@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-23 12:33+0100\n"
+"POT-Creation-Date: 2004-02-07 00:18+0200\n"
 "PO-Revision-Date: 2004-01-23 12:35+0100\n"
 "Last-Translator: Danilo Segan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -50,20 +50,20 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "Документ %s садржи несачуване измене. Сачувати их?"
 
 #. Page page
-#: src/desktop.c:1537 src/dialogs/align.c:290
+#: src/desktop.c:1541 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Страна"
 
-#: src/desktop.c:1541 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
 #: src/verbs.c:468
 msgid "Drawing"
 msgstr "Цртеж"
 
 #. Selection submenu
-#: src/desktop.c:1545 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:596 src/toolbox.c:407 src/verbs.c:469
+#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Избор"
 
@@ -294,49 +294,63 @@ msgstr "Боја странице"
 msgid "Close"
 msgstr "Затвори"
 
-#: src/dialogs/display-settings.c:88
+#: src/dialogs/display-settings.c:101
 msgid "Display settings"
 msgstr "Подешавања приказа"
 
 #. Rendering settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:96
+#: src/dialogs/display-settings.c:108
 msgid "Rendering"
 msgstr "Исцртавање"
 
-#: src/dialogs/display-settings.c:108
+#: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
 msgstr "Превише увећај битмапу:"
 
-#: src/dialogs/display-settings.c:119 src/verbs.c:403
+#: src/dialogs/display-settings.c:125 src/verbs.c:403
 msgid "None"
 msgstr "Ништа"
 
-#: src/dialogs/display-settings.c:123
+#: src/dialogs/display-settings.c:128
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:127
+#: src/dialogs/display-settings.c:131
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:131
+#: src/dialogs/display-settings.c:134
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:135
+#: src/dialogs/display-settings.c:137
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:146
+#: src/dialogs/display-settings.c:147
 msgid "Input"
 msgstr "Унос"
 
-#: src/dialogs/display-settings.c:157
+#: src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
 msgstr "Подразумевана трпељивост курзора:"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr ""
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr ""
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr ""
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -444,15 +458,15 @@ msgstr "Извозим [%d x %d] %s"
 msgid "Fill style"
 msgstr "Стил испуњавања"
 
-#: src/dialogs/fill-style.c:122
+#: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
 msgstr "Правила испуњавања"
 
-#: src/dialogs/fill-style.c:136
+#: src/dialogs/fill-style.c:138
 msgid "nonzero"
 msgstr "ненула"
 
-#: src/dialogs/fill-style.c:141
+#: src/dialogs/fill-style.c:143
 msgid "evenodd"
 msgstr "паран-непаран"
 
@@ -886,28 +900,28 @@ msgstr "Откажи"
 msgid "Create"
 msgstr "Направи"
 
-#: src/document.c:349
+#: src/document.c:353
 #, c-format
 msgid "New document %d"
 msgstr "Нови документ %d"
 
-#: src/document.c:378
+#: src/document.c:382
 #, c-format
 msgid "Memory document %d"
 msgstr "Меморијски документ %d"
 
-#: src/document.c:488
+#: src/document.c:492
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Неименовани документ %d"
 
-#: src/draw-context.c:289
+#: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr ""
 "Допуњава текући избор. Притисните „a“ да измените да ли се допуњава или "
 "започиње нови. "
 
-#: src/draw-context.c:294
+#: src/draw-context.c:299
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr ""
 "Прави нову криву. Притисните „a“ да измените да ли се допуњава или започиње "
@@ -936,11 +950,11 @@ msgstr "Врста датотеке:"
 msgid "Save file"
 msgstr "Сачувај датотеку"
 
-#: src/file.c:472 src/file.c:482 src/file.c:488
+#: src/file.c:480 src/file.c:490 src/file.c:496
 msgid "Select file to import"
 msgstr "Одаберите датотеку за увоз"
 
-#: src/help.c:57
+#: src/help.c:51
 msgid "About sodipodi"
 msgstr "О содиподију"
 
@@ -1083,110 +1097,110 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "екс квадрати"
 
-#: src/interface.c:305 src/interface.c:503
+#: src/interface.c:315 src/interface.c:513
 msgid "Open Recent"
 msgstr "Отвори скорашње"
 
-#: src/interface.c:325
+#: src/interface.c:335
 msgid "Close View"
 msgstr "Затвори преглед"
 
-#: src/interface.c:328 src/interface.c:509
+#: src/interface.c:338 src/interface.c:519
 msgid "About Sodipodi"
 msgstr "О Содиподију"
 
 #. Have modules about menu
-#: src/interface.c:334 src/interface.c:515
+#: src/interface.c:344 src/interface.c:525
 msgid "About Modules"
 msgstr "О додацима"
 
-#: src/interface.c:354
+#: src/interface.c:364
 msgid "Cleanup"
 msgstr "Очисти"
 
 #. View:Zoom
-#: src/interface.c:429 src/toolbox.c:546 src/verbs.c:459
+#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Увећај"
 
 #. View:New View
-#: src/interface.c:441
+#: src/interface.c:451
 msgid "New View"
 msgstr "Нови поглед"
 
 #. View:New Preview
-#: src/interface.c:443
+#: src/interface.c:453
 msgid "New Preview"
 msgstr "Нови преглед"
 
-#: src/interface.c:445
+#: src/interface.c:455
 msgid "New Toplevel Toolbox"
 msgstr "Нови скуп алата првог нивоа"
 
-#: src/interface.c:446
+#: src/interface.c:456
 msgid "New Docked Toolbox"
 msgstr "Нови привезани скуп алата"
 
-#: src/interface.c:447
+#: src/interface.c:457
 msgid "Remove Docked Toolbox"
 msgstr "Уклони привезани скуп алата"
 
 #. File
-#: src/interface.c:500 src/verbs.c:405
+#: src/interface.c:510 src/verbs.c:405
 msgid "New"
 msgstr "Нова"
 
-#: src/interface.c:501
+#: src/interface.c:511
 msgid "Open"
 msgstr "Отвори"
 
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:521 src/verbs.c:414
+#: src/interface.c:531 src/verbs.c:414
 msgid "Exit program"
 msgstr "Излаз из програма"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:584 src/toolbox.c:270
+#: src/interface.c:594 src/toolbox.c:270
 msgid "File"
 msgstr "Датотека"
 
 #. Edit submenu
-#: src/interface.c:590 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Уређивање"
 
 #. View submenu
-#: src/interface.c:602
+#: src/interface.c:612
 msgid "View"
 msgstr "Преглед"
 
 #. Drawing mode submenu
-#: src/interface.c:608
+#: src/interface.c:618
 msgid "Drawing Mode"
 msgstr "Режим цртања"
 
 #. Dialog submenu
-#: src/interface.c:614
+#: src/interface.c:624
 msgid "Dialogs"
 msgstr "Прозорчићи"
 
 #. Have modules menu
-#: src/interface.c:623
+#: src/interface.c:633
 msgid "Modules"
 msgstr "Модули"
 
-#: src/main.c:120 src/main.c:619
+#: src/main.c:120 src/main.c:611
 msgid "Do not use X server (only process files from console)"
 msgstr "Не користи X сервер (само обрађуј датотеке преко конзоле)"
 
 # bug: unmatched parenthesis??
-#: src/main.c:123 src/main.c:620
+#: src/main.c:123 src/main.c:612
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr ""
 "Покушај да користиш X сервер чак иако променљива $DISPLAY није постављена)"
 
-#: src/main.c:126 src/main.c:621
+#: src/main.c:126 src/main.c:613
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Отвори наведене документе (ниска са опција се може прескочити)"
 
@@ -1200,11 +1214,11 @@ msgstr ""
 "Штампај документе у наведену излазну датотеку (користите „| програм“ за "
 "цевку)"
 
-#: src/main.c:132 src/main.c:622
+#: src/main.c:132 src/main.c:614
 msgid "Export document to png file"
 msgstr "Извези документ у PNG датотеку"
 
-#: src/main.c:135 src/main.c:623
+#: src/main.c:135 src/main.c:615
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "Резолуција која се користи за претварање СВГ-а у битмапу (подразумевано 72,0)"
@@ -1213,7 +1227,7 @@ msgstr ""
 msgid "DPI"
 msgstr "ТПИ"
 
-#: src/main.c:138 src/main.c:624
+#: src/main.c:138 src/main.c:616
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1225,7 +1239,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:625
+#: src/main.c:141 src/main.c:617
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Ширина образоване битмапе у тачкама (преписује ТПИ)"
 
@@ -1233,7 +1247,7 @@ msgstr "Ширина образоване битмапе у тачкама (пр
 msgid "WIDTH"
 msgstr "ШИРИНА"
 
-#: src/main.c:143 src/main.c:626
+#: src/main.c:143 src/main.c:618
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Висина образоване битмапе у тачкама (преписује ТПИ)"
 
@@ -1241,7 +1255,7 @@ msgstr "Висина образоване битмапе у тачкама (пр
 msgid "HEIGHT"
 msgstr "ВИСИНА"
 
-#: src/main.c:145 src/main.c:627
+#: src/main.c:145 src/main.c:619
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Боја позадине извезене битмапе (било која ознака боје коју подржава СВГ)"
@@ -1250,7 +1264,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "БОЈА"
 
-#: src/main.c:147 src/main.c:628
+#: src/main.c:147 src/main.c:620
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Извези документ у обичну СВГ датотеку (без простора имена „xmlns:sodipodi“)"
@@ -1265,55 +1279,55 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Дај првенство битмапираним (XPM) иконама у односу на СВГ иконе"
 
-#: src/main.c:629
+#: src/main.c:621
 msgid "Print sodipodi version information"
 msgstr "Испиши податке о издању Содиподија"
 
-#: src/main.c:630
+#: src/main.c:622
 msgid "Print help about command-line arguments"
 msgstr "Испиши помоћ за аргументе наредбе"
 
-#: src/main.c:779
+#: src/main.c:771
 msgid "Untitled document"
 msgstr "Неименовани документ"
 
 #. Show nice dialog box
-#: src/main.c:804
+#: src/main.c:796
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Содиподи је наишао на унутрашњу грешку и сада ће се затворити.\n"
 
-#: src/main.c:805
+#: src/main.c:797
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Аутоматски резервни примерци несачуваних докумената су смештени у наредне "
 "путање:\n"
 
-#: src/main.c:806
+#: src/main.c:798
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Није успело аутоматско снимање резервних примерака:\n"
 
-#: src/module.c:851
+#: src/module.c:873
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Скалабилна векторска графика (SVG)"
 
-#: src/module.c:851
+#: src/module.c:873
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Матичан запис Содиподија и W3C стандард"
 
-#: src/module.c:858
+#: src/module.c:880
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "СВГ са простором имена „xmlns:sodipodi“"
 
-#: src/module.c:859
+#: src/module.c:881
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Скалабилни векторски графички запис за содиподијевим проширењима"
 
-#: src/module.c:862
+#: src/module.c:884
 msgid "Plain SVG"
 msgstr "Обичан СВГ"
 
-#: src/module.c:863
+#: src/module.c:885
 msgid "Scalable Vector Graphics format"
 msgstr "Скалабилни векторски графички запис"
 
@@ -1345,20 +1359,20 @@ msgid "Save document as"
 msgstr "Сачувај документ као"
 
 #. Print destination frame
-#: src/modules/ps.c:192 src/modules/ps.c:253
+#: src/modules/ps.c:245 src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Одредиште штампе"
 
 #. Print properties frame
-#: src/modules/ps.c:203
+#: src/modules/ps.c:256
 msgid "Print properties"
 msgstr "Особине штампе"
 
-#: src/modules/ps.c:211
+#: src/modules/ps.c:264
 msgid "Print using PostScript operators"
 msgstr "Штампај помоћу ПостСкрипт оператора"
 
-#: src/modules/ps.c:213
+#: src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1368,11 +1382,11 @@ msgstr ""
 "мања и моћи ће се произвољно увећавати, али провидност, обележја и обрасци "
 "ће бити изгубљени"
 
-#: src/modules/ps.c:218
+#: src/modules/ps.c:271
 msgid "Print as bitmap"
 msgstr "Штампај као битмапу"
 
-#: src/modules/ps.c:220
+#: src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1382,15 +1396,15 @@ msgstr ""
 "зависити од размере увећања, али сва графика ће се исцртати исто као што је "
 "приказана"
 
-#: src/modules/ps.c:234
+#: src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Жељена резолуција (тачака по инчу) битмапе"
 
-#: src/modules/ps.c:249
+#: src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Резолуција:"
 
-#: src/modules/ps.c:259
+#: src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1400,7 +1414,7 @@ msgstr ""
 "Користите „> датотека“ да штампате у датотеку.\n"
 "Користите „| програм аргумент...“ да проследите у програм"
 
-#: src/modules/ps.c:893
+#: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "грешка при писању"
 
@@ -1584,7 +1598,7 @@ msgstr "Центрирај поглед на изабрану ставку"
 msgid "Sodipodi slideshow"
 msgstr "Содиподи аутоматски приказ"
 
-#: src/sodipodi.c:453
+#: src/sodipodi.c:468
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1595,7 +1609,7 @@ msgstr ""
 "Иако ће се Содиподи покренути, нећете моћи\n"
 "ни да учитате ни да сачувате поставке\n"
 
-#: src/sodipodi.c:456
+#: src/sodipodi.c:471
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1610,7 +1624,7 @@ msgstr ""
 "моћи ни да учитате ни да сачувате\n"
 "поставке."
 
-#: src/sodipodi.c:461
+#: src/sodipodi.c:476
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1623,7 +1637,7 @@ msgstr ""
 "моћи ни да учитате ни да сачувате\n"
 "поставке."
 
-#: src/sodipodi.c:473
+#: src/sodipodi.c:488
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1634,7 +1648,7 @@ msgstr ""
 "Иако ће се Содиподи покренути, нећете\n"
 "моћи да користите проширења (додатке)\n"
 
-#: src/sodipodi.c:476
+#: src/sodipodi.c:491
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1647,7 +1661,7 @@ msgstr ""
 "Иако ће се Содиподи покренути, нећете\n"
 "моћи да користите проширења (додатке)\n"
 
-#: src/sodipodi.c:480
+#: src/sodipodi.c:495
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1659,7 +1673,7 @@ msgstr ""
 "Иако ће се Содиподи покренути, нећете\n"
 "моћи да користите проширења (додатке)\n"
 
-#: src/sodipodi.c:841
+#: src/sodipodi.c:829
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1672,7 +1686,7 @@ msgstr ""
 "моћи ни да учитате ни да сачувате\n"
 "%s."
 
-#: src/sodipodi.c:845
+#: src/sodipodi.c:833
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1685,7 +1699,7 @@ msgstr ""
 "моћи ни да учитате ни да сачувате\n"
 "поставке."
 
-#: src/sodipodi.c:849
+#: src/sodipodi.c:837
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1698,7 +1712,7 @@ msgstr ""
 "моћи ни да учитате ни да сачувате\n"
 "поставке."
 
-#: src/sodipodi.c:853
+#: src/sodipodi.c:841
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1711,7 +1725,7 @@ msgstr ""
 "моћи ни да учитате ни да сачувате\n"
 "поставке."
 
-#: src/sodipodi.c:863
+#: src/sodipodi.c:851
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1722,7 +1736,7 @@ msgstr ""
 "Иако ће се Содиподи покренути, нећете\n"
 "моћи да користите проширења (додатке)\n"
 
-#: src/sodipodi.c:866
+#: src/sodipodi.c:854
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1733,7 +1747,7 @@ msgstr ""
 "Иако ће се Содиподи покренути, нећете\n"
 "моћи да користите проширења (додатке)\n"
 
-#: src/sodipodi.c:869
+#: src/sodipodi.c:857
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1744,7 +1758,7 @@ msgstr ""
 "Иако ће се Содиподи покренути, нећете\n"
 "моћи да користите проширења (додатке)\n"
 
-#: src/sodipodi.c:872
+#: src/sodipodi.c:860
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1802,7 +1816,7 @@ msgid "Unknown item :-("
 msgstr "Непозната ставка :-("
 
 #. fixme:
-#: src/sp-text.c:1291
+#: src/sp-text.c:1292
 msgid "Text object"
 msgstr "Објекат за текст"
 

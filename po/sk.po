@@ -6,14 +6,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-07 04:58+0100\n"
+"POT-Creation-Date: 2004-02-07 00:18+0200\n"
 "PO-Revision-Date: 2004-01-07 22:01+0100\n"
 "Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.2beta3\n"
 
 #: sodipodi.desktop.in.h:1
@@ -49,20 +49,20 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neuložené zmeny, uložiť ich?"
 
 #. Page page
-#: src/desktop.c:1537 src/dialogs/align.c:290
+#: src/desktop.c:1541 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:160 src/verbs.c:463
+#: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Stránka"
 
-#: src/desktop.c:1541 src/dialogs/align.c:291 src/dialogs/export.c:165
-#: src/verbs.c:464
+#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/verbs.c:468
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1545 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:591 src/toolbox.c:407 src/verbs.c:465
+#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Výber"
 
@@ -293,49 +293,63 @@ msgstr "Farba strany"
 msgid "Close"
 msgstr "Zatvoriť"
 
-#: src/dialogs/display-settings.c:88
+#: src/dialogs/display-settings.c:101
 msgid "Display settings"
 msgstr "Zobraziť nastavenia"
 
 #. Rendering settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:96
+#: src/dialogs/display-settings.c:108
 msgid "Rendering"
 msgstr "Generovanie"
 
-#: src/dialogs/display-settings.c:108
+#: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
 msgstr "Prevzorkovanie bitmáp:"
 
-#: src/dialogs/display-settings.c:119 src/verbs.c:403
+#: src/dialogs/display-settings.c:125 src/verbs.c:403
 msgid "None"
 msgstr "Žiadne"
 
-#: src/dialogs/display-settings.c:123
+#: src/dialogs/display-settings.c:128
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:127
+#: src/dialogs/display-settings.c:131
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:131
+#: src/dialogs/display-settings.c:134
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:135
+#: src/dialogs/display-settings.c:137
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:146
+#: src/dialogs/display-settings.c:147
 msgid "Input"
 msgstr "Vstup"
 
-#: src/dialogs/display-settings.c:157
+#: src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
 msgstr "Štandardná tolerancia kurzora:"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr ""
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr ""
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr ""
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -443,15 +457,15 @@ msgstr "Exportovanie [%d x %d] %s"
 msgid "Fill style"
 msgstr "Štýl výplne"
 
-#: src/dialogs/fill-style.c:122
+#: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
 msgstr "Spôsob vyplnenia"
 
-#: src/dialogs/fill-style.c:136
+#: src/dialogs/fill-style.c:138
 msgid "nonzero"
 msgstr "nenulové"
 
-#: src/dialogs/fill-style.c:141
+#: src/dialogs/fill-style.c:143
 msgid "evenodd"
 msgstr "párno nepárny"
 
@@ -500,7 +514,7 @@ msgstr "ID je neplatné"
 msgid "ID exists"
 msgstr "ID existuje"
 
-#: src/dialogs/item-properties.c:436 src/verbs.c:478
+#: src/dialogs/item-properties.c:436 src/verbs.c:482
 msgid "Item properties"
 msgstr "Vlastnosti položiek"
 
@@ -666,7 +680,7 @@ msgstr "Voľná ruka a pero"
 msgid "Calligraphic line"
 msgstr "Kaligrafická čiara"
 
-#: src/dialogs/object-properties.c:210 src/verbs.c:454
+#: src/dialogs/object-properties.c:210 src/verbs.c:458
 msgid "Text"
 msgstr "Text"
 
@@ -674,7 +688,7 @@ msgstr "Text"
 msgid "Object Size and Position"
 msgstr "Veľkosť  a umiestnenie objektu"
 
-#: src/dialogs/object-properties.c:312 src/verbs.c:473
+#: src/dialogs/object-properties.c:312 src/verbs.c:477
 msgid "Size and Position"
 msgstr "Veľkosť a pozícia"
 
@@ -718,15 +732,20 @@ msgstr "Orientácia:"
 msgid "Line spacing:"
 msgstr "Riadkovanie:"
 
-#: src/dialogs/text-edit.c:217
+#: src/dialogs/text-edit.c:212
+#, fuzzy
+msgid "Spacing:"
+msgstr "Rozostup Y:"
+
+#: src/dialogs/text-edit.c:235
 msgid "Text and font"
 msgstr "Text a písmo"
 
-#: src/dialogs/text-edit.c:228
+#: src/dialogs/text-edit.c:246
 msgid "Set as default"
 msgstr "Nastaviť ako štandardné"
 
-#: src/dialogs/tool-attributes.c:48 src/verbs.c:471
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:475
 msgid "Tool attributes"
 msgstr "Atribúty nástroja"
 
@@ -778,7 +797,7 @@ msgstr "Nástroj nemá atribúty"
 msgid "No active tool"
 msgstr "Neaktívny nástroj"
 
-#: src/dialogs/tool-options.c:47 src/verbs.c:470
+#: src/dialogs/tool-options.c:47 src/verbs.c:474
 msgid "Tool options"
 msgstr "Nastavenia nástroja"
 
@@ -880,26 +899,26 @@ msgstr "Zrušiť"
 msgid "Create"
 msgstr "Vytvoriť"
 
-#: src/document.c:349
+#: src/document.c:353
 #, c-format
 msgid "New document %d"
 msgstr "Nový dokument %d"
 
-#: src/document.c:378
+#: src/document.c:382
 #, c-format
 msgid "Memory document %d"
 msgstr "Pamäťový dokument %d"
 
-#: src/document.c:488
+#: src/document.c:492
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Nepomenovaný dokument %d"
 
-#: src/draw-context.c:285
+#: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr "Pripojenie k výberu. Stlačte 'a' na prepnutie Pridať/Nový."
 
-#: src/draw-context.c:290
+#: src/draw-context.c:299
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr "Vytváranie novej krivky. Stlačte 'a' na prepnutie Pridať/Novú."
 
@@ -926,11 +945,11 @@ msgstr "Typ súbora:"
 msgid "Save file"
 msgstr "Uložiť súbor"
 
-#: src/file.c:472 src/file.c:482 src/file.c:488
+#: src/file.c:480 src/file.c:490 src/file.c:496
 msgid "Select file to import"
 msgstr "Voľba súboru na importovanie"
 
-#: src/help.c:57
+#: src/help.c:51
 msgid "About sodipodi"
 msgstr "O sodipodi"
 
@@ -1073,108 +1092,108 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "Ex štvorce"
 
-#: src/interface.c:305 src/interface.c:498
+#: src/interface.c:315 src/interface.c:513
 msgid "Open Recent"
 msgstr "Otvoriť nedávne"
 
-#: src/interface.c:325
+#: src/interface.c:335
 msgid "Close View"
 msgstr "Zatvoriť pohľad"
 
-#: src/interface.c:328 src/interface.c:504
+#: src/interface.c:338 src/interface.c:519
 msgid "About Sodipodi"
 msgstr "O sodipodi"
 
 #. Have modules about menu
-#: src/interface.c:334 src/interface.c:510
+#: src/interface.c:344 src/interface.c:525
 msgid "About Modules"
 msgstr "O moduloch"
 
-#: src/interface.c:354
+#: src/interface.c:364
 msgid "Cleanup"
 msgstr "Vyčistiť"
 
 #. View:Zoom
-#: src/interface.c:424 src/toolbox.c:546 src/verbs.c:455
+#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Lupa"
 
 #. View:New View
-#: src/interface.c:436
+#: src/interface.c:451
 msgid "New View"
 msgstr "Nový pohľad"
 
 #. View:New Preview
-#: src/interface.c:438
+#: src/interface.c:453
 msgid "New Preview"
 msgstr "Nový náhľad"
 
-#: src/interface.c:440
+#: src/interface.c:455
 msgid "New Toplevel Toolbox"
 msgstr "Nový najvyšší nástrojový panel"
 
-#: src/interface.c:441
+#: src/interface.c:456
 msgid "New Docked Toolbox"
 msgstr "Nový ukotvený nástrojový panel"
 
-#: src/interface.c:442
+#: src/interface.c:457
 msgid "Remove Docked Toolbox"
 msgstr "Odstrániť nástrojový panel"
 
 #. File
-#: src/interface.c:495 src/verbs.c:405
+#: src/interface.c:510 src/verbs.c:405
 msgid "New"
 msgstr "Nový"
 
-#: src/interface.c:496
+#: src/interface.c:511
 msgid "Open"
 msgstr "Otvoriť"
 
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:516 src/verbs.c:414
+#: src/interface.c:531 src/verbs.c:414
 msgid "Exit program"
 msgstr "Koniec programu"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:579 src/toolbox.c:270
+#: src/interface.c:594 src/toolbox.c:270
 msgid "File"
 msgstr "Súbor"
 
 #. Edit submenu
-#: src/interface.c:585 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Upraviť"
 
 #. View submenu
-#: src/interface.c:597
+#: src/interface.c:612
 msgid "View"
 msgstr "Zobraziť"
 
 #. Drawing mode submenu
-#: src/interface.c:603
+#: src/interface.c:618
 msgid "Drawing Mode"
 msgstr "Mód kreslenia"
 
 #. Dialog submenu
-#: src/interface.c:609
+#: src/interface.c:624
 msgid "Dialogs"
 msgstr "Dialógy"
 
 #. Have modules menu
-#: src/interface.c:618
+#: src/interface.c:633
 msgid "Modules"
 msgstr "Moduly"
 
-#: src/main.c:120 src/main.c:619
+#: src/main.c:120 src/main.c:611
 msgid "Do not use X server (only process files from console)"
 msgstr "Nepoužívať X server (iba spracovať súbory z konzoly)"
 
-#: src/main.c:123 src/main.c:620
+#: src/main.c:123 src/main.c:612
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Pokúsiť sa použiť X server (aj keď $DISPLAY nie je nastavená)"
 
-#: src/main.c:126 src/main.c:621
+#: src/main.c:126 src/main.c:613
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otvoriť určený dokument (reťazec s voľbami môže byť vynechaný)"
 
@@ -1184,13 +1203,14 @@ msgstr "NÁZOV_SÚBORU"
 
 #: src/main.c:129
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
-msgstr "Vytlačiť súbor do určeného výstupného súboru (použite '| program' pre rúru)"
+msgstr ""
+"Vytlačiť súbor do určeného výstupného súboru (použite '| program' pre rúru)"
 
-#: src/main.c:132 src/main.c:622
+#: src/main.c:132 src/main.c:614
 msgid "Export document to png file"
 msgstr "Exportovať dokument do png súboru"
 
-#: src/main.c:135 src/main.c:623
+#: src/main.c:135 src/main.c:615
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "Rozlíšenie použité pre konverziu SVG na bitmapu (štandardne 72.0)"
 
@@ -1198,7 +1218,7 @@ msgstr "Rozlíšenie použité pre konverziu SVG na bitmapu (štandardne 72.0)"
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:624
+#: src/main.c:138 src/main.c:616
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1210,7 +1230,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:625
+#: src/main.c:141 src/main.c:617
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Šírka generovanej bitmapy v bodoch (prepíše dpi)"
 
@@ -1218,7 +1238,7 @@ msgstr "Šírka generovanej bitmapy v bodoch (prepíše dpi)"
 msgid "WIDTH"
 msgstr "ŠÍRKA"
 
-#: src/main.c:143 src/main.c:626
+#: src/main.c:143 src/main.c:618
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Výška generovanej bitmapy v bodoch (prepíše dpi)"
 
@@ -1226,15 +1246,16 @@ msgstr "Výška generovanej bitmapy v bodoch (prepíše dpi)"
 msgid "HEIGHT"
 msgstr "VÝŠKA"
 
-#: src/main.c:145 src/main.c:627
+#: src/main.c:145 src/main.c:619
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr "Farba pozadia exportovanej bitmapy (akýkoľvek podporovaný SVG reťazec farby)"
+msgstr ""
+"Farba pozadia exportovanej bitmapy (akýkoľvek podporovaný SVG reťazec farby)"
 
 #: src/main.c:145
 msgid "COLOR"
 msgstr "FARBA"
 
-#: src/main.c:147 src/main.c:628
+#: src/main.c:147 src/main.c:620
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Exportovať dokument do obyčajného SVG súboru (bez  \"xmlns:sodipodi\" "
@@ -1250,52 +1271,53 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Dávať prednosť bitmapovým ikonám (XPM) pred SVG"
 
-#: src/main.c:629
+#: src/main.c:621
 msgid "Print sodipodi version information"
 msgstr "Vytlačiť informácie o verzií sodipodi"
 
-#: src/main.c:630
+#: src/main.c:622
 msgid "Print help about command-line arguments"
 msgstr "Vytlačiť pomocníka o argumentoch na príkazovom riadku"
 
-#: src/main.c:779
+#: src/main.c:771
 msgid "Untitled document"
 msgstr "Nepomenovaný dokument"
 
 #. Show nice dialog box
-#: src/main.c:804
+#: src/main.c:796
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi našiel internú chybu a bude teraz ukončený.\n"
 
-#: src/main.c:805
-msgid "Automatic backups of unsaved documents were done to following locations:\n"
+#: src/main.c:797
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
 msgstr "Automatické zálohovanie neuložených dokumentov bolo vykonané do:\n"
 
-#: src/main.c:806
+#: src/main.c:798
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Nepodarilo sa automaticky zálohovať nasledujúce dokumenty:\n"
 
-#: src/module.c:851
+#: src/module.c:873
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Stupňovateľná Vektorová Grafika (SVG)"
 
-#: src/module.c:851
+#: src/module.c:873
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Natívny formát súbor Sodipodi a štandard W3C"
 
-#: src/module.c:858
+#: src/module.c:880
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG s \"xmlns:sodipodi\" namespace"
 
-#: src/module.c:859
+#: src/module.c:881
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Stupňovateľný Vektorový Grafický formát so sodipodi rozšírením"
 
-#: src/module.c:862
+#: src/module.c:884
 msgid "Plain SVG"
 msgstr "Obyčajné SVG"
 
-#: src/module.c:863
+#: src/module.c:885
 msgid "Scalable Vector Graphics format"
 msgstr "Stupňovateľný Vektorový Grafický formát"
 
@@ -1327,20 +1349,20 @@ msgid "Save document as"
 msgstr "Uložiť dokument ako"
 
 #. Print destination frame
-#: src/modules/ps.c:192 src/modules/ps.c:253
+#: src/modules/ps.c:245 src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Cieľ tlače"
 
 #. Print properties frame
-#: src/modules/ps.c:203
+#: src/modules/ps.c:256
 msgid "Print properties"
 msgstr "Vlastnosti tlače"
 
-#: src/modules/ps.c:211
+#: src/modules/ps.c:264
 msgid "Print using PostScript operators"
 msgstr "Tlačiť s pomocou Postcript operátorov"
 
-#: src/modules/ps.c:213
+#: src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1350,11 +1372,11 @@ msgstr ""
 "menší a je možné ľubovoľne meniť jeho veľkosť, avšak sa stratí alfa "
 "priehľadnosť, značky a vzory."
 
-#: src/modules/ps.c:218
+#: src/modules/ps.c:271
 msgid "Print as bitmap"
 msgstr "Tlačiť ako bitmapu"
 
-#: src/modules/ps.c:220
+#: src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1364,15 +1386,15 @@ msgstr ""
 "kvalita bude závisieť na úrovni zväčšenia. Budú však vykreslené všetky "
 "grafické prvky tak, ako sú zobrazené"
 
-#: src/modules/ps.c:234
+#: src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Preferované rozlíšenie bitmapy (v bodoch na palec)"
 
-#: src/modules/ps.c:249
+#: src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Rozlíšenie:"
 
-#: src/modules/ps.c:259
+#: src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1382,7 +1404,7 @@ msgstr ""
 "Použite '> súbor', ak chcete tlačiť do súboru.\n"
 "Použite '| program argument', ak chcete presmerovať tlač do programu"
 
-#: src/modules/ps.c:893
+#: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "vyskytla sa chyba zápisu"
 
@@ -1392,7 +1414,7 @@ msgid "Item"
 msgstr "Položka"
 
 #. Item dialog
-#: src/object-ui.c:111 src/verbs.c:478
+#: src/object-ui.c:111 src/verbs.c:482
 msgid "Item Properties"
 msgstr "Vlastnosti položiek"
 
@@ -1494,7 +1516,7 @@ msgid "Rect Properties"
 msgstr "Vlastnosti pravouholníka"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:533 src/verbs.c:449
+#: src/object-ui.c:533 src/verbs.c:453
 msgid "Star"
 msgstr "Hviezda"
 
@@ -1504,7 +1526,7 @@ msgid "Star Properties"
 msgstr "Vlastnosti hviezdy"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:569 src/verbs.c:450
+#: src/object-ui.c:569 src/verbs.c:454
 msgid "Spiral"
 msgstr "Špirála"
 
@@ -1563,7 +1585,7 @@ msgstr "Dať do stredu a vybrať položku"
 msgid "Sodipodi slideshow"
 msgstr "Premietanie snímkov Sodipodi"
 
-#: src/sodipodi.c:453
+#: src/sodipodi.c:468
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1574,7 +1596,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia.\n"
 
-#: src/sodipodi.c:456
+#: src/sodipodi.c:471
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1588,7 +1610,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:461
+#: src/sodipodi.c:476
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1600,7 +1622,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:473
+#: src/sodipodi.c:488
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1611,7 +1633,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:476
+#: src/sodipodi.c:491
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1624,7 +1646,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:480
+#: src/sodipodi.c:495
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1635,7 +1657,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:841
+#: src/sodipodi.c:829
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1648,7 +1670,7 @@ msgstr ""
 "môcť ukladať alebo načítavať\n"
 "%s."
 
-#: src/sodipodi.c:845
+#: src/sodipodi.c:833
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1660,7 +1682,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:849
+#: src/sodipodi.c:837
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1672,7 +1694,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:853
+#: src/sodipodi.c:841
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1684,7 +1706,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:863
+#: src/sodipodi.c:851
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1695,7 +1717,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:866
+#: src/sodipodi.c:854
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1706,7 +1728,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:869
+#: src/sodipodi.c:857
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1717,7 +1739,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:872
+#: src/sodipodi.c:860
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1774,7 +1796,7 @@ msgid "Unknown item :-("
 msgstr "Neznáma položka :-("
 
 #. fixme:
-#: src/sp-text.c:1287
+#: src/sp-text.c:1292
 msgid "Text object"
 msgstr "Textový objekt"
 
@@ -1797,7 +1819,7 @@ msgstr "Urobiť strany ostré"
 msgid "Object"
 msgstr "Objekt"
 
-#: src/toolbox.c:362 src/verbs.c:473
+#: src/toolbox.c:362 src/verbs.c:477
 msgid "Object size and position"
 msgstr "Veľkosť objektu a pozícia"
 
@@ -1805,7 +1827,7 @@ msgstr "Veľkosť objektu a pozícia"
 msgid "Text and font settings"
 msgstr "Nastavenia textu a písma"
 
-#: src/toolbox.c:365 src/verbs.c:474
+#: src/toolbox.c:365 src/verbs.c:478
 msgid "Object transformations"
 msgstr "Transformácie objektu"
 
@@ -2068,250 +2090,288 @@ msgid "Break selected path to subpaths"
 msgstr "Rozdelí vybrané cesty na podcesty"
 
 #: src/verbs.c:435
+msgid "Uncross"
+msgstr ""
+
+#: src/verbs.c:435
+#, fuzzy
+msgid "Break selected path at crossings"
+msgstr "Rozdelí vybrané cesty na podcesty"
+
+#: src/verbs.c:436
+#, fuzzy
+msgid "Union"
+msgstr "nič"
+
+#: src/verbs.c:436
+#, fuzzy
+msgid "Calculate union of selected paths"
+msgstr "Kombinovať zvolené cesty"
+
+#: src/verbs.c:437
+#, fuzzy
+msgid "Intersection"
+msgstr "_Interaktívne"
+
+#: src/verbs.c:437
+#, fuzzy
+msgid "Calculate intersection of selected paths"
+msgstr "Kombinovať zvolené cesty"
+
+#: src/verbs.c:438
+#, fuzzy
+msgid "Subtraction"
+msgstr "Sýtosť:"
+
+#: src/verbs.c:438
+msgid "Subtract paths from first"
+msgstr ""
+
+#: src/verbs.c:439
 msgid "Transform"
 msgstr "Transformácia"
 
-#: src/verbs.c:435
+#: src/verbs.c:439
 msgid "Applies transformation"
 msgstr "Vykoná transformáciu"
 
 #. Object
-#: src/verbs.c:437
+#: src/verbs.c:441
 msgid "Rotate 90 degrees"
 msgstr "Otočiť o 90 stupňov"
 
-#: src/verbs.c:437
+#: src/verbs.c:441
 msgid "Rotates object 90 degrees clockwise"
 msgstr "Otočí objekt o 90° doprava"
 
-#: src/verbs.c:438
+#: src/verbs.c:442
 msgid "Flatten object"
 msgstr "Sploštiť objekt"
 
-#: src/verbs.c:438
+#: src/verbs.c:442
 msgid "Remove transformations from object"
 msgstr "Odstrániť transformácie z objektu"
 
-#: src/verbs.c:439
+#: src/verbs.c:443
 msgid "Convert to Curves"
 msgstr "Konvertovať na krivky"
 
-#: src/verbs.c:439
+#: src/verbs.c:443
 msgid "Convert selected object to path"
 msgstr "Konvertovať zvolený objekt na cestu"
 
-#: src/verbs.c:440
+#: src/verbs.c:444
 msgid "Flip Horizontally"
 msgstr "Preklopiť vodorovne"
 
-#: src/verbs.c:441
+#: src/verbs.c:445
 msgid "Flip selected objects horizontally"
 msgstr "Preklopiť zvolené objekty vodorovne"
 
-#: src/verbs.c:442
+#: src/verbs.c:446
 msgid "Flip Vertically"
 msgstr "Preklopiť zvisle"
 
-#: src/verbs.c:443
+#: src/verbs.c:447
 msgid "Flip selected objects vertically"
 msgstr "Preklopiť zvolené objekty zvisle"
 
 #. Event contexts
-#: src/verbs.c:445
+#: src/verbs.c:449
 msgid "Select"
 msgstr "Vybrať"
 
-#: src/verbs.c:445
+#: src/verbs.c:449
 msgid "Select and transform objects"
 msgstr "Vybrať a transformovať objekty"
 
-#: src/verbs.c:446
+#: src/verbs.c:450
 msgid "Node edit"
 msgstr "Upraviť uzol"
 
-#: src/verbs.c:446
+#: src/verbs.c:450
 msgid "Modify existing objects by control nodes"
 msgstr "Úprava existujúcich objektov pomocou ovládacích uzlov"
 
-#: src/verbs.c:447
+#: src/verbs.c:451
 msgid "Rectangle"
 msgstr "Obdĺžnik"
 
-#: src/verbs.c:447
+#: src/verbs.c:451
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr "Tvorba štvoruholníkov a štvorcov s možnosťou oblých hrán"
 
-#: src/verbs.c:448
+#: src/verbs.c:452
 msgid "Ellipse"
 msgstr "Elipsa"
 
-#: src/verbs.c:448
+#: src/verbs.c:452
 msgid "Create circles, ellipses and arcs"
 msgstr "Tvorba kruhov, elíps a oblúkov"
 
-#: src/verbs.c:449
+#: src/verbs.c:453
 msgid "Create stars and polygons"
 msgstr "Tvorba hviezd a mnohouholníkov"
 
-#: src/verbs.c:450
+#: src/verbs.c:454
 msgid "Create spirals"
 msgstr "Tvorba špirál"
 
-#: src/verbs.c:451
+#: src/verbs.c:455
 msgid "Pencil"
 msgstr "Ceruzka"
 
-#: src/verbs.c:451
+#: src/verbs.c:455
 msgid "Draw freehand curves and straight lines"
 msgstr "Kresba voľnou rukou a priamych čiar"
 
-#: src/verbs.c:452
+#: src/verbs.c:456
 msgid "Pen"
 msgstr "Pero"
 
-#: src/verbs.c:452
+#: src/verbs.c:456
 msgid "Draw precisely positioned curved and straight lines"
 msgstr "Kreslenie presne umiestnených zahnutých a priamych čiar"
 
-#: src/verbs.c:453
+#: src/verbs.c:457
 msgid "Calligraphy"
 msgstr "Kaligrafická čiara"
 
-#: src/verbs.c:453
+#: src/verbs.c:457
 msgid "Draw calligraphic lines"
 msgstr "Kreslenie kaligrafických čiar"
 
-#: src/verbs.c:454
+#: src/verbs.c:458
 msgid "Create and edit text objects"
 msgstr "Tvorba a úprava textových objektov"
 
-#: src/verbs.c:455
+#: src/verbs.c:459
 msgid "Zoom into precisely selected area"
 msgstr "Zväčšenie do presne vybranej oblasti"
 
-#: src/verbs.c:456
+#: src/verbs.c:460
 msgid "Dropper"
 msgstr "Pipeta"
 
-#: src/verbs.c:456
+#: src/verbs.c:460
 msgid "Pick averaged colors from image"
 msgstr "Výber spriemerovaných farieb obrázku"
 
 #. Zooming
-#: src/verbs.c:458
+#: src/verbs.c:462
 msgid "In"
 msgstr "zväčšiť"
 
-#: src/verbs.c:458
+#: src/verbs.c:462
 msgid "Zoom in drawing"
 msgstr "Zväčšiť kresbu"
 
-#: src/verbs.c:459
+#: src/verbs.c:463
 msgid "Out"
 msgstr "Zmenšiť"
 
-#: src/verbs.c:459
+#: src/verbs.c:463
 msgid "Zoom out drawing"
 msgstr "Zmenšiť kresbu"
 
-#: src/verbs.c:460
+#: src/verbs.c:464
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:460
+#: src/verbs.c:464
 msgid "Set zoom factor to 1:1"
 msgstr "Nastaviť faktor zobrazenia na 1:1"
 
-#: src/verbs.c:461
+#: src/verbs.c:465
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:461
+#: src/verbs.c:465
 msgid "Set zoom factor to 1:2"
 msgstr "Nastaviť faktor zobrazenia na 1:2"
 
-#: src/verbs.c:462
+#: src/verbs.c:466
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:462
+#: src/verbs.c:466
 msgid "Set zoom factor to 2:1"
 msgstr "Nastaviť faktor zobrazenia na 2:1"
 
-#: src/verbs.c:463
+#: src/verbs.c:467
 msgid "Fit the whole page into window"
 msgstr "Zobraziť celú stránku v okne"
 
-#: src/verbs.c:464
+#: src/verbs.c:468
 msgid "Fit the whole drawing into window"
 msgstr "Zobraziť celú kresbu v okne"
 
-#: src/verbs.c:465
+#: src/verbs.c:469
 msgid "Fit the whole selection into window"
 msgstr "Zobraziť označené v okne"
 
 #. Dialogs
-#: src/verbs.c:467
+#: src/verbs.c:471
 msgid "Display"
 msgstr "Zobrazenie"
 
-#: src/verbs.c:467
+#: src/verbs.c:471
 msgid "Global display settings"
 msgstr "Globálne nastavenie zobrazovania"
 
-#: src/verbs.c:468
+#: src/verbs.c:472
 msgid "Document"
 msgstr "Dokument"
 
-#: src/verbs.c:468
+#: src/verbs.c:472
 msgid "Page layout"
 msgstr "Rozvrhnutie strany"
 
-#: src/verbs.c:469
+#: src/verbs.c:473
 msgid "Editing Window"
 msgstr "Úprava okna"
 
-#: src/verbs.c:469
+#: src/verbs.c:473
 msgid "Editing window properties"
 msgstr "Úprava vlastností okna"
 
-#: src/verbs.c:470
+#: src/verbs.c:474
 msgid "Tool Options"
 msgstr "Nastavenia nástroja"
 
-#: src/verbs.c:471
+#: src/verbs.c:475
 msgid "Tool Attributes"
 msgstr "Atribúty nástroja"
 
-#: src/verbs.c:472
+#: src/verbs.c:476
 msgid "Fill and Stroke"
 msgstr "Výplň a ťah"
 
-#: src/verbs.c:472
+#: src/verbs.c:476
 msgid "Fill and stroke settings"
 msgstr "Nastavenie výplne a ťahu"
 
-#: src/verbs.c:474
+#: src/verbs.c:478
 msgid "Transformations"
 msgstr "Transformácia"
 
-#: src/verbs.c:475
+#: src/verbs.c:479
 msgid "Align and Distribute"
 msgstr "Zarovnanie a rozmiestnenie"
 
-#: src/verbs.c:475
+#: src/verbs.c:479
 msgid "Align and distribute"
 msgstr "Zarovnanie a rozmiestnenie"
 
-#: src/verbs.c:476
+#: src/verbs.c:480
 msgid "Text and Font"
 msgstr "Text a písmo"
 
-#: src/verbs.c:476
+#: src/verbs.c:480
 msgid "Text editing and font settings"
 msgstr "Nastavenie úprav textu a písma"
 
-#: src/verbs.c:477
+#: src/verbs.c:481
 msgid "XML Editor"
 msgstr "XML editor"
 
@@ -2717,9 +2777,6 @@ msgstr "Hodnota"
 #~ msgid "millimeters"
 #~ msgstr "milimetre"
 
-#~ msgid "none"
-#~ msgstr "nič"
-
 #~ msgid "object properties"
 #~ msgstr "vlastnosti objektov"
 
@@ -2837,9 +2894,6 @@ msgstr "Hodnota"
 #~ msgid "_Group"
 #~ msgstr "_Zoskupiť"
 
-#~ msgid "_Interactive"
-#~ msgstr "_Interaktívne"
-
 #~ msgid "_New"
 #~ msgstr "_Nový"
 
@@ -2857,9 +2911,6 @@ msgstr "Hodnota"
 
 #~ msgid "Break apart selected paths"
 #~ msgstr "Rozdeliť zvolené cesty"
-
-#~ msgid "Combine selected paths"
-#~ msgstr "Kombinovať zvolené cesty"
 
 #~ msgid "Copy selection to clipboard"
 #~ msgstr "Kopírovať výber do schránky"
@@ -3235,4 +3286,3 @@ msgstr "Hodnota"
 
 #~ msgid "Radial"
 #~ msgstr "Radiálny"
-

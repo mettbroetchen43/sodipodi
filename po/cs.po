@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-02-06 04:40+0100\n"
+"POT-Creation-Date: 2004-02-07 00:18+0200\n"
 "PO-Revision-Date: 2004-02-06 17:58+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -50,21 +50,19 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 
 #. Page page
-#. Page settings
-#. Notebook tab
-#: src/desktop.c:1537 src/dialogs/align.c:290
+#: src/desktop.c:1541 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1541 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
 #: src/verbs.c:468
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1545 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
 #: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Výběr"
@@ -379,7 +377,6 @@ msgid "Units:"
 msgstr "Jednotky:"
 
 #. Stroke width
-#. Width
 #: src/dialogs/document-properties.c:228 src/dialogs/export.c:188
 #: src/dialogs/export.c:212 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
@@ -948,11 +945,11 @@ msgstr "Typ souboru:"
 msgid "Save file"
 msgstr "Uložit soubor"
 
-#: src/file.c:472 src/file.c:482 src/file.c:488
+#: src/file.c:480 src/file.c:490 src/file.c:496
 msgid "Select file to import"
 msgstr "Vyberte soubor pro import"
 
-#: src/help.c:57
+#: src/help.c:51
 msgid "About sodipodi"
 msgstr "O aplikaci Sodipodi"
 
@@ -1302,27 +1299,27 @@ msgstr ""
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Automatické zálohy následujících dokumentů selhaly:\n"
 
-#: src/module.c:854
+#: src/module.c:873
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Škálovatelná Vektorová Grafika (SVG)"
 
-#: src/module.c:854
+#: src/module.c:873
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Nativní formát souborů Sodipodi a standard W3C"
 
-#: src/module.c:861
+#: src/module.c:880
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG se jmenným prostorem \"xmlns:sodipodi\""
 
-#: src/module.c:862
+#: src/module.c:881
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Formát Škálovatelné vektorové grafiky s rozšířeními Sodipodi"
 
-#: src/module.c:865
+#: src/module.c:884
 msgid "Plain SVG"
 msgstr "Prostá SVG"
 
-#: src/module.c:866
+#: src/module.c:885
 msgid "Scalable Vector Graphics format"
 msgstr "Formát Škálovatelná vektorová grafika"
 

@@ -5,14 +5,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.50\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-29 10:30+0100\n"
+"POT-Creation-Date: 2004-02-07 00:18+0200\n"
 "PO-Revision-Date: 2004-01-29 10:35+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -47,20 +47,20 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s har ikke-lagrede endringer, lagre dem?"
 
 #. Page page
-#: src/desktop.c:1537 src/dialogs/align.c:290
+#: src/desktop.c:1541 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Side"
 
-#: src/desktop.c:1541 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
 #: src/verbs.c:468
 msgid "Drawing"
 msgstr "Tegning"
 
 #. Selection submenu
-#: src/desktop.c:1545 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:596 src/toolbox.c:407 src/verbs.c:469
+#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Valg"
 
@@ -291,49 +291,63 @@ msgstr "Sidefarge"
 msgid "Close"
 msgstr "Lukk"
 
-#: src/dialogs/display-settings.c:88
+#: src/dialogs/display-settings.c:101
 msgid "Display settings"
 msgstr "Skjerminstillinger"
 
 #. Rendering settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:96
+#: src/dialogs/display-settings.c:108
 msgid "Rendering"
 msgstr "Rendering"
 
-#: src/dialogs/display-settings.c:108
+#: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
 msgstr "Oversample bitkart:"
 
-#: src/dialogs/display-settings.c:119 src/verbs.c:403
+#: src/dialogs/display-settings.c:125 src/verbs.c:403
 msgid "None"
 msgstr "Ingen"
 
-#: src/dialogs/display-settings.c:123
+#: src/dialogs/display-settings.c:128
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:127
+#: src/dialogs/display-settings.c:131
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:131
+#: src/dialogs/display-settings.c:134
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:135
+#: src/dialogs/display-settings.c:137
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:146
+#: src/dialogs/display-settings.c:147
 msgid "Input"
 msgstr "Inndata"
 
-#: src/dialogs/display-settings.c:157
+#: src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
 msgstr "Forvalgt markørtoleranse:"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr ""
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr ""
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr ""
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -441,15 +455,15 @@ msgstr "Eksporterer [%d x %d] %s"
 msgid "Fill style"
 msgstr "Fyllstil"
 
-#: src/dialogs/fill-style.c:122
+#: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
 msgstr "Fyllregel"
 
-#: src/dialogs/fill-style.c:136
+#: src/dialogs/fill-style.c:138
 msgid "nonzero"
 msgstr "ikke-null"
 
-#: src/dialogs/fill-style.c:141
+#: src/dialogs/fill-style.c:143
 msgid "evenodd"
 msgstr ""
 
@@ -882,26 +896,26 @@ msgstr "Avbryt"
 msgid "Create"
 msgstr "Opprett"
 
-#: src/document.c:349
+#: src/document.c:353
 #, c-format
 msgid "New document %d"
 msgstr "Nytt dokument %d"
 
-#: src/document.c:378
+#: src/document.c:382
 #, c-format
 msgid "Memory document %d"
 msgstr "Dokument i minne %d"
 
-#: src/document.c:488
+#: src/document.c:492
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Dokument uten navn %d"
 
-#: src/draw-context.c:289
+#: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr "Legger til i utvalg. Trykk «a» for å velge mellom Legg til/ny."
 
-#: src/draw-context.c:294
+#: src/draw-context.c:299
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr "Oppretter ny kurve. Trykk «a» for å velge mellom Legg til/ny."
 
@@ -928,11 +942,11 @@ msgstr "Filtype:"
 msgid "Save file"
 msgstr "Lagre fil"
 
-#: src/file.c:472 src/file.c:482 src/file.c:488
+#: src/file.c:480 src/file.c:490 src/file.c:496
 msgid "Select file to import"
 msgstr "Velg fil som skal importeres"
 
-#: src/help.c:57
+#: src/help.c:51
 msgid "About sodipodi"
 msgstr "Om Sodipodi"
 
@@ -1075,108 +1089,108 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "Ex kvadrat"
 
-#: src/interface.c:305 src/interface.c:503
+#: src/interface.c:315 src/interface.c:513
 msgid "Open Recent"
 msgstr "Åpne tidligere"
 
-#: src/interface.c:325
+#: src/interface.c:335
 msgid "Close View"
 msgstr "Lukk visning"
 
-#: src/interface.c:328 src/interface.c:509
+#: src/interface.c:338 src/interface.c:519
 msgid "About Sodipodi"
 msgstr "Om Sodipodi"
 
 #. Have modules about menu
-#: src/interface.c:334 src/interface.c:515
+#: src/interface.c:344 src/interface.c:525
 msgid "About Modules"
 msgstr "Om moduler"
 
-#: src/interface.c:354
+#: src/interface.c:364
 msgid "Cleanup"
 msgstr "Rydd opp"
 
 #. View:Zoom
-#: src/interface.c:429 src/toolbox.c:546 src/verbs.c:459
+#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Zoom"
 
 #. View:New View
-#: src/interface.c:441
+#: src/interface.c:451
 msgid "New View"
 msgstr "Ny visning"
 
 #. View:New Preview
-#: src/interface.c:443
+#: src/interface.c:453
 msgid "New Preview"
 msgstr "Ny forhåndsvisning"
 
-#: src/interface.c:445
+#: src/interface.c:455
 msgid "New Toplevel Toolbox"
 msgstr ""
 
-#: src/interface.c:446
+#: src/interface.c:456
 msgid "New Docked Toolbox"
 msgstr ""
 
-#: src/interface.c:447
+#: src/interface.c:457
 msgid "Remove Docked Toolbox"
 msgstr ""
 
 #. File
-#: src/interface.c:500 src/verbs.c:405
+#: src/interface.c:510 src/verbs.c:405
 msgid "New"
 msgstr "Ny"
 
-#: src/interface.c:501
+#: src/interface.c:511
 msgid "Open"
 msgstr "Åpne"
 
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:521 src/verbs.c:414
+#: src/interface.c:531 src/verbs.c:414
 msgid "Exit program"
 msgstr "Avslutt programmet"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:584 src/toolbox.c:270
+#: src/interface.c:594 src/toolbox.c:270
 msgid "File"
 msgstr "Fil"
 
 #. Edit submenu
-#: src/interface.c:590 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Rediger"
 
 #. View submenu
-#: src/interface.c:602
+#: src/interface.c:612
 msgid "View"
 msgstr "Visning"
 
 #. Drawing mode submenu
-#: src/interface.c:608
+#: src/interface.c:618
 msgid "Drawing Mode"
 msgstr "Tegnemodus"
 
 #. Dialog submenu
-#: src/interface.c:614
+#: src/interface.c:624
 msgid "Dialogs"
 msgstr "Dialoger"
 
 #. Have modules menu
-#: src/interface.c:623
+#: src/interface.c:633
 msgid "Modules"
 msgstr "Moduler"
 
-#: src/main.c:120 src/main.c:619
+#: src/main.c:120 src/main.c:611
 msgid "Do not use X server (only process files from console)"
 msgstr "Ikke bruk X-tjeneren (prosesser filer fra konsollet)"
 
-#: src/main.c:123 src/main.c:620
+#: src/main.c:123 src/main.c:612
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Prøv å bruke X-tjeneren selv om ikke $DISPLAY er satt."
 
-#: src/main.c:126 src/main.c:621
+#: src/main.c:126 src/main.c:613
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Åpne spesifisert(e) dokument(er) (alternativ-streng kan eksluderes)"
 
@@ -1188,11 +1202,11 @@ msgstr "FILNAVN"
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr "Skriv ut dokument(er) til spesifisert utfil (bruk '| program' for rør)"
 
-#: src/main.c:132 src/main.c:622
+#: src/main.c:132 src/main.c:614
 msgid "Export document to png file"
 msgstr "Eksporter dokument som en png-fil"
 
-#: src/main.c:135 src/main.c:623
+#: src/main.c:135 src/main.c:615
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 
@@ -1200,7 +1214,7 @@ msgstr ""
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:624
+#: src/main.c:138 src/main.c:616
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1212,7 +1226,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:625
+#: src/main.c:141 src/main.c:617
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
@@ -1220,7 +1234,7 @@ msgstr ""
 msgid "WIDTH"
 msgstr "BREDDE"
 
-#: src/main.c:143 src/main.c:626
+#: src/main.c:143 src/main.c:618
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 
@@ -1228,7 +1242,7 @@ msgstr ""
 msgid "HEIGHT"
 msgstr "HØYDE"
 
-#: src/main.c:145 src/main.c:627
+#: src/main.c:145 src/main.c:619
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 
@@ -1236,7 +1250,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "FARGE"
 
-#: src/main.c:147 src/main.c:628
+#: src/main.c:147 src/main.c:620
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Eksporter dokument til en vanlig SVG-fil (ingen «xmlns:sodipodi» navneområde)"
@@ -1250,55 +1264,55 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr ""
 
-#: src/main.c:629
+#: src/main.c:621
 msgid "Print sodipodi version information"
 msgstr "Skriv ut versjonsinformasjon for Sodipodi"
 
-#: src/main.c:630
+#: src/main.c:622
 msgid "Print help about command-line arguments"
 msgstr ""
 
-#: src/main.c:779
+#: src/main.c:771
 msgid "Untitled document"
 msgstr "Dokument uten navn"
 
 #. Show nice dialog box
-#: src/main.c:804
+#: src/main.c:796
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Det oppsto en intern feil i sodipodi og programmet vil lukkes nå.\n"
 
-#: src/main.c:805
+#: src/main.c:797
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatiske sikkerhetskopier av dokumenter som ikke er lagret ble utført til "
 "følgende lokasjoner:\n"
 
-#: src/main.c:806
+#: src/main.c:798
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Automatisk sikkerhetskopiering av følgende dokumenter feilet:\n"
 
-#: src/module.c:851
+#: src/module.c:873
 msgid "Scalable Vector Graphic (SVG)"
 msgstr ""
 
-#: src/module.c:851
+#: src/module.c:873
 msgid "Sodipodi native file format and W3C standard"
 msgstr ""
 
-#: src/module.c:858
+#: src/module.c:880
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr ""
 
-#: src/module.c:859
+#: src/module.c:881
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr ""
 
-#: src/module.c:862
+#: src/module.c:884
 msgid "Plain SVG"
 msgstr "Vanlig SVG"
 
-#: src/module.c:863
+#: src/module.c:885
 msgid "Scalable Vector Graphics format"
 msgstr ""
 
@@ -1327,53 +1341,53 @@ msgid "Save document as"
 msgstr "Lagre dokument som"
 
 #. Print destination frame
-#: src/modules/ps.c:192 src/modules/ps.c:253
+#: src/modules/ps.c:245 src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Utskriftsmål"
 
 #. Print properties frame
-#: src/modules/ps.c:203
+#: src/modules/ps.c:256
 msgid "Print properties"
 msgstr "Egenskaper for utskrift"
 
-#: src/modules/ps.c:211
+#: src/modules/ps.c:264
 msgid "Print using PostScript operators"
 msgstr ""
 
-#: src/modules/ps.c:213
+#: src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
 
-#: src/modules/ps.c:218
+#: src/modules/ps.c:271
 msgid "Print as bitmap"
 msgstr "Skriv ut som bitkart"
 
-#: src/modules/ps.c:220
+#: src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
 
-#: src/modules/ps.c:234
+#: src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr ""
 
-#: src/modules/ps.c:249
+#: src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Oppløsning:"
 
-#: src/modules/ps.c:259
+#: src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
 
-#: src/modules/ps.c:893
+#: src/modules/ps.c:961
 msgid "write error occured"
 msgstr ""
 
@@ -1554,7 +1568,7 @@ msgstr "Midtstill visning i forhold til valgt oppføring"
 msgid "Sodipodi slideshow"
 msgstr "Sodipodi lysbildevisning"
 
-#: src/sodipodi.c:453
+#: src/sodipodi.c:468
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1565,7 +1579,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne lagre eller laste brukervalg\n"
 
-#: src/sodipodi.c:456
+#: src/sodipodi.c:471
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1579,7 +1593,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne laste eller lagre brukervalg."
 
-#: src/sodipodi.c:461
+#: src/sodipodi.c:476
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1591,7 +1605,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne laste eller lagre brukervalg."
 
-#: src/sodipodi.c:473
+#: src/sodipodi.c:488
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1602,7 +1616,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne bruke utvidelser (tillegg)\n"
 
-#: src/sodipodi.c:476
+#: src/sodipodi.c:491
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1615,7 +1629,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne bruke utvidelser (tillegg)\n"
 
-#: src/sodipodi.c:480
+#: src/sodipodi.c:495
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1626,7 +1640,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne bruke utvidelser (tillegg)\n"
 
-#: src/sodipodi.c:841
+#: src/sodipodi.c:829
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1639,7 +1653,7 @@ msgstr ""
 "ikke kunne laste eller lagre\n"
 "%s."
 
-#: src/sodipodi.c:845
+#: src/sodipodi.c:833
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1652,7 +1666,7 @@ msgstr ""
 "ikke kunne laste eller lagre\n"
 "brukervalg."
 
-#: src/sodipodi.c:849
+#: src/sodipodi.c:837
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1665,7 +1679,7 @@ msgstr ""
 "du ikke kunne laste eller lagre\n"
 "brukervalg."
 
-#: src/sodipodi.c:853
+#: src/sodipodi.c:841
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1678,7 +1692,7 @@ msgstr ""
 "du ikke kunne laste eller lagre\n"
 "brukervalg."
 
-#: src/sodipodi.c:863
+#: src/sodipodi.c:851
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1689,7 +1703,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne bruke utvidelser (tillegg)\n"
 
-#: src/sodipodi.c:866
+#: src/sodipodi.c:854
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1700,7 +1714,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne bruke utvidelser (tillegg)\n"
 
-#: src/sodipodi.c:869
+#: src/sodipodi.c:857
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1711,7 +1725,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil\n"
 "du ikke kunne bruke utvidelser (tillegg)\n"
 
-#: src/sodipodi.c:872
+#: src/sodipodi.c:860
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1768,7 +1782,7 @@ msgid "Unknown item :-("
 msgstr "Ukjent oppføring :-("
 
 #. fixme:
-#: src/sp-text.c:1291
+#: src/sp-text.c:1292
 msgid "Text object"
 msgstr "Tekstobjekt"
 

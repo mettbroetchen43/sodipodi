@@ -10,6 +10,7 @@ nr_config.h: gen_nr_config
 INCLUDES = \
 	-DHAVE_NR_CONFIG_H \
 	-I.. \
+	-I$(top_srcdir)/src \
 	$(LIBNR_CFLAGS)
 
 #	$(SODIPODI_CFLAGS)

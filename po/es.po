@@ -10,14 +10,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi.HEAD.es\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-01-24 01:58+0100\n"
+"POT-Creation-Date: 2004-02-07 00:18+0200\n"
 "PO-Revision-Date: 2004-01-24 02:00+0100\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 "X-Generator: KBabel 1.0.1\n"
 
 #: sodipodi.desktop.in.h:1
@@ -53,22 +53,20 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "El documento %s ha sido modificado. ¿Desea guardar los cambios?"
 
 #. Page page
-#. Page settings
-#. Notebook tab
-#: src/desktop.c:1537 src/dialogs/align.c:290
+#: src/desktop.c:1541 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Página"
 
-#: src/desktop.c:1541 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
 #: src/verbs.c:468
 msgid "Drawing"
 msgstr "Dibujo"
 
 #. Selection submenu
-#: src/desktop.c:1545 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:596 src/toolbox.c:407 src/verbs.c:469
+#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Selección"
 
@@ -301,49 +299,63 @@ msgstr "Color de la página"
 msgid "Close"
 msgstr "Cerrar"
 
-#: src/dialogs/display-settings.c:88
+#: src/dialogs/display-settings.c:101
 msgid "Display settings"
 msgstr "Parámetros de pantalla"
 
 #. Rendering settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:96
+#: src/dialogs/display-settings.c:108
 msgid "Rendering"
 msgstr "Renderizado"
 
-#: src/dialogs/display-settings.c:108
+#: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
 msgstr "Bitmaps de sobremuestreo:"
 
-#: src/dialogs/display-settings.c:119 src/verbs.c:403
+#: src/dialogs/display-settings.c:125 src/verbs.c:403
 msgid "None"
 msgstr "Ninguno"
 
-#: src/dialogs/display-settings.c:123
+#: src/dialogs/display-settings.c:128
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:127
+#: src/dialogs/display-settings.c:131
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:131
+#: src/dialogs/display-settings.c:134
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:135
+#: src/dialogs/display-settings.c:137
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:146
+#: src/dialogs/display-settings.c:147
 msgid "Input"
 msgstr "Entrada"
 
-#: src/dialogs/display-settings.c:157
+#: src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
 msgstr "Tolerancia por omisión del cursor:"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr ""
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr ""
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr ""
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -370,7 +382,6 @@ msgid "Units:"
 msgstr "Unidades:"
 
 #. Stroke width
-#. Width
 #: src/dialogs/document-properties.c:228 src/dialogs/export.c:188
 #: src/dialogs/export.c:212 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
@@ -452,15 +463,15 @@ msgstr "Exportando  [%d x %d] : %s"
 msgid "Fill style"
 msgstr "Estilo de relleno"
 
-#: src/dialogs/fill-style.c:122
+#: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
 msgstr "Regla de relleno"
 
-#: src/dialogs/fill-style.c:136
+#: src/dialogs/fill-style.c:138
 msgid "nonzero"
 msgstr "no cero"
 
-#: src/dialogs/fill-style.c:141
+#: src/dialogs/fill-style.c:143
 msgid "evenodd"
 msgstr "parimpar"
 
@@ -893,26 +904,26 @@ msgstr "Cancelar"
 msgid "Create"
 msgstr "Crear"
 
-#: src/document.c:349
+#: src/document.c:353
 #, c-format
 msgid "New document %d"
 msgstr "Nuevo documento %d"
 
-#: src/document.c:378
+#: src/document.c:382
 #, c-format
 msgid "Memory document %d"
 msgstr "Documento memoria %d"
 
-#: src/document.c:488
+#: src/document.c:492
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Documento sin nombre %d"
 
-#: src/draw-context.c:289
+#: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr "Añadiendo a selección. Presione «a» para conmutar Añadir/Nuevo."
 
-#: src/draw-context.c:294
+#: src/draw-context.c:299
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr "Creando una curva nueva. Presione «a» para conmutar Añadir/Nuevo."
 
@@ -939,11 +950,11 @@ msgstr "Tipo de archivo"
 msgid "Save file"
 msgstr "Guardar el archivo"
 
-#: src/file.c:472 src/file.c:482 src/file.c:488
+#: src/file.c:480 src/file.c:490 src/file.c:496
 msgid "Select file to import"
 msgstr "Seleccionar el archivo a importar"
 
-#: src/help.c:57
+#: src/help.c:51
 msgid "About sodipodi"
 msgstr "Acerca de sodipodi"
 
@@ -1086,108 +1097,108 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "Ex cuadrados"
 
-#: src/interface.c:305 src/interface.c:503
+#: src/interface.c:315 src/interface.c:513
 msgid "Open Recent"
 msgstr "Abrir reciente"
 
-#: src/interface.c:325
+#: src/interface.c:335
 msgid "Close View"
 msgstr "Cerrar vista"
 
-#: src/interface.c:328 src/interface.c:509
+#: src/interface.c:338 src/interface.c:519
 msgid "About Sodipodi"
 msgstr "Acerca de Sodipodi"
 
 #. Have modules about menu
-#: src/interface.c:334 src/interface.c:515
+#: src/interface.c:344 src/interface.c:525
 msgid "About Modules"
 msgstr "Acerca de los módulos"
 
-#: src/interface.c:354
+#: src/interface.c:364
 msgid "Cleanup"
 msgstr "Borrado"
 
 #. View:Zoom
-#: src/interface.c:429 src/toolbox.c:546 src/verbs.c:459
+#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Aumentar"
 
 #. View:New View
-#: src/interface.c:441
+#: src/interface.c:451
 msgid "New View"
 msgstr "Nueva vista"
 
 #. View:New Preview
-#: src/interface.c:443
+#: src/interface.c:453
 msgid "New Preview"
 msgstr "Nueva vista preliminar"
 
-#: src/interface.c:445
+#: src/interface.c:455
 msgid "New Toplevel Toolbox"
 msgstr "Nueva caja de herramientas de nivel superior"
 
-#: src/interface.c:446
+#: src/interface.c:456
 msgid "New Docked Toolbox"
 msgstr "Nueva caja de herramientas empotrada"
 
-#: src/interface.c:447
+#: src/interface.c:457
 msgid "Remove Docked Toolbox"
 msgstr "Quitar caja de herramientas empotrada"
 
 #. File
-#: src/interface.c:500 src/verbs.c:405
+#: src/interface.c:510 src/verbs.c:405
 msgid "New"
 msgstr "Nuevo"
 
-#: src/interface.c:501
+#: src/interface.c:511
 msgid "Open"
 msgstr "Abrir"
 
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:521 src/verbs.c:414
+#: src/interface.c:531 src/verbs.c:414
 msgid "Exit program"
 msgstr "Salir del programa"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:584 src/toolbox.c:270
+#: src/interface.c:594 src/toolbox.c:270
 msgid "File"
 msgstr "Archivo"
 
 #. Edit submenu
-#: src/interface.c:590 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Editar"
 
 #. View submenu
-#: src/interface.c:602
+#: src/interface.c:612
 msgid "View"
 msgstr "Vista"
 
 #. Drawing mode submenu
-#: src/interface.c:608
+#: src/interface.c:618
 msgid "Drawing Mode"
 msgstr "Modo de dibujo"
 
 #. Dialog submenu
-#: src/interface.c:614
+#: src/interface.c:624
 msgid "Dialogs"
 msgstr "Diálogos"
 
 #. Have modules menu
-#: src/interface.c:623
+#: src/interface.c:633
 msgid "Modules"
 msgstr "Módulos"
 
-#: src/main.c:120 src/main.c:619
+#: src/main.c:120 src/main.c:611
 msgid "Do not use X server (only process files from console)"
 msgstr "No utilizar el servidor X (sólo procesa archivos desde la consola)"
 
-#: src/main.c:123 src/main.c:620
+#: src/main.c:123 src/main.c:612
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Intentar utilizar el servidor X aunque $DISPLAY no se ha dado"
 
-#: src/main.c:126 src/main.c:621
+#: src/main.c:126 src/main.c:613
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 "Abrir el(los) documento(s) especificado(s) (se pueden excluir las opciones "
@@ -1203,11 +1214,11 @@ msgstr ""
 "Imprimir documento(s) al archivo de salida especificado (usa «| programa» "
 "para el filtro)"
 
-#: src/main.c:132 src/main.c:622
+#: src/main.c:132 src/main.c:614
 msgid "Export document to png file"
 msgstr "Exportar documento a archivo png"
 
-#: src/main.c:135 src/main.c:623
+#: src/main.c:135 src/main.c:615
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "La resolución utilizada para convertir SVG en mapa de bits (por omisión 72.0)"
@@ -1216,7 +1227,7 @@ msgstr ""
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:624
+#: src/main.c:138 src/main.c:616
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1228,7 +1239,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:625
+#: src/main.c:141 src/main.c:617
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "El ancho del mapa de bits generado en píxeles (sobreescribe ppp)"
 
@@ -1236,7 +1247,7 @@ msgstr "El ancho del mapa de bits generado en píxeles (sobreescribe ppp)"
 msgid "WIDTH"
 msgstr "ANCHO"
 
-#: src/main.c:143 src/main.c:626
+#: src/main.c:143 src/main.c:618
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "El alto del mapa de bits generado en pixels (sobreescribe ppp)"
 
@@ -1244,7 +1255,7 @@ msgstr "El alto del mapa de bits generado en pixels (sobreescribe ppp)"
 msgid "HEIGHT"
 msgstr "ALTO"
 
-#: src/main.c:145 src/main.c:627
+#: src/main.c:145 src/main.c:619
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Color de fondo para el mapa de bits exportado (cualquier cadena de color "
@@ -1254,7 +1265,7 @@ msgstr ""
 msgid "COLOR"
 msgstr "COLOR"
 
-#: src/main.c:147 src/main.c:628
+#: src/main.c:147 src/main.c:620
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Exportar documento a archivo SVG plano (sin nombre de espacio «xmlns:"
@@ -1270,55 +1281,55 @@ msgstr ""
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Preferir iconos de mapa de bits (xpm) a los SVG"
 
-#: src/main.c:629
+#: src/main.c:621
 msgid "Print sodipodi version information"
 msgstr "Imprimir la información de versión de Sodipodi"
 
-#: src/main.c:630
+#: src/main.c:622
 msgid "Print help about command-line arguments"
 msgstr "Imprimir ayuda acerca de los argumentos de línea de órdenes"
 
-#: src/main.c:779
+#: src/main.c:771
 msgid "Untitled document"
 msgstr "Documento sin nombre"
 
 #. Show nice dialog box
-#: src/main.c:804
+#: src/main.c:796
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi ha encontrado un error interno y se cerrará ahora.\n"
 
-#: src/main.c:805
+#: src/main.c:797
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Las copias de seguridad automáticas se realizaron a los siguientes "
 "emplazamientos:\n"
 
-#: src/main.c:806
+#: src/main.c:798
 msgid "Automatic backup of following documents failed:\n"
 msgstr "La copia de seguridad de los siguientes documentos falló:\n"
 
-#: src/module.c:851
+#: src/module.c:873
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Scalable Vector Graphic (SVG)"
 
-#: src/module.c:851
+#: src/module.c:873
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Formato de archivo nativo de Sodipodi y estándar W3C"
 
-#: src/module.c:858
+#: src/module.c:880
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG con espacio de nombres \"xmlns:sodipodi\""
 
-#: src/module.c:859
+#: src/module.c:881
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Formato Scalable Vector Graphics con extensiones sodipodi"
 
-#: src/module.c:862
+#: src/module.c:884
 msgid "Plain SVG"
 msgstr "SVG Plano"
 
-#: src/module.c:863
+#: src/module.c:885
 msgid "Scalable Vector Graphics format"
 msgstr "Formato Scalable Vector Graphics"
 
@@ -1350,20 +1361,20 @@ msgid "Save document as"
 msgstr "Guardar documento como"
 
 #. Print destination frame
-#: src/modules/ps.c:192 src/modules/ps.c:253
+#: src/modules/ps.c:245 src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Imprimir destino"
 
 #. Print properties frame
-#: src/modules/ps.c:203
+#: src/modules/ps.c:256
 msgid "Print properties"
 msgstr "Propiedades de impresión"
 
-#: src/modules/ps.c:211
+#: src/modules/ps.c:264
 msgid "Print using PostScript operators"
 msgstr "Imprimir usando operadores PostScript"
 
-#: src/modules/ps.c:213
+#: src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1373,11 +1384,11 @@ msgstr ""
 "(usualmente) menor y puede ser escalada arbitrariamente, pero la "
 "transparencia alfa, los marcadores y los patrones se perderán."
 
-#: src/modules/ps.c:218
+#: src/modules/ps.c:271
 msgid "Print as bitmap"
 msgstr "Imprimir como mapa de bits"
 
-#: src/modules/ps.c:220
+#: src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1387,15 +1398,15 @@ msgstr ""
 "mayor y la calidad dependerá del factor de ampliación, pero todos los "
 "gráficos serán renderizados idénticos a la pantalla"
 
-#: src/modules/ps.c:234
+#: src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Resolución preferida (puntos por pulgada) de mapa de bits"
 
-#: src/modules/ps.c:249
+#: src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Resolución:"
 
-#: src/modules/ps.c:259
+#: src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1405,7 +1416,7 @@ msgstr ""
 "Utilice  «> archivo» para imprimir en un archivo.\n"
 "Emplee «| prog arg...» para enviar a un programa"
 
-#: src/modules/ps.c:893
+#: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "ocurrió un error de escritura"
 
@@ -1586,7 +1597,7 @@ msgstr "Centrar vista en el elemento seleccionado"
 msgid "Sodipodi slideshow"
 msgstr "Ver como muestra de diapositivas Sodipodi"
 
-#: src/sodipodi.c:453
+#: src/sodipodi.c:468
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1597,7 +1608,7 @@ msgstr ""
 "Aunque Sodipodi se ejecutará, no\n"
 "podrá cargar ni guardar sus preferencias\n"
 
-#: src/sodipodi.c:456
+#: src/sodipodi.c:471
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1611,7 +1622,7 @@ msgstr ""
 "Aunque Sodipodi se ejecutará, no\n"
 "podrá cargar ni guardar sus preferencias."
 
-#: src/sodipodi.c:461
+#: src/sodipodi.c:476
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1623,7 +1634,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·cargar·ni·guardar·sus·preferencias."
 
-#: src/sodipodi.c:473
+#: src/sodipodi.c:488
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1634,7 +1645,7 @@ msgstr ""
 "Aunque Sodipodi se ejecutará, no\n"
 "podrá usar extensiones (plugins)\n"
 
-#: src/sodipodi.c:476
+#: src/sodipodi.c:491
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1647,7 +1658,7 @@ msgstr ""
 "Aunque Sodipodi se ejecutará, no\n"
 "podrá usar extensiones (plugins).\n"
 
-#: src/sodipodi.c:480
+#: src/sodipodi.c:495
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1658,7 +1669,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·usar extensiones (plugins)\n"
 
-#: src/sodipodi.c:841
+#: src/sodipodi.c:829
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1670,7 +1681,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·cargar·ni·guardar·%s"
 
-#: src/sodipodi.c:845
+#: src/sodipodi.c:833
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1682,7 +1693,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·cargar·ni·guardar·sus·preferencias."
 
-#: src/sodipodi.c:849
+#: src/sodipodi.c:837
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1694,7 +1705,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·cargar·ni·guardar·sus·preferencias."
 
-#: src/sodipodi.c:853
+#: src/sodipodi.c:841
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1706,7 +1717,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·cargar·ni·guardar·sus·preferencias."
 
-#: src/sodipodi.c:863
+#: src/sodipodi.c:851
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1717,7 +1728,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·usar extensiones (plugins).\n"
 
-#: src/sodipodi.c:866
+#: src/sodipodi.c:854
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1728,7 +1739,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·usar extensiones(plugins)\n"
 
-#: src/sodipodi.c:869
+#: src/sodipodi.c:857
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1739,7 +1750,7 @@ msgstr ""
 "Aunque·Sodipodi·se·ejecutará,·no\n"
 "podrá·usar extensiones(plugins)\n"
 
-#: src/sodipodi.c:872
+#: src/sodipodi.c:860
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1796,7 +1807,7 @@ msgid "Unknown item :-("
 msgstr "Elemento desconocido :-("
 
 #. fixme:
-#: src/sp-text.c:1291
+#: src/sp-text.c:1292
 msgid "Text object"
 msgstr "Objeto de texto"
 

@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.19\n"
-"POT-Creation-Date: 2003-11-30 17:37+0200\n"
+"POT-Creation-Date: 2004-02-07 00:18+0200\n"
 "PO-Revision-Date: 2003-10-16 12:57+0200\n"
 "Last-Translator: Francesc Dorca <f.dorca@filnet.es>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -20,52 +20,52 @@ msgid "SVG Vector Illustrator"
 msgstr "Il·lustrador vectorial SVG"
 
 #. Create window
-#: sodipodi.desktop.in.h:2 src/toolbox.c:121 src/toolbox.c:142
+#: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:138
 msgid "Sodipodi"
 msgstr "Sodipodi"
+
+#: src/arc-context.c:302
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr ""
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "No s'ha pogut crear la factoria sodipodi-svg-doc"
 
-#: src/arc-context.c:303
-#, c-format
-msgid "Drawing arc %s x %s"
-msgstr ""
-
 #: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
 msgstr "Amplia/redueix el dibuix si canvia la mida de la finestra"
 
-#: src/desktop.c:858
+#: src/desktop.c:860
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:987
+#: src/desktop.c:989
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "El document %s te canvis que no han estat desats. Els voleu desar?"
 
 #. Page page
-#: src/desktop.c:1535 src/dialogs/align.c:288
+#: src/desktop.c:1541 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:137 src/verbs.c:453
+#: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Pàgina"
 
-#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
-#: src/verbs.c:454
+#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/verbs.c:468
 msgid "Drawing"
 msgstr "Dibuix"
 
 #. Selection submenu
-#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
-#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
+#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Selecció"
 
-#: src/dialogs/align.c:155 src/toolbox.c:449
+#: src/dialogs/align.c:155 src/toolbox.c:364
 msgid "Align objects"
 msgstr "Alinea els objectes"
 
@@ -157,19 +157,19 @@ msgstr "Distribueix la distància vertical entre objectes de forma equitativa"
 msgid "Distribute"
 msgstr "Distribueix"
 
-#: src/dialogs/align.c:284
+#: src/dialogs/align.c:286
 msgid "Last selected"
 msgstr "El darrer seleccionat"
 
-#: src/dialogs/align.c:285
+#: src/dialogs/align.c:287
 msgid "First selected"
 msgstr "El primer seleccionat"
 
-#: src/dialogs/align.c:286
+#: src/dialogs/align.c:288
 msgid "Biggest item"
 msgstr "L'element més gran"
 
-#: src/dialogs/align.c:287
+#: src/dialogs/align.c:289
 msgid "Smallest item"
 msgstr "L'element més petit"
 
@@ -302,53 +302,67 @@ msgstr "Color de les guies:"
 msgid "Page color"
 msgstr "Color inicial"
 
-#: src/dialogs/desktop-properties.c:580
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
 msgid "Close"
 msgstr "Tanca"
 
-#: src/dialogs/display-settings.c:88
+#: src/dialogs/display-settings.c:101
 msgid "Display settings"
 msgstr "Paràmetres de visualització"
 
 #. Rendering settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:96
+#: src/dialogs/display-settings.c:108
 msgid "Rendering"
 msgstr "Ombrejat"
 
-#: src/dialogs/display-settings.c:108
+#: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
 msgstr "Sobremostreja els mapes de bits:"
 
-#: src/dialogs/display-settings.c:119 src/verbs.c:394
+#: src/dialogs/display-settings.c:125 src/verbs.c:403
 msgid "None"
 msgstr "Cap"
 
-#: src/dialogs/display-settings.c:123
+#: src/dialogs/display-settings.c:128
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:127
+#: src/dialogs/display-settings.c:131
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:131
+#: src/dialogs/display-settings.c:134
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:135
+#: src/dialogs/display-settings.c:137
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:146
+#: src/dialogs/display-settings.c:147
 msgid "Input"
 msgstr "Entrada"
 
-#: src/dialogs/display-settings.c:157
+#: src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
 msgstr "Tolerància del cursor per defecte:"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr ""
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr ""
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr ""
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -368,136 +382,155 @@ msgid "Custom paper"
 msgstr "Paper a mida"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:178
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Unitats:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
-#: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:188
+#: src/dialogs/export.c:212 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
-#: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
-#: src/dyna-draw-context.c:1082
+#: src/dialogs/stroke-style.c:566 src/dialogs/tool-attributes.c:125
+#: src/dyna-draw-context.c:1087
 msgid "Width:"
 msgstr "Amplada:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
-#: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:197
+#: src/dialogs/export.c:220 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
 msgstr "Alçada:"
 
-#: src/dialogs/export.c:117
+#: src/dialogs/export.c:140
 msgid "Export bitmap"
 msgstr "Exporta el mapa de bits"
 
 #. Export area frame
-#: src/dialogs/export.c:126
+#: src/dialogs/export.c:149
 msgid "Export area"
 msgstr "Exporta l'àrea"
 
-#: src/dialogs/export.c:159
+#: src/dialogs/export.c:182
 msgid "x0:"
 msgstr "x0:"
 
-#: src/dialogs/export.c:162
+#: src/dialogs/export.c:185
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:168
+#: src/dialogs/export.c:191
 msgid "y0:"
 msgstr "y0:"
 
-#: src/dialogs/export.c:171
+#: src/dialogs/export.c:194
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:180
+#: src/dialogs/export.c:203
 msgid "Bitmap size"
 msgstr "Mida del mapa de bits"
 
-#: src/dialogs/export.c:189 src/dialogs/export.c:197
+#: src/dialogs/export.c:212 src/dialogs/export.c:220
 msgid "pixels"
 msgstr "píxels"
 
-#: src/dialogs/export.c:193 src/dialogs/export.c:201
+#: src/dialogs/export.c:216 src/dialogs/export.c:224
 msgid "dpi"
 msgstr "ppp"
 
-#: src/dialogs/export.c:208
+#: src/dialogs/export.c:232
+#, fuzzy
+msgid "Background color"
+msgstr "Color final"
+
+#: src/dialogs/export.c:234
+msgid "Bitmap background:"
+msgstr ""
+
+#: src/dialogs/export.c:239
 msgid "Export png file"
 msgstr "Exporta el fitxer PNG"
 
-#: src/dialogs/export.c:237 src/verbs.c:404
+#: src/dialogs/export.c:266 src/verbs.c:413
 msgid "Export"
 msgstr "Exporta"
 
-#: src/dialogs/fill-style.c:86
+#: src/dialogs/export.c:401
+#, fuzzy
+msgid "Export in progress"
+msgstr "Exporta l'àrea"
+
+#: src/dialogs/export.c:405
+#, fuzzy, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "Imatge en color %d x %d: %s"
+
+#: src/dialogs/fill-style.c:87
 msgid "Fill style"
 msgstr "Tipus d'emplenat"
 
-#: src/dialogs/fill-style.c:121
+#: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
 msgstr "Regla d'emplenat"
 
-#: src/dialogs/fill-style.c:135
+#: src/dialogs/fill-style.c:138
 msgid "nonzero"
 msgstr "no nul"
 
-#: src/dialogs/fill-style.c:140
+#: src/dialogs/fill-style.c:143
 msgid "evenodd"
 msgstr "parell/imparell"
 
-#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:281
-#: src/dialogs/item-properties.c:355 src/dialogs/item-properties.c:362
+#: src/dialogs/item-properties.c:85 src/dialogs/item-properties.c:282
+#: src/dialogs/item-properties.c:356 src/dialogs/item-properties.c:363
 msgid "ID"
 msgstr ""
 
-#: src/dialogs/item-properties.c:98
+#: src/dialogs/item-properties.c:99
 msgid "Set ID"
 msgstr ""
 
-#: src/dialogs/item-properties.c:109
+#: src/dialogs/item-properties.c:110
 msgid "Sensitive"
 msgstr "Sensible"
 
-#: src/dialogs/item-properties.c:114
+#: src/dialogs/item-properties.c:115
 msgid "Visible"
 msgstr "Visible"
 
-#: src/dialogs/item-properties.c:119
+#: src/dialogs/item-properties.c:120
 msgid "Active"
 msgstr "Actiu/va"
 
-#: src/dialogs/item-properties.c:124
+#: src/dialogs/item-properties.c:125
 msgid "Printable"
 msgstr "Imprimible"
 
-#: src/dialogs/item-properties.c:135
+#: src/dialogs/item-properties.c:136
 msgid "Opacity:"
 msgstr "Opacitat:"
 
-#: src/dialogs/item-properties.c:154
+#: src/dialogs/item-properties.c:155
 msgid "Transformation matrix"
 msgstr "Matriu de transformació"
 
-#: src/dialogs/item-properties.c:275
+#: src/dialogs/item-properties.c:276
 msgid "Ref"
 msgstr ""
 
-#: src/dialogs/item-properties.c:357
+#: src/dialogs/item-properties.c:358
 #, fuzzy
 msgid "ID invalid"
 msgstr "L'identificador és vàlid"
 
-#: src/dialogs/item-properties.c:359
+#: src/dialogs/item-properties.c:360
 msgid "ID exists"
 msgstr ""
 
-#: src/dialogs/item-properties.c:435 src/verbs.c:468
+#: src/dialogs/item-properties.c:436 src/verbs.c:482
 msgid "Item properties"
 msgstr "Propietats de l'element"
 
@@ -525,7 +558,7 @@ msgstr ""
 msgid "Title:"
 msgstr "Títol"
 
-#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:113
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
 msgid "Show:"
 msgstr "Mostra:"
 
@@ -562,13 +595,13 @@ msgid "ARG2:"
 msgstr "ARG2:"
 
 #. Expansion
-#: src/dialogs/object-attributes.c:59 src/spiral-context.c:365
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:363
 msgid "Expansion:"
 msgstr "Expansió:"
 
 #. Revolution
-#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:93
-#: src/spiral-context.c:353
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
+#: src/spiral-context.c:351
 msgid "Revolution:"
 msgstr "Revolució:"
 
@@ -663,7 +696,7 @@ msgstr "A mà alçada i ploma"
 msgid "Calligraphic line"
 msgstr "Línia cal·ligràfica"
 
-#: src/dialogs/object-properties.c:210 src/verbs.c:444
+#: src/dialogs/object-properties.c:210 src/verbs.c:458
 msgid "Text"
 msgstr "Text"
 
@@ -672,115 +705,120 @@ msgstr "Text"
 msgid "Object Size and Position"
 msgstr "Mida i posició de l'objecte"
 
-#: src/dialogs/object-properties.c:312 src/verbs.c:463
+#: src/dialogs/object-properties.c:312 src/verbs.c:477
 msgid "Size and Position"
 msgstr "Mida i posició"
 
-#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
+#: src/dialogs/stroke-style.c:553 src/toolbox.c:360
 msgid "Stroke settings"
 msgstr "Paràmetres del contorn"
 
 #. Join type
-#: src/dialogs/stroke-style.c:588
+#: src/dialogs/stroke-style.c:589
 msgid "Join:"
 msgstr "Uneix:"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:631
+#: src/dialogs/stroke-style.c:632
 msgid "Cap:"
 msgstr "Cobreix:"
 
 #. Dash
-#: src/dialogs/stroke-style.c:674
+#: src/dialogs/stroke-style.c:675
 msgid "Pattern:"
 msgstr "Patró:"
 
-#: src/dialogs/text-edit.c:101
+#: src/dialogs/text-edit.c:102
 msgid "Text properties"
 msgstr "Propietats de text"
 
 #. Layout
-#: src/dialogs/text-edit.c:140
+#: src/dialogs/text-edit.c:141
 msgid "Layout"
 msgstr "Esquema"
 
-#: src/dialogs/text-edit.c:148
+#: src/dialogs/text-edit.c:149
 msgid "Alignment:"
 msgstr "Aliniament:"
 
-#: src/dialogs/text-edit.c:173
+#: src/dialogs/text-edit.c:174
 msgid "Orientation:"
 msgstr "Orientació:"
 
-#: src/dialogs/text-edit.c:191
+#: src/dialogs/text-edit.c:192
 msgid "Line spacing:"
 msgstr "Espaiat entre línies:"
 
-#: src/dialogs/text-edit.c:216
+#: src/dialogs/text-edit.c:212
+#, fuzzy
+msgid "Spacing:"
+msgstr "Espaiat Y:"
+
+#: src/dialogs/text-edit.c:235
 msgid "Text and font"
 msgstr "Text i tipus de lletra"
 
-#: src/dialogs/text-edit.c:227
+#: src/dialogs/text-edit.c:246
 msgid "Set as default"
 msgstr "Fixa per defecte"
 
-#: src/dialogs/tool-attributes.c:48 src/verbs.c:461
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:475
 msgid "Tool attributes"
 msgstr "Atributs d'eina"
 
-#: src/dialogs/tool-attributes.c:93
+#: src/dialogs/tool-attributes.c:95
 msgid "Expansion"
 msgstr "Expansió"
 
-#: src/dialogs/tool-attributes.c:93
+#: src/dialogs/tool-attributes.c:95
 msgid "Inner radius"
 msgstr "Radi intern"
 
-#: src/dialogs/tool-attributes.c:97 src/dialogs/tool-attributes.c:107
-#: src/dialogs/tool-attributes.c:117 src/dialogs/tool-attributes.c:127
+#: src/dialogs/tool-attributes.c:99 src/dialogs/tool-attributes.c:109
+#: src/dialogs/tool-attributes.c:119 src/dialogs/tool-attributes.c:129
 msgid "Missing tool preferences"
 msgstr "Falten les preferències d'eina"
 
 #. Magnitude
-#: src/dialogs/tool-attributes.c:103 src/star-context.c:358
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:356
 msgid "Corners:"
 msgstr "Cantonades:"
 
-#: src/dialogs/tool-attributes.c:103
+#: src/dialogs/tool-attributes.c:105
 msgid "Proportion"
 msgstr "Proporció"
 
-#: src/dialogs/tool-attributes.c:113
+#: src/dialogs/tool-attributes.c:115
 msgid "Transform:"
 msgstr "Transforma:"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1046
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
 msgid "Mass:"
 msgstr "Cota:"
 
 #. Drag
-#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1058
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1063
 msgid "Drag:"
 msgstr "Arrossega:"
 
-#: src/dialogs/tool-attributes.c:123
+#: src/dialogs/tool-attributes.c:125
 msgid "Angle"
 msgstr "Angle"
 
-#: src/dialogs/tool-attributes.c:130
+#: src/dialogs/tool-attributes.c:132
 msgid "Tool has no attributes"
 msgstr "L'eina no té atributs"
 
-#: src/dialogs/tool-attributes.c:133 src/dialogs/tool-options.c:91
+#: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
 msgid "No active tool"
 msgstr "No hi ha cap eina activa"
 
-#: src/dialogs/tool-options.c:47 src/verbs.c:460
+#: src/dialogs/tool-options.c:47 src/verbs.c:474
 msgid "Tool options"
 msgstr "Opcions d'eina"
 
-#: src/dialogs/tool-options.c:88
+#: src/dialogs/tool-options.c:90
 msgid "Tool has no options"
 msgstr "L'eina no té opcions"
 
@@ -809,134 +847,126 @@ msgstr "Gira"
 msgid "deg"
 msgstr "graus"
 
-#: src/dialogs/xml-tree.c:162
+#: src/dialogs/xml-tree.c:157
 msgid "Drag to reorder nodes"
 msgstr "Arrossega per a reordenar els nodes"
 
-#: src/dialogs/xml-tree.c:175
+#: src/dialogs/xml-tree.c:170
 msgid "New element node"
 msgstr "Node del nou element"
 
-#: src/dialogs/xml-tree.c:193
+#: src/dialogs/xml-tree.c:188
 msgid "New text node"
 msgstr "Nou node de text"
 
-#: src/dialogs/xml-tree.c:210
+#: src/dialogs/xml-tree.c:205
 msgid "Duplicate node"
 msgstr "Duplica el node"
 
-#: src/dialogs/xml-tree.c:226
+#: src/dialogs/xml-tree.c:221
 msgid "Delete node"
 msgstr "Suprimeix el node"
 
-#: src/dialogs/xml-tree.c:239
+#: src/dialogs/xml-tree.c:234
 msgid "Unindent node"
 msgstr "Desindenta el node"
 
-#: src/dialogs/xml-tree.c:250
+#: src/dialogs/xml-tree.c:245
 msgid "Indent node"
 msgstr "Indenta el node"
 
-#: src/dialogs/xml-tree.c:260
+#: src/dialogs/xml-tree.c:255
 msgid "Raise node"
 msgstr "Puja el node"
 
-#: src/dialogs/xml-tree.c:271
+#: src/dialogs/xml-tree.c:266
 msgid "Lower node"
 msgstr "Baixa el node"
 
-#: src/dialogs/xml-tree.c:308
+#: src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
 msgstr "Suprimeix l'atribut"
 
-#: src/dialogs/xml-tree.c:338
+#: src/dialogs/xml-tree.c:333
 msgid "Attribute name"
 msgstr "Nom de l'atribut"
 
-#: src/dialogs/xml-tree.c:345
+#: src/dialogs/xml-tree.c:340
 msgid "Set attribute"
 msgstr "Defineix l'atribut"
 
-#: src/dialogs/xml-tree.c:358
+#: src/dialogs/xml-tree.c:353
 msgid "Attribute value"
 msgstr "Valor de l'atribut"
 
-#: src/dialogs/xml-tree.c:830
+#: src/dialogs/xml-tree.c:832
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi: %s : Vista XML"
 
-#: src/dialogs/xml-tree.c:853
+#: src/dialogs/xml-tree.c:855
 msgid "New element node..."
 msgstr "Nou node de l'element..."
 
-#: src/dialogs/xml-tree.c:873
+#: src/dialogs/xml-tree.c:875
 msgid "Cancel"
 msgstr "Cancel·la"
 
-#: src/dialogs/xml-tree.c:877
+#: src/dialogs/xml-tree.c:879
 msgid "Create"
 msgstr "Crea"
 
-#: src/document.c:343
+#: src/document.c:353
 #, c-format
 msgid "New document %d"
 msgstr "Nou document %d"
 
-#: src/document.c:372
+#: src/document.c:382
 #, c-format
 msgid "Memory document %d"
 msgstr ""
 
-#: src/document.c:458
+#: src/document.c:492
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Document sense nom %d"
 
-#: src/draw-context.c:283
+#: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr "S'està afegint a la selecció. Premeu 'a' per a commutar Afegir/Nou."
 
-#: src/draw-context.c:288
+#: src/draw-context.c:299
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr "S'està creant una nova corba. Premeu 'a' per a commutar Afegir/Nou."
 
 #. Angle
-#: src/dyna-draw-context.c:1070
+#: src/dyna-draw-context.c:1075
 msgid "Angle:"
 msgstr "Angle:"
 
 #. Reset
-#: src/dyna-draw-context.c:1094 src/rect-context.c:424
-#: src/spiral-context.c:389 src/star-context.c:389
+#: src/dyna-draw-context.c:1099 src/rect-context.c:420
+#: src/spiral-context.c:387 src/star-context.c:387
 msgid "Defaults"
 msgstr "Per defecte"
 
-#: src/file.c:157 src/file.c:169 src/file.c:183
+#: src/file.c:162 src/file.c:176 src/file.c:188
 msgid "Select file to open"
 msgstr "Seleccioneu el fitxer que s'ha d'obrir"
 
-#: src/file.c:200 src/module.c:550
-msgid "Scalable Vector Graphic (SVG)"
-msgstr "Gràfic vectorial escalable (SVG)"
-
-#: src/file.c:200 src/module.c:550
-msgid "Sodipodi native file format and W3C standard"
-msgstr "Format natiu Sodipodi i estàndard W3C"
-
-#: src/file.c:206 src/file.c:280
+#: src/file.c:207 src/file.c:305
 msgid "File type:"
 msgstr "Tipus de fitxer:"
 
-#: src/file.c:265
+#: src/file.c:290
 msgid "Save file"
 msgstr "Desa el fitxer"
 
-#: src/file.c:443 src/file.c:453 src/file.c:459
+#: src/file.c:480 src/file.c:490 src/file.c:496
 msgid "Select file to import"
 msgstr "Seleccioneu el fitxer que s'ha de importar"
 
-#: src/help.c:57
+#: src/help.c:51
 msgid "About sodipodi"
 msgstr "Quant a Sodipodi"
 
@@ -1079,134 +1109,138 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "Ex quadrats"
 
-#: src/interface.c:309 src/interface.c:491
+#: src/interface.c:315 src/interface.c:513
 msgid "Open Recent"
 msgstr ""
 
-#: src/interface.c:329
+#: src/interface.c:335
 msgid "Close View"
 msgstr "Tanca vista"
 
-#: src/interface.c:330 src/interface.c:506
-msgid "Exit Program"
-msgstr "Surt del programa"
-
-#: src/interface.c:332 src/interface.c:498
+#: src/interface.c:338 src/interface.c:519
 msgid "About Sodipodi"
 msgstr "Quant a Sodipodi"
 
-#. Modules need abouts too
-#: src/interface.c:335 src/interface.c:501
+#. Have modules about menu
+#: src/interface.c:344 src/interface.c:525
 msgid "About Modules"
 msgstr "Quant als mòduls"
 
-#: src/interface.c:355
+#: src/interface.c:364
 msgid "Cleanup"
 msgstr "Neteja-ho tot"
 
 #. View:Zoom
-#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
+#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Zoom"
 
 #. View:New View
-#: src/interface.c:437
+#: src/interface.c:451
 msgid "New View"
 msgstr "Nova vista"
 
 #. View:New Preview
-#: src/interface.c:439
+#: src/interface.c:453
 msgid "New Preview"
 msgstr "Nova visualització prèvia"
 
-#: src/interface.c:441
+#: src/interface.c:455
 msgid "New Toplevel Toolbox"
 msgstr "Nova caixa d'eines de primer nivell"
 
-#: src/interface.c:442
+#: src/interface.c:456
 msgid "New Docked Toolbox"
 msgstr "Nova caixa d'eines acoblada"
 
-#: src/interface.c:443
+#: src/interface.c:457
 msgid "Remove Docked Toolbox"
 msgstr "Suprimeix caixa d'eines acoblada"
 
 #. File
-#: src/interface.c:488 src/verbs.c:396
+#: src/interface.c:510 src/verbs.c:405
 msgid "New"
 msgstr "Nou"
 
-#: src/interface.c:489
+#: src/interface.c:511
 msgid "Open"
 msgstr "Obre"
 
+#. For some reason action menu does not work on menubar :-(
+#: src/interface.c:531 src/verbs.c:414
+#, fuzzy
+msgid "Exit program"
+msgstr "Surt del programa"
+
 #. Generic menu
 #. File submenu
-#: src/interface.c:569 src/toolbox.c:361
+#: src/interface.c:594 src/toolbox.c:270
 msgid "File"
 msgstr "Fitxer"
 
 #. Edit submenu
-#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
+#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Edició"
 
 #. View submenu
-#: src/interface.c:587
+#: src/interface.c:612
 msgid "View"
 msgstr "Vista"
 
 #. Drawing mode submenu
-#: src/interface.c:593
+#: src/interface.c:618
 msgid "Drawing Mode"
 msgstr "Mode de dibuix"
 
 #. Dialog submenu
-#: src/interface.c:599
+#: src/interface.c:624
 msgid "Dialogs"
 msgstr "Diàlegs"
 
-#: src/interface.c:606
-msgid "Filters"
-msgstr "Filtres"
+#. Have modules menu
+#: src/interface.c:633
+#, fuzzy
+msgid "Modules"
+msgstr "Quant als mòduls"
 
-#: src/main.c:130 src/main.c:612
+#: src/main.c:120 src/main.c:611
 msgid "Do not use X server (only process files from console)"
 msgstr "No usis el servidor X (només processa fitxers des de la consola)"
 
-#: src/main.c:133 src/main.c:613
+#: src/main.c:123 src/main.c:612
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Prova d'usar el servidor X (encara que $DISPLAY no estigui habilitat)"
 
-#: src/main.c:136 src/main.c:614
+#: src/main.c:126 src/main.c:613
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 "Obre el(s) document(s) especificat(s) (la cadena d'opcions es pot excloure)"
 
-#: src/main.c:137 src/main.c:140 src/main.c:143 src/main.c:157
+#: src/main.c:127 src/main.c:130 src/main.c:133 src/main.c:147
 msgid "FILENAME"
 msgstr "NOM DEL FITXER"
 
-#: src/main.c:139
+#: src/main.c:129
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Imprimeix el(s) document(s) al fitxer de sortida especificat (utilitzeu '| "
 "programa' per al conducte)"
 
-#: src/main.c:142 src/main.c:615
+#: src/main.c:132 src/main.c:614
 msgid "Export document to png file"
 msgstr "Exporta el document a un fitxer PNG"
 
-#: src/main.c:145 src/main.c:616
+#: src/main.c:135 src/main.c:615
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "La resolució emprada per a convertir l'SVG en mapa de bits (per defecte 72.0)"
 
-#: src/main.c:146
+#: src/main.c:136
 msgid "DPI"
 msgstr "PPP"
 
-#: src/main.c:148 src/main.c:617
+#: src/main.c:138 src/main.c:616
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1214,90 +1248,118 @@ msgstr ""
 "Àrea exportada en milímetres (per defecte tot el document, 0.0 es la "
 "cantonada inferior-esquerra)"
 
-#: src/main.c:149
+#: src/main.c:139
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:151 src/main.c:618
+#: src/main.c:141 src/main.c:617
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "L'amplada del mapa de bits generat en píxels (sobreescriu ppp)"
 
-#: src/main.c:151
+#: src/main.c:141
 msgid "WIDTH"
 msgstr "AMPLADA"
 
-#: src/main.c:153 src/main.c:619
+#: src/main.c:143 src/main.c:618
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "L'alçada del mapa de bits generat en píxels (sobreescriu ppp)"
 
-#: src/main.c:153
+#: src/main.c:143
 msgid "HEIGHT"
 msgstr "ALÇADA"
 
-#: src/main.c:155 src/main.c:620
+#: src/main.c:145 src/main.c:619
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Color de fons del mapa de bits exportat (qualsevol cadena de color admesa "
 "pel SVG)"
 
-#: src/main.c:155
+#: src/main.c:145
 msgid "COLOR"
 msgstr "COLOR"
 
-#: src/main.c:157 src/main.c:621
+#: src/main.c:147 src/main.c:620
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Exporta el document a un fitxer SVG simple (no \"xmlns:sodipodi\" namespace)"
 
-#: src/main.c:159
+#: src/main.c:149
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Mostra els fitxers un per un, canvia al següent a cada accionament de tecla/"
 "ratolí"
 
-#: src/main.c:161
+#: src/main.c:151
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Prefereix les icones de mapa de bits (xpm) a les SVG"
 
-#: src/main.c:622
+#: src/main.c:621
 #, fuzzy
 msgid "Print sodipodi version information"
 msgstr "Destí de la impressió"
 
-#: src/main.c:623
+#: src/main.c:622
 msgid "Print help about command-line arguments"
 msgstr ""
 
-#: src/module.c:558
+#: src/main.c:771
+msgid "Untitled document"
+msgstr "Document sense títol"
+
+#. Show nice dialog box
+#: src/main.c:796
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr "Sodipodi ha trobat un error intern i es tancarà ara.\n"
+
+#: src/main.c:797
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+"S'han fet còpies de seguretat automàtiques dels documents no desats a les "
+"següents ubicacions:\n"
+
+#: src/main.c:798
+msgid "Automatic backup of following documents failed:\n"
+msgstr "Ha fallat la còpia de seguretat dels següents documents:\n"
+
+#: src/module.c:873
+msgid "Scalable Vector Graphic (SVG)"
+msgstr "Gràfic vectorial escalable (SVG)"
+
+#: src/module.c:873
+msgid "Sodipodi native file format and W3C standard"
+msgstr "Format natiu Sodipodi i estàndard W3C"
+
+#: src/module.c:880
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG amb \"xmlns:sodipodi\" namespace"
 
-#: src/module.c:559
+#: src/module.c:881
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Format de gràfic vectorial escalable amb extensions de Sodipodi"
 
-#: src/module.c:562
+#: src/module.c:884
 msgid "Plain SVG"
 msgstr "SVG simple"
 
-#: src/module.c:563
+#: src/module.c:885
 msgid "Scalable Vector Graphics format"
 msgstr "Format gràfic vectorial escalable (SVG)"
 
-#: src/modules/gnome.c:133
+#: src/modules/gnome.c:158
 msgid "Select printer"
 msgstr "Selecciona la impressora"
 
-#: src/modules/gnome.c:187
+#: src/modules/gnome.c:212
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (nom del document %s..): Presentació preliminar"
 
-#: src/modules/kde.cpp:159
+#: src/modules/kde.cpp:162
 msgid "Document variant:"
 msgstr "Variant de document:"
 
-#: src/modules/kde.cpp:169
+#: src/modules/kde.cpp:172
 msgid ""
 "*.svg *.svgz|SVG files\n"
 "*.xml|XML files\n"
@@ -1307,25 +1369,25 @@ msgstr ""
 "*.xmlfitxers |XML\n"
 "*|Tots els fitxers"
 
-#: src/modules/kde.cpp:171
+#: src/modules/kde.cpp:174
 msgid "Save document as"
 msgstr "Desa document com a"
 
 #. Print destination frame
-#: src/modules/ps.c:167 src/modules/ps.c:228
+#: src/modules/ps.c:245 src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Destí de la impressió"
 
 #. Print properties frame
-#: src/modules/ps.c:178
+#: src/modules/ps.c:256
 msgid "Print properties"
 msgstr "Propietats d'impressió"
 
-#: src/modules/ps.c:186
+#: src/modules/ps.c:264
 msgid "Print using PostScript operators"
 msgstr "Imprimeix usant els operadors PostScript"
 
-#: src/modules/ps.c:188
+#: src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1335,11 +1397,11 @@ msgstr ""
 "(normalment) més petita i pot escalar-se arbitràriament, però es perdran la "
 "transparència alfa, els marcardors i els patrons."
 
-#: src/modules/ps.c:193
+#: src/modules/ps.c:271
 msgid "Print as bitmap"
 msgstr "Imprimeix com a mapa de bits"
 
-#: src/modules/ps.c:195
+#: src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1349,15 +1411,15 @@ msgstr ""
 "més gran i la qualitat dependrà del factor d'ampliació, però els gràfics es "
 "representaran igual com a la pantalla"
 
-#: src/modules/ps.c:209
+#: src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Resolució preferida (punts per polzada) del mapa de bits"
 
-#: src/modules/ps.c:224
+#: src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Resolució:"
 
-#: src/modules/ps.c:234
+#: src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1367,35 +1429,41 @@ msgstr ""
 "Useu '> nomfitxer' per imprimir a un fitxer.\n"
 "Useu '| prog arg...' per redirigir el flux cap aun programa"
 
-#: src/modules/ps.c:868
+#: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "hi ha hagut un error d'escriptura"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:107
+#: src/object-ui.c:108
 msgid "Item"
 msgstr "Element"
 
 #. Item dialog
-#: src/object-ui.c:110 src/verbs.c:468
+#: src/object-ui.c:111 src/verbs.c:482
 msgid "Item Properties"
 msgstr "Propietats de l'element"
 
 #. Select item
-#: src/object-ui.c:120
+#: src/object-ui.c:119
 msgid "Select this"
 msgstr "Selecciona això"
 
 #. Reset transformations
-#: src/object-ui.c:130
+#: src/object-ui.c:128
 msgid "Reset transformation"
 msgstr "Reinicialitza la transformació"
 
-#: src/object-ui.c:136
+#. Apply transformation
+#: src/object-ui.c:132
+#, fuzzy
+msgid "Apply transformation"
+msgstr "Reinicialitza la transformació"
+
+#: src/object-ui.c:137
 msgid "Make sensitive"
 msgstr "Fes sensible"
 
-#: src/object-ui.c:136
+#: src/object-ui.c:137
 msgid "Make insensitive"
 msgstr "Fes insensible"
 
@@ -1404,138 +1472,138 @@ msgstr "Fes insensible"
 msgid "Create link"
 msgstr "Crea un enllaç"
 
-#: src/object-ui.c:253 src/verbs.c:421
+#: src/object-ui.c:261 src/verbs.c:431
 msgid "Group"
 msgstr "Agrupa"
 
 #. Group dialog
-#: src/object-ui.c:257
+#: src/object-ui.c:265
 msgid "Group Properties"
 msgstr "Propietats del grup"
 
 #. "Ungroup"
-#: src/object-ui.c:270 src/verbs.c:422
+#: src/object-ui.c:278 src/verbs.c:432
 msgid "Ungroup"
 msgstr "Desagrupa"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:318
+#: src/object-ui.c:326
 msgid "Link"
 msgstr "Enllaç"
 
 #. Link dialog
-#: src/object-ui.c:321
+#: src/object-ui.c:329
 msgid "Link Properties"
 msgstr "Propietats de l'enllaç"
 
 #. Select item
-#: src/object-ui.c:331
+#: src/object-ui.c:339
 msgid "Follow link"
 msgstr "Segueix un enllaç"
 
 #. Reset transformations
-#: src/object-ui.c:336
+#: src/object-ui.c:344
 msgid "Remove link"
 msgstr "Suprimeix un enllaç"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:399
+#: src/object-ui.c:407
 msgid "Image"
 msgstr "Imatge"
 
 #. Link dialog
-#: src/object-ui.c:402
+#: src/object-ui.c:410
 msgid "Image Properties"
 msgstr "Propietats de la imatge"
 
 #. Autotrace dialog
-#: src/object-ui.c:410 src/sp-image.c:776
+#: src/object-ui.c:418 src/sp-image.c:788
 msgid "Trace"
 msgstr "Localitza"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:459
+#: src/object-ui.c:467
 msgid "Shape"
 msgstr "Forma"
 
 #. Item dialog
-#: src/object-ui.c:462 src/toolbox.c:446
+#: src/object-ui.c:470 src/toolbox.c:361
 msgid "Fill settings"
 msgstr "Paràmetres d'emplenat"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:489
+#: src/object-ui.c:497
 msgid "Rect"
 msgstr "Rectangle"
 
 #. Link dialog
-#: src/object-ui.c:492
+#: src/object-ui.c:500
 msgid "Rect Properties"
 msgstr "Propietats del rectangle"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:525 src/verbs.c:439
+#: src/object-ui.c:533 src/verbs.c:453
 msgid "Star"
 msgstr "Estrella"
 
 #. Link dialog
-#: src/object-ui.c:528
+#: src/object-ui.c:536
 msgid "Star Properties"
 msgstr "Propietats de l'estrella"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:561 src/verbs.c:440
+#: src/object-ui.c:569 src/verbs.c:454
 msgid "Spiral"
 msgstr "Espiral"
 
 #. Link dialog
-#: src/object-ui.c:564
+#: src/object-ui.c:572
 msgid "Spiral Properties"
 msgstr "Propietats de l'espiral"
 
 #. rx_ratio
-#: src/rect-context.c:400
+#: src/rect-context.c:396
 msgid "Roundness ratio for x:"
 msgstr "Radi de curvatura per x:"
 
 #. ry_ratio
-#: src/rect-context.c:412
+#: src/rect-context.c:408
 msgid "Roundness ratio for y:"
 msgstr "Radi de curvatura per y:"
 
-#: src/select-context.c:569
+#: src/select-context.c:570
 msgid "Visual transformation"
 msgstr "Transformació visual"
 
-#: src/select-context.c:575
+#: src/select-context.c:576
 msgid "Show content"
 msgstr "Mostra el contingut"
 
-#: src/select-context.c:581
+#: src/select-context.c:582
 msgid "Show outline"
 msgstr "Mostra el contorn"
 
-#: src/select-context.c:587
+#: src/select-context.c:588
 msgid "Object transformation"
 msgstr "Transformació de l'objecte"
 
-#: src/select-context.c:593
+#: src/select-context.c:594
 msgid "Optimize"
 msgstr "Optimitza"
 
-#: src/select-context.c:599
+#: src/select-context.c:600
 msgid "Preserve"
 msgstr "Preserva"
 
-#: src/select-context.c:605
+#: src/select-context.c:606
 msgid "[Tab] Cycling"
 msgstr ""
 
-#: src/select-context.c:610
+#: src/select-context.c:611
 msgid "Cycle only among visible items"
 msgstr ""
 
-#: src/select-context.c:613
+#: src/select-context.c:614
 #, fuzzy
 msgid "Center view to selected item"
 msgstr "Insereix nous nodes en els segments seleccionats"
@@ -1544,27 +1612,7 @@ msgstr "Insereix nous nodes en els segments seleccionats"
 msgid "Sodipodi slideshow"
 msgstr "Presentació de diapositives Sodipodi"
 
-#: src/sodipodi.c:406
-msgid "Untitled document"
-msgstr "Document sense títol"
-
-#. Show nice dialog box
-#: src/sodipodi.c:431
-msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr "Sodipodi ha trobat un error intern i es tancarà ara.\n"
-
-#: src/sodipodi.c:432
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
-msgstr ""
-"S'han fet còpies de seguretat automàtiques dels documents no desats a les "
-"següents ubicacions:\n"
-
-#: src/sodipodi.c:433
-msgid "Automatic backup of following documents failed:\n"
-msgstr "Ha fallat la còpia de seguretat dels següents documents:\n"
-
-#: src/sodipodi.c:572
+#: src/sodipodi.c:468
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1575,7 +1623,7 @@ msgstr ""
 "Encara que sodipodi s'executarà, \n"
 "no podreu carregar ni desar les preferències\n"
 
-#: src/sodipodi.c:575
+#: src/sodipodi.c:471
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1590,7 +1638,7 @@ msgstr ""
 "no podreu carregar ni desar les\n"
 "preferències."
 
-#: src/sodipodi.c:580
+#: src/sodipodi.c:476
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1602,7 +1650,7 @@ msgstr ""
 "Encara que sodipodi s'executarà, \n"
 "no podreu carregar ni desar les preferències."
 
-#: src/sodipodi.c:592
+#: src/sodipodi.c:488
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1613,7 +1661,7 @@ msgstr ""
 "Encara que sodipodi s'executarà, \n"
 "no podreu usar extensións (connectors)\n"
 
-#: src/sodipodi.c:595
+#: src/sodipodi.c:491
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1626,7 +1674,7 @@ msgstr ""
 "Encara que sodipodi s'executarà, \n"
 "no podreu usar extensións (connectors)\n"
 
-#: src/sodipodi.c:599
+#: src/sodipodi.c:495
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1637,7 +1685,7 @@ msgstr ""
 "Encara que sodipodi s'executarà, \n"
 "no podreu usar extensións (connectors)\n"
 
-#: src/sodipodi.c:938
+#: src/sodipodi.c:829
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1650,7 +1698,7 @@ msgstr ""
 "podreu obrir ni desar documents\n"
 "%s."
 
-#: src/sodipodi.c:942
+#: src/sodipodi.c:833
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1662,7 +1710,7 @@ msgstr ""
 "Encara que sodipodi s'executarà, \n"
 "no podreu carregar ni desar les preferències."
 
-#: src/sodipodi.c:946
+#: src/sodipodi.c:837
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1674,7 +1722,7 @@ msgstr ""
 "Encara que sodipodi s'executarà, \n"
 "no podreu carregar ni desar les preferències."
 
-#: src/sodipodi.c:950
+#: src/sodipodi.c:841
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1686,7 +1734,7 @@ msgstr ""
 "Encara que sodipodi s'executarà, \n"
 "no podreu carregar ni desar les preferències."
 
-#: src/sodipodi.c:960
+#: src/sodipodi.c:851
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1697,7 +1745,7 @@ msgstr ""
 "Encara que s'executarà sodipodi, no \n"
 "podreu usar extensions (connectors)\n"
 
-#: src/sodipodi.c:963
+#: src/sodipodi.c:854
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1708,7 +1756,7 @@ msgstr ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 
-#: src/sodipodi.c:966
+#: src/sodipodi.c:857
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1719,7 +1767,7 @@ msgstr ""
 "Encara que s'executarà sodipod, no\n"
 "podreu usar extensions (connectors)\n"
 
-#: src/sodipodi.c:969
+#: src/sodipodi.c:860
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1745,577 +1793,618 @@ msgstr "Imatge amb referència incorrecta: %s"
 msgid "Color image %d x %d: %s"
 msgstr "Imatge en color %d x %d: %s"
 
-#: src/sp-image.c:922
+#: src/sp-image.c:934
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Error a l'escriure %s: %s"
 
-#: src/sp-image.c:956
+#: src/sp-image.c:968
 msgid "Untitled"
 msgstr "Sense títol"
 
-#: src/sp-image.c:961
+#: src/sp-image.c:973
 msgid "Document Name:"
 msgstr "Nom del document:"
 
-#: src/sp-image.c:974
+#: src/sp-image.c:986
 msgid "Unknown"
 msgstr "Desconegut "
 
-#: src/sp-image.c:980
+#: src/sp-image.c:992
 msgid "Image URI:"
 msgstr "URI de la imatge:"
 
-#: src/sp-item-group.c:457
+#: src/sp-item-group.c:462
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grup de %d objectes"
 
-#: src/sp-item.c:503
+#: src/sp-item.c:509
 msgid "Unknown item :-("
 msgstr "Element desconegut :-("
 
 #. fixme:
-#: src/sp-text.c:1428
+#: src/sp-text.c:1292
 msgid "Text object"
 msgstr "Objecte de text"
 
 #. T0
-#: src/spiral-context.c:377
+#: src/spiral-context.c:375
 msgid "Inner radius:"
 msgstr "Radi intern:"
 
 #. Proportion
-#: src/star-context.c:370
+#: src/star-context.c:368
 msgid "Proportion:"
 msgstr "Proporció:"
 
 #. Making sides flat
-#: src/star-context.c:383
+#: src/star-context.c:381
 msgid "Make sides flat"
 msgstr "Fes planes les cares"
 
-#: src/toolbox.c:443
+#: src/toolbox.c:358
 msgid "Object"
 msgstr "Objecte"
 
-#: src/toolbox.c:447 src/verbs.c:463
+#: src/toolbox.c:362 src/verbs.c:477
 msgid "Object size and position"
 msgstr "Mida i posició de l'objecte"
 
-#: src/toolbox.c:448
+#: src/toolbox.c:363
 msgid "Text and font settings"
 msgstr "Paràmetres del text i el tipus de lletra"
 
-#: src/toolbox.c:450 src/verbs.c:464
+#: src/toolbox.c:365 src/verbs.c:478
 msgid "Object transformations"
 msgstr "Transformacions de l'objecte"
 
-#: src/toolbox.c:523
+#: src/toolbox.c:444
 msgid "Draw"
 msgstr "Dibuixa"
 
-#: src/toolbox.c:578
+#: src/toolbox.c:501
 msgid "Extension"
 msgstr "Extensió"
 
-#: src/toolbox.c:655
+#: src/toolbox.c:583
 msgid "Nodes"
 msgstr "Nodes"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:586
 msgid "Insert new nodes into selected segments"
 msgstr "Insereix nous nodes en els segments seleccionats"
 
-#: src/toolbox.c:660
+#: src/toolbox.c:588
 msgid "Break line at selected nodes"
 msgstr "Trenca la línia als nodes seleccionats"
 
-#: src/toolbox.c:662
+#: src/toolbox.c:590
 msgid "Make selected nodes corner"
 msgstr "Converteix els nodes seleccionats en cantonada"
 
-#: src/toolbox.c:664
+#: src/toolbox.c:592
 msgid "Make selected segments lines"
 msgstr "Converteix els segments seleccionats en línies"
 
-#: src/toolbox.c:666
+#: src/toolbox.c:594
 msgid "Delete selected nodes"
 msgstr "Suprimeix els nodes seleccionats"
 
-#: src/toolbox.c:668
+#: src/toolbox.c:596
 msgid "Join lines at selected nodes"
 msgstr "Uneix les línies als nodes seleccionats"
 
-#: src/toolbox.c:671
+#: src/toolbox.c:599
 #, fuzzy
 msgid "Join lines at selected nodes with new segment"
 msgstr "Uneix les línies als nodes seleccionats"
 
-#: src/toolbox.c:673
+#: src/toolbox.c:601
 msgid "Make selected nodes smooth"
 msgstr "Suavitza els nodes seleccionats"
 
-#: src/toolbox.c:675
+#: src/toolbox.c:603
 msgid "Make selected segments curves"
 msgstr "Converteix els segments seleccionats en corbes"
 
-#: src/verbs.c:394
+#: src/verbs.c:403
 msgid "Does nothing"
 msgstr "No fa res"
 
-#: src/verbs.c:396
+#: src/verbs.c:405
 msgid "Create new SVG document"
 msgstr "Crea un nou document SVG"
 
-#: src/verbs.c:397
+#: src/verbs.c:406
 msgid "Open..."
 msgstr "Obre"
 
-#: src/verbs.c:397
+#: src/verbs.c:406
 msgid "Open existing SVG document"
 msgstr "Obre un document SVG existent"
 
-#: src/verbs.c:398
+#: src/verbs.c:407
 msgid "Save"
 msgstr "Desa"
 
-#: src/verbs.c:398
+#: src/verbs.c:407
 msgid "Save document"
 msgstr "Desa el document"
 
-#: src/verbs.c:399
+#: src/verbs.c:408
 msgid "Save As..."
 msgstr "Desa com a..."
 
-#: src/verbs.c:399
+#: src/verbs.c:408
 msgid "Save document under new name"
 msgstr "Desa el document amb un nom nou"
 
-#: src/verbs.c:400
+#: src/verbs.c:409
 msgid "Print..."
 msgstr "Imprimeix..."
 
-#: src/verbs.c:400
+#: src/verbs.c:409
 msgid "Print document"
 msgstr "Imprimeix document"
 
-#: src/verbs.c:401
+#: src/verbs.c:410
 msgid "Print Direct..."
 msgstr "Imprimeix directament..."
 
-#: src/verbs.c:401
+#: src/verbs.c:410
 msgid "Print directly to file or pipe"
 msgstr "Imprimeix directament a un fitxer o conducte"
 
-#: src/verbs.c:402
+#: src/verbs.c:411
 msgid "Print Preview"
 msgstr "Exemple d'impressió"
 
-#: src/verbs.c:402
+#: src/verbs.c:411
 msgid "Preview document printout"
 msgstr "Exemple d'impressió"
 
-#: src/verbs.c:403
+#: src/verbs.c:412
 msgid "Import"
 msgstr "Importa"
 
-#: src/verbs.c:403
+#: src/verbs.c:412
 msgid "Import bitmap or SVG image into document"
 msgstr "Importa cap al document un mapa de bits o una imatge SVG"
 
-#: src/verbs.c:404
+#: src/verbs.c:413
 msgid "Export document as PNG bitmap"
 msgstr "Exporta el document com un mapa de bits PNG"
 
+#: src/verbs.c:414
+#, fuzzy
+msgid "Exit"
+msgstr "Edició"
+
 #. Edit
-#: src/verbs.c:406
+#: src/verbs.c:416
 msgid "Undo"
 msgstr "Desfés"
 
-#: src/verbs.c:406
+#: src/verbs.c:416
 msgid "Revert last action"
 msgstr "Desfès l'ultima acció"
 
-#: src/verbs.c:407
+#: src/verbs.c:417
 msgid "Redo"
 msgstr "Refés"
 
-#: src/verbs.c:407
+#: src/verbs.c:417
 msgid "Do again undone action"
 msgstr "Refés l'acció desfeta"
 
-#: src/verbs.c:408
+#: src/verbs.c:418
 msgid "Cut"
 msgstr "Talla"
 
-#: src/verbs.c:408
+#: src/verbs.c:418
 msgid "Cut selected objects to clipboard"
 msgstr "Retalla els objectes seleccionats al porta-retalls"
 
-#: src/verbs.c:409
+#: src/verbs.c:419
 msgid "Copy"
 msgstr "Copia"
 
-#: src/verbs.c:409
+#: src/verbs.c:419
 msgid "Copy selected objects to clipboard"
 msgstr "Copia els objectes seleccionats al porta-retalls"
 
-#: src/verbs.c:410
+#: src/verbs.c:420
 msgid "Paste"
 msgstr "Enganxa"
 
-#: src/verbs.c:410
+#: src/verbs.c:420
 msgid "Paste objects from clipboard"
 msgstr "Enganxa objectes del porta-retalls"
 
-#: src/verbs.c:411
+#: src/verbs.c:421
 msgid "Delete"
 msgstr "Suprimeix"
 
-#: src/verbs.c:411
+#: src/verbs.c:421
 msgid "Delete selected objects"
 msgstr "Suprimeix el(s) objecte(s) seleccionat(s)"
 
-#: src/verbs.c:412
+#: src/verbs.c:422
 msgid "Duplicate"
 msgstr "Duplica"
 
-#: src/verbs.c:412
+#: src/verbs.c:422
 msgid "Duplicate selected objects"
 msgstr "Duplica el(s) objecte(s) seleccionat(s)"
 
-#: src/verbs.c:413
+#: src/verbs.c:423
 msgid "Clear All"
 msgstr "Esborra'ls tots"
 
-#: src/verbs.c:413
+#: src/verbs.c:423
 msgid "Delete all objects from document"
 msgstr "Suprimeix tots els objectes del document"
 
-#: src/verbs.c:414
+#: src/verbs.c:424
 msgid "Select All"
 msgstr "Selecciona'ls tots"
 
-#: src/verbs.c:414
+#: src/verbs.c:424
 msgid "Select all objects in document"
 msgstr "Selecciona tots els objectes del document"
 
-#: src/verbs.c:415
+#: src/verbs.c:425
 #, fuzzy
 msgid "Repeat"
 msgstr "Rectangle"
 
-#: src/verbs.c:415
+#: src/verbs.c:425
 #, fuzzy
 msgid "Repeat last saved action"
 msgstr "Desfès l'ultima acció"
 
 #. Selection
-#: src/verbs.c:417
+#: src/verbs.c:427
 msgid "Bring to Front"
 msgstr "Porta a primer pla"
 
-#: src/verbs.c:417
+#: src/verbs.c:427
 msgid "Raise selected objects to top"
 msgstr "Puja els objectes seleccionats a dalt de tot"
 
-#: src/verbs.c:418
+#: src/verbs.c:428
 msgid "Send to Back"
 msgstr "Envia al fons"
 
-#: src/verbs.c:418
+#: src/verbs.c:428
 msgid "Lower selected objects to bottom"
 msgstr "Baixa els objectes seleccionats a baix de tot"
 
-#: src/verbs.c:419
+#: src/verbs.c:429
 msgid "Raise"
 msgstr "Puja"
 
-#: src/verbs.c:419
+#: src/verbs.c:429
 msgid "Raise selected objects one position"
 msgstr "Puja el(s) objecte(s) seleccionat(s) una posició"
 
-#: src/verbs.c:420
+#: src/verbs.c:430
 msgid "Lower"
 msgstr "Baixa"
 
-#: src/verbs.c:420
+#: src/verbs.c:430
 msgid "Lower selected objects one position"
 msgstr "Baixa el(s) objecte(s) seleccionat(s) una posició"
 
-#: src/verbs.c:421
+#: src/verbs.c:431
 msgid "Group selected objects"
 msgstr "Agrupa els objectes seleccionats"
 
-#: src/verbs.c:422
+#: src/verbs.c:432
 msgid "Ungroup selected group"
 msgstr "Desagrupa els objectes seleccionats"
 
-#: src/verbs.c:423
+#: src/verbs.c:433
 msgid "Combine"
 msgstr "Combina"
 
-#: src/verbs.c:423
+#: src/verbs.c:433
 msgid "Combine multiple paths"
 msgstr "Combina múltiples camins"
 
-#: src/verbs.c:424
+#: src/verbs.c:434
 msgid "Break Apart"
 msgstr "Trenca Apart"
 
-#: src/verbs.c:424
+#: src/verbs.c:434
 msgid "Break selected path to subpaths"
 msgstr "Trenca el camí seleccionat en subcamins"
 
-#: src/verbs.c:425
+#: src/verbs.c:435
+msgid "Uncross"
+msgstr ""
+
+#: src/verbs.c:435
+#, fuzzy
+msgid "Break selected path at crossings"
+msgstr "Trenca el camí seleccionat en subcamins"
+
+#: src/verbs.c:436
+#, fuzzy
+msgid "Union"
+msgstr "Desfés"
+
+#: src/verbs.c:436
+msgid "Calculate union of selected paths"
+msgstr ""
+
+#: src/verbs.c:437
+#, fuzzy
+msgid "Intersection"
+msgstr "Selecció"
+
+#: src/verbs.c:437
+msgid "Calculate intersection of selected paths"
+msgstr ""
+
+#: src/verbs.c:438
+#, fuzzy
+msgid "Subtraction"
+msgstr "Saturació:"
+
+#: src/verbs.c:438
+msgid "Subtract paths from first"
+msgstr ""
+
+#: src/verbs.c:439
 #, fuzzy
 msgid "Transform"
 msgstr "Transforma:"
 
-#: src/verbs.c:425
+#: src/verbs.c:439
 #, fuzzy
 msgid "Applies transformation"
 msgstr "Reinicialitza la transformació"
 
 #. Object
-#: src/verbs.c:427
+#: src/verbs.c:441
 msgid "Rotate 90 degrees"
 msgstr "Gira 90 graus"
 
-#: src/verbs.c:427
+#: src/verbs.c:441
 msgid "Rotates object 90 degrees clockwise"
 msgstr "Gira l'objecte 90 graus en el sentit de les agulles del rellotge"
 
-#: src/verbs.c:428
+#: src/verbs.c:442
 msgid "Flatten object"
 msgstr "Aplana l'objecte"
 
-#: src/verbs.c:428
+#: src/verbs.c:442
 msgid "Remove transformations from object"
 msgstr "Suprimeix les transformacions de l'objecte"
 
-#: src/verbs.c:429
+#: src/verbs.c:443
 msgid "Convert to Curves"
 msgstr "Converteix en corbes"
 
-#: src/verbs.c:429
+#: src/verbs.c:443
 msgid "Convert selected object to path"
 msgstr "Converteix els objectes seleccionats en corbes"
 
-#: src/verbs.c:430
+#: src/verbs.c:444
 msgid "Flip Horizontally"
 msgstr "Volteja horitzontalment"
 
-#: src/verbs.c:431
+#: src/verbs.c:445
 msgid "Flip selected objects horizontally"
 msgstr "Volteja horitzontalment el(s) objecte(s) seleccionat(s)"
 
-#: src/verbs.c:432
+#: src/verbs.c:446
 msgid "Flip Vertically"
 msgstr "Volteja verticalment"
 
-#: src/verbs.c:433
+#: src/verbs.c:447
 msgid "Flip selected objects vertically"
 msgstr "Volteja verticalment el(s) objecte(s) seleccionat(s)"
 
 #. Event contexts
-#: src/verbs.c:435
+#: src/verbs.c:449
 msgid "Select"
 msgstr "Selecciona"
 
-#: src/verbs.c:435
+#: src/verbs.c:449
 msgid "Select and transform objects"
 msgstr "Selecciona i transforma els objectes"
 
-#: src/verbs.c:436
+#: src/verbs.c:450
 msgid "Node edit"
 msgstr "Edició del node"
 
-#: src/verbs.c:436
+#: src/verbs.c:450
 msgid "Modify existing objects by control nodes"
 msgstr "Modifica els objectes existents mitjançant els nodes de control"
 
-#: src/verbs.c:437
+#: src/verbs.c:451
 msgid "Rectangle"
 msgstr "Rectangle"
 
-#: src/verbs.c:437
+#: src/verbs.c:451
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr ""
 "Crea rectangles i quadrats, opcionalment amb les cantonades arrodonides"
 
-#: src/verbs.c:438
+#: src/verbs.c:452
 msgid "Ellipse"
 msgstr "El·lipse"
 
-#: src/verbs.c:438
+#: src/verbs.c:452
 msgid "Create circles, ellipses and arcs"
 msgstr "Crea cercles, el·lipses i arcs"
 
-#: src/verbs.c:439
+#: src/verbs.c:453
 msgid "Create stars and polygons"
 msgstr "Crea estrelles i polígons"
 
-#: src/verbs.c:440
+#: src/verbs.c:454
 msgid "Create spirals"
 msgstr "Crea espirals"
 
-#: src/verbs.c:441
+#: src/verbs.c:455
 msgid "Pencil"
 msgstr "Llàpis"
 
-#: src/verbs.c:441
+#: src/verbs.c:455
 msgid "Draw freehand curves and straight lines"
 msgstr "Dibuixa corbes a mà alçada i línies rectes"
 
-#: src/verbs.c:442
+#: src/verbs.c:456
 msgid "Pen"
 msgstr "Llàpis"
 
-#: src/verbs.c:442
+#: src/verbs.c:456
 msgid "Draw precisely positioned curved and straight lines"
 msgstr "Dibuixa corbes posicionades amb precisió i línies rectes"
 
-#: src/verbs.c:443
+#: src/verbs.c:457
 msgid "Calligraphy"
 msgstr "Cal·ligrafia"
 
-#: src/verbs.c:443
+#: src/verbs.c:457
 msgid "Draw calligraphic lines"
 msgstr "Dibuixa línies de cal·ligrafia"
 
-#: src/verbs.c:444
+#: src/verbs.c:458
 msgid "Create and edit text objects"
 msgstr "Crea i edita objectes de text"
 
-#: src/verbs.c:445
+#: src/verbs.c:459
 msgid "Zoom into precisely selected area"
 msgstr "Amplia una àrea seleccionada de forma precisa"
 
-#: src/verbs.c:446
+#: src/verbs.c:460
 msgid "Dropper"
 msgstr "Compta-gotes"
 
-#: src/verbs.c:446
+#: src/verbs.c:460
 msgid "Pick averaged colors from image"
 msgstr "Agafa color mitjos de la imatge"
 
 #. Zooming
-#: src/verbs.c:448
+#: src/verbs.c:462
 msgid "In"
 msgstr "Entrada"
 
-#: src/verbs.c:448
+#: src/verbs.c:462
 msgid "Zoom in drawing"
 msgstr "Amplia el dibuix"
 
-#: src/verbs.c:449
+#: src/verbs.c:463
 msgid "Out"
 msgstr "Sortida"
 
-#: src/verbs.c:449
+#: src/verbs.c:463
 msgid "Zoom out drawing"
 msgstr "Redueix el dibuix"
 
-#: src/verbs.c:450
+#: src/verbs.c:464
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:450
+#: src/verbs.c:464
 msgid "Set zoom factor to 1:1"
 msgstr "Fixa el factor d'ampliació 1:1"
 
-#: src/verbs.c:451
+#: src/verbs.c:465
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:451
+#: src/verbs.c:465
 msgid "Set zoom factor to 1:2"
 msgstr "Fixa el factor d'ampliació a 1:2"
 
-#: src/verbs.c:452
+#: src/verbs.c:466
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:452
+#: src/verbs.c:466
 msgid "Set zoom factor to 2:1"
 msgstr "Fixa el factor d'ampliació a 2:1"
 
-#: src/verbs.c:453
+#: src/verbs.c:467
 msgid "Fit the whole page into window"
 msgstr "Ajusta la pàgina a la finestra"
 
-#: src/verbs.c:454
+#: src/verbs.c:468
 msgid "Fit the whole drawing into window"
 msgstr "Ajusta el dibuix a la finestra"
 
-#: src/verbs.c:455
+#: src/verbs.c:469
 msgid "Fit the whole selection into window"
 msgstr "Ajusta la selecció a la finestra"
 
 #. Dialogs
-#: src/verbs.c:457
+#: src/verbs.c:471
 msgid "Display"
 msgstr "Visualitza"
 
-#: src/verbs.c:457
+#: src/verbs.c:471
 msgid "Global display settings"
 msgstr "Paràmetres globals de presentació"
 
-#: src/verbs.c:458
+#: src/verbs.c:472
 msgid "Document"
 msgstr "Document"
 
-#: src/verbs.c:458
+#: src/verbs.c:472
 msgid "Page layout"
 msgstr "Esquema de la pàgina"
 
-#: src/verbs.c:459
+#: src/verbs.c:473
 msgid "Editing Window"
 msgstr "Finestra d'edició"
 
-#: src/verbs.c:459
+#: src/verbs.c:473
 msgid "Editing window properties"
 msgstr "Edita les propietats de la finestra"
 
-#: src/verbs.c:460
+#: src/verbs.c:474
 msgid "Tool Options"
 msgstr "Opcions de l'eina"
 
-#: src/verbs.c:461
+#: src/verbs.c:475
 msgid "Tool Attributes"
 msgstr "Atributs de l'eina"
 
-#: src/verbs.c:462
+#: src/verbs.c:476
 msgid "Fill and Stroke"
 msgstr "Emplenat i línia"
 
-#: src/verbs.c:462
+#: src/verbs.c:476
 msgid "Fill and stroke settings"
 msgstr "Paràmetres d'emplenat i contorn"
 
-#: src/verbs.c:464
+#: src/verbs.c:478
 msgid "Transformations"
 msgstr "Transformacions"
 
-#: src/verbs.c:465
+#: src/verbs.c:479
 msgid "Align and Distribute"
 msgstr "Alinea i distribueix"
 
-#: src/verbs.c:465
+#: src/verbs.c:479
 msgid "Align and distribute"
 msgstr "Alinea i distribueix"
 
-#: src/verbs.c:466
+#: src/verbs.c:480
 msgid "Text and Font"
 msgstr "Text i tipus de lletra"
 
-#: src/verbs.c:466
+#: src/verbs.c:480
 msgid "Text editing and font settings"
 msgstr "Paràmetres d'edicio de text i tipus de lletra"
 
-#: src/verbs.c:467
+#: src/verbs.c:481
 msgid "XML Editor"
 msgstr "Editor XML"
 
@@ -2373,57 +2462,57 @@ msgstr "Color final"
 msgid "Gradient vector"
 msgstr "Vector de gradient"
 
-#: src/widgets/paint-selector.c:621
+#: src/widgets/paint-selector.c:622
 msgid "No objects"
 msgstr "No hi ha objectes"
 
-#: src/widgets/paint-selector.c:635
+#: src/widgets/paint-selector.c:636
 msgid "Multiple styles"
 msgstr "Múltiples estils"
 
-#: src/widgets/paint-selector.c:649
+#: src/widgets/paint-selector.c:650
 msgid "No paint"
 msgstr "Sense pintar"
 
 #. Label
-#: src/widgets/paint-selector.c:739
+#: src/widgets/paint-selector.c:747
 msgid "Mode:"
 msgstr "Mode:"
 
-#: src/widgets/paint-selector.c:749
+#: src/widgets/paint-selector.c:757
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
 msgstr "Espai de color RGB"
 
-#: src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:758
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK Colorspace"
 msgstr "Espai de color CMYK"
 
 #. Use dropper
-#: src/widgets/paint-selector.c:758
+#: src/widgets/paint-selector.c:766
 msgid "Get from dropper"
 msgstr "Agafa del comptagotes"
 
-#: src/widgets/paint-selector.c:789
+#: src/widgets/paint-selector.c:797
 msgid "Color paint"
 msgstr "Pinta amb color"
 
-#: src/widgets/paint-selector.c:859
+#: src/widgets/paint-selector.c:875
 msgid "Linear gradient"
 msgstr "Gradient lineal"
 
-#: src/widgets/paint-selector.c:862
+#: src/widgets/paint-selector.c:878
 msgid "Radial gradient"
 msgstr "Gradient radial"
 
@@ -2477,13 +2566,16 @@ msgid "Toggle separate window and main toolbox placement"
 msgstr ""
 "Commuta la situació entre la finestra separada i la caixa d'eines principal"
 
-#: src/widgets/sp-xmlview-attr-list.c:55
+#: src/widgets/sp-xmlview-attr-list.c:54
 msgid "Attribute"
 msgstr "Atribut"
 
-#: src/widgets/sp-xmlview-attr-list.c:56
+#: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Value"
 msgstr "Valor"
+
+#~ msgid "Filters"
+#~ msgstr "Filtres"
 
 #~ msgid "Item is reference"
 #~ msgstr "L'element és referència"

@@ -34,6 +34,7 @@ bin_PROGRAMS = sodipodi
 sodipodilib_src = \
 	testing.h \
 	macros.h \
+	api.h \
 	forward.h \
 	enums.h \
 	system.h \

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.32+\n"
-"POT-Creation-Date: 2003-11-30 17:37+0200\n"
+"POT-Creation-Date: 2004-02-07 00:18+0200\n"
 "PO-Revision-Date: 2003-06-29 01:05+0400\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <gnome-cyr@gnome.org>\n"
@@ -20,52 +20,52 @@ msgid "SVG Vector Illustrator"
 msgstr "Программа для создания векторной графики"
 
 #. Create window
-#: sodipodi.desktop.in.h:2 src/toolbox.c:121 src/toolbox.c:142
+#: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:138
 msgid "Sodipodi"
 msgstr "Sodipodi"
+
+#: src/arc-context.c:302
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr ""
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Не удалось создать фабрику sodipodi-svg-doc"
 
-#: src/arc-context.c:303
-#, c-format
-msgid "Drawing arc %s x %s"
-msgstr ""
-
 #: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
 msgstr "Масштабировать рисунок при изменении размеров окна"
 
-#: src/desktop.c:858
+#: src/desktop.c:860
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:987
+#: src/desktop.c:989
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "В документе '%s' есть несохранённые изменения, сохранить их?"
 
 #. Page page
-#: src/desktop.c:1535 src/dialogs/align.c:288
+#: src/desktop.c:1541 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:137 src/verbs.c:453
+#: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Страница"
 
-#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
-#: src/verbs.c:454
+#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/verbs.c:468
 msgid "Drawing"
 msgstr "Рисунок"
 
 #. Selection submenu
-#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
-#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
+#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Выбранное"
 
-#: src/dialogs/align.c:155 src/toolbox.c:449
+#: src/dialogs/align.c:155 src/toolbox.c:364
 msgid "Align objects"
 msgstr "Выравнивать объекты"
 
@@ -150,19 +150,19 @@ msgstr ""
 msgid "Distribute"
 msgstr "Распределить"
 
-#: src/dialogs/align.c:284
+#: src/dialogs/align.c:286
 msgid "Last selected"
 msgstr "Последний выбранный"
 
-#: src/dialogs/align.c:285
+#: src/dialogs/align.c:287
 msgid "First selected"
 msgstr "Сгруппировать выбранные элементы"
 
-#: src/dialogs/align.c:286
+#: src/dialogs/align.c:288
 msgid "Biggest item"
 msgstr "Наибольший элемент"
 
-#: src/dialogs/align.c:287
+#: src/dialogs/align.c:289
 msgid "Smallest item"
 msgstr "Наименьший элемент"
 
@@ -296,53 +296,67 @@ msgstr "Цвет направляющих:"
 msgid "Page color"
 msgstr "Начальный цвет"
 
-#: src/dialogs/desktop-properties.c:580
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
 msgid "Close"
 msgstr "Закрыть"
 
-#: src/dialogs/display-settings.c:88
+#: src/dialogs/display-settings.c:101
 msgid "Display settings"
 msgstr "Параметры отображения"
 
 #. Rendering settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:96
+#: src/dialogs/display-settings.c:108
 msgid "Rendering"
 msgstr "Отображение"
 
-#: src/dialogs/display-settings.c:108
+#: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
 msgstr "Усреднять растр по точкам:"
 
-#: src/dialogs/display-settings.c:119 src/verbs.c:394
+#: src/dialogs/display-settings.c:125 src/verbs.c:403
 msgid "None"
 msgstr "Нет"
 
-#: src/dialogs/display-settings.c:123
+#: src/dialogs/display-settings.c:128
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:127
+#: src/dialogs/display-settings.c:131
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:131
+#: src/dialogs/display-settings.c:134
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:135
+#: src/dialogs/display-settings.c:137
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:146
+#: src/dialogs/display-settings.c:147
 msgid "Input"
 msgstr "Ввод"
 
-#: src/dialogs/display-settings.c:157
+#: src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
 msgstr "Невосприимчивость курсора по умолчанию:"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr ""
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr ""
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr ""
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
@@ -362,136 +376,155 @@ msgid "Custom paper"
 msgstr "Размер страницы"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:178
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Единицы:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
-#: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:188
+#: src/dialogs/export.c:212 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
-#: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
-#: src/dyna-draw-context.c:1082
+#: src/dialogs/stroke-style.c:566 src/dialogs/tool-attributes.c:125
+#: src/dyna-draw-context.c:1087
 msgid "Width:"
 msgstr "Ширина:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
-#: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:197
+#: src/dialogs/export.c:220 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
 msgstr "Высота:"
 
-#: src/dialogs/export.c:117
+#: src/dialogs/export.c:140
 msgid "Export bitmap"
 msgstr "Экспортировать растровое изображение"
 
 #. Export area frame
-#: src/dialogs/export.c:126
+#: src/dialogs/export.c:149
 msgid "Export area"
 msgstr "Экспортировать область"
 
-#: src/dialogs/export.c:159
+#: src/dialogs/export.c:182
 msgid "x0:"
 msgstr "x0:"
 
-#: src/dialogs/export.c:162
+#: src/dialogs/export.c:185
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:168
+#: src/dialogs/export.c:191
 msgid "y0:"
 msgstr "y0:"
 
-#: src/dialogs/export.c:171
+#: src/dialogs/export.c:194
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:180
+#: src/dialogs/export.c:203
 msgid "Bitmap size"
 msgstr "Размер растрового изображения"
 
-#: src/dialogs/export.c:189 src/dialogs/export.c:197
+#: src/dialogs/export.c:212 src/dialogs/export.c:220
 msgid "pixels"
 msgstr "точки растра"
 
-#: src/dialogs/export.c:193 src/dialogs/export.c:201
+#: src/dialogs/export.c:216 src/dialogs/export.c:224
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:208
+#: src/dialogs/export.c:232
+#, fuzzy
+msgid "Background color"
+msgstr "Конечный цвет"
+
+#: src/dialogs/export.c:234
+msgid "Bitmap background:"
+msgstr ""
+
+#: src/dialogs/export.c:239
 msgid "Export png file"
 msgstr "Экспортировать в файл png"
 
-#: src/dialogs/export.c:237 src/verbs.c:404
+#: src/dialogs/export.c:266 src/verbs.c:413
 msgid "Export"
 msgstr "Экспортировать"
 
-#: src/dialogs/fill-style.c:86
+#: src/dialogs/export.c:401
+#, fuzzy
+msgid "Export in progress"
+msgstr "Экспортировать область"
+
+#: src/dialogs/export.c:405
+#, fuzzy, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "Цветное изображение %d x %d: %s"
+
+#: src/dialogs/fill-style.c:87
 msgid "Fill style"
 msgstr "Стиль заливки"
 
-#: src/dialogs/fill-style.c:121
+#: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
 msgstr "Пересечения"
 
-#: src/dialogs/fill-style.c:135
+#: src/dialogs/fill-style.c:138
 msgid "nonzero"
 msgstr "как одно целое"
 
-#: src/dialogs/fill-style.c:140
+#: src/dialogs/fill-style.c:143
 msgid "evenodd"
 msgstr "не заливать"
 
-#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:281
-#: src/dialogs/item-properties.c:355 src/dialogs/item-properties.c:362
+#: src/dialogs/item-properties.c:85 src/dialogs/item-properties.c:282
+#: src/dialogs/item-properties.c:356 src/dialogs/item-properties.c:363
 msgid "ID"
 msgstr ""
 
-#: src/dialogs/item-properties.c:98
+#: src/dialogs/item-properties.c:99
 msgid "Set ID"
 msgstr ""
 
-#: src/dialogs/item-properties.c:109
+#: src/dialogs/item-properties.c:110
 msgid "Sensitive"
 msgstr "Чувствительный"
 
-#: src/dialogs/item-properties.c:114
+#: src/dialogs/item-properties.c:115
 msgid "Visible"
 msgstr "Видимый"
 
-#: src/dialogs/item-properties.c:119
+#: src/dialogs/item-properties.c:120
 msgid "Active"
 msgstr "Действующий"
 
-#: src/dialogs/item-properties.c:124
+#: src/dialogs/item-properties.c:125
 msgid "Printable"
 msgstr "Печатаемый"
 
-#: src/dialogs/item-properties.c:135
+#: src/dialogs/item-properties.c:136
 msgid "Opacity:"
 msgstr "Непрозрачность:"
 
-#: src/dialogs/item-properties.c:154
+#: src/dialogs/item-properties.c:155
 msgid "Transformation matrix"
 msgstr "Матрица преобразования"
 
-#: src/dialogs/item-properties.c:275
+#: src/dialogs/item-properties.c:276
 msgid "Ref"
 msgstr ""
 
-#: src/dialogs/item-properties.c:357
+#: src/dialogs/item-properties.c:358
 #, fuzzy
 msgid "ID invalid"
 msgstr "Допустимый идентификатор"
 
-#: src/dialogs/item-properties.c:359
+#: src/dialogs/item-properties.c:360
 msgid "ID exists"
 msgstr ""
 
-#: src/dialogs/item-properties.c:435 src/verbs.c:468
+#: src/dialogs/item-properties.c:436 src/verbs.c:482
 msgid "Item properties"
 msgstr "Свойства элемента"
 
@@ -519,7 +552,7 @@ msgstr ""
 msgid "Title:"
 msgstr "Заголовок:"
 
-#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:113
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
 msgid "Show:"
 msgstr "Показать:"
 
@@ -556,13 +589,13 @@ msgid "ARG2:"
 msgstr "ARG2:"
 
 #. Expansion
-#: src/dialogs/object-attributes.c:59 src/spiral-context.c:365
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:363
 msgid "Expansion:"
 msgstr "Расширение:"
 
 #. Revolution
-#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:93
-#: src/spiral-context.c:353
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
+#: src/spiral-context.c:351
 msgid "Revolution:"
 msgstr "Переворот:"
 
@@ -657,7 +690,7 @@ msgstr "Свободная кисть"
 msgid "Calligraphic line"
 msgstr "Динамичная линия"
 
-#: src/dialogs/object-properties.c:210 src/verbs.c:444
+#: src/dialogs/object-properties.c:210 src/verbs.c:458
 msgid "Text"
 msgstr "Текст"
 
@@ -666,116 +699,121 @@ msgstr "Текст"
 msgid "Object Size and Position"
 msgstr "Размер и расположение объекта"
 
-#: src/dialogs/object-properties.c:312 src/verbs.c:463
+#: src/dialogs/object-properties.c:312 src/verbs.c:477
 msgid "Size and Position"
 msgstr "Размер и расположение"
 
-#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
+#: src/dialogs/stroke-style.c:553 src/toolbox.c:360
 msgid "Stroke settings"
 msgstr "Параметры рамки"
 
 #. Join type
-#: src/dialogs/stroke-style.c:588
+#: src/dialogs/stroke-style.c:589
 msgid "Join:"
 msgstr "Соединение:"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:631
+#: src/dialogs/stroke-style.c:632
 msgid "Cap:"
 msgstr "Края:"
 
 #. Dash
-#: src/dialogs/stroke-style.c:674
+#: src/dialogs/stroke-style.c:675
 msgid "Pattern:"
 msgstr "Шаблон:"
 
-#: src/dialogs/text-edit.c:101
+#: src/dialogs/text-edit.c:102
 msgid "Text properties"
 msgstr "Свойства текста"
 
 #. Layout
-#: src/dialogs/text-edit.c:140
+#: src/dialogs/text-edit.c:141
 msgid "Layout"
 msgstr "Размещение"
 
-#: src/dialogs/text-edit.c:148
+#: src/dialogs/text-edit.c:149
 msgid "Alignment:"
 msgstr "Выравнивание:"
 
-#: src/dialogs/text-edit.c:173
+#: src/dialogs/text-edit.c:174
 msgid "Orientation:"
 msgstr "Расположение:"
 
-#: src/dialogs/text-edit.c:191
+#: src/dialogs/text-edit.c:192
 #, fuzzy
 msgid "Line spacing:"
 msgstr "Интервал X:"
 
-#: src/dialogs/text-edit.c:216
+#: src/dialogs/text-edit.c:212
+#, fuzzy
+msgid "Spacing:"
+msgstr "Интервал Y:"
+
+#: src/dialogs/text-edit.c:235
 msgid "Text and font"
 msgstr "Текст и шрифт"
 
-#: src/dialogs/text-edit.c:227
+#: src/dialogs/text-edit.c:246
 msgid "Set as default"
 msgstr "Установить по умолчанию"
 
-#: src/dialogs/tool-attributes.c:48 src/verbs.c:461
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:475
 msgid "Tool attributes"
 msgstr "Настройки инструмента"
 
-#: src/dialogs/tool-attributes.c:93
+#: src/dialogs/tool-attributes.c:95
 msgid "Expansion"
 msgstr "Расширение"
 
-#: src/dialogs/tool-attributes.c:93
+#: src/dialogs/tool-attributes.c:95
 msgid "Inner radius"
 msgstr "Внутренний радиус"
 
-#: src/dialogs/tool-attributes.c:97 src/dialogs/tool-attributes.c:107
-#: src/dialogs/tool-attributes.c:117 src/dialogs/tool-attributes.c:127
+#: src/dialogs/tool-attributes.c:99 src/dialogs/tool-attributes.c:109
+#: src/dialogs/tool-attributes.c:119 src/dialogs/tool-attributes.c:129
 msgid "Missing tool preferences"
 msgstr "Пропущены настроки инструмента"
 
 #. Magnitude
-#: src/dialogs/tool-attributes.c:103 src/star-context.c:358
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:356
 msgid "Corners:"
 msgstr "Углы:"
 
-#: src/dialogs/tool-attributes.c:103
+#: src/dialogs/tool-attributes.c:105
 msgid "Proportion"
 msgstr "Пропорции"
 
-#: src/dialogs/tool-attributes.c:113
+#: src/dialogs/tool-attributes.c:115
 msgid "Transform:"
 msgstr "Преобразование:"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1046
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
 msgid "Mass:"
 msgstr "Масса:"
 
 #. Drag
-#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1058
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1063
 msgid "Drag:"
 msgstr "Заторможенность:"
 
-#: src/dialogs/tool-attributes.c:123
+#: src/dialogs/tool-attributes.c:125
 msgid "Angle"
 msgstr "Угол"
 
-#: src/dialogs/tool-attributes.c:130
+#: src/dialogs/tool-attributes.c:132
 msgid "Tool has no attributes"
 msgstr "Инструмент не имеет параметров"
 
-#: src/dialogs/tool-attributes.c:133 src/dialogs/tool-options.c:91
+#: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
 msgid "No active tool"
 msgstr "Не выбран активный инструмент"
 
-#: src/dialogs/tool-options.c:47 src/verbs.c:460
+#: src/dialogs/tool-options.c:47 src/verbs.c:474
 msgid "Tool options"
 msgstr "Параметры инструментов"
 
-#: src/dialogs/tool-options.c:88
+#: src/dialogs/tool-options.c:90
 msgid "Tool has no options"
 msgstr "Инструмент не имеет параметров"
 
@@ -804,138 +842,130 @@ msgstr "Повернуть"
 msgid "deg"
 msgstr "градусов"
 
-#: src/dialogs/xml-tree.c:162
+#: src/dialogs/xml-tree.c:157
 msgid "Drag to reorder nodes"
 msgstr "Переместите для изменения порядка узлов"
 
-#: src/dialogs/xml-tree.c:175
+#: src/dialogs/xml-tree.c:170
 msgid "New element node"
 msgstr "Создать узел элемента"
 
-#: src/dialogs/xml-tree.c:193
+#: src/dialogs/xml-tree.c:188
 msgid "New text node"
 msgstr "Создать текстовый узел"
 
-#: src/dialogs/xml-tree.c:210
+#: src/dialogs/xml-tree.c:205
 msgid "Duplicate node"
 msgstr "Дублировать узел"
 
-#: src/dialogs/xml-tree.c:226
+#: src/dialogs/xml-tree.c:221
 msgid "Delete node"
 msgstr "Удалить узел"
 
-#: src/dialogs/xml-tree.c:239
+#: src/dialogs/xml-tree.c:234
 msgid "Unindent node"
 msgstr "Убрать отступ узла"
 
-#: src/dialogs/xml-tree.c:250
+#: src/dialogs/xml-tree.c:245
 msgid "Indent node"
 msgstr "Добавить отступ узла"
 
-#: src/dialogs/xml-tree.c:260
+#: src/dialogs/xml-tree.c:255
 msgid "Raise node"
 msgstr "Поднять узел"
 
-#: src/dialogs/xml-tree.c:271
+#: src/dialogs/xml-tree.c:266
 msgid "Lower node"
 msgstr "Опустить узел"
 
-#: src/dialogs/xml-tree.c:308
+#: src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
 msgstr "Удалить атрибут"
 
-#: src/dialogs/xml-tree.c:338
+#: src/dialogs/xml-tree.c:333
 msgid "Attribute name"
 msgstr "Название атрибута"
 
-#: src/dialogs/xml-tree.c:345
+#: src/dialogs/xml-tree.c:340
 msgid "Set attribute"
 msgstr "Установить атрибут"
 
-#: src/dialogs/xml-tree.c:358
+#: src/dialogs/xml-tree.c:353
 msgid "Attribute value"
 msgstr "Значение атрибута"
 
-#: src/dialogs/xml-tree.c:830
+#: src/dialogs/xml-tree.c:832
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi: %s : Просмотр XML"
 
-#: src/dialogs/xml-tree.c:853
+#: src/dialogs/xml-tree.c:855
 msgid "New element node..."
 msgstr "Создать узел элемента..."
 
-#: src/dialogs/xml-tree.c:873
+#: src/dialogs/xml-tree.c:875
 msgid "Cancel"
 msgstr "Отменить"
 
-#: src/dialogs/xml-tree.c:877
+#: src/dialogs/xml-tree.c:879
 msgid "Create"
 msgstr "Создать"
 
-#: src/document.c:343
+#: src/document.c:353
 #, c-format
 msgid "New document %d"
 msgstr "Создать документ %d"
 
-#: src/document.c:372
+#: src/document.c:382
 #, c-format
 msgid "Memory document %d"
 msgstr "Запомнить документ %d"
 
-#: src/document.c:458
+#: src/document.c:492
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Без названия %d"
 
-#: src/draw-context.c:283
+#: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr ""
 "Добавлять к выбранному. Нажмите 'a' для переключения \"Добавлять/Создавать "
 "новый\"."
 
-#: src/draw-context.c:288
+#: src/draw-context.c:299
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr ""
 "Создать новую кривую. Нажмите 'a' для переключения \"Добавлять/Создавать "
 "новую\""
 
 #. Angle
-#: src/dyna-draw-context.c:1070
+#: src/dyna-draw-context.c:1075
 msgid "Angle:"
 msgstr "Угол:"
 
 #. Reset
-#: src/dyna-draw-context.c:1094 src/rect-context.c:424
-#: src/spiral-context.c:389 src/star-context.c:389
+#: src/dyna-draw-context.c:1099 src/rect-context.c:420
+#: src/spiral-context.c:387 src/star-context.c:387
 msgid "Defaults"
 msgstr "Умолчания"
 
-#: src/file.c:157 src/file.c:169 src/file.c:183
+#: src/file.c:162 src/file.c:176 src/file.c:188
 msgid "Select file to open"
 msgstr "Выберите файл для открытия"
 
-#: src/file.c:200 src/module.c:550
-msgid "Scalable Vector Graphic (SVG)"
-msgstr "Масштабируемая векторная графика (SVG)"
-
-#: src/file.c:200 src/module.c:550
-msgid "Sodipodi native file format and W3C standard"
-msgstr "Формат используемый Sodipodi и стандарт W3C"
-
-#: src/file.c:206 src/file.c:280
+#: src/file.c:207 src/file.c:305
 msgid "File type:"
 msgstr "Тип файла:"
 
-#: src/file.c:265
+#: src/file.c:290
 msgid "Save file"
 msgstr "Сохранить файл"
 
-#: src/file.c:443 src/file.c:453 src/file.c:459
+#: src/file.c:480 src/file.c:490 src/file.c:496
 msgid "Select file to import"
 msgstr "Выберите файл для импортирования"
 
-#: src/help.c:57
+#: src/help.c:51
 msgid "About sodipodi"
 msgstr "О Sodipodi"
 
@@ -1078,135 +1108,139 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "X-квадрат"
 
-#: src/interface.c:309 src/interface.c:491
+#: src/interface.c:315 src/interface.c:513
 msgid "Open Recent"
 msgstr ""
 
-#: src/interface.c:329
+#: src/interface.c:335
 msgid "Close View"
 msgstr "Закрыть просмотр"
 
-#: src/interface.c:330 src/interface.c:506
-msgid "Exit Program"
-msgstr "Выйти из программы"
-
-#: src/interface.c:332 src/interface.c:498
+#: src/interface.c:338 src/interface.c:519
 msgid "About Sodipodi"
 msgstr "О Sodipodi"
 
-#. Modules need abouts too
-#: src/interface.c:335 src/interface.c:501
+#. Have modules about menu
+#: src/interface.c:344 src/interface.c:525
 msgid "About Modules"
 msgstr "О модулях"
 
-#: src/interface.c:355
+#: src/interface.c:364
 msgid "Cleanup"
 msgstr "Очистить"
 
 #. View:Zoom
-#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
+#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Масштаб"
 
 #. View:New View
-#: src/interface.c:437
+#: src/interface.c:451
 msgid "New View"
 msgstr "Новое окно"
 
 #. View:New Preview
-#: src/interface.c:439
+#: src/interface.c:453
 msgid "New Preview"
 msgstr "Новый предпросмотр"
 
-#: src/interface.c:441
+#: src/interface.c:455
 msgid "New Toplevel Toolbox"
 msgstr "Новая панель инструментов верхнего уровня"
 
-#: src/interface.c:442
+#: src/interface.c:456
 msgid "New Docked Toolbox"
 msgstr "Новая встроенная панель инструментов"
 
-#: src/interface.c:443
+#: src/interface.c:457
 msgid "Remove Docked Toolbox"
 msgstr "Удалить встроенную панель инструментов"
 
 #. File
-#: src/interface.c:488 src/verbs.c:396
+#: src/interface.c:510 src/verbs.c:405
 msgid "New"
 msgstr "Создать"
 
-#: src/interface.c:489
+#: src/interface.c:511
 msgid "Open"
 msgstr "Открыть"
 
+#. For some reason action menu does not work on menubar :-(
+#: src/interface.c:531 src/verbs.c:414
+#, fuzzy
+msgid "Exit program"
+msgstr "Выйти из программы"
+
 #. Generic menu
 #. File submenu
-#: src/interface.c:569 src/toolbox.c:361
+#: src/interface.c:594 src/toolbox.c:270
 msgid "File"
 msgstr "Файл"
 
 #. Edit submenu
-#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
+#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Правка"
 
 #. View submenu
-#: src/interface.c:587
+#: src/interface.c:612
 msgid "View"
 msgstr "Вид"
 
 #. Drawing mode submenu
-#: src/interface.c:593
+#: src/interface.c:618
 msgid "Drawing Mode"
 msgstr "Инструменты"
 
 #. Dialog submenu
-#: src/interface.c:599
+#: src/interface.c:624
 msgid "Dialogs"
 msgstr "Диалоги"
 
-#: src/interface.c:606
-msgid "Filters"
-msgstr "Фильтры"
+#. Have modules menu
+#: src/interface.c:633
+#, fuzzy
+msgid "Modules"
+msgstr "О модулях"
 
-#: src/main.c:130 src/main.c:612
+#: src/main.c:120 src/main.c:611
 msgid "Do not use X server (only process files from console)"
 msgstr ""
 "Не использовать X-сервер (выполнять только обработку файлов из консоли)"
 
-#: src/main.c:133 src/main.c:613
+#: src/main.c:123 src/main.c:612
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Попытаться использовать X-сервер, даже если $DISPLAY не установлена"
 
-#: src/main.c:136 src/main.c:614
+#: src/main.c:126 src/main.c:613
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Открыть указанный документ(ы) (строка параметров может быть исключена)"
 
-#: src/main.c:137 src/main.c:140 src/main.c:143 src/main.c:157
+#: src/main.c:127 src/main.c:130 src/main.c:133 src/main.c:147
 msgid "FILENAME"
 msgstr "FILENAME"
 
-#: src/main.c:139
+#: src/main.c:129
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Распечатать документ(ы) в указанный выходной файл (используйте '| program' "
 "для конвейеров)"
 
-#: src/main.c:142 src/main.c:615
+#: src/main.c:132 src/main.c:614
 msgid "Export document to png file"
 msgstr "Экспортировать документ в файл PNG"
 
-#: src/main.c:145 src/main.c:616
+#: src/main.c:135 src/main.c:615
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "Разрешение, используемое при преобразовании SVG в растровый формат (по "
 "умолчанию - 72,0)"
 
-#: src/main.c:146
+#: src/main.c:136
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:148 src/main.c:617
+#: src/main.c:138 src/main.c:616
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1214,93 +1248,123 @@ msgstr ""
 "Экспортируемая область в миллиметрах (по умолчанию весь документ, 0,0 - "
 "левый нижний угол)"
 
-#: src/main.c:149
+#: src/main.c:139
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:151 src/main.c:618
+#: src/main.c:141 src/main.c:617
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "Ширина генерируемого растрового изображения в точках (отменяет настройку dpi)"
 
-#: src/main.c:151
+#: src/main.c:141
 msgid "WIDTH"
 msgstr "ШИРИНА"
 
-#: src/main.c:153 src/main.c:619
+#: src/main.c:143 src/main.c:618
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "Высота генерируемого растрового изображения в точках (отменяет настройку dpi)"
 
-#: src/main.c:153
+#: src/main.c:143
 msgid "HEIGHT"
 msgstr "ВЫСОТА"
 
-#: src/main.c:155 src/main.c:620
+#: src/main.c:145 src/main.c:619
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Цвет фона экспортируемого растрового изображения (любая строка цвета, "
 "поддерживаемая SVG)"
 
-#: src/main.c:155
+#: src/main.c:145
 msgid "COLOR"
 msgstr "ЦВЕТ"
 
-#: src/main.c:157 src/main.c:621
+#: src/main.c:147 src/main.c:620
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Экспортировать документ в простой файл SVG (без пространства имён \"xmlns:"
 "sodipodi\")"
 
-#: src/main.c:159
+#: src/main.c:149
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Показывать заданные файлы один за другим, переключаться на следующий при "
 "любом событии мыши/клавиатуры"
 
-#: src/main.c:161
+#: src/main.c:151
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Использовать растровые (xpm) пиктограммы вместо векторных (svg)"
 
-#: src/main.c:622
+#: src/main.c:621
 #, fuzzy
 msgid "Print sodipodi version information"
 msgstr "Куда печатать"
 
-#: src/main.c:623
+#: src/main.c:622
 msgid "Print help about command-line arguments"
 msgstr ""
 
-#: src/module.c:558
+#: src/main.c:771
+msgid "Untitled document"
+msgstr "Без названия"
+
+#. Show nice dialog box
+#: src/main.c:796
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr ""
+"В Sodipodi произошла внутренняя ошибка и программа сейчас будет закрыта.\n"
+
+#: src/main.c:797
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+"Автоматическое резервное копирование несохранённых документы было выполнено "
+"в следующие места:\n"
+
+#: src/main.c:798
+msgid "Automatic backup of following documents failed:\n"
+msgstr ""
+"Автоматическое резервное копирование следующих документов не удалось:\n"
+
+#: src/module.c:873
+msgid "Scalable Vector Graphic (SVG)"
+msgstr "Масштабируемая векторная графика (SVG)"
+
+#: src/module.c:873
+msgid "Sodipodi native file format and W3C standard"
+msgstr "Формат используемый Sodipodi и стандарт W3C"
+
+#: src/module.c:880
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG с пространством имён \"xmlns:sodipodi\""
 
-#: src/module.c:559
+#: src/module.c:881
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Формат масштабируемой векторной графики с расширениями sodipodi"
 
-#: src/module.c:562
+#: src/module.c:884
 msgid "Plain SVG"
 msgstr "Простой SVG"
 
-#: src/module.c:563
+#: src/module.c:885
 msgid "Scalable Vector Graphics format"
 msgstr "Формат масштабируемой векторной графики"
 
-#: src/modules/gnome.c:133
+#: src/modules/gnome.c:158
 msgid "Select printer"
 msgstr "Выбрать принтер"
 
-#: src/modules/gnome.c:187
+#: src/modules/gnome.c:212
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (документ %s..): Предварительный просмотр"
 
-#: src/modules/kde.cpp:159
+#: src/modules/kde.cpp:162
 msgid "Document variant:"
 msgstr "Вариант документа:"
 
-#: src/modules/kde.cpp:169
+#: src/modules/kde.cpp:172
 msgid ""
 "*.svg *.svgz|SVG files\n"
 "*.xml|XML files\n"
@@ -1310,25 +1374,25 @@ msgstr ""
 "*.xml|XML файлы\n"
 "*|Все файлы"
 
-#: src/modules/kde.cpp:171
+#: src/modules/kde.cpp:174
 msgid "Save document as"
 msgstr "Сохранить документ как"
 
 #. Print destination frame
-#: src/modules/ps.c:167 src/modules/ps.c:228
+#: src/modules/ps.c:245 src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Куда печатать"
 
 #. Print properties frame
-#: src/modules/ps.c:178
+#: src/modules/ps.c:256
 msgid "Print properties"
 msgstr "Свойства печати"
 
-#: src/modules/ps.c:186
+#: src/modules/ps.c:264
 msgid "Print using PostScript operators"
 msgstr "Печатать с использованием операторов PostScript"
 
-#: src/modules/ps.c:188
+#: src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1338,11 +1402,11 @@ msgstr ""
 "будет (как правило) меньше и его можно будет масштабировать, но альфа-"
 "прозрачность, маркеры и шаблоны будут потеряны."
 
-#: src/modules/ps.c:193
+#: src/modules/ps.c:271
 msgid "Print as bitmap"
 msgstr "Печатать как растровое изображение"
 
-#: src/modules/ps.c:195
+#: src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1352,50 +1416,56 @@ msgstr ""
 "больше и качество будет зависеть от масштаба, зато вся графика будет "
 "визуализирована идентично."
 
-#: src/modules/ps.c:209
+#: src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Предпочтительное разрешение (точек на дюйм) для растра"
 
-#: src/modules/ps.c:224
+#: src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Разрешение:"
 
-#: src/modules/ps.c:234
+#: src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
 
-#: src/modules/ps.c:868
+#: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "возникла ошибка записи"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:107
+#: src/object-ui.c:108
 msgid "Item"
 msgstr "Элемент"
 
 #. Item dialog
-#: src/object-ui.c:110 src/verbs.c:468
+#: src/object-ui.c:111 src/verbs.c:482
 msgid "Item Properties"
 msgstr "Свойства элемента"
 
 #. Select item
-#: src/object-ui.c:120
+#: src/object-ui.c:119
 msgid "Select this"
 msgstr "Выбрать это"
 
 #. Reset transformations
-#: src/object-ui.c:130
+#: src/object-ui.c:128
 msgid "Reset transformation"
 msgstr "Удалить преобразование"
 
-#: src/object-ui.c:136
+#. Apply transformation
+#: src/object-ui.c:132
+#, fuzzy
+msgid "Apply transformation"
+msgstr "Удалить преобразование"
+
+#: src/object-ui.c:137
 msgid "Make sensitive"
 msgstr "Сделать чувствительным"
 
-#: src/object-ui.c:136
+#: src/object-ui.c:137
 msgid "Make insensitive"
 msgstr "Сделать нечувствительным"
 
@@ -1404,138 +1474,138 @@ msgstr "Сделать нечувствительным"
 msgid "Create link"
 msgstr "Создать ссылку"
 
-#: src/object-ui.c:253 src/verbs.c:421
+#: src/object-ui.c:261 src/verbs.c:431
 msgid "Group"
 msgstr "Сгруппировать"
 
 #. Group dialog
-#: src/object-ui.c:257
+#: src/object-ui.c:265
 msgid "Group Properties"
 msgstr "Свойства группы"
 
 #. "Ungroup"
-#: src/object-ui.c:270 src/verbs.c:422
+#: src/object-ui.c:278 src/verbs.c:432
 msgid "Ungroup"
 msgstr "Разгруппировать"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:318
+#: src/object-ui.c:326
 msgid "Link"
 msgstr "Ссылка"
 
 #. Link dialog
-#: src/object-ui.c:321
+#: src/object-ui.c:329
 msgid "Link Properties"
 msgstr "Свойства ссылки"
 
 #. Select item
-#: src/object-ui.c:331
+#: src/object-ui.c:339
 msgid "Follow link"
 msgstr "Следующая ссылка"
 
 #. Reset transformations
-#: src/object-ui.c:336
+#: src/object-ui.c:344
 msgid "Remove link"
 msgstr "Удалённая ссылка"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:399
+#: src/object-ui.c:407
 msgid "Image"
 msgstr "Изображение"
 
 #. Link dialog
-#: src/object-ui.c:402
+#: src/object-ui.c:410
 msgid "Image Properties"
 msgstr "Свойства изображения"
 
 #. Autotrace dialog
-#: src/object-ui.c:410 src/sp-image.c:776
+#: src/object-ui.c:418 src/sp-image.c:788
 msgid "Trace"
 msgstr "Трассировка"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:459
+#: src/object-ui.c:467
 msgid "Shape"
 msgstr "Форма"
 
 #. Item dialog
-#: src/object-ui.c:462 src/toolbox.c:446
+#: src/object-ui.c:470 src/toolbox.c:361
 msgid "Fill settings"
 msgstr "Параметры заливки"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:489
+#: src/object-ui.c:497
 msgid "Rect"
 msgstr "Прямоугольник"
 
 #. Link dialog
-#: src/object-ui.c:492
+#: src/object-ui.c:500
 msgid "Rect Properties"
 msgstr "Свойства прямоугольника"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:525 src/verbs.c:439
+#: src/object-ui.c:533 src/verbs.c:453
 msgid "Star"
 msgstr "Звезда"
 
 #. Link dialog
-#: src/object-ui.c:528
+#: src/object-ui.c:536
 msgid "Star Properties"
 msgstr "Свойства звезды"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:561 src/verbs.c:440
+#: src/object-ui.c:569 src/verbs.c:454
 msgid "Spiral"
 msgstr "Спираль"
 
 #. Link dialog
-#: src/object-ui.c:564
+#: src/object-ui.c:572
 msgid "Spiral Properties"
 msgstr "Свойства спирали"
 
 #. rx_ratio
-#: src/rect-context.c:400
+#: src/rect-context.c:396
 msgid "Roundness ratio for x:"
 msgstr "Округляющий коэффициент для X:"
 
 #. ry_ratio
-#: src/rect-context.c:412
+#: src/rect-context.c:408
 msgid "Roundness ratio for y:"
 msgstr "Округляющий коэффициент для y:"
 
-#: src/select-context.c:569
+#: src/select-context.c:570
 msgid "Visual transformation"
 msgstr "Видимое преобразование"
 
-#: src/select-context.c:575
+#: src/select-context.c:576
 msgid "Show content"
 msgstr "Показать содержание"
 
-#: src/select-context.c:581
+#: src/select-context.c:582
 msgid "Show outline"
 msgstr "Показать контуры"
 
-#: src/select-context.c:587
+#: src/select-context.c:588
 msgid "Object transformation"
 msgstr "Преобразование объекта"
 
-#: src/select-context.c:593
+#: src/select-context.c:594
 msgid "Optimize"
 msgstr "Оптимизировать"
 
-#: src/select-context.c:599
+#: src/select-context.c:600
 msgid "Preserve"
 msgstr "Сохранить"
 
-#: src/select-context.c:605
+#: src/select-context.c:606
 msgid "[Tab] Cycling"
 msgstr ""
 
-#: src/select-context.c:610
+#: src/select-context.c:611
 msgid "Cycle only among visible items"
 msgstr ""
 
-#: src/select-context.c:613
+#: src/select-context.c:614
 #, fuzzy
 msgid "Center view to selected item"
 msgstr "Вставить новые узлы в выделенные сегменты"
@@ -1544,29 +1614,7 @@ msgstr "Вставить новые узлы в выделенные сегме�
 msgid "Sodipodi slideshow"
 msgstr "Показ слайдов Sodipodi"
 
-#: src/sodipodi.c:406
-msgid "Untitled document"
-msgstr "Без названия"
-
-#. Show nice dialog box
-#: src/sodipodi.c:431
-msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr ""
-"В Sodipodi произошла внутренняя ошибка и программа сейчас будет закрыта.\n"
-
-#: src/sodipodi.c:432
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
-msgstr ""
-"Автоматическое резервное копирование несохранённых документы было выполнено "
-"в следующие места:\n"
-
-#: src/sodipodi.c:433
-msgid "Automatic backup of following documents failed:\n"
-msgstr ""
-"Автоматическое резервное копирование следующих документов не удалось:\n"
-
-#: src/sodipodi.c:572
+#: src/sodipodi.c:468
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1577,7 +1625,7 @@ msgstr ""
 "Хотя sodipodi запустится, вы не сможете\n"
 "ни загрузить ни, сохранить настройки.\n"
 
-#: src/sodipodi.c:575
+#: src/sodipodi.c:471
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1592,7 +1640,7 @@ msgstr ""
 "не сможете ни загрузить, ни сохранить\n"
 "настройки."
 
-#: src/sodipodi.c:580
+#: src/sodipodi.c:476
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1605,7 +1653,7 @@ msgstr ""
 "не сможете ни загрузить, ни сохранить\n"
 "настройки."
 
-#: src/sodipodi.c:592
+#: src/sodipodi.c:488
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1616,7 +1664,7 @@ msgstr ""
 "Хотя sodipodi запустится, вы не сможете\n"
 "использовать расширения или дополнения.\n"
 
-#: src/sodipodi.c:595
+#: src/sodipodi.c:491
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1629,7 +1677,7 @@ msgstr ""
 "sodipodi запустится, но вы не сможете\n"
 "использовать расширения или дополнения.\n"
 
-#: src/sodipodi.c:599
+#: src/sodipodi.c:495
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1640,7 +1688,7 @@ msgstr ""
 "sodipodi запустится, но вы\n"
 "не сможете использовать расширения или дополнения\n"
 
-#: src/sodipodi.c:938
+#: src/sodipodi.c:829
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1653,7 +1701,7 @@ msgstr ""
 "не сможете ни загрузить, ни сохранить\n"
 "%s"
 
-#: src/sodipodi.c:942
+#: src/sodipodi.c:833
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1666,7 +1714,7 @@ msgstr ""
 "не сможете ни загрузить, ни сохранить\n"
 "настройки."
 
-#: src/sodipodi.c:946
+#: src/sodipodi.c:837
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1679,7 +1727,7 @@ msgstr ""
 "не сможете ни загрузить, ни сохранить\n"
 "настройки."
 
-#: src/sodipodi.c:950
+#: src/sodipodi.c:841
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1692,7 +1740,7 @@ msgstr ""
 "не сможете ни загрузить, ни сохранить\n"
 "настройки."
 
-#: src/sodipodi.c:960
+#: src/sodipodi.c:851
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1703,7 +1751,7 @@ msgstr ""
 "sodipodi запустится, но вы\n"
 "не сможете использовать расширения\n"
 
-#: src/sodipodi.c:963
+#: src/sodipodi.c:854
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1714,7 +1762,7 @@ msgstr ""
 "sodipodi запустится, но вы\n"
 "не сможете использовать расширения\n"
 
-#: src/sodipodi.c:966
+#: src/sodipodi.c:857
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1725,7 +1773,7 @@ msgstr ""
 "sodipodi запустится, но вы\n"
 "не сможете использовать расширения\n"
 
-#: src/sodipodi.c:969
+#: src/sodipodi.c:860
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1751,578 +1799,619 @@ msgstr "Изображение с плохой ссылкой: %s"
 msgid "Color image %d x %d: %s"
 msgstr "Цветное изображение %d x %d: %s"
 
-#: src/sp-image.c:922
+#: src/sp-image.c:934
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Ошибка записи %s: %s"
 
-#: src/sp-image.c:956
+#: src/sp-image.c:968
 msgid "Untitled"
 msgstr "Без названия"
 
-#: src/sp-image.c:961
+#: src/sp-image.c:973
 msgid "Document Name:"
 msgstr "Название документа:"
 
-#: src/sp-image.c:974
+#: src/sp-image.c:986
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: src/sp-image.c:980
+#: src/sp-image.c:992
 msgid "Image URI:"
 msgstr "Путь к изображению:"
 
-#: src/sp-item-group.c:457
+#: src/sp-item-group.c:462
 #, c-format
 msgid "Group of %d objects"
 msgstr "Группа из %d элементов"
 
-#: src/sp-item.c:503
+#: src/sp-item.c:509
 msgid "Unknown item :-("
 msgstr "Неизвестный элемент :-("
 
 #. fixme:
-#: src/sp-text.c:1428
+#: src/sp-text.c:1292
 msgid "Text object"
 msgstr "Текстовый объект"
 
 #. T0
-#: src/spiral-context.c:377
+#: src/spiral-context.c:375
 msgid "Inner radius:"
 msgstr "Внутренний радиус:"
 
 #. Proportion
-#: src/star-context.c:370
+#: src/star-context.c:368
 msgid "Proportion:"
 msgstr "Пропорции:"
 
 #. Making sides flat
-#: src/star-context.c:383
+#: src/star-context.c:381
 msgid "Make sides flat"
 msgstr "Сделать стороны плоскими"
 
-#: src/toolbox.c:443
+#: src/toolbox.c:358
 msgid "Object"
 msgstr "Объект"
 
-#: src/toolbox.c:447 src/verbs.c:463
+#: src/toolbox.c:362 src/verbs.c:477
 msgid "Object size and position"
 msgstr "Размер и расположение объекта"
 
-#: src/toolbox.c:448
+#: src/toolbox.c:363
 msgid "Text and font settings"
 msgstr "Параметры текста и шрифта"
 
-#: src/toolbox.c:450 src/verbs.c:464
+#: src/toolbox.c:365 src/verbs.c:478
 msgid "Object transformations"
 msgstr "Преобразования объекта"
 
-#: src/toolbox.c:523
+#: src/toolbox.c:444
 msgid "Draw"
 msgstr "Рисование"
 
-#: src/toolbox.c:578
+#: src/toolbox.c:501
 msgid "Extension"
 msgstr "Расширение"
 
-#: src/toolbox.c:655
+#: src/toolbox.c:583
 msgid "Nodes"
 msgstr "Узлы"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:586
 msgid "Insert new nodes into selected segments"
 msgstr "Вставить новые узлы в выделенные сегменты"
 
-#: src/toolbox.c:660
+#: src/toolbox.c:588
 msgid "Break line at selected nodes"
 msgstr "Разорвать линию на выбранных узлах"
 
-#: src/toolbox.c:662
+#: src/toolbox.c:590
 msgid "Make selected nodes corner"
 msgstr "Сделать выбранные узлы вершинами"
 
-#: src/toolbox.c:664
+#: src/toolbox.c:592
 msgid "Make selected segments lines"
 msgstr "Сделать выбранные сегменты прямыми"
 
-#: src/toolbox.c:666
+#: src/toolbox.c:594
 msgid "Delete selected nodes"
 msgstr "Удалить выбранные узлы"
 
-#: src/toolbox.c:668
+#: src/toolbox.c:596
 msgid "Join lines at selected nodes"
 msgstr "Подсоединить линии к выбранным узлам"
 
-#: src/toolbox.c:671
+#: src/toolbox.c:599
 #, fuzzy
 msgid "Join lines at selected nodes with new segment"
 msgstr "Подсоединить линии к выбранным узлам"
 
-#: src/toolbox.c:673
+#: src/toolbox.c:601
 msgid "Make selected nodes smooth"
 msgstr "Сделать выбранные узлы гладкими"
 
-#: src/toolbox.c:675
+#: src/toolbox.c:603
 msgid "Make selected segments curves"
 msgstr "Сделать выбранные сегменты кривыми"
 
-#: src/verbs.c:394
+#: src/verbs.c:403
 msgid "Does nothing"
 msgstr ""
 
-#: src/verbs.c:396
+#: src/verbs.c:405
 msgid "Create new SVG document"
 msgstr "Создать новый документ SVG"
 
-#: src/verbs.c:397
+#: src/verbs.c:406
 msgid "Open..."
 msgstr "Открыть..."
 
-#: src/verbs.c:397
+#: src/verbs.c:406
 msgid "Open existing SVG document"
 msgstr "Открыть существующий документ SVG"
 
-#: src/verbs.c:398
+#: src/verbs.c:407
 msgid "Save"
 msgstr "Сохранить"
 
-#: src/verbs.c:398
+#: src/verbs.c:407
 msgid "Save document"
 msgstr "Сохранить документ"
 
-#: src/verbs.c:399
+#: src/verbs.c:408
 msgid "Save As..."
 msgstr "Сохранить как..."
 
-#: src/verbs.c:399
+#: src/verbs.c:408
 msgid "Save document under new name"
 msgstr "Сохранить документ с новым названием"
 
-#: src/verbs.c:400
+#: src/verbs.c:409
 msgid "Print..."
 msgstr "Напечатать..."
 
-#: src/verbs.c:400
+#: src/verbs.c:409
 msgid "Print document"
 msgstr "Напечатать документ"
 
-#: src/verbs.c:401
+#: src/verbs.c:410
 msgid "Print Direct..."
 msgstr "Прямая печать..."
 
-#: src/verbs.c:401
+#: src/verbs.c:410
 msgid "Print directly to file or pipe"
 msgstr "Печатать прямо в файл или канал"
 
-#: src/verbs.c:402
+#: src/verbs.c:411
 msgid "Print Preview"
 msgstr "Предварительный просмотр"
 
-#: src/verbs.c:402
+#: src/verbs.c:411
 msgid "Preview document printout"
 msgstr "Предварительный просмотр того, что будет напечатано"
 
-#: src/verbs.c:403
+#: src/verbs.c:412
 msgid "Import"
 msgstr "Импортировать"
 
-#: src/verbs.c:403
+#: src/verbs.c:412
 msgid "Import bitmap or SVG image into document"
 msgstr "Импортировать растровое SVG-изображение в документ"
 
-#: src/verbs.c:404
+#: src/verbs.c:413
 msgid "Export document as PNG bitmap"
 msgstr "Экспортировать документ в растровый формат PNG"
 
+#: src/verbs.c:414
+#, fuzzy
+msgid "Exit"
+msgstr "Правка"
+
 #. Edit
-#: src/verbs.c:406
+#: src/verbs.c:416
 msgid "Undo"
 msgstr "Отменить"
 
-#: src/verbs.c:406
+#: src/verbs.c:416
 msgid "Revert last action"
 msgstr "Откатить последнее действие"
 
-#: src/verbs.c:407
+#: src/verbs.c:417
 msgid "Redo"
 msgstr "Повторить"
 
-#: src/verbs.c:407
+#: src/verbs.c:417
 msgid "Do again undone action"
 msgstr "Выполнить отменённое действие"
 
-#: src/verbs.c:408
+#: src/verbs.c:418
 msgid "Cut"
 msgstr "Вырезать"
 
-#: src/verbs.c:408
+#: src/verbs.c:418
 msgid "Cut selected objects to clipboard"
 msgstr "Вырезать выбранные объекты в буфер обмена"
 
-#: src/verbs.c:409
+#: src/verbs.c:419
 msgid "Copy"
 msgstr "Запомнить"
 
-#: src/verbs.c:409
+#: src/verbs.c:419
 msgid "Copy selected objects to clipboard"
 msgstr "Запомнить выбранные объекты в буфер обмена"
 
-#: src/verbs.c:410
+#: src/verbs.c:420
 msgid "Paste"
 msgstr "Вставить"
 
-#: src/verbs.c:410
+#: src/verbs.c:420
 msgid "Paste objects from clipboard"
 msgstr "Вставить объекты из буфера обмена"
 
-#: src/verbs.c:411
+#: src/verbs.c:421
 msgid "Delete"
 msgstr "Удалить"
 
-#: src/verbs.c:411
+#: src/verbs.c:421
 msgid "Delete selected objects"
 msgstr "Удалить выбранные объекты"
 
-#: src/verbs.c:412
+#: src/verbs.c:422
 msgid "Duplicate"
 msgstr "Дублировать"
 
-#: src/verbs.c:412
+#: src/verbs.c:422
 msgid "Duplicate selected objects"
 msgstr "Сдублировать выбранные объекты"
 
-#: src/verbs.c:413
+#: src/verbs.c:423
 msgid "Clear All"
 msgstr "Очистить всё"
 
-#: src/verbs.c:413
+#: src/verbs.c:423
 msgid "Delete all objects from document"
 msgstr "Удалить все объекты из документа"
 
-#: src/verbs.c:414
+#: src/verbs.c:424
 msgid "Select All"
 msgstr "Выбрать всё"
 
-#: src/verbs.c:414
+#: src/verbs.c:424
 msgid "Select all objects in document"
 msgstr "Выбрать все объекты в документе"
 
-#: src/verbs.c:415
+#: src/verbs.c:425
 #, fuzzy
 msgid "Repeat"
 msgstr "Прямоугольник"
 
-#: src/verbs.c:415
+#: src/verbs.c:425
 #, fuzzy
 msgid "Repeat last saved action"
 msgstr "Откатить последнее действие"
 
 #. Selection
-#: src/verbs.c:417
+#: src/verbs.c:427
 msgid "Bring to Front"
 msgstr "На передний план"
 
-#: src/verbs.c:417
+#: src/verbs.c:427
 msgid "Raise selected objects to top"
 msgstr "Переместить выбранные объекты на верхний уровень"
 
-#: src/verbs.c:418
+#: src/verbs.c:428
 msgid "Send to Back"
 msgstr "На задний план"
 
-#: src/verbs.c:418
+#: src/verbs.c:428
 msgid "Lower selected objects to bottom"
 msgstr "Опустить выбранные объекты на нижний уровень"
 
-#: src/verbs.c:419
+#: src/verbs.c:429
 msgid "Raise"
 msgstr "Поднять"
 
-#: src/verbs.c:419
+#: src/verbs.c:429
 msgid "Raise selected objects one position"
 msgstr "Переместить выбранные объекты на один уровень вверх"
 
-#: src/verbs.c:420
+#: src/verbs.c:430
 msgid "Lower"
 msgstr "Опустить"
 
-#: src/verbs.c:420
+#: src/verbs.c:430
 msgid "Lower selected objects one position"
 msgstr "Опустить выбранные объекты на один уровень вниз"
 
-#: src/verbs.c:421
+#: src/verbs.c:431
 msgid "Group selected objects"
 msgstr "Сгруппировать выбранные объекты"
 
-#: src/verbs.c:422
+#: src/verbs.c:432
 msgid "Ungroup selected group"
 msgstr "Разгруппировать выбранные группы"
 
-#: src/verbs.c:423
+#: src/verbs.c:433
 msgid "Combine"
 msgstr "Объединить"
 
-#: src/verbs.c:423
+#: src/verbs.c:433
 msgid "Combine multiple paths"
 msgstr "Объединить различные пути"
 
-#: src/verbs.c:424
+#: src/verbs.c:434
 msgid "Break Apart"
 msgstr "_Разделить на части"
 
-#: src/verbs.c:424
+#: src/verbs.c:434
 msgid "Break selected path to subpaths"
 msgstr "Разделить выбранный путь на подпути"
 
-#: src/verbs.c:425
+#: src/verbs.c:435
+msgid "Uncross"
+msgstr ""
+
+#: src/verbs.c:435
+#, fuzzy
+msgid "Break selected path at crossings"
+msgstr "Разделить выбранный путь на подпути"
+
+#: src/verbs.c:436
+#, fuzzy
+msgid "Union"
+msgstr "Отменить"
+
+#: src/verbs.c:436
+msgid "Calculate union of selected paths"
+msgstr ""
+
+#: src/verbs.c:437
+#, fuzzy
+msgid "Intersection"
+msgstr "Выбранное"
+
+#: src/verbs.c:437
+msgid "Calculate intersection of selected paths"
+msgstr ""
+
+#: src/verbs.c:438
+#, fuzzy
+msgid "Subtraction"
+msgstr "Насыщенность:"
+
+#: src/verbs.c:438
+msgid "Subtract paths from first"
+msgstr ""
+
+#: src/verbs.c:439
 #, fuzzy
 msgid "Transform"
 msgstr "Преобразование:"
 
-#: src/verbs.c:425
+#: src/verbs.c:439
 #, fuzzy
 msgid "Applies transformation"
 msgstr "Удалить преобразование"
 
 #. Object
-#: src/verbs.c:427
+#: src/verbs.c:441
 msgid "Rotate 90 degrees"
 msgstr "Повернуть на 90╟"
 
-#: src/verbs.c:427
+#: src/verbs.c:441
 msgid "Rotates object 90 degrees clockwise"
 msgstr "Повернуть объект на 90 градусов по часовой стрелке"
 
-#: src/verbs.c:428
+#: src/verbs.c:442
 msgid "Flatten object"
 msgstr ""
 
-#: src/verbs.c:428
+#: src/verbs.c:442
 msgid "Remove transformations from object"
 msgstr "Удалить преобразования объекта"
 
-#: src/verbs.c:429
+#: src/verbs.c:443
 msgid "Convert to Curves"
 msgstr "Преобразовать в кривые"
 
-#: src/verbs.c:429
+#: src/verbs.c:443
 msgid "Convert selected object to path"
 msgstr "Преобразовать выбранный объекты в кривые"
 
-#: src/verbs.c:430
+#: src/verbs.c:444
 msgid "Flip Horizontally"
 msgstr "Отразить горизонтально"
 
-#: src/verbs.c:431
+#: src/verbs.c:445
 msgid "Flip selected objects horizontally"
 msgstr "Отразить выбранные объекты горизонтально"
 
-#: src/verbs.c:432
+#: src/verbs.c:446
 msgid "Flip Vertically"
 msgstr "Отразить вертикально"
 
-#: src/verbs.c:433
+#: src/verbs.c:447
 msgid "Flip selected objects vertically"
 msgstr "Отразить выбранные объекты вертикально"
 
 #. Event contexts
-#: src/verbs.c:435
+#: src/verbs.c:449
 msgid "Select"
 msgstr "Выбрать"
 
-#: src/verbs.c:435
+#: src/verbs.c:449
 msgid "Select and transform objects"
 msgstr "Выбрать и преобразовать объекты"
 
-#: src/verbs.c:436
+#: src/verbs.c:450
 msgid "Node edit"
 msgstr "Изменение узла"
 
-#: src/verbs.c:436
+#: src/verbs.c:450
 msgid "Modify existing objects by control nodes"
 msgstr "Изменить существующие объекты с помощью контрольных узлов"
 
-#: src/verbs.c:437
+#: src/verbs.c:451
 msgid "Rectangle"
 msgstr "Прямоугольник"
 
-#: src/verbs.c:437
+#: src/verbs.c:451
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr ""
 "Прямоугольник - создаёт прямоугольники и квадраты, с возможностью "
 "закругления углов"
 
-#: src/verbs.c:438
+#: src/verbs.c:452
 msgid "Ellipse"
 msgstr "Эллипс"
 
-#: src/verbs.c:438
+#: src/verbs.c:452
 msgid "Create circles, ellipses and arcs"
 msgstr "Эллипс - создаёт окружности, эллипсы и сектора"
 
-#: src/verbs.c:439
+#: src/verbs.c:453
 msgid "Create stars and polygons"
 msgstr "Звезда - создаёт звёзды и многоугольники"
 
-#: src/verbs.c:440
+#: src/verbs.c:454
 msgid "Create spirals"
 msgstr "Создать спирали"
 
-#: src/verbs.c:441
+#: src/verbs.c:455
 msgid "Pencil"
 msgstr "Карандаш"
 
-#: src/verbs.c:441
+#: src/verbs.c:455
 msgid "Draw freehand curves and straight lines"
 msgstr "Карандаш - рисование произвольных линий и прямых отрезков"
 
-#: src/verbs.c:442
+#: src/verbs.c:456
 msgid "Pen"
 msgstr "Перо"
 
-#: src/verbs.c:442
+#: src/verbs.c:456
 msgid "Draw precisely positioned curved and straight lines"
 msgstr "Перо - рисование точно расположенных кривых и отрезков"
 
-#: src/verbs.c:443
+#: src/verbs.c:457
 msgid "Calligraphy"
 msgstr "Каллиграфия"
 
-#: src/verbs.c:443
+#: src/verbs.c:457
 msgid "Draw calligraphic lines"
 msgstr "Рисовать каллиграфические линии"
 
-#: src/verbs.c:444
+#: src/verbs.c:458
 msgid "Create and edit text objects"
 msgstr "Текст - создание и правка текстовых объектов"
 
-#: src/verbs.c:445
+#: src/verbs.c:459
 msgid "Zoom into precisely selected area"
 msgstr ""
 
-#: src/verbs.c:446
+#: src/verbs.c:460
 msgid "Dropper"
 msgstr "Пипетка"
 
-#: src/verbs.c:446
+#: src/verbs.c:460
 msgid "Pick averaged colors from image"
 msgstr "Выбирает цвета из изображения"
 
 #. Zooming
-#: src/verbs.c:448
+#: src/verbs.c:462
 msgid "In"
 msgstr "+"
 
-#: src/verbs.c:448
+#: src/verbs.c:462
 msgid "Zoom in drawing"
 msgstr "Увеличить масштаб"
 
-#: src/verbs.c:449
+#: src/verbs.c:463
 msgid "Out"
 msgstr "-"
 
-#: src/verbs.c:449
+#: src/verbs.c:463
 msgid "Zoom out drawing"
 msgstr "Уменьшить масштаб"
 
-#: src/verbs.c:450
+#: src/verbs.c:464
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:450
+#: src/verbs.c:464
 msgid "Set zoom factor to 1:1"
 msgstr "Установить масштаб 1:1"
 
-#: src/verbs.c:451
+#: src/verbs.c:465
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:451
+#: src/verbs.c:465
 msgid "Set zoom factor to 1:2"
 msgstr "Установить масштаб 1:2"
 
-#: src/verbs.c:452
+#: src/verbs.c:466
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:452
+#: src/verbs.c:466
 msgid "Set zoom factor to 2:1"
 msgstr "Установить масштаб 2:1"
 
-#: src/verbs.c:453
+#: src/verbs.c:467
 msgid "Fit the whole page into window"
 msgstr "Поместить страницу целиком в окно"
 
-#: src/verbs.c:454
+#: src/verbs.c:468
 msgid "Fit the whole drawing into window"
 msgstr "Поместить рисунок целиком в окно"
 
-#: src/verbs.c:455
+#: src/verbs.c:469
 msgid "Fit the whole selection into window"
 msgstr "Поместить выделенную область целиком в окно"
 
 #. Dialogs
-#: src/verbs.c:457
+#: src/verbs.c:471
 msgid "Display"
 msgstr "Отображение"
 
-#: src/verbs.c:457
+#: src/verbs.c:471
 msgid "Global display settings"
 msgstr "Общие настройки отображения"
 
-#: src/verbs.c:458
+#: src/verbs.c:472
 msgid "Document"
 msgstr "Документ"
 
-#: src/verbs.c:458
+#: src/verbs.c:472
 msgid "Page layout"
 msgstr "Формат страницы"
 
-#: src/verbs.c:459
+#: src/verbs.c:473
 msgid "Editing Window"
 msgstr "Окно рисования"
 
-#: src/verbs.c:459
+#: src/verbs.c:473
 msgid "Editing window properties"
 msgstr "Свойства окна рисования"
 
-#: src/verbs.c:460
+#: src/verbs.c:474
 msgid "Tool Options"
 msgstr "Параметры инструментов"
 
-#: src/verbs.c:461
+#: src/verbs.c:475
 msgid "Tool Attributes"
 msgstr "Атрибуты инструмента"
 
-#: src/verbs.c:462
+#: src/verbs.c:476
 msgid "Fill and Stroke"
 msgstr "Заливка и обрамление"
 
-#: src/verbs.c:462
+#: src/verbs.c:476
 msgid "Fill and stroke settings"
 msgstr "Параметры заливки и штрихования"
 
-#: src/verbs.c:464
+#: src/verbs.c:478
 msgid "Transformations"
 msgstr "Преобразования"
 
-#: src/verbs.c:465
+#: src/verbs.c:479
 msgid "Align and Distribute"
 msgstr "Выравнивание и распределение"
 
-#: src/verbs.c:465
+#: src/verbs.c:479
 msgid "Align and distribute"
 msgstr "Выравнивание и распределение"
 
-#: src/verbs.c:466
+#: src/verbs.c:480
 msgid "Text and Font"
 msgstr "Текст и шрифт"
 
-#: src/verbs.c:466
+#: src/verbs.c:480
 msgid "Text editing and font settings"
 msgstr "Редактирование текста и настройки шрифта"
 
-#: src/verbs.c:467
+#: src/verbs.c:481
 msgid "XML Editor"
 msgstr "Редактор XML"
 
@@ -2380,58 +2469,58 @@ msgstr "Конечный цвет"
 msgid "Gradient vector"
 msgstr "Вектор градиента"
 
-#: src/widgets/paint-selector.c:621
+#: src/widgets/paint-selector.c:622
 msgid "No objects"
 msgstr "Нет объектов"
 
-#: src/widgets/paint-selector.c:635
+#: src/widgets/paint-selector.c:636
 msgid "Multiple styles"
 msgstr "Множество стилей"
 
-#: src/widgets/paint-selector.c:649
+#: src/widgets/paint-selector.c:650
 msgid "No paint"
 msgstr "Нет заливки"
 
 #. Label
-#: src/widgets/paint-selector.c:739
+#: src/widgets/paint-selector.c:747
 msgid "Mode:"
 msgstr "Режим:"
 
-#: src/widgets/paint-selector.c:749
+#: src/widgets/paint-selector.c:757
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
 msgstr "Цветовое пространство RGB"
 
-#: src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:758
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:751
+#: src/widgets/paint-selector.c:759
 #, fuzzy
 msgid "CMYK Colorspace"
 msgstr "Цветовое пространство CMYK"
 
 #. Use dropper
-#: src/widgets/paint-selector.c:758
+#: src/widgets/paint-selector.c:766
 msgid "Get from dropper"
 msgstr "Взять пипеткой"
 
-#: src/widgets/paint-selector.c:789
+#: src/widgets/paint-selector.c:797
 msgid "Color paint"
 msgstr "Цветная заливка"
 
-#: src/widgets/paint-selector.c:859
+#: src/widgets/paint-selector.c:875
 msgid "Linear gradient"
 msgstr "Линейный градиент"
 
-#: src/widgets/paint-selector.c:862
+#: src/widgets/paint-selector.c:878
 msgid "Radial gradient"
 msgstr "Круговой градиент"
 
@@ -2484,13 +2573,16 @@ msgstr "Чёрный:"
 msgid "Toggle separate window and main toolbox placement"
 msgstr "Переключить раздельное размещение окна и главной панели инструментов"
 
-#: src/widgets/sp-xmlview-attr-list.c:55
+#: src/widgets/sp-xmlview-attr-list.c:54
 msgid "Attribute"
 msgstr "Атрибут"
 
-#: src/widgets/sp-xmlview-attr-list.c:56
+#: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Value"
 msgstr "Значение"
+
+#~ msgid "Filters"
+#~ msgstr "Фильтры"
 
 #~ msgid "Item is reference"
 #~ msgstr "Элемент является ссылкой"
