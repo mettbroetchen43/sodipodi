@@ -159,7 +159,7 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
 			ret = TRUE;
 		} else {
-			sp_desktop_dialog ();
+			/* sp_desktop_dialog (); */
 		}
 		break;
 	case GDK_BUTTON_PRESS:

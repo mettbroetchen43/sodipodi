@@ -132,6 +132,7 @@ sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns)
 		}
 
 		sp_repr_document_set_root (rdoc, repr);
+		sp_repr_unref (repr);
 	}
 	g_hash_table_destroy (prefix_map);
 
@@ -189,13 +190,15 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 			if (!isspace (*p)) {
 				xmlChar *e;
 				unsigned char *s;
+				SPRepr *rdoc;
 				e = p + strlen (p) - 1;
 				while (*e && isspace (*e)) e -= 1;
 				s = g_new (unsigned char, e - p + 2);
 				memcpy (s, p, e - p + 1);
 				s[e - p + 1] = '\0';
-				return sp_xml_document_createTextNode (doc, s);
+				rdoc = sp_xml_document_createTextNode (doc, s);
 				g_free (s);
+				return rdoc;
 			}
 		}
 		return NULL;
@@ -220,7 +223,10 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 	child = node->xmlChildrenNode;
 	for (child = node->xmlChildrenNode; child != NULL; child = child->next) {
 		crepr = sp_repr_svg_read_node (doc, child, default_ns, prefix_map);
-		if (crepr) sp_repr_append_child (repr, crepr);
+		if (crepr) {
+			sp_repr_append_child (repr, crepr);
+			sp_repr_unref (crepr);
+		}
 	}
 
 	return repr;

@@ -568,7 +568,7 @@ sp_button_toggle_set_down (SPButton *button, unsigned int down, unsigned int sig
 void
 sp_button_add_option (SPButton *button, unsigned int option, SPAction *action)
 {
-	button->options[option].px = sp_icon_image_load_gtk ((GtkWidget *) button, action->image, button->size);
+	button->options[option].px = sp_icon_image_load_gtk ((GtkWidget *) button, action->image, button->size, button->size);
 	button->options[option].action = (SPAction *) nr_object_ref ((NRObject *) action);
 	nr_active_object_add_listener ((NRActiveObject *) action,
 				       (NRObjectEventVector *) &button_event_vector,

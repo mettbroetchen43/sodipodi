@@ -51,8 +51,8 @@ static int sp_icon_expose (GtkWidget *widget, GdkEventExpose *event);
 
 static void sp_icon_paint (SPIcon *icon, GdkRectangle *area);
 
-static unsigned char *sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size);
-static unsigned char *sp_icon_image_load_svg (const unsigned char *name, unsigned int size);
+static unsigned char *sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size, unsigned int scale);
+static unsigned char *sp_icon_image_load_svg (const unsigned char *name, unsigned int size, unsigned int scale);
 
 static GtkWidgetClass *parent_class;
 
@@ -146,19 +146,40 @@ sp_icon_expose (GtkWidget *widget, GdkEventExpose *event)
 	return TRUE;
 }
 
-GtkWidget *
-sp_icon_new (unsigned int size, const unsigned char *name)
+static GtkWidget *
+sp_icon_new_full (unsigned int size, unsigned int scale, const unsigned char *name)
 {
+	static GHashTable *iconlib = NULL;
+	char c[256];
 	SPIcon *icon;
+
+	if (!iconlib) iconlib = g_hash_table_new (g_str_hash, g_str_equal);
 
 	icon = g_object_new (SP_TYPE_ICON, NULL);
 
 	icon->size = CLAMP (size, 1, 128);
+	g_snprintf (c, 256, "%d:%d:%s", icon->size, scale, name);
+	icon->px = g_hash_table_lookup (iconlib, c);
+	if (!icon->px) {
+		icon->px = sp_icon_image_load_gtk ((GtkWidget *) icon, name, icon->size, scale);
+		g_hash_table_insert (iconlib, g_strdup (c), icon->px);
+	}
 
 	GTK_OBJECT_FLAGS (icon) &= ~SP_ICON_FLAG_STATIC_DATA;
-	icon->px = sp_icon_image_load_gtk ((GtkWidget *) icon, name, icon->size);
 
 	return (GtkWidget *) icon;
+}
+
+GtkWidget *
+sp_icon_new (unsigned int size, const unsigned char *name)
+{
+	return sp_icon_new_full (size, size, name);
+}
+
+GtkWidget *
+sp_icon_new_scaled (unsigned int size, const unsigned char *name)
+{
+	return sp_icon_new_full (size, 24, name);
 }
 
 GtkWidget *
@@ -177,16 +198,16 @@ sp_icon_new_from_data (unsigned int size, const unsigned char *px)
 }
 
 unsigned char *
-sp_icon_image_load (const unsigned char *name, unsigned int size)
+sp_icon_image_load (const unsigned char *name, unsigned int size, unsigned int scale)
 {
 	unsigned char *px;
 
 	if (sp_svg_icons) {
-		px = sp_icon_image_load_svg (name, size);
-		if (!px) px = sp_icon_image_load_pixmap (name, size);
+		px = sp_icon_image_load_svg (name, size, scale);
+		if (!px) px = sp_icon_image_load_pixmap (name, size, scale);
 	} else {
-		px = sp_icon_image_load_pixmap (name, size);
-		if (!px) px = sp_icon_image_load_svg (name, size);
+		px = sp_icon_image_load_pixmap (name, size, scale);
+		if (!px) px = sp_icon_image_load_svg (name, size, scale);
 	}
 
 	return px;
@@ -207,7 +228,7 @@ sp_icon_get_gtk_size (int size)
 }
 
 unsigned char *
-sp_icon_image_load_gtk (GtkWidget *widget, const unsigned char *name, unsigned int size)
+sp_icon_image_load_gtk (GtkWidget *widget, const unsigned char *name, unsigned int size, unsigned int scale)
 {
 	/* fixme: Make stock/nonstock configurable */
 	if (!strncmp (name, "gtk-", 4)) {
@@ -226,7 +247,7 @@ sp_icon_image_load_gtk (GtkWidget *widget, const unsigned char *name, unsigned i
 		g_object_unref ((GObject *) pb);
 		return px;
 	} else {
-		return sp_icon_image_load (name, size);
+		return sp_icon_image_load (name, size, scale);
 	}
 }
 
@@ -296,7 +317,7 @@ sp_icon_paint (SPIcon *icon, GdkRectangle *area)
 }
 
 static unsigned char *
-sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size)
+sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size, unsigned int scale)
 {
 	unsigned char *path;
 	unsigned char *px;
@@ -335,7 +356,7 @@ sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size)
 }
 
 static unsigned char *
-sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
+sp_icon_image_load_svg (const unsigned char *name, unsigned int size, unsigned int scale)
 {
 	static SPDocument *doc = NULL;
 	static NRArena *arena = NULL;
@@ -354,7 +375,6 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 		}
 		if (doc) {
 			unsigned int visionkey;
-			NRGC gc;
 			sp_document_ensure_up_to_date (doc);
 			/* Create new arena */
 			arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
@@ -362,9 +382,6 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 			visionkey = sp_item_display_key_new (1);
 			/* fixme: Memory manage root if needed (Lauris) */
 			root = sp_item_invoke_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena, visionkey, SP_ITEM_SHOW_PRINT);
-			/* Update to renderable state */
-			nr_matrix_d_set_scale (&gc.transform, 0.8, 0.8);
-			nr_arena_item_invoke_update (root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
 		} else {
 			edoc = TRUE;
 		}
@@ -377,20 +394,29 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 			NRMatrixD i2docD;
 			NRMatrixF i2docF;
 			NRRectF dbox;
-			sp_item_i2doc_affine (SP_ITEM (object), &i2docF);
 			/* Find bbox in document */
+			sp_item_i2doc_affine (SP_ITEM (object), &i2docF);
 			nr_matrix_d_from_f (&i2docD, &i2docF);
 			sp_item_invoke_bbox (SP_ITEM (object), &dbox, &i2docD, TRUE);
 			/* This is in document coordinates, i.e. pixels */
 			if (!nr_rect_f_test_empty (&dbox)) {
 				NRRectL ibox, area, ua;
+				NRMatrixF t;
 				NRPixBlock B;
+				NRGC gc;
+				float sf;
 				int width, height, dx, dy;
+				/* Update to renderable state */
+				sf = 0.8 * size / scale;
+				nr_matrix_f_set_scale (&t, sf, sf);
+				nr_arena_item_set_transform (root, &t);
+				nr_matrix_d_set_identity (&gc.transform);
+				nr_arena_item_invoke_update (root, NULL, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
 				/* Item integer bbox in points */
-				ibox.x0 = (int) (0.8 * dbox.x0 + 0.0625);
-				ibox.y0 = (int) (0.8 * dbox.y0 + 0.0625);
-				ibox.x1 = (int) (0.8 * dbox.x1 + 0.875);
-				ibox.y1 = (int) (0.8 * dbox.y1 + 0.875);
+				ibox.x0 = (int) floor (sf * dbox.x0 + 0.5);
+				ibox.y0 = (int) floor (sf * dbox.y0 + 0.5);
+				ibox.x1 = (int) floor (sf * dbox.x1 + 0.5);
+				ibox.y1 = (int) floor (sf * dbox.y1 + 0.5);
 				/* Find button visible area */
 				width = ibox.x1 - ibox.x0;
 				height = ibox.y1 - ibox.y0;

@@ -1,3 +1,17 @@
+2003-06-13  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/event-context.c (sp_event_context_private_root_handler): Removed
+	desktop dialog double-click binding
+
+	* src/widgets/icon.c (sp_icon_new_scaled): New method
+	(sp_icon_new_full): Refactored static method
+	(sp_icon_image_load_svg): Use scale factor
+
+	* src/xml/repr-io.c (sp_repr_do_read): Unref node after attaching
+	(sp_repr_svg_read_node): Ditto
+
+	* src/xml/repr.c (sp_repr_document_new): Ditto
+
 2003-06-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/modules/ps.c: Ported Ascii85 filter from The GIMP

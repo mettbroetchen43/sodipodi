@@ -437,6 +437,9 @@ sp_repr_remove_child (SPRepr *repr, SPRepr *child)
 			if (rl->vector->child_removed) (* rl->vector->child_removed) (repr, child, ref, rl->data);
 		}
 
+		if (child->refcount > 1) {
+			g_warning ("Detaching repr with refcount > 1");
+		}
 		sp_repr_unref (child);
 	}
 
@@ -635,6 +638,7 @@ sp_repr_document_new (const char *rootname)
 
 	root = sp_repr_new (rootname);
 	sp_repr_add_child (repr, root, 0);
+	sp_repr_unref (root);
 
 	return (SPReprDoc *) repr;
 }
@@ -652,7 +656,7 @@ sp_repr_document_unref (SPReprDoc * doc)
 }
 
 void
-sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr)
+sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr)
 {
 	SPRepr * rdoc;
 

@@ -259,7 +259,7 @@ sp_ui_menu_append_item_from_verb (GtkMenu *menu, unsigned int verb)
 			item = gtk_image_menu_item_new_with_label (action->name);
 		}
 		if (action->image) {
-			icon = sp_icon_new (16, action->image);
+			icon = sp_icon_new_scaled (16, action->image);
 			gtk_widget_show (icon);
 			gtk_image_menu_item_set_image ((GtkImageMenuItem *) item, icon);
 		}
