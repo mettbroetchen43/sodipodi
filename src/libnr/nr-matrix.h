@@ -29,7 +29,14 @@
 #define nr_matrix_f_test_translate_equal(m0,m1,e) ((!(m0) && !(m1)) || ((m0) && (m1) && NR_MATRIX_DF_TEST_TRANSLATE_CLOSE (m0, m1, e)))
 
 NRMatrixD *nr_matrix_d_invert (NRMatrixD *d, NRMatrixD *m);
+NRMatrixF *nr_matrix_f_invert (NRMatrixF *d, NRMatrixF *m);
 
 NRMatrixD *nr_matrix_multiply_ddd (NRMatrixD *d, const NRMatrixD *m0, const NRMatrixD *m1);
+NRMatrixF *nr_matrix_multiply_fdd (NRMatrixF *d, const NRMatrixD *m0, const NRMatrixD *m1);
+NRMatrixF *nr_matrix_multiply_fdf (NRMatrixF *d, const NRMatrixD *m0, const NRMatrixF *m1);
+NRMatrixF *nr_matrix_multiply_ffd (NRMatrixF *d, const NRMatrixF *m0, const NRMatrixD *m1);
+
+NRMatrixD *nr_matrix_d_set_scale (NRMatrixD *m, double sx, double sy);
+NRMatrixD *nr_matrix_f_set_scale (NRMatrixD *m, float sx, float sy);
 
 #endif

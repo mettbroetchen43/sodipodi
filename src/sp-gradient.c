@@ -1009,7 +1009,6 @@ typedef struct _SPLGPainter SPLGPainter;
 struct _SPLGPainter {
 	SPPainter painter;
 	SPLinearGradient *lg;
-	gdouble len;
 	gdouble x0, y0;
 	gdouble dx, dy;
 };
@@ -1424,13 +1423,9 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 	g = (SPGradient *) lg;
 
 	if (!g->color) {
-#if 0
 		/* fixme: This is forbidden, so we should paint some mishmesh instead */
-		sp_gradient_ensure_colors (g);
-#else
 		nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
 		return;
-#endif
 	}
 
 	for (y = 0; y < height; y++) {
@@ -1465,10 +1460,8 @@ typedef struct _SPRGPainter SPRGPainter;
 struct _SPRGPainter {
 	SPPainter painter;
 	SPRadialGradient *rg;
-	gdouble len;
-	gdouble x0, y0;
-	gdouble dx, dy;
-	guint32 opacity;
+	NRMatrixF px2gs;
+	NRRectF bbox;
 };
 
 static void sp_radialgradient_class_init (SPRadialGradientClass *klass);
@@ -1534,11 +1527,11 @@ sp_radialgradient_class_init (SPRadialGradientClass * klass)
 static void
 sp_radialgradient_init (SPRadialGradient *rg)
 {
-	sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
-	sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
-	sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
-	sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
-	sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+	sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
+	sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
+	sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
+	sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
+	sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 }
 
 static void
@@ -1581,27 +1574,27 @@ sp_radialgradient_read_attr (SPObject *object, const gchar *key)
 
 	if (!strcmp (key, "cx")) {
 		if (!sp_svg_length_read (str, &rg->cx)) {
-			sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+			sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "cy")) {
 		if (!sp_svg_length_read (str, &rg->cy)) {
-			sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+			sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "r")) {
 		if (!sp_svg_length_read (str, &rg->r)) {
-			sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+			sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "fx")) {
 		if (!sp_svg_length_read (str, &rg->fx)) {
-			sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+			sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "fy")) {
 		if (!sp_svg_length_read (str, &rg->fy)) {
-			sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+			sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else {
@@ -1611,7 +1604,7 @@ sp_radialgradient_read_attr (SPObject *object, const gchar *key)
 }
 
 static SPPainter *
-sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox)
+sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtDRect *bbox)
 {
 	SPRadialGradient *rg;
 	SPGradient *gr;
@@ -1620,9 +1613,7 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const A
 	rg = SP_RADIALGRADIENT (ps);
 	gr = SP_GRADIENT (ps);
 
-	if (!gr->color) {
-		sp_gradient_ensure_colors (gr);
-	}
+	if (!gr->color) sp_gradient_ensure_colors (gr);
 
 	rgp = g_new (SPRGPainter, 1);
 
@@ -1631,58 +1622,47 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const A
 
 	rgp->rg = rg;
 
-#if 0
-	if (rg->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
-		gdouble b2c[6], vec2b[6], norm2vec[6], norm2c[6], c2norm[6];
-		/* fixme: we should use start & end here */
-		norm2vec[0] = gr->len / 1023.9999;
-		norm2vec[1] = 0.0;
-		norm2vec[2] = 0.0;
-		norm2vec[3] = gr->len / 1023.9999;
-		norm2vec[4] = 0.0;
-		norm2vec[5] = 0.0;
-#if 0
-		g_print ("\nnorm2vec: ");for (i = 0; i < 6; i++) g_print ("%g ", norm2vec[i]);g_print ("\n");
-#endif
-		/* fixme: gradient transform somewhere here */
-		vec2b[0] = lg->x2.distance - lg->x1.distance;
-		vec2b[1] = lg->y2.distance - lg->y1.distance;
-		vec2b[2] = lg->y2.distance - lg->y1.distance;
-		vec2b[3] = lg->x1.distance - lg->x2.distance;
-		vec2b[4] = lg->x1.distance;
-		vec2b[5] = lg->y1.distance;
-#if 0
-		g_print ("vec2b: ");for (i = 0; i < 6; i++) g_print ("%g ", vec2b[i]);g_print ("\n");
-#endif
-		b2c[0] = bbox->x1 - bbox->x0;
-		b2c[1] = 0.0;
-		b2c[2] = 0.0;
-		b2c[3] = bbox->y1 - bbox->y0;
-		b2c[4] = bbox->x0;
-		b2c[5] = bbox->y0;
-#if 0
-		g_print ("b2c: ");for (i = 0; i < 6; i++) g_print ("%g ", b2c[i]);g_print ("\n");
-#endif
-		art_affine_multiply (norm2c, norm2vec, vec2b);
-		art_affine_multiply (norm2c, norm2c, b2c);
-#if 0
-		g_print ("norm2c: ");for (i = 0; i < 6; i++) g_print ("%g ", norm2c[i]);g_print ("\n");
-#endif
-		art_affine_invert (c2norm, norm2c);
-#if 0
-		g_print ("c2norm: ");for (i = 0; i < 6; i++) g_print ("%g ", c2norm[i]);g_print ("\n");
-#endif
-		lgp->x0 = norm2c[4];
-		lgp->y0 = norm2c[5];
-		lgp->dx = c2norm[0];
-		lgp->dy = c2norm[2];
+	/* fixme: We may try to normalize here too, look at linearGradient (Lauris) */
+
+	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF bbox2user;
+		NRMatrixF gs2user, gs2px;
+
+		/* fixme: We may try to normalize here too, look at linearGradient (Lauris) */
+
+		/* gradientTransform goes here (Lauris) */
+
+		/* BBox to user coordinate system */
+		bbox2user.c[0] = bbox->x1 - bbox->x0;
+		bbox2user.c[1] = 0.0;
+		bbox2user.c[2] = 0.0;
+		bbox2user.c[3] = bbox->y1 - bbox->y0;
+		bbox2user.c[4] = bbox->x0;
+		bbox2user.c[5] = bbox->y0;
+
+		/* fixme: (Lauris) */
+		nr_matrix_multiply_fdf (&gs2user, (NRMatrixD *) gr->transform, &bbox2user);
+		nr_matrix_multiply_ffd (&gs2px, &gs2user, (NRMatrixD *) ctm);
+
+		nr_matrix_f_invert (&rgp->px2gs, &gs2px);
 	} else {
-		lgp->x0 = affine[4];
-		lgp->y0 = affine[5];
-		lgp->dx = 127.0 / (bbox->x1 - bbox->x0);
-		lgp->dy = 127.0 / (bbox->y1 - bbox->y0);
+		NRMatrixF gs2px;
+
+		/* Problem: What to do, if we have mixed lengths and percentages? */
+		/* Currently we do ignore percentages at all, but that is not good (lauris) */
+
+		/* fixme: We may try to normalize here too, look at linearGradient (Lauris) */
+
+		/* fixme: (Lauris) */
+		nr_matrix_multiply_fdd (&gs2px, (NRMatrixD *) gr->transform, (NRMatrixD *) ctm);
+
+		nr_matrix_f_invert (&rgp->px2gs, &gs2px);
 	}
-#endif
+
+	rgp->bbox.x0 = bbox->x0;
+	rgp->bbox.y0 = bbox->y0;
+	rgp->bbox.x1 = bbox->x1;
+	rgp->bbox.y1 = bbox->y1;
 
 	return (SPPainter *) rgp;
 }
@@ -1733,56 +1713,131 @@ sp_radialgradient_build_repr (SPRadialGradient *rg, gboolean vector)
 	return repr;
 }
 
+#define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
+
 static void
 sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
-#if 0
-	SPLGPainter *lgp;
-	SPRadialGradient *lg;
-	SPGradient *g;
-	gdouble pos;
+	SPRGPainter *rgp;
+	SPRadialGradient *rg;
+	SPGradient *gr;
 	gint x, y;
-	guint32 *p;
-	guint32 tmp;
+	guchar *p;
 
-	lgp = (SPLGPainter *) painter;
-	lg = lgp->lg;
-	g = (SPGradient *) lg;
+	rgp = (SPRGPainter *) painter;
+	rg = rgp->rg;
+	gr = (SPGradient *) rg;
 
-	if (!g->color) {
+	if (!gr->color) {
 		/* fixme: This is forbidden, so we should paint some mishmesh instead */
-		sp_gradient_ensure_colors (g);
+		nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
+		return;
 	}
 
-	for (y = 0; y < height; y++) {
-		p = buf + y * rowstride;
-		pos = (y + y0 - lgp->y0) * lgp->dy + (0 + x0 - lgp->x0) * lgp->dx;
-		for (x = 0; x < width; x++) {
-			gint ip, idx;
-			ip = (gint) pos;
-			switch (g->spread) {
-			case SP_GRADIENT_SPREAD_PAD:
-				idx = CLAMP (ip, 0, 1023);
-				break;
-			case SP_GRADIENT_SPREAD_REFLECT:
-				idx = ip & 0x3ff;
-				if (ip & 0x400) idx = 1023 - idx;
-				break;
-			case SP_GRADIENT_SPREAD_REPEAT:
-				idx = ip & 0x3ff;
-				break;
-			default:
-				g_assert_not_reached ();
-				idx = 0;
-				break;
+	if (NR_DF_TEST_CLOSE (rg->cx.computed, rg->fx.computed, NR_EPSILON_D) &&
+	    NR_DF_TEST_CLOSE (rg->cy.computed, rg->fy.computed, NR_EPSILON_D)) {
+		for (y = 0; y < height; y++) {
+			p = px + y * rowstride;
+			for (x = 0; x < width; x++) {
+				double gx, gy;
+				double r, pos;
+				gx = rgp->px2gs.c[0] * (x + x0) + rgp->px2gs.c[2] * (y + y0) + rgp->px2gs.c[4];
+				gy = rgp->px2gs.c[1] * (x + x0) + rgp->px2gs.c[3] * (y + y0) + rgp->px2gs.c[5];
+
+				r = MAX (rg->r.computed, 1e-9);
+				pos = hypot (gx - rg->cx.computed, gy - rg->cy.computed) * NCOLORS / r;
+
+				gint idx;
+				if (gr->spread == SP_GRADIENT_SPREAD_REFLECT) {
+					idx = ((gint) pos) & (2 * NCOLORS - 1);
+					if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
+				} else if (gr->spread == SP_GRADIENT_SPREAD_REPEAT) {
+					idx = ((gint) pos) & (NCOLORS - 1);
+				} else {
+					idx = CLAMP (((gint) pos), 0, (NCOLORS - 1));
+				}
+				idx = idx * 4;
+				*p++ = gr->color[idx];
+				*p++ = gr->color[idx + 1];
+				*p++ = gr->color[idx + 2];
+				*p++ = gr->color[idx + 3];
 			}
-			/* a * b / 255 = a * b * (256 * 256 / 255) / 256 / 256 */
-			tmp = (g->color[idx] & 0xff) * lgp->opacity;
-			tmp = (tmp << 16) + tmp + (tmp >> 8);
-			*p++ = (g->color[idx] & 0xffffff00) | (tmp >> 24);
-			pos += lgp->dx;
+		}
+	} else {
+		for (y = 0; y < height; y++) {
+			p = px + y * rowstride;
+			for (x = 0; x < width; x++) {
+				double gx, gy;
+				double r, pos;
+				double D, N, A, B, C;
+
+				gx = rgp->px2gs.c[0] * (x + x0) + rgp->px2gs.c[2] * (y + y0) + rgp->px2gs.c[4];
+				gy = rgp->px2gs.c[1] * (x + x0) + rgp->px2gs.c[3] * (y + y0) + rgp->px2gs.c[5];
+
+				/*
+				 * (1)  (gx - fx) * (Py - fy) = (gy - fy) * (Px - fx)
+				 * (2)  (Px - cx) * (Px - cx) + (Py - cy) * (Py - cy) = r * r
+				 *
+				 * (3)   Py = (Px - fx) * (gy - fy) / (gx - fx) + fy
+				 * (4)  (gy - fy) / (gx - fx) = D
+				 * (5)   Py = D * Px - D * fx + fy
+				 *
+				 * (6)   D * fx - fy + cy = N
+				 * (7)   Px * Px - 2 * Px * cx + cx * cx + (D * Px) * (D * Px) - 2 * (D * Px) * N + N * N = r * r
+				 * (8)  (D * D + 1) * (Px * Px) - 2 * (cx + D * N) * Px + cx * cx + N * N = r * r
+				 *
+				 * (9)   A = D * D + 1
+				 * (10)  B = -2 * (cx + D * N)
+				 * (11)  C = cx * cx + N * N - r * r
+				 *
+				 * (12)  Px = (-B +- SQRT (B * B - 4 * A * C)) / 2 * A
+				 */
+
+				r = MAX (rg->r.computed, 1e-9);
+
+				if (NR_DF_TEST_CLOSE (gx, rg->fx.computed, NR_EPSILON_D)) {
+					gx = rg->fx.computed + NR_EPSILON_D;
+				}
+
+				D = (gy - rg->fy.computed) / (gx - rg->fx.computed);
+				N = D * rg->fx.computed - rg->fy.computed + rg->cy.computed;
+				A = D * D + 1;
+				B = -2 * (rg->cx.computed + D * N);
+				C = rg->cx.computed * rg->cx.computed + N * N - r * r;
+				if (NR_DF_TEST_CLOSE (A, 0.0, NR_EPSILON_D)) {
+					pos = 0.0;
+				} else {
+					double q;
+					q = B * B - 4 * A * C;
+					if (q < 0.0) {
+						pos = 0.0;
+					} else {
+						double px;
+						if ((gx - rg->fx.computed) < 0.0) {
+							px = (-B - sqrt (q)) / (2 * A);
+						} else {
+							px = (-B + sqrt (q)) / (2 * A);
+						}
+						pos = (gx - rg->fx.computed) / (px - rg->fx.computed) * NCOLORS;
+					}
+				}
+
+				gint idx;
+				if (gr->spread == SP_GRADIENT_SPREAD_REFLECT) {
+					idx = ((gint) pos) & (2 * NCOLORS - 1);
+					if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
+				} else if (gr->spread == SP_GRADIENT_SPREAD_REPEAT) {
+					idx = ((gint) pos) & (NCOLORS - 1);
+				} else {
+					idx = CLAMP (((gint) pos), 0, (NCOLORS - 1));
+				}
+				idx = idx * 4;
+				*p++ = gr->color[idx];
+				*p++ = gr->color[idx + 1];
+				*p++ = gr->color[idx + 2];
+				*p++ = gr->color[idx + 3];
+			}
 		}
 	}
-#endif
 }
 

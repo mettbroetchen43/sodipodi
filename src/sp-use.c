@@ -99,8 +99,7 @@ sp_use_destroy (GtkObject *object)
 	use = SP_USE (object);
 
 	if (use->child) {
-		SP_OBJECT (use->child)->parent = NULL;
-		gtk_object_destroy (GTK_OBJECT (use->child));
+		use->child = sp_object_detach_unref (SP_OBJECT (object), use->child);
 	}
 
 	if (use->href) g_free (use->href);
@@ -183,7 +182,7 @@ sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr)
 			if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
 				SPObject *childobj;
 				childobj = gtk_type_new (type);
-				use->child = (SPItem *) sp_object_attach_reref (object, childobj, NULL);
+				use->child = sp_object_attach_reref (object, childobj, NULL);
 				sp_object_invoke_build (childobj, document, childrepr, TRUE);
 			}
 		}
@@ -279,7 +278,7 @@ sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 	use = SP_USE (item);
 
 	if (use->child) {
-		sp_item_invoke_bbox (use->child, bbox, transform);
+		sp_item_invoke_bbox (SP_ITEM (use->child), bbox, transform);
 	} else {
 		bbox->x0 = bbox->y0 = 0.0;
 		bbox->x1 = bbox->y1 = 0.0;
@@ -293,7 +292,7 @@ sp_use_print (SPItem * item, GnomePrintContext * gpc)
 
 	use = SP_USE (item);
 
-	if (use->child) sp_item_print (use->child, gpc);
+	if (use->child) sp_item_print (SP_ITEM (use->child), gpc);
 }
 
 static gchar *
@@ -303,7 +302,7 @@ sp_use_description (SPItem * item)
 
 	use = SP_USE (item);
 
-	if (use->child) return sp_item_description (use->child);
+	if (use->child) return sp_item_description (SP_ITEM (use->child));
 
 	return g_strdup ("Empty reference [SHOULDN'T HAPPEN]");
 }
@@ -319,7 +318,7 @@ sp_use_show (SPItem *item, NRArena *arena)
 		NRArenaItem *ai, *ac;
 		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 		nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
-		ac = sp_item_show (use->child, arena);
+		ac = sp_item_show (SP_ITEM (use->child), arena);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
 			gtk_object_unref (GTK_OBJECT(ac));
@@ -337,7 +336,7 @@ sp_use_hide (SPItem * item, NRArena *arena)
 
 	use = SP_USE (item);
 
-	if (use->child) sp_item_hide (use->child, arena);
+	if (use->child) sp_item_hide (SP_ITEM (use->child), arena);
 
 	if (SP_ITEM_CLASS (parent_class)->hide)
 		(* SP_ITEM_CLASS (parent_class)->hide) (item, arena);
@@ -356,8 +355,7 @@ sp_use_href_changed (SPUse * use)
 	item = SP_ITEM (use);
 
 	if (use->child) {
-		SP_OBJECT (use->child)->parent = NULL;
-		gtk_object_destroy (GTK_OBJECT (use->child));
+		use->child = sp_object_detach_unref (SP_OBJECT (use), use->child);
 	}
 
 	use->child = NULL;
@@ -375,8 +373,7 @@ sp_use_href_changed (SPUse * use)
 				SPObject * childobj;
 				SPItemView * v;
 				childobj = gtk_type_new (type);
-				childobj->parent = SP_OBJECT (use);
-				use->child = SP_ITEM (childobj);
+				use->child = sp_object_attach_reref (SP_OBJECT (use), childobj, NULL);
 				sp_object_invoke_build (childobj, SP_OBJECT (use)->document, repr, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;

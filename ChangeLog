@@ -1,4 +1,17 @@
+2002-09-25  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-gradient.c (sp_rg_fill): Implement, seems correct although SLOW
+	(sp_radialgradient_painter_new): Implement, except viewport percentages
+	(sp_radialgradient_read_attr): Initialize right numbers
+	(sp_radialgradient_init): Ditto
+
 2002-09-24  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-matrix.c (nr_matrix_d_set_scale): new method
+	(nr_matrix_f_set_scale): Ditto
+
+	* src/sp-use.c (sp_use_href_changed): Use unref instead of destroy
+	(sp_use_destroy): Ditto
 
 	* src/seltrans.c (sp_sel_trans_scale): Allow scaling in one dimension,
 	if it is > 0.0

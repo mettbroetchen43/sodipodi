@@ -16,9 +16,9 @@ typedef struct _SPUseClass SPUseClass;
 
 struct _SPUse {
 	SPItem item;
-	SPItem * child;
+	SPObject *child;
 	gdouble x, y, width, height;
-	gchar * href;
+	guchar *href;
 };
 
 struct _SPUseClass {
