@@ -14,7 +14,11 @@
  */
 
 #include <config.h>
-#include <gnome.h>
+#include <string.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-mime.h>
 #include <libgnomeui/gnome-pixmap.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-window-icon.h>

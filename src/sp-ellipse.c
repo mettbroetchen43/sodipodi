@@ -14,7 +14,7 @@
  */
 
 #include <math.h>
-#include <gnome.h>
+#include <string.h>
 #include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "style.h"

@@ -1,8 +1,6 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include <gnome.h>
-
 gint
 sp_sm_save_yourself (GnomeClient * client,
 	gint phase,

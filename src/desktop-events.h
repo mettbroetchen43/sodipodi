@@ -13,7 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnomeui/gnome-canvas.h>
+#include "helper/sp-canvas.h"
 #include "forward.h"
 
 /* Item handlers */

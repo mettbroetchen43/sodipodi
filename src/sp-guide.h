@@ -10,7 +10,7 @@
  *
  */
 
-#include <libgnomeui/gnome-canvas.h>
+#include "helper/sp-canvas.h"
 #include "sp-object.h"
 
 typedef enum {

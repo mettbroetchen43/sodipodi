@@ -11,6 +11,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <libgnomeui/gnome-stock.h>
+#include <libgnomeui/gnome-dialog.h>
+
 #include "helper/sp-guide.h"
 #include "helper/unit-menu.h"
 #include "sodipodi-private.h"
@@ -24,7 +27,6 @@
 #include "sp-metrics.h"
 #include "sp-item.h"
 #include "desktop-events.h"
-#include "gnome.h"
 
 static void sp_dt_simple_guide_dialog (SPGuide * guide, SPDesktop * desktop);
 

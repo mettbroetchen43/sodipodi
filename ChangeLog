@@ -1,3 +1,11 @@
+2002-10-10  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas.c: Local version of praised GnomeCanvas
+
+	* src/helper/sp-canvas.h: Local version of praised GnomeCanvas
+
+	* src/libnr/nr-gradient.c (nr_rgradient_render_generic_symmetric): Optimize
+
 2002-10-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-blit.c (nr_blit_pixblock_mask_rgba32): New method

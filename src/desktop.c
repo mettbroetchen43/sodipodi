@@ -282,8 +282,7 @@ sp_desktop_new (SPNamedView *namedview, GnomeCanvas *canvas)
 	root = gnome_canvas_root (canvas);
 
 	desktop->acetate = gnome_canvas_item_new (root, GNOME_TYPE_CANVAS_ACETATE, NULL);
-	gtk_signal_connect (GTK_OBJECT (desktop->acetate), "event",
-		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
+	gtk_signal_connect (GTK_OBJECT (desktop->acetate), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
 	/* Setup adminstrative layers */
 	desktop->main = (GnomeCanvasGroup *) gnome_canvas_item_new (root, GNOME_TYPE_CANVAS_GROUP, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->main), "event",

@@ -22,7 +22,7 @@ typedef struct _SPSVGViewClass SPSVGViewClass;
 #define SP_IS_SVG_VIEW(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SVG_VIEW))
 #define SP_IS_SVG_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SVG_VIEW))
 
-#include <libgnomeui/gnome-canvas.h>
+#include "helper/sp-canvas.h"
 #include "view.h"
 
 struct _SPSVGView {

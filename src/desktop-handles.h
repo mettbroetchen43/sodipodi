@@ -1,7 +1,7 @@
 #ifndef SP_DESKTOP_HANDLES_H
 #define SP_DESKTOP_HANDLES_H
 
-#include <libgnomeui/gnome-canvas.h>
+#include "helper/sp-canvas.h"
 #include "forward.h"
 
 #define SP_DT_IS_EDITABLE(d) (TRUE)

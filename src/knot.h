@@ -15,7 +15,7 @@
 
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkpacker.h>
-#include <libgnomeui/gnome-canvas.h>
+#include "helper/sp-canvas.h"
 #include "forward.h"
 
 typedef enum {

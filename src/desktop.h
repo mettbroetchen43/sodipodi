@@ -24,7 +24,7 @@ typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
 #define SP_IS_DESKTOP_WIDGET(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP_WIDGET))
 #define SP_IS_DESKTOP_WIDGET_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_DESKTOP_WIDGET))
 
-#include <libgnomeui/gnome-canvas.h>
+#include "helper/sp-canvas.h"
 #include "forward.h"
 #include "view.h"
 
