@@ -30,9 +30,12 @@ struct _SPTextContext {
 	SPEventContext event_context;
 
 	SPItem *text;
-	SPItem *string;
 
+	/* Text item position in document coordinates */
 	ArtPoint pdoc;
+	/* Insertion point position */
+	gint ipos;
+
 	GnomeCanvasItem *cursor;
 	gint timeout;
 	guint show : 1;

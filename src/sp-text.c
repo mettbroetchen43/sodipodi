@@ -52,9 +52,8 @@ static void sp_string_destroy (GtkObject *object);
 
 static void sp_string_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_string_read_content (SPObject *object);
-static void sp_string_modified (SPObject *object, guint flags);
 
-static void sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp);
+static void sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean inspace);
 
 static SPCharsClass *string_parent_class;
 
@@ -93,7 +92,6 @@ sp_string_class_init (SPStringClass *class)
 
 	sp_object_class->build = sp_string_build;
 	sp_object_class->read_content = sp_string_read_content;
-	sp_object_class->modified = sp_string_modified;
 }
 
 static void
@@ -141,29 +139,11 @@ sp_string_read_content (SPObject *object)
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
-/*
- * fixme: I am not sure
- * But - thinking - signal is emitted after virtual method
- * So - everything seems OK
- */
-
-static void
-sp_string_modified (SPObject *object, guint flags)
-{
-	/* We do not need it here, as set_shape is cascaded for text classes */
-#if 0
-	if ((flags & SP_OBJECT_MODIFIED_FLAG) || (flags & SP_OBJECT_STYLE_MODIFIED_FLAG)) {
-		sp_string_set_shape (SP_STRING (object));
-	}
-#endif
-}
-
 /* fixme: Should values be parsed by parent? */
 
 static void
-sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp)
+sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean inspace)
 {
-#if 1
 	SPChars *chars;
 	SPStyle *style;
 	const GnomeFontFace *face;
@@ -190,24 +170,39 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp)
 	g_print ("Drawing string (%s) at %g %g\n", string->text, x, y);
 
 	art_affine_scale (a, size * 0.001, size * -0.001);
+
 	if (string->text) {
 		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
 			gunichar u;
 			u = g_utf8_get_char (p);
-			glyph = gnome_font_face_lookup_default (face, u);
 
-			if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
-				a[4] = x;
-				a[5] = y;
-				sp_chars_add_element (chars, glyph, (GnomeFontFace *) face, a);
-				y += size;
+			if (u == ' ') {
+				inspace = TRUE;
 			} else {
-				w = gnome_font_face_get_glyph_width (face, glyph);
-				w = w * size / 1000.0;
-				a[4] = x;
-				a[5] = y;
-				sp_chars_add_element (chars, glyph, (GnomeFontFace *) face, a);
-				x += w;
+				glyph = gnome_font_face_lookup_default (face, u);
+				if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+					if (inspace) {
+						y += size;
+						inspace = FALSE;
+					}
+					a[4] = x;
+					a[5] = y;
+					sp_chars_add_element (chars, glyph, (GnomeFontFace *) face, a);
+					y += size;
+				} else {
+					if (inspace) {
+						w = gnome_font_face_get_glyph_width (face, ' ');
+						w = w * size / 1000.0;
+						x += w;
+						inspace = FALSE;
+					}
+					w = gnome_font_face_get_glyph_width (face, glyph);
+					w = w * size / 1000.0;
+					a[4] = x;
+					a[5] = y;
+					sp_chars_add_element (chars, glyph, (GnomeFontFace *) face, a);
+					x += w;
+				}
 			}
 		}
 	}
@@ -215,9 +210,6 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp)
 	cp->x = x;
 	cp->y = y;
 	g_print ("Finished string (%s) at %g %g\n", string->text, x, y);
-#else
-	g_warning ("sp_string_set_shape: Not implemented");
-#endif
 }
 
 /* SPTSpan */
@@ -237,7 +229,7 @@ static NRArenaItem *sp_tspan_show (SPItem *item, NRArena *arena);
 static void sp_tspan_hide (SPItem *item, NRArena *arena);
 static void sp_tspan_print (SPItem *item, GnomePrintContext *gpc);
 
-static void sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp);
+static void sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean inspace);
 
 static SPItemClass *tspan_parent_class;
 
@@ -501,12 +493,12 @@ sp_tspan_print (SPItem *item, GnomePrintContext *gpc)
 }
 
 static void
-sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp)
+sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean inspace)
 {
 	if (tspan->ly.x_set) cp->x = tspan->ly.x;
 	if (tspan->ly.y_set) cp->y = tspan->ly.y;
 
-	sp_string_set_shape (SP_STRING (tspan->string), &tspan->ly, cp);
+	sp_string_set_shape (SP_STRING (tspan->string), &tspan->ly, cp, inspace);
 }
 
 /* SPText */
@@ -528,7 +520,10 @@ static char * sp_text_description (SPItem * item);
 static GSList * sp_text_snappoints (SPItem * item, GSList * points);
 static void sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
 
-static void sp_text_set_shape (SPText * text);
+static void sp_text_update_immediate_state (SPText *text);
+static void sp_text_set_shape (SPText *text);
+
+static SPObject *sp_text_get_child_by_position (SPText *text, gint pos);
 
 static SPItemClass *text_parent_class;
 
@@ -641,6 +636,8 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	sp_text_read_attr (object, "dx");
 	sp_text_read_attr (object, "dy");
 	sp_text_read_attr (object, "rotate");
+
+	sp_text_update_immediate_state (text);
 }
 
 static void
@@ -749,6 +746,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	}
 
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	sp_text_update_immediate_state (text);
 }
 
 static void
@@ -776,6 +774,7 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 	}
 
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	sp_text_update_immediate_state (text);
 }
 
 static void
@@ -806,6 +805,10 @@ sp_text_modified (SPObject *object, guint flags)
 		sp_object_unref (SP_OBJECT (child), object);
 	}
 
+	/* fixme: It is not nice to have it here, but otherwise children content changes does not work */
+	/* fixme: Even now it may not work, as we are delayed */
+	/* fixme: So check modification flag everywhere immediate state is used */
+	sp_text_update_immediate_state (text);
 	sp_text_set_shape (text);
 }
 
@@ -948,6 +951,7 @@ sp_text_set_shape (SPText *text)
 {
 	ArtPoint cp;
 	SPObject *child;
+	gboolean haslast, lastwastspan;
 
 	/* The logic should be: */
 	/* 1. Calculate attributes */
@@ -957,11 +961,18 @@ sp_text_set_shape (SPText *text)
 	if (text->ly.x_set) cp.x = text->ly.x;
 	if (text->ly.y_set) cp.y = text->ly.y;
 
+	haslast = FALSE;
+	lastwastspan = FALSE;
+
 	for (child = text->children; child != NULL; child = child->next) {
 		if (SP_IS_STRING (child)) {
-			sp_string_set_shape (SP_STRING (child), &text->ly, &cp);
+			sp_string_set_shape (SP_STRING (child), &text->ly, &cp, haslast);
+			haslast = TRUE;
+			lastwastspan = FALSE;
 		} else {
-			sp_tspan_set_shape (SP_TSPAN (child), &text->ly, &cp);
+			sp_tspan_set_shape (SP_TSPAN (child), &text->ly, &cp, haslast && !lastwastspan);
+			haslast = TRUE;
+			lastwastspan = TRUE;
 		}
 	}
 }
@@ -1130,26 +1141,6 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 	g_free (content);
 }
 
-SPItem *
-sp_text_get_last_string (SPText *text)
-{
-	g_return_val_if_fail (text != NULL, NULL);
-	g_return_val_if_fail (SP_IS_TEXT (text), NULL);
-
-	if (text->children) {
-		SPObject *child;
-		child = text->children;
-		while (child->next) child = child->next;
-		if (SP_IS_TSPAN (child)) {
-			return (SPItem *) SP_TSPAN (child)->string;
-		} else if (SP_IS_STRING (child)) {
-			return (SPItem *) child;
-		}
-	}
-
-	return NULL;
-}
-
 SPTSpan *
 sp_text_append_line (SPText *text)
 {
@@ -1199,6 +1190,156 @@ sp_text_append_line (SPText *text)
 	sp_repr_unref (rtspan);
 
 	return (SPTSpan *) sp_document_lookup_id (SP_OBJECT_DOCUMENT (text), sp_repr_attr (rtspan, "id"));
+}
+
+static void
+sp_text_update_immediate_state (SPText *text)
+{
+	SPObject *child;
+	guint start;
+
+	start = 0;
+	for (child = text->children; child != NULL; child = child->next) {
+		SPString *string;
+		if (SP_IS_TSPAN (child)) {
+			string = SP_TSPAN_STRING (child);
+		} else {
+			string = SP_STRING (child);
+		}
+		string->start = start;
+		if (string->text) {
+			start += g_utf8_strlen (string->text, -1);
+		}
+		/* Count newlines as well */
+		if (child->next) start += 1;
+	}
+}
+
+/* fixme: Think about these (Lauris) */
+
+gint
+sp_text_get_length (SPText *text)
+{
+	SPObject *child;
+	SPString *string;
+
+	g_return_val_if_fail (text != NULL, 0);
+	g_return_val_if_fail (SP_IS_TEXT (text), 0);
+
+	if (!text->children) return 0;
+
+	child = text->children;
+	while (child->next) child = child->next;
+
+	if (SP_IS_STRING (child)) {
+		string = SP_STRING (child);
+	} else {
+		string = SP_TSPAN_STRING (child);
+	}
+
+	return string->start + g_utf8_strlen (string->text, -1);
+}
+
+gint
+sp_text_append (SPText *text, const guchar *utf8)
+{
+	SPObject *child;
+	SPString *string;
+	const guchar *content;
+	gint clen, ulen, cchars, uchars;
+	guchar b[1024], *p;
+
+	g_return_val_if_fail (text != NULL, -1);
+	g_return_val_if_fail (SP_IS_TEXT (text), -1);
+	g_return_val_if_fail (utf8 != NULL, -1);
+
+	if (!text->children) {
+		SPRepr *rtspan, *rstring;
+		/* Create <tspan> */
+		rtspan = sp_repr_new ("tspan");
+		/* Create TEXT */
+		rstring = sp_xml_document_createTextNode (sp_repr_document (rtspan), "");
+		sp_repr_add_child (rtspan, rstring, NULL);
+		sp_repr_unref (rstring);
+		/* Add string */
+		sp_repr_add_child (SP_OBJECT_REPR (text), rtspan, NULL);
+		sp_repr_unref (rtspan);
+		g_assert (text->children);
+	}
+
+	child = text->children;
+	while (child->next) child = child->next;
+	if (SP_IS_STRING (child)) {
+		string = SP_STRING (child);
+	} else {
+		string = SP_TSPAN_STRING (child);
+	}
+		
+	content = sp_repr_content (SP_OBJECT_REPR (string));
+
+	clen = (content) ? strlen (content) : 0;
+	cchars = (content) ? g_utf8_strlen (content, clen) : 0;
+
+	ulen = (utf8) ? strlen (utf8) : 0;
+	uchars = (utf8) ? g_utf8_strlen (utf8, ulen) : 0;
+
+	if (ulen < 1) return cchars;
+
+	if ((clen + ulen) < 1024) {
+		p = b;
+	} else {
+		p = g_new (guchar, clen + ulen + 1);
+	}
+
+	if (clen > 0) memcpy (p, content, clen);
+	if (ulen > 0) memcpy (p + clen, utf8, ulen);
+	*(p + clen + ulen) = '\0';
+
+	sp_repr_set_content (SP_OBJECT_REPR (string), p);
+
+	if (p != b) g_free (p);
+
+	return string->start + cchars + uchars;
+}
+
+/* Returns start position */
+
+gint 
+sp_text_delete (SPText *text, gint start, gint end)
+{
+	SPObject *schild, *echild;
+
+	g_return_val_if_fail (text != NULL, -1);
+	g_return_val_if_fail (SP_IS_TEXT (text), -1);
+	g_return_val_if_fail (start >= 0, -1);
+	g_return_val_if_fail (end >= start, -1);
+
+	if (!text->children) return 0;
+
+	schild = sp_text_get_child_by_position (text, start);
+	echild = sp_text_get_child_by_position (text, end);
+
+	return 0;
+}
+
+static SPObject *
+sp_text_get_child_by_position (SPText *text, gint pos)
+{
+	SPObject *child;
+
+	for (child = text->children; child && child->next; child = child->next) {
+		SPString *string;
+		gint uchars;
+		if (SP_IS_STRING (child)) {
+			string = SP_STRING (child);
+		} else {
+			string = SP_TSPAN_STRING (child);
+		}
+		uchars = (string->text) ? g_utf8_strlen (string->text, -1) : 0;
+		if (pos <= (string->start + uchars)) return child;
+	}
+
+	return child;
 }
 
 

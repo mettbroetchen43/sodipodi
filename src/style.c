@@ -593,14 +593,12 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 			if (!style->text->writing_mode.set || style->text->writing_mode.inherit) {
 				style->text->writing_mode.value = object->style->text->writing_mode.value;
 			}
+
+			if (!style->text->font_size_set) {
+				style->text->font_size = object->style->text->font_size;
+			}
 		}
 	}
-
-#if 0
-	if (object->parent) {
-		sp_style_merge_from_object_parent (style, object->parent);
-	}
-#endif
 }
 
 static void

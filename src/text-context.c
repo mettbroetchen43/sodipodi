@@ -94,9 +94,10 @@ sp_text_context_init (SPTextContext *tc)
 	event_context->hot_y = 0;
 
 	tc->text = NULL;
-	tc->string = NULL;
 	tc->pdoc.x = 0.0;
 	tc->pdoc.y = 0.0;
+	tc->ipos = 0;
+
 	tc->cursor = NULL;
 	tc->timeout = 0;
 	tc->show = FALSE;
@@ -119,9 +120,6 @@ sp_text_context_finalize (GtkObject *object)
 	gdk_ic_attr_destroy (tc->ic_attr);
 	gdk_window_set_events (GTK_WIDGET (SP_DT_CANVAS (ec->desktop))->window, tc->savedmask);
 #endif
-
-	tc->text = NULL;
-	tc->string = NULL;
 
 	if (tc->timeout) {
 		gtk_timeout_remove (tc->timeout);
@@ -242,7 +240,6 @@ static gint
 sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 {
 	SPTextContext *tc;
-	const guchar *content;
 	gint ret;
 
 	tc = SP_TEXT_CONTEXT (ec);
@@ -267,11 +264,13 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_KEY_PRESS:
+#if 0
 		/* fixme: */
 		// filter control-modifier for desktop shortcuts
+		/* I removed this, as we prefer some text specific stuff here (Lauris) */
                 if (event->key.state & GDK_CONTROL_MASK) return FALSE;
-
-		if (!tc->string) {
+#endif
+		if (!tc->text) {
 			SPRepr *rtext, *rtspan, *rstring, *style;
 
 			/* Create <text> */
@@ -305,25 +304,21 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			sp_document_done (SP_DT_DOCUMENT (ec->desktop));
 		}
 
-		g_assert (tc->string != NULL);
+		g_assert (tc->text != NULL);
 
 		if (event->key.keyval == GDK_Return) {
 			SPTSpan *new;
 			/* Append new line */
+			/* fixme: Has to be insert here */
 			new = sp_text_append_line (SP_TEXT (tc->text));
-			tc->string = (SPItem *) SP_TSPAN_STRING (new);
+			tc->ipos += 1;
+		} else if ((event->key.keyval == GDK_space) && (event->key.state & GDK_CONTROL_MASK)) {
+			/* Nonbreaking space */
+			tc->ipos = sp_text_append (SP_TEXT (tc->text), "\302\240");
 		} else if (event->key.string) {
 			guchar *utf8;
 			utf8 = e_utf8_from_locale_string (event->key.string);
-			content = sp_repr_content (SP_OBJECT_REPR (tc->string));
-			if (content) {
-				guchar *new;
-				new = g_strconcat (content, utf8, NULL);
-				sp_repr_set_content (SP_OBJECT_REPR (tc->string), new);
-				g_free (new);
-			} else {
-				sp_repr_set_content (SP_OBJECT_REPR (tc->string), utf8);
-			}
+			tc->ipos = sp_text_append (SP_TEXT (tc->text), utf8);
 			if (utf8) g_free (utf8);
 		}
 		sp_document_done (SP_DT_DOCUMENT (ec->desktop));
@@ -353,13 +348,12 @@ sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
 
 	if (SP_IS_TEXT (item)) {
 		tc->text = item;
-		tc->string = sp_text_get_last_string (SP_TEXT (tc->text));
+		tc->ipos = sp_text_get_length (SP_TEXT (tc->text));
 		gnome_canvas_item_show (tc->cursor);
 		tc->show = TRUE;
 		tc->phase = 1;
 	} else {
 		tc->text = NULL;
-		tc->string = NULL;
 		gnome_canvas_item_hide (tc->cursor);
 		tc->show = FALSE;
 	}
