@@ -1,5 +1,16 @@
 2002-02-19  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/dialogs/stroke-style.c: New file
+
+	* src/dialogs/stroke-style.h: New file
+
+	* src/helper/units.c (sp_distance_get_units): New method
+	(sp_distance_get_points): Ditto
+
+	* src/helper/units.h: Moved SPDistance here
+
+	* src/style.h: Moved SPDistance to units.h
+
 	* src/display/nr-arena-shape.c (nr_arena_shape_render): Render gradient
 	strokes as well
 

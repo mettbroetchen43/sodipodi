@@ -29,6 +29,13 @@
  * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
  */
 
+enum {
+	SP_UNIT_BASE_DIMENSIONLESS,
+	SP_UNIT_BASE_ABSOLUTE,
+	SP_UNIT_BASE_DEVICE,
+	SP_UNIT_BASE_USERSPACE
+};
+
 static const SPUnit sp_units[] = {
 	/* Do not insert any elements before/between first 4 */
 	{0, SP_UNIT_DIMENSIONLESS, 1.0, N_("Unit"), "", N_("Units"), ""},
@@ -55,16 +62,16 @@ sp_unit_get_identity (guint base)
 {
 	switch (base) {
 	case SP_UNIT_DIMENSIONLESS:
-		return &sp_units[0];
+		return &sp_units[SP_UNIT_BASE_DIMENSIONLESS];
 		break;
 	case SP_UNIT_ABSOLUTE:
-		return &sp_units[1];
+		return &sp_units[SP_UNIT_BASE_ABSOLUTE];
 		break;
 	case SP_UNIT_DEVICE:
-		return &sp_units[2];
+		return &sp_units[SP_UNIT_BASE_DEVICE];
 		break;
 	case SP_UNIT_USERSPACE:
-		return &sp_units[3];
+		return &sp_units[SP_UNIT_BASE_USERSPACE];
 		break;
 	default:
 		g_warning ("file %s: line %d: Illegal unit base %d", __FILE__, __LINE__, base);
@@ -226,5 +233,35 @@ sp_convert_distance_full (gdouble *distance, const SPUnit *from, const SPUnit *t
 	}
 
 	return TRUE;
+}
+
+/* Some more convenience */
+/* Be careful to not mix bases */
+
+gdouble
+sp_distance_get_units (SPDistance *distance, const SPUnit *unit)
+{
+	gdouble val;
+
+	g_return_val_if_fail (distance != NULL, 0.0);
+	g_return_val_if_fail (unit != NULL, 0.0);
+
+	val = distance->distance;
+	sp_convert_distance (&val, distance->unit, unit);
+
+	return val;
+}
+
+gdouble
+sp_distance_get_points (SPDistance *distance)
+{
+	gdouble val;
+
+	g_return_val_if_fail (distance != NULL, 0.0);
+
+	val = distance->distance;
+	sp_convert_distance (&val, distance->unit, &sp_units[SP_UNIT_BASE_ABSOLUTE]);
+
+	return val;
 }
 

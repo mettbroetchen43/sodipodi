@@ -53,20 +53,30 @@ sp_object_properties_dialog (void)
 		gtk_container_add (GTK_CONTAINER (dlg), nb);
 		gtk_object_set_data (GTK_OBJECT (dlg), "notebook", nb);
 
+		/* Fill page */
 		hb = gtk_hbox_new (FALSE, 0);
 		gtk_widget_show (hb);
-
 		l = gtk_label_new (_("Fill"));
 		gtk_widget_show (l);
 		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
-
 		px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/properties_fill.xpm");
 		gtk_widget_show (px);
 		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
-
 		page = sp_fill_style_widget_new ();
 		gtk_widget_show (page);
+		gtk_notebook_append_page (GTK_NOTEBOOK (nb), page, hb);
 
+		/* Stroke page */
+		hb = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (hb);
+		l = gtk_label_new (_("Stroke"));
+		gtk_widget_show (l);
+		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
+		px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
+		gtk_widget_show (px);
+		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
+		page = sp_stroke_style_widget_new ();
+		gtk_widget_show (page);
 		gtk_notebook_append_page (GTK_NOTEBOOK (nb), page, hb);
 	}
 
@@ -166,6 +176,7 @@ static void sp_object_fill_picker_changed (void);
 
 void sp_object_properties_stroke (void)
 {
+#if 0
 	if (!GTK_IS_WIDGET (dialog)) sp_object_properties_dialog_old ();
 	gtk_notebook_set_page (prop_notebook, 0);
 	sp_object_properties_reread_page ();
@@ -176,6 +187,15 @@ void sp_object_properties_stroke (void)
 						    NULL);
 	}
 	gtk_widget_show (dialog);
+#else
+	GtkWidget *nb;
+
+	if (!dlg) sp_object_properties_dialog ();
+
+	nb = gtk_object_get_data (GTK_OBJECT (dlg), "notebook");
+
+	gtk_notebook_set_page (GTK_NOTEBOOK (nb), 1);
+#endif
 }
 
 void sp_object_properties_fill (void)

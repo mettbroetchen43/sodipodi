@@ -40,6 +40,7 @@ BEGIN_GNOME_DECLS
  */
 
 typedef struct _SPUnit SPUnit;
+typedef struct _SPDistance SPDistance;
 
 /*
  * The base absolute unit is 1/72th of an inch (we are gnome PRINT, so sorry SI)
@@ -72,6 +73,11 @@ struct _SPUnit {
 	guchar *abbr_plural;
 };
 
+struct _SPDistance {
+	const SPUnit *unit;
+	gdouble distance;
+};
+
 /* Base units are the ones used by gnome-print and paper descriptions */
 
 #define SP_PS_UNIT (sp_unit_get_identity (SP_UNIT_ABSOLUTE))
@@ -94,6 +100,12 @@ gboolean sp_convert_distance (gdouble *distance, const SPUnit *from, const SPUni
 /* If either one is NULL, transconverting to/from that base fails */
 /* Generic conversion between volatile units would be useless anyways */
 gboolean sp_convert_distance_full (gdouble *distance, const SPUnit *from, const SPUnit *to, gdouble ctmscale, gdouble devicescale);
+
+/* Some more convenience */
+/* Be careful to not mix bases */
+
+gdouble sp_distance_get_units (SPDistance *distance, const SPUnit *unit);
+gdouble sp_distance_get_points (SPDistance *distance);
 
 END_GNOME_DECLS
 

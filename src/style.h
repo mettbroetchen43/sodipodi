@@ -26,7 +26,6 @@ BEGIN_GNOME_DECLS
 /* Colors */
 
 typedef struct _SPPaint SPPaint;
-typedef struct _SPDistance SPDistance;
 
 typedef enum {
 	SP_PAINT_TYPE_NONE,
@@ -38,11 +37,6 @@ struct _SPPaint {
 	SPPaintType type;
 	SPColor color;
 	SPPaintServer *server;
-};
-
-struct _SPDistance {
-	const SPUnit *unit;
-	gdouble distance;
 };
 
 #define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.server)
