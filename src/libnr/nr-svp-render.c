@@ -336,7 +336,10 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 
 	/* Find starting pixel row */
 	/* g_assert (svl->bbox.y0 == svl->vertex->y); */
-	ystart = (int) svp->segments[0].bbox.y0;
+	sidx = 0;
+	while (!svp->segments[sidx].length && (sidx < svp->length)) sidx += 1;
+	if (sidx >= svp->length) return;
+	ystart = (int) NR_SVPSEG_Y0 (svp, sidx);
 	if (ystart >= y1) return;
 	if (ystart > y0) {
 		px += (ystart - y0) * rs;
@@ -345,15 +348,16 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 
 	/* Construct initial slice list */
 	slices = NULL;
-	for (sidx = 0; (sidx < svp->length) && (svp->segments[sidx].bbox.y0 <= y0); sidx++) {
+	while ((sidx < svp->length) && (NR_SVPSEG_Y0 (svp, sidx) <= y0)) {
 		NRSVPSegment *seg;
 		seg = svp->segments + sidx;
 		/* g_assert (nsvl->bbox.y0 == nsvl->vertex->y); */
-		if (seg->wind && (seg->bbox.y1 > y0) && (seg->bbox.y1 > seg->bbox.y0)) {
+		if (seg->wind && (NR_SVPSEG_Y1 (svp, sidx) > y0)) {
 			NRSlice *newslice;
 			newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, y0);
 			slices = nr_slice_insert_sorted (slices, newslice);
 		}
+		sidx += 1;
 	}
 	if (!slices && (sidx >= svp->length)) return;
 
@@ -371,13 +375,13 @@ nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs,
 		int x;
 
 		/* Add possible new svls to slice list */
-		while ((sidx < svp->length) && (svp->segments[sidx].bbox.y0 < (y + 1))) {
+		while ((sidx < svp->length) && (NR_SVPSEG_Y0 (svp, sidx) < (y + 1))) {
 			NRSVPSegment *seg;
 			seg = svp->segments + sidx;
-			if (seg->wind && (seg->bbox.y1 > seg->bbox.y0)) {
+			if (seg->wind) {
 				NRSlice *newslice;
 				/* fixme: we should use safely nsvl->vertex->y here */
-				newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, MAX (y, seg->bbox.y0));
+				newslice = nr_slice_new (seg->wind, svp->points + seg->start, seg->length, MAX (y, NR_SVPSEG_Y0 (svp, sidx)));
 				slices = nr_slice_insert_sorted (slices, newslice);
 			}
 			sidx += 1;

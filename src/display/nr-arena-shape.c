@@ -350,10 +350,14 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		x0 = y0 = NR_HUGE_F;
 		x1 = y1 = -NR_HUGE_F;
 		for (sidx = 0; sidx < shape->stroke_svp->length; sidx++) {
-			x0 = MIN (x0, shape->stroke_svp->segments[sidx].bbox.x0);
-			y0 = MIN (y0, shape->stroke_svp->segments[sidx].bbox.y0);
-			x1 = MAX (x1, shape->stroke_svp->segments[sidx].bbox.x1);
-			y1 = MAX (y1, shape->stroke_svp->segments[sidx].bbox.y1);
+			NRSVPSegment *seg;
+			seg = shape->stroke_svp->segments + sidx;
+			if (seg->length) {
+				x0 = MIN (x0, seg->x0);
+				y0 = MIN (y0, shape->stroke_svp->points[seg->start].y);
+				x1 = MAX (x1, seg->x1);
+				y1 = MAX (y1, shape->stroke_svp->points[seg->start + seg->length - 1].y);
+			}
 		}
 		if ((x1 > x0) && (y1 > y0)) {
 			if ((bbox.x1 > bbox.x0) && (bbox.x1 > bbox.x0)) {
@@ -375,10 +379,14 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		x0 = y0 = NR_HUGE_F;
 		x1 = y1 = -NR_HUGE_F;
 		for (sidx = 0; sidx < shape->fill_svp->length; sidx++) {
-			x0 = MIN (x0, shape->fill_svp->segments[sidx].bbox.x0);
-			y0 = MIN (y0, shape->fill_svp->segments[sidx].bbox.y0);
-			x1 = MAX (x1, shape->fill_svp->segments[sidx].bbox.x1);
-			y1 = MAX (y1, shape->fill_svp->segments[sidx].bbox.y1);
+			NRSVPSegment *seg;
+			seg = shape->fill_svp->segments + sidx;
+			if (seg->length) {
+				x0 = MIN (x0, seg->x0);
+				y0 = MIN (y0, shape->fill_svp->points[seg->start].y);
+				x1 = MAX (x1, seg->x1);
+				y1 = MAX (y1, shape->fill_svp->points[seg->start + seg->length - 1].y);
+			}
 		}
 		if ((x1 > x0) && (y1 > y0)) {
 			if ((bbox.x1 > bbox.x0) && (bbox.x1 > bbox.x0)) {

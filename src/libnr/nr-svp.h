@@ -18,13 +18,21 @@ typedef float NRCoord;
 /* Sorted vector paths */
 
 typedef struct _NRSVPSegment NRSVPSegment;
+typedef struct _NRSVPFlat NRSVPFlat;
 typedef struct _NRSVP NRSVP;
 
 struct _NRSVPSegment {
-	unsigned int start;
-	unsigned int length;
-	int wind;
-	NRRectF bbox;
+	NRShort wind;
+	NRUShort length;
+	NRULong start;
+	float x0, x1;
+};
+
+struct _NRSVPFlat {
+	NRShort wind;
+	NRUShort length;
+	float y;
+	float x0, x1;
 };
 
 struct _NRSVP {
@@ -32,6 +40,11 @@ struct _NRSVP {
 	NRPointF *points;
 	NRSVPSegment segments[1];
 };
+
+#define NR_SVPSEG_X0(svp,sidx) ((svp)->segments[sidx].x0)
+#define NR_SVPSEG_Y0(svp,sidx) ((svp)->points[(svp)->segments[sidx].start].y)
+#define NR_SVPSEG_X1(svp,sidx) ((svp)->segments[sidx].x1)
+#define NR_SVPSEG_Y1(svp,sidx) ((svp)->points[(svp)->segments[sidx].start + (svp)->segments[sidx].length - 1].y)
 
 void nr_svp_free (NRSVP *svp);
 

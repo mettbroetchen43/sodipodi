@@ -9,7 +9,9 @@
  * This code is in public domain
  */
 
+#define NR_SVP_LENGTH_MAX 128
 
+#include <assert.h>
 #include <stdio.h>
 
 #include "nr-values.h"
@@ -26,17 +28,44 @@ nr_svp_from_svl (NRSVL *svl, NRFlat *flat)
 	NRSVL *si;
 	NRFlat *fi;
 	NRVertex *vi;
-	unsigned int nsegs, npoints;
+	unsigned int nsegs, npoints, clip;
+
 	nsegs = 0;
 	npoints = 0;
+	clip = FALSE;
 	for (si = svl; si; si = si->next) {
+		unsigned int np;
 		nsegs += 1;
-		for (vi = si->vertex; vi; vi = vi->next) npoints += 1;
+		np = 0;
+		for (vi = si->vertex; vi; vi = vi->next) {
+			np += 1;
+			if ((np == NR_SVP_LENGTH_MAX) && vi->next) {
+				nsegs += 1;
+				npoints += np;
+				np = 1;
+				clip = TRUE;
+			}
+		}
+		npoints += np;
 	}
-	for (fi = flat; fi; fi = fi->next) {
-		nsegs += 1;
-		npoints += 2;
+	for (fi = flat; fi; fi = fi->next) nsegs += 1;
+
+	if (clip) {
+		NRSVL *sl, *pl, *nl;
+		sl = NULL;
+		pl = NULL;
+		for (si = svl; si; si = si->next) {
+			nl = nr_svl_new_full (si->vertex, &si->bbox, si->wind);
+			if (pl) {
+				pl->next = nl;
+			} else {
+				sl = nl;
+			}
+			pl = nl;
+		}
+		svl = sl;
 	}
+
 	svp = malloc (sizeof (NRSVP) + (nsegs - 1) * sizeof (NRSVPSegment));
 	svp->length = nsegs;
 	if (nsegs > 0) {
@@ -47,40 +76,57 @@ nr_svp_from_svl (NRSVL *svl, NRFlat *flat)
 		si = svl;
 		fi = flat;
 		while (si || fi) {
-			/* Initial flats */
 			while (fi && (!si || (fi->y < si->vertex->y))) {
-				NRSVPSegment *seg;
-				seg = svp->segments + sidx;
-				seg->start = pidx;
-				seg->length = 0;
-				seg->wind = 0;
-				seg->bbox.x0 = fi->x0;
-				seg->bbox.y0 = fi->y;
-				seg->bbox.x1 = fi->x1;
-				seg->bbox.y1 = fi->y;
+				NRSVPFlat *flat;
+				flat = (NRSVPFlat *) svp->segments + sidx;
+				flat->wind = 0;
+				flat->length = 0;
+				flat->y = fi->y;
+				flat->x0 = fi->x0;
+				flat->x1 = fi->x1;
 				sidx += 1;
 				fi = fi->next;
 			}
 			while (si && (!fi || (si->vertex->y <= fi->y))) {
 				NRSVPSegment *seg;
 				seg = svp->segments + sidx;
-				seg->start = pidx;
-				seg->length = 0;
 				seg->wind = si->wind;
-				seg->bbox = si->bbox;
+				seg->length = 0;
+				seg->start = pidx;
+				seg->x0 = si->bbox.x0;
+				seg->x1 = si->bbox.x1;
+				sidx += 1;
 				for (vi = si->vertex; vi; vi = vi->next) {
 					svp->points[pidx].x = vi->x;
 					svp->points[pidx].y = vi->y;
 					seg->length += 1;
 					pidx += 1;
+					if ((seg->length == NR_SVP_LENGTH_MAX) && vi->next) {
+						NRSVL *nsvl;
+						/* Have to add SVL segment */
+						nsvl = nr_svl_new_vertex_wind (vi, si->wind);
+						si = nr_svl_insert_sorted (si, nsvl);
+						break;
+					}
 				}
-				sidx += 1;
 				si = si->next;
 			}
 		}
+		assert (sidx == nsegs);
+		assert (pidx == npoints);
 	} else {
 		svp->points = NULL;
 	}
+
+	if (clip) {
+		while (svl) {
+			si = svl->next;
+			svl->vertex = NULL;
+			nr_svl_free_one (svl);
+			svl = si;
+		}
+	}
+
 	return svp;
 }
 
@@ -101,8 +147,8 @@ nr_svp_point_wind (NRSVP *svp, float x, float y)
 	for (sidx = 0; sidx < svp->length; sidx++) {
 		NRSVPSegment *seg;
 		seg = svp->segments + sidx;
-		if (seg->wind && (seg->bbox.x0 < x) && (seg->bbox.y0 <= y) && (seg->bbox.y1 > y)) {
-			if (seg->bbox.x1 <= x) {
+		if (seg->wind && (seg->x0 < x) && (svp->points[seg->start].y <= y) && (svp->points[seg->start + seg->length - 1].y > y)) {
+			if (seg->x1 <= x) {
 				/* Segment entirely to the left */
 				wind += seg->wind;
 			} else {
@@ -163,13 +209,15 @@ nr_svp_point_distance (NRSVP *svp, float x, float y)
 	for (sidx = 0; sidx < svp->length; sidx++) {
 		NRSVPSegment *seg;
 		seg = svp->segments + sidx;
-		if (((seg->bbox.x0 - x) < best) &&
-		    ((seg->bbox.y0 - y) < best) &&
-		    ((x - seg->bbox.x1) < best) &&
-		    ((y - seg->bbox.y1) < best)) {
+		if (((seg->x0 - x) < best) &&
+		    ((NR_SVPSEG_Y0 (svp, sidx) - y) < best) &&
+		    ((x - seg->x1) < best) &&
+		    ((y - NR_SVPSEG_Y1 (svp, sidx)) < best)) {
 			if (seg->length < 2) {
+				NRSVPFlat *flat;
 				double dist2;
-				dist2 = nr_line_point_distance2 (seg->bbox.x0, seg->bbox.y0, seg->bbox.x1, seg->bbox.y1, x, y);
+				flat = (NRSVPFlat *) seg;
+				dist2 = nr_line_point_distance2 (flat->x0, flat->y, flat->x1, flat->y, x, y);
 				if (dist2 < best2) {
 					best2 = dist2;
 					best = sqrt (best2);
@@ -501,7 +549,6 @@ nr_vertex_free_list (NRVertex * v)
 {
 #ifndef NR_VERTEX_ALLOC
 	NRVertex * l;
-
 	for (l = v; l->next != NULL; l = l->next);
 	l->next = ffvertex;
 	ffvertex = v;
@@ -585,7 +632,7 @@ nr_svl_new_vertex_wind (NRVertex *vertex, int dir)
 
 	svl->vertex = vertex;
 	svl->dir = dir;
-	svl->wind = svl->wind;
+	svl->wind = svl->dir;
 	nr_svl_calculate_bbox (svl);
 
 	return svl;
@@ -594,7 +641,7 @@ nr_svl_new_vertex_wind (NRVertex *vertex, int dir)
 void
 nr_svl_free_one (NRSVL *svl)
 {
-	nr_vertex_free_list (svl->vertex);
+	if (svl->vertex) nr_vertex_free_list (svl->vertex);
 	svl->next = ffsvl;
 	ffsvl = svl;
 }
@@ -606,9 +653,9 @@ nr_svl_free_list (NRSVL *svl)
 
 	if (svl) {
 		for (l = svl; l->next != NULL; l = l->next) {
-			nr_vertex_free_list (l->vertex);
+			if (l->vertex) nr_vertex_free_list (l->vertex);
 		}
-		nr_vertex_free_list (l->vertex);
+		if (l->vertex) nr_vertex_free_list (l->vertex);
 		l->next = ffsvl;
 		ffsvl = svl;
 	}

@@ -1,3 +1,9 @@
+2003-04-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-svp.h: Use more compact format for segments
+
+	* src/libnr/nr-svp.c (nr_svp_from_svl): Use max segment length
+
 2003-04-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp-render.c (nr_svp_render): New method
