@@ -1,5 +1,7 @@
 2003-02-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-shape.c (sp_shape_write_transform): Working path tranformation optimizer
+
 	* src/widgets/sp-color-slider.c (sp_color_slider_adjustment_value_changed): Add
 	some extra pixels around arrow dirtified area
 	(sp_color_slider_paint): Use gtk_draw_box instead of gtk_draw_shadow

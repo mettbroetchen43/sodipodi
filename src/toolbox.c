@@ -59,7 +59,9 @@ static GtkWidget *sp_toolbox_edit_create (void);
 static GtkWidget *sp_toolbox_draw_create (void);
 static GtkWidget *sp_toolbox_object_create (void);
 static GtkWidget *sp_toolbox_selection_create (void);
+#ifdef WITH_EXTENSIONS_TOOLBOX
 static GtkWidget *sp_toolbox_extension_create (void);
+#endif
 static GtkWidget *sp_toolbox_zoom_create (void);
 static GtkWidget *sp_toolbox_node_create (void);
 
@@ -74,10 +76,6 @@ static void sp_maintoolbox_drag_data_received (GtkWidget * widget,
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObject *toolbox);
 
 static void sp_toolbox_object_flip_clicked (SPButton *button, gpointer data);
-
-#if 0
-static GtkWidget *mtoolbox = NULL;
-#endif
 
 /* Drag and Drop */
 typedef enum {
@@ -100,35 +98,6 @@ sp_maintoolbox_destroy (GtkObject *object, gpointer data)
 	sp_signal_disconnect_by_data (sodipodi, object);
 	sodipodi_unref ();
 }
-
-#if 0
-static gint
-sp_maintoolbox_delete_event (GtkWidget *widget, GdkEventAny *event, gpointer data)
-{
-	/* fixme: i do not like that hide/show game (Lauris) */
-
-	sodipodi_unref ();
-
-	gtk_widget_hide (GTK_WIDGET (toolbox));
-
-	return TRUE;
-}
-#endif
-
-#if 0
-static gint
-sp_maintoolbox_menu_button_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
-{
-	GtkWidget *m;
-
-	m = sp_ui_main_menu ();
-	gtk_widget_show (m);
-
-	gtk_menu_popup (GTK_MENU (m), NULL, NULL, NULL, NULL, event->button, event->time);
-
-	return TRUE;
-}
-#endif
 
 void
 sp_maintoolbox_create_toplevel (void)
@@ -199,11 +168,12 @@ sp_maintoolbox_new (void)
 		}
 	}
 	g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), toolbox);
-		/* Extension */
-		t = sp_toolbox_extension_create ();
-		gtk_widget_show (t);
-		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
-
+#ifdef WITH_EXTENSIONS_TOOLBOX
+	/* Extension */
+	t = sp_toolbox_extension_create ();
+	gtk_widget_show (t);
+	gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+#endif
 	/* Zoom */
 	t = sp_toolbox_zoom_create ();
 	gtk_widget_show (t);
@@ -559,6 +529,8 @@ sp_toolbox_draw_create (void)
 	return tb;
 }
 
+#ifdef WITH_EXTENSIONS_TOOLBOX
+
 static GtkWidget *
 sp_toolbox_extension_create (void)
 {
@@ -607,6 +579,7 @@ sp_toolbox_extension_create (void)
 
 	return tb;
 }
+#endif
 
 static GtkWidget *
 sp_toolbox_zoom_create (void)
