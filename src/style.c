@@ -629,8 +629,8 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 		}
 		e = strchr (p, ';');
 		if (!e) {
-			g_warning ("No end marker at style at: %s", p);
 			e = p + strlen (p);
+			if (*e) g_warning ("No end marker at style at: %s", p);
 		}
 		len = MIN (s - p, 4095);
 		if (len < 1) {

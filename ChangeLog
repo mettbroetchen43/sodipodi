@@ -1,3 +1,8 @@
+2003-04-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/style.c (sp_style_merge_from_style_string): Complain only if not the end
+	of the style string (thanks to MenTaL)
+
 2003-04-22  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/print.c (sp_module_print_plain_begin): Magic by MenTaL
