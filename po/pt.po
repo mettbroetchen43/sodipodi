@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24.1\n"
-"POT-Creation-Date: 2002-01-23 23:21+0000\n"
-"PO-Revision-Date: 2002-01-23 23:30+0000\n"
+"POT-Creation-Date: 2002-02-04 23:54+0000\n"
+"PO-Revision-Date: 2002-02-04 23:55+0000\n"
 "Last-Translator: Álvaro Lopes <alvieboy@alvie.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -185,7 +185,7 @@ msgid "Origin Y:"
 msgstr "Origem Y:"
 
 #: glade/desktop.glade.h:20 glade/display.glade.h:23
-#: src/helper/unit-menu.c:358 src/helper/units.c:37
+#: src/helper/unit-menu.c:358 src/helper/units.c:36
 msgid "Pixels"
 msgstr "Pixels"
 
@@ -313,7 +313,7 @@ msgid "ID:"
 msgstr "Identificação:"
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:660
+#: glade/item.glade.h:3 src/sp-item.c:619
 msgid "Item"
 msgstr "Item"
 
@@ -460,8 +460,8 @@ msgid "Layout"
 msgstr "Disposição"
 
 #: glade/object_props.glade.h:26
-msgid "Mitter join"
-msgstr "Conexão em ângulo"
+msgid "Miter join"
+msgstr "Conexão em junta"
 
 #: glade/object_props.glade.h:27
 msgid "No fill"
@@ -634,7 +634,7 @@ msgid "Cusp line at selected nodes"
 msgstr "Remover suavização nos nós seleccionados"
 
 #: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
-#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:106
+#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:115
 msgid "Delete"
 msgstr "Apagar"
 
@@ -946,7 +946,7 @@ msgid "Duplicate selection"
 msgstr "Duplicar selecção"
 
 #: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:86
-#: src/dialogs/gradient-vector.c:98 src/toolbox.c:78
+#: src/dialogs/gradient-vector.c:107 src/toolbox.c:78
 msgid "Edit"
 msgstr "Editar"
 
@@ -1256,7 +1256,7 @@ msgstr "Largura da origem: "
 msgid "Orig. X: "
 msgstr "Orig. X: "
 
-#. Volatiles do not have default, so there are not here
+#. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
 #: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
 #: src/helper/units.c:40
@@ -1401,7 +1401,7 @@ msgid "vertical scale value"
 msgstr "valor do escalamento vertical"
 
 #: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:91
-#: src/dialogs/gradient-vector.c:102
+#: src/dialogs/gradient-vector.c:111
 msgid "Add"
 msgstr "Adicionar"
 
@@ -1575,19 +1575,19 @@ msgid "Reset"
 msgstr "Repor"
 
 #. No document or no gradients
-#: src/dialogs/gradient-vector.c:225
+#: src/dialogs/gradient-vector.c:242
 msgid "No gradients defined"
 msgstr "Nenhum gradiente definido"
 
-#: src/dialogs/gradient-vector.c:378
+#: src/dialogs/gradient-vector.c:473
 msgid "Start color"
 msgstr "Cor inicial"
 
-#: src/dialogs/gradient-vector.c:390
+#: src/dialogs/gradient-vector.c:485
 msgid "End color"
 msgstr "Cor final"
 
-#: src/dialogs/gradient-vector.c:417
+#: src/dialogs/gradient-vector.c:512
 msgid "Gradient vector"
 msgstr "Vector do gradiente"
 
@@ -1760,7 +1760,7 @@ msgstr "\""
 msgid "Point"
 msgstr "Pontos"
 
-#: src/helper/unit-menu.c:358 src/helper/units.c:37
+#: src/helper/unit-menu.c:358 src/helper/units.c:36
 msgid "Pixel"
 msgstr "Pixel"
 
@@ -1810,20 +1810,20 @@ msgid "Pt"
 msgstr "Pt"
 
 #: src/helper/units.c:36
+msgid "Px"
+msgstr "Px"
+
+#: src/helper/units.c:37
 msgid "Userspace unit"
 msgstr "Unidade de espaço de utilizador"
 
-#: src/helper/units.c:36
+#: src/helper/units.c:37
 msgid "User"
 msgstr "Utilizador"
 
-#: src/helper/units.c:36
+#: src/helper/units.c:37
 msgid "Userspace units"
 msgstr "Unidades de espaço de utilizador"
-
-#: src/helper/units.c:37
-msgid "Px"
-msgstr "Px"
 
 #: src/helper/units.c:40
 msgid "Percents"
@@ -2028,35 +2028,35 @@ msgstr "Propriedades do Grupo"
 msgid "Ungroup"
 msgstr "Desagrupar"
 
-#: src/sp-item.c:400
+#: src/sp-item.c:359
 msgid "Unknown item :-("
 msgstr "Item desconhecido :-("
 
 #. Item dialog
-#: src/sp-item.c:663
+#: src/sp-item.c:622
 msgid "Item Properties"
 msgstr "Propriedades do Item"
 
 #. Select item
-#: src/sp-item.c:673
+#: src/sp-item.c:632
 msgid "Select this"
 msgstr "Seleccionar este"
 
 #. Reset transformations
-#: src/sp-item.c:683
+#: src/sp-item.c:642
 msgid "Reset transformation"
 msgstr "Repor transformação"
 
-#: src/sp-item.c:689
+#: src/sp-item.c:648
 msgid "Make sensitive"
 msgstr "Tornar sensível"
 
-#: src/sp-item.c:689
+#: src/sp-item.c:648
 msgid "Make insensitive"
 msgstr "Tornar insensível"
 
 #. Create link
-#: src/sp-item.c:694
+#: src/sp-item.c:653
 msgid "Create link"
 msgstr "Criar ligação"
 
