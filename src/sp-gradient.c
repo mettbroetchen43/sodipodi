@@ -17,6 +17,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <stdlib.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 #include "svg/svg.h"
@@ -713,11 +714,12 @@ sp_gradient_render_vector_line_rgb (SPGradient *gradient, guchar *buf, gint len,
 		b = gradient->color[4 * (idx >> 8) + 2];
 		a = gradient->color[4 * (idx >> 8) + 3];
 		fc = (r - *buf) * a;
-		*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+		buf[0] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
 		fc = (g - *buf) * a;
-		*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+		buf[1] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
 		fc = (b - *buf) * a;
-		*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+		buf[2] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+		buf += 3;
 		idx += didx;
 	}
 }
@@ -786,11 +788,12 @@ sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gint wid
 				gint a, fc;
 				a = t[3];
 				fc = (t[0] - *buf) * a;
-				*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				buf[0] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
 				fc = (t[1] - *buf) * a;
-				*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				buf[1] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
 				fc = (t[2] - *buf) * a;
-				*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				buf[2] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				buf += 3;
 				t += 4;
 			}
 		}
@@ -807,11 +810,11 @@ sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gint wid
 				gint a, fc;
 				a = t[3];
 				fc = (t[0] - *buf) * a;
-				*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				buf[0] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
 				fc = (t[1] - *buf) * a;
-				*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				buf[1] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
 				fc = (t[2] - *buf) * a;
-				*buf++ = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
+				buf[2] = *buf + ((fc + (fc >> 8) + 0x80) >> 8);
 			}
 		}
 	}

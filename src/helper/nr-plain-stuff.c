@@ -12,7 +12,7 @@
  */
 
 #include <stdlib.h>
-#include <sys/time.h>
+#include <time.h>
 #include "nr-plain-stuff.h"
 
 #define NR_DEFAULT_CHECKERSIZEP2 3
@@ -1409,15 +1409,15 @@ nr_R8G8B8A8_P_R8G8B8A8_P_A8_RGBA32 (guchar *px, gint w, gint h, gint rs, const g
 }
 
 void
-nr_render_checkerboard_rgb (guchar *px, gint w, gint h, gint rs)
+nr_render_checkerboard_rgb (guchar *px, gint w, gint h, gint rs, gint xoff, gint yoff)
 {
 	g_return_if_fail (px != NULL);
 
-	nr_render_checkerboard_rgb_custom (px, w, h, rs, NR_DEFAULT_CHECKERCOLOR0, NR_DEFAULT_CHECKERCOLOR1, NR_DEFAULT_CHECKERSIZEP2);
+	nr_render_checkerboard_rgb_custom (px, w, h, rs, xoff, yoff, NR_DEFAULT_CHECKERCOLOR0, NR_DEFAULT_CHECKERCOLOR1, NR_DEFAULT_CHECKERSIZEP2);
 }
 
 void
-nr_render_checkerboard_rgb_custom (guchar *px, gint w, gint h, gint rs, guint32 c0, guint32 c1, gint sizep2)
+nr_render_checkerboard_rgb_custom (guchar *px, gint w, gint h, gint rs, gint xoff, gint yoff, guint32 c0, guint32 c1, gint sizep2)
 {
 	gint x, y, m;
 	guint r0, g0, b0;
@@ -1427,6 +1427,8 @@ nr_render_checkerboard_rgb_custom (guchar *px, gint w, gint h, gint rs, guint32 
 	g_return_if_fail (sizep2 >= 0);
 	g_return_if_fail (sizep2 <= 8);
 
+	xoff &= 0x1ff;
+	yoff &= 0x1ff;
 	m = 0x1 << sizep2;
 	r0 = NR_RGBA32_R (c0);
 	g0 = NR_RGBA32_G (c0);
@@ -1439,7 +1441,7 @@ nr_render_checkerboard_rgb_custom (guchar *px, gint w, gint h, gint rs, guint32 
 		guchar *p;
 		p = px;
 		for (x = 0; x < w; x++) {
-			if ((x ^ y) & m) {
+			if (((x + xoff) ^ (y + yoff)) & m) {
 				*p++ = r0;
 				*p++ = g0;
 				*p++ = b0;
@@ -1454,7 +1456,7 @@ nr_render_checkerboard_rgb_custom (guchar *px, gint w, gint h, gint rs, guint32 
 }
 
 void
-nr_render_rgba32_rgb (guchar *px, gint w, gint h, gint rs, guint32 c)
+nr_render_rgba32_rgb (guchar *px, gint w, gint h, gint rs, gint xoff, gint yoff, guint32 c)
 {
 	guint32 c0, c1;
 	gint a, r, g, b, cr, cg, cb;
@@ -1466,17 +1468,17 @@ nr_render_rgba32_rgb (guchar *px, gint w, gint h, gint rs, guint32 c)
 	b = NR_RGBA32_B (c);
 	a = NR_RGBA32_A (c);
 
-	cr = r + (r - NR_RGBA32_R (NR_DEFAULT_CHECKERCOLOR0)) * a / 255;
-	cg = g + (g - NR_RGBA32_G (NR_DEFAULT_CHECKERCOLOR0)) * a / 255;
-	cb = b + (b - NR_RGBA32_B (NR_DEFAULT_CHECKERCOLOR0)) * a / 255;
-	c0 = (r << 24) | (g << 16) | (b << 8) | 0xff;
+	cr = COMPOSEN11 (r, a, NR_RGBA32_R (NR_DEFAULT_CHECKERCOLOR0));
+	cg = COMPOSEN11 (g, a, NR_RGBA32_G (NR_DEFAULT_CHECKERCOLOR0));
+	cb = COMPOSEN11 (b, a, NR_RGBA32_B (NR_DEFAULT_CHECKERCOLOR0));
+	c0 = (cr << 24) | (cg << 16) | (cb << 8) | 0xff;
 
-	cr = r + (r - NR_RGBA32_R (NR_DEFAULT_CHECKERCOLOR1)) * a / 255;
-	cg = g + (g - NR_RGBA32_G (NR_DEFAULT_CHECKERCOLOR1)) * a / 255;
-	cb = b + (b - NR_RGBA32_B (NR_DEFAULT_CHECKERCOLOR1)) * a / 255;
-	c1 = (r << 24) | (g << 16) | (b << 8) | 0xff;
+	cr = COMPOSEN11 (r, a, NR_RGBA32_R (NR_DEFAULT_CHECKERCOLOR1));
+	cg = COMPOSEN11 (g, a, NR_RGBA32_G (NR_DEFAULT_CHECKERCOLOR1));
+	cb = COMPOSEN11 (b, a, NR_RGBA32_B (NR_DEFAULT_CHECKERCOLOR1));
+	c1 = (cr << 24) | (cg << 16) | (cb << 8) | 0xff;
 
-	nr_render_checkerboard_rgb_custom (px, w, h, rs, c0, c1, NR_DEFAULT_CHECKERSIZEP2);
+	nr_render_checkerboard_rgb_custom (px, w, h, rs, xoff, yoff, c0, c1, NR_DEFAULT_CHECKERSIZEP2);
 }
 
 #define COMPOSE4(bc,fc,ba,fa,da) (((255 - fa) * (bc * ba) + fa * 255 * fc) / da)

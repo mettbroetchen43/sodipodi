@@ -550,7 +550,7 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	pos->vbox.y1 = widget->allocation.height - pos->vbox.y0;
 	/* Draw checkerboard */
 	/* fixme: Get rid of uint32 stuff */
-	nr_render_checkerboard_rgb (pos->rgb, widget->allocation.width, widget->allocation.height, 3 * widget->allocation.width);
+	nr_render_checkerboard_rgb (pos->rgb, widget->allocation.width, widget->allocation.height, 3 * widget->allocation.width, 0, 0);
 	/* Create painter */
 	art_affine_identity (id);
 	bbox.x0 = xp;
@@ -568,11 +568,12 @@ sp_gradient_position_update (SPGradientPosition *pos)
 			guint a, fc;
 			a = t[3];
 			fc = (t[0] - *p) * a;
-			*p++ = *p + ((fc + (fc >> 8) + 0x80) >> 8);
+			p[0] = *p + ((fc + (fc >> 8) + 0x80) >> 8);
 			fc = (t[1] - *p) * a;
-			*p++ = *p + ((fc + (fc >> 8) + 0x80) >> 8);
+			p[1] = *p + ((fc + (fc >> 8) + 0x80) >> 8);
 			fc = (t[2] - *p) * a;
-			*p++ = *p + ((fc + (fc >> 8) + 0x80) >> 8);
+			p[2] = *p + ((fc + (fc >> 8) + 0x80) >> 8);
+			p += 3;
 			t += 4;
 		}
 	}

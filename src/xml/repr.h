@@ -2,11 +2,15 @@
 #define SP_REPR_H
 
 /*
- * repr.h
+ * Our fuzzy tyleless DOM implementation
  *
- * Currently fuzzy wrapper thing, which will be (I hope) merged into
- * gdome as soon, as it stabilizes
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
  *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Licensed under GNU GPL
  */
 
 #include <glib.h>

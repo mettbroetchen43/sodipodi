@@ -1,3 +1,47 @@
+2001-12-28  Lauris Kaplinski  <lauris@localhost.localdomain>
+
+	* src/widgets/sp-color-selector.c: Added 'rrggbbaa' hex value entry,
+	use SPColor helpers instead of doing conversions here, added some
+	generic color methods and renamed/changed signature of old ones.
+
+	* src/widgets/sp-color-slider.c (sp_color_slider_paint): Update arrow
+	the right way
+
+	* src/helper/nr-plain-stuff.c (nr_render_rgba32_rgb): Use computed channels
+	instead of plain color ones
+
+	* src/helper/nr-plain-stuff-gdk.c (nr_gdk_draw_rgba32_solid): New method
+
+	* src/text-context.c (sp_text_context_setup): Some XIM handling
+	(sp_text_context_destroy): Ditto
+	(sp_text_context_root_handler): Ditto
+
+	* src/sp-gradient.c: Killed gcc 3 warnings
+
+	* src/draw-context.c: Started rewriting of drawing context, added 4-member
+	path cache (instead of 2 in old version), the goal is to make selection
+	continuation and pen tool
+
+	* src/draw-context.h: New members in class
+
+	* src/color.c (sp_color_get_colorspace_class): Broke colorspace descriptor
+	into class (process | spot) and type (rgb | cmyk), added new methods and
+	renamed old one accordingly
+	(sp_color_get_colorspace_type): Ditto
+	(sp_color_rgb_to_hsv_floatv): Convenience method
+	(sp_color_hsv_to_rgb_floatv): Ditto
+	(sp_color_rgb_to_cmyk_floatv): Ditto
+	(sp_color_cmyk_to_rgb_floatv): Ditto
+
+	* src/color.h: New convenience macros and methods
+
+	* configure.in (have_bonobo): Made --without-bonobo default
+
+	* src/widgets/sp-color-preview.c: New file, implement simple
+	color preview object, a la the one in Gtk+ color selector
+
+	* src/widgets/sp-color-preview.h: New file
+
 2001-12-21  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-spiral.*, spiral-context.c
@@ -8,6 +52,33 @@
 
 	* src/dyna-draw-context.*, sp-shape.c, sp-star.c:
 	Clean up codes
+
+2001-12-15  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/helper/canvas-bpath.h: New file
+
+	* src/helper/canvas-bpath.c: New file
+
+	* src/helper/Makefile.am (libspchelp_a_SOURCES): Added
+	canvas-bpath.[c,h]
+
+	* src/helper/curve.c (sp_curve_ref): Signature change
+	(sp_curve_unref): Ditto
+
+	* src/display/Makefile.am (nr_sources): Removed stale files
+
+	* src/helper/bezier-utils.c (sp_bezier_fit_cubic): Added argument
+	checks, signature change, cleanup
+	(sp_bezier_fit_cubic_r): Ditto
+	(sp_bezier_fit_cubic_full): Ditto
+
+	* src/helper/bezier-utils.h: Changed fit method signatures
+
+	* src/draw-context.c (fit_and_split): Use new sp_bezier_fit signature
+
+	* src/dyna-draw-context.c (fit_and_split_line): Use new sp_bezier_fit
+	signature
+	(fit_and_split_caligraphics): Ditto
 
 2001-12-07  Lauris Kaplinski  <lauris@ximian.com>
 

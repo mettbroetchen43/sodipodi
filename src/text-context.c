@@ -14,6 +14,7 @@
 
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
+#include <gal/widgets/e-unicode.h>
 #include "sp-text.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -107,6 +108,13 @@ sp_text_context_destroy (GtkObject *object)
 		sp_text_complete (text_context);
 #endif
 
+	gtk_signal_disconnect_by_data (GTK_OBJECT (ec->desktop->owner->canvas), tc);
+#ifdef SP_TC_XIM
+	gdk_ic_destroy (tc->ic);
+	gdk_ic_attr_destroy (tc->ic_attr);
+	gdk_window_set_events (GTK_WIDGET (ec->desktop->owner)->window, tc->savedmask);
+#endif
+
 	tc->item = NULL;
 
 	if (ec->desktop) {
@@ -117,6 +125,20 @@ sp_text_context_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+static gint
+sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
+{
+	g_print ("focus in\n");
+	gdk_im_begin (tc->ic, GTK_WIDGET (SP_EVENT_CONTEXT (tc)->desktop->owner->canvas)->window);
+}
+
+static gint
+sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
+{
+	g_print ("focus out\n");
+	gdk_im_end ();
+}
+
 static void
 sp_text_context_setup (SPEventContext *event_context, SPDesktop *desktop)
 {
@@ -124,6 +146,40 @@ sp_text_context_setup (SPEventContext *event_context, SPDesktop *desktop)
 
 	tc = SP_TEXT_CONTEXT (event_context);
 
+#ifdef SP_TC_XIM
+	if (gdk_im_ready () && (tc->ic_attr = gdk_ic_attr_new ()) != NULL) {
+		GdkICAttr *attr;
+		GdkColormap *colormap;
+		GdkICAttributesType attrmask;
+		GdkIMStyle style;
+		GdkIMStyle supported_style;
+
+		attr = tc->ic_attr;
+		attrmask = GDK_IC_ALL_REQ;
+		supported_style = GDK_IM_PREEDIT_NONE |
+			GDK_IM_PREEDIT_NOTHING |
+			/* GDK_IM_PREEDIT_POSITION | */
+			GDK_IM_STATUS_NONE |
+			GDK_IM_STATUS_NOTHING;
+		attr->style = style = gdk_im_decide_style (supported_style);
+		/* fixme: is this OK? */
+		attr->client_window = GTK_WIDGET (desktop->owner)->window;
+		if ((colormap = gtk_widget_get_colormap (GTK_WIDGET (desktop->owner))) != gtk_widget_get_default_colormap ()) {
+			attrmask |= GDK_IC_PREEDIT_COLORMAP;
+			attr->preedit_colormap = colormap;
+		}
+		tc->ic = gdk_ic_new (attr, attrmask);
+		if (tc->ic) {
+			tc->savedmask = gdk_window_get_events (GTK_WIDGET (desktop->owner)->window);
+			gdk_window_set_events (GTK_WIDGET (desktop->owner)->window, tc->savedmask | gdk_ic_get_events (tc->ic));
+		}
+		if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (desktop->owner->canvas))) {
+			gdk_im_begin (tc->ic, GTK_WIDGET (desktop->owner->canvas)->window);
+		}
+		gtk_signal_connect (GTK_OBJECT (desktop->owner->canvas), "focus_in_event", GTK_SIGNAL_FUNC (sptc_focus_in), tc);
+		gtk_signal_connect (GTK_OBJECT (desktop->owner->canvas), "focus_out_event", GTK_SIGNAL_FUNC (sptc_focus_out), tc);
+	}
+#endif
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
 
@@ -168,7 +224,8 @@ static gint
 sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 {
 	SPTextContext *tc;
-	gchar k[2];
+	guchar *utf8;
+	const guchar *content;
 	gchar *c;
 	gint ret;
 
@@ -209,19 +266,30 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			sp_document_done (SP_DT_DOCUMENT (ec->desktop));
 			sp_repr_unref (repr);
 		}
+		utf8 = NULL;
 		if (event->key.keyval == GDK_Return) {
-			k[0] = '\n';
-		} else {
-			if (event->key.keyval > 0x8000) {
-				return TRUE;
-			}
-			k[0] = event->key.keyval;
+			utf8 = g_strdup ("\n");
+		} else if (event->key.string) {
+			g_print ("Key %d string %s\n", event->key.keyval, event->key.string);
+#if 0
+			utf8 = e_utf8_from_gtk_string (GTK_WIDGET (ec->desktop->owner->canvas), event->key.string);
+#else
+			utf8 = e_utf8_from_locale_string (event->key.string);
+#endif
+			g_print ("UTF8 %s\n", utf8);
 		}
-		k[1] = '\0';
-		c = (gchar *) sp_repr_content (SP_OBJECT_REPR (tc->item));
-		if (c == NULL) c = "";
-		c = g_strconcat (c, k, NULL);
-		sp_repr_set_content (SP_OBJECT_REPR (tc->item), c);
+		content = sp_repr_content (SP_OBJECT_REPR (tc->item));
+		if (content) {
+			guchar *new;
+			new = g_strconcat (content, utf8, NULL);
+			g_print ("Old %s new %s\n", content, new);
+			sp_repr_set_content (SP_OBJECT_REPR (tc->item), new);
+			g_free (new);
+		} else {
+			g_print ("Setting %s\n", utf8);
+			sp_repr_set_content (SP_OBJECT_REPR (tc->item), utf8);
+		}
+		if (utf8) g_free (utf8);
 		sp_document_done (SP_DT_DOCUMENT (ec->desktop));
 
 		ret = TRUE;

@@ -22,11 +22,11 @@ sel_dragged (SPColorSelector *sel, gpointer data)
 	blocked = TRUE;
 
 	for (i = 0; i < 3; i++) {
-		if (sel != (SPColorSelector *) s[i]) sp_color_selector_set_rgba_float (SP_COLOR_SELECTOR (s[i]),
-										       sp_color_selector_get_r (sel),
-										       sp_color_selector_get_g (sel),
-										       sp_color_selector_get_b (sel),
-										       sp_color_selector_get_a (sel));
+		if (sel != (SPColorSelector *) s[i]) sp_color_selector_set_any_rgba_float (SP_COLOR_SELECTOR (s[i]),
+											   sp_color_selector_get_r (sel),
+											   sp_color_selector_get_g (sel),
+											   sp_color_selector_get_b (sel),
+											   sp_color_selector_get_a (sel));
 	}
 
 	blocked = FALSE;
@@ -50,11 +50,11 @@ sel_changed (SPColorSelector *sel, gpointer data)
 	blocked = TRUE;
 
 	for (i = 0; i < 3; i++) {
-		if (sel != (SPColorSelector *) s[i]) sp_color_selector_set_rgba_float (SP_COLOR_SELECTOR (s[i]),
-										       sp_color_selector_get_r (sel),
-										       sp_color_selector_get_g (sel),
-										       sp_color_selector_get_b (sel),
-										       sp_color_selector_get_a (sel));
+		if (sel != (SPColorSelector *) s[i]) sp_color_selector_set_any_rgba_float (SP_COLOR_SELECTOR (s[i]),
+											   sp_color_selector_get_r (sel),
+											   sp_color_selector_get_g (sel),
+											   sp_color_selector_get_b (sel),
+											   sp_color_selector_get_a (sel));
 	}
 
 	blocked = FALSE;

@@ -1,5 +1,17 @@
 #define SP_CANVAS_SHAPE_C
 
+/*
+ * Basic bezier shape item for sodipodi
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 2001 Lauris Kaplinski and Ximian, Inc.
+ *
+ * Released under GNU GPL
+ *
+ */
+
 #include <config.h>
 #include <math.h>
 #include <gnome.h>

@@ -21,6 +21,7 @@ libspchelp_a_SOURCES = \
 	sp-ctrlline.c sp-ctrlline.h \
 	sp-guide.c sp-guide.h \
 	canvas-grid.c canvas-grid.h \
+	canvas-bpath.c canvas-bpath.h \
 	png-write.c png-write.h \
 	unit-menu.c unit-menu.h \
 	nr-buffers.c nr-buffers.h \

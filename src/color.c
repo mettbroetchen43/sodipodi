@@ -17,25 +17,33 @@ struct _SPColorSpace {
 	guchar *name;
 };
 
-static void sp_color_rgb_from_cmyk (gfloat *rgb, gfloat *cmyk);
-static void sp_color_cmyk_from_rgb (gfloat *rgb, gfloat *cmyk);
-
 static const SPColorSpace RGB = {"RGB"};
 static const SPColorSpace CMYK = {"CMYK"};
 
-SPColorSpaceType
-sp_color_get_colorspace_type (SPColor *color)
+SPColorSpaceClass
+sp_color_get_colorspace_class (const SPColor *color)
 {
-	g_return_val_if_fail (color != NULL, SP_COLORSPACE_INVALID);
+	g_return_val_if_fail (color != NULL, SP_COLORSPACE_CLASS_INVALID);
 
-	if (color->colorspace == &RGB) return SP_COLORSPACE_RGB;
-	if (color->colorspace == &CMYK) return SP_COLORSPACE_CMYK;
+	if (color->colorspace == &RGB) return SP_COLORSPACE_CLASS_PROCESS;
+	if (color->colorspace == &CMYK) return SP_COLORSPACE_CLASS_PROCESS;
 
-	return SP_COLORSPACE_UNKNOWN;
+	return SP_COLORSPACE_CLASS_UNKNOWN;
+}
+
+SPColorSpaceType
+sp_color_get_colorspace_type (const SPColor *color)
+{
+	g_return_val_if_fail (color != NULL, SP_COLORSPACE_TYPE_INVALID);
+
+	if (color->colorspace == &RGB) return SP_COLORSPACE_TYPE_RGB;
+	if (color->colorspace == &CMYK) return SP_COLORSPACE_TYPE_CMYK;
+
+	return SP_COLORSPACE_TYPE_UNKNOWN;
 }
 
 void
-sp_color_copy (SPColor *dst, SPColor *src)
+sp_color_copy (SPColor *dst, const SPColor *src)
 {
 	g_return_if_fail (dst != NULL);
 	g_return_if_fail (src != NULL);
@@ -92,7 +100,7 @@ sp_color_set_cmyk_float (SPColor *color, gfloat c, gfloat m, gfloat y, gfloat k)
 }
 
 guint32
-sp_color_get_rgba32_ualpha (SPColor *color, guint alpha)
+sp_color_get_rgba32_ualpha (const SPColor *color, guint alpha)
 {
 	guint32 rgba;
 
@@ -100,34 +108,28 @@ sp_color_get_rgba32_ualpha (SPColor *color, guint alpha)
 	g_return_val_if_fail (alpha <= 0xff, 0x0);
 
 	if (color->colorspace == &RGB) {
-		rgba = ((guint) floor (color->v.c[0] * 255.9999) << 24) |
-			((guint) floor (color->v.c[1] * 255.9999) << 16) |
-			((guint) floor (color->v.c[2] * 255.9999) << 8) |
-			alpha;
+		rgba = SP_RGBA32_U_COMPOSE (SP_COLOR_F_TO_U (color->v.c[0]), SP_COLOR_F_TO_U (color->v.c[1]), SP_COLOR_F_TO_U (color->v.c[2]), alpha);
 	} else {
 		gfloat rgb[3];
 		sp_color_get_rgb_floatv (color, rgb);
-		rgba = ((guint) floor (rgb[0] * 255.9999) << 24) |
-			((guint) floor (rgb[1] * 255.9999) << 16) |
-			((guint) floor (rgb[2] * 255.9999) << 8) |
-			alpha;
+		rgba = SP_RGBA32_U_COMPOSE (SP_COLOR_F_TO_U (rgb[0]), SP_COLOR_F_TO_U (rgb[1]), SP_COLOR_F_TO_U (rgb[2]), alpha);
 	}
 
 	return rgba;
 }
 
 guint32
-sp_color_get_rgba32_falpha (SPColor *color, gfloat alpha)
+sp_color_get_rgba32_falpha (const SPColor *color, gfloat alpha)
 {
 	g_return_val_if_fail (color != NULL, 0x0);
 	g_return_val_if_fail (alpha >= 0.0, 0x0);
 	g_return_val_if_fail (alpha <= 1.0, 0x0);
 
-	return sp_color_get_rgba32_ualpha (color, (guint) floor (alpha * 255.9999));
+	return sp_color_get_rgba32_ualpha (color, SP_COLOR_F_TO_U (alpha));
 }
 
 void
-sp_color_get_rgb_floatv (SPColor *color, gfloat *rgb)
+sp_color_get_rgb_floatv (const SPColor *color, gfloat *rgb)
 {
 	g_return_if_fail (color != NULL);
 	g_return_if_fail (rgb != NULL);
@@ -137,12 +139,12 @@ sp_color_get_rgb_floatv (SPColor *color, gfloat *rgb)
 		rgb[1] = color->v.c[1];
 		rgb[2] = color->v.c[2];
 	} else if (color->colorspace == &CMYK) {
-		sp_color_rgb_from_cmyk (rgb, color->v.c);
+		sp_color_cmyk_to_rgb_floatv (rgb, color->v.c[0], color->v.c[1], color->v.c[2], color->v.c[3]);
 	}
 }
 
 void
-sp_color_get_cmyk_floatv (SPColor *color, gfloat *cmyk)
+sp_color_get_cmyk_floatv (const SPColor *color, gfloat *cmyk)
 {
 	g_return_if_fail (color != NULL);
 	g_return_if_fail (cmyk != NULL);
@@ -153,43 +155,90 @@ sp_color_get_cmyk_floatv (SPColor *color, gfloat *cmyk)
 		cmyk[2] = color->v.c[2];
 		cmyk[3] = color->v.c[3];
 	} else if (color->colorspace == &RGB) {
-		sp_color_cmyk_from_rgb (cmyk, color->v.c);
+		sp_color_rgb_to_cmyk_floatv (cmyk, color->v.c[0], color->v.c[1], color->v.c[2]);
 	}
 }
 
-static void
-sp_color_rgb_from_cmyk (gfloat *rgb, gfloat *cmyk)
+/* Plain mode helpers */
+
+void
+sp_color_rgb_to_hsv_floatv (gfloat *hsv, gfloat r, gfloat g, gfloat b)
 {
-	gdouble c, m, y, k, kd;
+	gdouble max, min, delta;
 
-	c = cmyk[0];
-	m = cmyk[1];
-	y = cmyk[2];
-	k = cmyk[3];
+	max = MAX (MAX (r, g), b);
+	min = MIN (MIN (r, g), b);
+	delta = max - min;
 
-	kd = 1.0 - k;
+	hsv[2] = max;
 
-	c = c * kd;
-	m = m * kd;
-	y = y * kd;
+	if (max > 0) {
+		hsv[1] = delta / max;
+	} else {
+		hsv[1] = 0.0;
+	}
 
-	c = c + k;
-	m = m + k;
-	y = y + k;
+	if (hsv[1] != 0.0) {
+		if (r == max) {
+			hsv[0] = (g - b) / delta;
+		} else if (g == max) {
+			hsv[0] = 2.0 + (b - r) / delta;
+		} else {
+			hsv[0] = 4.0 + (r - g) / delta;
+		}
 
-	rgb[0] = 1.0 - c;
-	rgb[1] = 1.0 - m;
-	rgb[2] = 1.0 - y;
+		hsv[0] = hsv[0] / 6.0;
+
+		if (hsv[0] < 0) hsv[0] += 1.0;
+	}
 }
 
-static void
-sp_color_cmyk_from_rgb (gfloat *rgb, gfloat *cmyk)
+void
+sp_color_hsv_to_rgb_floatv (gfloat *rgb, gfloat h, gfloat s, gfloat v)
+{
+	gdouble f, w, q, t, d;
+
+	d = h * 5.99999999;
+	f = d - floor (d);
+	w = v * (1.0 - s);
+	q = v * (1.0 - (s * f));
+	t = v * (1.0 - (s * (1.0 - f)));
+
+	if (d < 1.0) {
+		*rgb++ = v;
+		*rgb++ = t;
+		*rgb++ = w;
+	} else if (d < 2.0) {
+		*rgb++ = q;
+		*rgb++ = v;
+		*rgb++ = w;
+	} else if (d < 3.0) {
+		*rgb++ = w;
+		*rgb++ = v;
+		*rgb++ = t;
+	} else if (d < 4.0) {
+		*rgb++ = w;
+		*rgb++ = q;
+		*rgb++ = v;
+	} else if (d < 5.0) {
+		*rgb++ = t;
+		*rgb++ = w;
+		*rgb++ = v;
+	} else {
+		*rgb++ = v;
+		*rgb++ = w;
+		*rgb++ = q;
+	}
+}
+
+void
+sp_color_rgb_to_cmyk_floatv (gfloat *cmyk, gfloat r, gfloat g, gfloat b)
 {
 	gfloat c, m, y, k, kd;
 
-	c = 1.0 - rgb[0];
-	m = 1.0 - rgb[1];
-	y = 1.0 - rgb[2];
+	c = 1.0 - r;
+	m = 1.0 - g;
+	y = 1.0 - b;
 	k = MIN (MIN (c, m), y);
 
 	c = c - k;
@@ -209,6 +258,27 @@ sp_color_cmyk_from_rgb (gfloat *rgb, gfloat *cmyk)
 	cmyk[2] = y;
 	cmyk[3] = k;
 }
+
+void
+sp_color_cmyk_to_rgb_floatv (gfloat *rgb, gfloat c, gfloat m, gfloat y, gfloat k)
+{
+	gfloat kd;
+
+	kd = 1.0 - k;
+
+	c = c * kd;
+	m = m * kd;
+	y = y * kd;
+
+	c = c + k;
+	m = m + k;
+	y = y + k;
+
+	rgb[0] = 1.0 - c;
+	rgb[1] = 1.0 - m;
+	rgb[2] = 1.0 - y;
+}
+
 
 
 

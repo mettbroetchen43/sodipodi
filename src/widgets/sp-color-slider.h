@@ -8,6 +8,8 @@
  *
  * Copyright (C) Lauris Kaplinski <lauris@ximian.com> 2001
  *
+ * Licensed under GNU General Public License
+ *
  */
 
 #include <gtk/gtkwidget.h>
@@ -23,13 +25,18 @@ typedef struct _SPColorSliderClass SPColorSliderClass;
 
 struct _SPColorSlider {
 	GtkWidget widget;
+
 	guint dragging : 1;
+
 	GtkAdjustment *adjustment;
+
 	gfloat value;
 	gfloat oldvalue;
 	guchar c0[4], c1[4];
 	guchar b0, b1;
 	guchar bmask;
+
+	gint mapsize;
 	guchar *map;
 };
 

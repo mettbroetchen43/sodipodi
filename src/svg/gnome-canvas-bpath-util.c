@@ -10,8 +10,9 @@
  *          Raph Levien <raph@acm.org>
  */
 
-#include <glib.h>
 #include <math.h>
+#include <string.h>
+#include <glib.h>
 #include "gnome-canvas-bpath-util.h"
 
 GnomeCanvasBpathDef *
@@ -33,7 +34,7 @@ GnomeCanvasBpathDef *
 gnome_canvas_bpath_def_new_from (ArtBpath *path)
 {
 	GnomeCanvasBpathDef *bpd;
-	int n, i;
+	int i;
 
 	g_return_val_if_fail (path != NULL, NULL);
 

@@ -255,7 +255,7 @@ sp_gradient_image_update (SPGradientImage *image)
 	allocation = &((GtkWidget *) image)->allocation;
 
 	if (image->gradient) {
-		nr_render_checkerboard_rgb (image->px, allocation->width, VBLOCK, 3 * allocation->width);
+		nr_render_checkerboard_rgb (image->px, allocation->width, VBLOCK, 3 * allocation->width, 0, 0);
 		sp_gradient_render_vector_block_rgb (image->gradient,
 						     image->px, allocation->width, VBLOCK, 3 * allocation->width,
 						     0, allocation->width, TRUE);

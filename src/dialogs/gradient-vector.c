@@ -10,6 +10,7 @@
  *
  */
 
+#include <stdlib.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtkwindow.h>
@@ -138,9 +139,9 @@ sp_gradient_vector_widget_load_gradient (GtkWidget *widget, SPGradient *gradient
 
 		/* Set color selector values */
 		w = gtk_object_get_data (GTK_OBJECT (widget), "start");
-		sp_color_selector_set_rgba_uint (SP_COLOR_SELECTOR (w), cs);
+		sp_color_selector_set_any_rgba32 (SP_COLOR_SELECTOR (w), cs);
 		w = gtk_object_get_data (GTK_OBJECT (widget), "end");
-		sp_color_selector_set_rgba_uint (SP_COLOR_SELECTOR (w), ce);
+		sp_color_selector_set_any_rgba32 (SP_COLOR_SELECTOR (w), ce);
 
 		/* Fixme: Sensitivity */
 	}
@@ -201,7 +202,7 @@ sp_gradient_vector_color_dragged (SPColorSelector *csel, GtkObject *object)
 {
 	SPGradient *gradient, *ngr;
 	SPGradientVector *vector;
-	gdouble c[4];
+	gfloat c[4];
 
 	if (blocked) return;
 
@@ -224,12 +225,12 @@ sp_gradient_vector_color_dragged (SPColorSelector *csel, GtkObject *object)
 	vector->end = ngr->vector->end;
 
 	csel = gtk_object_get_data (object, "start");
-	sp_color_selector_get_rgba_double (csel, c);
+	sp_color_selector_get_rgba_floatv (csel, c);
 	vector->stops[0].offset = 0.0;
 	sp_color_set_rgb_float (&vector->stops[0].color, c[0], c[1], c[2]);
 	vector->stops[0].opacity = c[3];
 	csel = gtk_object_get_data (object, "end");
-	sp_color_selector_get_rgba_double (csel, c);
+	sp_color_selector_get_rgba_floatv (csel, c);
 	vector->stops[1].offset = 1.0;
 	sp_color_set_rgb_float (&vector->stops[1].color, c[0], c[1], c[2]);
 	vector->stops[1].opacity = c[3];
@@ -274,7 +275,7 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	g_return_if_fail (child != NULL);
 
 	csel = gtk_object_get_data (object, "start");
-	color = sp_color_selector_get_color_uint (csel);
+	color = sp_color_selector_get_rgba32 (csel);
 
 	sp_repr_set_double_attribute (SP_OBJECT_REPR (child), "offset", start);
 	g_snprintf (c, 256, "stop-color:#%06x;stop-opacity:%g;", color >> 8, (gdouble) (color & 0xff) / 255.0);
@@ -286,7 +287,7 @@ sp_gradient_vector_color_changed (SPColorSelector *csel, GtkObject *object)
 	g_return_if_fail (child != NULL);
 
 	csel = gtk_object_get_data (object, "end");
-	color = sp_color_selector_get_color_uint (csel);
+	color = sp_color_selector_get_rgba32 (csel);
 
 	sp_repr_set_double_attribute (SP_OBJECT_REPR (child), "offset", end);
 	g_snprintf (c, 256, "stop-color:#%06x;stop-opacity:%g;", color >> 8, (gdouble) (color & 0xff) / 255.0);

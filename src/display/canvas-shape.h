@@ -2,9 +2,14 @@
 #define SP_CANVAS_SHAPE_H
 
 /*
- * CanvasShape
+ * Basic bezier shape item for sodipodi
  *
- * A multiline, multicomponent shape, filled and/or stroked
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 2001 Lauris Kaplinski and Ximian, Inc.
+ *
+ * Released under GNU GPL
  *
  */
 

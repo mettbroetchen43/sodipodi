@@ -441,27 +441,27 @@ sp_fill_style_widget_get_collective_color (SPWidget *spw, SPColor *color, gdoubl
 	objects = sp_selection_item_list (SP_DT_SELECTION (spw->desktop));
 
 	/* Try to determine colorspace */
-	colorspace = SP_COLORSPACE_NONE;
+	colorspace = SP_COLORSPACE_TYPE_NONE;
 	for (l = objects; l != NULL; l = l->next) {
 		SPObject *o;
 		o = SP_OBJECT (l->data);
 		if (o->style->fill.type == SP_PAINT_TYPE_COLOR) {
 			SPColorSpaceType sct;
 			sct = sp_color_get_colorspace_type (&o->style->fill.color);
-			if (colorspace == SP_COLORSPACE_NONE) {
+			if (colorspace == SP_COLORSPACE_TYPE_NONE) {
 				colorspace = sct;
 			} else if (colorspace != sct) {
-				colorspace = SP_COLORSPACE_UNKNOWN;
+				colorspace = SP_COLORSPACE_TYPE_UNKNOWN;
 			}
 		}
 	}
 
 	switch (colorspace) {
-	case SP_COLORSPACE_NONE:
+	case SP_COLORSPACE_TYPE_NONE:
 		/* Noting interesting, use last value */
 		sp_color_copy (color, &lastprocesscolor);
 		*alpha = lastalpha;
-	case SP_COLORSPACE_CMYK:
+	case SP_COLORSPACE_TYPE_CMYK:
 		/* RGB has precendence over CMYK */
 		/* Find average */
 		items = 0;
@@ -605,10 +605,10 @@ sp_fill_style_set_solid (SPWidget *spw)
 
 	sp_fill_style_widget_get_collective_color (spw, &color, &alpha);
 
-	if (sp_color_get_colorspace_type (&color) == SP_COLORSPACE_CMYK) {
+	if (sp_color_get_colorspace_type (&color) == SP_COLORSPACE_TYPE_CMYK) {
 		gtk_option_menu_set_history (GTK_OPTION_MENU (gtk_object_get_data (GTK_OBJECT (csel), "mode-menu")), 2);
 		sp_color_selector_set_mode (SP_COLOR_SELECTOR (csel), SP_COLOR_SELECTOR_MODE_CMYK);
-		sp_color_selector_set_cmyka_float (SP_COLOR_SELECTOR (csel), color.v.c[0], color.v.c[1], color.v.c[2], color.v.c[3], alpha);
+		sp_color_selector_set_any_cmyka_float (SP_COLOR_SELECTOR (csel), color.v.c[0], color.v.c[1], color.v.c[2], color.v.c[3], alpha);
 	} else {
 		/* fixme: preserve RGB/HSV mode */
 		if (lastmode == SP_COLOR_SELECTOR_MODE_HSV) {
@@ -618,7 +618,7 @@ sp_fill_style_set_solid (SPWidget *spw)
 		gtk_option_menu_set_history (GTK_OPTION_MENU (gtk_object_get_data (GTK_OBJECT (csel), "mode-menu")), 0);
 			sp_color_selector_set_mode (SP_COLOR_SELECTOR (csel), SP_COLOR_SELECTOR_MODE_RGB);
 		}
-		sp_color_selector_set_rgba_float (SP_COLOR_SELECTOR (csel), color.v.c[0], color.v.c[1], color.v.c[2], alpha);
+		sp_color_selector_set_any_rgba_float (SP_COLOR_SELECTOR (csel), color.v.c[0], color.v.c[1], color.v.c[2], alpha);
 	}
 	
 	/* Save colors used */
@@ -712,13 +712,13 @@ sp_fill_style_widget_rgba_changed (SPColorSelector *csel, SPWidget *spw)
 		css = sp_repr_css_attr_new ();
 
 		fill_cmyk = (sp_color_selector_get_mode (csel) == SP_COLOR_SELECTOR_MODE_CMYK);
-		sp_svg_write_color (c, 64, sp_color_selector_get_color_uint (csel));
+		sp_svg_write_color (c, 64, sp_color_selector_get_rgba32 (csel));
 		sp_repr_css_set_property (css, "fill", c);
 		g_snprintf (c, 64, "%g", sp_color_selector_get_a (csel));
 		sp_repr_css_set_property (css, "fill-opacity", c);
 		if (fill_cmyk) {
-			gdouble cmyk[5];
-			sp_color_selector_get_cmyka_double (csel, cmyk);
+			gfloat cmyk[5];
+			sp_color_selector_get_cmyka_floatv (csel, cmyk);
 			cmykstr = g_strdup_printf ("(%g %g %g %g)", cmyk[0], cmyk[1], cmyk[2], cmyk[3]);
 		} else {
 			cmykstr = NULL;
@@ -765,12 +765,12 @@ sp_fill_style_widget_rgba_dragged (SPColorSelector *csel, SPWidget *spw)
 		style->fill_set = TRUE;
 		style->fill.type = SP_PAINT_TYPE_COLOR;
 		if (sp_color_selector_get_mode (csel) == SP_COLOR_SELECTOR_MODE_CMYK) {
-			gdouble cmyk[5];
-			sp_color_selector_get_cmyka_double (csel, cmyk);
+			gfloat cmyk[5];
+			sp_color_selector_get_cmyka_floatv (csel, cmyk);
 			sp_color_set_cmyk_float (&style->fill.color, cmyk[0], cmyk[1], cmyk[2], cmyk[3]);
 		} else {
-			gdouble rgb[4];
-			sp_color_selector_get_rgba_double (csel, rgb);
+			gfloat rgb[4];
+			sp_color_selector_get_rgba_floatv (csel, rgb);
 			sp_color_set_rgb_float (&style->fill.color, rgb[0], rgb[1], rgb[2]);
 		}
 		style->fill_opacity_set = TRUE;

@@ -704,20 +704,21 @@ sp_sel_trans_stretch_request (SPSelTrans * seltrans, SPSelTransHandle * handle, 
 	  break;
 	case GDK_LEFT_SIDE:
 	case GDK_RIGHT_SIDE:
-	  if (fabs (point.x - norm.x) < 1e-5) return FALSE;
-	  sx = (p->x - norm.x) / (point.x - norm.x);
-	  if (fabs (sx) < 1e-5) sx = 1e-15;
-	  if (state & GDK_CONTROL_MASK) {
-	    if (fabs (sx) > 1) sx = sx / fabs (sx);
-	    sy = fabs (sx);
-	    ratio = sp_desktop_vector_snap_list (desktop, seltrans->snappoints, &norm, sx, sy);
-	    sx = (fabs (sx) < 1) ? fabs (ratio) * sx / fabs (sx) : sx / fabs (sx);
-	    sy = fabs (ratio);
-	  } else {
-	    sx = sp_desktop_horizontal_snap_list_scale (desktop, seltrans->snappoints, &norm, sx);
-	  }
-	  break;
+		if (fabs (point.x - norm.x) < 1e-5) return FALSE;
+		sx = (p->x - norm.x) / (point.x - norm.x);
+		if (fabs (sx) < 1e-5) sx = 1e-15;
+		if (state & GDK_CONTROL_MASK) {
+			if (fabs (sx) > 1) sx = sx / fabs (sx);
+			sy = fabs (sx);
+			ratio = sp_desktop_vector_snap_list (desktop, seltrans->snappoints, &norm, sx, sy);
+			sx = (fabs (sx) < 1) ? fabs (ratio) * sx / fabs (sx) : sx / fabs (sx);
+			sy = fabs (ratio);
+		} else {
+			sx = sp_desktop_horizontal_snap_list_scale (desktop, seltrans->snappoints, &norm, sx);
+		}
+		break;
 	default:
+		break;
 	}
 
 	p->x = (point.x - norm.x)* sx + norm.x;
@@ -788,6 +789,7 @@ sp_sel_trans_skew_request (SPSelTrans * seltrans, SPSelTransHandle * handle, Art
 	  skew[1] = 0;
 	  break;
 	default:
+		break;
 	}
 	// status text
 	sprintf (status, "Skew  %0.2f%c %0.2f%c", 100 * fabs(skew[2]), '%', 100 * fabs(skew[1]), '%');
@@ -920,6 +922,7 @@ sp_sel_trans_stretch (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint
 	  }
 	  break;
 	default:
+		break;
 	}
 
 	if (fabs (sx) < 1e-15) sx = 1e-15; 
@@ -976,6 +979,7 @@ sp_sel_trans_skew (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * 
 	  skew[3] = 1;
 	  break;
 	default:
+		break;
 	}
 
 	if (fabs (skew[0]) < 1e-15) skew[0] = 1e-15;

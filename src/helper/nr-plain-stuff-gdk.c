@@ -15,6 +15,19 @@
 #include "nr-plain-stuff-gdk.h"
 
 void
+nr_gdk_draw_rgba32_solid (GdkDrawable *drawable, GdkGC *gc, gint x, gint y, gint w, gint h, guint32 rgba)
+{
+	NRBuffer *b;
+
+	b = nr_buffer_get (NR_IMAGE_R8G8B8A8, w, h, TRUE, FALSE);
+
+	nr_render_rgba32_rgb (b->px, b->w, b->h, b->rs, x, y, rgba);
+	gdk_draw_rgb_image (drawable, gc, x, y, w, h, GDK_RGB_DITHER_MAX, b->px, b->rs);
+
+	nr_buffer_free (b);
+}
+
+void
 nr_gdk_draw_gray_garbage (GdkDrawable *drawable, GdkGC *gc, gint x, gint y, gint w, gint h)
 {
 	static guchar *px;

@@ -13,6 +13,7 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include "document.h"
 #include "uri-references.h"

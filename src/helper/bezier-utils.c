@@ -1,51 +1,53 @@
+#define __SP_BEZIER_UTILS_C__
+
 /*
  * An Algorithm for Automatically Fitting Digitized Curves
  * by Philip J. Schneider
  * from "Graphics Gems", Academic Press, 1990
+ *
+ * Authors:
+ *   Philip J. Schneider
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1990 Philip J. Schneider
+ * Copyright (C) 2001 Lauris Kaplinski and Ximian, Inc.
+ *
+ * Released under GNU GPL
  */
 
-#define noBEZIER_DEBUG
+#define BEZIER_DEBUG
 
 #include <math.h>
+#include <stdlib.h>
 #include "bezier-utils.h"
 
 typedef ArtPoint * BezierCurve;
 
 /* Forward declarations */
-static void GenerateBezier (ArtPoint * b, const ArtPoint * d, gint first, gint last, double * uPrime, const ArtPoint *tHat1, const ArtPoint *tHat2);
+static void GenerateBezier (ArtPoint *b, const ArtPoint *d, gdouble *uPrime, gint len, const ArtPoint *tHat1, const ArtPoint *tHat2);
 static gdouble * Reparameterize(const ArtPoint * d, gint first, gint last, gdouble * u, BezierCurve bezCurve);
 static gdouble NewtonRaphsonRootFind(BezierCurve Q, ArtPoint P, gdouble u);
 static void BezierII (gint degree, ArtPoint * V, gdouble t, ArtPoint *result);
-static gdouble B0 (gdouble u);
-static gdouble B1 (gdouble u);
-static gdouble B2 (gdouble u);
-static gdouble B3 (gdouble u);
 
-static gdouble * ChordLengthParameterize(const ArtPoint * d, gint first, gint last);
-static gdouble ComputeMaxError(const ArtPoint * d, gint first, gint last, BezierCurve bezCurve, gdouble * u, gint * splitPoint);
+/*
+ *  B0, B1, B2, B3 : Bezier multipliers
+ */
 
-/* Vector */
+#define B0(u) ((1.0 - u) * (1.0 - u) * (1.0 - u))
+#define B1(u) (3 * u * (1.0 - u) * (1.0 - u))
+#define B2(u) (3 * u * u * (1.0 - u))
+#define B3(u) (u * u * u)
 
-static
-void	sp_vector_add 			(ArtPoint	a,
-					 ArtPoint	b,
-					 ArtPoint      *c);
+static void ChordLengthParameterize(const ArtPoint *d, gdouble *u, gint len);
+static gdouble ComputeMaxError (const ArtPoint *d, gdouble *u, gint len, const BezierCurve bezCurve, gint *splitPoint);
 
-static
-void	sp_vector_scale			(ArtPoint	v,
-					 gdouble	s,
-					 ArtPoint      *result);
+/* Vector operations */
 
-static
-void	sp_vector_sub			(ArtPoint	a,
-					 ArtPoint	b,
-					 ArtPoint      *c);
-
-static
-void	sp_vector_normalize		(ArtPoint      *v);
-
-static
-void	sp_vector_negate		(ArtPoint      *v);
+static void sp_vector_add (const ArtPoint *a, const ArtPoint *b, ArtPoint *result);
+static void sp_vector_sub (const ArtPoint *a, const ArtPoint *b, ArtPoint *result);
+static void sp_vector_scale (const ArtPoint *v, gdouble s, ArtPoint *result);
+static void sp_vector_normalize (ArtPoint *v);
+static void sp_vector_negate (ArtPoint *v);
 
 #define V2Dot(a,b) ((a)->x * (b)->x + (a)->y * (b)->y)
 
@@ -69,109 +71,115 @@ void	sp_vector_negate		(ArtPoint      *v);
 #define MAXPOINTS	1000		/* The most points you can have */
 
 /*
- *  sp_bezier_fit_cubic :
- *  	Fit a Bezier curve to a (sub)set of digitized points
+ * sp_bezier_fit_cubic
+ *
+ * Fit a single-segment Bezier curve to a set of digitized points
+ *
+ * Returns number of segments generated or -1 on error
  */
-gboolean
-sp_bezier_fit_cubic (ArtPoint       *bezier, /* assume size==4 */
-		     const ArtPoint *data,
-		     gint            first,
-		     gint            last,
-		     gdouble         error)
+
+gint
+sp_bezier_fit_cubic (ArtPoint *bezier, const ArtPoint *data, gint len, gdouble error)
 {
 	ArtPoint    tHat1;
 	ArtPoint    tHat2;
 	gint        fill;
 	
-	sp_darray_left_tangent (data, first, &tHat1);
-	sp_darray_right_tangent (data, last, &tHat2);
+	g_return_val_if_fail (bezier != NULL, -1);
+	g_return_val_if_fail (data != NULL, -1);
+	g_return_val_if_fail (len > 0, -1);
+
+	if (len < 2) return 0;
+
+	sp_darray_left_tangent (data, 0, &tHat1);
+	sp_darray_right_tangent (data, len - 1, &tHat2);
 	
 	/* call fit-cubic function without recursion */
-	fill = sp_bezier_fit_cubic_full (bezier, data, first, last,
-					 &tHat1, &tHat2,error, 1);
+	fill = sp_bezier_fit_cubic_full (bezier, data, len, &tHat1, &tHat2,error, 1);
 	
-	return (fill != -1) ? TRUE : FALSE;
+	return fill;
 }
 
 /*
- *  sp_bezier_fit_cubic_r:
- *     fit-cubic with recursive
- *  attribute
- *    beizer:
- *      ArtPoint array to fill result bezier paths
- *      required size==4*2^(max_depth-1)
+ *  sp_bezier_fit_cubic_r
+ *
+ * Fit a multi-segment Bezier curve to a set of digitized points
+ *
+ * Maximum number of generated segments is 2 ^ (max_depth - 1)
+ *
  *    return value:
  *      block size which filled bezier paths by fit-cubic fuction
  *        where 1 block size = 4 * sizeof(ArtPoint)
  *      -1 if failed.
  */
 gint
-sp_bezier_fit_cubic_r (ArtPoint       *bezier,
-		       const ArtPoint *data,
-		       gint            first,
-		       gint            last,
-		       gdouble         error,
-		       gint            max_depth)
+sp_bezier_fit_cubic_r (ArtPoint *bezier, const ArtPoint *data, gint len, gdouble error, gint max_depth)
 {
 	ArtPoint    tHat1;
 	ArtPoint    tHat2;
 	
-	sp_darray_left_tangent (data, first, &tHat1);
-	sp_darray_right_tangent (data, last, &tHat2);
+	g_return_val_if_fail (bezier != NULL, -1);
+	g_return_val_if_fail (data != NULL, -1);
+	g_return_val_if_fail (len > 0, -1);
+	g_return_val_if_fail (max_depth >= 0, -1);
+
+	if (len < 2) return 0;
+
+	sp_darray_left_tangent (data, 0, &tHat1);
+	sp_darray_right_tangent (data, len - 1, &tHat2);
 	
 	/* call fit-cubic function with recursion */
-	return sp_bezier_fit_cubic_full (bezier, data, first, last,
-					 &tHat1, &tHat2,error, max_depth);
+	return sp_bezier_fit_cubic_full (bezier, data, len, &tHat1, &tHat2, error, max_depth);
 }
 
 gint
-sp_bezier_fit_cubic_full (ArtPoint       *bezier,
-			  const ArtPoint *data,
-			  gint            first,
-			  gint            last,
-			  ArtPoint       *tHat1,
-			  ArtPoint       *tHat2,
-			  gdouble         error,
-			  gint            max_depth)
+sp_bezier_fit_cubic_full (ArtPoint *bezier, const ArtPoint *data, gint len,
+			  ArtPoint *tHat1, ArtPoint *tHat2, gdouble error, gint max_depth)
 {
-	double	*u;		/*  Parameter values for point  */
-	double	*uPrime;	/*  Improved parameter values */
-	double	maxError;	/*  Maximum fitting error	 */
-	int		splitPoint; /*  Point to split point set at	 */
-	int		nPts;	/*  Number of points in subset  */
-	double	iterationError; /*Error below which you try iterating  */
-	int		maxIterations = 4; /*  Max times to try iterating  */
+	double *u; /* Parameter values for point */
+	double *uPrime;	/* Improved parameter values */
+	double maxError; /* Maximum fitting error */
+	int splitPoint; /* Point to split point set at */
+	double iterationError; /* Error below which you try iterating (squared) */
+	int maxIterations = 4; /* Max times to try iterating */
 	
-	int		i;
+	int i;
 	
+	g_return_val_if_fail (bezier != NULL, -1);
+	g_return_val_if_fail (data != NULL, -1);
+	g_return_val_if_fail (len > 0, -1);
+	g_return_val_if_fail (tHat1 != NULL, -1);
+	g_return_val_if_fail (tHat2 != NULL, -1);
+	g_return_val_if_fail (max_depth >= 0, -1);
+
+	if (len < 2) return 0;
+
 	iterationError = error * error;
-	nPts = last - first + 1;
 	
-	/*  Use heuristic if region only has two points in it */
-	if (nPts == 2) {
-		double dist = hypot (data[last].x - data[first].x, data[last].y - data[first].y) / 3.0;
-		
-		bezier[0] = data[first];
-		bezier[3] = data[last];
+	if (len == 2) {
+		double dist;
+		/* We have 2 points, so just draw straight segment */
+		dist = hypot (data[len - 1].x - data[0].x, data[len - 1].y - data[0].y) / 3.0;
+		bezier[0] = data[0];
+		bezier[3] = data[len - 1];
 		bezier[1].x = tHat1->x * dist + bezier[0].x;
 		bezier[1].y = tHat1->y * dist + bezier[0].y;
 		bezier[2].x = tHat2->x * dist + bezier[3].x;
 		bezier[2].y = tHat2->y * dist + bezier[3].y;
-		
 		BEZIER_ASSERT (bezier);
 		return 1;
 	}
 	
 	/*  Parameterize points, and attempt to fit curve */
-	u = ChordLengthParameterize(data, first, last);
-	GenerateBezier(bezier, data, first, last, u, tHat1, tHat2);
+	u = alloca (len * sizeof (gdouble));
+	ChordLengthParameterize (data, u, len);
+	GenerateBezier (bezier, data, u, len, tHat1, tHat2);
 	
 	/*  Find max deviation of points to fitted curve */
-	maxError = ComputeMaxError(data, first, last, bezier, u, &splitPoint);
+	maxError = ComputeMaxError (data, u, len, bezier, &splitPoint);
 	
 	if (maxError < error) {
 		BEZIER_ASSERT (bezier);
-		g_free (u);
 		return 1;
 	}
 
@@ -179,21 +187,17 @@ sp_bezier_fit_cubic_full (ArtPoint       *bezier,
 	/*  and iteration */
 	if (maxError < iterationError) {
 		for (i = 0; i < maxIterations; i++) {
-			uPrime = Reparameterize(data, first, last, u, bezier);
-			GenerateBezier(bezier, data, first, last, uPrime, tHat1, tHat2);
-			maxError = ComputeMaxError(data, first, last, bezier, uPrime, &splitPoint);
+			uPrime = Reparameterize(data, 0, len - 1, u, bezier);
+			GenerateBezier (bezier, data, uPrime, len, tHat1, tHat2);
+			maxError = ComputeMaxError(data, uPrime, len, bezier, &splitPoint);
 			if (maxError < error) {
 				BEZIER_ASSERT (bezier);
-				g_free (u);
 				g_free (uPrime);
 				return 1;
 			}
-			g_free (u);
 			u = uPrime;
 		}
 	}
-	
-	g_free (u);
 	
 	if (max_depth > 1)
 	{
@@ -206,7 +210,7 @@ sp_bezier_fit_cubic_full (ArtPoint       *bezier,
 		max_depth--;
 		
 		sp_darray_center_tangent (data, splitPoint, &tHatCenter);
-		depth1 = sp_bezier_fit_cubic_full (bezier, data, first,  splitPoint, tHat1, &tHatCenter, error, max_depth);
+		depth1 = sp_bezier_fit_cubic_full (bezier, data, splitPoint + 1, tHat1, &tHatCenter, error, max_depth);
 		if (depth1 == -1)
 		{
 #ifdef BEZIER_DEBUG
@@ -215,7 +219,7 @@ sp_bezier_fit_cubic_full (ArtPoint       *bezier,
 			return -1;
 		}
 		sp_vector_negate(&tHatCenter);
-		depth2 = sp_bezier_fit_cubic_full (bezier + depth1*4, data, splitPoint, last, &tHatCenter, tHat2, error, max_depth);
+		depth2 = sp_bezier_fit_cubic_full (bezier + depth1*4, data + splitPoint, len - splitPoint, &tHatCenter, tHat2, error, max_depth);
 		if (depth2 == -1)
 		{
 #ifdef BEZIER_DEBUG
@@ -240,17 +244,10 @@ sp_bezier_fit_cubic_full (ArtPoint       *bezier,
  *
  */
 static void
-GenerateBezier (ArtPoint * bezier,
-		const ArtPoint * data,
-		gint first,
-		gint last,
-		double * uPrime,
-		const ArtPoint *tHat1,
-		const ArtPoint *tHat2)
+GenerateBezier (ArtPoint *bezier, const ArtPoint *data, gdouble *uPrime, gint len, const ArtPoint *tHat1, const ArtPoint *tHat2)
 {
 	int 	i;
 	ArtPoint 	A[MAXPOINTS][2]; /* Precomputed rhs for eqn	*/
-	int 	nPts;		/* Number of pts in sub-curve */
 	double 	C[2][2];	/* Matrix C		*/
 	double 	X[2];		/* Matrix X			*/
 	double 	det_C0_C1,	/* Determinants of matrices	*/
@@ -259,29 +256,11 @@ GenerateBezier (ArtPoint * bezier,
 	double 	alpha_l,	/* Alpha values, left and right	*/
     	   	alpha_r;
 	ArtPoint 	tmp;	/* Utility variable		*/
-#if 0
-	BezierCurve	bezCurve; /* RETURN bezier curve ctl pts	*/
-#endif
 
-	nPts = last - first + 1;
-	
 	/* Compute the A's	*/
-	for (i = 0; i < nPts; i++) {
-		ArtPoint       	v1, v2;
-		gdouble b1, b2;
-		
-		b1 = B1(uPrime[i]);
-		b2 = B2(uPrime[i]);
-		v1.x = tHat1->x * b1;
-		v1.y = tHat1->y * b1;
-		v2.x = tHat2->x * b2;
-		v2.y = tHat2->y * b2;
-#if 0
-		V2Scale(&v1, B1(uPrime[i]));
-		V2Scale(&v2, B2(uPrime[i]));
-#endif
-		A[i][0] = v1;
-		A[i][1] = v2;
+	for (i = 0; i < len; i++) {
+		sp_vector_scale (tHat1, B1 (uPrime[i]), &A[i][0]);
+		sp_vector_scale (tHat2, B2 (uPrime[i]), &A[i][1]);
 	}
 	
 	/* Create the C and X matrices	*/
@@ -292,22 +271,21 @@ GenerateBezier (ArtPoint * bezier,
 	X[0]    = 0.0;
 	X[1]    = 0.0;
 	
-	for (i = 0; i < nPts; i++) {
+	for (i = 0; i < len; i++) {
 		ArtPoint tmp1, tmp2, tmp3, tmp4;
 		C[0][0] += V2Dot(&A[i][0], &A[i][0]);
 		C[0][1] += V2Dot(&A[i][0], &A[i][1]);
-/*					C[1][0] += V2Dot(&A[i][0], &A[i][1]);*/	
 		C[1][0] = C[0][1];
 		C[1][1] += V2Dot(&A[i][1], &A[i][1]);
 		
-                sp_vector_scale(data[last], B2(uPrime[i]), &tmp1);
-                sp_vector_scale(data[last], B3(uPrime[i]), &tmp2);
-                sp_vector_add(tmp1, tmp2, &tmp3);
-                sp_vector_scale(data[first], B0(uPrime[i]), &tmp1);
-                sp_vector_scale(data[first], B1(uPrime[i]), &tmp2);
-                sp_vector_add(tmp2, tmp3, &tmp4);
-                sp_vector_add(tmp1, tmp4, &tmp2);
-		sp_vector_sub(data[first + i], tmp2, &tmp);
+                sp_vector_scale (&data[len - 1], B2(uPrime[i]), &tmp1);
+                sp_vector_scale (&data[len - 1], B3(uPrime[i]), &tmp2);
+                sp_vector_add (&tmp1, &tmp2, &tmp3);
+                sp_vector_scale (&data[0], B0(uPrime[i]), &tmp1);
+                sp_vector_scale (&data[0], B1(uPrime[i]), &tmp2);
+                sp_vector_add (&tmp2, &tmp3, &tmp4);
+                sp_vector_add (&tmp1, &tmp4, &tmp2);
+		sp_vector_sub (&data[i], &tmp2, &tmp);
 		
 		
 		X[0] += V2Dot(&A[i][0], &tmp);
@@ -326,44 +304,34 @@ GenerateBezier (ArtPoint * bezier,
 	alpha_l = det_X_C1 / det_C0_C1;
 	alpha_r = det_C0_X / det_C0_C1;
 	
-	
+	/*  First and last control points of the Bezier curve are */
+	/*  positioned exactly at the first and last data points */
+	bezier[0] = data[0];
+	bezier[3] = data[len - 1];
+
 	/*  If alpha negative, use the Wu/Barsky heuristic (see text) */
 	/* (if alpha is 0, you get coincident control points that lead to
 	 * divide by zero in any subsequent NewtonRaphsonRootFind() call. */
 	if (alpha_l < 1.0e-6 || alpha_r < 1.0e-6) {
-		double	dist;
+		gdouble dist;
 		
-		dist = hypot (data[last].x - data[first].x, data[last].y - data[first].y) / 3.0;
+		dist = hypot (data[len - 1].x - data[0].x, data[len - 1].y - data[0].y) / 3.0;
 		
-		bezier[0] = data[first];
-		bezier[3] = data[last];
-#if 0
-		V2Add(&bezCurve[0], V2Scale(tHat1, dist), &bezCurve[1]);
-		V2Add(&bezCurve[3], V2Scale(tHat2, dist), &bezCurve[2]);
-#else
 		bezier[1].x = tHat1->x * dist + bezier[0].x;
 		bezier[1].y = tHat1->y * dist + bezier[0].y;
 		bezier[2].x = tHat2->x * dist + bezier[3].x;
 		bezier[2].y = tHat2->y * dist + bezier[3].y;
-#endif
+
 		return;
 	}
 	
-	/*  First and last control points of the Bezier curve are */
-	/*  positioned exactly at the first and last data points */
 	/*  Control points 1 and 2 are positioned an alpha distance out */
 	/*  on the tangent vectors, left and right, respectively */
-	bezier[0] = data[first];
-	bezier[3] = data[last];
-#if 0
-	V2Add(&bezCurve[0], V2Scale(tHat1, alpha_l), &bezCurve[1]);
-	V2Add(&bezCurve[3], V2Scale(tHat2, alpha_r), &bezCurve[2]);
-#else
 	bezier[1].x = tHat1->x * alpha_l + bezier[0].x;
 	bezier[1].y = tHat1->y * alpha_l + bezier[0].y;
 	bezier[2].x = tHat2->x * alpha_r + bezier[3].x;
 	bezier[2].y = tHat2->y * alpha_r + bezier[3].y;
-#endif
+
 	return;
 }
 
@@ -481,36 +449,6 @@ BezierII (gint degree, ArtPoint * V, gdouble t, ArtPoint *Q)
 }
 
 /*
- *  B0, B1, B2, B3 :
- *	Bezier multipliers
- */
-static gdouble B0 (gdouble u)
-{
-	double tmp = 1.0 - u;
-	return (tmp * tmp * tmp);
-}
-
-
-static gdouble B1 (gdouble u)
-{
-	double tmp = 1.0 - u;
-	return (3 * u * (tmp * tmp));
-}
-
-static gdouble B2 (gdouble u)
-{
-	double tmp = 1.0 - u;
-	return (3 * u * u * tmp);
-}
-
-static gdouble B3(gdouble u)
-{
-	return (u * u * u);
-}
-
-
-
-/*
  * ComputeLeftTangent, ComputeRightTangent, ComputeCenterTangent :
  *Approximate unit tangents at endpoints and "center" of digitized curve
  */
@@ -519,7 +457,7 @@ sp_darray_left_tangent (const ArtPoint *d,
 			gint            first,
 			ArtPoint       *tHat1)
 {
-	sp_vector_sub(d[first+1], d[first], tHat1);
+	sp_vector_sub (&d[first+1], &d[first], tHat1);
 	sp_vector_normalize(tHat1);
 }
 
@@ -528,7 +466,7 @@ sp_darray_right_tangent (const ArtPoint *d,
 			 gint            last,
 			 ArtPoint       *tHat2)
 {
-	sp_vector_sub(d[last-1], d[last], tHat2);
+	sp_vector_sub (&d[last-1], &d[last], tHat2);
 	sp_vector_normalize(tHat2);
 }
 
@@ -539,8 +477,8 @@ sp_darray_center_tangent (const ArtPoint *d,
 {
 	ArtPoint	V1, V2;
 	
-	sp_vector_sub(d[center-1], d[center], &V1);
-	sp_vector_sub(d[center], d[center+1], &V2);
+	sp_vector_sub (&d[center-1], &d[center], &V1);
+	sp_vector_sub(&d[center], &d[center+1], &V2);
 	tHatCenter->x = (V1.x + V2.x)/2.0;
 	tHatCenter->y = (V1.y + V2.y)/2.0;
 	sp_vector_normalize(tHatCenter);
@@ -550,32 +488,30 @@ sp_darray_center_tangent (const ArtPoint *d,
  *  ChordLengthParameterize :
  *	Assign parameter values to digitized points 
  *	using relative distances between points.
+ *
+ * Parameter array u has to be allocated with the same length as data
  */
-static gdouble *
-ChordLengthParameterize(const ArtPoint * d, gint first, gint last)
+static void
+ChordLengthParameterize(const ArtPoint *d, gdouble *u, gint len)
 {
-	int		i;	
-	gdouble	*u;			/*  Parameterization		*/
-	
-	u = g_new (gdouble, last - first + 1);
+	gint i;	
 	
 	u[0] = 0.0;
-	for (i = first+1; i <= last; i++) {
-		u[i-first] = u[i-first-1] +
-			hypot (d[i].x - d[i-1].x, d[i].y - d[i-1].y);
+
+	for (i = 1; i < len; i++) {
+		u[i] = u[i-1] + hypot (d[i].x - d[i-1].x, d[i].y - d[i-1].y);
 	}
 
-	for (i = first + 1; i <= last; i++) {
-		u[i-first] = u[i-first] / u[last-first];
+	for (i = 1; i < len; i++) {
+		u[i] = u[i] / u[len - 1];
 	}
 
 #ifdef BEZIER_DEBUG
-	g_assert (u[0] == 0.0 && u[last - first] == 1.0);
-	for (i = 1; i<= last - first; i++) {
-		g_assert (u[i] > u[i-1]);
+	g_assert (u[0] == 0.0 && u[len - 1] == 1.0);
+	for (i = 1; i < len; i++) {
+		g_assert (u[i] >= u[i-1]);
 	}
 #endif
-	return(u);
 }
 
 
@@ -587,74 +523,64 @@ ChordLengthParameterize(const ArtPoint * d, gint first, gint last)
  *	to fitted curve.
 */
 static gdouble
-ComputeMaxError(const ArtPoint   *d,
-                gint              first,
-                gint              last,
-                const BezierCurve bezCurve,
-                gdouble          *u,
-                gint             *splitPoint)
+ComputeMaxError (const ArtPoint *d, gdouble *u, gint len, const BezierCurve bezCurve, gint *splitPoint)
 {
-#if 0
-  Point2	*d;			/*  Array of digitized points	*/
-  int		first, last;		/*  Indices defining region	*/
-  BezierCurve	bezCurve;		/*  Fitted Bezier curve		*/
-  double	*u;			/*  Parameterization of points	*/
-  int		*splitPoint;		/*  Point of maximum error	*/
-#endif
-  int		i;
-  double	maxDist;		/*  Maximum error		*/
-  double	dist;		/*  Current error		*/
-  ArtPoint	P;			/*  Point on curve		*/
-  ArtPoint	v;			/*  Vector from point to curve	*/
-  
-  *splitPoint = (last - first + 1)/2;
-  maxDist = 0.0;
-  for (i = first + 1; i < last; i++) {
-    BezierII(3, bezCurve, u[i-first], &P);
-    sp_vector_sub(P, d[i], &v);
-    dist = v.x * v.x + v.y * v.y;
-    if (dist >= maxDist) {
-      maxDist = dist;
-      *splitPoint = i;
-    }
-  }
-  return (maxDist);
+	int i;
+	double maxDist; /* Maximum error */
+	double dist; /* Current error */
+	ArtPoint P; /* Point on curve */
+	ArtPoint v; /* Vector from point to curve */
+
+	*splitPoint = len / 2;
+
+	maxDist = 0.0;
+	for (i = 1; i < len; i++) {
+		BezierII (3, bezCurve, u[i], &P);
+		sp_vector_sub (&P, &d[i], &v);
+		dist = v.x * v.x + v.y * v.y;
+		if (dist >= maxDist) {
+			maxDist = dist;
+			*splitPoint = i;
+		}
+	}
+
+	return maxDist;
 }
 
 static void
-sp_vector_add (ArtPoint a, ArtPoint b, ArtPoint *c)
+sp_vector_add (const ArtPoint *a, const ArtPoint *b, ArtPoint *c)
 {
-  c->x = a.x + b.x;
-  c->y = a.y + b.y;
+	c->x = a->x + b->x;
+	c->y = a->y + b->y;
 }
 
 static void
-sp_vector_scale (ArtPoint v, gdouble s, ArtPoint *result)
+sp_vector_sub (const ArtPoint *a, const ArtPoint *b, ArtPoint *c)
 {
-  result->x = v.x * s;
-  result->y = v.y * s;
+	c->x = a->x - b->x;
+	c->y = a->y - b->y;
 }
 
 static void
-sp_vector_sub (ArtPoint a, ArtPoint b, ArtPoint *c)
+sp_vector_scale (const ArtPoint *v, gdouble s, ArtPoint *result)
 {
-  c->x = a.x - b.x;
-  c->y = a.y - b.y;
+	result->x = v->x * s;
+	result->y = v->y * s;
 }
 
 static void
 sp_vector_normalize (ArtPoint *v)
 {
-  gdouble len;
+	gdouble len;
 
-  len = hypot (v->x, v->y);
-  v->x /= len;
-  v->y /= len;
+	len = hypot (v->x, v->y);
+	v->x /= len;
+	v->y /= len;
 }
 
 static void
 sp_vector_negate (ArtPoint *v)
 {
-  v->x = -v->x;
-  v->y = -v->y;
+	v->x = -v->x;
+	v->y = -v->y;
 }

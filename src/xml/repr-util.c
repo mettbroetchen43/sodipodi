@@ -1,5 +1,18 @@
-#define SP_REPR_UTIL_C
+#define __SP_REPR_UTIL_C__
 
+/*
+ * Miscellaneous helpers for reprs
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Licensed under GNU GPL
+ */
+
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "repr-private.h"

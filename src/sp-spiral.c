@@ -14,6 +14,7 @@
  */
 
 #include <math.h>
+#include <string.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -265,7 +266,7 @@ sp_spiral_fit_and_draw (SPSpiral *spiral,
 	/* Fixme:
 	   we should use better algorithm to specify maximum error.
 	*/
-	depth = sp_bezier_fit_cubic_full (bezier, darray, 0, SAMPLE_SIZE - 1,
+	depth = sp_bezier_fit_cubic_full (bezier, darray, SAMPLE_SIZE,
 					  hat1, hat2,
 					  SPIRAL_TOLERANCE*SPIRAL_TOLERANCE,
 					  FITTING_DEPTH);
@@ -345,6 +346,32 @@ sp_spiral_set_shape (SPShape *shape)
 	for (t = spiral->t0; t < (1.0-tstep); t += tstep)
 	{
 		sp_spiral_fit_and_draw (spiral, c, dstep, darray, &hat1, &hat2, t);
+
+#if 0
+<<<<<<< sp-spiral.c
+		/* Fixme:
+		   we shuld specify a maximum error using better algorithm.
+		*/
+		depth = sp_bezier_fit_cubic_full (bezier, darray, SAMPLE_SIZE,
+						  &hat1, &hat2,
+						  SPIRAL_TOLERANCE * SPIRAL_TOLERANCE,
+						  FITTING_DEPTH);
+		if (depth != -1) {
+			for (j = 0; j < 4*depth; j += 4)
+				sp_curve_curveto (c, bezier[j + 1].x, bezier[j + 1].y,
+						  bezier[j + 2].x, bezier[j + 2].y,
+						  bezier[j + 3].x, bezier[j + 3].y);
+		} else {
+#ifdef SPIRAL_VERBOSE
+			g_print ("cant_fit_cubic: t=%g\n", t);
+#endif
+			for (i = 1; i < SAMPLE_SIZE; i++)
+				sp_curve_lineto (c, darray[i].x, darray[i].y);
+		}
+
+=======
+>>>>>>> 1.5
+#endif
 
 		hat1.x = - hat2.x;
 		hat1.y = - hat2.y;

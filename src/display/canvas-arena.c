@@ -12,6 +12,7 @@
  *
  */
 
+#include <string.h>
 #include <gtk/gtksignal.h>
 #include "../helper/canvas-helper.h"
 #include "../helper/nr-buffers.h"

@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = intl po macros src glade
+SUBDIRS = src glade po intl macros
 
 EXTRA_DIST =			\
 	sodipodi.desktop	\

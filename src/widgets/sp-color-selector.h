@@ -10,7 +10,8 @@
  *
  */
 
-#include <gtk/gtktable.h>
+#include <gtk/gtkvbox.h>
+#include "../color.h"
 #include "sp-color-slider.h"
 
 typedef struct _SPColorSelector SPColorSelector;
@@ -30,18 +31,21 @@ typedef enum {
 } SPColorSelectorMode;
 
 struct _SPColorSelector {
-	GtkTable table;
+	GtkVBox vbox;
 	gint8 mode;
 	guint updating : 1;
+	guint updatingrgba : 1;
 	guint dragging : 1;
 	GtkAdjustment *a[5]; /* Channel adjustments */
 	GtkWidget *s[5]; /* Channel sliders */
 	GtkWidget *b[5]; /* Spinbuttons */
 	GtkWidget *l[5]; /* Labels */
+	GtkWidget *rgbal, *rgbae; /* RGBA entry */
+	GtkWidget *p; /* Color preview */
 };
 
 struct _SPColorSelectorClass {
-	GtkTableClass parent_class;
+	GtkVBoxClass parent_class;
 
 	void (* grabbed) (SPColorSelector *rgbsel);
 	void (* dragged) (SPColorSelector *rgbsel);
@@ -56,17 +60,30 @@ GtkWidget *sp_color_selector_new (void);
 void sp_color_selector_set_mode (SPColorSelector *csel, SPColorSelectorMode mode);
 SPColorSelectorMode sp_color_selector_get_mode (SPColorSelector *csel);
 
+/* Syntax is: ..._set_[colorspace]_valuetype */
+/* Missing colorspace means, that selector mode will be adjusted */
+/* Any means, that selector colorspace remains unchanged */
+
+void sp_color_selector_set_any_color_alpha (SPColorSelector *csel, const SPColor *color, gfloat alpha);
+void sp_color_selector_set_color_alpha (SPColorSelector *csel, const SPColor *color, gfloat alpha);
+void sp_color_selector_get_color_alpha (SPColorSelector *csel, SPColor *color, gfloat *alpha);
+
+void sp_color_selector_set_any_rgba_float (SPColorSelector *csel, gfloat r, gfloat g, gfloat b, gfloat a);
+void sp_color_selector_set_any_cmyka_float (SPColorSelector *csel, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a);
+void sp_color_selector_set_any_rgba32 (SPColorSelector *csel, guint32 rgba);
+
 void sp_color_selector_set_rgba_float (SPColorSelector *csel, gfloat r, gfloat g, gfloat b, gfloat a);
 void sp_color_selector_set_cmyka_float (SPColorSelector *csel, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a);
-void sp_color_selector_set_rgba_uint (SPColorSelector *csel, guint32 rgba);
+void sp_color_selector_set_rgba32 (SPColorSelector *csel, guint32 rgba);
 
-void sp_color_selector_get_rgba_double (SPColorSelector *csel, gdouble *rgba);
-void sp_color_selector_get_cmyka_double (SPColorSelector *csel, gdouble *cmyka);
+void sp_color_selector_get_rgba_floatv (SPColorSelector *csel, gfloat *rgba);
+void sp_color_selector_get_cmyka_floatv (SPColorSelector *csel, gfloat *cmyka);
 
 gfloat sp_color_selector_get_r (SPColorSelector *csel);
 gfloat sp_color_selector_get_g (SPColorSelector *csel);
 gfloat sp_color_selector_get_b (SPColorSelector *csel);
 gfloat sp_color_selector_get_a (SPColorSelector *csel);
-guint32 sp_color_selector_get_color_uint (SPColorSelector *csel);
+
+guint32 sp_color_selector_get_rgba32 (SPColorSelector *csel);
 
 #endif

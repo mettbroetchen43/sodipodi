@@ -12,13 +12,6 @@ endif
 if WITH_NEW_RENDER
 nr_sources = \
 	nr-uta.c nr-uta.h \
-	nr-canvas.c nr-canvas.h \
-	nr-canvas-item.c nr-canvas-item.h \
-	nr-canvas-group.c nr-canvas-group.h \
-	nr-aa-canvas.c nr-aa-canvas.h \
-	sp-arena.c sp-arena.h \
-	sp-canvas-item.c sp-canvas-item.h \
-	sp-canvas-group.c sp-canvas-group.h \
 	nr-svp.c nr-svp.h \
 	nr-svp-uncross.c nr-svp-uncross.h \
 	nr-svp-render.c nr-svp-render.h
@@ -56,5 +49,3 @@ libspdisplay_a_SOURCES = \
 	stroke.c stroke.h \
 	$(nr_sources)
 
-#	canvas-bgroup.c canvas-bgroup.h \
-#	canvas-image.c canvas-image.h \

@@ -108,13 +108,31 @@ sp_curve_new_from_foreign_bpath (ArtBpath * bpath)
 	return curve;
 }
 
-void
+SPCurve *
 sp_curve_ref (SPCurve * curve)
 {
-	g_return_if_fail (curve != NULL);
+	g_return_val_if_fail (curve != NULL, NULL);
 
-	curve->refcount++;
+	curve->refcount += 1;
+
+	return curve;
 }
+
+SPCurve *
+sp_curve_unref (SPCurve * curve)
+{
+	g_return_val_if_fail (curve != NULL, NULL);
+
+	curve->refcount -= 1;
+
+	if (curve->refcount < 1) {
+		if ((!curve->sbpath) && (curve->bpath)) art_free (curve->bpath);
+		g_free (curve);
+	}
+
+	return NULL;
+}
+
 
 void
 sp_curve_finish (SPCurve * curve)
@@ -228,21 +246,6 @@ sp_curve_split (SPCurve * curve)
 
 	return l;
 }
-
-
-/* Destructor */
-
-void
-sp_curve_unref (SPCurve * curve)
-{
-	g_return_if_fail (curve != NULL);
-
-	if (--curve->refcount < 1) {
-		if ((!curve->sbpath) && (curve->bpath)) art_free (curve->bpath);
-		g_free (curve);
-	}
-}
-
 
 /* Methods */
 

@@ -12,6 +12,7 @@
  *
  */
 
+#include <string.h>
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 #include "../helper/nr-plain-stuff.h"

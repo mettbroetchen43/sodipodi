@@ -543,7 +543,9 @@ sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw) {
   sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
   sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, any, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
   // give focus back to canvas
+#if 1
   gtk_widget_grab_focus (GTK_WIDGET (dtw->canvas));
+#endif
 }
 
 
@@ -818,8 +820,10 @@ sp_desktop_set_focus (GtkWidget *widget, GtkWidget *widget2, SPDesktop * desktop
 {
   sodipodi_activate_desktop (desktop);
   // give focus to canvas widget
+#if 1
   gtk_widget_grab_focus (GTK_WIDGET (desktop->owner->canvas));
   gnome_canvas_item_grab_focus ((GnomeCanvasItem *) desktop->main); 
+#endif
 
   return FALSE;
 }
@@ -893,7 +897,9 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	GtkStyle *style;
 	GtkAdjustment *hadj, *vadj;
 	//	GList * zoom_list = NULL;
-
+#if 0
+        GTK_WIDGET_SET_FLAGS (GTK_WIDGET(desktop), GTK_CAN_FOCUS);
+#endif
 	desktop->document = NULL;
 	desktop->namedview = NULL;
 	desktop->desktop = NULL;
@@ -1104,7 +1110,9 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	gtk_signal_connect (GTK_OBJECT (hadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_widget_update_rulers), desktop);
 	gtk_signal_connect (GTK_OBJECT (vadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_widget_update_rulers), desktop);
 
+#if 1
         gtk_widget_grab_focus (GTK_WIDGET (desktop->canvas));
+#endif
 }
 
 static void

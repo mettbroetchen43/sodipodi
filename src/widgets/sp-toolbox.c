@@ -11,6 +11,7 @@
  */
 
 #include <gnome.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include "sp-toolbox.h"
 
 enum {

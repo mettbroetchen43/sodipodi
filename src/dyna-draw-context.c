@@ -926,7 +926,7 @@ fit_and_split_line (SPDynaDrawContext *dc,
   tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE_LINE;
   tolerance = tolerance * tolerance;
 
-  if (sp_bezier_fit_cubic (b, dc->point1, 0, dc->npoints - 1, tolerance)
+  if (sp_bezier_fit_cubic (b, dc->point1, dc->npoints, tolerance) > 0
       && dc->npoints < SAMPLING_SIZE)
     {
       /* Fit and draw and reset state */
@@ -1028,9 +1028,9 @@ fit_and_split_calligraphics (SPDynaDrawContext *dc,
           sp_curve_moveto (dc->cal2, dc->point2[0].x, dc->point2[0].y);
         }
 
-      nb1 = sp_bezier_fit_cubic_r (b1, dc->point1, 0, dc->npoints-1,
+      nb1 = sp_bezier_fit_cubic_r (b1, dc->point1, dc->npoints,
                                        tolerance, BEZIER_MAX_DEPTH);
-      nb2 = sp_bezier_fit_cubic_r (b2, dc->point2, 0, dc->npoints-1,
+      nb2 = sp_bezier_fit_cubic_r (b2, dc->point2, dc->npoints,
                                        tolerance, BEZIER_MAX_DEPTH);
       if (nb1 != -1 && nb2 != -1)
         {
