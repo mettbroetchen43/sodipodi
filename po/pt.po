@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24.1\n"
-"POT-Creation-Date: 2002-08-24 06:19+0200\n"
-"PO-Revision-Date: 2002-08-24 13:45+0000\n"
+"POT-Creation-Date: 2002-08-25 21:11+0100\n"
+"PO-Revision-Date: 2002-08-25 21:15+0000\n"
 "Last-Translator: Álvaro Lopes <alvieboy@alvie.com>\n"
 "Language-Team: Portuguese <gnome_pt@yahoogroups.com>\n"
 "MIME-Version: 1.0\n"
@@ -82,7 +82,7 @@ msgid "Close window"
 msgstr "Fechar janela"
 
 #: glade/align.glade.h:16 glade/sodipodi.glade.h:19 src/dialogs/align.c:106
-#: src/interface.c:368
+#: src/interface.c:330
 msgid "Drawing"
 msgstr "Desenho"
 
@@ -97,13 +97,13 @@ msgstr "Último seleccionado"
 #. Page settings
 #. Notebook tab
 #: glade/align.glade.h:19 glade/sodipodi.glade.h:42 src/dialogs/align.c:101
-#: src/dialogs/document-properties.c:144 src/interface.c:369
+#: src/dialogs/document-properties.c:144 src/interface.c:331
 msgid "Page"
 msgstr "Página"
 
 #. Selection submenu
 #: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
-#: src/dialogs/align.c:111 src/interface.c:367 src/interface.c:467
+#: src/dialogs/align.c:111 src/interface.c:329 src/interface.c:429
 #: src/toolbox.c:114
 msgid "Selection"
 msgstr "Selecção"
@@ -340,6 +340,7 @@ msgstr "Largura da rasura"
 #: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
 #: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
 #: src/dialogs/object-properties.c:225 src/dialogs/stroke-style.c:166
+#: src/dialogs/tool-attributes.c:99
 msgid "Width:"
 msgstr "Largura:"
 
@@ -414,19 +415,19 @@ msgstr "px"
 msgid "1.0MB"
 msgstr "1.0MB"
 
-#: glade/sodipodi.glade.h:2 src/interface.c:376
+#: glade/sodipodi.glade.h:2 src/interface.c:338
 msgid "1:1"
 msgstr "1:1"
 
-#: glade/sodipodi.glade.h:3 src/interface.c:375
+#: glade/sodipodi.glade.h:3 src/interface.c:337
 msgid "1:2"
 msgstr "1:2"
 
-#: glade/sodipodi.glade.h:4 src/interface.c:377
+#: glade/sodipodi.glade.h:4 src/interface.c:339
 msgid "2:1"
 msgstr "2:1"
 
-#: glade/sodipodi.glade.h:5 src/interface.c:390
+#: glade/sodipodi.glade.h:5 src/interface.c:352
 msgid "Arc"
 msgstr "Arco"
 
@@ -463,7 +464,7 @@ msgid "Cusp line at selected nodes"
 msgstr "Remover suavização nos nós seleccionados"
 
 #. File:Export
-#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:12 src/interface.c:293
+#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:12 src/interface.c:255
 #: src/widgets/gradient-selector.c:145
 msgid "Delete"
 msgstr "Apagar"
@@ -480,7 +481,7 @@ msgstr "Área de Trabalho"
 msgid "Display"
 msgstr "Ecrâ"
 
-#: glade/sodipodi.glade.h:18 src/interface.c:408
+#: glade/sodipodi.glade.h:18 src/interface.c:370
 msgid "Document"
 msgstr "Documento"
 
@@ -489,16 +490,16 @@ msgid "Drawing Context"
 msgstr "Contexto de Desenho"
 
 #. Edit:Duplicate
-#: glade/sodipodi.glade.h:21 src/interface.c:288
+#: glade/sodipodi.glade.h:21 src/interface.c:250
 msgid "Duplicate"
 msgstr "Duplicar"
 
-#: glade/sodipodi.glade.h:22 src/interface.c:394
+#: glade/sodipodi.glade.h:22 src/interface.c:356
 msgid "Dynahand"
 msgstr "Mão dinâmica"
 
 #. File:Export
-#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:229
+#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:210
 msgid "Export"
 msgstr "Exportar"
 
@@ -518,7 +519,7 @@ msgstr "Ficheiro:"
 msgid "Forward One"
 msgstr "Um passo para a frente"
 
-#: glade/sodipodi.glade.h:29 src/interface.c:393
+#: glade/sodipodi.glade.h:29 src/interface.c:355
 msgid "Freehand"
 msgstr "Mão livre"
 
@@ -531,7 +532,7 @@ msgid "Image size"
 msgstr "Tamanho da imagem"
 
 #. File:Import
-#: glade/sodipodi.glade.h:32 src/interface.c:224
+#: glade/sodipodi.glade.h:32 src/interface.c:208
 msgid "Import"
 msgstr "Importar"
 
@@ -548,16 +549,16 @@ msgid "Lock aspect ratio"
 msgstr "Bloquear aspecto"
 
 #. View:New Preview
-#: glade/sodipodi.glade.h:36 src/interface.c:381
+#: glade/sodipodi.glade.h:36 src/interface.c:343
 msgid "New Preview"
 msgstr "Nova Pré-visualização"
 
 #. View:New View
-#: glade/sodipodi.glade.h:37 src/interface.c:379
+#: glade/sodipodi.glade.h:37 src/interface.c:341
 msgid "New View"
 msgstr "Nova vista"
 
-#: glade/sodipodi.glade.h:38 src/interface.c:388
+#: glade/sodipodi.glade.h:38 src/interface.c:350
 msgid "Node"
 msgstr "Nó"
 
@@ -570,7 +571,7 @@ msgid "Nodes"
 msgstr "Nós"
 
 #. Selection:Order
-#: glade/sodipodi.glade.h:41 src/interface.c:333
+#: glade/sodipodi.glade.h:41 src/interface.c:295
 msgid "Order"
 msgstr "Ordenar"
 
@@ -578,16 +579,16 @@ msgstr "Ordenar"
 msgid "Png file name"
 msgstr "Nome do ficheiro png"
 
-#: glade/sodipodi.glade.h:44 src/interface.c:389
+#: glade/sodipodi.glade.h:44 src/interface.c:351
 msgid "Rectangle"
 msgstr "Rectângulo"
 
 #: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
-#: src/interface.c:371
+#: src/interface.c:333
 msgid "Scale"
 msgstr "Escala"
 
-#: glade/sodipodi.glade.h:46 src/interface.c:387
+#: glade/sodipodi.glade.h:46 src/interface.c:349
 msgid "Select"
 msgstr "Seleccionar"
 
@@ -608,12 +609,12 @@ msgid "Smooth line at selected nodes"
 msgstr "Suavizar linha nos nós seleccionados"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:52 src/interface.c:392 src/sp-spiral.c:586
+#: glade/sodipodi.glade.h:52 src/interface.c:354 src/sp-spiral.c:586
 msgid "Spiral"
 msgstr "Espiral"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/interface.c:391 src/sp-star.c:467
+#: glade/sodipodi.glade.h:53 src/interface.c:353 src/sp-star.c:467
 msgid "Star"
 msgstr "Estrela"
 
@@ -621,7 +622,7 @@ msgstr "Estrela"
 msgid "Symmetric "
 msgstr "Simétrico"
 
-#: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1 src/interface.c:395
+#: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1 src/interface.c:357
 msgid "Text"
 msgstr "Texto"
 
@@ -662,8 +663,8 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1076
-#: src/interface.c:363 src/interface.c:396 src/toolbox.c:135
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1077
+#: src/interface.c:325 src/interface.c:358 src/toolbox.c:135
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -780,7 +781,7 @@ msgid "Duplicate selection"
 msgstr "Duplicar selecção"
 
 #. Edit submenu
-#: glade/toolbox.glade.h:23 src/interface.c:461 src/toolbox.c:96
+#: glade/toolbox.glade.h:23 src/interface.c:423 src/toolbox.c:96
 #: src/widgets/gradient-selector.c:132
 msgid "Edit"
 msgstr "Editar"
@@ -807,7 +808,7 @@ msgstr "Editar rasuramento dos objectos seleccionados"
 
 #. Generic menu
 #. File submenu
-#: glade/toolbox.glade.h:30 src/interface.c:455 src/toolbox.c:92
+#: glade/toolbox.glade.h:30 src/interface.c:417 src/toolbox.c:92
 msgid "File"
 msgstr "Ficheiro"
 
@@ -873,7 +874,7 @@ msgid "Really wanna quit sodipodi ?"
 msgstr "Quer mesmo sair do sodipodi ?"
 
 #. File:Print Preview
-#: glade/toolbox.glade.h:49 src/interface.c:432
+#: glade/toolbox.glade.h:49 src/interface.c:394
 msgid "Redo"
 msgstr "Refazer"
 
@@ -886,8 +887,8 @@ msgid "Rise selection one layer"
 msgstr "Elevar selecção uma camada"
 
 #: glade/toolbox.glade.h:52
-msgid "Rotate selected objects 90 clockwise"
-msgstr "Rodar objectos seleccionados 90 no sentido dos ponteiros"
+msgid "Rotate selected objects 90° clockwise"
+msgstr "Rodar objectos seleccionados 90° no sentido dos ponteiros"
 
 #: glade/toolbox.glade.h:53
 msgid "Save drawing "
@@ -1271,12 +1272,12 @@ msgid "Content"
 msgstr "Conteúdo"
 
 #. Edit:Copy
-#: glade/xml-tree.glade.h:9 src/interface.c:274
+#: glade/xml-tree.glade.h:9 src/interface.c:236
 msgid "Copy"
 msgstr "Copiar"
 
 #. Edit:Cut
-#: glade/xml-tree.glade.h:10 src/interface.c:269
+#: glade/xml-tree.glade.h:10 src/interface.c:231
 msgid "Cut"
 msgstr "Cortar"
 
@@ -1313,7 +1314,7 @@ msgid "Key"
 msgstr "Chave"
 
 #. File:New
-#: glade/xml-tree.glade.h:20 src/interface.c:200
+#: glade/xml-tree.glade.h:20 src/interface.c:198
 msgid "New"
 msgstr "Novo"
 
@@ -1322,7 +1323,7 @@ msgid "New Element"
 msgstr "Novo Elemento"
 
 #. Edit:Paste
-#: glade/xml-tree.glade.h:22 src/interface.c:279
+#: glade/xml-tree.glade.h:22 src/interface.c:241
 msgid "Paste"
 msgstr "Colar"
 
@@ -1348,26 +1349,26 @@ msgstr "Não foi possível criar a factory sodipodi-svg-doc"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1068
+#: src/desktop.c:1069
 msgid "Welcome !"
 msgstr "Bem Vindo !"
 
-#: src/desktop.c:1140
+#: src/desktop.c:1141
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1216
+#: src/desktop.c:1217
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "O documento %s foi alterado, deseja gravá-lo?"
 
 #. File:Save
-#: src/desktop.c:1217 src/interface.c:210
+#: src/desktop.c:1218 src/interface.c:202
 msgid "Save"
 msgstr "Gravar"
 
-#: src/desktop.c:1217
+#: src/desktop.c:1218
 msgid "Don't save"
 msgstr "Não gravar"
 
@@ -1824,124 +1825,124 @@ msgid "meters"
 msgstr "metros"
 
 #. File:Open
-#: src/interface.c:205
+#: src/interface.c:200
 msgid "Open"
 msgstr "Abrir"
 
 #. File:Save As
-#: src/interface.c:215
-msgid "Save As"
-msgstr "Gravar Como"
+#: src/interface.c:204
+msgid "Save as"
+msgstr "Gravar como"
 
 #. File:Print
-#: src/interface.c:238
+#: src/interface.c:214
 msgid "Print"
 msgstr "Imprimir"
 
 #. File:Print Preview
-#: src/interface.c:243
-msgid "Print preview"
-msgstr "Prever impressão"
+#: src/interface.c:216
+msgid "Print Preview"
+msgstr "Antever Impressão"
 
 #. File:Close
-#: src/interface.c:252
-msgid "Close view"
-msgstr "Fechar vista"
+#: src/interface.c:220
+msgid "Close View"
+msgstr "Fechar Vista"
 
 #. File:Exit
-#: src/interface.c:257
-msgid "Exit"
-msgstr "Sair"
+#: src/interface.c:222
+msgid "Exit Program"
+msgstr "Sair Aplicação"
 
 #. Selection:Group
-#: src/interface.c:305 src/sp-item-group.c:458
+#: src/interface.c:267 src/sp-item-group.c:458
 msgid "Group"
 msgstr "Agrupar"
 
 #. Selection:Ungroup
-#: src/interface.c:310 src/sp-item-group.c:475
+#: src/interface.c:272 src/sp-item-group.c:475
 msgid "Ungroup"
 msgstr "Desagrupar"
 
 #. Selection:Combine
-#: src/interface.c:319
+#: src/interface.c:281
 msgid "Combine"
 msgstr "Combinar"
 
 #. Selection:Break apart
-#: src/interface.c:324
+#: src/interface.c:286
 msgid "Break apart"
 msgstr "Quebrar"
 
-#: src/interface.c:337
+#: src/interface.c:299
 msgid "Bring to Front"
 msgstr "Trazer para a Frente"
 
-#: src/interface.c:341
+#: src/interface.c:303
 msgid "Send to Back"
 msgstr "Enviar para Trás"
 
-#: src/interface.c:345
+#: src/interface.c:307
 msgid "Raise"
 msgstr "Subir"
 
-#: src/interface.c:349
+#: src/interface.c:311
 msgid "Lower"
 msgstr "Descer"
 
-#: src/interface.c:402
+#: src/interface.c:364
 msgid "Fill and Stroke"
 msgstr "Enchimento e Pincel"
 
-#: src/interface.c:403
+#: src/interface.c:365
 msgid "Size and Position"
 msgstr "Tamanho e Posição"
 
-#: src/interface.c:404
+#: src/interface.c:366
 msgid "Align Objects"
 msgstr "Alinhar Objectos"
 
-#: src/interface.c:405
+#: src/interface.c:367
 msgid "Text Editing"
 msgstr "Editar Texto"
 
-#: src/interface.c:406
+#: src/interface.c:368
 msgid "Transformations"
 msgstr "Transformações"
 
-#: src/interface.c:407
+#: src/interface.c:369
 msgid "Tool Attributes"
 msgstr "Atributos Ferramentas"
 
-#: src/interface.c:409
+#: src/interface.c:371
 msgid "Editing Window"
 msgstr "Janela de Edição"
 
-#: src/interface.c:410
+#: src/interface.c:372
 msgid "XML Editor"
 msgstr "Editor XML"
 
-#: src/interface.c:411
+#: src/interface.c:373
 msgid "Display Properties"
 msgstr "Propriedades de Ecrã"
 
 #. Undo
-#: src/interface.c:430
+#: src/interface.c:392
 msgid "Undo"
 msgstr "Desfazer"
 
 #. View submenu
-#: src/interface.c:473
+#: src/interface.c:435
 msgid "View"
 msgstr "Vista"
 
 #. Drawing mode submenu
-#: src/interface.c:479
+#: src/interface.c:441
 msgid "Drawing Mode"
 msgstr "Contexto de Desenho"
 
 #. Dialog submenu
-#: src/interface.c:485
+#: src/interface.c:447
 msgid "Dialogs"
 msgstr "Diálogos"
 
@@ -1955,7 +1956,8 @@ msgstr "Tentar utilizar servidor X mesmo se $DISPLAY não estiver definido)"
 
 #: src/main.c:99
 msgid "Open specified document(s) (option string may be excluded)"
-msgstr "Abrir documento(s) especificados(s) (a opção do nome pode ser excluida)"
+msgstr ""
+"Abrir documento(s) especificados(s) (a opção do nome pode ser excluida)"
 
 #: src/main.c:100 src/main.c:103 src/main.c:106
 msgid "FILENAME"
@@ -1973,7 +1975,8 @@ msgstr "Exportar documento para ficheiro png"
 
 #: src/main.c:108
 msgid "Exported bitmap resolution in pixels per inch (default 72.0)"
-msgstr "Resolução do bitmap exportado em pixels por polegada (por omissão 72.0)"
+msgstr ""
+"Resolução do bitmap exportado em pixels por polegada (por omissão 72.0)"
 
 #: src/main.c:109
 msgid "DPI"
@@ -2262,7 +2265,7 @@ msgid "Star Properties"
 msgstr "Propriedades da Estrela"
 
 #. fixme:
-#: src/sp-text.c:902
+#: src/sp-text.c:904
 msgid "Text object"
 msgstr "Objecto de texto"
 
@@ -2350,6 +2353,81 @@ msgstr "Amarelo:"
 #: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "Preto:"
+
+#: src/dialogs/tool-attributes.c:44
+msgid "Tool attributes"
+msgstr "Atributos ferramentas"
+
+#: src/dialogs/tool-attributes.c:89
+msgid "Number of corners:"
+msgstr "Número de cantos:"
+
+#: src/dialogs/tool-attributes.c:93 src/dialogs/tool-attributes.c:103
+msgid "Missing tool preferences"
+msgstr "Preferências de ferramentas em falta"
+
+#: src/dialogs/tool-attributes.c:99
+msgid "Mass:"
+msgstr "Massa:"
+
+#: src/dialogs/tool-attributes.c:99
+msgid "Drag:"
+msgstr "Arrastar:"
+
+#: src/dialogs/tool-attributes.c:99
+msgid "Angle"
+msgstr "Ângulo"
+
+#: src/dialogs/tool-attributes.c:106
+msgid "Tool has no attributes"
+msgstr "Ferramenta não tem atributos"
+
+#: src/dialogs/tool-attributes.c:109
+msgid "No active tool"
+msgstr "Nenhuma ferramenta activa"
+
+#: src/dialogs/xml-tree.c:305
+msgid "You can't delete 'id' attribute!"
+msgstr "Não pode apagar o atributo 'id'!"
+
+#: src/dialogs/xml-tree.c:312
+#, c-format
+msgid "Do you want to delete attribute %s?"
+msgstr "Deseja apagar o atributo %s?"
+
+#: src/dialogs/xml-tree.c:317 src/dialogs/xml-tree.c:556
+msgid "Yes"
+msgstr "Sim"
+
+#: src/dialogs/xml-tree.c:318 src/dialogs/xml-tree.c:557
+msgid "No"
+msgstr "Não"
+
+#: src/dialogs/xml-tree.c:540
+#, c-format
+msgid "You can't delete element %s!"
+msgstr "Não pode apagar o elemento %s!"
+
+#: src/dialogs/xml-tree.c:551
+#, c-format
+msgid "Do you want to delete element %s?"
+msgstr "Deseja apagar o elemento %s?"
+
+#: src/dialogs/xml-tree.c:691
+#, c-format
+msgid "You can't cut element %s!"
+msgstr "Não pode cortar o elemento %s!"
+
+#: src/draw-context.c:235
+msgid "Appending to selection. Press '+' to toggle Append/New."
+msgstr "A anexar à selecção. Prima '+' para alternar Anexar/Novo."
+
+#: src/draw-context.c:240
+msgid "Creating new curve. Press '+' to toggle Append/New."
+msgstr "A criar nova curva. Prima '+' para alternar Anexar/Novo."
+
+#~ msgid "Exit"
+#~ msgstr "Sair"
 
 #~ msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 #~ msgstr ""
