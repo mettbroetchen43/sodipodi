@@ -297,7 +297,11 @@ nr_arena_group_set_transparent (NRArenaGroup *group, gboolean transparent)
 void
 nr_arena_group_set_child_transform (NRArenaGroup *group, NRMatrixF *t)
 {
-	group->child_transform = *t;
+	if (t != NULL) {
+		group->child_transform = *t;
+	} else {
+		nr_matrix_f_set_identity (&group->child_transform);
+	}
 
 	nr_arena_item_request_update (NR_ARENA_ITEM (group), NR_ARENA_ITEM_STATE_ALL, TRUE);
 }

@@ -621,14 +621,12 @@ sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 		}
 	}
 
-	if (((SPObjectClass *) G_OBJECT_GET_CLASS (object))->update)
-		((SPObjectClass *) G_OBJECT_GET_CLASS (object))->update (object, ctx, flags);
-
-	/*
-	 * fixme: I am not sure - it was before class method, but moved it here
-	 */
+	/* We have to clear flags here to allow rescheduling update */
 
 	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_UPDATE_FLAG);
+
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS (object))->update)
+		((SPObjectClass *) G_OBJECT_GET_CLASS (object))->update (object, ctx, flags);
 }
 
 void
@@ -668,6 +666,10 @@ sp_object_invoke_modified (SPObject *object, unsigned int flags)
 	flags |= (SP_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
 	g_return_if_fail (flags != 0);
 
+	/* We have to clear flags here to allow rescheduling modified */
+
+	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_MODIFIED_STATE);
+
 	g_object_ref (G_OBJECT (object));
 	g_signal_emit (G_OBJECT (object), object_signals[MODIFIED], 0, flags);
 	g_object_unref (G_OBJECT (object));
@@ -680,12 +682,6 @@ sp_object_invoke_modified (SPObject *object, unsigned int flags)
 		if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->style_modified)
 			(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->style_modified) (object, flags);
 	}
-
-	/*
-	 * fixme: I am not sure - it was before class method, but moved it here
-	 */
-
-	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_MODIFIED_STATE);
 }
 
 /* Sequence */

@@ -50,6 +50,7 @@ static void sp_item_init (SPItem *item);
 static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_item_release (SPObject *object);
 static void sp_item_set (SPObject *object, unsigned int key, const unsigned char *value);
+static void sp_item_update (SPObject *object, SPCtx *ctx, guint flags);
 static void sp_item_modified (SPObject *object, guint flags);
 static void sp_item_style_modified (SPObject *object, guint flags);
 static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
@@ -102,6 +103,7 @@ sp_item_class_init (SPItemClass *klass)
 	sp_object_class->build = sp_item_build;
 	sp_object_class->release = sp_item_release;
 	sp_object_class->set = sp_item_set;
+	sp_object_class->update = sp_item_update;
 	sp_object_class->modified = sp_item_modified;
 	sp_object_class->style_modified = sp_item_style_modified;
 	sp_object_class->write = sp_item_write;
@@ -260,16 +262,19 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				item->clip = sp_object_hunref (item->clip, object);
 			}
 			if (SP_IS_CLIPPATH (cp)) {
+				NRRectF bbox;
 				SPItemView *v;
 				item->clip = sp_object_href (cp, object);
 				g_signal_connect (G_OBJECT (item->clip), "release", G_CALLBACK (sp_item_clip_release), item);
 				g_signal_connect (G_OBJECT (item->clip), "modified", G_CALLBACK (sp_item_clip_modified), item);
+				sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;
 					if (!v->pkey) v->pkey = sp_item_display_key_new ();
 					ai = sp_clippath_show (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
 					nr_arena_item_set_clip (v->arenaitem, ai);
 					nr_arena_item_unref (ai);
+					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), v->pkey, &bbox);
 				}
 			}
 		}
@@ -327,6 +332,29 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				(* ((SPObjectClass *) (parent_class))->set) (object, key, value);
 		}
 		break;
+	}
+}
+
+static void
+sp_item_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	SPItem *item;
+
+	item = SP_ITEM (object);
+
+	if (((SPObjectClass *) (parent_class))->update)
+		(* ((SPObjectClass *) (parent_class))->update) (object, ctx, flags);
+
+	if (flags & (SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG)) {
+		if (item->clip) {
+			NRRectF bbox;
+			SPItemView *v;
+			printf ("Flags %x\n", flags);
+			sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
+			for (v = item->display; v != NULL; v = v->next) {
+				sp_clippath_set_bbox (SP_CLIPPATH (item->clip), v->pkey, &bbox);
+			}
+		}
 	}
 }
 

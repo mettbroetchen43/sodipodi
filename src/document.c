@@ -607,8 +607,9 @@ sp_document_idle_handler (gpointer data)
 		ctx.vp.y1 = 29.7 / 2.54 * 72.0 * 1.25;
 		nr_matrix_d_set_identity (&ctx.i2vp);
 		sp_object_invoke_update (doc->root, (SPCtx *) &ctx, 0);
-		g_assert (!(SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG));
+		if (SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG) return FALSE;
 	}
+
 	/* Emit "modified" signal on objects */
 	sp_object_invoke_modified (doc->root, 0);
 
@@ -623,6 +624,7 @@ sp_document_idle_handler (gpointer data)
 #ifdef SP_DOCUMENT_DEBUG_IDLE
 	g_print (" S ->\n");
 #endif
+
 	return FALSE;
 }
 

@@ -121,6 +121,11 @@ static const SPStyleProp props[] = {
 	{SP_ATTR_PATTERNUNITS, "patternUnits"},
 	{SP_ATTR_PATTERNCONTENTUNITS, "patternContentUnits"},
 	{SP_ATTR_PATTERNTRANSFORM, "patternTransform"},
+	/* SPClipPath */
+	{SP_ATTR_CLIPPATHUNITS, "clipPathUnits"},
+	/* SPMask */
+	{SP_ATTR_MASKUNITS, "maskUnits"},
+	{SP_ATTR_MASKCONTENTUNITS, "maskContentUnits"},
 	/* Animations */
 	{SP_ATTR_ATTRIBUTENAME, "attributeName"},
 	{SP_ATTR_ATTRIBUTETYPE, "attributeType"},

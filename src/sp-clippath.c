@@ -12,22 +12,33 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <string.h>
+
+#include <libnr/nr-matrix.h>
+
 #include "display/nr-arena.h"
 #include "display/nr-arena-group.h"
+
+#include "enums.h"
+#include "attributes.h"
 #include "document.h"
 #include "sp-item.h"
+
 #include "sp-clippath.h"
 
 struct _SPClipPathView {
 	SPClipPathView *next;
 	unsigned int key;
 	NRArenaItem *arenaitem;
+	NRRectF bbox;
 };
 
 static void sp_clippath_class_init (SPClipPathClass *klass);
 static void sp_clippath_init (SPClipPath *clippath);
 
+static void sp_clippath_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_clippath_release (SPObject * object);
+static void sp_clippath_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_clippath_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_clippath_remove_child (SPObject *object, SPRepr *child);
 static void sp_clippath_update (SPObject *object, SPCtx *ctx, guint flags);
@@ -69,7 +80,9 @@ sp_clippath_class_init (SPClipPathClass *klass)
 
 	parent_class = g_type_class_ref (SP_TYPE_OBJECTGROUP);
 
+	sp_object_class->build = sp_clippath_build;
 	sp_object_class->release = sp_clippath_release;
+	sp_object_class->set = sp_clippath_set;
 	sp_object_class->child_added = sp_clippath_child_added;
 	sp_object_class->remove_child = sp_clippath_remove_child;
 	sp_object_class->update = sp_clippath_update;
@@ -78,9 +91,28 @@ sp_clippath_class_init (SPClipPathClass *klass)
 }
 
 static void
-sp_clippath_init (SPClipPath *clippath)
+sp_clippath_init (SPClipPath *cp)
 {
-	clippath->display = NULL;
+	cp->clipPathUnits_set = FALSE;
+	cp->clipPathUnits = SP_CONTENT_UNITS_USERSPACEONUSE;
+
+	cp->display = NULL;
+}
+
+static void
+sp_clippath_build (SPObject *object, SPDocument *document, SPRepr *repr)
+{
+	SPClipPath *cp;
+
+	cp = SP_CLIPPATH (object);
+
+	if (((SPObjectClass *) parent_class)->build)
+		((SPObjectClass *) parent_class)->build (object, document, repr);
+
+	sp_object_read_attr (object, "clipPathUnits");
+
+	/* Register ourselves */
+	sp_document_add_resource (document, "clipPath", object);
 }
 
 static void
@@ -90,6 +122,11 @@ sp_clippath_release (SPObject * object)
 
 	cp = SP_CLIPPATH (object);
 
+	if (SP_OBJECT_DOCUMENT (object)) {
+		/* Unregister ourselves */
+		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "clipPath", object);
+	}
+
 	while (cp->display) {
 		/* We simply unref and let item to manage this in handler */
 		cp->display = sp_clippath_view_list_remove (cp->display, cp->display);
@@ -97,6 +134,34 @@ sp_clippath_release (SPObject * object)
 
 	if (((SPObjectClass *) (parent_class))->release)
 		((SPObjectClass *) parent_class)->release (object);
+}
+
+static void
+sp_clippath_set (SPObject *object, unsigned int key, const unsigned char *value)
+{
+	SPClipPath *cp;
+
+	cp = SP_CLIPPATH (object);
+
+	switch (key) {
+	case SP_ATTR_CLIPPATHUNITS:
+		cp->clipPathUnits = SP_CONTENT_UNITS_USERSPACEONUSE;
+		cp->clipPathUnits_set = FALSE;
+		if (value) {
+			if (!strcmp (value, "userSpaceOnUse")) {
+				cp->clipPathUnits_set = TRUE;
+			} else if (!strcmp (value, "objectBoundingBox")) {
+				cp->clipPathUnits = SP_CONTENT_UNITS_OBJECTBOUNDINGBOX;
+				cp->clipPathUnits_set = TRUE;
+			}
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
+	}
 }
 
 static void
@@ -142,6 +207,7 @@ sp_clippath_update (SPObject *object, SPCtx *ctx, guint flags)
 	SPObjectGroup *og;
 	SPClipPath *cp;
 	SPObject *child;
+	SPClipPathView *v;
 	GSList *l;
 
 	og = SP_OBJECTGROUP (object);
@@ -159,10 +225,22 @@ sp_clippath_update (SPObject *object, SPCtx *ctx, guint flags)
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (SP_OBJECT_FLAGS (child) & SP_OBJECT_UPDATE_FLAG)) {
 			sp_object_invoke_update (child, ctx, flags);
 		}
 		g_object_unref (G_OBJECT (child));
+	}
+
+	for (v = cp->display; v != NULL; v = v->next) {
+		if (cp->clipPathUnits == SP_CONTENT_UNITS_OBJECTBOUNDINGBOX) {
+			NRMatrixF t;
+			nr_matrix_f_set_scale (&t, v->bbox.x1 - v->bbox.x0, v->bbox.y1 - v->bbox.y0);
+			t.c[4] = v->bbox.x0;
+			t.c[5] = v->bbox.y0;
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &t);
+		} else {
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), NULL);
+		}
 	}
 }
 
@@ -238,6 +316,14 @@ sp_clippath_show (SPClipPath *cp, NRArena *arena, unsigned int key)
 		}
 	}
 
+	if (cp->clipPathUnits == SP_CONTENT_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF t;
+		nr_matrix_f_set_scale (&t, cp->display->bbox.x1 - cp->display->bbox.x0, cp->display->bbox.y1 - cp->display->bbox.y0);
+		t.c[4] = cp->display->bbox.x0;
+		t.c[5] = cp->display->bbox.y0;
+		nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &t);
+	}
+
 	return ai;
 }
 
@@ -267,6 +353,25 @@ sp_clippath_hide (SPClipPath *cp, unsigned int key)
 	g_assert_not_reached ();
 }
 
+void
+sp_clippath_set_bbox (SPClipPath *cp, unsigned int key, NRRectF *bbox)
+{
+	SPClipPathView *v;
+
+	for (v = cp->display; v != NULL; v = v->next) {
+		if (v->key == key) {
+			if (!NR_DF_TEST_CLOSE (v->bbox.x0, bbox->x0, NR_EPSILON_F) ||
+			    !NR_DF_TEST_CLOSE (v->bbox.y0, bbox->y0, NR_EPSILON_F) ||
+			    !NR_DF_TEST_CLOSE (v->bbox.x1, bbox->x1, NR_EPSILON_F) ||
+			    !NR_DF_TEST_CLOSE (v->bbox.y1, bbox->y1, NR_EPSILON_F)) {
+				v->bbox = *bbox;
+				sp_object_request_update (SP_OBJECT (cp), SP_OBJECT_MODIFIED_FLAG);
+			}
+			break;
+		}
+	}
+}
+
 /* ClipPath views */
 
 SPClipPathView *
@@ -279,6 +384,8 @@ sp_clippath_view_new_prepend (SPClipPathView *list, unsigned int key, NRArenaIte
 	new->next = list;
 	new->key = key;
 	new->arenaitem = nr_arena_item_ref (arenaitem);
+	new->bbox.x0 = new->bbox.x1 = 0.0;
+	new->bbox.y0 = new->bbox.y1 = 0.0;
 
 	return new;
 }

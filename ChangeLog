@@ -1,3 +1,16 @@
+2003-02-04  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-item-group.c (sp_group_update): Propagate only if update flag set
+
+	* src/sp-item.c (sp_item_set): Set clippath bbox
+	(sp_item_update): Ditto
+
+	* src/sp-clippath.c (sp_clippath_build): Implement
+	(sp_clippath_set): Ditto, clipPathUnits attribute
+	(sp_clippath_update): Ditto
+	(sp_clippath_show): Use bbox if needed
+	(sp_clippath_set_bbox): New method
+
 2003-02-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-item.c (sp_item_release): Release mask

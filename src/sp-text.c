@@ -1046,6 +1046,9 @@ sp_text_update (SPObject *object, SPCtx *ctx, guint flags)
 
 	text = SP_TEXT (object);
 
+	if (((SPObjectClass *) text_parent_class)->update)
+		((SPObjectClass *) text_parent_class)->update (object, ctx, flags);
+
 	cflags = (flags & SP_OBJECT_MODIFIED_CASCADE);
 	if (flags & SP_OBJECT_MODIFIED_FLAG) cflags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 
@@ -1059,7 +1062,7 @@ sp_text_update (SPObject *object, SPCtx *ctx, guint flags)
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (cflags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (cflags || (SP_OBJECT_FLAGS (child) & SP_OBJECT_UPDATE_FLAG)) {
 			/* fixme: Do we need transform? */
 			sp_object_invoke_update (child, ctx, cflags);
 		}

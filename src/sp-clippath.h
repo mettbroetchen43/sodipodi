@@ -27,6 +27,9 @@ typedef struct _SPClipPathView SPClipPathView;
 struct _SPClipPath {
 	SPObjectGroup group;
 
+	unsigned int clipPathUnits_set : 1;
+	unsigned int clipPathUnits : 1;
+
 	SPClipPathView *display;
 };
 
@@ -38,5 +41,7 @@ GType sp_clippath_get_type (void);
 
 NRArenaItem *sp_clippath_show (SPClipPath *cp, NRArena *arena, unsigned int key);
 void sp_clippath_hide (SPClipPath *cp, unsigned int key);
+
+void sp_clippath_set_bbox (SPClipPath *cp, unsigned int key, NRRectF *bbox);
 
 #endif
