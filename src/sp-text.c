@@ -1298,8 +1298,8 @@ sp_text_set_shape (SPText *text)
 			}
 			bbox.x0 = MIN (bbox.x0, string->bbox.x0 + advance.x);
 			bbox.y0 = MIN (bbox.y0, string->bbox.y0 + advance.y);
-			bbox.x1 = MIN (bbox.x1, string->bbox.x1 + advance.x);
-			bbox.y1 = MIN (bbox.y1, string->bbox.y1 + advance.y);
+			bbox.x1 = MAX (bbox.x1, string->bbox.x1 + advance.x);
+			bbox.y1 = MAX (bbox.y1, string->bbox.y1 + advance.y);
 			advance.x += string->advance.x;
 			advance.y += string->advance.y;
 		}

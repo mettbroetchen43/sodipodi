@@ -3,8 +3,8 @@
 TODO for 0.25
 
 - SVG spec conforming text object (DONE)
-- Dynamic stroke dialog (Mostly done - needs unit cleanup)
-- Replace static fill dialog with dynamic one (Mostly done)
+- Dynamic stroke dialog (DONE)
+- Replace static fill dialog with dynamic one (DONE)
 - Fix stack order undo (DONE)
 - Pen tool (DONE)
 - Tool options (1/2 DONE)

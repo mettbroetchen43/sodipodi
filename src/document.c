@@ -230,8 +230,6 @@ sp_document_new (const gchar * uri)
 		document->private->base = g_malloc (len);
 		g_snprintf (document->private->base, len, "%s/", b);
 		g_free (b);
-		sp_repr_set_attr (rroot, "sodipodi:docname", uri);
-		sp_repr_set_attr (rroot, "sodipodi:docbase", document->private->base);
 	} else {
 		document->private->uri = g_strdup_printf (_("Unnamed document %d"), ++doc_count);
 	}
@@ -254,6 +252,13 @@ sp_document_new (const gchar * uri)
 	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
 	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
 	/* End of quick hack 2 */
+	/* Quick hack 3 - Set uri attributes */
+	if (uri) {
+		/* fixme: Think, what this means for images (Lauris) */
+		sp_repr_set_attr (rroot, "sodipodi:docname", uri);
+		sp_repr_set_attr (rroot, "sodipodi:docbase", document->private->base);
+	}
+	/* End of quick hack 3 */
 
 	/* Namedviews */
 	if (!SP_ROOT (document->root)->namedviews) {
