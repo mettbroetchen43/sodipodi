@@ -38,6 +38,7 @@ libspmodules_a_SOURCES = \
 	sp-module-sys.h \
 	ps.c ps.h \
 	$(gnome_print_sources) \
+	$(kdeprivsources) \
 	$(kdesources)
 
 EXTRA_DIST = \
