@@ -45,6 +45,8 @@ NRSVP *nr_svp_from_art_vpath (ArtVpath *vpath);
 NRSVP *nr_svp_from_art_svp (ArtSVP *asvp);
 ArtSVP * nr_art_svp_from_svp (NRSVP *svp);
 
+int nr_svp_point_wind (NRSVP *svp, float x, float y);
+
 /* NRVertex */
 
 NRVertex *nr_vertex_new (void);

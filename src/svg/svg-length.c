@@ -24,6 +24,10 @@
 #define snprintf g_snprintf
 #endif
 
+#ifndef MAX
+#define MAX(a,b) ((a < b) ? (b) : (a))
+#endif
+
 unsigned int
 sp_svg_number_read_f (const unsigned char *str, float *val)
 {
@@ -242,6 +246,18 @@ sp_svg_length_unset (SPSVGLength *length, unsigned long unit, float value, float
 	length->unit = unit;
 	length->value = value;
 	length->computed = computed;
+}
+
+void
+sp_svg_length_update (SPSVGLength *length, double em, double ex, double scale)
+{
+	if (length->unit == SP_SVG_UNIT_EM) {
+		length->computed = length->value * em;
+	} else if (length->unit == SP_SVG_UNIT_EX) {
+		length->computed = length->value * ex;
+	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
+		length->computed = length->value * scale;
+	}
 }
 
 double

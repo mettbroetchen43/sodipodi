@@ -63,10 +63,12 @@ static double sp_round (double x, double y)
 static void sp_genericellipse_class_init (SPGenericEllipseClass *klass);
 static void sp_genericellipse_init (SPGenericEllipse *ellipse);
 
+static void sp_genericellipse_update (SPObject *object, SPCtx *ctx, guint flags);
+
 static int sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size);
 
-static void sp_genericellipse_glue_set_shape (SPShape *shape);
-static void sp_genericellipse_set_shape (SPGenericEllipse *ellipse);
+static void sp_genericellipse_set_shape (SPShape *shape);
+
 static void sp_genericellipse_normalize (SPGenericEllipse *ellipse);
 
 static SPShapeClass *ge_parent_class;
@@ -107,9 +109,11 @@ sp_genericellipse_class_init (SPGenericEllipseClass *klass)
 
 	ge_parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
+	sp_object_class->update = sp_genericellipse_update;
+
 	item_class->snappoints = sp_genericellipse_snappoints;
 
-	shape_class->set_shape = sp_genericellipse_glue_set_shape;
+	shape_class->set_shape = sp_genericellipse_set_shape;
 }
 
 static void
@@ -126,47 +130,24 @@ sp_genericellipse_init (SPGenericEllipse *ellipse)
 }
 
 static void
-sp_genericellipse_glue_set_shape (SPShape *shape)
+sp_genericellipse_update (SPObject *object, SPCtx *ctx, guint flags)
 {
-	SPGenericEllipse *ge;
-
-	ge = SP_GENERICELLIPSE (shape);
-
-	sp_genericellipse_set_shape (ge);
-}
-
-static void
-sp_genericellipse_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
-{
-	if (length->unit == SP_SVG_UNIT_EM) {
-		length->computed = length->value * em;
-	} else if (length->unit == SP_SVG_UNIT_EX) {
-		length->computed = length->value * ex;
-	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
-		length->computed = length->value * scale;
+	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
+		SPGenericEllipse *ellipse;
+		SPStyle *style;
+		double d;
+		ellipse = (SPGenericEllipse *) object;
+		style = object->style;
+		d = 1.0 / NR_MATRIX_DF_EXPANSION (&((SPItemCtx *) ctx)->i2vp);
+		sp_svg_length_update (&ellipse->cx, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_svg_length_update (&ellipse->cy, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_svg_length_update (&ellipse->rx, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_svg_length_update (&ellipse->ry, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_shape_set_shape ((SPShape *) object);
 	}
-}
 
-static void
-sp_genericellipse_compute_values (SPGenericEllipse *ellipse)
-{
-	SPStyle *style;
-	NRMatrixF i2vp, vp2i;
-	gdouble d;
-
-	style = SP_OBJECT_STYLE (ellipse);
-
-	/* fixme: It is somewhat dangerous, yes (Lauris) */
-	/* fixme: And it is terribly slow too (Lauris) */
-	/* fixme: In general we want to keep viewport scales around */
-	sp_item_i2vp_affine (SP_ITEM (ellipse), &i2vp);
-	nr_matrix_f_invert (&vp2i, &i2vp);
-	d = NR_MATRIX_DF_EXPANSION (&vp2i);
-
-	sp_genericellipse_update_length (&ellipse->cx, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_genericellipse_update_length (&ellipse->cy, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_genericellipse_update_length (&ellipse->rx, style->font_size.computed, style->font_size.computed * 0.5, d);
-	sp_genericellipse_update_length (&ellipse->ry, style->font_size.computed, style->font_size.computed * 0.5, d);
+	if (((SPObjectClass *) ge_parent_class)->update)
+		((SPObjectClass *) ge_parent_class)->update (object, ctx, flags);
 }
 
 #define C1 0.552
@@ -176,9 +157,10 @@ sp_genericellipse_compute_values (SPGenericEllipse *ellipse)
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
 
-static void sp_genericellipse_set_shape (SPGenericEllipse *ellipse)
+static void sp_genericellipse_set_shape (SPShape *shape)
 {
-	SPCurve * c;
+	SPGenericEllipse *ellipse;
+	SPCurve *c;
 	ArtBpath bpath[16], * abp;
 
 	double cx, cy, rx, ry, s, e;
@@ -188,9 +170,7 @@ static void sp_genericellipse_set_shape (SPGenericEllipse *ellipse)
 	gint slice = FALSE;
 	gint i;
 
-	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
-	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
-	sp_genericellipse_compute_values (ellipse);
+	ellipse = (SPGenericEllipse *) shape;
 
 	if ((ellipse->rx.computed < 1e-18) || (ellipse->ry.computed < 1e-18)) return;
 	if (fabs (ellipse->end - ellipse->start) < 1e-9) return;
@@ -270,7 +250,7 @@ g_print ("step %d s %f e %f coords %f %f %f %f %f %f\n",
 	abp = art_bpath_affine_transform (bpath, affine);
 
 	c = sp_curve_new_from_bpath (abp);
-	sp_shape_set_curve (SP_SHAPE (ellipse), c, TRUE);
+	sp_shape_set_curve_insync ((SPShape *) ellipse, c, TRUE);
 	sp_curve_unref (c);
 }
 
@@ -440,25 +420,25 @@ sp_ellipse_set (SPObject *object, unsigned int key, const unsigned char *value)
 		if (!sp_svg_length_read (value, &ellipse->cx)) {
 			sp_svg_length_unset (&ellipse->cx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ellipse);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_CY:
 		if (!sp_svg_length_read (value, &ellipse->cy)) {
 			sp_svg_length_unset (&ellipse->cy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ellipse);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_RX:
 		if (!sp_svg_length_read (value, &ellipse->rx) || (ellipse->rx.value <= 0.0)) {
 			sp_svg_length_unset (&ellipse->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ellipse);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_RY:
 		if (!sp_svg_length_read (value, &ellipse->ry) || (ellipse->ry.value <= 0.0)) {
 			sp_svg_length_unset (&ellipse->ry, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ellipse);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) ellipse_parent_class)->set)
@@ -489,7 +469,7 @@ sp_ellipse_position_set (SPEllipse *ellipse, gdouble x, gdouble y, gdouble rx, g
 	ge->rx.computed = rx;
 	ge->ry.computed = ry;
 
-	sp_genericellipse_set_shape (ge);
+	sp_object_request_update ((SPObject *) ge, SP_OBJECT_MODIFIED_FLAG);
 }
 
 /* SVG <circle> element */
@@ -595,20 +575,20 @@ sp_circle_set (SPObject *object, unsigned int key, const unsigned char *value)
 		if (!sp_svg_length_read (value, &ge->cx)) {
 			sp_svg_length_unset (&ge->cx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_CY:
 		if (!sp_svg_length_read (value, &ge->cy)) {
 			sp_svg_length_unset (&ge->cy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_R:
 		if (!sp_svg_length_read (value, &ge->rx) || (ge->rx.value <= 0.0)) {
 			sp_svg_length_unset (&ge->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		ge->ry = ge->rx;
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) circle_parent_class)->set)
@@ -882,37 +862,37 @@ sp_arc_set (SPObject *object, unsigned int key, const unsigned char *value)
 		if (!sp_svg_length_read (value, &ge->cx)) {
 			sp_svg_length_unset (&ge->cx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_CY:
 		if (!sp_svg_length_read (value, &ge->cy)) {
 			sp_svg_length_unset (&ge->cy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_RX:
 		if (!sp_svg_length_read (value, &ge->rx) || (ge->rx.computed <= 0.0)) {
 			sp_svg_length_unset (&ge->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_RY:
 		if (!sp_svg_length_read (value, &ge->ry) || (ge->ry.computed <= 0.0)) {
 			sp_svg_length_unset (&ge->ry, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_START:
 		sp_svg_number_read_d (value, &ge->start);
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_END:
 		sp_svg_number_read_d (value, &ge->end);
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_OPEN:
 		ge->closed = (!value);
-		sp_genericellipse_set_shape (ge);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) arc_parent_class)->set)
@@ -953,7 +933,7 @@ sp_arc_position_set (SPArc *arc, gdouble x, gdouble y, gdouble rx, gdouble ry)
 	ge->rx.computed = rx;
 	ge->ry.computed = ry;
 
-	sp_genericellipse_set_shape (ge);
+	sp_object_request_update ((SPObject *) arc, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -976,6 +956,7 @@ sp_arc_start_set (SPItem *item, const NRPointF *p, guint state)
 		ge->start = sp_round(ge->start, M_PI_4);
 	}
 	sp_genericellipse_normalize (ge);
+	sp_object_request_update ((SPObject *) arc, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -1009,6 +990,7 @@ sp_arc_end_set (SPItem *item, const NRPointF *p, guint state)
 		ge->end = sp_round(ge->end, M_PI_4);
 	}
 	sp_genericellipse_normalize (ge);
+	sp_object_request_update ((SPObject *) arc, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void

@@ -51,6 +51,7 @@ unsigned int sp_svg_number_write_fe (unsigned char *buf, float val, unsigned int
 unsigned int sp_svg_length_read (const unsigned char *str, SPSVGLength *length);
 unsigned int sp_svg_length_read_lff (const unsigned char *str, unsigned long *unit, float *value, float *computed);
 void sp_svg_length_unset (SPSVGLength *length, unsigned long unit, float value, float computed);
+void sp_svg_length_update (SPSVGLength *length, double em, double ex, double scale);
 
 unsigned int sp_svg_transform_read (const unsigned char *str, NRMatrixF *transform);
 

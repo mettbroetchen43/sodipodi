@@ -563,7 +563,7 @@ sp_event_context_item_handler (SPEventContext * event_context, SPItem * item, Gd
 {
 	gint ret;
 
-	ret = ((SPEventContextClass *) G_OBJECT_GET_CLASS(event_context))->item_handler (event_context, item, event);
+	ret = ((SPEventContextClass *) G_OBJECT_GET_CLASS (event_context))->item_handler (event_context, item, event);
 
 	if (! ret) {
 		ret = sp_event_context_root_handler (event_context, event);

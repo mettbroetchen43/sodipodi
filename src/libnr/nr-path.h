@@ -18,8 +18,21 @@ typedef struct _NRBPath NRBPath;
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
 
+typedef struct _NRPathCode NRPathCode;
+typedef union _NRPathElement NRPathElement;
+
+struct _NRPathCode {
+	unsigned int length : 24;
+	unsigned int closed : 1;
+};
+
+union _NRPathElement {
+	NRPathCode code;
+	float value;
+};
+
 struct _NRVPath {
-	ArtVpath *path;
+	NRPathElement *elements;
 };
 
 struct _NRBPath {

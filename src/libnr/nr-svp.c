@@ -237,6 +237,32 @@ nr_art_svp_from_svp (NRSVP * svp)
 	return asvp;
 }
 
+int
+nr_svp_point_wind (NRSVP *svp, float x, float y)
+{
+	NRSVP *s;
+	int wind;
+
+	wind = 0;
+	for (s = svp; s != NULL; s = s->next) {
+		if ((s->bbox.x0 < x) && (s->bbox.y0 <= y) && (s->bbox.y1 > y)) {
+			if (s->bbox.x1 <= x) {
+				wind += s->wind;
+			} else {
+				NRVertex *vx;
+				for (vx = s->vertex; vx && vx->next && (vx->y <= y); vx = vx->next) {
+					if (vx->next->y > y) {
+						float cxy;
+						cxy = vx->x + (vx->next->x - vx->x) * (y - vx->y) / (vx->next->y - vx->y);
+						if (cxy < x) wind += s->wind;
+					}
+				}
+			}
+		}
+	}
+	return wind;
+}
+
 /* NRVertex */
 
 #define NR_VERTEX_ALLOC_SIZE 4096

@@ -593,7 +593,7 @@ sp_xml_dtoa (unsigned char *buf, double val, unsigned int tprec, unsigned int fp
 			c[32 - (++j)] = '0' + (ival % 10);
 			ival /= 10;
 		}
-		memcpy (buf, &c[32 - j], j);
+		memcpy (buf + i, &c[32 - j], j);
 		i += j;
 		tprec -= j;
 	} else {

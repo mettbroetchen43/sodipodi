@@ -47,6 +47,7 @@ static void sp_spiral_init (SPSpiral *spiral);
 static void sp_spiral_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_spiral_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value);
+static void sp_spiral_update (SPObject *object, SPCtx *ctx, guint flags);
 
 static SPKnotHolder *sp_spiral_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_spiral_description (SPItem * item);
@@ -98,6 +99,7 @@ sp_spiral_class_init (SPSpiralClass *class)
 	sp_object_class->build = sp_spiral_build;
 	sp_object_class->write = sp_spiral_write;
 	sp_object_class->set = sp_spiral_set;
+	sp_object_class->update = sp_spiral_update;
 
 	item_class->knot_holder = sp_spiral_knot_holder;
 	item_class->description = sp_spiral_description;
@@ -184,7 +186,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		    (unit == SP_SVG_UNIT_PERCENT)) {
 			spiral->cx = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_CY:
 		if (!sp_svg_length_read_lff (value, &unit, NULL, &spiral->cy) ||
@@ -193,7 +195,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		    (unit == SP_SVG_UNIT_PERCENT)) {
 			spiral->cy = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_EXPANSION:
 		if (value) {
@@ -202,7 +204,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			spiral->exp = 1.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_REVOLUTION:
 		if (value) {
@@ -211,7 +213,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			spiral->revo = 3.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_RADIUS:
 		if (!sp_svg_length_read_lff (value, &unit, NULL, &spiral->rad) ||
@@ -220,7 +222,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		    (unit != SP_SVG_UNIT_PERCENT)) {
 			spiral->rad = MAX (spiral->rad, 0.001);
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_ARGUMENT:
 		if (value) {
@@ -228,7 +230,7 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			spiral->arg = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_T0:
 		if (value) {
@@ -237,13 +239,24 @@ sp_spiral_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			spiral->t0 = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) parent_class)->set)
 			((SPObjectClass *) parent_class)->set (object, key, value);
 		break;
 	}
+}
+
+static void
+sp_spiral_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
+		sp_shape_set_shape ((SPShape *) object);
+	}
+
+	if (((SPObjectClass *) parent_class)->update)
+		((SPObjectClass *) parent_class)->update (object, ctx, flags);
 }
 
 static gchar *
@@ -414,7 +427,7 @@ sp_spiral_inner_set (SPItem *item, const NRPointF *p, guint state)
 	}
 	spiral->t0 = t0;
 #endif
-
+	sp_object_request_update ((SPObject *) spiral, SP_OBJECT_MODIFIED_FLAG);
 }
 
 /*
@@ -445,6 +458,7 @@ sp_spiral_outer_set (SPItem *item, const NRPointF *p, guint state)
 	}
 	spiral->revo = arg/(2.0*M_PI);
 #endif
+	sp_object_request_update ((SPObject *) spiral, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -507,7 +521,7 @@ sp_spiral_position_set       (SPSpiral          *spiral,
 	spiral->arg        = arg;
 	spiral->t0         = t0;
 	
-	sp_shape_set_shape (SP_SHAPE(spiral));
+	sp_object_request_update ((SPObject *) spiral, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static int

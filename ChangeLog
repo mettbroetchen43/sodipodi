@@ -1,3 +1,20 @@
+2003-04-27  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/knotholder.c (knot_ungrabbed_handler): Flush object here
+
+	* src/xml/repr-util.c (sp_xml_dtoa): Take '-' into accounti if
+	copying integral part
+
+	* src/svg/svg-length.c (sp_svg_length_update): New method
+
+	* src/sp-spiral.c (sp_spiral_update): New method
+
+	* src/sp-star.c (sp_star_update): New method
+
+	* src/sp-ellipse.c (sp_genericellipse_update): Use generic ::set_shape
+
+	* src/sp-rect.c (sp_rect_update): Use generic ::set_shape
+
 2003-04-24  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp-uncross.c (nr_svp_uncross_full): Concat segment start only if

@@ -39,6 +39,7 @@ static void sp_star_init (SPStar *star);
 static void sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_star_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_star_set (SPObject *object, unsigned int key, const unsigned char *value);
+static void sp_star_update (SPObject *object, SPCtx *ctx, guint flags);
 
 static SPKnotHolder *sp_star_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_star_description (SPItem * item);
@@ -91,6 +92,7 @@ sp_star_class_init (SPStarClass *class)
 	sp_object_class->build = sp_star_build;
 	sp_object_class->write = sp_star_write;
 	sp_object_class->set = sp_star_set;
+	sp_object_class->update = sp_star_update;
 
 	item_class->knot_holder = sp_star_knot_holder;
 	item_class->description = sp_star_description;
@@ -174,7 +176,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			star->sides = 5;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_CX:
 		if (!sp_svg_length_read_lff (value, &unit, NULL, &star->cx) ||
@@ -183,7 +185,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->cx = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_CY:
 		if (!sp_svg_length_read_lff (value, &unit, NULL, &star->cy) ||
@@ -192,7 +194,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->cy = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_R1:
 		if (!sp_svg_length_read_lff (value, &unit, NULL, &star->r1) ||
@@ -202,7 +204,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 			star->r1 = 1.0;
 		}
 		/* fixme: Need CLAMP (Lauris) */
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_R2:
 		if (!sp_svg_length_read_lff (value, &unit, NULL, &star->r2) ||
@@ -211,7 +213,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->r2 = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	case SP_ATTR_SODIPODI_ARG1:
 		if (value) {
@@ -219,7 +221,7 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			star->arg1 = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_SODIPODI_ARG2:
 		if (value) {
@@ -227,13 +229,28 @@ sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			star->arg2 = 0.0;
 		}
-		sp_shape_set_shape (shape);
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) parent_class)->set)
 			((SPObjectClass *) parent_class)->set (object, key, value);
 		break;
 	}
+}
+
+static void
+sp_star_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	SPStar *star;
+
+	star = (SPStar *) object;
+
+	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
+		sp_shape_set_shape ((SPShape *) object);
+	}
+
+	if (((SPObjectClass *) parent_class)->update)
+		((SPObjectClass *) parent_class)->update (object, ctx, flags);
 }
 
 static gchar *
@@ -258,7 +275,7 @@ sp_star_set_shape (SPShape *shape)
 	star = SP_STAR (shape);
 
 #if 0
-	if (star->r1 < 1e-12) || (star->r2 < 1e-12)) return;
+	if ((star->r1 < 1e-12) || (star->r2 < 1e-12)) return;
 	if (star->sides < 3) return;
 #endif
 	
@@ -271,6 +288,7 @@ sp_star_set_shape (SPShape *shape)
 	sp_curve_moveto (c, p.x, p.y);
 	sp_star_get_xy (star, SP_STAR_POINT_KNOT2, 0, &p);
 	sp_curve_lineto (c, p.x, p.y);
+
 	for (i = 1; i < sides; i++) {
 		sp_star_get_xy (star, SP_STAR_POINT_KNOT1, i, &p);
 		sp_curve_lineto (c, p.x, p.y);
@@ -304,6 +322,7 @@ sp_star_knot1_set (SPItem *item, const NRPointF *p, guint state)
 		star->arg1  = arg1;
 		star->arg2 += darg1;
 	}
+	sp_object_request_update ((SPObject *) star, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -319,11 +338,12 @@ sp_star_knot2_set (SPItem *item, const NRPointF *p, guint state)
 
 	if (state & GDK_CONTROL_MASK) {
 		star->r2   = hypot (dx, dy);
-		star->arg2 = star->arg1 + M_PI/star->sides;
+		star->arg2 = star->arg1 + M_PI / star->sides;
 	} else {
 		star->r2   = hypot (dx, dy);
 		star->arg2 = atan2 (dy, dx);
 	}
+	sp_object_request_update ((SPObject *) star, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -393,7 +413,7 @@ sp_star_position_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble 
 	star->arg1 = arg1;
 	star->arg2 = arg2;
 	
-	sp_shape_set_shape (SP_SHAPE(star));
+	sp_object_request_update ((SPObject *) star, SP_OBJECT_MODIFIED_FLAG);
 }
 
 /* fixme: We should use all corners of star (Lauris) */

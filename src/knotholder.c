@@ -171,8 +171,6 @@ knot_moved_handler (SPKnot *knot, NRPointF *p, guint state, gpointer data)
 	
 	sp_shape_set_shape (SP_SHAPE (item));
 
-	sp_object_invoke_write (object, object->repr, SP_OBJECT_WRITE_SODIPODI);
-	
 	sp_item_i2d_affine(item, &i2d);
 
 	for (el = knot_holder->entity; el; el = el->next) {
@@ -199,6 +197,9 @@ knot_ungrabbed_handler (SPKnot *knot, unsigned int state, SPKnotHolder *kh)
 	if (kh->released) {
 		kh->released (kh->item);
 	} else {
+		SPObject *object;
+		object = (SPObject *) kh->item;
+		sp_object_invoke_write (object, object->repr, SP_OBJECT_WRITE_SODIPODI);
 		sp_document_done (SP_OBJECT_DOCUMENT (kh->item));
 	}
 }

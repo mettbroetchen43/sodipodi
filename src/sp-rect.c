@@ -37,7 +37,6 @@ static void sp_rect_init (SPRect *rect);
 static void sp_rect_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_rect_update (SPObject *object, SPCtx *ctx, guint flags);
-static void sp_rect_modified (SPObject *object, guint flags);
 static SPRepr *sp_rect_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_rect_description (SPItem * item);
@@ -47,8 +46,8 @@ static void sp_rect_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_rect_rect_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
 
-static void sp_rect_glue_set_shape (SPShape * shape);
-static void sp_rect_set_shape (SPRect * rect);
+static void sp_rect_set_shape (SPShape *shape);
+
 static SPKnotHolder *sp_rect_knot_holder (SPItem *item, SPDesktop *desktop);
 
 static SPShapeClass *parent_class;
@@ -94,7 +93,6 @@ sp_rect_class_init (SPRectClass *class)
 	sp_object_class->write = sp_rect_write;
 	sp_object_class->set = sp_rect_set;
 	sp_object_class->update = sp_rect_update;
-	sp_object_class->modified = sp_rect_modified;
 
 	item_class->description = sp_rect_description;
 	item_class->snappoints = sp_rect_snappoints;
@@ -102,7 +100,7 @@ sp_rect_class_init (SPRectClass *class)
 	item_class->menu = sp_rect_menu;
 	item_class->knot_holder = sp_rect_knot_holder;
 
-	shape_class->set_shape = sp_rect_glue_set_shape;
+	shape_class->set_shape = sp_rect_set_shape;
 }
 
 static void
@@ -221,18 +219,6 @@ sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value)
 }
 
 static void
-sp_rect_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
-{
-	if (length->unit == SP_SVG_UNIT_EM) {
-		length->computed = length->value * em;
-	} else if (length->unit == SP_SVG_UNIT_EX) {
-		length->computed = length->value * ex;
-	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
-		length->computed = length->value * scale;
-	}
-}
-
-static void
 sp_rect_update (SPObject *object, SPCtx *ctx, guint flags)
 {
 	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
@@ -242,30 +228,17 @@ sp_rect_update (SPObject *object, SPCtx *ctx, guint flags)
 		rect = (SPRect *) object;
 		style = object->style;
 		d = 1.0 / NR_MATRIX_DF_EXPANSION (&((SPItemCtx *) ctx)->i2vp);
-		sp_rect_update_length (&rect->x, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_rect_update_length (&rect->y, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_rect_update_length (&rect->width, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_rect_update_length (&rect->height, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_rect_update_length (&rect->rx, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_rect_update_length (&rect->ry, style->font_size.computed, style->font_size.computed * 0.5, d);
-		sp_rect_set_shape (SP_RECT (object));
+		sp_svg_length_update (&rect->x, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_svg_length_update (&rect->y, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_svg_length_update (&rect->width, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_svg_length_update (&rect->height, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_svg_length_update (&rect->rx, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_svg_length_update (&rect->ry, style->font_size.computed, style->font_size.computed * 0.5, d);
+		sp_shape_set_shape ((SPShape *) object);
 	}
 
 	if (((SPObjectClass *) parent_class)->update)
 		((SPObjectClass *) parent_class)->update (object, ctx, flags);
-}
-
-static void
-sp_rect_modified (SPObject *object, guint flags)
-{
-	if ((flags & SP_OBJECT_STYLE_MODIFIED_FLAG) || (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
-		/* fixme: This should happen only in ::update */
-		/* fixme: But until all objects request update properly we have to keep it here (Lauris) */
-		sp_rect_set_shape (SP_RECT (object));
-	}
-
-	if (((SPObjectClass *) parent_class)->modified)
-		((SPObjectClass *) parent_class)->modified (object, flags);
 }
 
 static SPRepr *
@@ -302,29 +275,16 @@ sp_rect_description (SPItem * item)
 	return g_strdup_printf ("Rectangle %0.2f %0.2f %0.2f %0.2f", rect->x.computed, rect->y.computed, rect->width.computed, rect->height.computed);
 }
 
-static void
-sp_rect_glue_set_shape (SPShape *shape)
-{
-	SPRect *rect;
-
-	rect = SP_RECT (shape);
-
-	sp_rect_set_shape (rect);
-}
-
 #define C1 0.554
 
 static void
-sp_rect_set_shape (SPRect * rect)
+sp_rect_set_shape (SPShape *shape)
 {
+	SPRect *rect;
 	double x, y, w, h, w2, h2, rx, ry;
 	SPCurve * c;
-	
-#if 0
-	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
-	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
-	sp_rect_compute_values (rect);
-#endif
+
+	rect = (SPRect *) shape;
 
 	if ((rect->height.computed < 1e-18) || (rect->width.computed < 1e-18)) return;
 
@@ -387,8 +347,6 @@ sp_rect_position_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdoubl
 	rect->width.computed = width;
 	rect->height.computed = height;
 
-	/* sp_rect_set_shape (rect); */
-	/* fixme: (Lauris) */
 	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }
 
@@ -400,8 +358,7 @@ sp_rect_set_rx (SPRect * rect, gboolean set, gdouble value)
 
 	rect->rx.set = set;
 	if (set) rect->rx.computed = value;
-	/* sp_rect_set_shape (rect); */
-	/* fixme: (Lauris) */
+
 	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }
 
@@ -413,8 +370,7 @@ sp_rect_set_ry (SPRect * rect, gboolean set, gdouble value)
 
 	rect->ry.set = set;
 	if (set) rect->ry.computed = value;
-	/* sp_rect_set_shape (rect); */
-	/* fixme: (Lauris) */
+
 	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }
 
@@ -603,6 +559,7 @@ sp_rect_rx_set (SPItem *item, const NRPointF *p, guint state)
 		rect->rx.computed = CLAMP (p->x - rect->x.computed, 0.0, rect->width.computed / 2.0);
 		rect->rx.set = TRUE;
 	}
+	sp_object_request_update ((SPObject *) rect, SP_OBJECT_MODIFIED_FLAG);
 }
 
 
@@ -632,6 +589,7 @@ sp_rect_ry_set (SPItem *item, const NRPointF *p, guint state)
 		rect->ry.computed = CLAMP (p->y - rect->y.computed, 0.0, rect->height.computed / 2.0);
 		rect->ry.set = TRUE;
 	}
+	sp_object_request_update ((SPObject *) rect, SP_OBJECT_MODIFIED_FLAG);
 }
 
 

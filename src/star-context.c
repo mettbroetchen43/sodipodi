@@ -178,7 +178,7 @@ sp_star_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
-		if (dragging && event->motion.state && GDK_BUTTON1_MASK) {
+		if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
 			NRPointF p;
 			sp_desktop_w2d_xy_point (event_context->desktop, &p, event->motion.x, event->motion.y);
 			sp_star_drag (sc, p.x, p.y, event->motion.state);

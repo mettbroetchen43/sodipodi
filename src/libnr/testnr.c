@@ -14,8 +14,12 @@
 #include <sys/time.h>
 #include <time.h>
 
+#include "nr-types.h"
 #include "nr-pixblock.h"
 #include "nr-blit.h"
+#include "nr-path.h"
+
+NRPathElement toru[10];
 
 static double
 get_time (void)
@@ -41,6 +45,8 @@ main (int argc, const char **argv)
 	int count, i;
 
 	srand (time (NULL));
+
+	printf ("lala %d toru[0] %d toru %d\n", sizeof (NRPathElement), sizeof (toru[0]), sizeof (toru));
 
 	printf ("Initializing buffers\n");
 

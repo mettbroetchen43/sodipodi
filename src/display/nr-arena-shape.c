@@ -548,7 +548,11 @@ nr_arena_shape_pick (NRArenaItem *item, double x, double y, double delta, unsign
 
 	if (item->state & NR_ARENA_ITEM_STATE_RENDER) {
 		if (shape->fill_svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
+#ifdef WITH_NRSVP
+			if (nr_svp_point_wind (shape->nrsvp, x, y)) return item;
+#else
 			if (art_svp_point_wind (shape->fill_svp, x, y)) return item;
+#endif
 		}
 		if (shape->stroke_svp && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
 			if (art_svp_point_wind (shape->stroke_svp, x, y)) return item;
