@@ -21,7 +21,7 @@
 #include "../macros.h"
 #include "gradient-position.h"
 
-#define RADIUS 3
+#define RADIUS 4
 
 enum {
 	GRABBED,
@@ -53,7 +53,9 @@ static void sp_gradient_position_update (SPGradientPosition *img);
 static void sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area);
 static void sp_gradient_position_free_image_data (SPGradientPosition *pos);
 
+void spgp_clip_line (long *c, long x0, long y0, long x1, long y1);
 void spgp_draw_line (unsigned char *px, int w, int h, int rs, int x0, int y0, int x1, int y1, unsigned long c0, unsigned long c1);
+void spgp_draw_rect (unsigned char *px, int w, int h, int rs, int x0, int y0, int x1, int y1, unsigned long c0, unsigned long c1);
 
 static GtkWidgetClass *parent_class;
 static guint position_signals[LAST_SIGNAL] = {0};
@@ -305,24 +307,45 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 	} else {
 		/* Radial mode */
 		if (event->button == 1) {
-			float cx, cy;
-			pos->dragging = TRUE;
-			pos->changed = FALSE;
-			gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
-			cx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
-			cy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
-			if (!NR_DF_TEST_CLOSE (cx, pos->gdata.radial.cx, NR_EPSILON_F) ||
-			    !NR_DF_TEST_CLOSE (cy, pos->gdata.radial.cy, NR_EPSILON_F)) {
-				pos->gdata.radial.cx = cx;
-				pos->gdata.radial.cy = cy;
-				pos->gdata.radial.fx = cx;
-				pos->gdata.radial.fy = cy;
-				gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
-				pos->changed = TRUE;
-				pos->need_update = TRUE;
-				if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
+			if (event->state & GDK_CONTROL_MASK) {
+				pos->dragging = TRUE;
+				pos->changed = FALSE;
+				gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
+			} else if (event->state & GDK_SHIFT_MASK) {
+				float fx, fy;
+				pos->dragging = TRUE;
+				pos->changed = FALSE;
+				gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
+				fx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+				fy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+				if (!NR_DF_TEST_CLOSE (fx, pos->gdata.radial.fx, NR_EPSILON_F) ||
+				    !NR_DF_TEST_CLOSE (fy, pos->gdata.radial.fy, NR_EPSILON_F)) {
+					pos->gdata.radial.fx = fx;
+					pos->gdata.radial.fy = fy;
+					gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+					pos->changed = TRUE;
+					pos->need_update = TRUE;
+					if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
+				}
+				gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
+			} else {
+				float cx, cy;
+				pos->dragging = TRUE;
+				pos->changed = FALSE;
+				gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
+				cx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+				cy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+				if (!NR_DF_TEST_CLOSE (cx, pos->gdata.radial.cx, NR_EPSILON_F) ||
+				    !NR_DF_TEST_CLOSE (cy, pos->gdata.radial.cy, NR_EPSILON_F)) {
+					pos->gdata.radial.cx = cx;
+					pos->gdata.radial.cy = cy;
+					gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+					pos->changed = TRUE;
+					pos->need_update = TRUE;
+					if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
+				}
+				gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
 			}
-			gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
 		}
 	}
 
@@ -360,7 +383,8 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 		if (pos->dragging) {
 			if (event->state & GDK_CONTROL_MASK) {
 				NRMatrixF n2gs, gs2n, n2w, w2n, s2n;
-				float x1, y1, x2, y2, cx, cy, ncx, ncy, nx, ny;
+				float x1, y1, x2, y2;
+				float cx, cy, ncx, ncy, nx, ny;
 				x1 = pos->gdata.linear.x1;
 				y1 = pos->gdata.linear.y1;
 				x2 = pos->gdata.linear.x2;
@@ -386,22 +410,19 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 
 				s2n.c[0] = 1.0;
 				s2n.c[1] = 0.0;
-#if 1
 				s2n.c[2] = !NR_DF_TEST_CLOSE (ncy, ny, NR_EPSILON_F) ? (nx - ncx) / (ny - ncy) : 0.0;
-#else
-				s2n.c[2] = 0.0;
-#endif
 				s2n.c[3] = 1.0;
 				s2n.c[4] = 0.0;
 				s2n.c[5] = 0.0;
 
-#if 1
+#if 0
 				nr_matrix_multiply_fff (&n2w, &s2n, &n2w);
-				SP_PRINT_MATRIX ("n2w:", &n2w);
-#else
-				SP_PRINT_MATRIX ("s2n:", &s2n);
-#endif
 				nr_matrix_multiply_fff (&pos->gs2w, &gs2n, &n2w);
+#else
+				nr_matrix_multiply_fff (&gs2n, &gs2n, &s2n);
+				nr_matrix_multiply_fff (&gs2n, &gs2n, &n2gs);
+				nr_matrix_multiply_fff (&pos->gs2w, &gs2n, &pos->gs2w);
+#endif
 
 				nr_matrix_f_invert (&pos->w2gs, &pos->gs2w);
 				nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
@@ -416,10 +437,105 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 		}
 	} else {
 		if (pos->dragging) {
-			float x, y;
-			x = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
-			y = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
-			pos->gdata.radial.r = hypot (x - pos->gdata.radial.cx, y - pos->gdata.radial.cy);
+			float cx, cy, fx, fy, r;
+			cx = pos->gdata.radial.cx;
+			cy = pos->gdata.radial.cy;
+			fx = pos->gdata.radial.fx;
+			fy = pos->gdata.radial.fy;
+			r = pos->gdata.radial.r;
+			if (event->state & GDK_CONTROL_MASK) {
+				NRMatrixF n2gs, gs2n, n2w, w2n;
+				float x, y, ncx, ncy, nx, ny;
+
+				n2gs.c[0] = r;
+				n2gs.c[1] = 0.0;
+				n2gs.c[2] = 0.0;
+				n2gs.c[3] = r;
+				n2gs.c[4] = cx;
+				n2gs.c[5] = cy;
+				nr_matrix_f_invert (&gs2n, &n2gs);
+				nr_matrix_multiply_fff (&n2w, &n2gs, &pos->gs2w);
+				nr_matrix_f_invert (&w2n, &n2w);
+
+				x = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+				y = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+				ncx = NR_MATRIX_DF_TRANSFORM_X (&gs2n, cx, cy);
+				ncy = NR_MATRIX_DF_TRANSFORM_Y (&gs2n, cx, cy);
+				nx = NR_MATRIX_DF_TRANSFORM_X (&w2n, event->x, event->y);
+				ny = NR_MATRIX_DF_TRANSFORM_Y (&w2n, event->x, event->y);
+
+				if (!NR_DF_TEST_CLOSE (ny, ncy, NR_EPSILON_F)) {
+					NRMatrixF s2n;
+
+#if 0
+					r2n.c[0] = 1.0;
+					r2n.c[1] = 0.0;
+					r2n.c[2] = 0.0;
+					r2n.c[3] = ny - ncy;
+					r2n.c[4] = 0.0;
+					r2n.c[5] = 0.0;
+#else
+					s2n.c[0] = 1.0;
+					s2n.c[1] = 0.0;
+					s2n.c[2] = !NR_DF_TEST_CLOSE (ncy, ny, NR_EPSILON_F) ? (nx - ncx) / (ny - ncy) : 0.0;
+					s2n.c[3] = 1.0;
+					s2n.c[4] = 0.0;
+					s2n.c[5] = 0.0;
+#endif
+
+					nr_matrix_multiply_fff (&gs2n, &gs2n, &s2n);
+					nr_matrix_multiply_fff (&gs2n, &gs2n, &n2gs);
+					nr_matrix_multiply_fff (&pos->gs2w, &gs2n, &pos->gs2w);
+
+					nr_matrix_f_invert (&pos->w2gs, &pos->gs2w);
+					nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
+				}
+			} else if (event->state & GDK_SHIFT_MASK) {
+				pos->gdata.radial.fx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+				pos->gdata.radial.fy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+			} else {
+				NRMatrixF n2gs, gs2n, n2w, w2n;
+				float x, y, ncx, ncy, nx, ny, nr;
+
+				n2gs.c[0] = r;
+				n2gs.c[1] = 0.0;
+				n2gs.c[2] = 0.0;
+				n2gs.c[3] = r;
+				n2gs.c[4] = cx;
+				n2gs.c[5] = cy;
+				nr_matrix_f_invert (&gs2n, &n2gs);
+				nr_matrix_multiply_fff (&n2w, &n2gs, &pos->gs2w);
+				nr_matrix_f_invert (&w2n, &n2w);
+
+				x = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+				y = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+				ncx = NR_MATRIX_DF_TRANSFORM_X (&gs2n, cx, cy);
+				ncy = NR_MATRIX_DF_TRANSFORM_Y (&gs2n, cx, cy);
+				nx = NR_MATRIX_DF_TRANSFORM_X (&w2n, event->x, event->y);
+				ny = NR_MATRIX_DF_TRANSFORM_Y (&w2n, event->x, event->y);
+				nr = hypot (nx - ncx, ny - ncy);
+
+				if (1 && !NR_DF_TEST_CLOSE (nr, 0.0, NR_EPSILON_F)) {
+					NRMatrixF r2n;
+
+					r2n.c[0] = (nx - ncx) / nr;
+					r2n.c[1] = (ny - ncy) / nr;
+					r2n.c[2] = (ncy - ny) / nr;
+					r2n.c[3] = (nx - ncx) / nr;;
+					r2n.c[4] = 0.0;
+					r2n.c[5] = 0.0;
+
+					nr_matrix_multiply_fff (&gs2n, &gs2n, &r2n);
+					nr_matrix_multiply_fff (&gs2n, &gs2n, &n2gs);
+					nr_matrix_multiply_fff (&pos->gs2w, &gs2n, &pos->gs2w);
+
+					nr_matrix_f_invert (&pos->w2gs, &pos->gs2w);
+					nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
+				}
+
+				pos->gdata.radial.r = hypot (x - cx, y - cy);
+
+			}
 			gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
 			pos->changed = TRUE;
 			pos->need_update = TRUE;
@@ -659,7 +775,6 @@ sp_gradient_position_free_image_data (SPGradientPosition *pos)
 static void
 sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 {
-	static guchar *rgb = NULL;
 	SPGradientPosition *gp;
 	gint x, y;
 
@@ -680,131 +795,192 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 		sp_gradient_position_update (gp);
 	}
 
-	if (!rgb) rgb = g_new (guchar, 64 * 64 * 3);
+	if (gp->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
+		float x1, y1, x2, y2, cx, cy, dx, dy;
+		long wx1, wy1, wx2, wy2, c[4];
 
-	for (y = area->y; y < area->y + area->height; y += 64) {
-		for (x = area->x; x < area->x + area->width; x += 64) {
-			gint x0, y0, x1, y1, w, h;
-			NRPixBlock pb;
+		x1 = gp->gdata.linear.x1;
+		y1 = gp->gdata.linear.y1;
+		x2 = gp->gdata.linear.x2;
+		y2 = gp->gdata.linear.y2;
 
-			w = MIN (x + 64, area->x + area->width) - x;
-			h = MIN (y + 64, area->y + area->height) - y;
+		wx1 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, x1, y1) + 0.5);
+		wy1 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, x1, y1) + 0.5);
+		wx2 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, x2, y2) + 0.5);
+		wy2 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, x2, y2) + 0.5);
 
-			/* Draw checkerboard */
-			nr_render_checkerboard_rgb (rgb, w, h, 3 * w, x, y);
-			/* Set up pixblock */
-			nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8, x, y, x + w, y + h, rgb, 3 * w, FALSE, FALSE);
-			if (gp->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
+		cx = (x1 + x2) / 2.0 + y1 - y2;
+		cy = (y1 + y2) / 2.0 + x2 - x1;
+		c[0] = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy) + 0.5);
+		c[1] = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy) + 0.5);
+		dx = (x1 + x2) / 2.0 - y1 + y2;
+		dy = (y1 + y2) / 2.0 - x2 + x1;
+		c[2] = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, dx, dy) + 0.5);
+		c[3] = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, dx, dy) + 0.5);
+
+		spgp_clip_line (c, area->x + 4, area->y + 4, area->x + area->width - 4, area->y + area->height - 4);
+
+		for (y = area->y; y < area->y + area->height; y += 64) {
+			for (x = area->x; x < area->x + area->width; x += 64) {
+				int w, h;
+				NRPixBlock pb;
+
+				w = MIN (x + 64, area->x + area->width) - x;
+				h = MIN (y + 64, area->y + area->height) - y;
+
+				/* Set up pixblock */
+				nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8, x, y, x + w, y + h, FALSE);
+
+				/* Draw checkerboard */
+				nr_render_checkerboard_rgb (pb.px, w, h, pb.rs, x, y);
+
 				/* Render gradient */
 				nr_lgradient_render (&gp->renderer.lgr, &pb);
-			} else {
-				/* Render gradient */
-				nr_rgradient_render (&gp->renderer.rgr, &pb);
-			}
-			if (gp->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
-				float x1, y1, x2, y2, cx, cy, dx, dy;
-				long wx1, wy1, wx2, wy2, wcx, wcy, wdx, wdy;
 
-				x1 = gp->gdata.linear.x1;
-				y1 = gp->gdata.linear.y1;
-				x2 = gp->gdata.linear.x2;
-				y2 = gp->gdata.linear.y2;
-
-				/* Draw start */
-				wx1 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, x1, y1) + 0.5);
-				wy1 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, x1, y1) + 0.5);
-				/* Draw end */
-				wx2 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, x2, y2) + 0.5);
-				wy2 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, x2, y2) + 0.5);
-				/* Draw line */
+				/* Draw controls */
 				spgp_draw_line (NR_PIXBLOCK_PX (&pb), w, h, pb.rs, wx1 - x, wy1 - y, wx2 - x, wy2 - y,
 						0xfff7f77f, 0x7f7f7f7f);
-
-				cx = (x1 + x2) / 2.0 + y1 - y2;
-				cy = (y1 + y2) / 2.0 + x2 - x1;
-				wcx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy) + 0.5);
-				wcy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy) + 0.5);
-				dx = (x1 + x2) / 2.0 - y1 + y2;
-				dy = (y1 + y2) / 2.0 - x2 + x1;
-				wdx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, dx, dy) + 0.5);
-				wdy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, dx, dy) + 0.5);
-
 				spgp_draw_line (NR_PIXBLOCK_PX (&pb), w, h, pb.rs,
-						wcx - x, wcy - y,
-						wdx - x, wdy - y,
-						0x7f7fff7f, 0x7f7f7f7f);
-			}
-			/* Draw pixmap */
-			gdk_gc_set_function (gp->gc, GDK_COPY);
-			gdk_draw_rgb_image (gp->px, gp->gc, 0, 0, w, h, GDK_RGB_DITHER_MAX, rgb, 3 * w);
-			/* Release pixblock */
-			nr_pixblock_release (&pb);
+						c[0] - x, c[1] - y,
+						c[2] - x, c[3] - y,
+						0x7f7fffff, 0x7f7f7fff);
 
-			if (gp->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
-				/* Draw start */
-				gdk_gc_set_function (gp->gc, GDK_INVERT);
-				x0 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, gp->gdata.linear.x1, gp->gdata.linear.y1) + 0.5);
-				y0 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, gp->gdata.linear.x1, gp->gdata.linear.y1) + 0.5);
-				gdk_draw_arc (gp->px, gp->gc, FALSE, x0 - x - RADIUS, y0 - y - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
-				/* Draw end */
-				x1 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, gp->gdata.linear.x2, gp->gdata.linear.y2) + 0.5);
-				y1 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, gp->gdata.linear.x2, gp->gdata.linear.y2) + 0.5);
-				gdk_draw_arc (gp->px, gp->gc, FALSE, x1 - x - RADIUS, y1 - y - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
-			} else {
-				short cx, cy, fx, fy;
-				NRPointF p0, p1, p2, p3;
-				/* Draw center */
-				gdk_gc_set_function (gp->gc, GDK_INVERT);
-				cx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, gp->gdata.radial.cx, gp->gdata.radial.cy) + 0.5);
-				cy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, gp->gdata.radial.cx, gp->gdata.radial.cy) + 0.5);
-				gdk_draw_arc (gp->px, gp->gc, FALSE,
-					      cx - x - RADIUS, cy - y - RADIUS,
-					      2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
-				fx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, gp->gdata.radial.fx, gp->gdata.radial.fy) + 0.5);
-				fy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, gp->gdata.radial.fx, gp->gdata.radial.fy) + 0.5);
-				if ((fx != cx) || (fy != cy)) {
-					gdk_draw_arc (gp->px, gp->gc, FALSE,
-						      fx - x - RADIUS, fy - y - RADIUS,
-						      2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
-				}
-				p0.x = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w,
-										gp->gdata.radial.cx - gp->gdata.radial.r,
-										gp->gdata.radial.cy - gp->gdata.radial.r) + 0.5);
-				p0.y = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w,
-										gp->gdata.radial.cx - gp->gdata.radial.r,
-										gp->gdata.radial.cy - gp->gdata.radial.r) + 0.5);
-				p1.x = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w,
-										gp->gdata.radial.cx + gp->gdata.radial.r,
-										gp->gdata.radial.cy - gp->gdata.radial.r) + 0.5);
-				p1.y = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w,
-										gp->gdata.radial.cx + gp->gdata.radial.r,
-										gp->gdata.radial.cy - gp->gdata.radial.r) + 0.5);
-				p2.x = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w,
-										gp->gdata.radial.cx + gp->gdata.radial.r,
-										gp->gdata.radial.cy + gp->gdata.radial.r) + 0.5);
-				p2.y = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w,
-										gp->gdata.radial.cx + gp->gdata.radial.r,
-										gp->gdata.radial.cy + gp->gdata.radial.r) + 0.5);
-				p3.x = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w,
-										gp->gdata.radial.cx - gp->gdata.radial.r,
-										gp->gdata.radial.cy + gp->gdata.radial.r) + 0.5);
-				p3.y = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w,
-										gp->gdata.radial.cx - gp->gdata.radial.r,
-										gp->gdata.radial.cy + gp->gdata.radial.r) + 0.5);
-				gdk_draw_line (gp->px, gp->gc, p0.x - x, p0.y - y, p1.x - x, p1.y - y);
-				gdk_draw_line (gp->px, gp->gc, p1.x - x, p1.y - y, p2.x - x, p2.y - y);
-				gdk_draw_line (gp->px, gp->gc, p2.x - x, p2.y - y, p3.x - x, p3.y - y);
-				gdk_draw_line (gp->px, gp->gc, p3.x - x, p3.y - y, p0.x - x, p0.y - y);
+				spgp_draw_rect (NR_PIXBLOCK_PX (&pb), w, h, pb.rs,
+						wx1 - RADIUS - x, wy1 - RADIUS - y,
+						wx1 + RADIUS - x, wy1 + RADIUS - y,
+						0xff7f7f7f, 0x7f7f7f7f);
+				spgp_draw_rect (NR_PIXBLOCK_PX (&pb), w, h, pb.rs,
+						wx2 - RADIUS - x, wy2 - RADIUS - y,
+						wx2 + RADIUS - x, wy2 + RADIUS - y,
+						0xff7f7f7f, 0x7f7f7f7f);
+
+				/* Draw pixmap */
+				gdk_gc_set_function (gp->gc, GDK_COPY);
+				gdk_draw_rgb_image (gp->px, gp->gc, 0, 0, w, h, GDK_RGB_DITHER_MAX, NR_PIXBLOCK_PX (&pb), pb.rs);
+
+				/* Draw bbox */
+				gdk_draw_rectangle (gp->px, gp->gc, FALSE,
+						    gp->vbox.x0 - x, gp->vbox.y0 - y,
+						    gp->vbox.x1 - gp->vbox.x0 - 1, gp->vbox.y1 - gp->vbox.y0 - 1);
+				/* Copy to window */
+				gdk_gc_set_function (gp->gc, GDK_COPY);
+				gdk_draw_pixmap (widget->window, gp->gc, gp->px, 0, 0, x, y, w, h);
+
+				/* Release pixblock */
+				nr_pixblock_release (&pb);
 			}
-			/* Draw bbox */
-			gdk_draw_rectangle (gp->px, gp->gc, FALSE,
-					    gp->vbox.x0 - x, gp->vbox.y0 - y,
-					    gp->vbox.x1 - gp->vbox.x0 - 1, gp->vbox.y1 - gp->vbox.y0 - 1);
-			/* Copy to window */
-			gdk_gc_set_function (gp->gc, GDK_COPY);
-			gdk_draw_pixmap (widget->window, gp->gc, gp->px, 0, 0, x, y, w, h);
+		}
+	} else {
+		float cx, cy, fx, fy, r;
+		long wcx, wcy, wdx, wdy, wfx, wfy, c[4];
+
+		cx = gp->gdata.radial.cx;
+		cy = gp->gdata.radial.cy;
+		fx = gp->gdata.radial.fx;
+		fy = gp->gdata.radial.fy;
+		r = gp->gdata.radial.r;
+
+		wcx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy) + 0.5);
+		wcy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy) + 0.5);
+		wdx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx + r, cy) + 0.5);
+		wdy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx + r, cy) + 0.5);
+		wfx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, fx, fy) + 0.5);
+		wfy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, fx, fy) + 0.5);
+
+		c[0] = wcx;
+		c[1] = wcy;
+		c[2] = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy + r) + 0.5);
+		c[3] = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy + r) + 0.5);
+
+		spgp_clip_line (c, area->x + 4, area->y + 4, area->x + area->width - 4, area->y + area->height - 4);
+
+		for (y = area->y; y < area->y + area->height; y += 64) {
+			for (x = area->x; x < area->x + area->width; x += 64) {
+				int w, h;
+				NRPixBlock pb;
+
+				w = MIN (x + 64, area->x + area->width) - x;
+				h = MIN (y + 64, area->y + area->height) - y;
+
+				/* Set up pixblock */
+				nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8, x, y, x + w, y + h, FALSE);
+
+				/* Draw checkerboard */
+				nr_render_checkerboard_rgb (pb.px, w, h, pb.rs, x, y);
+
+				/* Render gradient */
+				nr_rgradient_render (&gp->renderer.rgr, &pb);
+
+				/* Draw controls */
+				spgp_draw_line (NR_PIXBLOCK_PX (&pb), w, h, pb.rs, wcx - x, wcy - y, wdx - x, wdy - y,
+						0xfff7f77f, 0x7f7f7f7f);
+				spgp_draw_line (NR_PIXBLOCK_PX (&pb), w, h, pb.rs,
+						c[0] - x, c[1] - y,
+						c[2] - x, c[3] - y,
+						0x7f7fffff, 0x7f7f7fff);
+
+				spgp_draw_rect (NR_PIXBLOCK_PX (&pb), w, h, pb.rs,
+						wcx - RADIUS - x, wcy - RADIUS - y,
+						wcx + RADIUS - x, wcy + RADIUS - y,
+						0xff7f7f7f, 0x7f7f7f7f);
+				spgp_draw_rect (NR_PIXBLOCK_PX (&pb), w, h, pb.rs,
+						wfx - RADIUS - x, wfy - RADIUS - y,
+						wfx + RADIUS - x, wfy + RADIUS - y,
+						0xff7f7f7f, 0x7f7f7f7f);
+
+
+				/* Draw pixmap */
+				gdk_gc_set_function (gp->gc, GDK_COPY);
+				gdk_draw_rgb_image (gp->px, gp->gc, 0, 0, w, h, GDK_RGB_DITHER_MAX, NR_PIXBLOCK_PX (&pb), pb.rs);
+
+				/* Draw bbox */
+				gdk_draw_rectangle (gp->px, gp->gc, FALSE,
+						    gp->vbox.x0 - x, gp->vbox.y0 - y,
+						    gp->vbox.x1 - gp->vbox.x0 - 1, gp->vbox.y1 - gp->vbox.y0 - 1);
+				/* Copy to window */
+				gdk_gc_set_function (gp->gc, GDK_COPY);
+				gdk_draw_pixmap (widget->window, gp->gc, gp->px, 0, 0, x, y, w, h);
+
+				/* Release pixblock */
+				nr_pixblock_release (&pb);
+			}
 		}
 	}
+}
+
+/* fixme: We may want to adjust it to integers (Lauris) */
+
+void
+spgp_clip_line (long *c, long x0, long y0, long x1, long y1)
+{
+	float px, py, vx, vy;
+	float s, e, t0, t1;
+
+	px = c[0];
+	py = c[1];
+	vx = c[2] - c[0];
+	vy = c[3] - c[1];
+
+	s = -NR_HUGE_F;
+	e = NR_HUGE_F;
+
+	if (!NR_DF_TEST_CLOSE (vx, 0.0, NR_EPSILON_F)) {
+		t0 = (x0 - px) / vx;
+		t1 = (x1 - px) / vx;
+		s = MAX (s, MIN (t0, t1));
+		e = MIN (e, MAX (t0, t1));
+	}
+	if (!NR_DF_TEST_CLOSE (vy, 0.0, NR_EPSILON_F)) {
+		t0 = (y0 - py) / vy;
+		t1 = (y1 - py) / vy;
+		s = MAX (s, MIN (t0, t1));
+		e = MIN (e, MAX (t0, t1));
+	}
+
+	c[0] = px + s * vx;
+	c[1] = py + s * vy;
+	c[2] = px + e * vx;
+	c[3] = py + e * vy;
 }
 
 void
@@ -888,3 +1064,56 @@ spgp_draw_line (unsigned char *px, int w, int h, int rs, int x0, int y0, int x1,
 	}
 }
 
+void
+spgp_draw_rect (unsigned char *px, int w, int h, int rs, int x0, int y0, int x1, int y1, unsigned long c0, unsigned long c1)
+{
+	int sx, sy, ex, ey, x, y;
+	unsigned char s[4];
+	unsigned char f[4];
+	unsigned char *p;
+
+	if (x0 >= w) return;
+	if (y0 >= h) return;
+	if (x1 < 0) return;
+	if (y1 < 0) return;
+ 
+	s[0] = NR_RGBA32_R (c0);
+	s[1] = NR_RGBA32_G (c0);
+	s[2] = NR_RGBA32_B (c0);
+	s[3] = NR_RGBA32_A (c0);
+	f[0] = NR_RGBA32_R (c1);
+	f[1] = NR_RGBA32_G (c1);
+	f[2] = NR_RGBA32_B (c1);
+	f[3] = NR_RGBA32_A (c1);
+
+	sx = MAX (x0, 0);
+	sy = MAX (y0, 0);
+	ex = MIN (x1, w - 1);
+	ey = MIN (y1, h - 1);
+
+	for (y = sy; y <= ey; y++) {
+		p = px + y * rs + sx * 3;
+		if ((y == y0) || (y == y1)) {
+			for (x = sx; x <= ex; x++) {
+				p[0] = NR_COMPOSEN11 (s[0], s[3], p[0]);
+				p[1] = NR_COMPOSEN11 (s[0], s[3], p[0]);
+				p[2] = NR_COMPOSEN11 (s[0], s[3], p[0]);
+				p += 3;
+			}
+		} else {
+			for (x = sx; x <= ex; x++) {
+				if ((x == x0) || (x == x1)) {
+					p[0] = NR_COMPOSEN11 (s[0], s[3], p[0]);
+					p[1] = NR_COMPOSEN11 (s[0], s[3], p[0]);
+					p[2] = NR_COMPOSEN11 (s[0], s[3], p[0]);
+					p += 3;
+				} else {
+					p[0] = NR_COMPOSEN11 (f[0], f[3], p[0]);
+					p[1] = NR_COMPOSEN11 (f[0], f[3], p[0]);
+					p[2] = NR_COMPOSEN11 (f[0], f[3], p[0]);
+					p += 3;
+				}
+			}
+		}
+	}
+}

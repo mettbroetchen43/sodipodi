@@ -1,3 +1,8 @@
+2002-09-30  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/gradient-position.c (spgp_clip_line): New method
+	(spgp_draw_rect): Ditto
+
 2002-09-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-gradient.c (sp_gradient_set_gs2d_matrix_f): Oops, write the right transform
