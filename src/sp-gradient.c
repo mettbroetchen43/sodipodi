@@ -961,18 +961,22 @@ sp_lineargradient_read_attr (SPObject * object, const gchar * key)
 	} else if (!strcmp (key, "x1")) {
 		lg->x1.distance = sp_svg_read_length (&lg->x1.unit, val, 0.0);
 		lg->x1_set = (val != NULL);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	} else if (!strcmp (key, "y1")) {
 		lg->y1.distance = sp_svg_read_length (&lg->y1.unit, val, 0.0);
 		lg->y1_set = (val != NULL);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	} else if (!strcmp (key, "x2")) {
 		lg->x2.distance = sp_svg_read_length (&lg->x2.unit, val, 1.0);
 		lg->x2_set = (val != NULL);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	} else if (!strcmp (key, "y2")) {
 		lg->y2.distance = sp_svg_read_length (&lg->y2.unit, val, 0.0);
 		lg->y2_set = (val != NULL);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 

@@ -187,7 +187,7 @@ sp_document_new (const gchar * uri)
 			"fill:#000000;fill-opacity:0.5;stroke:none");
 	}
 	/* A quick hack to get namespaces into doc */
-	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/Graphics/SVG/SVG-19991203.dtd");
+	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/2000/svg");
 	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
 	/* End of quick hack */
 
@@ -265,7 +265,7 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	if (strcmp (sp_repr_name (rroot), "svg") != 0) return NULL;
 
 	/* A quick hack to get namespaces into doc */
-	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/Graphics/SVG/SVG-19991203.dtd");
+	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/2000.svg");
 	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
 	/* End of quick hack */
 

@@ -8,6 +8,7 @@
 #include "../document.h"
 #include "../desktop-handles.h"
 #include "../selection-chemistry.h"
+#include "fill-style.h"
 #include "object-properties.h"
 
 void sp_object_properties_page_changed (GtkNotebook * notebook,
@@ -136,7 +137,7 @@ void sp_object_properties_layout (void)
 void sp_object_properties_dialog (void)
 {
 	if (xml == NULL) {
-		GtkWidget * w;
+		GtkWidget *w, *p;
 
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/object_props.glade", "properties");
 		glade_xml_signal_autoconnect (xml);
@@ -202,6 +203,13 @@ void sp_object_properties_dialog (void)
 		position_ver = (GtkSpinButton *) glade_xml_get_widget (xml, "position_ver"); 
 		dimension_width = (GtkSpinButton *) glade_xml_get_widget (xml, "dimension_width"); 
 		dimension_height = (GtkSpinButton *) glade_xml_get_widget (xml, "dimension_height"); 
+
+		/* Do some evil things */
+		w = gtk_label_new (_("Dynamic fill"));
+		gtk_widget_show (w);
+		p = sp_fill_style_widget_new ();
+		gtk_widget_show (p);
+		gtk_notebook_append_page (prop_notebook, p, w);
 	}
 
 	sp_object_properties_reread_stroke ();

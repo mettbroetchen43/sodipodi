@@ -12,10 +12,13 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 #include <libart_lgpl/art_rgb_svp.h>
+#include <libart_lgpl/art_gray_svp.h>
+#include <libart_lgpl/art_rect_svp.h>
 
 #include "dialogs/fill-style.h"
 #include "helper/art-rgba-svp.h"
 #include "display/canvas-shape.h"
+#include "document.h"
 #include "desktop.h"
 #include "selection.h"
 #include "desktop-handles.h"
@@ -258,14 +261,70 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 
 			gnome_print_bpath (gpc, bpath, FALSE);
 
-			if (closed && (object->style->fill.type == SP_PAINT_TYPE_COLOR)) {
-				sp_color_get_rgb_floatv (&object->style->fill.color, rgb);
-				opacity = object->style->fill_opacity * object->style->real_opacity;
-				gnome_print_gsave (gpc);
-				gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
-				gnome_print_setopacity (gpc, opacity);
-				gnome_print_eofill (gpc);
-				gnome_print_grestore (gpc);
+			if (closed) {
+				if (object->style->fill.type == SP_PAINT_TYPE_COLOR) {
+					sp_color_get_rgb_floatv (&object->style->fill.color, rgb);
+					opacity = object->style->fill_opacity * object->style->real_opacity;
+					gnome_print_gsave (gpc);
+					gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
+					gnome_print_setopacity (gpc, opacity);
+					gnome_print_eofill (gpc);
+					gnome_print_grestore (gpc);
+				} else if (object->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
+					SPPainter *painter;
+					ArtDRect bbox;
+					gdouble id[6] = {1,0,0,1,0,0};
+					sp_item_bbox (item, &bbox);
+					painter = sp_paint_server_painter_new (object->style->fill.server, id, object->style->real_opacity, &bbox);
+					if (painter) {
+						ArtDRect dbox, cbox;
+						ArtIRect ibox;
+						gdouble i2d[6], d2i[6];
+						gint x, y;
+						dbox.x0 = 0.0;
+						dbox.y0 = 0.0;
+						dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
+						dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
+						art_drect_intersect (&cbox, &dbox, &bbox);
+						art_drect_to_irect (&ibox, &cbox);
+						sp_item_i2d_affine (item, i2d);
+						art_affine_invert (d2i, i2d);
+
+						gnome_print_gsave (gpc);
+						gnome_print_eoclip (gpc);
+						for (y = ibox.y0; y < ibox.y1; y+= 64) {
+							for (x = ibox.x0; x < ibox.x1; x+= 64) {
+								static guint32 *rgba = NULL;
+								static guchar *rgbp = NULL;
+								gint xx, yy;
+								if (!rgba) rgba = g_new (guint32, 64 * 64);
+								if (!rgbp) rgbp = g_new (guchar, 4 * 64 * 64);
+								painter->fill (painter, rgba, x, ibox.y1 + ibox.y0 - y, 64, 64, 64);
+								for (yy = 0; yy < 64; yy++) {
+									guint32 *sp;
+									guchar *dp;
+									sp = rgba + 64 * yy;
+									dp = rgbp + 4 * yy * 64;
+									for (xx = 0; xx < 64; xx++) {
+										*dp++ = (*sp >> 24);
+										*dp++ = (*sp >> 16) & 0xff;
+										*dp++ = (*sp >> 8) & 0xff;
+										*dp++ = *sp & 0xff;
+										sp++;
+									}
+								}
+								gnome_print_gsave (gpc);
+								gnome_print_concat (gpc, d2i);
+								gnome_print_translate (gpc, x, y);
+								gnome_print_scale (gpc, 64, 64);
+								gnome_print_rgbaimage (gpc, rgbp, 64, 64, 4 * 64);
+								gnome_print_grestore (gpc);
+							}
+						}
+						gnome_print_grestore (gpc);
+						sp_painter_free (painter);
+					}
+				}
 			}
 			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
 				sp_color_get_rgb_floatv (&object->style->stroke.color, rgb);
@@ -369,12 +428,89 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 							buf->pixels, buf->rowstride, NULL);
 					}
 				} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-#if 0
 					SPPainter *painter;
 					ArtDRect bbox;
-					sp_item_bbox (item, &bbox);
+					/* Find item bbox */
+					/* fixme: This does not work for multi-component objects (text) */
+					art_drect_svp (&bbox, svp);
 					painter = sp_paint_server_painter_new (style->fill.server, affine, style->real_opacity, &bbox);
-#endif
+					if (painter) {
+						ArtDRect abox;
+						ArtIRect ibox;
+						/* Find component bbox */
+						art_drect_svp (&abox, svp);
+						/* Find integer bbox */
+						art_drect_to_irect (&ibox, &abox);
+						/* Clip */
+						ibox.x0 = MAX (ibox.x0, 0);
+						ibox.y0 = MAX (ibox.y0, 0);
+						ibox.x1 = MIN (ibox.x1, buf->width);
+						ibox.y1 = MIN (ibox.y1, buf->height);
+						if ((ibox.x0 < ibox.x1) && (ibox.y0 < ibox.y1)) {
+							static guchar *gray = NULL;
+							static guint32 *rgba = NULL;
+							gint x, y;
+							if (!gray) gray = g_new (guchar, 64 * 64);
+							if (!rgba) rgba = g_new (guint32, 64 * 64);
+							for (y = ibox.y0; y < ibox.y1; y+= 64) {
+								for (x = ibox.x0; x < ibox.x1; x+= 64) {
+									gint xx, yy, xe, ye;
+									/* Draw grayscale image */
+									art_gray_svp_aa (svp, x, y, x + 64, y + 64, gray, 64);
+									/* Render painter */
+									painter->fill (painter, rgba, x, y, 64, 64, 64);
+									/* Compose */
+									xe = MIN (x + 64, ibox.x1) - x;
+									ye = MIN (y + 64, ibox.y1) - y;
+									for (yy = 0; yy < ye; yy++) {
+										guchar *gp, *bp;
+										guint32 *pp;
+										gp = gray + yy * 64;
+										pp = rgba + yy * 64;
+										if (buf->n_channels == 3) {
+											/* RGB buffer */
+											bp = buf->pixels + (y + yy) * buf->rowstride + x * 3;
+											for (xx = 0; xx < xe; xx++) {
+												guint a, fc;
+												/* fixme: */
+												a = ((*pp & 0xff) * (*gp) + 0x80) >> 8;
+												fc = (((*pp >> 24) & 0xff) - *bp) * a;
+												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
+												fc = (((*pp >> 16) & 0xff) - *bp) * a;
+												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
+												fc = (((*pp >> 8) & 0xff) - *bp) * a;
+												*bp++ = *bp + ((fc + (fc >> 8) + 0x80) >> 8);
+												pp++;
+												gp++;
+											}
+										} else {
+											/* RGBA buffer */
+											bp = buf->pixels + (y + yy) * buf->rowstride + x * 4;
+											for (xx = 0; xx < xe; xx++) {
+												guint a, bg_r, bg_g, bg_b, bg_a, tmp;
+												/* fixme: */
+												a = ((*pp & 0xff) * (*gp)) / 255;
+												bg_r = bp[0];
+												bg_g = bp[1];
+												bg_b = bp[2];
+												bg_a = bp[3];
+												tmp = (((*pp >> 24) & 0xff) - bg_r) * a;
+												*bp++ = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
+												tmp = (((*pp >> 16) & 0xff) - bg_g) * a;
+												*bp++ = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
+												tmp = (((*pp >> 8) & 0xff) - bg_b) * a;
+												*bp++ = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);
+												*bp++ = bg_a + (((255 - bg_a) * a + 0x80) >> 8);
+												pp++;
+												gp++;
+											}
+										}
+									}
+								}
+							}
+						}
+						sp_painter_free (painter);
+					}
 				}
 				art_svp_free (svp);
 			}

@@ -1,5 +1,15 @@
 2001-09-27  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/dialogs/object-properties.c (sp_object_properties_dialog): Create
+	dynamic fill page
+
+	* src/sp-shape.c (sp_shape_print): Print gradients (somewhat)
+	(sp_shape_paint): Paint gradients (somewhat)
+
+	* src/document.c (sp_document_new_from_mem): Use fresh namespace
+
+	* src/xml/repr-io.c (sp_repr_save_stream): Write fresher descriptor
+
 	* src/widgets/gradient-position.c: New file and widget
 
 	* src/widgets/gradient-position.h: New file and widget
