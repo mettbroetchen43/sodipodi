@@ -319,8 +319,11 @@ nr_type_directory_build (void)
 	for (fdef = families; fdef; fdef = fdef->next) {
 		NRTypeFaceDef *tdef;
 		for (tdef = fdef->faces; tdef; tdef = tdef->next) {
+			const unsigned char *s;
 			tdef->pdef = pdefs + pos;
-			nr_type_calculate_position (tdef->pdef, tdef->name);
+			s=tdef->name;
+			if (strstr (s, tdef->family) == s) s += strlen (tdef->family);
+			nr_type_calculate_position (tdef->pdef, s);
 			pos += 1;
 		}
 	}
