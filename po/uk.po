@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.17\n"
-"POT-Creation-Date: 2001-03-26 13:50+0300\n"
+"POT-Creation-Date: 2001-04-04 09:02+0300\n"
 "PO-Revision-Date: 2000-01-17 14:31+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -1049,18 +1049,16 @@ msgid "Expand dialog - Ctl+e"
 msgstr "Розширити д╕алог - Ctl+E"
 
 #: glade/transformation.c:43
-#, fuzzy
 msgid "Use alignment during transformation"
-msgstr "Видалити трансформац╕ю"
+msgstr "Вир╕внювання п╕д час трансформац╕╖"
 
 #: glade/transformation.c:45
 msgid "Use center as transformation fixpoint"
-msgstr ""
+msgstr "Центр у якост╕ стало╖ точки трансформац╕╖"
 
 #: glade/transformation.c:46 glade/transformation.c:47
-#, fuzzy
 msgid "Center"
-msgstr "Вм╕ст"
+msgstr "Центр"
 
 #: glade/transformation.c:48
 msgid "Horizontal center value"
@@ -1100,46 +1098,39 @@ msgstr "Встановити типов╕ значення в д╕алоз╕ - Ctrl+R"
 
 #: glade/transformation.c:58
 msgid "Align to top middle"
-msgstr ""
+msgstr "Вир╕вняти вгору посередин╕"
 
 #: glade/transformation.c:59
-#, fuzzy
 msgid "Align to bottom right"
-msgstr "Вир╕вняти зовн╕шн╕й об'╓кт за правою границею"
+msgstr "Вир╕вняти проворуч вниз"
 
 #: glade/transformation.c:60
-#, fuzzy
 msgid "Align to right middle"
-msgstr "Центрувати об'╓кти по горизонтал╕"
+msgstr "Вир╕вняти праворуч посередин╕"
 
 #: glade/transformation.c:61
-#, fuzzy
 msgid "Align to top right"
-msgstr "Вир╕вняти зовн╕шн╕й об'╓кт за правою границею"
+msgstr "Вир╕вняти вгору праворуч"
 
 #: glade/transformation.c:62
-#, fuzzy
 msgid "Align to left middle"
-msgstr "Центрувати об'╓кти по вертикал╕"
+msgstr "Вир╕вняти л╕воруч посередин╕"
 
 #: glade/transformation.c:63
 msgid "Align to center"
-msgstr ""
+msgstr "Вир╕вняти в центр"
 
 #: glade/transformation.c:64
-#, fuzzy
 msgid "Align to bottom middle"
-msgstr "Вир╕вняти внутр╕шн╕й об'╓кт за нижньою границею"
+msgstr "Вир╕вняти вниз посередин╕"
 
 #: glade/transformation.c:65
-#, fuzzy
 msgid "Align to bottom left"
-msgstr "Вир╕вняти зовн╕шн╕й об'╓кт за л╕вою границею"
+msgstr "Вир╕вняти вниз л╕воруч"
 
 #: glade/transformation.c:66
-#, fuzzy
 msgid "Align to top left"
-msgstr "Вир╕вняти зовн╕шн╕й об'╓кт за л╕вою границею"
+msgstr "Вир╕вняти вгору л╕воруч"
 
 #: glade/transformation.c:67 glade/transformation.c:77
 #: glade/transformation.c:85 glade/transformation.c:95
