@@ -5,7 +5,7 @@
 # Mitsuru Oka <oka@debian.or.jp>, 2001.
 # Junichi Uekawa <dancer@debian.org>, 2002.
 # Mitsuru Oka <oka326@parkcity.ne.jp>, 2002.
-# Masatake YAMATO <jetGyve.org>, 2002
+# Masatake YAMATO <jet@gyve.org>, 2002
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.33\n"
@@ -19,7 +19,7 @@ msgstr ""
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
-msgstr "SVGãƒ™ã‚¯ã‚¿ãƒ¼ã‚¤ãƒ©ã‚¹ãƒˆãƒ¬ãƒ¼ã‚¿"
+msgstr "SVG¥Ù¥¯¥¿¡¼¥¤¥é¥¹¥È¥ì¡¼¥¿"
 
 #. Create window
 #: sodipodi.desktop.in.h:2 src/toolbox.c:119 src/toolbox.c:140
@@ -28,7 +28,7 @@ msgstr "Sodipodi"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
-msgstr "sodipodi-svg-docãƒ•ã‚¡ã‚¯ãƒˆãƒªã‚’ä½œæˆã§ãã¾ã›ã‚“"
+msgstr "sodipodi-svg-doc¥Õ¥¡¥¯¥È¥ê¤òºîÀ®¤Ç¤­¤Ş¤»¤ó"
 
 #: src/desktop.c:750
 msgid "Zoom drawing if window size changes"
@@ -42,235 +42,235 @@ msgstr "Sodipodi: %s: %s: %d"
 #: src/desktop.c:959
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr "ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ %s ã¯æœªä¿å­˜ã®å¤‰æ›´ãŒã‚ã‚Šã¾ã™ãŒã€ä¿å­˜ã—ã¾ã™ã‹?"
+msgstr "¥É¥­¥å¥á¥ó¥È %s ¤ÏÌ¤ÊİÂ¸¤ÎÊÑ¹¹¤¬¤¢¤ê¤Ş¤¹¤¬¡¢ÊİÂ¸¤·¤Ş¤¹¤«?"
 
 #. Page page
 #: src/desktop.c:1481 src/dialogs/align.c:286
 #: src/dialogs/desktop-properties.c:385 src/dialogs/document-properties.c:163
 #: src/dialogs/export.c:135 src/verbs.c:484
 msgid "Page"
-msgstr "ãƒšãƒ¼ã‚¸"
+msgstr "¥Ú¡¼¥¸"
 
 #: src/desktop.c:1485 src/dialogs/align.c:287 src/dialogs/export.c:140
 #: src/verbs.c:485
 msgid "Drawing"
-msgstr "æç”»"
+msgstr "ÉÁ²è"
 
 #. Selection submenu
 #: src/desktop.c:1489 src/dialogs/align.c:288 src/dialogs/export.c:145
 #: src/interface.c:554 src/toolbox.c:484 src/verbs.c:486
 msgid "Selection"
-msgstr "é¸æŠ"
+msgstr "ÁªÂò"
 
 #: src/dialogs/align.c:153 src/toolbox.c:444
 msgid "Align objects"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®é…ç½®"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤ÎÇÛÃÖ"
 
 #: src/dialogs/align.c:172
 msgid "Right side of aligned objects to left side of anchor"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å³ç«¯ã‚’ã‚¢ãƒ³ã‚«ãƒ¼ã®å·¦å´ã«ãã‚ãˆã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î±¦Ã¼¤ò¥¢¥ó¥«¡¼¤Îº¸Â¦¤Ë¤½¤í¤¨¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:175
 msgid "Left side of aligned objects to left side of anchor"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å·¦ç«¯ã‚’ã‚¢ãƒ³ã‚«ãƒ¼ã®å·¦å´ã«ãã‚ãˆã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Îº¸Ã¼¤ò¥¢¥ó¥«¡¼¤Îº¸Â¦¤Ë¤½¤í¤¨¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:178
 msgid "Center horizontally"
-msgstr "æ°´å¹³æ–¹å‘ã§ä¸­å¤®ã«é…ç½®ã™ã‚‹"
+msgstr "¿åÊ¿Êı¸ş¤ÇÃæ±û¤ËÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:181
 msgid "Right side of aligned objects to right side of anchor"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å³ç«¯ã‚’ã‚¢ãƒ³ã‚«ãƒ¼ã®å³å´ã«ãã‚ãˆã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î±¦Ã¼¤ò¥¢¥ó¥«¡¼¤Î±¦Â¦¤Ë¤½¤í¤¨¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:184
 msgid "Left side of aligned objects to right side of anchor"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å·¦ç«¯ã‚’ã‚¢ãƒ³ã‚«ãƒ¼ã®å³å´ã«ãã‚ãˆã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Îº¸Ã¼¤ò¥¢¥ó¥«¡¼¤Î±¦Â¦¤Ë¤½¤í¤¨¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:188
 msgid "Bottom of aligned objects to top of anchor"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸‹ç«¯ã‚’ã‚¢ãƒ³ã‚«ãƒ¼ã®ä¸Šå´ã«ãã‚ãˆã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î²¼Ã¼¤ò¥¢¥ó¥«¡¼¤Î¾åÂ¦¤Ë¤½¤í¤¨¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:191 src/dialogs/align.c:200
 msgid "Top of aligned objects to top of anchor"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸Šç«¯ã‚’ã‚¢ãƒ³ã‚«ãƒ¼ã®ä¸Šå´ã«ãã‚ãˆã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î¾åÃ¼¤ò¥¢¥ó¥«¡¼¤Î¾åÂ¦¤Ë¤½¤í¤¨¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:194
 msgid "Center vertically"
-msgstr "å‚ç›´æ–¹å‘ã§ä¸­å¤®ã«é…ç½®"
+msgstr "¿âÄ¾Êı¸ş¤ÇÃæ±û¤ËÇÛÃÖ"
 
 #: src/dialogs/align.c:197
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸‹ç«¯ã‚’ã‚¢ãƒ³ã‚«ãƒ¼ã®ä¸‹å´ã«ãã‚ãˆã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î²¼Ã¼¤ò¥¢¥ó¥«¡¼¤Î²¼Â¦¤Ë¤½¤í¤¨¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:203
 msgid "Align"
-msgstr "é…ç½®"
+msgstr "ÇÛÃÖ"
 
 #: src/dialogs/align.c:221
 msgid "Distribute left sides of objects at even distances"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å·¦ç«¯ã®é–“éš”ã‚’ç­‰å¹…ã«ã—ã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Îº¸Ã¼¤Î´Ö³Ö¤òÅùÉı¤Ë¤·¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:224
 msgid "Distribute centres of objects at even distances horizontally"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸­å¤®ã‚’æ°´å¹³æ–¹å‘ã«ç­‰å¹…ã«ã—ã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤ÎÃæ±û¤ò¿åÊ¿Êı¸ş¤ËÅùÉı¤Ë¤·¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:227
 msgid "Distribute right sides of objects at even distances"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å³ç«¯ã®é–“éš”ã‚’ç­‰å¹…ã«ã—ã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î±¦Ã¼¤Î´Ö³Ö¤òÅùÉı¤Ë¤·¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:230
 msgid "Distribute horizontal distance between objects equally"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®é–“éš”ã‚’æ°´å¹³æ–¹å‘ã«ç­‰å¹…ã«ã—ã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î´Ö³Ö¤ò¿åÊ¿Êı¸ş¤ËÅùÉı¤Ë¤·¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:234
 msgid "Distribute top sides of objects at even distances"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸Šç«¯ã®é–“éš”ã‚’ç­‰å¹…ã«ã—ã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î¾åÃ¼¤Î´Ö³Ö¤òÅùÉı¤Ë¤·¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:237
 msgid "Distribute centres of objects at even distances vertically"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸­å¤®ã®é–“éš”ã‚’å‚ç›´æ–¹å‘ã«ç­‰å¹…ã«ã—ã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤ÎÃæ±û¤Î´Ö³Ö¤ò¿âÄ¾Êı¸ş¤ËÅùÉı¤Ë¤·¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:240
 msgid "Distribute bottom sides of objects at even distances"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä¸‹ç«¯ã®é–“éš”ã‚’ç­‰å¹…ã«ã—ã¦é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î²¼Ã¼¤Î´Ö³Ö¤òÅùÉı¤Ë¤·¤ÆÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:243
 msgid "Distribute vertical distance between objects equally"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®é–“éš”ã‚’å‚ç›´æ–¹å‘ã«é…ç½®ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î´Ö³Ö¤ò¿âÄ¾Êı¸ş¤ËÇÛÃÖ¤¹¤ë"
 
 #: src/dialogs/align.c:246
 msgid "Distribute"
-msgstr "åˆ†æ•£é…ç½®"
+msgstr "Ê¬»¶ÇÛÃÖ"
 
 #: src/dialogs/align.c:282
 msgid "Last selected"
-msgstr "æœ€å¾Œã®é¸æŠéƒ¨åˆ†"
+msgstr "ºÇ¸å¤ÎÁªÂòÉôÊ¬"
 
 #: src/dialogs/align.c:283
 msgid "First selected"
-msgstr "æœ€åˆã®é¸æŠéƒ¨åˆ†"
+msgstr "ºÇ½é¤ÎÁªÂòÉôÊ¬"
 
 #: src/dialogs/align.c:284
 msgid "Biggest item"
-msgstr "æœ€å¤§è¦ç´ "
+msgstr "ºÇÂçÍ×ÁÇ"
 
 #: src/dialogs/align.c:285
 msgid "Smallest item"
-msgstr "æœ€å°ã®è¦ç´ "
+msgstr "ºÇ¾®¤ÎÍ×ÁÇ"
 
 #: src/dialogs/desktop-properties.c:185
 msgid "Desktop settings"
-msgstr "ãƒ‡ã‚¹ã‚¯ãƒˆãƒƒãƒ—è¨­å®š"
+msgstr "¥Ç¥¹¥¯¥È¥Ã¥×ÀßÄê"
 
 #. Grid settings
 #. Notebook tab
 #: src/dialogs/desktop-properties.c:194
 msgid "Grid"
-msgstr "ã‚°ãƒªãƒƒãƒ‰"
+msgstr "¥°¥ê¥Ã¥É"
 
 #. Checkbuttons
 #: src/dialogs/desktop-properties.c:204
 msgid "Show grid"
-msgstr "ã‚°ãƒªãƒƒãƒ‰ã®è¡¨ç¤º"
+msgstr "¥°¥ê¥Ã¥É¤ÎÉ½¼¨"
 
 #: src/dialogs/desktop-properties.c:211
 msgid "Snap to grid"
-msgstr "ã‚°ãƒªãƒƒãƒ‰ã«ã‚ã‚ã›ã‚‹"
+msgstr "¥°¥ê¥Ã¥É¤Ë¤¢¤ï¤»¤ë"
 
 #: src/dialogs/desktop-properties.c:218
 msgid "Grid units:"
-msgstr "ã‚°ãƒªãƒƒãƒ‰ãƒ¦ãƒ‹ãƒƒãƒˆ:"
+msgstr "¥°¥ê¥Ã¥É¥æ¥Ë¥Ã¥È:"
 
 #: src/dialogs/desktop-properties.c:227
 msgid "Origin X:"
-msgstr "Xæ–¹å‘ã®å§‹ç‚¹:"
+msgstr "XÊı¸ş¤Î»ÏÅÀ:"
 
 #: src/dialogs/desktop-properties.c:241
 msgid "Origin Y:"
-msgstr "Yæ–¹å‘ã®å§‹ç‚¹:"
+msgstr "YÊı¸ş¤Î»ÏÅÀ:"
 
 #: src/dialogs/desktop-properties.c:255
 msgid "Spacing X:"
-msgstr "Xæ–¹å‘ã®é–“éš”:"
+msgstr "XÊı¸ş¤Î´Ö³Ö:"
 
 #: src/dialogs/desktop-properties.c:269
 msgid "Spacing Y:"
-msgstr "Yæ–¹å‘ã®é–“éš”:"
+msgstr "YÊı¸ş¤Î´Ö³Ö:"
 
 #: src/dialogs/desktop-properties.c:283 src/dialogs/desktop-properties.c:342
 msgid "Snap units:"
-msgstr "ãƒ¦ãƒ‹ãƒƒãƒˆã«åˆã‚ã›ã‚‹:"
+msgstr "¥æ¥Ë¥Ã¥È¤Ë¹ç¤ï¤»¤ë:"
 
 #: src/dialogs/desktop-properties.c:295 src/dialogs/desktop-properties.c:354
 msgid "Snap distance:"
-msgstr "åˆã‚ã›ã‚‹è·é›¢:"
+msgstr "¹ç¤ï¤»¤ëµ÷Î¥:"
 
 #: src/dialogs/desktop-properties.c:308
 msgid "Grid color:"
-msgstr "ã‚°ãƒªãƒƒãƒ‰ã®ã‚«ãƒ©ãƒ¼:"
+msgstr "¥°¥ê¥Ã¥É¤Î¥«¥é¡¼:"
 
 #: src/dialogs/desktop-properties.c:312
 msgid "Grid color"
-msgstr "ã‚°ãƒªãƒƒãƒ‰ã®ã‚«ãƒ©ãƒ¼:"
+msgstr "¥°¥ê¥Ã¥É¤Î¥«¥é¡¼:"
 
 #. Guidelines page
 #: src/dialogs/desktop-properties.c:318
 msgid "Guides"
-msgstr "ã‚¬ã‚¤ãƒ‰ãƒ©ã‚¤ãƒ³"
+msgstr "¥¬¥¤¥É¥é¥¤¥ó"
 
 #: src/dialogs/desktop-properties.c:327
 msgid "Show guides"
-msgstr "ã‚¬ã‚¤ãƒ‰ãƒ©ã‚¤ãƒ³ã®è¡¨ç¤º"
+msgstr "¥¬¥¤¥É¥é¥¤¥ó¤ÎÉ½¼¨"
 
 #: src/dialogs/desktop-properties.c:335
 msgid "Snap to guides"
-msgstr "ã‚¬ã‚¤ãƒ‰ã«åˆã‚ã›ã‚‹"
+msgstr "¥¬¥¤¥É¤Ë¹ç¤ï¤»¤ë"
 
 #: src/dialogs/desktop-properties.c:366
 msgid "Guides color:"
-msgstr "ã‚¬ã‚¤ãƒ‰ã‚«ãƒ©ãƒ¼:"
+msgstr "¥¬¥¤¥É¥«¥é¡¼:"
 
 #: src/dialogs/desktop-properties.c:370
 msgid "Guideline color"
-msgstr "ã‚¬ã‚¤ãƒ‰ãƒ©ã‚¤ãƒ³ã‚«ãƒ©ãƒ¼"
+msgstr "¥¬¥¤¥É¥é¥¤¥ó¥«¥é¡¼"
 
 #: src/dialogs/desktop-properties.c:375
 msgid "Highlight color:"
-msgstr "ãƒã‚¤ãƒ©ã‚¤ãƒˆã‚«ãƒ©ãƒ¼:"
+msgstr "¥Ï¥¤¥é¥¤¥È¥«¥é¡¼:"
 
 #: src/dialogs/desktop-properties.c:379
 msgid "Highlighted guideline color"
-msgstr "ã‚¬ã‚¤ãƒ‰ãƒ©ã‚¤ãƒ³ã‚«ãƒ©ãƒ¼ã®ãƒã‚¤ãƒ©ã‚¤ãƒˆ"
+msgstr "¥¬¥¤¥É¥é¥¤¥ó¥«¥é¡¼¤Î¥Ï¥¤¥é¥¤¥È"
 
 #: src/dialogs/desktop-properties.c:394
 msgid "Show border"
-msgstr "å¢ƒç•Œã®è¡¨ç¤º"
+msgstr "¶­³¦¤ÎÉ½¼¨"
 
 #: src/dialogs/desktop-properties.c:401
 msgid "Border on top of drawing"
-msgstr "æç”»é ˜åŸŸã®ä¸Šç«¯ã®å¢ƒç•Œ"
+msgstr "ÉÁ²èÎÎ°è¤Î¾åÃ¼¤Î¶­³¦"
 
 #: src/dialogs/desktop-properties.c:647
 msgid "Close"
-msgstr "é–‰ã˜ã‚‹"
+msgstr "ÊÄ¤¸¤ë"
 
 #: src/dialogs/display-settings.c:85
 msgid "Display settings"
-msgstr "è¡¨ç¤ºè¨­å®š"
+msgstr "É½¼¨ÀßÄê"
 
 #. Rendering settings
 #. Notebook tab
 #: src/dialogs/display-settings.c:93
 msgid "Rendering"
-msgstr "æç”»"
+msgstr "ÉÁ²è"
 
 #: src/dialogs/display-settings.c:105
 msgid "Oversample bitmaps:"
-msgstr "ã‚ªãƒ¼ãƒãƒ¼ã‚µãƒ³ãƒ—ãƒ«ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—:"
+msgstr "¥ª¡¼¥Ğ¡¼¥µ¥ó¥×¥ë¥Ó¥Ã¥È¥Ş¥Ã¥×:"
 
 #: src/dialogs/display-settings.c:116 src/verbs.c:427
 msgid "None"
-msgstr "ãªã—"
+msgstr "¤Ê¤·"
 
 #: src/dialogs/display-settings.c:120
 msgid "2x2"
@@ -292,35 +292,35 @@ msgstr "16x16"
 #. Notebook tab
 #: src/dialogs/display-settings.c:143
 msgid "Input"
-msgstr "å…¥åŠ›"
+msgstr "ÆşÎÏ"
 
 #: src/dialogs/display-settings.c:154
 msgid "Default cursor tolerance:"
-msgstr "ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚«ãƒ¼ã‚½ãƒ«ãƒˆãƒ¬ãƒ©ãƒ³ã‚¹:"
+msgstr "¥Ç¥Õ¥©¥ë¥È¥«¡¼¥½¥ë¥È¥ì¥é¥ó¥¹:"
 
 #: src/dialogs/document-properties.c:154
 msgid "Document settings"
-msgstr "ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆè¨­å®š"
+msgstr "¥É¥­¥å¥á¥ó¥ÈÀßÄê"
 
 #: src/dialogs/document-properties.c:175
 msgid "Paper size:"
-msgstr "ç”¨ç´™ã‚µã‚¤ã‚º:"
+msgstr "ÍÑ»æ¥µ¥¤¥º:"
 
 #: src/dialogs/document-properties.c:196
 msgid "Custom"
-msgstr "ã‚«ã‚¹ã‚¿ãƒ "
+msgstr "¥«¥¹¥¿¥à"
 
 #. Custom paper frame
 #: src/dialogs/document-properties.c:203
 msgid "Custom paper"
-msgstr "ã‚«ã‚¹ã‚¿ãƒ ã‚µã‚¤ã‚º"
+msgstr "¥«¥¹¥¿¥à¥µ¥¤¥º"
 
 #. Unit selector
 #: src/dialogs/document-properties.c:214 src/dialogs/export.c:153
 #: src/dialogs/object-properties.c:318 src/dialogs/transformation.c:401
 #: src/dialogs/transformation.c:576
 msgid "Units:"
-msgstr "ãƒ¦ãƒ‹ãƒƒãƒˆ:"
+msgstr "¥æ¥Ë¥Ã¥È:"
 
 #. Stroke width
 #: src/dialogs/document-properties.c:223 src/dialogs/export.c:163
@@ -329,22 +329,22 @@ msgstr "ãƒ¦ãƒ‹ãƒƒãƒˆ:"
 #: src/dialogs/stroke-style.c:556 src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1079
 msgid "Width:"
-msgstr "å¹…:"
+msgstr "Éı:"
 
 #: src/dialogs/document-properties.c:238 src/dialogs/export.c:172
 #: src/dialogs/export.c:195 src/dialogs/object-attributes.c:69
 #: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:375
 msgid "Height:"
-msgstr "é«˜ã•:"
+msgstr "¹â¤µ:"
 
 #: src/dialogs/export.c:115
 msgid "Export bitmap"
-msgstr "ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã®å‡ºåŠ›"
+msgstr "¥Ó¥Ã¥È¥Ş¥Ã¥×¤Î½ĞÎÏ"
 
 #. Export area frame
 #: src/dialogs/export.c:124
 msgid "Export area"
-msgstr "æŒ‡å®šç¯„å›²ã‚’å‡ºåŠ›"
+msgstr "»ØÄêÈÏ°Ï¤ò½ĞÎÏ"
 
 #: src/dialogs/export.c:157
 msgid "x0:"
@@ -365,11 +365,11 @@ msgstr "y1:"
 #. Bitmap size frame
 #: src/dialogs/export.c:178
 msgid "Bitmap size"
-msgstr "ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã‚µã‚¤ã‚º"
+msgstr "¥Ó¥Ã¥È¥Ş¥Ã¥×¥µ¥¤¥º"
 
 #: src/dialogs/export.c:187 src/dialogs/export.c:195
 msgid "pixels"
-msgstr "ãƒ”ã‚¯ã‚»ãƒ«"
+msgstr "¥Ô¥¯¥»¥ë"
 
 #: src/dialogs/export.c:191 src/dialogs/export.c:199
 msgid "dpi"
@@ -377,19 +377,19 @@ msgstr "dpi"
 
 #: src/dialogs/export.c:206
 msgid "Export png file"
-msgstr "PNGãƒ•ã‚¡ã‚¤ãƒ«ã‚’å‡ºåŠ›"
+msgstr "PNG¥Õ¥¡¥¤¥ë¤ò½ĞÎÏ"
 
 #: src/dialogs/export.c:235 src/verbs.c:437
 msgid "Export"
-msgstr "å‡ºåŠ›"
+msgstr "½ĞÎÏ"
 
 #: src/dialogs/fill-style.c:89
 msgid "Fill style"
-msgstr "ãƒ•ã‚£ãƒ«ã‚¹ã‚¿ã‚¤ãƒ«"
+msgstr "¥Õ¥£¥ë¥¹¥¿¥¤¥ë"
 
 #: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
-msgstr "å¡—ã‚Šæ½°ã—è¦å‰‡"
+msgstr "ÅÉ¤êÄÙ¤·µ¬Â§"
 
 #: src/dialogs/fill-style.c:138
 msgid "nonzero"
@@ -401,51 +401,51 @@ msgstr "evenodd"
 
 #: src/dialogs/item-properties.c:78
 msgid "Sensitive"
-msgstr "ã‚»ãƒ³ã‚·ãƒ†ã‚£ãƒ–"
+msgstr "¥»¥ó¥·¥Æ¥£¥Ö"
 
 #: src/dialogs/item-properties.c:83
 msgid "Visible"
-msgstr "å¯è¦–"
+msgstr "²Ä»ë"
 
 #: src/dialogs/item-properties.c:88
 msgid "Active"
-msgstr "ã‚¢ã‚¯ãƒ†ã‚£ãƒ–"
+msgstr "¥¢¥¯¥Æ¥£¥Ö"
 
 #: src/dialogs/item-properties.c:93
 msgid "Printable"
-msgstr "å°åˆ·å¯èƒ½"
+msgstr "°õºş²ÄÇ½"
 
 #: src/dialogs/item-properties.c:104
 msgid "Opacity:"
-msgstr "åŠé€æ˜"
+msgstr "È¾Æ©ÌÀ"
 
 #: src/dialogs/item-properties.c:123
 msgid "Transformation matrix"
-msgstr "å¤‰å½¢è¡Œåˆ—"
+msgstr "ÊÑ·Á¹ÔÎó"
 
 #: src/dialogs/item-properties.c:245
 msgid "Item is reference"
-msgstr "è¦ç´ ã¯å‚ç…§ã§ã™"
+msgstr "Í×ÁÇ¤Ï»²¾È¤Ç¤¹"
 
 #: src/dialogs/item-properties.c:251 src/dialogs/item-properties.c:330
 msgid "The SVG ID of item"
-msgstr "ã‚¢ã‚¤ãƒ†ãƒ ã® SVG ID"
+msgstr "¥¢¥¤¥Æ¥à¤Î SVG ID"
 
 #: src/dialogs/item-properties.c:332
 msgid "The ID is not valid"
-msgstr "ã“ã®IDã¯ç„¡åŠ¹ã§ã™"
+msgstr "¤³¤ÎID¤ÏÌµ¸ú¤Ç¤¹"
 
 #: src/dialogs/item-properties.c:334
 msgid "The ID is already defined"
-msgstr "ã“ã®IDã¯æ—¢ã«å®šç¾©ã•ã‚Œã¦ã„ã¾ã™"
+msgstr "¤³¤ÎID¤Ï´û¤ËÄêµÁ¤µ¤ì¤Æ¤¤¤Ş¤¹"
 
 #: src/dialogs/item-properties.c:337
 msgid "The ID is valid"
-msgstr "ã“ã®IDã¯æœ‰åŠ¹ã§ã™"
+msgstr "¤³¤ÎID¤ÏÍ­¸ú¤Ç¤¹"
 
 #: src/dialogs/item-properties.c:410 src/verbs.c:499
 msgid "Item properties"
-msgstr "ã‚¢ã‚¤ãƒ†ãƒ ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "¥¢¥¤¥Æ¥à¥×¥í¥Ñ¥Æ¥£"
 
 #: src/dialogs/object-attributes.c:31
 msgid "Href:"
@@ -453,78 +453,78 @@ msgstr "Href:"
 
 #: src/dialogs/object-attributes.c:32
 msgid "Target:"
-msgstr "ã‚¿ãƒ¼ã‚²ãƒƒãƒˆ:"
+msgstr "¥¿¡¼¥²¥Ã¥È:"
 
 #: src/dialogs/object-attributes.c:33
 msgid "Type:"
-msgstr "ã‚¿ã‚¤ãƒ—:"
+msgstr "¥¿¥¤¥×:"
 
 #: src/dialogs/object-attributes.c:34
 msgid "Role:"
-msgstr "ãƒ­ãƒ¼ãƒ«:"
+msgstr "¥í¡¼¥ë:"
 
 #: src/dialogs/object-attributes.c:35
 msgid "Arcrole:"
-msgstr "ã‚¢ãƒ¼ã‚¯ãƒ­ãƒ¼ãƒ«:"
+msgstr "¥¢¡¼¥¯¥í¡¼¥ë:"
 
 #: src/dialogs/object-attributes.c:36
 msgid "Title:"
-msgstr "ã‚¿ã‚¤ãƒˆãƒ«:"
+msgstr "¥¿¥¤¥È¥ë:"
 
 #: src/dialogs/object-attributes.c:37 src/dialogs/tool-attributes.c:110
 msgid "Show:"
-msgstr "è¡¨ç¤º:"
+msgstr "É½¼¨:"
 
 #: src/dialogs/object-attributes.c:38
 msgid "Actuate:"
-msgstr "ã‚¢ã‚¯ãƒãƒ¥ã‚¨ãƒ¼ãƒˆ:"
+msgstr "¥¢¥¯¥Á¥å¥¨¡¼¥È:"
 
 #: src/dialogs/object-attributes.c:43
 msgid "Sides:"
-msgstr "é¢æ•°:"
+msgstr "ÌÌ¿ô:"
 
 #: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
 msgid "Center X:"
-msgstr "ä¸­å¿ƒ X:"
+msgstr "Ãæ¿´ X:"
 
 #: src/dialogs/object-attributes.c:45 src/dialogs/object-attributes.c:55
 msgid "Center Y:"
-msgstr "ä¸­å¿ƒ Y:"
+msgstr "Ãæ¿´ Y:"
 
 #: src/dialogs/object-attributes.c:46
 msgid "R1:"
-msgstr "åŠå¾„1:"
+msgstr "È¾·Â1:"
 
 #: src/dialogs/object-attributes.c:47
 msgid "R2:"
-msgstr "åŠå¾„2:"
+msgstr "È¾·Â2:"
 
 #: src/dialogs/object-attributes.c:48
 msgid "ARG1:"
-msgstr "åè§’1:"
+msgstr "ÊĞ³Ñ1:"
 
 #: src/dialogs/object-attributes.c:49
 msgid "ARG2:"
-msgstr "åè§’2:"
+msgstr "ÊĞ³Ñ2:"
 
 #. Expansion
 #: src/dialogs/object-attributes.c:56 src/spiral-context.c:362
 msgid "Expansion:"
-msgstr "å±•é–‹ä¿‚æ•°:"
+msgstr "Å¸³«·¸¿ô:"
 
 #. Revolution
 #: src/dialogs/object-attributes.c:57 src/dialogs/tool-attributes.c:90
 #: src/spiral-context.c:350
 msgid "Revolution:"
-msgstr "å·»æ•°:"
+msgstr "´¬¿ô:"
 
 #: src/dialogs/object-attributes.c:58
 msgid "Radius:"
-msgstr "åŠå¾„:"
+msgstr "È¾·Â:"
 
 #: src/dialogs/object-attributes.c:59
 msgid "Argument:"
-msgstr "åè§’:"
+msgstr "ÊĞ³Ñ:"
 
 #: src/dialogs/object-attributes.c:60
 msgid "T0:"
@@ -555,273 +555,273 @@ msgstr "RY:"
 #: src/dialogs/object-attributes.c:114
 #, c-format
 msgid "%s attributes"
-msgstr "%sã®å±æ€§"
+msgstr "%s¤ÎÂ°À­"
 
 #: src/dialogs/object-properties.c:110
 msgid "Object style"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¹ã‚¿ã‚¤ãƒ«"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¥¹¥¿¥¤¥ë"
 
 #: src/dialogs/object-properties.c:125
 msgid "Fill"
-msgstr "ãƒ•ã‚£ãƒ«"
+msgstr "¥Õ¥£¥ë"
 
 #: src/dialogs/object-properties.c:139
 msgid "Stroke paint"
-msgstr "ã‚¹ãƒˆãƒ­ãƒ¼ã‚¯ã®ãƒšã‚¤ãƒ³ãƒˆ"
+msgstr "¥¹¥È¥í¡¼¥¯¤Î¥Ú¥¤¥ó¥È"
 
 #: src/dialogs/object-properties.c:153
 msgid "Stroke style"
-msgstr "ã‚¹ãƒˆãƒ­ãƒ¼ã‚¯ã‚¹ã‚¿ã‚¤ãƒ«"
+msgstr "¥¹¥È¥í¡¼¥¯¥¹¥¿¥¤¥ë"
 
 #: src/dialogs/object-properties.c:173
 msgid "Apply to:"
-msgstr "é©ç”¨:"
+msgstr "Å¬ÍÑ:"
 
 #: src/dialogs/object-properties.c:183
 msgid "Selected objects"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È"
 
 #: src/dialogs/object-properties.c:186
 msgid "All shape tools"
-msgstr "å…¨ã¦ã®ã‚·ã‚§ã‚¤ãƒ—ãƒ„ãƒ¼ãƒ«"
+msgstr "Á´¤Æ¤Î¥·¥§¥¤¥×¥Ä¡¼¥ë"
 
 #: src/dialogs/object-properties.c:189
 msgid "Rectangle tool"
-msgstr "çŸ©å½¢ãƒ„ãƒ¼ãƒ«"
+msgstr "¶ë·Á¥Ä¡¼¥ë"
 
 #: src/dialogs/object-properties.c:192
 msgid "Arc tool"
-msgstr "å¼§ãƒ„ãƒ¼ãƒ«"
+msgstr "¸Ì¥Ä¡¼¥ë"
 
 #: src/dialogs/object-properties.c:195
 msgid "Star tool"
-msgstr "æ˜Ÿãƒ„ãƒ¼ãƒ«"
+msgstr "À±¥Ä¡¼¥ë"
 
 #: src/dialogs/object-properties.c:198
 msgid "Spiral tool"
-msgstr "èºæ—‹ãƒ„ãƒ¼ãƒ«"
+msgstr "ÍæÀû¥Ä¡¼¥ë"
 
 #: src/dialogs/object-properties.c:201
 msgid "Freehand and pen"
-msgstr "ãƒ•ãƒªãƒ¼ãƒãƒ³ãƒ‰ã¨ãƒšãƒ³"
+msgstr "¥Õ¥ê¡¼¥Ï¥ó¥É¤È¥Ú¥ó"
 
 #: src/dialogs/object-properties.c:204
 msgid "Calligraphic line"
-msgstr "ã‚«ãƒªã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ç·š"
+msgstr "¥«¥ê¥°¥é¥Õ¥£¥Ã¥¯Àş"
 
 #: src/dialogs/object-properties.c:207 src/verbs.c:475
 msgid "Text"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆ"
+msgstr "¥Æ¥­¥¹¥È"
 
 #: src/dialogs/object-properties.c:283
 msgid "Object position and size"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½ç½®ã¨å¤§ãã•"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È°ÌÃÖ¤ÈÂç¤­¤µ"
 
 #: src/dialogs/object-properties.c:305
 msgid "Position and size"
-msgstr "ä½ç½®ã¨å¤§ãã•"
+msgstr "°ÌÃÖ¤ÈÂç¤­¤µ"
 
 #: src/dialogs/stroke-style.c:543 src/toolbox.c:440
 msgid "Stroke settings"
-msgstr "ã‚¹ãƒˆãƒ­ãƒ¼ã‚¯è¨­å®š"
+msgstr "¥¹¥È¥í¡¼¥¯ÀßÄê"
 
 #. Join type
 #: src/dialogs/stroke-style.c:579
 msgid "Join:"
-msgstr "çµåˆ:"
+msgstr "·ë¹ç:"
 
 #. Cap type
 #: src/dialogs/stroke-style.c:622
 msgid "Cap:"
-msgstr "å…ˆç«¯:"
+msgstr "ÀèÃ¼:"
 
 #. Dash
 #: src/dialogs/stroke-style.c:665
 msgid "Pattern:"
-msgstr "ãƒ‘ã‚¿ãƒ¼ãƒ³:"
+msgstr "¥Ñ¥¿¡¼¥ó:"
 
 #: src/dialogs/text-edit.c:93
 msgid "Text properties"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "¥Æ¥­¥¹¥È¥×¥í¥Ñ¥Æ¥£"
 
 #. Layout
 #: src/dialogs/text-edit.c:132
 msgid "Layout"
-msgstr "ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ"
+msgstr "¥ì¥¤¥¢¥¦¥È"
 
 #: src/dialogs/text-edit.c:140
 msgid "Alignment:"
-msgstr "æ•´åˆ—:"
+msgstr "À°Îó:"
 
 #: src/dialogs/text-edit.c:165
 msgid "Orientation:"
-msgstr "æ–¹å‘:"
+msgstr "Êı¸ş:"
 
 #: src/dialogs/text-edit.c:183
 msgid "Line spacing:"
-msgstr "ç·šã®é–“éš”:"
+msgstr "Àş¤Î´Ö³Ö:"
 
 #: src/dialogs/text-edit.c:208
 msgid "Text and font"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆã¨ãƒ•ã‚©ãƒ³ãƒˆ"
+msgstr "¥Æ¥­¥¹¥È¤È¥Õ¥©¥ó¥È"
 
 #: src/dialogs/text-edit.c:219
 msgid "Set as default"
-msgstr "æ—¢å®šå€¤ã«è¨­å®š"
+msgstr "´ûÄêÃÍ¤ËÀßÄê"
 
 #: src/dialogs/tool-attributes.c:45 src/verbs.c:492
 msgid "Tool attributes"
-msgstr "ãƒ„ãƒ¼ãƒ«ã®å±æ€§"
+msgstr "¥Ä¡¼¥ë¤ÎÂ°À­"
 
 #: src/dialogs/tool-attributes.c:90
 msgid "Expansion"
-msgstr "å±•é–‹"
+msgstr "Å¸³«"
 
 #: src/dialogs/tool-attributes.c:90
 msgid "Inner radius"
-msgstr "å†…åŠå¾„"
+msgstr "ÆâÈ¾·Â"
 
 #: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
 #: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
 msgid "Missing tool preferences"
-msgstr "ãƒ„ãƒ¼ãƒ«ãƒ—ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ãŒã‚ã‚Šã¾ã›ã‚“"
+msgstr "¥Ä¡¼¥ë¥×¥ê¥Õ¥¡¥ì¥ó¥¹¤¬¤¢¤ê¤Ş¤»¤ó"
 
 #. Magnitude
 #: src/dialogs/tool-attributes.c:100 src/star-context.c:355
 msgid "Corners:"
-msgstr "è§’æ•°:"
+msgstr "³Ñ¿ô:"
 
 #: src/dialogs/tool-attributes.c:100
 msgid "Proportion"
-msgstr "æ¯”ç‡"
+msgstr "ÈæÎ¨"
 
 #: src/dialogs/tool-attributes.c:110
 msgid "Transform:"
-msgstr "å¤‰å½¢:"
+msgstr "ÊÑ·Á:"
 
 #. Mass
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1043
 msgid "Mass:"
-msgstr "è³ªé‡:"
+msgstr "¼ÁÎÌ:"
 
 #. Drag
 #: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1055
 msgid "Drag:"
-msgstr "é‡ã¿:"
+msgstr "½Å¤ß:"
 
 #: src/dialogs/tool-attributes.c:120
 msgid "Angle"
-msgstr "è§’åº¦"
+msgstr "³ÑÅÙ"
 
 #: src/dialogs/tool-attributes.c:127
 msgid "Tool has no attributes"
-msgstr "ãƒ„ãƒ¼ãƒ«ã®å±æ€§ãŒã‚ã‚Šã¾ã›ã‚“"
+msgstr "¥Ä¡¼¥ë¤ÎÂ°À­¤¬¤¢¤ê¤Ş¤»¤ó"
 
 #: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:88
 msgid "No active tool"
-msgstr "ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªãƒ„ãƒ¼ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“"
+msgstr "¥¢¥¯¥Æ¥£¥Ö¤Ê¥Ä¡¼¥ë¤¬¤¢¤ê¤Ş¤»¤ó"
 
 #: src/dialogs/tool-options.c:44 src/verbs.c:491
 msgid "Tool options"
-msgstr "ãƒ„ãƒ¼ãƒ«ã‚ªãƒ—ã‚·ãƒ§ãƒ³"
+msgstr "¥Ä¡¼¥ë¥ª¥×¥·¥ç¥ó"
 
 #: src/dialogs/tool-options.c:85
 msgid "Tool has no options"
-msgstr "ãƒ„ãƒ¼ãƒ«ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒã‚ã‚Šã¾ã›ã‚“"
+msgstr "¥Ä¡¼¥ë¤Î¥ª¥×¥·¥ç¥ó¤¬¤¢¤ê¤Ş¤»¤ó"
 
 #: src/dialogs/transformation.c:193
 msgid "Transform selection"
-msgstr "å¤‰å½¢æ–¹å¼ã®é¸æŠ"
+msgstr "ÊÑ·ÁÊı¼°¤ÎÁªÂò"
 
 #: src/dialogs/transformation.c:365
 msgid "Move"
-msgstr "ç§»å‹•"
+msgstr "°ÜÆ°"
 
 #. Relative moves
 #: src/dialogs/transformation.c:407
 msgid "Relative move"
-msgstr "ç›¸å¯¾ä½ç½®ã§æŒ‡å®š"
+msgstr "ÁêÂĞ°ÌÃÖ¤Ç»ØÄê"
 
 #: src/dialogs/transformation.c:539
 msgid "Scale"
-msgstr "ã‚¹ã‚±ãƒ¼ãƒ«"
+msgstr "¥¹¥±¡¼¥ë"
 
 #: src/dialogs/transformation.c:666
 msgid "Rotate"
-msgstr "å›è»¢"
+msgstr "²óÅ¾"
 
 #: src/dialogs/transformation.c:684
 msgid "deg"
-msgstr "åº¦"
+msgstr "ÅÙ"
 
 #: src/dialogs/xml-tree.c:158
 msgid "Drag to reorder nodes"
-msgstr "å†ç·¨æˆãƒãƒ¼ãƒ‰ã¸ãƒ‰ãƒ©ãƒƒã‚°"
+msgstr "ºÆÊÔÀ®¥Î¡¼¥É¤Ø¥É¥é¥Ã¥°"
 
 #: src/dialogs/xml-tree.c:171
 msgid "New element node"
-msgstr "è¦ç´ ãƒãƒ¼ãƒ‰ã®æ–°è¦ä½œæˆ"
+msgstr "Í×ÁÇ¥Î¡¼¥É¤Î¿·µ¬ºîÀ®"
 
 #: src/dialogs/xml-tree.c:189
 msgid "New text node"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆãƒãƒ¼ãƒ‰ã®æ–°è¦ä½œæˆ"
+msgstr "¥Æ¥­¥¹¥È¥Î¡¼¥É¤Î¿·µ¬ºîÀ®"
 
 #: src/dialogs/xml-tree.c:206
 msgid "Duplicate node"
-msgstr "ãƒãƒ¼ãƒ‰è¤‡è£½"
+msgstr "¥Î¡¼¥ÉÊ£À½"
 
 #: src/dialogs/xml-tree.c:222
 msgid "Delete node"
-msgstr "ãƒãƒ¼ãƒ‰ã®å‰Šé™¤"
+msgstr "¥Î¡¼¥É¤Îºï½ü"
 
 #: src/dialogs/xml-tree.c:235
 msgid "Unindent node"
-msgstr "ãƒãƒ¼ãƒ‰ã®ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆé™¤å»"
+msgstr "¥Î¡¼¥É¤Î¥¤¥ó¥Ç¥ó¥È½üµî"
 
 #: src/dialogs/xml-tree.c:246
 msgid "Indent node"
-msgstr "ãƒãƒ¼ãƒ‰ã®ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆ"
+msgstr "¥Î¡¼¥É¤Î¥¤¥ó¥Ç¥ó¥È"
 
 #: src/dialogs/xml-tree.c:256
 msgid "Raise node"
-msgstr "ãƒãƒ¼ãƒ‰ã‚’ä¸Šã’ã‚‹"
+msgstr "¥Î¡¼¥É¤ò¾å¤²¤ë"
 
 #: src/dialogs/xml-tree.c:267
 msgid "Lower node"
-msgstr "ãƒãƒ¼ãƒ‰ã‚’ä¸‹ã’ã‚‹"
+msgstr "¥Î¡¼¥É¤ò²¼¤²¤ë"
 
 #: src/dialogs/xml-tree.c:304
 msgid "Delete attribute"
-msgstr "å±æ€§å‰Šé™¤"
+msgstr "Â°À­ºï½ü"
 
 #: src/dialogs/xml-tree.c:334
 msgid "Attribute name"
-msgstr "å±æ€§å"
+msgstr "Â°À­Ì¾"
 
 #: src/dialogs/xml-tree.c:341
 msgid "Set attribute"
-msgstr "å±æ€§è¨­å®š"
+msgstr "Â°À­ÀßÄê"
 
 #: src/dialogs/xml-tree.c:354
 msgid "Attribute value"
-msgstr "å±æ€§å€¤"
+msgstr "Â°À­ÃÍ"
 
 #: src/dialogs/xml-tree.c:826
 #, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr "Sodipodi: %s: XMLãƒ“ãƒ¥ãƒ¼"
+msgstr "Sodipodi: %s: XML¥Ó¥å¡¼"
 
 #: src/dialogs/xml-tree.c:849
 msgid "New element node..."
-msgstr "è¦ç´ ãƒãƒ¼ãƒ‰ã®æ–°è¦ä½œæˆ..."
+msgstr "Í×ÁÇ¥Î¡¼¥É¤Î¿·µ¬ºîÀ®..."
 
 #: src/dialogs/xml-tree.c:869
 msgid "Cancel"
-msgstr "ã‚­ãƒ£ãƒ³ã‚»ãƒ«"
+msgstr "¥­¥ã¥ó¥»¥ë"
 
 #: src/dialogs/xml-tree.c:873
 msgid "Create"
-msgstr "ä½œæˆ"
+msgstr "ºîÀ®"
 
 #: src/document.c:339
 #, c-format
@@ -840,71 +840,71 @@ msgstr "Unnamed document %d"
 
 #: src/draw-context.c:280
 msgid "Appending to selection. Press 'a' to toggle Append/New."
-msgstr "é¸æŠã«è¿½åŠ ã—ã¾ã™ã€‚è¿½åŠ /æ–°è¦ã®åˆ‡ã‚Šæ›¿ãˆã¯ 'a' ã‚’æŠ¼ã—ã¾ã™ã€‚"
+msgstr "ÁªÂò¤ËÄÉ²Ã¤·¤Ş¤¹¡£ÄÉ²Ã/¿·µ¬¤ÎÀÚ¤êÂØ¤¨¤Ï 'a' ¤ò²¡¤·¤Ş¤¹¡£"
 
 #: src/draw-context.c:285
 msgid "Creating new curve. Press 'a' to toggle Append/New."
-msgstr "æ–°è¦ã«æ›²ç·šã‚’ä½œæˆã—ã¾ã™ã€‚è¿½åŠ /æ–°è¦ã®åˆ‡æ›¿ã¯ 'a' ã‚’æŠ¼ã—ã¾ã™ã€‚"
+msgstr "¿·µ¬¤Ë¶ÊÀş¤òºîÀ®¤·¤Ş¤¹¡£ÄÉ²Ã/¿·µ¬¤ÎÀÚÂØ¤Ï 'a' ¤ò²¡¤·¤Ş¤¹¡£"
 
 #. Angle
 #: src/dyna-draw-context.c:1067
 msgid "Angle:"
-msgstr "è§’åº¦:"
+msgstr "³ÑÅÙ:"
 
 #. Reset
 #: src/dyna-draw-context.c:1091 src/rect-context.c:421
 #: src/spiral-context.c:386 src/star-context.c:386
 msgid "Defaults"
-msgstr "æ—¢å®šå€¤"
+msgstr "´ûÄêÃÍ"
 
 #: src/file.c:150 src/file.c:161 src/file.c:173
 msgid "Select file to open"
-msgstr "é–‹ããƒ•ã‚¡ã‚¤ãƒ«ã‚’é¸æŠ"
+msgstr "³«¤¯¥Õ¥¡¥¤¥ë¤òÁªÂò"
 
 #: src/file.c:190 src/module.c:548
 msgid "Scalable Vector Graphic (SVG)"
-msgstr "ã‚¹ã‚±ãƒ¼ãƒ©ãƒ–ãƒ«ãƒ»ãƒ™ã‚¯ã‚¿ãƒ¼ãƒ»ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯(SVG)"
+msgstr "¥¹¥±¡¼¥é¥Ö¥ë¡¦¥Ù¥¯¥¿¡¼¡¦¥°¥é¥Õ¥£¥Ã¥¯(SVG)"
 
 #: src/file.c:190 src/module.c:548
 msgid "Sodipodi native file format and W3C standard"
-msgstr "Sodipodiã®ãƒã‚¤ãƒ†ã‚£ãƒ–ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã§W3Cã‚¹ã‚¿ãƒ³ãƒ€ãƒ¼ãƒ‰"
+msgstr "Sodipodi¤Î¥Í¥¤¥Æ¥£¥Ö¥Õ¥¡¥¤¥ë¥Õ¥©¡¼¥Ş¥Ã¥È¤ÇW3C¥¹¥¿¥ó¥À¡¼¥É"
 
 #: src/file.c:196 src/file.c:309
 msgid "File type:"
-msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã‚¿ã‚¤ãƒ—:"
+msgstr "¥Õ¥¡¥¤¥ë¥¿¥¤¥×:"
 
 #: src/file.c:294
 msgid "Save file"
-msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä¿å­˜"
+msgstr "¥Õ¥¡¥¤¥ë¤òÊİÂ¸"
 
 #: src/file.c:470 src/file.c:480 src/file.c:486
 msgid "Select file to import"
-msgstr "èª­ã¿è¾¼ã‚€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é¸æŠ"
+msgstr "ÆÉ¤ß¹ş¤à¥Õ¥¡¥¤¥ë¤òÁªÂò"
 
 #: src/help.c:49
 msgid "About sodipodi"
-msgstr "Sodipodiã«ã¤ã„ã¦"
+msgstr "Sodipodi¤Ë¤Ä¤¤¤Æ"
 
 #. Do not insert any elements before/between first 4
 #: src/helper/units.c:40
 msgid "Unit"
-msgstr "ãƒ¦ãƒ‹ãƒƒãƒˆ"
+msgstr "¥æ¥Ë¥Ã¥È"
 
 #: src/helper/units.c:40
 msgid "Units"
-msgstr "ãƒ¦ãƒ‹ãƒƒãƒˆ"
+msgstr "¥æ¥Ë¥Ã¥È"
 
 #: src/helper/units.c:41
 msgid "Point"
-msgstr "ãƒã‚¤ãƒ³ãƒˆ"
+msgstr "¥İ¥¤¥ó¥È"
 
 #: src/helper/units.c:41
 msgid "pt"
-msgstr "ãƒã‚¤ãƒ³ãƒˆ"
+msgstr "¥İ¥¤¥ó¥È"
 
 #: src/helper/units.c:41
 msgid "Points"
-msgstr "ãƒã‚¤ãƒ³ãƒˆ"
+msgstr "¥İ¥¤¥ó¥È"
 
 #: src/helper/units.c:41
 msgid "Pt"
@@ -912,7 +912,7 @@ msgstr "Pt"
 
 #: src/helper/units.c:42
 msgid "Pixel"
-msgstr "ãƒ”ã‚¯ã‚»ãƒ«"
+msgstr "¥Ô¥¯¥»¥ë"
 
 #: src/helper/units.c:42
 msgid "px"
@@ -920,7 +920,7 @@ msgstr "px"
 
 #: src/helper/units.c:42
 msgid "Pixels"
-msgstr "ãƒ”ã‚¯ã‚»ãƒ«"
+msgstr "¥Ô¥¯¥»¥ë"
 
 #: src/helper/units.c:42
 msgid "Px"
@@ -928,21 +928,21 @@ msgstr "Px"
 
 #: src/helper/units.c:43
 msgid "Userspace unit"
-msgstr "ãƒ¦ãƒ¼ã‚¶ç©ºé–“ãƒ¦ãƒ‹ãƒƒãƒˆ"
+msgstr "¥æ¡¼¥¶¶õ´Ö¥æ¥Ë¥Ã¥È"
 
 #: src/helper/units.c:43
 msgid "User"
-msgstr "ãƒ¦ãƒ¼ã‚¶"
+msgstr "¥æ¡¼¥¶"
 
 #: src/helper/units.c:43
 msgid "Userspace units"
-msgstr "ãƒ¦ãƒ¼ã‚¶ç©ºé–“ãƒ¦ãƒ‹ãƒƒãƒˆ"
+msgstr "¥æ¡¼¥¶¶õ´Ö¥æ¥Ë¥Ã¥È"
 
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
 #: src/helper/units.c:46
 msgid "Percent"
-msgstr "ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆ"
+msgstr "¥Ñ¡¼¥»¥ó¥È"
 
 #: src/helper/units.c:46
 msgid "%"
@@ -950,11 +950,11 @@ msgstr "%"
 
 #: src/helper/units.c:46
 msgid "Percents"
-msgstr "ãƒ‘ãƒ¼ã‚»ãƒ³ãƒˆ"
+msgstr "¥Ñ¡¼¥»¥ó¥È"
 
 #: src/helper/units.c:47
 msgid "Millimeter"
-msgstr "ãƒŸãƒªãƒ¡ãƒ¼ãƒˆãƒ«"
+msgstr "¥ß¥ê¥á¡¼¥È¥ë"
 
 #: src/helper/units.c:47
 msgid "mm"
@@ -962,11 +962,11 @@ msgstr "mm"
 
 #: src/helper/units.c:47
 msgid "Millimeters"
-msgstr "ãƒŸãƒªãƒ¡ãƒ¼ãƒˆãƒ«"
+msgstr "¥ß¥ê¥á¡¼¥È¥ë"
 
 #: src/helper/units.c:48
 msgid "Centimeter"
-msgstr "ã‚»ãƒ³ãƒãƒ¡ãƒ¼ãƒˆãƒ«"
+msgstr "¥»¥ó¥Á¥á¡¼¥È¥ë"
 
 #: src/helper/units.c:48
 msgid "cm"
@@ -974,35 +974,35 @@ msgstr "cm"
 
 #: src/helper/units.c:48
 msgid "Centimeters"
-msgstr "ã‚»ãƒ³ãƒãƒ¡ãƒ¼ãƒˆãƒ«"
+msgstr "¥»¥ó¥Á¥á¡¼¥È¥ë"
 
 #: src/helper/units.c:49
 msgid "Meter"
-msgstr "ãƒ¡ãƒ¼ã‚¿"
+msgstr "¥á¡¼¥¿"
 
 #: src/helper/units.c:49
 msgid "m"
-msgstr "ãƒŸãƒª"
+msgstr "¥ß¥ê"
 
 #: src/helper/units.c:49
 msgid "meters"
-msgstr "ãƒ¡ãƒ¼ãƒˆãƒ«"
+msgstr "¥á¡¼¥È¥ë"
 
 #: src/helper/units.c:50
 msgid "Inch"
-msgstr "ã‚¤ãƒ³ãƒ"
+msgstr "¥¤¥ó¥Á"
 
 #: src/helper/units.c:50
 msgid "in"
-msgstr "ã‚¤ãƒ³ãƒ"
+msgstr "¥¤¥ó¥Á"
 
 #: src/helper/units.c:50
 msgid "Inches"
-msgstr "ã‚¤ãƒ³ãƒ"
+msgstr "¥¤¥ó¥Á"
 
 #: src/helper/units.c:51
 msgid "Em square"
-msgstr "EM ã‚¹ã‚¯ã‚¨ã‚¢"
+msgstr "EM ¥¹¥¯¥¨¥¢"
 
 #: src/helper/units.c:51
 msgid "em"
@@ -1010,11 +1010,11 @@ msgstr "em"
 
 #: src/helper/units.c:51
 msgid "Em squares"
-msgstr "EM ã‚¹ã‚¯ã‚¨ã‚¢"
+msgstr "EM ¥¹¥¯¥¨¥¢"
 
 #: src/helper/units.c:52
 msgid "Ex square"
-msgstr "EX ã‚¹ã‚¯ã‚¨ã‚¢"
+msgstr "EX ¥¹¥¯¥¨¥¢"
 
 #: src/helper/units.c:52
 msgid "ex"
@@ -1022,106 +1022,106 @@ msgstr "ex"
 
 #: src/helper/units.c:52
 msgid "Ex squares"
-msgstr "EX ã‚¹ã‚¯ã‚¨ã‚¢"
+msgstr "EX ¥¹¥¯¥¨¥¢"
 
 #: src/interface.c:313
 msgid "Close View"
-msgstr "ãƒ“ãƒ¥ãƒ¼ã‚’é–‰ã˜ã‚‹"
+msgstr "¥Ó¥å¡¼¤òÊÄ¤¸¤ë"
 
 #: src/interface.c:314 src/interface.c:479
 msgid "Exit Program"
-msgstr "ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’çµ‚äº†"
+msgstr "¥×¥í¥°¥é¥à¤ò½ªÎ»"
 
 #: src/interface.c:316 src/interface.c:472
 msgid "About Sodipodi"
-msgstr "sodipodi ã«ã¤ã„ã¦"
+msgstr "sodipodi ¤Ë¤Ä¤¤¤Æ"
 
 #. Modules need abouts too
 #: src/interface.c:319 src/interface.c:475
 msgid "About Modules"
-msgstr "ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã«ã¤ã„ã¦"
+msgstr "¥â¥¸¥å¡¼¥ë¤Ë¤Ä¤¤¤Æ"
 
 #: src/interface.c:337
 msgid "Cleanup"
-msgstr "æƒé™¤ã™ã‚‹"
+msgstr "Áİ½ü¤¹¤ë"
 
 #. View:Zoom
 #: src/interface.c:408 src/toolbox.c:616 src/verbs.c:476
 msgid "Zoom"
-msgstr "ã‚ºãƒ¼ãƒ "
+msgstr "¥º¡¼¥à"
 
 #. View:New View
 #: src/interface.c:420
 msgid "New View"
-msgstr "æ–°è¦ã®ãƒ“ãƒ¥ãƒ¼"
+msgstr "¿·µ¬¤Î¥Ó¥å¡¼"
 
 #. View:New Preview
 #: src/interface.c:422
 msgid "New Preview"
-msgstr "æ–°è¦ã®ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼"
+msgstr "¿·µ¬¤Î¥×¥ì¥Ó¥å¡¼"
 
 #: src/interface.c:424
 msgid "New Toplevel Toolbox"
-msgstr "æ–°è¦ãƒˆãƒƒãƒ—ãƒ¬ãƒ™ãƒ«ãƒ„ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹"
+msgstr "¿·µ¬¥È¥Ã¥×¥ì¥Ù¥ë¥Ä¡¼¥ë¥Ü¥Ã¥¯¥¹"
 
 #: src/interface.c:425
 msgid "New Docked Toolbox"
-msgstr "æ–°è¦ãƒ‰ãƒƒã‚¯ãƒ„ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹"
+msgstr "¿·µ¬¥É¥Ã¥¯¥Ä¡¼¥ë¥Ü¥Ã¥¯¥¹"
 
 #: src/interface.c:426
 msgid "Remove Docked Toolbox"
-msgstr "ãƒ‰ãƒƒã‚¯ãƒ„ãƒ¼ãƒ«ãƒœãƒƒã‚¯ã‚¹ã®å‰Šé™¤"
+msgstr "¥É¥Ã¥¯¥Ä¡¼¥ë¥Ü¥Ã¥¯¥¹¤Îºï½ü"
 
 #. File
 #: src/interface.c:468 src/verbs.c:429
 msgid "New"
-msgstr "æ–°è¦(_N)"
+msgstr "¿·µ¬(_N)"
 
 #: src/interface.c:469
 msgid "Open"
-msgstr "é–‹ã(_O)"
+msgstr "³«¤¯(_O)"
 
 #. Generic menu
 #. File submenu
 #: src/interface.c:542 src/toolbox.c:347
 msgid "File"
-msgstr "ãƒ•ã‚¡ã‚¤ãƒ«"
+msgstr "¥Õ¥¡¥¤¥ë"
 
 #. Edit submenu
 #: src/interface.c:548 src/toolbox.c:404 src/widgets/gradient-selector.c:135
 msgid "Edit"
-msgstr "ç·¨é›†"
+msgstr "ÊÔ½¸"
 
 #. View submenu
 #: src/interface.c:560
 msgid "View"
-msgstr "ãƒ“ãƒ¥ãƒ¼"
+msgstr "¥Ó¥å¡¼"
 
 #. Drawing mode submenu
 #: src/interface.c:566
 msgid "Drawing Mode"
-msgstr "æç”»ãƒ¢ãƒ¼ãƒ‰"
+msgstr "ÉÁ²è¥â¡¼¥É"
 
 #. Dialog submenu
 #: src/interface.c:572
 msgid "Dialogs"
-msgstr "ãƒ€ã‚¤ã‚¢ãƒ­ã‚°"
+msgstr "¥À¥¤¥¢¥í¥°"
 
 #: src/interface.c:579
 msgid "Filters"
-msgstr "ãƒ•ã‚£ãƒ«ã‚¿"
+msgstr "¥Õ¥£¥ë¥¿"
 
 #: src/main.c:126
 msgid "Do not use X server (only process files from console)"
-msgstr "X ã‚µãƒ¼ãƒã‚’ä½¿ç”¨ã—ã¾ã›ã‚“ (ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã§ãƒ•ã‚¡ã‚¤ãƒ«ã®å‡¦ç†ã ã‘ã‚’è¡Œã„ã¾ã™)"
+msgstr "X ¥µ¡¼¥Ğ¤ò»ÈÍÑ¤·¤Ş¤»¤ó (¥³¥ó¥½¡¼¥ë¤Ç¥Õ¥¡¥¤¥ë¤Î½èÍı¤À¤±¤ò¹Ô¤¤¤Ş¤¹)"
 
 #: src/main.c:129
 msgid "Try to use X server even if $DISPLAY is not set)"
-msgstr "$DISPLAY å¤‰æ•°ãŒè¨­å®šã•ã‚Œãªãã¦ã‚‚ X ã‚µãƒ¼ãƒã®åˆ©ç”¨ã‚’è©¦ã¿ã¾ã™"
+msgstr "$DISPLAY ÊÑ¿ô¤¬ÀßÄê¤µ¤ì¤Ê¤¯¤Æ¤â X ¥µ¡¼¥Ğ¤ÎÍøÍÑ¤ò»î¤ß¤Ş¤¹"
 
 #: src/main.c:132
 msgid "Open specified document(s) (option string may be excluded)"
-msgstr "æŒ‡å®šã—ãŸæ–‡æ›¸ã‚’é–‹ã (ã‚ªãƒ—ã‚·ãƒ§ãƒ³æ–‡å­—åˆ—ã¯ç„¡è¦–ã•ã‚Œã‚‹ã§ã—ã‚‡ã†)"
+msgstr "»ØÄê¤·¤¿Ê¸½ñ¤ò³«¤¯ (¥ª¥×¥·¥ç¥óÊ¸»úÎó¤ÏÌµ»ë¤µ¤ì¤ë¤Ç¤·¤ç¤¦)"
 
 #: src/main.c:133 src/main.c:136 src/main.c:139 src/main.c:153
 msgid "FILENAME"
@@ -1129,15 +1129,15 @@ msgstr "FILENAME"
 
 #: src/main.c:135
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
-msgstr "æŒ‡å®šã•ã‚ŒãŸå‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã«æ–‡æ›¸ã‚’å°åˆ· (ãƒ‘ã‚¤ãƒ—ã¯ '| program' ã§æŒ‡å®š)"
+msgstr "»ØÄê¤µ¤ì¤¿½ĞÎÏ¥Õ¥¡¥¤¥ë¤ËÊ¸½ñ¤ò°õºş (¥Ñ¥¤¥×¤Ï '| program' ¤Ç»ØÄê)"
 
 #: src/main.c:138
 msgid "Export document to png file"
-msgstr "æ–‡æ›¸ã‚’ PNG ãƒ•ã‚¡ã‚¤ãƒ«ã«å‡ºåŠ›"
+msgstr "Ê¸½ñ¤ò PNG ¥Õ¥¡¥¤¥ë¤Ë½ĞÎÏ"
 
 #: src/main.c:141
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr "SVGã‚’ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã«å¤‰æ›ã™ã‚‹ãŸã‚ã«ä½¿ç”¨ã™ã‚‹è§£åƒåº¦ (æ—¢å®šå€¤ 72.0)"
+msgstr "SVG¤ò¥Ó¥Ã¥È¥Ş¥Ã¥×¤ËÊÑ´¹¤¹¤ë¤¿¤á¤Ë»ÈÍÑ¤¹¤ë²òÁüÅÙ (´ûÄêÃÍ 72.0)"
 
 #: src/main.c:142
 msgid "DPI"
@@ -1148,7 +1148,7 @@ msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
-"å‡ºåŠ›ã‚¨ãƒªã‚¢ã‚’ãƒŸãƒªãƒ¡ãƒ¼ãƒˆãƒ«ã§æŒ‡å®š (æ—¢å®šå€¤ã¯ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆå…¨ä½“, 0,0 ã¯å·¦ä¸‹ç«¯)"
+"½ĞÎÏ¥¨¥ê¥¢¤ò¥ß¥ê¥á¡¼¥È¥ë¤Ç»ØÄê (´ûÄêÃÍ¤Ï¥É¥­¥å¥á¥ó¥ÈÁ´ÂÎ, 0,0 ¤Ïº¸²¼Ã¼)"
 
 #: src/main.c:145
 msgid "x0:y0:x1:y1"
@@ -1156,70 +1156,70 @@ msgstr "x0:y0:x1:y1"
 
 #: src/main.c:147
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr "ç”Ÿæˆã•ã‚Œã‚‹ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—å¹…ã‚’ãƒ”ã‚¯ã‚»ãƒ«å€¤ã§æŒ‡å®š (dpi ã‚’ä¸Šæ›¸ã)"
+msgstr "À¸À®¤µ¤ì¤ë¥Ó¥Ã¥È¥Ş¥Ã¥×Éı¤ò¥Ô¥¯¥»¥ëÃÍ¤Ç»ØÄê (dpi ¤ò¾å½ñ¤­)"
 
 #: src/main.c:147
 msgid "WIDTH"
-msgstr "å¹…"
+msgstr "Éı"
 
 #: src/main.c:149
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr "ç”Ÿæˆã•ã‚Œã‚‹ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã®é«˜ã•ã‚’ãƒ”ã‚¯ã‚»ãƒ«å€¤ã§æŒ‡å®š (dpi ã‚’ä¸Šæ›¸ã)"
+msgstr "À¸À®¤µ¤ì¤ë¥Ó¥Ã¥È¥Ş¥Ã¥×¤Î¹â¤µ¤ò¥Ô¥¯¥»¥ëÃÍ¤Ç»ØÄê (dpi ¤ò¾å½ñ¤­)"
 
 #: src/main.c:149
 msgid "HEIGHT"
-msgstr "é«˜ã•"
+msgstr "¹â¤µ"
 
 #: src/main.c:151
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
-"å‡ºåŠ›ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã®èƒŒæ™¯ã®è‰²ã‚’æŒ‡å®š (SVG ã§ã‚µãƒãƒ¼ãƒˆã•ã‚Œã‚‹ä»»æ„ã®ã‚«ãƒ©ãƒ¼æŒ‡å®šæ–‡å­—åˆ—)"
+"½ĞÎÏ¥Ó¥Ã¥È¥Ş¥Ã¥×¤ÎÇØ·Ê¤Î¿§¤ò»ØÄê (SVG ¤Ç¥µ¥İ¡¼¥È¤µ¤ì¤ëÇ¤°Õ¤Î¥«¥é¡¼»ØÄêÊ¸»úÎó)"
 
 #: src/main.c:151
 msgid "COLOR"
-msgstr "è‰²"
+msgstr "¿§"
 
 #: src/main.c:153
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
-"æ–‡æ›¸ã‚’æ¨™æº– SVG ãƒ•ã‚¡ã‚¤ãƒ«ã¸å‡ºåŠ› (\"xmlns:sodipodi\" ãƒãƒ¼ãƒ ã‚¹ãƒšãƒ¼ã‚¹ã‚’ä½¿ç”¨ã—ãªã„)"
+"Ê¸½ñ¤òÉ¸½à SVG ¥Õ¥¡¥¤¥ë¤Ø½ĞÎÏ (\"xmlns:sodipodi\" ¥Í¡¼¥à¥¹¥Ú¡¼¥¹¤ò»ÈÍÑ¤·¤Ê¤¤)"
 
 #: src/main.c:155
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
-msgstr "ä¸€ã¤ãšã¤ä¸ãˆã‚‰ã‚ŒãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¡¨ç¤ºã€‚ä»»æ„ã®ã‚­ãƒ¼/ãƒã‚¦ã‚¹ã§æ¬¡ã«ã‚¹ã‚¤ãƒƒãƒ"
+msgstr "°ì¤Ä¤º¤ÄÍ¿¤¨¤é¤ì¤¿¥Õ¥¡¥¤¥ë¤òÉ½¼¨¡£Ç¤°Õ¤Î¥­¡¼/¥Ş¥¦¥¹¤Ç¼¡¤Ë¥¹¥¤¥Ã¥Á"
 
 #: src/main.c:157
 msgid "Prefer bitmap (xpm) icons to SVG ones"
-msgstr "ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—(xpm)ã‚¢ã‚¤ã‚³ãƒ³ã‚’SVGã‚¢ã‚¤ã‚³ãƒ³ã‚ˆã‚Šå„ªå…ˆã™ã‚‹"
+msgstr "¥Ó¥Ã¥È¥Ş¥Ã¥×(xpm)¥¢¥¤¥³¥ó¤òSVG¥¢¥¤¥³¥ó¤è¤êÍ¥Àè¤¹¤ë"
 
 #: src/module.c:556
 msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr "\"xmlns:sodipodi\"ãƒãƒ¼ãƒ ã‚¹ãƒšãƒ¼ã‚¹ä»˜ãSVG"
+msgstr "\"xmlns:sodipodi\"¥Í¡¼¥à¥¹¥Ú¡¼¥¹ÉÕ¤­SVG"
 
 #: src/module.c:557
 msgid "Scalable Vector Graphics format with sodipodi extensions"
-msgstr "sodipodiæ‹¡å¼µä»˜ãã‚¹ã‚±ãƒ¼ãƒ©ãƒ–ãƒ«ãƒ»ãƒ™ã‚¯ã‚¿ãƒ¼ãƒ»ã‚°ãƒ©ãƒ•ã‚£ã‚¯ã‚¹ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ"
+msgstr "sodipodi³ÈÄ¥ÉÕ¤­¥¹¥±¡¼¥é¥Ö¥ë¡¦¥Ù¥¯¥¿¡¼¡¦¥°¥é¥Õ¥£¥¯¥¹¥Õ¥©¡¼¥Ş¥Ã¥È"
 
 #: src/module.c:560
 msgid "Plain SVG"
-msgstr "æ¨™æº–çš„ãªSVG"
+msgstr "É¸½àÅª¤ÊSVG"
 
 #: src/module.c:561
 msgid "Scalable Vector Graphics format"
-msgstr "ã‚¹ã‚±ãƒ¼ãƒ©ãƒ–ãƒ«ãƒ»ãƒ™ã‚¯ã‚¿ãƒ¼ãƒ»ã‚°ãƒ©ãƒ•ã‚£ã‚¯ã‚¹ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ"
+msgstr "¥¹¥±¡¼¥é¥Ö¥ë¡¦¥Ù¥¯¥¿¡¼¡¦¥°¥é¥Õ¥£¥¯¥¹¥Õ¥©¡¼¥Ş¥Ã¥È"
 
 #: src/modules/gnome.c:133
 msgid "Select printer"
-msgstr "ãƒ—ãƒªãƒ³ã‚¿ã®é¸æŠ"
+msgstr "¥×¥ê¥ó¥¿¤ÎÁªÂò"
 
 #: src/modules/gnome.c:187
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr "Sodipodi (æ–‡æ›¸å %s..): å°åˆ·ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼"
+msgstr "Sodipodi (Ê¸½ñÌ¾ %s..): °õºş¥×¥ì¥Ó¥å¡¼"
 
 #: src/modules/kde.cpp:159
 msgid "Document variant:"
-msgstr "ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã®ç¨®é¡:"
+msgstr "¥É¥­¥å¥á¥ó¥È¤Î¼ïÎà:"
 
 #: src/modules/kde.cpp:169
 msgid ""
@@ -1227,27 +1227,27 @@ msgid ""
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
-"*.svg *.svgz|SVGãƒ•ã‚¡ã‚¤ãƒ«\n"
-"*.xml|XMLãƒ•ã‚¡ã‚¤ãƒ«\n"
-"*|ã™ã¹ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ«"
+"*.svg *.svgz|SVG¥Õ¥¡¥¤¥ë\n"
+"*.xml|XML¥Õ¥¡¥¤¥ë\n"
+"*|¤¹¤Ù¤Æ¤Î¥Õ¥¡¥¤¥ë"
 
 #: src/modules/kde.cpp:171
 msgid "Save document as"
-msgstr "åå‰ã‚’å¤‰ãˆã¦ä¿å­˜"
+msgstr "Ì¾Á°¤òÊÑ¤¨¤ÆÊİÂ¸"
 
 #. Print destination frame
 #: src/modules/ps.c:157 src/modules/ps.c:218
 msgid "Print destination"
-msgstr "å°åˆ·å‡ºåŠ›å…ˆ"
+msgstr "°õºş½ĞÎÏÀè"
 
 #. Print properties frame
 #: src/modules/ps.c:168
 msgid "Print properties"
-msgstr "å°åˆ·ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "°õºş¤Î¥×¥í¥Ñ¥Æ¥£"
 
 #: src/modules/ps.c:176
 msgid "Print using PostScript operators"
-msgstr "PostScriptã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã‚’ä½¿ã£ã¦å°åˆ·"
+msgstr "PostScript¥ª¥Ú¥ì¡¼¥¿¤ò»È¤Ã¤Æ°õºş"
 
 #: src/modules/ps.c:178
 msgid ""
@@ -1255,12 +1255,12 @@ msgid ""
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
-"PostScriptãƒ™ã‚¯ã‚¿ãƒ¼ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ã‚’ä½¿ã†ã¨ã€å‡ºåŠ›ã•ã‚Œã‚‹ç”»åƒã¯(é€šå¸¸)å°ã•ããªã‚Š"
-"è‡ªå‹•çš„ã«ã‚µã‚¤ã‚ºèª¿æ•´ã•ã‚Œã¾ã™ãŒã€Î±é€æ˜ã€ãƒãƒ¼ã‚«ãƒ¼ã€ãƒ‘ã‚¿ãƒ¼ãƒ³ã¯å¤±ã‚ã‚Œã¾ã™"
+"PostScript¥Ù¥¯¥¿¡¼¥ª¥Ú¥ì¡¼¥¿¤ò»È¤¦¤È¡¢½ĞÎÏ¤µ¤ì¤ë²èÁü¤Ï(ÄÌ¾ï)¾®¤µ¤¯¤Ê¤ê"
+"¼«Æ°Åª¤Ë¥µ¥¤¥ºÄ´À°¤µ¤ì¤Ş¤¹¤¬¡¢¦ÁÆ©ÌÀ¡¢¥Ş¡¼¥«¡¼¡¢¥Ñ¥¿¡¼¥ó¤Ï¼º¤ï¤ì¤Ş¤¹"
 
 #: src/modules/ps.c:183
 msgid "Print as bitmap"
-msgstr "ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã§å°åˆ·"
+msgstr "¥Ó¥Ã¥È¥Ş¥Ã¥×¤Ç°õºş"
 
 #: src/modules/ps.c:185
 msgid ""
@@ -1268,17 +1268,17 @@ msgid ""
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
-"ã™ã¹ã¦ã‚’ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã§å°åˆ·ã—ã¾ã™ã€‚å‡ºåŠ›ã™ã‚‹ç”»åƒã¯(é€šå¸¸)å¤§ãããªã‚Šå“è³ªã¯"
-"ã‚ºãƒ¼ãƒ ãƒ•ã‚¡ã‚¯ã‚¿ã«ä¾å­˜ã—ã¾ã™ãŒã€ã™ã¹ã¦ã®ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã¯è¡¨ç¤ºã¨åŒæ§˜ã«å°åˆ·"
-"ã•ã‚Œã¾ã™"
+"¤¹¤Ù¤Æ¤ò¥Ó¥Ã¥È¥Ş¥Ã¥×¤Ç°õºş¤·¤Ş¤¹¡£½ĞÎÏ¤¹¤ë²èÁü¤Ï(ÄÌ¾ï)Âç¤­¤¯¤Ê¤êÉÊ¼Á¤Ï"
+"¥º¡¼¥à¥Õ¥¡¥¯¥¿¤Ë°ÍÂ¸¤·¤Ş¤¹¤¬¡¢¤¹¤Ù¤Æ¤Î¥°¥é¥Õ¥£¥Ã¥¯¤ÏÉ½¼¨¤ÈÆ±ÍÍ¤Ë°õºş"
+"¤µ¤ì¤Ş¤¹"
 
 #: src/modules/ps.c:199
 msgid "Preferred resolution (dots per inch) of bitmap"
-msgstr "å¸Œæœ›ã™ã‚‹ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—è§£åƒåº¦(ã‚¤ãƒ³ãƒã‚ãŸã‚Šã®ãƒ‰ãƒƒãƒˆæ•°)"
+msgstr "´õË¾¤¹¤ë¥Ó¥Ã¥È¥Ş¥Ã¥×²òÁüÅÙ(¥¤¥ó¥Á¤¢¤¿¤ê¤Î¥É¥Ã¥È¿ô)"
 
 #: src/modules/ps.c:214
 msgid "Resolution:"
-msgstr "è§£åƒåº¦:"
+msgstr "²òÁüÅÙ:"
 
 #: src/modules/ps.c:224
 msgid ""
@@ -1286,192 +1286,192 @@ msgid ""
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
-"å‡ºåŠ›å…ˆã®lprã‚­ãƒ¥ãƒ¼ã‚’å…¥åŠ›ã—ã¦ä¸‹ã•ã„ã€‚\n"
-"ãƒ•ã‚¡ã‚¤ãƒ«ã«å‡ºåŠ›ã™ã‚‹ã«ã¯ã€ '> ãƒ•ã‚¡ã‚¤ãƒ«å' ã‚’ä½¿ã£ã¦ä¸‹ã•ã„ã€‚\n"
-"ãƒ‘ã‚¤ãƒ—ã‚’ä½¿ã£ã¦ä»–ã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã«å‡ºåŠ›ã‚’æ¸¡ã™ã«ã¯ã€'| ãƒ—ãƒ­ã‚°ãƒ©ãƒ  å¼•æ•°...' ã‚’ä½¿ã£ã¦"
-"ä¸‹ã•ã„ã€‚"
+"½ĞÎÏÀè¤Îlpr¥­¥å¡¼¤òÆşÎÏ¤·¤Æ²¼¤µ¤¤¡£\n"
+"¥Õ¥¡¥¤¥ë¤Ë½ĞÎÏ¤¹¤ë¤Ë¤Ï¡¢ '> ¥Õ¥¡¥¤¥ëÌ¾' ¤ò»È¤Ã¤Æ²¼¤µ¤¤¡£\n"
+"¥Ñ¥¤¥×¤ò»È¤Ã¤ÆÂ¾¤Î¥×¥í¥°¥é¥à¤Ë½ĞÎÏ¤òÅÏ¤¹¤Ë¤Ï¡¢'| ¥×¥í¥°¥é¥à °ú¿ô...' ¤ò»È¤Ã¤Æ"
+"²¼¤µ¤¤¡£"
 
 #: src/modules/ps.c:837
 msgid "write error occured"
-msgstr "æ›¸ãè¾¼ã¿ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ"
+msgstr "½ñ¤­¹ş¤ß¥¨¥é¡¼¤¬È¯À¸¤·¤Ş¤·¤¿"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:105
 msgid "Item"
-msgstr "ã‚¢ã‚¤ãƒ†ãƒ "
+msgstr "¥¢¥¤¥Æ¥à"
 
 #. Item dialog
 #: src/object-ui.c:108 src/verbs.c:499
 msgid "Item Properties"
-msgstr "ã‚¢ã‚¤ãƒ†ãƒ ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "¥¢¥¤¥Æ¥à¥×¥í¥Ñ¥Æ¥£"
 
 #. Select item
 #: src/object-ui.c:118
 msgid "Select this"
-msgstr "é¸æŠ"
+msgstr "ÁªÂò"
 
 #. Reset transformations
 #: src/object-ui.c:128
 msgid "Reset transformation"
-msgstr "å¤‰å½¢ã‚’ãƒªã‚»ãƒƒãƒˆ"
+msgstr "ÊÑ·Á¤ò¥ê¥»¥Ã¥È"
 
 #: src/object-ui.c:134
 msgid "Make sensitive"
-msgstr "ã‚»ãƒ³ã‚·ãƒ†ã‚£ãƒ–ã«è¨­å®š"
+msgstr "¥»¥ó¥·¥Æ¥£¥Ö¤ËÀßÄê"
 
 #: src/object-ui.c:134
 msgid "Make insensitive"
-msgstr "ã‚¤ãƒ³ã‚»ãƒ³ã‚·ãƒ†ã‚£ãƒ–ã«è¨­å®š"
+msgstr "¥¤¥ó¥»¥ó¥·¥Æ¥£¥Ö¤ËÀßÄê"
 
 #. Create link
 #: src/object-ui.c:139
 msgid "Create link"
-msgstr "ãƒªãƒ³ã‚¯ã®ä½œæˆ"
+msgstr "¥ê¥ó¥¯¤ÎºîÀ®"
 
 #: src/object-ui.c:251 src/verbs.c:453
 msgid "Group"
-msgstr "ã‚°ãƒ«ãƒ¼ãƒ—åŒ–"
+msgstr "¥°¥ë¡¼¥×²½"
 
 #. Group dialog
 #: src/object-ui.c:255
 msgid "Group Properties"
-msgstr "ã‚°ãƒ«ãƒ¼ãƒ—ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "¥°¥ë¡¼¥×¤Î¥×¥í¥Ñ¥Æ¥£"
 
 #. "Ungroup"
 #: src/object-ui.c:268 src/verbs.c:454
 msgid "Ungroup"
-msgstr "ã‚°ãƒ«ãƒ¼ãƒ—è§£é™¤"
+msgstr "¥°¥ë¡¼¥×²ò½ü"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:316
 msgid "Link"
-msgstr "ãƒªãƒ³ã‚¯"
+msgstr "¥ê¥ó¥¯"
 
 #. Link dialog
 #: src/object-ui.c:319
 msgid "Link Properties"
-msgstr "ãƒªãƒ³ã‚¯ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "¥ê¥ó¥¯¤Î¥×¥í¥Ñ¥Æ¥£"
 
 #. Select item
 #: src/object-ui.c:329
 msgid "Follow link"
-msgstr "ãƒªãƒ³ã‚¯ã‚’è¿½ã†"
+msgstr "¥ê¥ó¥¯¤òÄÉ¤¦"
 
 #. Reset transformations
 #: src/object-ui.c:334
 msgid "Remove link"
-msgstr "ãƒªãƒ³ã‚¯ã‚’é™¤å»"
+msgstr "¥ê¥ó¥¯¤ò½üµî"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:397
 msgid "Image"
-msgstr "ã‚¤ãƒ¡ãƒ¼ã‚¸"
+msgstr "¥¤¥á¡¼¥¸"
 
 #. Link dialog
 #: src/object-ui.c:400
 msgid "Image Properties"
-msgstr "ã‚¤ãƒ¡ãƒ¼ã‚¸ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "¥¤¥á¡¼¥¸¤Î¥×¥í¥Ñ¥Æ¥£"
 
 #. Autotrace dialog
 #: src/object-ui.c:408 src/sp-image.c:776
 msgid "Trace"
-msgstr "ãƒˆãƒ¬ãƒ¼ã‚¹"
+msgstr "¥È¥ì¡¼¥¹"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:457
 msgid "Shape"
-msgstr "ã‚·ã‚§ã‚¤ãƒ—"
+msgstr "¥·¥§¥¤¥×"
 
 #. Item dialog
 #: src/object-ui.c:460 src/toolbox.c:441
 msgid "Fill settings"
-msgstr "ãƒ•ã‚£ãƒ«ã®è¨­å®š"
+msgstr "¥Õ¥£¥ë¤ÎÀßÄê"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:487
 msgid "Rect"
-msgstr "çŸ©å½¢"
+msgstr "¶ë·Á"
 
 #. Link dialog
 #: src/object-ui.c:490
 msgid "Rect Properties"
-msgstr "çŸ©å½¢ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "¶ë·Á¤Î¥×¥í¥Ñ¥Æ¥£"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:523 src/verbs.c:470
 msgid "Star"
-msgstr "æ˜Ÿ"
+msgstr "À±"
 
 #. Link dialog
 #: src/object-ui.c:526
 msgid "Star Properties"
-msgstr "æ˜Ÿã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "À±¤Î¥×¥í¥Ñ¥Æ¥£"
 
 #. Create toplevel menuitem
 #: src/object-ui.c:559 src/verbs.c:471
 msgid "Spiral"
-msgstr "èºæ—‹"
+msgstr "ÍæÀû"
 
 #. Link dialog
 #: src/object-ui.c:562
 msgid "Spiral Properties"
-msgstr "èºæ—‹ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "ÍæÀû¤Î¥×¥í¥Ñ¥Æ¥£"
 
 #. rx_ratio
 #: src/rect-context.c:397
 msgid "Roundness ratio for x:"
-msgstr "x ã®çœŸå††ç‡:"
+msgstr "x ¤Î¿¿±ßÎ¨:"
 
 #. ry_ratio
 #: src/rect-context.c:409
 msgid "Roundness ratio for y:"
-msgstr "y ã®çœŸå††ç‡:"
+msgstr "y ¤Î¿¿±ßÎ¨:"
 
 #: src/select-context.c:564
 msgid "Visual transformation"
-msgstr "ãƒ“ã‚¸ãƒ¥ã‚¢ãƒ«å¤‰å½¢"
+msgstr "¥Ó¥¸¥å¥¢¥ëÊÑ·Á"
 
 #: src/select-context.c:572
 msgid "Show content"
-msgstr "å†…å®¹ã‚’è¡¨ç¤º"
+msgstr "ÆâÍÆ¤òÉ½¼¨"
 
 #: src/select-context.c:579
 msgid "Show outline"
-msgstr "ã‚¢ã‚¦ãƒˆãƒ©ã‚¤ãƒ³ã®è¡¨ç¤º"
+msgstr "¥¢¥¦¥È¥é¥¤¥ó¤ÎÉ½¼¨"
 
 #: src/select-context.c:586
 msgid "Object transformation"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¤‰å½¢"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤ÎÊÑ·Á"
 
 #: src/select-context.c:594
 msgid "Optimize"
-msgstr "æœ€é©åŒ–"
+msgstr "ºÇÅ¬²½"
 
 #: src/select-context.c:601
 msgid "Preserve"
-msgstr "ä¿è­·"
+msgstr "Êİ¸î"
 
 #: src/slideshow.c:88
 msgid "Sodipodi slideshow"
-msgstr "Sodipodi: ã‚¹ãƒ©ã‚¤ãƒ‰ã‚·ãƒ§ãƒ¼"
+msgstr "Sodipodi: ¥¹¥é¥¤¥É¥·¥ç¡¼"
 
 #: src/sodipodi.c:398
 msgid "Untitled document"
-msgstr "ç„¡é¡Œæ–‡æ›¸"
+msgstr "ÌµÂêÊ¸½ñ"
 
 #. Show nice dialog box
 #: src/sodipodi.c:423
 msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr "Sodipodi ã¯å†…éƒ¨ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚ä»Šã™ãçµ‚äº†ã—ã¾ã™ã€‚\n"
+msgstr "Sodipodi ¤ÏÆâÉô¥¨¥é¡¼¤¬È¯À¸¤·¤Ş¤·¤¿¡£º£¤¹¤°½ªÎ»¤·¤Ş¤¹¡£\n"
 
 #: src/sodipodi.c:424
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
-msgstr "æœªä¿å­˜æ–‡æ›¸ã®è‡ªå‹•ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’æ¬¡ã®å ´æ‰€ã«è¡Œã„ã¾ã—ãŸ:\n"
+msgstr "Ì¤ÊİÂ¸Ê¸½ñ¤Î¼«Æ°¥Ğ¥Ã¥¯¥¢¥Ã¥×¤ò¼¡¤Î¾ì½ê¤Ë¹Ô¤¤¤Ş¤·¤¿:\n"
 
 #: src/sodipodi.c:425
 msgid "Automatic backup of following documents failed:\n"
-msgstr "æ¬¡ã®æ–‡æ›¸ã®è‡ªå‹•ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã«å¤±æ•—ã—ã¾ã—ãŸ:\n"
+msgstr "¼¡¤ÎÊ¸½ñ¤Î¼«Æ°¥Ğ¥Ã¥¯¥¢¥Ã¥×¤Ë¼ºÇÔ¤·¤Ş¤·¤¿:\n"
 
 #: src/sodipodi.c:564
 #, c-format
@@ -1480,9 +1480,9 @@ msgid ""
 "Although sodipodi will run, you can\n"
 "neither load nor save preferences\n"
 msgstr ""
-"%s ã¯é€šå¸¸ã®ãƒ•ã‚¡ã‚¤ãƒ«ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚\n"
-"sodipodiã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"ãƒ—ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ã®èª­ã¿æ›¸ãã¯ã§ãã¾ã›ã‚“ã€‚\n"
+"%s ¤ÏÄÌ¾ï¤Î¥Õ¥¡¥¤¥ë¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó¡£\n"
+"sodipodi¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"¥×¥ê¥Õ¥¡¥ì¥ó¥¹¤ÎÆÉ¤ß½ñ¤­¤Ï¤Ç¤­¤Ş¤»¤ó¡£\n"
 
 #: src/sodipodi.c:567
 #, c-format
@@ -1493,10 +1493,10 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"%s ãŒæœ‰åŠ¹ãª XML ãƒ•ã‚¡ã‚¤ãƒ«ã§ãªã„ã‹\n"
-"ã“ã®èª­ã¿å‡ºã—è¨±å¯ãŒã‚ã‚Šã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"è¨­å®šã®èª­ã¿æ›¸ãã¯ã§ãã¾ã›ã‚“ã€‚"
+"%s ¤¬Í­¸ú¤Ê XML ¥Õ¥¡¥¤¥ë¤Ç¤Ê¤¤¤«\n"
+"¤³¤ÎÆÉ¤ß½Ğ¤·µö²Ä¤¬¤¢¤ê¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"ÀßÄê¤ÎÆÉ¤ß½ñ¤­¤Ï¤Ç¤­¤Ş¤»¤ó¡£"
 
 #: src/sodipodi.c:572
 #, c-format
@@ -1506,9 +1506,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"%s ã¯æœ‰åŠ¹ãª sodipodi ãƒ—ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ãƒ•ã‚¡ã‚¤ãƒ«\n"
-"ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚sodopodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"è¨­å®šã®èª­ã¿æ›¸ãã¯ã§ãã¾ã›ã‚“ã€‚"
+"%s ¤ÏÍ­¸ú¤Ê sodipodi ¥×¥ê¥Õ¥¡¥ì¥ó¥¹¥Õ¥¡¥¤¥ë\n"
+"¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó¡£sodopodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"ÀßÄê¤ÎÆÉ¤ß½ñ¤­¤Ï¤Ç¤­¤Ş¤»¤ó¡£"
 
 #: src/sodipodi.c:584
 msgid ""
@@ -1516,9 +1516,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"%s ã¯é€šå¸¸ã®ãƒ•ã‚¡ã‚¤ãƒ«ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚\n"
-"sodipodiã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"æ‹¡å¼µæ©Ÿèƒ½(ãƒ—ãƒ©ã‚°ã‚¤ãƒ³)ã¯ä½¿ãˆã¾ã›ã‚“ã€‚\n"
+"%s ¤ÏÄÌ¾ï¤Î¥Õ¥¡¥¤¥ë¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó¡£\n"
+"sodipodi¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"³ÈÄ¥µ¡Ç½(¥×¥é¥°¥¤¥ó)¤Ï»È¤¨¤Ş¤»¤ó¡£\n"
 
 #: src/sodipodi.c:587
 msgid ""
@@ -1527,10 +1527,10 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"%s ãŒæœ‰åŠ¹ãª XML ãƒ•ã‚¡ã‚¤ãƒ«ã§ãªã„ã‹\n"
-"ã“ã®èª­ã¿å‡ºã—è¨±å¯ãŒã‚ã‚Šã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"æ‹¡å¼µæ©Ÿèƒ½(ãƒ—ãƒ©ã‚°ã‚¤ãƒ³)ã¯ä½¿ãˆã¾ã›ã‚“ã€‚\n"
+"%s ¤¬Í­¸ú¤Ê XML ¥Õ¥¡¥¤¥ë¤Ç¤Ê¤¤¤«\n"
+"¤³¤ÎÆÉ¤ß½Ğ¤·µö²Ä¤¬¤¢¤ê¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"³ÈÄ¥µ¡Ç½(¥×¥é¥°¥¤¥ó)¤Ï»È¤¨¤Ş¤»¤ó¡£\n"
 
 #: src/sodipodi.c:591
 msgid ""
@@ -1538,9 +1538,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"%s ã¯æœ‰åŠ¹ãª sodipodi æ‹¡å¼µãƒ•ã‚¡ã‚¤ãƒ«\n"
-"ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚sodopodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"æ‹¡å¼µæ©Ÿèƒ½(ãƒ—ãƒ©ã‚°ã‚¤ãƒ³)ã¯ä½¿ãˆã¾ã›ã‚“ã€‚\n"
+"%s ¤ÏÍ­¸ú¤Ê sodipodi ³ÈÄ¥¥Õ¥¡¥¤¥ë\n"
+"¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó¡£sodopodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"³ÈÄ¥µ¡Ç½(¥×¥é¥°¥¤¥ó)¤Ï»È¤¨¤Ş¤»¤ó¡£\n"
 
 #: src/sodipodi.c:930
 msgid ""
@@ -1549,9 +1549,9 @@ msgid ""
 "are neither able to load nor save\n"
 "%s."
 msgstr ""
-"ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª %s ã‚’ä½œæˆã§ãã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"%sã®èª­ã¿æ›¸ãã¯ã§ãã¾ã›ã‚“ã€‚"
+"¥Ç¥£¥ì¥¯¥È¥ê %s ¤òºîÀ®¤Ç¤­¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"%s¤ÎÆÉ¤ß½ñ¤­¤Ï¤Ç¤­¤Ş¤»¤ó¡£"
 
 #: src/sodipodi.c:934
 #, c-format
@@ -1561,9 +1561,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"%s ã¯æœ‰åŠ¹ãªãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"è¨­å®šã®èª­ã¿æ›¸ãã¯ã§ãã¾ã›ã‚“ã€‚"
+"%s ¤ÏÍ­¸ú¤Ê¥Ç¥£¥ì¥¯¥È¥ê¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"ÀßÄê¤ÎÆÉ¤ß½ñ¤­¤Ï¤Ç¤­¤Ş¤»¤ó¡£"
 
 #: src/sodipodi.c:938
 #, c-format
@@ -1573,9 +1573,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"ãƒ•ã‚¡ã‚¤ãƒ« %s ã‚’ä½œæˆã§ãã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"è¨­å®šã®èª­ã¿æ›¸ãã¯ã§ãã¾ã›ã‚“ã€‚"
+"¥Õ¥¡¥¤¥ë %s ¤òºîÀ®¤Ç¤­¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"ÀßÄê¤ÎÆÉ¤ß½ñ¤­¤Ï¤Ç¤­¤Ş¤»¤ó¡£"
 
 #: src/sodipodi.c:942
 #, c-format
@@ -1585,9 +1585,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"ãƒ•ã‚¡ã‚¤ãƒ« %s ã«æ›¸ãè¾¼ã‚ã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"è¨­å®šã®èª­ã¿æ›¸ãã¯ã§ãã¾ã›ã‚“ã€‚"
+"¥Õ¥¡¥¤¥ë %s ¤Ë½ñ¤­¹ş¤á¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"ÀßÄê¤ÎÆÉ¤ß½ñ¤­¤Ï¤Ç¤­¤Ş¤»¤ó¡£"
 
 #: src/sodipodi.c:952
 msgid ""
@@ -1595,9 +1595,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª %s ã‚’ä½œæˆã§ãã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"æ‹¡å¼µæ©Ÿèƒ½(ãƒ—ãƒ©ã‚°ã‚¤ãƒ³)ã¯ä½¿ãˆã¾ã›ã‚“ã€‚\n"
+"¥Ç¥£¥ì¥¯¥È¥ê %s ¤òºîÀ®¤Ç¤­¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"³ÈÄ¥µ¡Ç½(¥×¥é¥°¥¤¥ó)¤Ï»È¤¨¤Ş¤»¤ó¡£\n"
 
 #: src/sodipodi.c:955
 msgid ""
@@ -1605,9 +1605,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"%s ã¯æœ‰åŠ¹ãªãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"æ‹¡å¼µæ©Ÿèƒ½(ãƒ—ãƒ©ã‚°ã‚¤ãƒ³)ã¯ä½¿ãˆã¾ã›ã‚“\n"
+"%s ¤ÏÍ­¸ú¤Ê¥Ç¥£¥ì¥¯¥È¥ê¤Ç¤Ï¤¢¤ê¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"³ÈÄ¥µ¡Ç½(¥×¥é¥°¥¤¥ó)¤Ï»È¤¨¤Ş¤»¤ó\n"
 
 #: src/sodipodi.c:958
 msgid ""
@@ -1615,9 +1615,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"ãƒ•ã‚¡ã‚¤ãƒ« %s ã‚’ä½œæˆã§ãã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"æ‹¡å¼µæ©Ÿèƒ½(ãƒ—ãƒ©ã‚°ã‚¤ãƒ³)ã¯ä½¿ãˆã¾ã›ã‚“ã€‚\n"
+"¥Õ¥¡¥¤¥ë %s ¤òºîÀ®¤Ç¤­¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"³ÈÄ¥µ¡Ç½(¥×¥é¥°¥¤¥ó)¤Ï»È¤¨¤Ş¤»¤ó¡£\n"
 
 #: src/sodipodi.c:961
 msgid ""
@@ -1625,446 +1625,446 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"ãƒ•ã‚¡ã‚¤ãƒ« %s ã«æ›¸ãè¾¼ã‚ã¾ã›ã‚“ã€‚\n"
-"sodipodi ã¯å®Ÿè¡Œã•ã‚Œã¾ã™ãŒã€\n"
-"æ‹¡å¼µæ©Ÿèƒ½(ãƒ—ãƒ©ã‚°ã‚¤ãƒ³)ã¯ä½¿ãˆã¾ã›ã‚“ã€‚\n"
+"¥Õ¥¡¥¤¥ë %s ¤Ë½ñ¤­¹ş¤á¤Ş¤»¤ó¡£\n"
+"sodipodi ¤Ï¼Â¹Ô¤µ¤ì¤Ş¤¹¤¬¡¢\n"
+"³ÈÄ¥µ¡Ç½(¥×¥é¥°¥¤¥ó)¤Ï»È¤¨¤Ş¤»¤ó¡£\n"
 
 #: src/sp-anchor.c:195
 #, c-format
 msgid "Link to %s"
-msgstr "%s ã«ãƒªãƒ³ã‚¯"
+msgstr "%s ¤Ë¥ê¥ó¥¯"
 
 #: src/sp-image.c:370
 #, c-format
 msgid "Image with bad reference: %s"
-msgstr "ç„¡åŠ¹ãªå‚ç…§ã®ç”»åƒ: %s"
+msgstr "Ìµ¸ú¤Ê»²¾È¤Î²èÁü: %s"
 
 #: src/sp-image.c:372
 #, c-format
 msgid "Color image %d x %d: %s"
-msgstr "ã‚«ãƒ©ãƒ¼ç”»åƒ %d x %d: %s"
+msgstr "¥«¥é¡¼²èÁü %d x %d: %s"
 
 #: src/sp-image.c:922
 #, c-format
 msgid "Error to write %s: %s"
-msgstr "%s ã®æ›¸ãè¾¼ã¿ã‚¨ãƒ©ãƒ¼: %s"
+msgstr "%s ¤Î½ñ¤­¹ş¤ß¥¨¥é¡¼: %s"
 
 #: src/sp-image.c:956
 msgid "Untitled"
-msgstr "ç„¡é¡Œ"
+msgstr "ÌµÂê"
 
 #: src/sp-image.c:961
 msgid "Document Name:"
-msgstr "æ–‡æ›¸å:"
+msgstr "Ê¸½ñÌ¾:"
 
 #: src/sp-image.c:974
 msgid "Unknown"
-msgstr "ä¸æ˜"
+msgstr "ÉÔÌÀ"
 
 #: src/sp-image.c:980
 msgid "Image URI:"
-msgstr "ç”»åƒ URI:"
+msgstr "²èÁü URI:"
 
 #: src/sp-item-group.c:456
 #, c-format
 msgid "Group of %d objects"
-msgstr "%d ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚°ãƒ«ãƒ¼ãƒ—"
+msgstr "%d ¥ª¥Ö¥¸¥§¥¯¥È¤Î¥°¥ë¡¼¥×"
 
 #: src/sp-item.c:497
 msgid "Unknown item :-("
-msgstr "ä¸æ˜ãªã‚¢ã‚¤ãƒ†ãƒ  :-("
+msgstr "ÉÔÌÀ¤Ê¥¢¥¤¥Æ¥à :-("
 
 #. fixme:
 #: src/sp-text.c:1305
 msgid "Text object"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ"
+msgstr "¥Æ¥­¥¹¥È¥ª¥Ö¥¸¥§¥¯¥È"
 
 #. T0
 #: src/spiral-context.c:374
 msgid "Inner radius:"
-msgstr "å†…åŠå¾„:"
+msgstr "ÆâÈ¾·Â:"
 
 #. Proportion
 #: src/star-context.c:367
 msgid "Proportion:"
-msgstr "æ¯”ç‡"
+msgstr "ÈæÎ¨"
 
 #. Making sides flat
 #: src/star-context.c:380
 msgid "Make sides flat"
-msgstr "æ­£å¤šè§’å½¢ã«ã™ã‚‹"
+msgstr "ÀµÂ¿³Ñ·Á¤Ë¤¹¤ë"
 
 #: src/toolbox.c:438
 msgid "Object"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È"
 
 #: src/toolbox.c:442 src/verbs.c:494
 msgid "Object size and position"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½ç½®ã¨å¤§ãã•"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤Î°ÌÃÖ¤ÈÂç¤­¤µ"
 
 #: src/toolbox.c:443
 msgid "Text and font settings"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆã¨ãƒ•ã‚©ãƒ³ãƒˆè¨­å®š"
+msgstr "¥Æ¥­¥¹¥È¤È¥Õ¥©¥ó¥ÈÀßÄê"
 
 #: src/toolbox.c:445 src/verbs.c:495
 msgid "Object transformations"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¤‰å½¢"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤ÎÊÑ·Á"
 
 #: src/toolbox.c:518
 msgid "Draw"
-msgstr "æç”»"
+msgstr "ÉÁ²è"
 
 #: src/toolbox.c:573
 msgid "Extension"
-msgstr "æ‹¡å¼µ"
+msgstr "³ÈÄ¥"
 
 #: src/toolbox.c:650
 msgid "Nodes"
-msgstr "ãƒãƒ¼ãƒ‰"
+msgstr "¥Î¡¼¥É"
 
 #: src/toolbox.c:652
 msgid "Insert new nodes into selected segments"
-msgstr "ãƒãƒ¼ãƒ‰ã‚’é¸æŠã‚»ã‚°ãƒ¡ãƒ³ãƒˆã«æŒ¿å…¥ã™ã‚‹"
+msgstr "¥Î¡¼¥É¤òÁªÂò¥»¥°¥á¥ó¥È¤ËÁŞÆş¤¹¤ë"
 
 #: src/toolbox.c:653
 msgid "Break line at selected nodes"
-msgstr "é¸æŠãƒãƒ¼ãƒ‰ã®ã§ç·šã‚’åˆ†å‰²"
+msgstr "ÁªÂò¥Î¡¼¥É¤Î¤ÇÀş¤òÊ¬³ä"
 
 #: src/toolbox.c:654
 msgid "Make selected nodes corner"
-msgstr "é¸æŠãƒãƒ¼ãƒ‰ã«å…ˆç«¯ã‚’ã¤ã‘ã‚‹"
+msgstr "ÁªÂò¥Î¡¼¥É¤ËÀèÃ¼¤ò¤Ä¤±¤ë"
 
 #: src/toolbox.c:655
 msgid "Make selected segments lines"
-msgstr "é¸æŠã‚»ã‚°ãƒ¡ãƒ³ãƒˆã‚’æŠ˜ç·šã«ã™ã‚‹"
+msgstr "ÁªÂò¥»¥°¥á¥ó¥È¤òÀŞÀş¤Ë¤¹¤ë"
 
 #: src/toolbox.c:656
 msgid "Delete selected nodes"
-msgstr "é¸æŠã—ãŸãƒãƒ¼ãƒ‰ã®å‰Šé™¤"
+msgstr "ÁªÂò¤·¤¿¥Î¡¼¥É¤Îºï½ü"
 
 #: src/toolbox.c:657
 msgid "Join lines at selected nodes"
-msgstr "é¸æŠãƒãƒ¼ãƒ‰ã§ç·šã‚’çµåˆ"
+msgstr "ÁªÂò¥Î¡¼¥É¤ÇÀş¤ò·ë¹ç"
 
 #: src/toolbox.c:658
 msgid "Make selected nodes smooth"
-msgstr "é¸æŠãƒãƒ¼ãƒ‰ã‚’æ»‘ã‹ã«ã™ã‚‹"
+msgstr "ÁªÂò¥Î¡¼¥É¤ò³ê¤«¤Ë¤¹¤ë"
 
 #: src/toolbox.c:659
 msgid "Make selected segments curves"
-msgstr "é¸æŠã‚»ã‚°ãƒ¡ãƒ³ãƒˆã‚’æ›²ç·šã«ã™ã‚‹"
+msgstr "ÁªÂò¥»¥°¥á¥ó¥È¤ò¶ÊÀş¤Ë¤¹¤ë"
 
 #: src/verbs.c:427
 msgid "Does nothing"
-msgstr "ä½•ã‚‚ã—ãªã„"
+msgstr "²¿¤â¤·¤Ê¤¤"
 
 #: src/verbs.c:429
 msgid "Create new SVG document"
-msgstr "æ–°è¦ SVG æ–‡æ›¸ã‚’ä½œæˆ"
+msgstr "¿·µ¬ SVG Ê¸½ñ¤òºîÀ®"
 
 #: src/verbs.c:430
 msgid "Open..."
-msgstr "é–‹ã(_O)..."
+msgstr "³«¤¯(_O)..."
 
 #: src/verbs.c:430
 msgid "Open existing SVG document"
-msgstr "æ—¢å­˜ã® SVG æ–‡æ›¸ã‚’é–‹ã"
+msgstr "´ûÂ¸¤Î SVG Ê¸½ñ¤ò³«¤¯"
 
 #: src/verbs.c:431
 msgid "Save"
-msgstr "ä¿å­˜"
+msgstr "ÊİÂ¸"
 
 #: src/verbs.c:431
 msgid "Save document"
-msgstr "æ–‡æ›¸ã®ä¿å­˜"
+msgstr "Ê¸½ñ¤ÎÊİÂ¸"
 
 #: src/verbs.c:432
 msgid "Save As..."
-msgstr "åå‰ã‚’ã¤ã‘ã¦ä¿å­˜..."
+msgstr "Ì¾Á°¤ò¤Ä¤±¤ÆÊİÂ¸..."
 
 #: src/verbs.c:432
 msgid "Save document under new name"
-msgstr "æ–°è¦ãƒ•ã‚¡ã‚¤ãƒ«åã§æ–‡æ›¸ã‚’ä¿å­˜"
+msgstr "¿·µ¬¥Õ¥¡¥¤¥ëÌ¾¤ÇÊ¸½ñ¤òÊİÂ¸"
 
 #: src/verbs.c:433
 msgid "Print..."
-msgstr "å°åˆ·..."
+msgstr "°õºş..."
 
 #: src/verbs.c:433
 msgid "Print document"
-msgstr "æ–‡æ›¸ã‚’å°åˆ·"
+msgstr "Ê¸½ñ¤ò°õºş"
 
 #: src/verbs.c:434
 msgid "Print Direct..."
-msgstr "ç›´æ¥å°åˆ·..."
+msgstr "Ä¾ÀÜ°õºş..."
 
 #: src/verbs.c:434
 msgid "Print directly to file or pipe"
-msgstr "ãƒ•ã‚¡ã‚¤ãƒ«ã‹ãƒ‘ã‚¤ãƒ—ã«ç›´æ¥å°åˆ·"
+msgstr "¥Õ¥¡¥¤¥ë¤«¥Ñ¥¤¥×¤ËÄ¾ÀÜ°õºş"
 
 #: src/verbs.c:435
 msgid "Print Preview"
-msgstr "å°åˆ·ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼"
+msgstr "°õºş¥×¥ì¥Ó¥å¡¼"
 
 #: src/verbs.c:435
 msgid "Preview document printout"
-msgstr "å°åˆ·æ–‡æ›¸ã®ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼"
+msgstr "°õºşÊ¸½ñ¤Î¥×¥ì¥Ó¥å¡¼"
 
 #: src/verbs.c:436
 msgid "Import"
-msgstr "èª­ã¿è¾¼ã¿"
+msgstr "ÆÉ¤ß¹ş¤ß"
 
 #: src/verbs.c:436
 msgid "Import bitmap or SVG image into document"
-msgstr "ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã¾ãŸã¯SVGã‚¤ãƒ¡ãƒ¼ã‚¸ã‚’æ–‡æ›¸ã«å–ã‚Šè¾¼ã‚€"
+msgstr "¥Ó¥Ã¥È¥Ş¥Ã¥×¤Ş¤¿¤ÏSVG¥¤¥á¡¼¥¸¤òÊ¸½ñ¤Ë¼è¤ê¹ş¤à"
 
 #: src/verbs.c:437
 msgid "Export document as PNG bitmap"
-msgstr "æ–‡æ›¸ã‚’ PNG ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—ã¨ã—ã¦å‡ºåŠ›"
+msgstr "Ê¸½ñ¤ò PNG ¥Ó¥Ã¥È¥Ş¥Ã¥×¤È¤·¤Æ½ĞÎÏ"
 
 #. Edit
 #: src/verbs.c:439
 msgid "Undo"
-msgstr "å…ƒã«æˆ»ã™"
+msgstr "¸µ¤ËÌá¤¹"
 
 #: src/verbs.c:439
 msgid "Revert last action"
-msgstr "æœ€å¾Œã®æ“ä½œã‚’æˆ»ã™"
+msgstr "ºÇ¸å¤ÎÁàºî¤òÌá¤¹"
 
 #: src/verbs.c:440
 msgid "Redo"
-msgstr "ã‚„ã‚Šç›´ã—"
+msgstr "¤ä¤êÄ¾¤·"
 
 #: src/verbs.c:440
 msgid "Do again undone action"
-msgstr "æˆ»ã—ãŸæ“ä½œã‚’å†å®Ÿè¡Œ"
+msgstr "Ìá¤·¤¿Áàºî¤òºÆ¼Â¹Ô"
 
 #: src/verbs.c:441
 msgid "Cut"
-msgstr "ã‚«ãƒƒãƒˆ"
+msgstr "¥«¥Ã¥È"
 
 #: src/verbs.c:441
 msgid "Cut selected objects to clipboard"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã¸åˆ‡ã‚Šå–ã‚Š"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤ò¥¯¥ê¥Ã¥×¥Ü¡¼¥É¤ØÀÚ¤ê¼è¤ê"
 
 #: src/verbs.c:442
 msgid "Copy"
-msgstr "ã‚³ãƒ”ãƒ¼"
+msgstr "¥³¥Ô¡¼"
 
 #: src/verbs.c:442
 msgid "Copy selected objects to clipboard"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã¸è¤‡è£½"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤ò¥¯¥ê¥Ã¥×¥Ü¡¼¥É¤ØÊ£À½"
 
 #: src/verbs.c:443
 msgid "Paste"
-msgstr "è²¼ä»˜ã‘"
+msgstr "Å½ÉÕ¤±"
 
 #: src/verbs.c:443
 msgid "Paste objects from clipboard"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ã‚¯ãƒªãƒƒãƒ—ãƒœãƒ¼ãƒ‰ã‹ã‚‰è²¼ã‚Šä»˜ã‘"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤ò¥¯¥ê¥Ã¥×¥Ü¡¼¥É¤«¤éÅ½¤êÉÕ¤±"
 
 #: src/verbs.c:444
 msgid "Delete"
-msgstr "å‰Šé™¤"
+msgstr "ºï½ü"
 
 #: src/verbs.c:444
 msgid "Delete selected objects"
-msgstr "é¸æŠã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å‰Šé™¤"
+msgstr "ÁªÂò¤·¤¿¥ª¥Ö¥¸¥§¥¯¥È¤Îºï½ü"
 
 #: src/verbs.c:445
 msgid "Duplicate"
-msgstr "è¤‡è£½"
+msgstr "Ê£À½"
 
 #: src/verbs.c:445
 msgid "Duplicate selected objects"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®è¤‡è£½"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤ÎÊ£À½"
 
 #: src/verbs.c:446
 msgid "Clear All"
-msgstr "å…¨ã¦æ¶ˆå»"
+msgstr "Á´¤Æ¾Ãµî"
 
 #: src/verbs.c:446
 msgid "Delete all objects from document"
-msgstr "ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‹ã‚‰ã™ã¹ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‰Šé™¤ã—ã¾ã™"
+msgstr "¥É¥­¥å¥á¥ó¥È¤«¤é¤¹¤Ù¤Æ¤Î¥ª¥Ö¥¸¥§¥¯¥È¤òºï½ü¤·¤Ş¤¹"
 
 #: src/verbs.c:447
 msgid "Select All"
-msgstr "å…¨ã¦é¸æŠ"
+msgstr "Á´¤ÆÁªÂò"
 
 #: src/verbs.c:447
 msgid "Select all objects in document"
-msgstr "ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã®ã™ã¹ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’é¸æŠã—ã¾ã™"
+msgstr "¥É¥­¥å¥á¥ó¥È¤Î¤¹¤Ù¤Æ¤Î¥ª¥Ö¥¸¥§¥¯¥È¤òÁªÂò¤·¤Ş¤¹"
 
 #. Selection
 #: src/verbs.c:449
 msgid "Bring to Front"
-msgstr "å‰é¢ã«æŒã£ã¦ãã‚‹"
+msgstr "Á°ÌÌ¤Ë»ı¤Ã¤Æ¤¯¤ë"
 
 #: src/verbs.c:449
 msgid "Raise selected objects to top"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æœ€å‰é¢ã«ç§»å‹•"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤òºÇÁ°ÌÌ¤Ë°ÜÆ°"
 
 #: src/verbs.c:450
 msgid "Send to Back"
-msgstr "èƒŒå¾Œã«æŒã£ã¦ã„ã"
+msgstr "ÇØ¸å¤Ë»ı¤Ã¤Æ¤¤¤¯"
 
 #: src/verbs.c:450
 msgid "Lower selected objects to bottom"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æœ€èƒŒé¢ã«ç§»å‹•"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤òºÇÇØÌÌ¤Ë°ÜÆ°"
 
 #: src/verbs.c:451
 msgid "Raise"
-msgstr "ä¸Šã’ã‚‹"
+msgstr "¾å¤²¤ë"
 
 #: src/verbs.c:451
 msgid "Raise selected objects one position"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¸€ã¤å‰é¢ã«ç§»å‹•"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤ò°ì¤ÄÁ°ÌÌ¤Ë°ÜÆ°"
 
 #: src/verbs.c:452
 msgid "Lower"
-msgstr "ä¸‹ã’ã‚‹"
+msgstr "²¼¤²¤ë"
 
 #: src/verbs.c:452
 msgid "Lower selected objects one position"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¸€ã¤èƒŒé¢ã«ç§»å‹•"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤ò°ì¤ÄÇØÌÌ¤Ë°ÜÆ°"
 
 #: src/verbs.c:453
 msgid "Group selected objects"
-msgstr "é¸æŠã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚°ãƒ«ãƒ¼ãƒ—åŒ–"
+msgstr "ÁªÂò¤·¤¿¥ª¥Ö¥¸¥§¥¯¥È¤Î¥°¥ë¡¼¥×²½"
 
 #: src/verbs.c:454
 msgid "Ungroup selected group"
-msgstr "é¸æŠã—ãŸã‚°ãƒ«ãƒ¼ãƒ—ã®ã‚°ãƒ«ãƒ¼ãƒ—è§£é™¤"
+msgstr "ÁªÂò¤·¤¿¥°¥ë¡¼¥×¤Î¥°¥ë¡¼¥×²ò½ü"
 
 #: src/verbs.c:455
 msgid "Combine"
-msgstr "é€£çµ"
+msgstr "Ï¢·ë"
 
 #: src/verbs.c:455
 msgid "Combine multiple paths"
-msgstr "è¤‡æ•°ãƒ‘ã‚¹ã®çµåˆ"
+msgstr "Ê£¿ô¥Ñ¥¹¤Î·ë¹ç"
 
 #: src/verbs.c:456
 msgid "Break Apart"
-msgstr "åˆ†å‰²"
+msgstr "Ê¬³ä"
 
 #: src/verbs.c:456
 msgid "Break selected path to subpaths"
-msgstr "é¸æŠã—ãŸãƒ‘ã‚¹ã‚’ã‚µãƒ–ãƒ‘ã‚¹ã«åˆ†å‰²ã™ã‚‹"
+msgstr "ÁªÂò¤·¤¿¥Ñ¥¹¤ò¥µ¥Ö¥Ñ¥¹¤ËÊ¬³ä¤¹¤ë"
 
 #. Object
 #: src/verbs.c:458
 msgid "Rotate 90 degrees"
-msgstr "90åº¦å›è»¢"
+msgstr "90ÅÙ²óÅ¾"
 
 #: src/verbs.c:458
 msgid "Rotates object 90 degrees clockwise"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ90åº¦æ™‚è¨ˆã¾ã‚ã‚Šã«å›è»¢ã—ã¾ã™"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È90ÅÙ»ş·×¤Ş¤ï¤ê¤Ë²óÅ¾¤·¤Ş¤¹"
 
 #: src/verbs.c:459
 msgid "Flatten object"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å¹³å¦ã«ã™ã‚‹"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤òÊ¿Ã³¤Ë¤¹¤ë"
 
 #: src/verbs.c:459
 msgid "Remove transformations from object"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¤‰å½¢ã‚’æˆ»ã™"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥È¤ÎÊÑ·Á¤òÌá¤¹"
 
 #: src/verbs.c:460
 msgid "Convert to Curves"
-msgstr "æ›²ç·šã«å¤‰æ›"
+msgstr "¶ÊÀş¤ËÊÑ´¹"
 
 #: src/verbs.c:460
 msgid "Convert selected object to path"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ãƒ‘ã‚¹ã«å¤‰æ›ã—ã¾ã™"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤ò¥Ñ¥¹¤ËÊÑ´¹¤·¤Ş¤¹"
 
 #: src/verbs.c:461
 msgid "Flip Horizontally"
-msgstr "æ°´å¹³æ–¹å‘ã«åè»¢"
+msgstr "¿åÊ¿Êı¸ş¤ËÈ¿Å¾"
 
 #: src/verbs.c:462
 msgid "Flip selected objects horizontally"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ°´å¹³æ–¹å‘ã«åè»¢ã—ã¾ã™"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤ò¿åÊ¿Êı¸ş¤ËÈ¿Å¾¤·¤Ş¤¹"
 
 #: src/verbs.c:463
 msgid "Flip Vertically"
-msgstr "å‚ç›´æ–¹å‘ã«åè»¢"
+msgstr "¿âÄ¾Êı¸ş¤ËÈ¿Å¾"
 
 #: src/verbs.c:464
 msgid "Flip selected objects vertically"
-msgstr "é¸æŠã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å‚ç›´æ–¹å‘ã«åè»¢ã—ã¾ã™"
+msgstr "ÁªÂò¥ª¥Ö¥¸¥§¥¯¥È¤ò¿âÄ¾Êı¸ş¤ËÈ¿Å¾¤·¤Ş¤¹"
 
 #. Event contexts
 #: src/verbs.c:466
 msgid "Select"
-msgstr "é¸æŠ"
+msgstr "ÁªÂò"
 
 #: src/verbs.c:466
 msgid "Select and transform objects"
-msgstr "é¸æŠã—ã¦å¤‰å½¢"
+msgstr "ÁªÂò¤·¤ÆÊÑ·Á"
 
 #: src/verbs.c:467
 msgid "Node edit"
-msgstr "ãƒãƒ¼ãƒ‰ã®ç·¨é›†"
+msgstr "¥Î¡¼¥É¤ÎÊÔ½¸"
 
 #: src/verbs.c:467
 msgid "Modify existing objects by control nodes"
-msgstr "ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãƒãƒ¼ãƒ‰ã§ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç·¨é›†ã—ã¾ã™"
+msgstr "¥³¥ó¥È¥í¡¼¥ë¥Î¡¼¥É¤Ç¥ª¥Ö¥¸¥§¥¯¥È¤òÊÔ½¸¤·¤Ş¤¹"
 
 #: src/verbs.c:468
 msgid "Rectangle"
-msgstr "çŸ©å½¢"
+msgstr "¶ë·Á"
 
 #: src/verbs.c:468
 msgid "Create rectangles and squares with optional rounded corners"
-msgstr "é•·æ–¹å½¢ã‚„æ­£æ–¹å½¢ã‚’ä½œæˆã—ã¾ã™ã€‚ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§è§’ã‚’ä¸¸ã‚ã‚‰ã‚Œã¾ã™"
+msgstr "Ä¹Êı·Á¤äÀµÊı·Á¤òºîÀ®¤·¤Ş¤¹¡£¥ª¥×¥·¥ç¥ó¤Ç³Ñ¤ò´İ¤á¤é¤ì¤Ş¤¹"
 
 #: src/verbs.c:469
 msgid "Ellipse"
-msgstr "æ¥•å††"
+msgstr "ÂÊ±ß"
 
 #: src/verbs.c:469
 msgid "Create circles, ellipses and arcs"
-msgstr "æ¥•å††ã€å¼§ã‚’ä½œæˆã—ã¾ã™"
+msgstr "ÂÊ±ß¡¢¸Ì¤òºîÀ®¤·¤Ş¤¹"
 
 #: src/verbs.c:470
 msgid "Create stars and polygons"
-msgstr "æ˜Ÿå‹ã‚„ãƒãƒªã‚´ãƒ³ã‚’ä½œæˆã—ã¾ã™"
+msgstr "À±·¿¤ä¥İ¥ê¥´¥ó¤òºîÀ®¤·¤Ş¤¹"
 
 #: src/verbs.c:471
 msgid "Create spirals"
-msgstr "èºæ—‹ã®ä½œè£½"
+msgstr "ÍæÀû¤ÎºîÀ½"
 
 #: src/verbs.c:472
 msgid "Pencil"
-msgstr "ãƒšãƒ³ã‚·ãƒ«"
+msgstr "¥Ú¥ó¥·¥ë"
 
 #: src/verbs.c:472
 msgid "Draw freehand curves and straight lines"
-msgstr "ãƒ•ãƒªãƒ¼ãƒãƒ³ãƒ‰ç·šã‚„ç›´ç·šã‚’æç”»ã—ã¾ã™"
+msgstr "¥Õ¥ê¡¼¥Ï¥ó¥ÉÀş¤äÄ¾Àş¤òÉÁ²è¤·¤Ş¤¹"
 
 #: src/verbs.c:473
 msgid "Pen"
-msgstr "ãƒšãƒ³"
+msgstr "¥Ú¥ó"
 
 #: src/verbs.c:473
 msgid "Draw precisely positioned curved and straight lines"
-msgstr "æ˜ç¤ºçš„ã«ä½ç½®ã‚’æŒ‡å®šã—ã¦æ›²ç·šã‚„ç›´ç·šã‚’æç”»"
+msgstr "ÌÀ¼¨Åª¤Ë°ÌÃÖ¤ò»ØÄê¤·¤Æ¶ÊÀş¤äÄ¾Àş¤òÉÁ²è"
 
 #: src/verbs.c:474
 msgid "Calligraphy"
-msgstr "ã‚«ãƒªã‚°ãƒ©ãƒ•ã‚£"
+msgstr "¥«¥ê¥°¥é¥Õ¥£"
 
 #: src/verbs.c:474
 msgid "Draw calligraphic lines"
-msgstr "ã‚«ãƒªã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ç·šã‚’æç”»ã—ã¾ã™"
+msgstr "¥«¥ê¥°¥é¥Õ¥£¥Ã¥¯Àş¤òÉÁ²è¤·¤Ş¤¹"
 
 #: src/verbs.c:475
 msgid "Create and edit text objects"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆã—ã¦ç·¨é›†ã—ã¾ã™"
+msgstr "¥Æ¥­¥¹¥È¥ª¥Ö¥¸¥§¥¯¥È¤òºîÀ®¤·¤ÆÊÔ½¸¤·¤Ş¤¹"
 
 #: src/verbs.c:476
 msgid "Zoom into preciely selected area"
-msgstr "é¸æŠã—ãŸé ˜åŸŸã‚’æ‹¡å¤§ã—ã¾ã™"
+msgstr "ÁªÂò¤·¤¿ÎÎ°è¤ò³ÈÂç¤·¤Ş¤¹"
 
 #: src/verbs.c:477
 msgid "Dropper"
@@ -2077,19 +2077,19 @@ msgstr ""
 #. Zooming
 #: src/verbs.c:479
 msgid "In"
-msgstr "(æ‹¡å¤§)"
+msgstr "(³ÈÂç)"
 
 #: src/verbs.c:479
 msgid "Zoom in drawing"
-msgstr "æç”»é ˜åŸŸã«ã‚ºãƒ¼ãƒ "
+msgstr "ÉÁ²èÎÎ°è¤Ë¥º¡¼¥à"
 
 #: src/verbs.c:480
 msgid "Out"
-msgstr "(ç¸®å°)"
+msgstr "(½Ì¾®)"
 
 #: src/verbs.c:480
 msgid "Zoom out drawing"
-msgstr "æç”»é ˜åŸŸã«ã‚ºãƒ¼ãƒ ã‚¢ã‚¦ãƒˆ"
+msgstr "ÉÁ²èÎÎ°è¤Ë¥º¡¼¥à¥¢¥¦¥È"
 
 #: src/verbs.c:481
 msgid "1:1"
@@ -2097,7 +2097,7 @@ msgstr "1:1"
 
 #: src/verbs.c:481
 msgid "Set zoom factor to 1:1"
-msgstr "æ‹¡å¤§æ¯”ã‚’ 1:1 ã«è¨­å®š"
+msgstr "³ÈÂçÈæ¤ò 1:1 ¤ËÀßÄê"
 
 #: src/verbs.c:482
 msgid "1:2"
@@ -2105,7 +2105,7 @@ msgstr "1:2"
 
 #: src/verbs.c:482
 msgid "Set zoom factor to 1:2"
-msgstr "æ‹¡å¤§æ¯”ã‚’ 1:2 ã«è¨­å®š"
+msgstr "³ÈÂçÈæ¤ò 1:2 ¤ËÀßÄê"
 
 #: src/verbs.c:483
 msgid "2:1"
@@ -2113,102 +2113,102 @@ msgstr "2:1"
 
 #: src/verbs.c:483
 msgid "Set zoom factor to 2:1"
-msgstr "æ‹¡å¤§æ¯”ã‚’ 2:1 ã«è¨­å®š"
+msgstr "³ÈÂçÈæ¤ò 2:1 ¤ËÀßÄê"
 
 #: src/verbs.c:484
 msgid "Fit the whole page into window"
-msgstr "ãƒšãƒ¼ã‚¸å…¨ä½“ã‚’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ãƒ•ã‚£ãƒƒãƒˆ"
+msgstr "¥Ú¡¼¥¸Á´ÂÎ¤ò¥¦¥£¥ó¥É¥¦¤Ë¥Õ¥£¥Ã¥È"
 
 #: src/verbs.c:485
 msgid "Fit the whole drawing into window"
-msgstr "æç”»å…¨ä½“ã‚’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ãƒ•ã‚£ãƒƒãƒˆ"
+msgstr "ÉÁ²èÁ´ÂÎ¤ò¥¦¥£¥ó¥É¥¦¤Ë¥Õ¥£¥Ã¥È"
 
 #: src/verbs.c:486
 msgid "Fit the whole selection into window"
-msgstr "é¸æŠå…¨ä½“ã‚’ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã«ãƒ•ã‚£ãƒƒãƒˆ"
+msgstr "ÁªÂòÁ´ÂÎ¤ò¥¦¥£¥ó¥É¥¦¤Ë¥Õ¥£¥Ã¥È"
 
 #. Dialogs
 #: src/verbs.c:488
 msgid "Display"
-msgstr "ãƒ‡ã‚£ã‚¹ãƒ—ãƒ¬ã‚¤"
+msgstr "¥Ç¥£¥¹¥×¥ì¥¤"
 
 #: src/verbs.c:488
 msgid "Global display settings"
-msgstr "ã‚°ãƒ­ãƒ¼ãƒãƒ«è¡¨ç¤ºè¨­å®š"
+msgstr "¥°¥í¡¼¥Ğ¥ëÉ½¼¨ÀßÄê"
 
 #: src/verbs.c:489
 msgid "Document"
-msgstr "ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ"
+msgstr "¥É¥­¥å¥á¥ó¥È"
 
 #: src/verbs.c:489
 msgid "Page layout"
-msgstr "ãƒšãƒ¼ã‚¸ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ"
+msgstr "¥Ú¡¼¥¸¥ì¥¤¥¢¥¦¥È"
 
 #: src/verbs.c:490
 msgid "Editing Window"
-msgstr "ç·¨é›†ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦"
+msgstr "ÊÔ½¸¥¦¥£¥ó¥É¥¦"
 
 #: src/verbs.c:490
 msgid "Editing window properties"
-msgstr "ç·¨é›†ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£"
+msgstr "ÊÔ½¸¥¦¥£¥ó¥É¥¦¤Î¥×¥í¥Ñ¥Æ¥£"
 
 #: src/verbs.c:491
 msgid "Tool Options"
-msgstr "ãƒ„ãƒ¼ãƒ«ã‚ªãƒ—ã‚·ãƒ§ãƒ³"
+msgstr "¥Ä¡¼¥ë¥ª¥×¥·¥ç¥ó"
 
 #: src/verbs.c:492
 msgid "Tool Attributes"
-msgstr "ãƒ„ãƒ¼ãƒ«å±æ€§"
+msgstr "¥Ä¡¼¥ëÂ°À­"
 
 #: src/verbs.c:493
 msgid "Fill and Stroke"
-msgstr "ãƒ•ã‚£ãƒ«ã¨ã‚¹ãƒˆãƒ­ãƒ¼ã‚¯"
+msgstr "¥Õ¥£¥ë¤È¥¹¥È¥í¡¼¥¯"
 
 #: src/verbs.c:493
 msgid "Fill and stroke settings"
-msgstr "ãƒ•ã‚£ãƒ«ã¨ã‚¹ãƒˆãƒ­ãƒ¼ã‚¯è¨­å®š"
+msgstr "¥Õ¥£¥ë¤È¥¹¥È¥í¡¼¥¯ÀßÄê"
 
 #: src/verbs.c:494
 msgid "Size and Position"
-msgstr "ä½ç½®ã¨å¤§ãã•"
+msgstr "°ÌÃÖ¤ÈÂç¤­¤µ"
 
 #: src/verbs.c:495
 msgid "Transformations"
-msgstr "å¤‰å½¢"
+msgstr "ÊÑ·Á"
 
 #: src/verbs.c:496
 msgid "Align and Distribute"
-msgstr "é…ç½®ã¨é–“éš”"
+msgstr "ÇÛÃÖ¤È´Ö³Ö"
 
 #: src/verbs.c:496
 msgid "Align and distribute"
-msgstr "é…ç½®ã¨é–“éš”"
+msgstr "ÇÛÃÖ¤È´Ö³Ö"
 
 #: src/verbs.c:497
 msgid "Text and Font"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆã¨ãƒ•ã‚©ãƒ³ãƒˆ"
+msgstr "¥Æ¥­¥¹¥È¤È¥Õ¥©¥ó¥È"
 
 #: src/verbs.c:497
 msgid "Text editing and font settings"
-msgstr "ãƒ†ã‚­ã‚¹ãƒˆç·¨é›†ã¨ãƒ•ã‚©ãƒ³ãƒˆã®è¨­å®š"
+msgstr "¥Æ¥­¥¹¥ÈÊÔ½¸¤È¥Õ¥©¥ó¥È¤ÎÀßÄê"
 
 #: src/verbs.c:498
 msgid "XML Editor"
-msgstr "XMLã‚¨ãƒ‡ã‚£ã‚¿"
+msgstr "XML¥¨¥Ç¥£¥¿"
 
 #. Family frame
 #: src/widgets/font-selector.c:144
 msgid "Font family"
-msgstr "ãƒ•ã‚©ãƒ³ãƒˆãƒ•ã‚¡ãƒŸãƒªãƒ¼"
+msgstr "¥Õ¥©¥ó¥È¥Õ¥¡¥ß¥ê¡¼"
 
 #. Style frame
 #: src/widgets/font-selector.c:172
 msgid "Style"
-msgstr " ã‚¹ã‚¿ã‚¤ãƒ«"
+msgstr " ¥¹¥¿¥¤¥ë"
 
 #: src/widgets/font-selector.c:207
 msgid "Font size:"
-msgstr "ãƒ•ã‚©ãƒ³ãƒˆã‚µã‚¤ã‚º:"
+msgstr "¥Õ¥©¥ó¥È¥µ¥¤¥º:"
 
 #: src/widgets/font-selector.c:517
 msgid "AaBbCcIiPpQq12368.;/()"
@@ -2216,7 +2216,7 @@ msgstr "AaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-selector.c:140
 msgid "Add"
-msgstr "è¿½åŠ "
+msgstr "ÄÉ²Ã"
 
 #: src/widgets/gradient-selector.c:176
 msgid "gradientUnits"
@@ -2228,44 +2228,44 @@ msgstr "gradientSpread"
 
 #: src/widgets/gradient-vector.c:245
 msgid "No document selected"
-msgstr "æ–‡æ›¸ãŒé¸æŠã•ã‚Œã¦ã„ã¾ã›ã‚“"
+msgstr "Ê¸½ñ¤¬ÁªÂò¤µ¤ì¤Æ¤¤¤Ş¤»¤ó"
 
 #: src/widgets/gradient-vector.c:251
 msgid "No gradients in document"
-msgstr "æ–‡æ›¸ä¸­ã«ã‚°ãƒ©ãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³ãŒã‚ã‚Šã¾ã›ã‚“"
+msgstr "Ê¸½ñÃæ¤Ë¥°¥é¥Ç¡¼¥·¥ç¥ó¤¬¤¢¤ê¤Ş¤»¤ó"
 
 #: src/widgets/gradient-vector.c:257
 msgid "No gradient selected"
-msgstr "ã‚°ãƒ©ãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³ãŒé¸æŠã•ã‚Œã¦ã„ã¾ã›ã‚“"
+msgstr "¥°¥é¥Ç¡¼¥·¥ç¥ó¤¬ÁªÂò¤µ¤ì¤Æ¤¤¤Ş¤»¤ó"
 
 #: src/widgets/gradient-vector.c:412
 msgid "Start color"
-msgstr "å§‹ç‚¹ã®è‰²"
+msgstr "»ÏÅÀ¤Î¿§"
 
 #: src/widgets/gradient-vector.c:422
 msgid "End color"
-msgstr "çµ‚ç‚¹ã®è‰²"
+msgstr "½ªÅÀ¤Î¿§"
 
 #: src/widgets/gradient-vector.c:447
 msgid "Gradient vector"
-msgstr "å‹¾é…ãƒ™ã‚¯ãƒˆãƒ«"
+msgstr "¸ûÇÛ¥Ù¥¯¥È¥ë"
 
 #: src/widgets/paint-selector.c:620
 msgid "No objects"
-msgstr "ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç„¡ã—"
+msgstr "¥ª¥Ö¥¸¥§¥¯¥ÈÌµ¤·"
 
 #: src/widgets/paint-selector.c:634
 msgid "Multiple styles"
-msgstr "è¤‡æ•°ã‚¹ã‚¿ã‚¤ãƒ«"
+msgstr "Ê£¿ô¥¹¥¿¥¤¥ë"
 
 #: src/widgets/paint-selector.c:648
 msgid "No paint"
-msgstr "ãƒšã‚¤ãƒ³ãƒˆç„¡ã—"
+msgstr "¥Ú¥¤¥ó¥ÈÌµ¤·"
 
 #. Label
 #: src/widgets/paint-selector.c:738
 msgid "Mode:"
-msgstr "ãƒ¢ãƒ¼ãƒ‰:"
+msgstr "¥â¡¼¥É:"
 
 #: src/widgets/paint-selector.c:748
 msgid "RGB"
@@ -2294,60 +2294,60 @@ msgstr ""
 
 #: src/widgets/paint-selector.c:788
 msgid "Color paint"
-msgstr "ã‚«ãƒ©ãƒ¼ãƒšã‚¤ãƒ³ãƒˆ"
+msgstr "¥«¥é¡¼¥Ú¥¤¥ó¥È"
 
 #: src/widgets/paint-selector.c:858
 msgid "Linear gradient"
-msgstr "ç·šå½¢ã‚°ãƒ©ãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³"
+msgstr "Àş·Á¥°¥é¥Ç¡¼¥·¥ç¥ó"
 
 #: src/widgets/paint-selector.c:861
 msgid "Radial gradient"
-msgstr "æ”¾å°„çŠ¶ã‚°ãƒ©ãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³"
+msgstr "Êü¼Í¾õ¥°¥é¥Ç¡¼¥·¥ç¥ó"
 
 #: src/widgets/sp-color-selector.c:620
 msgid "Red:"
-msgstr "èµ¤:"
+msgstr "ÀÖ:"
 
 #: src/widgets/sp-color-selector.c:621
 msgid "Green:"
-msgstr "ç·‘:"
+msgstr "ÎĞ:"
 
 #: src/widgets/sp-color-selector.c:622
 msgid "Blue:"
-msgstr "é’:"
+msgstr "ÀÄ:"
 
 #: src/widgets/sp-color-selector.c:623 src/widgets/sp-color-selector.c:643
 #: src/widgets/sp-color-selector.c:665
 msgid "Alpha:"
-msgstr "é€æ˜åº¦:"
+msgstr "Æ©ÌÀÅÙ:"
 
 #: src/widgets/sp-color-selector.c:640
 msgid "Hue:"
-msgstr "è‰²ç›¸:"
+msgstr "¿§Áê:"
 
 #: src/widgets/sp-color-selector.c:641
 msgid "Saturation:"
-msgstr "å½©åº¦:"
+msgstr "ºÌÅÙ:"
 
 #: src/widgets/sp-color-selector.c:642
 msgid "Value:"
-msgstr "å€¤:"
+msgstr "ÃÍ:"
 
 #: src/widgets/sp-color-selector.c:661
 msgid "Cyan:"
-msgstr "ã‚·ã‚¢ãƒ³:"
+msgstr "¥·¥¢¥ó:"
 
 #: src/widgets/sp-color-selector.c:662
 msgid "Magenta:"
-msgstr "ãƒã‚¼ãƒ³ã‚¿:"
+msgstr "¥Ş¥¼¥ó¥¿:"
 
 #: src/widgets/sp-color-selector.c:663
 msgid "Yellow:"
-msgstr "é»„:"
+msgstr "²«:"
 
 #: src/widgets/sp-color-selector.c:664
 msgid "Black:"
-msgstr "é»’:"
+msgstr "¹õ:"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
@@ -2355,8 +2355,8 @@ msgstr ""
 
 #: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Attribute"
-msgstr "å±æ€§"
+msgstr "Â°À­"
 
 #: src/widgets/sp-xmlview-attr-list.c:56
 msgid "Value"
-msgstr "å€¤"
+msgstr "ÃÍ"
