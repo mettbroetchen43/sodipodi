@@ -46,12 +46,7 @@
 				Name="VCPostBuildEventTool"/>
 			<Tool
 				Name="VCPreBuildEventTool"
-				Description="Generate GObject marshallers"
-				CommandLine="set PATH=..\..\GnuWin32\lib
-..\..\GnuWin32\bin\glib-genmarshal.exe --header --prefix=sp_marshal ..\..\src\helper\sp-marshal.list &gt; ..\..\src\helper\sp-marshal.h
-..\..\GnuWin32\bin\glib-genmarshal.exe --body --prefix=sp_marshal ..\..\src\helper\sp-marshal.list &gt; ..\..\src\helper\sp-marshal.c
-"
-				ExcludedFromBuild="TRUE"/>
+				ExcludedFromBuild="FALSE"/>
 			<Tool
 				Name="VCPreLinkEventTool"/>
 			<Tool
@@ -1893,6 +1888,24 @@ GnuWin32\bin\msgfmt -o po\zh_CN.mo po\zh_CN.po
 			</File>
 			<File
 				RelativePath="..\..\src\libpng\pngwutil.c">
+			</File>
+		</Filter>
+		<Filter
+			Name="marshallers"
+			Filter="">
+			<File
+				RelativePath="..\..\src\helper\sp-marshal.list">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="cd ..\..
+PATH=GnuWin32\lib
+GnuWin32\bin\glib-genmarshal.exe --header --prefix=sp_marshal src\helper\sp-marshal.list &gt; src\helper\sp-marshal.h
+GnuWin32\bin\glib-genmarshal.exe --body --prefix=sp_marshal src\helper\sp-marshal.list &gt; src\helper\sp-marshal.c
+"
+						Outputs="..\..\src\helper\sp-marshal.c;..\..\src\helper\sp-marshal.h;"/>
+				</FileConfiguration>
 			</File>
 		</Filter>
 	</Files>
