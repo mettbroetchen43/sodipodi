@@ -179,7 +179,7 @@ dnl ******************************
 dnl   Plugin Support
 dnl ******************************
 
-AC_ARG_WITH(modules, AC_HELP_STRING([--with-modules], [Compile with plugin support (experimental)]), [mod=$withval], [mod=no])
+AC_ARG_WITH(modules, AC_HELP_STRING([--with-modules], [Compile with plugin support (experimental)]), [mod=$withval], [mod=yes])
 
 AM_CONDITIONAL(USE_MODULES, test "x$mod" = "xyes")
 if test "x$mod" = "xyes"; then

@@ -1,3 +1,20 @@
+2003-03-09  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/kde.cpp: Added SPModulePrintKDE object
+	(sp_kde_get_module_print): Contructor
+
+	* src/print.c: Port to modules, add KDE option
+
+	* src/module.c (sp_module_register): Check for id, fix crash
+	(sp_module_unregister): Ditto
+	(sp_module_print_get_type): Implement SPModulePrint
+
+	* src/document.h: Renamed private to priv to be nice with c++
+
+	* src/Makefile.am (kdeldadd): Added LIB_KDEPRINT
+
+	* configure.in: Enable modules by default
+
 2003-03-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/Makefile.am: Compile KDE module if needed

@@ -35,7 +35,7 @@ struct _SPDocument {
 	guchar *name;
 
 	/* fixme: remove this */
-	SPDocumentPrivate * private;
+	SPDocumentPrivate *priv;
 
 	/* Last action key */
 	const guchar *actionkey;

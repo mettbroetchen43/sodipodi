@@ -16,10 +16,14 @@
 
 G_BEGIN_DECLS
 
+#include "module.h"
+
 void sp_kde_init (int argc, char **argv, const char *name);
 void sp_kde_finish (void);
 
 char *sp_kde_get_open_filename (void);
+
+SPModulePrint *sp_kde_get_module_print (void);
 
 G_END_DECLS
 

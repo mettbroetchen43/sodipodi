@@ -151,13 +151,13 @@ sp_module_get_unique_id (unsigned char *c, int len, const unsigned char *val)
 static void
 sp_module_register (SPModule *module)
 {
-	g_hash_table_insert (moduledict, module->id, module);
+	if (module->id) g_hash_table_insert (moduledict, module->id, module);
 }
 
 static void
 sp_module_unregister (SPModule *module)
 {
-	g_hash_table_remove (moduledict, module->id);
+	if (module->id) g_hash_table_remove (moduledict, module->id);
 }
 
 /* ModuleInput */
@@ -219,11 +219,11 @@ sp_module_input_finalize (GObject *object)
 	imod = (SPModuleInput *) object;
 	
 	if (imod->mimetype) {
-		g_free(module->mimetype);
+		g_free (imod->mimetype);
 	}
 
 	if (imod->extention) {
-		g_free(module->extention);
+		g_free (imod->extention);
 	}
 
 	G_OBJECT_CLASS (input_parent_class)->finalize (object);
@@ -445,6 +445,61 @@ sp_module_filter_finalize (GObject *object)
 	fmod = (SPModuleFilter *) object;
 	
 	G_OBJECT_CLASS (filter_parent_class)->finalize (object);
+}
+
+/* ModulePrint */
+
+static void sp_module_print_class_init (SPModulePrintClass *klass);
+static void sp_module_print_init (SPModulePrint *fmod);
+static void sp_module_print_finalize (GObject *object);
+
+static SPModuleClass *print_parent_class;
+
+unsigned int
+sp_module_print_get_type (void)
+{
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
+			sizeof (SPModulePrintClass),
+			NULL, NULL,
+			(GClassInitFunc) sp_module_print_class_init,
+			NULL, NULL,
+			sizeof (SPModulePrint),
+			16,
+			(GInstanceInitFunc) sp_module_print_init,
+		};
+		type = g_type_register_static (SP_TYPE_MODULE, "SPModulePrint", &info, 0);
+	}
+	return type;
+}
+
+static void
+sp_module_print_class_init (SPModulePrintClass *klass)
+{
+	GObjectClass *g_object_class;
+
+	g_object_class = (GObjectClass *)klass;
+
+	print_parent_class = g_type_class_peek_parent (klass);
+
+	g_object_class->finalize = sp_module_print_finalize;
+}
+
+static void
+sp_module_print_init (SPModulePrint *fmod)
+{
+	/* Nothing here */
+}
+
+static void
+sp_module_print_finalize (GObject *object)
+{
+	SPModulePrint *fmod;
+
+	fmod = (SPModulePrint *) object;
+	
+	G_OBJECT_CLASS (print_parent_class)->finalize (object);
 }
 
 /* Global methods */

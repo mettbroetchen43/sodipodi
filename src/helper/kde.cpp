@@ -113,3 +113,313 @@ sp_kde_get_open_filename (void)
         return g_strdup (fileName);
 }
 
+// Printing
+
+#include <kprinter.h>
+#include <qpainter.h>
+#include <qimage.h>
+
+G_BEGIN_DECLS
+#include "display/nr-arena-item.h"
+#include "document.h"
+G_END_DECLS
+
+#define SP_TYPE_MODULE_PRINT_KDE (sp_module_print_kde_get_type())
+#define SP_MODULE_PRINT_KDE(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_PRINT_KDE, SPModulePrintKDE))
+#define SP_IS_MODULE_PRINT_KDE(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_PRINT_KDE))
+
+typedef struct _SPModulePrintKDE SPModulePrintKDE;
+typedef struct _SPModulePrintKDEClass SPModulePrintKDEClass;
+
+struct _SPModulePrintKDE {
+	SPModulePrint module;
+
+	float width;
+	float height;
+
+	KPrinter *kprinter;
+	QPainter *painter;
+};
+
+struct _SPModulePrintKDEClass {
+	SPModulePrintClass module_print_class;
+};
+
+unsigned int sp_module_print_kde_get_type (void);
+
+static void sp_module_print_kde_class_init (SPModulePrintClass *klass);
+static void sp_module_print_kde_init (SPModulePrintKDE *gpmod);
+static void sp_module_print_kde_finalize (GObject *object);
+
+static unsigned int sp_module_print_kde_setup (SPModulePrint *mod);
+static unsigned int sp_module_print_kde_begin (SPModulePrint *mod, SPDocument *doc);
+static unsigned int sp_module_print_kde_finish (SPModulePrint *mod);
+
+static unsigned int sp_module_print_kde_bind (SPModulePrint *mod, const NRMatrixF *transform, float opacity);
+static unsigned int sp_module_print_kde_release (SPModulePrint *mod);
+static unsigned int sp_module_print_kde_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+						const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
+static unsigned int sp_module_print_kde_stroke (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+						  const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
+static unsigned int sp_module_print_kde_image (SPModulePrint *mod, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
+						 const NRMatrixF *transform, const SPStyle *style);
+
+static SPModulePrintClass *print_kde_parent_class;
+
+unsigned int
+sp_module_print_kde_get_type (void)
+{
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
+			sizeof (SPModulePrintKDEClass),
+			NULL, NULL,
+			(GClassInitFunc) sp_module_print_kde_class_init,
+			NULL, NULL,
+			sizeof (SPModulePrintKDE),
+			16,
+			(GInstanceInitFunc) sp_module_print_kde_init,
+		};
+		type = g_type_register_static (SP_TYPE_MODULE_PRINT, "SPModulePrintKDE", &info, (GTypeFlags) 0);
+	}
+	return type;
+}
+
+static void
+sp_module_print_kde_class_init (SPModulePrintClass *klass)
+{
+	GObjectClass *g_object_class;
+	SPModulePrintClass *module_print_class;
+
+	g_object_class = (GObjectClass *)klass;
+	module_print_class = (SPModulePrintClass *) klass;
+
+	print_kde_parent_class = (SPModulePrintClass *) g_type_class_peek_parent (klass);
+
+	g_object_class->finalize = sp_module_print_kde_finalize;
+
+	module_print_class->setup = sp_module_print_kde_setup;
+	module_print_class->begin = sp_module_print_kde_begin;
+	module_print_class->finish = sp_module_print_kde_finish;
+	module_print_class->bind = sp_module_print_kde_bind;
+	module_print_class->release = sp_module_print_kde_release;
+	module_print_class->fill = sp_module_print_kde_fill;
+	module_print_class->stroke = sp_module_print_kde_stroke;
+	module_print_class->image = sp_module_print_kde_image;
+}
+
+static void
+sp_module_print_kde_init (SPModulePrintKDE *kpmod)
+{
+	kpmod->kprinter = new KPrinter (TRUE, QPrinter::HighResolution);
+	kpmod->kprinter->setFullPage (TRUE);
+	kpmod->kprinter->setPageSelection (KPrinter::ApplicationSide);
+}
+
+static void
+sp_module_print_kde_finalize (GObject *object)
+{
+	SPModulePrintKDE *kpmod;
+
+	kpmod = (SPModulePrintKDE *) object;
+
+	if (kpmod->painter) delete kpmod->painter;
+	delete kpmod->kprinter;
+
+	G_OBJECT_CLASS (print_kde_parent_class)->finalize (object);
+}
+
+static unsigned int
+sp_module_print_kde_setup (SPModulePrint *mod)
+{
+	SPModulePrintKDE *kpmod;
+	unsigned int ret;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	QTimer timer;
+	QObject::connect (&timer, SIGNAL (timeout ()), Bridge, SLOT (TimerHook ()));
+	timer.changeInterval (1000 / SP_FOREIGN_FREQ);
+	SPKDEModal = TRUE;
+
+	ret = kpmod->kprinter->setup (NULL);
+
+	SPKDEModal = FALSE;
+
+	return TRUE;
+}
+
+static unsigned int
+sp_module_print_kde_begin (SPModulePrint *mod, SPDocument *doc)
+{
+	SPModulePrintKDE *kpmod;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	kpmod->width = sp_document_width (doc);
+	kpmod->height = sp_document_height (doc);
+
+	kpmod->painter = new QPainter (kpmod->kprinter);
+
+	return 0;
+}
+
+#define RESOLUTION 72
+#define PS2PRINTER (600.0 / 72.0)
+
+static unsigned int
+sp_module_print_kde_finish (SPModulePrint *mod)
+{
+	SPModulePrintKDE *kpmod;
+	NRMatrixF affine;
+	double x0, y0, x1, y1;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	/* Go to document coordinates */
+	y0 = 0.0;
+	x0 = 0.0;
+	x1 = kpmod->width;
+	y1 = kpmod->height;
+
+	int width = (int) (RESOLUTION / 72.0 * kpmod->width + 0.5);
+	int height = (int) (RESOLUTION / 72.0 * kpmod->height + 0.5);
+
+	int kpwidth = (int) (kpmod->width * PS2PRINTER + 0.5);
+	int kpheight = (int) (kpmod->height * PS2PRINTER + 0.5);
+
+	affine.c[0] = width / ((x1 - x0) * 1.25);
+	affine.c[1] = 0.0;
+	affine.c[2] = 0.0;
+	affine.c[3] = height / ((y1 - y0) * 1.25);
+	affine.c[4] = -affine.c[0] * x0 * 1.25;
+	affine.c[5] = -affine.c[3] * y0 * 1.25;
+
+	nr_arena_item_set_transform (mod->root, &affine);
+
+	QImage img (width, 64, 32);
+
+	unsigned char *px = nr_new (unsigned char, 4 * width * 64);
+
+	int y;
+	for (y = 0; y < height; y += 64) {
+		NRRectL bbox;
+		NRGC gc;
+		/* Set area of interest */
+		bbox.x0 = 0;
+		bbox.y0 = y;
+		bbox.x1 = width;
+		bbox.y1 = MIN (height, y + 64);
+		/* Update to renderable state */
+		nr_matrix_d_set_identity (&gc.transform);
+		nr_arena_item_invoke_update (mod->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
+		/* Render */
+		NRPixBlock pb;
+		nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N,
+					  bbox.x0, bbox.y0, bbox.x1, bbox.y1,
+					  px, 4 * width, FALSE, FALSE);
+		memset (px, 0x7f, 4 * width * 64);
+		nr_arena_item_invoke_render (mod->root, &bbox, &pb, 0);
+		/* Blit into QImage */
+		int xx, yy;
+		for (yy = bbox.y0; yy < bbox.y1; yy++) {
+			unsigned char *s = NR_PIXBLOCK_PX (&pb) + pb.rs * (yy - bbox.y0);
+			unsigned int *d = (unsigned int *) img.scanLine (yy - bbox.y0);
+			for (xx = bbox.x0; xx < bbox.x1; xx++) {
+				d[0] = qRgb (s[0], s[1], s[2]);
+				s += 4;
+				d += 1;
+			}
+		}
+		nr_pixblock_release (&pb);
+		// g_print ("Area %d %d %d %d\n", 0, (int) (y * (72.0 / RESOLUTION) * PS2PRINTER + 0.5),
+		//	 (int) (kpmod->width * PS2PRINTER + 0.5),
+		//	 (int) ((y + 64) * (72.0 / RESOLUTION) * PS2PRINTER + 0.5));
+		kpmod->painter->drawImage (QRect (0, (int) (y * (72.0 / RESOLUTION) * PS2PRINTER + 0.5),
+						  (int) (kpmod->width * PS2PRINTER + 0.5),
+						  (int) (64 / (72.0 / RESOLUTION) / PS2PRINTER + 0.5)
+						  // 128
+						   ),
+					   img);
+	}
+
+	nr_free (px);
+
+	kpmod->painter->end ();
+	delete kpmod->painter;
+	kpmod->painter = NULL;
+
+	return 0;
+}
+
+static unsigned int
+sp_module_print_kde_bind (SPModulePrint *mod, const NRMatrixF *t, float opacity)
+{
+	SPModulePrintKDE *kpmod;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	// kpmod->painter->save ();
+	// kpmod->painter->setWorldMatrix (QWMatrix (t->c[0], t->c[1], t->c[2], t->c[3], t->c[4], t->c[5]), TRUE);
+
+	return 0;
+}
+
+static unsigned int
+sp_module_print_kde_release (SPModulePrint *mod)
+{
+	SPModulePrintKDE *kpmod;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	// kpmod->painter->restore ();
+
+	return 0;
+}
+
+static unsigned int
+sp_module_print_kde_fill (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
+{
+	SPModulePrintKDE *kpmod;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	// if (style->fill->type == SP_FILL_TYPE_COLOR) {
+		// float rgb[3];
+		// sp_color_get_rgb_floatv (&style->fill.value.color, rgb);
+		// kpmod->painter->setBrush (QColor ((int) (rgb[0] * 255.9999), (int) (rgb[1] * 255.9999), (int) (rgb[2] * 255.9999)));
+	// }
+
+	return 0;
+}
+
+static unsigned int
+sp_module_print_kde_stroke (SPModulePrint *mod, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox)
+{
+	SPModulePrintKDE *kpmod;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	return 0;
+}
+
+static unsigned int
+sp_module_print_kde_image (SPModulePrint *mod, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
+			   const NRMatrixF *transform, const SPStyle *style)
+{
+	SPModulePrintKDE *kpmod;
+
+	kpmod = (SPModulePrintKDE *) mod;
+
+	return 0;
+}
+
+SPModulePrint *
+sp_kde_get_module_print (void)
+{
+	return (SPModulePrint *) g_object_new (SP_TYPE_MODULE_PRINT_KDE, NULL);
+}
+
+

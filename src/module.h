@@ -55,6 +55,13 @@ typedef struct _SPModuleOutputClass SPModuleOutputClass;
 typedef struct _SPModuleFilter SPModuleFilter;
 typedef struct _SPModuleFilterClass SPModuleFilterClass;
 
+#define SP_TYPE_MODULE_PRINT (sp_module_print_get_type())
+#define SP_MODULE_PRINT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_PRINT, SPModulePrint))
+#define SP_IS_MODULE_PRINT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_PRINT))
+
+typedef struct _SPModulePrint SPModulePrint;
+typedef struct _SPModulePrintClass SPModulePrintClass;
+
 #include "widgets/menu.h"
 #include "xml/repr.h"
 #include "forward.h"
@@ -135,6 +142,43 @@ struct _SPModuleFilterClass {
 };
 
 unsigned int sp_module_filter_get_type (void);
+
+/* ModulePrint */
+
+#include <libnr/nr-path.h>
+#include <display/nr-arena-forward.h>
+
+struct _SPModulePrint {
+	SPModule module;
+
+	/* Copy of document image */
+	SPItem *base;
+	NRArena *arena;
+	NRArenaItem *root;
+	unsigned int dkey;
+};
+
+struct _SPModulePrintClass {
+	SPModuleClass module_class;
+
+	/* FALSE means user hit cancel */
+	unsigned int (* setup) (SPModulePrint *modp);
+
+	unsigned int (* begin) (SPModulePrint *modp, SPDocument *doc);
+	unsigned int (* finish) (SPModulePrint *modp);
+
+	/* Rendering methods */
+	unsigned int (* bind) (SPModulePrint *modp, const NRMatrixF *transform, float opacity);
+	unsigned int (* release) (SPModulePrint *modp);
+	unsigned int (* fill) (SPModulePrint *modp, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
+			       const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
+	unsigned int (* stroke) (SPModulePrint *modp, const NRBPath *bpath, const NRMatrixF *transform, const SPStyle *style,
+				 const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
+	unsigned int (* image) (SPModulePrint *modp, unsigned char *px, unsigned int w, unsigned int h, unsigned int rs,
+				const NRMatrixF *transform, const SPStyle *style);
+};
+
+unsigned int sp_module_print_get_type (void);
 
 /* Global methods */
 

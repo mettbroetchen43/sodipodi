@@ -9,7 +9,7 @@ extensions_src = extension.c extension.h
 endif
 
 if USE_KDE
-kdeldadd = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KIO) $(LIB_QT)
+kdeldadd = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KIO) $(LIB_KDEPRINT) $(LIB_QT)
 kdeldflags = $(KDE_RPATH)
 endif
 

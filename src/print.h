@@ -18,7 +18,6 @@
 
 unsigned int sp_print_bind (SPPrintContext *ctx, const NRMatrixF *transform, float opacity);
 unsigned int sp_print_release (SPPrintContext *ctx);
-
 unsigned int sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, const SPStyle *style,
 			    const NRRectF *pbox, const NRRectF *dbox, const NRRectF *bbox);
 unsigned int sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *transform, const SPStyle *style,

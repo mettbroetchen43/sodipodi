@@ -146,23 +146,23 @@ sp_document_init (SPDocument *doc)
 	p->redo = NULL;
 	p->actions = NULL;
 
-	doc->private = p;
+	doc->priv = p;
 }
 
 static void
 sp_document_dispose (GObject *object)
 {
 	SPDocument *doc;
-	SPDocumentPrivate * private;
+	SPDocumentPrivate * priv;
 
 	doc = (SPDocument *) object;
-	private = doc->private;
+	priv = doc->priv;
 
-	if (private) {
+	if (priv) {
 		sodipodi_remove_document (doc);
 
-		if (private->actions) {
-			sp_action_free_list (private->actions);
+		if (priv->actions) {
+			sp_action_free_list (priv->actions);
 		}
 
 		sp_document_clear_redo (doc);
@@ -174,16 +174,16 @@ sp_document_dispose (GObject *object)
 			doc->root = NULL;
 		}
 
-		if (private->iddef) g_hash_table_destroy (private->iddef);
+		if (priv->iddef) g_hash_table_destroy (priv->iddef);
 
 		if (doc->rdoc) sp_repr_document_unref (doc->rdoc);
 
 		/* Free resources */
-		g_hash_table_foreach_remove (private->resources, sp_document_resource_list_free, doc);
-		g_hash_table_destroy (private->resources);
+		g_hash_table_foreach_remove (priv->resources, sp_document_resource_list_free, doc);
+		g_hash_table_destroy (priv->resources);
 
-		g_free (private);
-		doc->private = NULL;
+		g_free (priv);
+		doc->priv = NULL;
 	}
 
 	if (doc->name) {
@@ -400,7 +400,7 @@ sp_document_width (SPDocument * document)
 {
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
-	g_return_val_if_fail (document->private != NULL, 0.0);
+	g_return_val_if_fail (document->priv != NULL, 0.0);
 	g_return_val_if_fail (document->root != NULL, 0.0);
 
 	return SP_ROOT (document->root)->width.computed / 1.25;
@@ -411,7 +411,7 @@ sp_document_height (SPDocument * document)
 {
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
-	g_return_val_if_fail (document->private != NULL, 0.0);
+	g_return_val_if_fail (document->priv != NULL, 0.0);
 	g_return_val_if_fail (document->root != NULL, 0.0);
 
 	return SP_ROOT (document->root)->height.computed / 1.25;
@@ -506,17 +506,17 @@ sp_document_namedview (SPDocument * document, const gchar * id)
 void
 sp_document_def_id (SPDocument * document, const gchar * id, SPObject * object)
 {
-	g_assert (g_hash_table_lookup (document->private->iddef, id) == NULL);
+	g_assert (g_hash_table_lookup (document->priv->iddef, id) == NULL);
 
-	g_hash_table_insert (document->private->iddef, (gchar *) id, object);
+	g_hash_table_insert (document->priv->iddef, (gchar *) id, object);
 }
 
 void
 sp_document_undef_id (SPDocument * document, const gchar * id)
 {
-	g_assert (g_hash_table_lookup (document->private->iddef, id) != NULL);
+	g_assert (g_hash_table_lookup (document->priv->iddef, id) != NULL);
 
-	g_hash_table_remove (document->private->iddef, id);
+	g_hash_table_remove (document->priv->iddef, id);
 }
 
 SPObject *
@@ -526,7 +526,7 @@ sp_document_lookup_id (SPDocument *doc, const gchar *id)
 	g_return_val_if_fail (SP_IS_DOCUMENT (doc), NULL);
 	g_return_val_if_fail (id != NULL, NULL);
 
-	return g_hash_table_lookup (doc->private->iddef, id);
+	return g_hash_table_lookup (doc->priv->iddef, id);
 }
 
 /* Object modification root handler */
@@ -581,7 +581,7 @@ sp_document_idle_handler (gpointer data)
 
 #ifdef SP_DOCUMENT_DEBUG_UNDO
 	/* ------------------------- */
-	if (doc->private->actions) {
+	if (doc->priv->actions) {
 		static gboolean warn = TRUE;
 		if (warn) {
 			warn = sp_document_warn_undo_stack (doc);
@@ -665,7 +665,7 @@ sp_document_items_in_box (SPDocument *document, NRRectD *box)
 
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->private != NULL, NULL);
+	g_return_val_if_fail (document->priv != NULL, NULL);
 	g_return_val_if_fail (box != NULL, NULL);
 
 	group = SP_GROUP (document->root);
@@ -704,7 +704,7 @@ sp_document_partial_items_in_box (SPDocument *document, NRRectD *box)
 
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
-	g_return_val_if_fail (document->private != NULL, NULL);
+	g_return_val_if_fail (document->priv != NULL, NULL);
 	g_return_val_if_fail (box != NULL, NULL);
 
 	group = SP_GROUP (document->root);
@@ -742,10 +742,10 @@ sp_document_add_resource (SPDocument *document, const guchar *key, SPObject *obj
 	g_return_val_if_fail (object != NULL, FALSE);
 	g_return_val_if_fail (SP_IS_OBJECT (object), FALSE);
 
-	rlist = g_hash_table_lookup (document->private->resources, key);
+	rlist = g_hash_table_lookup (document->priv->resources, key);
 	g_return_val_if_fail (!g_slist_find (rlist, object), FALSE);
 	rlist = g_slist_prepend (rlist, object);
-	g_hash_table_insert (document->private->resources, (gpointer) key, rlist);
+	g_hash_table_insert (document->priv->resources, (gpointer) key, rlist);
 
 	return TRUE;
 }
@@ -762,11 +762,11 @@ sp_document_remove_resource (SPDocument *document, const guchar *key, SPObject *
 	g_return_val_if_fail (object != NULL, FALSE);
 	g_return_val_if_fail (SP_IS_OBJECT (object), FALSE);
 
-	rlist = g_hash_table_lookup (document->private->resources, key);
+	rlist = g_hash_table_lookup (document->priv->resources, key);
 	g_return_val_if_fail (rlist != NULL, FALSE);
 	g_return_val_if_fail (g_slist_find (rlist, object), FALSE);
 	rlist = g_slist_remove (rlist, object);
-	g_hash_table_insert (document->private->resources, (gpointer) key, rlist);
+	g_hash_table_insert (document->priv->resources, (gpointer) key, rlist);
 
 	return TRUE;
 }
@@ -779,7 +779,7 @@ sp_document_get_resource_list (SPDocument *document, const guchar *key)
 	g_return_val_if_fail (key != NULL, NULL);
 	g_return_val_if_fail (*key != '\0', NULL);
 
-	return g_hash_table_lookup (document->private->resources, key);
+	return g_hash_table_lookup (document->priv->resources, key);
 }
 
 /* Helpers */
@@ -874,7 +874,7 @@ sp_document_warn_undo_stack (SPDocument *doc)
 	gtk_widget_show (t);
 	gtk_box_pack_start (GTK_BOX (dlg->vbox), t, FALSE, FALSE, 8);
 
-	al = sp_action_print_pending_list (doc->private->actions);
+	al = sp_action_print_pending_list (doc->priv->actions);
 	while (al) {
 		gtk_text_set_point (GTK_TEXT (t), 0);
 		gtk_text_insert (GTK_TEXT (t), NULL, NULL, NULL, al->data, strlen (al->data));

@@ -52,37 +52,37 @@ sp_document_set_undo_sensitive (SPDocument *doc, gboolean sensitive)
 {
 	g_assert (doc != NULL);
 	g_assert (SP_IS_DOCUMENT (doc));
-	g_assert (doc->private != NULL);
+	g_assert (doc->priv != NULL);
 
-	doc->private->sensitive = sensitive;
+	doc->priv->sensitive = sensitive;
 }
 
 static void
-sp_document_private_done (SPDocument *doc, const guchar *key)
+sp_document_priv_done (SPDocument *doc, const guchar *key)
 {
 	g_assert (doc != NULL);
 	g_assert (SP_IS_DOCUMENT (doc));
-	g_assert (doc->private != NULL);
-	g_assert (doc->private->sensitive);
+	g_assert (doc->priv != NULL);
+	g_assert (doc->priv->sensitive);
 
 	/* Set modal undo key */
 	doc->actionkey = key;
 
-	g_assert (doc->private->redo == NULL);
+	g_assert (doc->priv->redo == NULL);
 
 	if (!sp_repr_attr (doc->rroot, "sodipodi:modified")) {
 		sp_repr_set_attr (doc->rroot, "sodipodi:modified", "true");
 	}
 
-	if (g_slist_length (doc->private->undo) >= MAX_UNDO) {
+	if (g_slist_length (doc->priv->undo) >= MAX_UNDO) {
 		GSList *last;
-		last = g_slist_last (doc->private->undo);
+		last = g_slist_last (doc->priv->undo);
 		sp_action_free_list ((SPAction *) last->data);
-		doc->private->undo = g_slist_remove (doc->private->undo, last->data);
+		doc->priv->undo = g_slist_remove (doc->priv->undo, last->data);
 	}
 
-	doc->private->undo = g_slist_prepend (doc->private->undo, doc->private->actions);
-	doc->private->actions = NULL;
+	doc->priv->undo = g_slist_prepend (doc->priv->undo, doc->priv->actions);
+	doc->priv->actions = NULL;
 }
 
 void
@@ -90,23 +90,23 @@ sp_document_done (SPDocument *doc)
 {
 	g_assert (doc != NULL);
 	g_assert (SP_IS_DOCUMENT (doc));
-	g_assert (doc->private != NULL);
-	g_assert (doc->private->sensitive);
+	g_assert (doc->priv != NULL);
+	g_assert (doc->priv->sensitive);
 
-	if (!doc->private->actions) return;
+	if (!doc->priv->actions) return;
 
-	sp_document_private_done (doc, NULL);
+	sp_document_priv_done (doc, NULL);
 }
 
 void
 sp_document_maybe_done (SPDocument *doc, const guchar *key)
 {
-	if (!doc->private->actions) return;
+	if (!doc->priv->actions) return;
 
-	if (key && doc->actionkey && !strcmp (key, doc->actionkey) && doc->private->undo) {
+	if (key && doc->actionkey && !strcmp (key, doc->actionkey) && doc->priv->undo) {
 		SPAction *last, *current;
-		current = doc->private->actions;
-		last = (SPAction *) doc->private->undo->data;
+		current = doc->priv->actions;
+		last = (SPAction *) doc->priv->undo->data;
 		while (last && current) {
 			if (current->type != last->type) break;
 			if ((current->type != SP_ACTION_CHGATTR) && (current->type != SP_ACTION_CHGCONTENT)) break;
@@ -116,8 +116,8 @@ sp_document_maybe_done (SPDocument *doc, const guchar *key)
 		}
 		if (!last && !current) {
 			/* Merge current into last */
-			current = doc->private->actions;
-			last = (SPAction *) doc->private->undo->data;
+			current = doc->priv->actions;
+			last = (SPAction *) doc->priv->undo->data;
 			while (last && current) {
 				switch (current->type) {
 				case SP_ACTION_CHGATTR:
@@ -141,13 +141,13 @@ sp_document_maybe_done (SPDocument *doc, const guchar *key)
 			if (!sp_repr_attr (doc->rroot, "sodipodi:modified")) {
 				sp_repr_set_attr (doc->rroot, "sodipodi:modified", "true");
 			}
-			sp_action_free_list (doc->private->actions);
-			doc->private->actions = NULL;
+			sp_action_free_list (doc->priv->actions);
+			doc->priv->actions = NULL;
 			return;
 		}
 	}
 
-	sp_document_private_done (doc, key);
+	sp_document_priv_done (doc, key);
 }
 
 void
@@ -157,23 +157,23 @@ sp_document_undo (SPDocument *doc)
 
 	g_assert (doc != NULL);
 	g_assert (SP_IS_DOCUMENT (doc));
-	g_assert (doc->private != NULL);
-	g_assert (doc->private->sensitive);
+	g_assert (doc->priv != NULL);
+	g_assert (doc->priv->sensitive);
 
 	/* Set modal undo key */
 	doc->actionkey = NULL;
 
-	if (doc->private->actions) {
+	if (doc->priv->actions) {
 		g_warning ("Document Undo: Last operation did not flush cache");
-		sp_action_print_list (doc->private->actions);
+		sp_action_print_list (doc->priv->actions);
 		return;
 	}
 
-	if (doc->private->undo == NULL) return;
+	if (doc->priv->undo == NULL) return;
 
 	/* Get last action list */
-	actions = (SPAction *) doc->private->undo->data;
-	doc->private->undo = g_slist_remove (doc->private->undo, actions);
+	actions = (SPAction *) doc->priv->undo->data;
+	doc->priv->undo = g_slist_remove (doc->priv->undo, actions);
 	/* Replay it */
 	sp_action_list_undo (doc, actions);
 	/* Reverse it */
@@ -186,7 +186,7 @@ sp_document_undo (SPDocument *doc)
 		reverse = a;
 	}
 	/* Prepend it to redo */
-	doc->private->redo = g_slist_prepend (doc->private->redo, reverse);
+	doc->priv->redo = g_slist_prepend (doc->priv->redo, reverse);
 }
 
 void
@@ -196,18 +196,18 @@ sp_document_redo (SPDocument *doc)
 
 	g_assert (doc != NULL);
 	g_assert (SP_IS_DOCUMENT (doc));
-	g_assert (doc->private != NULL);
-	g_assert (doc->private->sensitive);
-	g_assert (doc->private->actions == NULL);
+	g_assert (doc->priv != NULL);
+	g_assert (doc->priv->sensitive);
+	g_assert (doc->priv->actions == NULL);
 
 	/* Set modal undo key */
 	doc->actionkey = NULL;
 
-	if (doc->private->redo == NULL) return;
+	if (doc->priv->redo == NULL) return;
 
 	/* Get last action list */
-	actions = (SPAction *) doc->private->redo->data;
-	doc->private->redo = g_slist_remove (doc->private->redo, actions);
+	actions = (SPAction *) doc->priv->redo->data;
+	doc->priv->redo = g_slist_remove (doc->priv->redo, actions);
 	/* Replay it */
 	sp_action_list_redo (doc, actions);
 	/* Reverse it */
@@ -220,7 +220,7 @@ sp_document_redo (SPDocument *doc)
 		reverse = a;
 	}
 	/* Prepend it to undo */
-	doc->private->undo = g_slist_prepend (doc->private->undo, reverse);
+	doc->priv->undo = g_slist_prepend (doc->priv->undo, reverse);
 }
 
 /*
@@ -236,7 +236,7 @@ sp_document_child_added (SPDocument *doc, SPObject *object, SPRepr *child, SPRep
 	g_assert (SP_IS_OBJECT (object));
 	g_assert (child != NULL);
 
-	if (doc->private->sensitive) {
+	if (doc->priv->sensitive) {
 		SPAction *action;
 		const guchar *refid;
 
@@ -247,8 +247,8 @@ sp_document_child_added (SPDocument *doc, SPObject *object, SPRepr *child, SPRep
 		refid = (ref) ? sp_repr_attr (ref, "id") : NULL;
 		action->act.add.ref = (refid) ? g_strdup (refid) : NULL;
 
-		action->next = doc->private->actions;
-		doc->private->actions = action;
+		action->next = doc->priv->actions;
+		doc->priv->actions = action;
 	}
 }
 
@@ -265,7 +265,7 @@ sp_document_child_removed (SPDocument *doc, SPObject *object, SPRepr *child, SPR
 	g_assert (SP_IS_OBJECT (object));
 	g_assert (child != NULL);
 
-	if (doc->private->sensitive) {
+	if (doc->priv->sensitive) {
 		SPAction *action;
 		const guchar *refid;
 
@@ -276,8 +276,8 @@ sp_document_child_removed (SPDocument *doc, SPObject *object, SPRepr *child, SPR
 		refid = (ref) ? sp_repr_attr (ref, "id") : NULL;
 		action->act.del.ref = (refid) ? g_strdup (refid) : NULL;
 
-		action->next = doc->private->actions;
-		doc->private->actions = action;
+		action->next = doc->priv->actions;
+		doc->priv->actions = action;
 	}
 }
 
@@ -292,7 +292,7 @@ sp_document_attr_changed (SPDocument *doc, SPObject *object, const guchar *key, 
 	g_assert (SP_IS_OBJECT (object));
 	g_assert (key != NULL);
 
-	if (doc->private->sensitive) {
+	if (doc->priv->sensitive) {
 		SPAction *action;
 
 		sp_document_clear_redo (doc);
@@ -302,8 +302,8 @@ sp_document_attr_changed (SPDocument *doc, SPObject *object, const guchar *key, 
 		if (oldval) action->act.chgattr.oldval = g_strdup (oldval);
 		if (newval) action->act.chgattr.newval = g_strdup (newval);
 
-		action->next = doc->private->actions;
-		doc->private->actions = action;
+		action->next = doc->priv->actions;
+		doc->priv->actions = action;
 	}
 }
 
@@ -317,7 +317,7 @@ sp_document_content_changed (SPDocument *doc, SPObject *object, const guchar *ol
 	g_assert (SP_IS_DOCUMENT (doc));
 	g_assert (SP_IS_OBJECT (object));
 
-	if (doc->private->sensitive) {
+	if (doc->priv->sensitive) {
 		SPAction *action;
 
 		sp_document_clear_redo (doc);
@@ -326,8 +326,8 @@ sp_document_content_changed (SPDocument *doc, SPObject *object, const guchar *ol
 		if (oldcontent) action->act.chgcontent.oldval = g_strdup (oldcontent);
 		if (newcontent) action->act.chgcontent.newval = g_strdup (newcontent);
 
-		action->next = doc->private->actions;
-		doc->private->actions = action;
+		action->next = doc->priv->actions;
+		doc->priv->actions = action;
 	}
 
 }
@@ -343,7 +343,7 @@ sp_document_order_changed (SPDocument *doc, SPObject *object, SPRepr *child, SPR
 	g_assert (SP_IS_OBJECT (object));
 	g_assert (child != NULL);
 
-	if (doc->private->sensitive) {
+	if (doc->priv->sensitive) {
 		SPAction *action;
 		const guchar *id;
 
@@ -357,18 +357,18 @@ sp_document_order_changed (SPDocument *doc, SPObject *object, SPRepr *child, SPR
 		id = (newref) ? sp_repr_attr (newref, "id") : NULL;
 		if (id) action->act.chgorder.newref = g_strdup (id);
 
-		action->next = doc->private->actions;
-		doc->private->actions = action;
+		action->next = doc->priv->actions;
+		doc->priv->actions = action;
 	}
 }
 
 void
 sp_document_clear_undo (SPDocument *doc)
 {
-	while (doc->private->undo) {
+	while (doc->priv->undo) {
 		SPAction *actions;
-		actions = (SPAction *) doc->private->undo->data;
-		doc->private->undo = g_slist_remove (doc->private->undo, actions);
+		actions = (SPAction *) doc->priv->undo->data;
+		doc->priv->undo = g_slist_remove (doc->priv->undo, actions);
 		sp_action_free_list (actions);
 	}
 }
@@ -376,10 +376,10 @@ sp_document_clear_undo (SPDocument *doc)
 void
 sp_document_clear_redo (SPDocument *doc)
 {
-	while (doc->private->redo) {
+	while (doc->priv->redo) {
 		SPAction *actions;
-		actions = (SPAction *) doc->private->redo->data;
-		doc->private->redo = g_slist_remove (doc->private->redo, actions);
+		actions = (SPAction *) doc->priv->redo->data;
+		doc->priv->redo = g_slist_remove (doc->priv->redo, actions);
 		sp_action_free_list (actions);
 	}
 }
