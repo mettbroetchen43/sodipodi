@@ -135,33 +135,55 @@ sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	}
 }
 
+#define RGBA_R(v) ((v) >> 24)
+#define RGBA_G(v) (((v) >> 16) & 0xff)
+#define RGBA_B(v) (((v) >> 8) & 0xff)
+#define RGBA_A(v) ((v) & 0xff)
+#define COMPOSE(b,f,a) (((255 - (a)) * b + (f * a) + 127) / 255)
+
 static void
-dot (GnomeCanvasBuf * buf, guint32 color, gint x, gint y)
+sp_grid_hline (GnomeCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
 {
-	guchar * p;
-	guint alpha, tmp;
-	guint bg_r, fg_r, bg_g, fg_g, bg_b, fg_b;
+	if ((y >= buf->rect.y0) && (y < buf->rect.y1)) {
+		guint r, g, b, a;
+		gint x0, x1, x;
+		guchar *p;
+		r = RGBA_R (rgba);
+		g = RGBA_G (rgba);
+		b = RGBA_B (rgba);
+		a = RGBA_A (rgba);
+		x0 = MAX (buf->rect.x0, xs);
+		x1 = MIN (buf->rect.x1, xe + 1);
+		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x0 - buf->rect.x0) * 3;
+		for (x = x0; x < x1; x++) {
+			p[0] = COMPOSE (p[0], r, a);
+			p[1] = COMPOSE (p[1], g, a);
+			p[2] = COMPOSE (p[2], b, a);
+			p += 3;
+		}
+	}
+}
 
-	if ((x >= buf->rect.x0) &&
-	    (x < buf->rect.x1) &&
-	    (y >= buf->rect.y0) &&
-	    (y < buf->rect.y1)) {
-		fg_r = (color >> 24) & 0xff;
-		fg_g = (color >> 16) & 0xff;
-		fg_b = (color >> 8) & 0xff;
-		alpha = color & 0xff;
-
-		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x - buf->rect.x0) * 3;
-
-		bg_r = *p;
-		tmp = (fg_r - bg_r) * alpha;
-		*p++ = bg_r + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		bg_g = *p;
-		tmp = (fg_g - bg_g) * alpha;
-		*p++ = bg_g + ((tmp + (tmp >> 8) + 0x80) >> 8);
-		bg_b = *p;
-		tmp = (fg_b - bg_b) * alpha;
-		*p++ = bg_b + ((tmp + (tmp >> 8) + 0x80) >> 8);
+static void
+sp_grid_vline (GnomeCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
+{
+	if ((x >= buf->rect.x0) && (x < buf->rect.x1)) {
+		guint r, g, b, a;
+		gint y0, y1, y;
+		guchar *p;
+		r = RGBA_R (rgba);
+		g = RGBA_G (rgba);
+		b = RGBA_B (rgba);
+		a = RGBA_A (rgba);
+		y0 = MAX (buf->rect.y0, ys);
+		y1 = MIN (buf->rect.y1, ye + 1);
+		p = buf->buf + (y0 - buf->rect.y0) * buf->buf_rowstride + (x - buf->rect.x0) * 3;
+		for (y = y0; y < y1; y++) {
+			p[0] = COMPOSE (p[0], r, a);
+			p[1] = COMPOSE (p[1], g, a);
+			p[2] = COMPOSE (p[2], b, a);
+			p += buf->buf_rowstride;
+		}
 	}
 }
 
@@ -176,15 +198,19 @@ sp_cgrid_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 	gnome_canvas_buf_ensure_buf (buf);
 	buf->is_bg = FALSE;
 
-	syg = ceil ((buf->rect.y0 - 1.0 - grid->ow.y) / grid->sw.y) * grid->sw.y + grid->ow.y;
-	sxg = ceil ((buf->rect.x0 - 1.0 - grid->ow.x) / grid->sw.x) * grid->sw.x + grid->ow.x;
+	sxg = floor ((buf->rect.x0 - grid->ow.x) / grid->sw.x) * grid->sw.x + grid->ow.x;
+	syg = floor ((buf->rect.y0 - grid->ow.y) / grid->sw.y) * grid->sw.y + grid->ow.y;
 
 	for (y = syg; y < buf->rect.y1; y += grid->sw.y) {
+		gint y0, y1;
+		y0 = (gint) floor (y + 0.5);
+		y1 = (gint) floor (y + grid->sw.y + 0.5);
+		sp_grid_hline (buf, y0, buf->rect.x0, buf->rect.x1 - 1, grid->color);
+
 		for (x = sxg; x < buf->rect.x1; x += grid->sw.x) {
-			gint ix, iy;
-			ix = (int) (x + 0.5);
-			iy = (int) (y + 0.5);
-			dot (buf, grid->color, ix, iy);
+			gint ix;
+			ix = (gint) floor (x + 0.5);
+			sp_grid_vline (buf, ix, y0 + 1, y1 - 1, grid->color);
 		}
 	}
 }
@@ -207,8 +233,8 @@ sp_cgrid_update (GnomeCanvasItem *item, double * affine, ArtSVP * clip_path, int
 	grid->sw.y -= affine[5];
 	grid->sw.x = fabs (grid->sw.x);
 	grid->sw.y = fabs (grid->sw.y);
-	while (grid->sw.x < 8.0) grid->sw.x *= 5.0;
-	while (grid->sw.y < 8.0) grid->sw.y *= 5.0;
+	while (grid->sw.x < 8.0) grid->sw.x *= 10.0;
+	while (grid->sw.y < 8.0) grid->sw.y *= 10.0;
 
 	gnome_canvas_request_redraw (item->canvas,
 				     -1000000, -1000000,

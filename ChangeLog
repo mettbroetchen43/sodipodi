@@ -1,5 +1,9 @@
 2002-02-08  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/helper/canvas-grid.c (sp_grid_hline): Use helpers from ctrlrect
+	(sp_grid_vline): Ditto
+	(sp_cgrid_render): Render real grid instead of dots
+
 	* src/xml/repr-util.c (sp_repr_get_boolean): Saner conveninence method
 	(sp_repr_get_int): Ditto
 	(sp_repr_get_double): Ditto
