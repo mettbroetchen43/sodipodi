@@ -24,6 +24,7 @@ static void sp_objectgroup_build (SPObject * object, SPDocument * document, SPRe
 static void sp_objectgroup_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_objectgroup_remove_child (SPObject * object, SPRepr * child);
 static void sp_objectgroup_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+static SPRepr *sp_objectgroup_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObject *sp_objectgroup_get_le_child_by_repr (SPObjectGroup *og, SPRepr *ref);
 
@@ -64,6 +65,7 @@ sp_objectgroup_class_init (SPObjectGroupClass *klass)
 	sp_object_class->child_added = sp_objectgroup_child_added;
 	sp_object_class->remove_child = sp_objectgroup_remove_child;
 	sp_object_class->order_changed = sp_objectgroup_order_changed;
+	sp_object_class->write = sp_objectgroup_write;
 }
 
 static void
@@ -182,6 +184,40 @@ sp_objectgroup_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRe
 		(onew) ? onew->next : og->children = sp_object_attach_reref (object, ochild, (onew) ? onew->next : og->children);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	}
+}
+
+static SPRepr *
+sp_objectgroup_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPObjectGroup *group;
+	SPObject *child;
+	SPRepr *crepr;
+
+	group = SP_OBJECTGROUP (object);
+
+	if (flags & SP_OBJECT_WRITE_BUILD) {
+		GSList *l;
+		if (!repr) repr = sp_repr_new ("g");
+		l = NULL;
+		for (child = group->children; child != NULL; child = child->next) {
+			crepr = sp_object_invoke_write (child, NULL, flags);
+			if (crepr) l = g_slist_prepend (l, crepr);
+		}
+		while (l) {
+			sp_repr_add_child (repr, (SPRepr *) l->data, NULL);
+			sp_repr_unref ((SPRepr *) l->data);
+			l = g_slist_remove (l, l->data);
+		}
+	} else {
+		for (child = group->children; child != NULL; child = child->next) {
+			sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
+		}
+	}
+
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
+
+	return repr;
 }
 
 static SPObject *

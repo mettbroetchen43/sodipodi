@@ -152,8 +152,6 @@ sp_chars_show (SPItem *item, NRArena *arena)
 
 	nr_arena_glyphs_group_set_style (NR_ARENA_GLYPHS_GROUP (arenaitem), SP_OBJECT_STYLE (item));
 
-	g_print ("Chars show\n");
-
 	for (el = chars->elements; el != NULL; el = el->next) {
 		const ArtBpath *bpath;
 		SPCurve *curve;
@@ -331,11 +329,7 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 			rgba = nr_pixelstore_16K_new (FALSE, 0x00000000);
 			for (y = ibox.y0; y < ibox.y1; y+= 64) {
 				for (x = ibox.x0; x < ibox.x1; x+= 64) {
-#if 0
-					painter->fill (painter, rgba, x, ibox.y1 + ibox.y0 - y - 64, 64, 64, 4 * 64);
-#else
 					painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
-#endif
 					gnome_print_gsave (ctx);
 					gnome_print_translate (ctx, x, y + 64);
 					gnome_print_scale (ctx, 64, -64);

@@ -1,3 +1,14 @@
+2002-09-16  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/png-write.c (sp_png_get_block_stripe): Helper
+	(sp_png_write_rgba): Use striped writer
+	(sp_png_write_rgba_striped): New method
+
+	* src/dialogs/export.c (sp_export_get_rows): Renderer
+	(sp_export_do_export): Use striped exporter
+
+	* src/file.c: Added <time.h> - Thanks to Mastake for finding it
+
 2002-09-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/display/nr-arena-image.c (nr_arena_image_render): Use libnr

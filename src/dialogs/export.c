@@ -26,14 +26,6 @@
 #include "../selection.h"
 #include "export.h"
 
-#ifdef ENABLE_RBUF
-#undef ENABLE_RBUF
-#endif
-
-#ifdef ENABLE_RBUF
-#include <libgnomeprint/gnome-print-pixbuf.h>
-#endif
-
 #define SP_EXPORT_MIN_SIZE 16.0
 
 static GladeXML * xml = NULL;
@@ -111,35 +103,59 @@ void sp_export_dialog (void)
 		gtk_widget_hide (dialog);
 }
 
-#ifdef ENABLE_RBUF
-static void
-sp_export_showpixbuf (GnomePrintPixbuf * gpb, GdkPixbuf * pb, gint pagenum, gpointer data)
+#include <display/nr-arena-item.h>
+#include <display/nr-arena.h>
+
+struct SPEBP {
+	int width, height;
+	NRArenaItem *root;
+	NRBuffer *b;
+};
+
+static int
+sp_export_get_rows (const unsigned char **rows, int row, int num_rows, void *data)
 {
-	ArtPixBuf * apb;
+	struct SPEBP *ebp;
+	NRRectL bbox;
+	NRGC gc;
+	int r;
 
-	apb = art_pixbuf_new_const_rgba (gdk_pixbuf_get_pixels (pb),
-		gdk_pixbuf_get_width (pb),
-		gdk_pixbuf_get_height (pb),
-		gdk_pixbuf_get_rowstride (pb));
+	ebp = (struct SPEBP *) data;
 
-	sp_png_write_rgba ((gchar *) data, apb);
+	num_rows = MIN (num_rows, 64);
+	num_rows = MIN (num_rows, ebp->height - row);
 
-	art_pixbuf_free (apb);
+	g_print ("Rendering %d + %d rows\n", row, num_rows);
+
+	/* Set area of interest */
+	bbox.x0 = 0;
+	bbox.y0 = row;
+	bbox.x1 = ebp->width;
+	bbox.y1 = row + num_rows;
+	/* Update to renderable state */
+	art_affine_identity (gc.affine);
+	nr_arena_item_invoke_update (ebp->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
+
+	for (r = 0; r < num_rows; r++) {
+		memset (ebp->b->px + r * ebp->b->rs, 0x0, 4 * ebp->width);
+	}
+	/* Render */
+	nr_arena_item_invoke_render (ebp->root, &bbox, ebp->b);
+
+	for (r = 0; r < num_rows; r++) {
+		rows[r] = ebp->b->px + r * ebp->b->rs;
+	}
+
+	return num_rows;
 }
-#endif
 
 static void
-sp_export_do_export (SPDesktop * desktop, gchar * filename,
-	gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint width, gint height)
+sp_export_do_export (SPDesktop *desktop, gchar *filename, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint width, gint height)
 {
-	SPDocument * doc;
-#ifdef ENABLE_RBUF
-	GnomePrintContext * pc;
-#else
-	ArtPixBuf * pixbuf;
-	art_u8 * pixels;
+	SPDocument *doc;
 	gdouble affine[6], t;
-#endif
+	NRArena *arena;
+	struct SPEBP ebp;
 
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (filename != NULL);
@@ -149,27 +165,6 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	doc = SP_DT_DOCUMENT (desktop);
 
 	sp_document_ensure_up_to_date (doc);
-
-#ifdef ENABLE_RBUF
-
-	pc = gnome_print_pixbuf_new (x0, y0, x1, y1,
-		width * 72.0 / (x1 - x0), height * 72.0 / (y1 - y0),
-		TRUE);
-
-	gtk_signal_connect (GTK_OBJECT (pc), "showpixbuf",
-		GTK_SIGNAL_FUNC (sp_export_showpixbuf), filename);
-
-	gnome_print_beginpage (pc, "Sodipodi");
-	sp_item_print (SP_ITEM (sp_document_root (doc)), pc);
-	gnome_print_showpage (pc);
-
-	gtk_object_destroy (GTK_OBJECT (pc));
-
-#else /* ENABLE_RBUF */
-
-	pixels = art_new (art_u8, width * height * 4);
-	memset (pixels, 0, width * height * 4);
-	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
 
 	/* Go to document coordinates */
 	t = y0;
@@ -201,13 +196,26 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 
 	SP_PRINT_TRANSFORM ("SVG2PNG", affine);
 
-	sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
+	ebp.width = width;
+	ebp.height = height;
+	/* Get RGBA buffer */
+	ebp.b = nr_buffer_get (NR_IMAGE_R8G8B8A8, width, 64, TRUE, FALSE);
 
-	sp_png_write_rgba (filename, pixbuf);
+	/* Create new arena */
+	arena = gtk_type_new (NR_TYPE_ARENA);
+	/* Create ArenaItem and set transform */
+	ebp.root = sp_item_show (SP_ITEM (sp_document_root (doc)), arena);
+	nr_arena_item_set_transform (ebp.root, affine);
 
-	art_pixbuf_free (pixbuf);
 
-#endif /* ENABLE_RBUF */
+	sp_png_write_rgba_striped (filename, width, height, sp_export_get_rows, &ebp);
+
+	/* Free Arena and ArenaItem */
+	sp_item_hide (SP_ITEM (sp_document_root (doc)), arena);
+	gtk_object_unref (GTK_OBJECT (arena));
+
+	/* Release RGBA buffer */
+	nr_buffer_free (ebp.b);
 }
 
 void

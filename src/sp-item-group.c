@@ -369,7 +369,7 @@ sp_group_write (SPObject *object, SPRepr *repr, guint flags)
 	}
 
 	if (((SPObjectClass *) (parent_class))->write)
-		(* ((SPObjectClass *) (parent_class))->write) (object, repr, flags);
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
 
 	return repr;
 }

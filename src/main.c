@@ -466,7 +466,7 @@ sp_do_export_png (SPDocument *doc)
 
 		sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
 
-		sp_png_write_rgba (sp_export_png, pixbuf);
+		sp_png_write_rgba (sp_export_png, pixbuf->pixels, pixbuf->width, pixbuf->height, pixbuf->rowstride);
 
 		art_pixbuf_free (pixbuf);
 	} else {

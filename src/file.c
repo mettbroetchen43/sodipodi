@@ -16,7 +16,7 @@
 #include <config.h>
 
 #include <string.h>
-
+#include <time.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -430,7 +430,7 @@ file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 
 	sp_item_paint (SP_ITEM (sp_document_root (doc)), pixbuf, affine);
 
-	sp_png_write_rgba (filename, pixbuf);
+	sp_png_write_rgba (filename, pixbuf->pixels, pixbuf->width, pixbuf->height, pixbuf->rowstride);
 
 	art_pixbuf_free (pixbuf);
 #if 0

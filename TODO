@@ -2,6 +2,9 @@
 
 TODO for 0.26
 
+- Cursor placement and Backspace in text context (2 days)
+- Save as plain SVG (1 day)
+- Recently opened file list (DONE)
 - Cleanups
 - Speedups
 
@@ -61,4 +64,4 @@ Done
 * Aligning
 
 Lauris Kaplinski
-<lauris@ximian.com>
+<lauris@kaplinski.com>

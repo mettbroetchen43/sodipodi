@@ -150,6 +150,9 @@ sp_anchor_read_attr (SPObject *object, const gchar *key)
 	}
 }
 
+#define COPY_ATTR(rd,rs,key) sp_repr_set_attr ((rd), (key), sp_repr_attr (rs, key));
+
+
 static SPRepr *
 sp_anchor_write (SPObject *object, SPRepr *repr, guint flags)
 {
@@ -164,13 +167,13 @@ sp_anchor_write (SPObject *object, SPRepr *repr, guint flags)
 	sp_repr_set_attr (repr, "xlink:href", anchor->href);
 
 	if (repr != SP_OBJECT_REPR (object)) {
-		sp_repr_set_attr (repr, "xlink:type", sp_repr_attr (object->repr, "xlink:type"));
-		sp_repr_set_attr (repr, "xlink:role", sp_repr_attr (object->repr, "xlink:role"));
-		sp_repr_set_attr (repr, "xlink:arcrole", sp_repr_attr (object->repr, "xlink:arcrole"));
-		sp_repr_set_attr (repr, "xlink:title", sp_repr_attr (object->repr, "xlink:title"));
-		sp_repr_set_attr (repr, "xlink:show", sp_repr_attr (object->repr, "xlink:show"));
-		sp_repr_set_attr (repr, "xlink:actuate", sp_repr_attr (object->repr, "xlink:actuate"));
-		sp_repr_set_attr (repr, "target", sp_repr_attr (object->repr, "target"));
+		COPY_ATTR (repr, object->repr, "xlink:type");
+		COPY_ATTR (repr, object->repr, "xlink:role");
+		COPY_ATTR (repr, object->repr, "xlink:arcrole");
+		COPY_ATTR (repr, object->repr, "xlink:title");
+		COPY_ATTR (repr, object->repr, "xlink:show");
+		COPY_ATTR (repr, object->repr, "xlink:actuate");
+		COPY_ATTR (repr, object->repr, "target");
 	}
 
 	if (((SPObjectClass *) (parent_class))->write)
@@ -203,8 +206,6 @@ sp_anchor_event (SPItem *item, SPEvent *event)
 	GdkCursor *cursor;
 
 	anchor = SP_ANCHOR (item);
-
-	g_print ("Anchor event\n");
 
 	switch (event->type) {
 	case SP_EVENT_ACTIVATE:
