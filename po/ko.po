@@ -1,0 +1,2446 @@
+# sodipodi ko.po
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Seongchong Park <spark@tapl01.kaist.ac.kr>, 2004-01-17 
+# Based on Japanese po file written by Mitsuru Oka <oka326@parkcity.ne.jp
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: sodipodi 0.33\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-11-30 18:52+0200\n"
+"PO-Revision-Date: 2004-01-17 18:13+0900\n"
+"Last-Translator: Seongchong Park <spark@tapl01.kaist.ac.kr>\n"
+"Language-Team: korean <ko@li.org>>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: sodipodi.desktop.in.h:1
+msgid "SVG Vector Illustrator"
+msgstr "SVG 벡터 일러스트래이터"
+
+#. Create window
+#: sodipodi.desktop.in.h:2 src/toolbox.c:121 src/toolbox.c:142
+msgid "Sodipodi"
+msgstr "Sodipodi"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "sodipodi-svg-doc 팩토리를 작성할 수 없습니다"
+
+#: src/arc-context.c:303
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr "%s x %s 호를 그리는 중"
+
+#: src/desktop.c:778
+msgid "Zoom drawing if window size changes"
+msgstr "창 크기 변경시 이미지 확대율 조정"
+
+#: src/desktop.c:858
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi: %s: %s: %d"
+
+#: src/desktop.c:987
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "문서 %s의 변경사항을 저장하지 않았습니다. 저장하시겠습니까?"
+
+#. Page page
+#: src/desktop.c:1535 src/dialogs/align.c:288
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
+#: src/dialogs/export.c:137 src/verbs.c:453
+msgid "Page"
+msgstr "쪽"
+
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/verbs.c:454
+msgid "Drawing"
+msgstr "그리기"
+
+#. Selection submenu
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
+msgid "Selection"
+msgstr "선택"
+
+#: src/dialogs/align.c:155 src/toolbox.c:449
+msgid "Align objects"
+msgstr "개체 배치"
+
+#: src/dialogs/align.c:174
+msgid "Right side of aligned objects to left side of anchor"
+msgstr "각 개체 오른쪽 끝을 마스터 개체 왼쪽 끝 앵커에 맞춤"
+
+#: src/dialogs/align.c:177
+msgid "Left side of aligned objects to left side of anchor"
+msgstr "각 개체 왼쪽 끝을 마스터 개체 왼쪽 끝 앵커에 맞춤"
+
+#: src/dialogs/align.c:180
+msgid "Center horizontally"
+msgstr "수평 방향으로 중심에 배치"
+
+#: src/dialogs/align.c:183
+msgid "Right side of aligned objects to right side of anchor"
+msgstr "각 개체 오른쪽 끝을 마스터 개체 오른쪽 끝 앵커에 맞춤"
+
+#: src/dialogs/align.c:186
+msgid "Left side of aligned objects to right side of anchor"
+msgstr "각 개체 왼쪽 끝을 마스터 개체 오른쪽 끝 앵커에 맞춤"
+
+#: src/dialogs/align.c:190
+msgid "Bottom of aligned objects to top of anchor"
+msgstr "각 개체 하단을 마스터 개체 상단 앵커에 맞춤"
+
+#: src/dialogs/align.c:193
+msgid "Top of aligned objects to top of anchor"
+msgstr "각 개체 상단을 마스터 개체 상단 앵커에 맞춤"
+
+#: src/dialogs/align.c:196
+msgid "Center vertically"
+msgstr "수직 방향으로 중심에 배치"
+
+#: src/dialogs/align.c:199
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr "각 개체 하단을 마스터 개체 하단 앵커에 맞춤"
+
+#: src/dialogs/align.c:202
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "각 개체 상단을 마스터 개체 하단 앵커에 맞춤"
+
+#: src/dialogs/align.c:205
+msgid "Align"
+msgstr "배치"
+
+#: src/dialogs/align.c:223
+msgid "Distribute left sides of objects at even distances"
+msgstr "개체 왼쪽 끝 간격을 동일하게 배분"
+
+#: src/dialogs/align.c:226
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr "개체 중앙 간격을 수평 방향에 대해 동일하게 배분"
+
+#: src/dialogs/align.c:229
+msgid "Distribute right sides of objects at even distances"
+msgstr "개체 오른쪽 끝 간격을 동일하게 배분"
+
+#: src/dialogs/align.c:232
+msgid "Distribute horizontal distance between objects equally"
+msgstr "개체 간격을 수평 방향에 대해 동일하게 배분"
+
+#: src/dialogs/align.c:236
+msgid "Distribute top sides of objects at even distances"
+msgstr "개체 상단 간격을 동일하게 배분"
+
+#: src/dialogs/align.c:239
+msgid "Distribute centres of objects at even distances vertically"
+msgstr "개체 중앙 간격을 수직 방향에 대해 동일하게 배분"
+
+#: src/dialogs/align.c:242
+msgid "Distribute bottom sides of objects at even distances"
+msgstr "개체 하단 간격을 동일하게 배분"
+
+#: src/dialogs/align.c:245
+msgid "Distribute vertical distance between objects equally"
+msgstr "개체 간격을 수직 방향에 대해 동일하게 배분"
+
+#: src/dialogs/align.c:248
+msgid "Distribute"
+msgstr "배분"
+
+#: src/dialogs/align.c:284
+msgid "Last selected"
+msgstr "최근 선택"
+
+#: src/dialogs/align.c:285
+msgid "First selected"
+msgstr "처음 선택"
+
+#: src/dialogs/align.c:286
+msgid "Biggest item"
+msgstr "최대 요소"
+
+#: src/dialogs/align.c:287
+msgid "Smallest item"
+msgstr "최소 요소"
+
+#: src/dialogs/desktop-properties.c:195
+msgid "Desktop settings"
+msgstr "데스크탑 설정"
+
+#. Grid settings
+#. Notebook tab
+#: src/dialogs/desktop-properties.c:204
+msgid "Grid"
+msgstr "격자선"
+
+#: src/dialogs/desktop-properties.c:217
+msgid "Show grid"
+msgstr "격자선 표시"
+
+#: src/dialogs/desktop-properties.c:218
+msgid "Snap to grid"
+msgstr "격자선에 스냅"
+
+#: src/dialogs/desktop-properties.c:221
+msgid "Horizontal lines"
+msgstr "수평선"
+
+#: src/dialogs/desktop-properties.c:222
+msgid "Vertical lines"
+msgstr "수직선"
+
+#: src/dialogs/desktop-properties.c:224
+msgid "Iso grid"
+msgstr "Iso 격자선"
+
+#: src/dialogs/desktop-properties.c:225
+msgid "Hex grid"
+msgstr "Hex 격자선"
+
+#: src/dialogs/desktop-properties.c:231
+msgid "Grid units:"
+msgstr "격자선 단위:"
+
+#: src/dialogs/desktop-properties.c:233
+msgid "Origin X:"
+msgstr "시작점 X 좌표:"
+
+#: src/dialogs/desktop-properties.c:235
+msgid "Origin Y:"
+msgstr "시작점 Y 좌표:"
+
+#: src/dialogs/desktop-properties.c:238
+msgid "Spacing X:"
+msgstr "X 간격:"
+
+#: src/dialogs/desktop-properties.c:240
+msgid "Spacing Y:"
+msgstr "Y 간격:"
+
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
+msgid "Snap units:"
+msgstr "스냅 단위:"
+
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
+msgid "Snap distance:"
+msgstr "스냅 거리:"
+
+#: src/dialogs/desktop-properties.c:249
+msgid "Grid color:"
+msgstr "격자선 색:"
+
+#: src/dialogs/desktop-properties.c:250
+msgid "Grid color"
+msgstr "격자선 색"
+
+#. Guidelines page
+#: src/dialogs/desktop-properties.c:254
+msgid "Guides"
+msgstr "안내선"
+
+#: src/dialogs/desktop-properties.c:265
+msgid "Show guides"
+msgstr "안내선 표시"
+
+#: src/dialogs/desktop-properties.c:266
+msgid "Snap to guides"
+msgstr "안내선에 스냅"
+
+#: src/dialogs/desktop-properties.c:276
+msgid "Guides color:"
+msgstr "안내선 색:"
+
+#: src/dialogs/desktop-properties.c:277
+msgid "Guideline color"
+msgstr "안내선 색"
+
+#: src/dialogs/desktop-properties.c:279
+msgid "Highlight color:"
+msgstr "강조 색:"
+
+#: src/dialogs/desktop-properties.c:280
+msgid "Highlighted guideline color"
+msgstr "안내선 강조 색"
+
+#: src/dialogs/desktop-properties.c:295
+msgid "Show border"
+msgstr "경계선 표시"
+
+#: src/dialogs/desktop-properties.c:301
+msgid "Border on top of drawing"
+msgstr "그림 상단 경계"
+
+#: src/dialogs/desktop-properties.c:306
+msgid "Border color:"
+msgstr "경계 색:"
+
+#: src/dialogs/desktop-properties.c:307
+msgid "Page border color"
+msgstr "쪽 경계선 색"
+
+#: src/dialogs/desktop-properties.c:308
+msgid "Page color:"
+msgstr "쪽 바탕색:"
+
+#: src/dialogs/desktop-properties.c:309
+msgid "Page color"
+msgstr "쪽 바탕색"
+
+#: src/dialogs/desktop-properties.c:580
+msgid "Close"
+msgstr "닫기"
+
+#: src/dialogs/display-settings.c:88
+msgid "Display settings"
+msgstr "표시 설정"
+
+#. Rendering settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:96
+msgid "Rendering"
+msgstr "렌더링"
+
+#: src/dialogs/display-settings.c:108
+msgid "Oversample bitmaps:"
+msgstr "오버샘플 비트맵:"
+
+#: src/dialogs/display-settings.c:119 src/verbs.c:394
+msgid "None"
+msgstr "없음"
+
+#: src/dialogs/display-settings.c:123
+msgid "2x2"
+msgstr "2x2"
+
+#: src/dialogs/display-settings.c:127
+msgid "4x4"
+msgstr "4x4"
+
+#: src/dialogs/display-settings.c:131
+msgid "8x8"
+msgstr "8x8"
+
+#: src/dialogs/display-settings.c:135
+msgid "16x16"
+msgstr "16x16"
+
+#. Input settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:146
+msgid "Input"
+msgstr "입력"
+
+#: src/dialogs/display-settings.c:157
+msgid "Default cursor tolerance:"
+msgstr "커서 tolerance 기본값:"
+
+#: src/dialogs/document-properties.c:159
+msgid "Document settings"
+msgstr "문서 설정"
+
+#: src/dialogs/document-properties.c:180
+msgid "Paper size:"
+msgstr "용지 크기:"
+
+#: src/dialogs/document-properties.c:201
+msgid "Custom"
+msgstr "사용자 지정"
+
+#. Custom paper frame
+#: src/dialogs/document-properties.c:208
+msgid "Custom paper"
+msgstr "사용자 지정 용지"
+
+#. Unit selector
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
+#: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
+#: src/dialogs/transformation.c:494
+msgid "Units:"
+msgstr "단위:"
+
+#. Stroke width
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
+#: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
+#: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
+#: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
+#: src/dyna-draw-context.c:1082
+msgid "Width:"
+msgstr "폭:"
+
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
+#: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
+msgid "Height:"
+msgstr "높이:"
+
+#: src/dialogs/export.c:117
+msgid "Export bitmap"
+msgstr "비트맵 내보내기"
+
+#. Export area frame
+#: src/dialogs/export.c:126
+msgid "Export area"
+msgstr "지정 범위 내보내기"
+
+#: src/dialogs/export.c:159
+msgid "x0:"
+msgstr "x0:"
+
+#: src/dialogs/export.c:162
+msgid "x1:"
+msgstr "x1:"
+
+#: src/dialogs/export.c:168
+msgid "y0:"
+msgstr "y0:"
+
+#: src/dialogs/export.c:171
+msgid "y1:"
+msgstr "y1:"
+
+#. Bitmap size frame
+#: src/dialogs/export.c:180
+msgid "Bitmap size"
+msgstr "비트맵 크기"
+
+#: src/dialogs/export.c:189 src/dialogs/export.c:197
+msgid "pixels"
+msgstr "픽셀"
+
+#: src/dialogs/export.c:193 src/dialogs/export.c:201
+msgid "dpi"
+msgstr "dpi"
+
+#: src/dialogs/export.c:208
+msgid "Export png file"
+msgstr "PNG 파일 내보내기"
+
+#: src/dialogs/export.c:237 src/verbs.c:404
+msgid "Export"
+msgstr "내보내기"
+
+#: src/dialogs/fill-style.c:86
+msgid "Fill style"
+msgstr "채우기 스타일"
+
+#: src/dialogs/fill-style.c:121
+msgid "Fill Rule"
+msgstr "채우기 규칙"
+
+#: src/dialogs/fill-style.c:135
+msgid "nonzero"
+msgstr "nonzero"
+
+#: src/dialogs/fill-style.c:140
+msgid "evenodd"
+msgstr "evenodd"
+
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:281
+#: src/dialogs/item-properties.c:355 src/dialogs/item-properties.c:362
+msgid "ID"
+msgstr "ID"
+
+#: src/dialogs/item-properties.c:98
+msgid "Set ID"
+msgstr "ID를 설정"
+
+#: src/dialogs/item-properties.c:109
+msgid "Sensitive"
+msgstr ""
+
+#: src/dialogs/item-properties.c:114
+msgid "Visible"
+msgstr ""
+
+#: src/dialogs/item-properties.c:119
+msgid "Active"
+msgstr "활성화"
+
+#: src/dialogs/item-properties.c:124
+msgid "Printable"
+msgstr "인쇄 가능"
+
+#: src/dialogs/item-properties.c:135
+msgid "Opacity:"
+msgstr "반투명"
+
+#: src/dialogs/item-properties.c:154
+msgid "Transformation matrix"
+msgstr "변환 행렬"
+
+#: src/dialogs/item-properties.c:275
+msgid "Ref"
+msgstr "Ref"
+
+#: src/dialogs/item-properties.c:357
+msgid "ID invalid"
+msgstr "잘못된 ID"
+
+#: src/dialogs/item-properties.c:359
+msgid "ID exists"
+msgstr "중복된 ID"
+
+#: src/dialogs/item-properties.c:435 src/verbs.c:468
+msgid "Item properties"
+msgstr "아이템 속성"
+
+#: src/dialogs/object-attributes.c:34
+msgid "Href:"
+msgstr "Href:"
+
+#: src/dialogs/object-attributes.c:35
+msgid "Target:"
+msgstr "대상:"
+
+#: src/dialogs/object-attributes.c:36
+msgid "Type:"
+msgstr "종류:"
+
+#: src/dialogs/object-attributes.c:37
+msgid "Role:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:38
+msgid "Arcrole:"
+msgstr ""
+
+#: src/dialogs/object-attributes.c:39
+msgid "Title:"
+msgstr "제목:"
+
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:113
+msgid "Show:"
+msgstr "표시:"
+
+#: src/dialogs/object-attributes.c:41
+msgid "Actuate:"
+msgstr "활성화:"
+
+#: src/dialogs/object-attributes.c:46
+msgid "Sides:"
+msgstr "면:"
+
+#: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
+msgid "Center X:"
+msgstr "중심 X 좌표:"
+
+#: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
+msgid "Center Y:"
+msgstr "중심 Y 좌표:"
+
+#: src/dialogs/object-attributes.c:49
+msgid "R1:"
+msgstr "반경 1:"
+
+#: src/dialogs/object-attributes.c:50
+msgid "R2:"
+msgstr "반경 2:"
+
+#: src/dialogs/object-attributes.c:51
+msgid "ARG1:"
+msgstr "편각 1:"
+
+#: src/dialogs/object-attributes.c:52
+msgid "ARG2:"
+msgstr "편각 2:"
+
+#. Expansion
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:365
+msgid "Expansion:"
+msgstr "전개 계수:"
+
+#. Revolution
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:93
+#: src/spiral-context.c:353
+msgid "Revolution:"
+msgstr "권수:"
+
+#: src/dialogs/object-attributes.c:61
+msgid "Radius:"
+msgstr "반경:"
+
+#: src/dialogs/object-attributes.c:62
+msgid "Argument:"
+msgstr "편각:"
+
+#: src/dialogs/object-attributes.c:63
+msgid "T0:"
+msgstr "T0:"
+
+#: src/dialogs/object-attributes.c:68
+msgid "URL:"
+msgstr "URL:"
+
+#: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
+#: src/dialogs/object-properties.c:332
+msgid "X:"
+msgstr "X:"
+
+#: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
+#: src/dialogs/object-properties.c:344
+msgid "Y:"
+msgstr "Y:"
+
+#: src/dialogs/object-attributes.c:81
+msgid "RX:"
+msgstr "RX:"
+
+#: src/dialogs/object-attributes.c:82
+msgid "RY:"
+msgstr "RY:"
+
+#: src/dialogs/object-attributes.c:117
+#, c-format
+msgid "%s attributes"
+msgstr "%s의 속성"
+
+#: src/dialogs/object-properties.c:113
+msgid "Object style"
+msgstr "개체 스타일"
+
+#: src/dialogs/object-properties.c:128
+msgid "Fill"
+msgstr "채우기"
+
+#: src/dialogs/object-properties.c:142
+msgid "Stroke paint"
+msgstr "스트로크 채우기"
+
+#: src/dialogs/object-properties.c:156
+msgid "Stroke style"
+msgstr "스트로크 스타일"
+
+#: src/dialogs/object-properties.c:176
+msgid "Apply to:"
+msgstr "적용:"
+
+#: src/dialogs/object-properties.c:186
+msgid "Selected objects"
+msgstr "선택한 개체"
+
+#: src/dialogs/object-properties.c:189
+msgid "All shape tools"
+msgstr "모든 모양 도구"
+
+#: src/dialogs/object-properties.c:192
+msgid "Rectangle tool"
+msgstr "사각형 도구"
+
+#: src/dialogs/object-properties.c:195
+msgid "Arc tool"
+msgstr "호 도구"
+
+#: src/dialogs/object-properties.c:198
+msgid "Star tool"
+msgstr "별 도구"
+
+#: src/dialogs/object-properties.c:201
+msgid "Spiral tool"
+msgstr "나선 도구"
+
+#: src/dialogs/object-properties.c:204
+msgid "Freehand and pen"
+msgstr "프리핸드와 펜"
+
+#: src/dialogs/object-properties.c:207
+msgid "Calligraphic line"
+msgstr "칼리그래픽 선"
+
+#: src/dialogs/object-properties.c:210 src/verbs.c:444
+msgid "Text"
+msgstr "텍스트"
+
+#: src/dialogs/object-properties.c:289
+msgid "Object Size and Position"
+msgstr "개체 크기와 위치"
+
+#: src/dialogs/object-properties.c:312 src/verbs.c:463
+msgid "Size and Position"
+msgstr "위치와 크기"
+
+#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
+msgid "Stroke settings"
+msgstr "스트로크 설정"
+
+#. Join type
+#: src/dialogs/stroke-style.c:588
+msgid "Join:"
+msgstr "결합:"
+
+#. Cap type
+#: src/dialogs/stroke-style.c:631
+msgid "Cap:"
+msgstr ""
+
+#. Dash
+#: src/dialogs/stroke-style.c:674
+msgid "Pattern:"
+msgstr "패턴:"
+
+#: src/dialogs/text-edit.c:101
+msgid "Text properties"
+msgstr "텍스트 속성"
+
+#. Layout
+#: src/dialogs/text-edit.c:140
+msgid "Layout"
+msgstr "레이아웃"
+
+#: src/dialogs/text-edit.c:148
+msgid "Alignment:"
+msgstr "정렬:"
+
+#: src/dialogs/text-edit.c:173
+msgid "Orientation:"
+msgstr "방향:"
+
+#: src/dialogs/text-edit.c:191
+msgid "Line spacing:"
+msgstr "줄 간격:"
+
+#: src/dialogs/text-edit.c:216
+msgid "Text and font"
+msgstr "텍스트와 글꼴"
+
+#: src/dialogs/text-edit.c:227
+msgid "Set as default"
+msgstr "기본값으로 설정"
+
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:461
+msgid "Tool attributes"
+msgstr "도구 속성"
+
+#: src/dialogs/tool-attributes.c:93
+msgid "Expansion"
+msgstr "전개"
+
+#: src/dialogs/tool-attributes.c:93
+msgid "Inner radius"
+msgstr "내경"
+
+#: src/dialogs/tool-attributes.c:97 src/dialogs/tool-attributes.c:107
+#: src/dialogs/tool-attributes.c:117 src/dialogs/tool-attributes.c:127
+msgid "Missing tool preferences"
+msgstr "도구 환경 설정이 없습니다"
+
+#. Magnitude
+#: src/dialogs/tool-attributes.c:103 src/star-context.c:358
+msgid "Corners:"
+msgstr "꼭지점:"
+
+#: src/dialogs/tool-attributes.c:103
+msgid "Proportion"
+msgstr "비율"
+
+#: src/dialogs/tool-attributes.c:113
+msgid "Transform:"
+msgstr "변환:"
+
+#. Mass
+#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1046
+msgid "Mass:"
+msgstr "질량:"
+
+#. Drag
+#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1058
+msgid "Drag:"
+msgstr ""
+
+#: src/dialogs/tool-attributes.c:123
+msgid "Angle"
+msgstr "각도"
+
+#: src/dialogs/tool-attributes.c:130
+msgid "Tool has no attributes"
+msgstr "도구 속성이 없습니다"
+
+#: src/dialogs/tool-attributes.c:133 src/dialogs/tool-options.c:91
+msgid "No active tool"
+msgstr "활성화한 도구가 없습니다"
+
+#: src/dialogs/tool-options.c:47 src/verbs.c:460
+msgid "Tool options"
+msgstr "도구 선택사항"
+
+#: src/dialogs/tool-options.c:88
+msgid "Tool has no options"
+msgstr "도구 선택사항이 없습니다"
+
+#: src/dialogs/transformation.c:195
+msgid "Transform selection"
+msgstr "변환 방식 선택"
+
+#. Apply to duplicate
+#: src/dialogs/transformation.c:216
+msgid "Apply to duplicate"
+msgstr "복제 후에 적용"
+
+#: src/dialogs/transformation.c:313
+msgid "Move"
+msgstr "이동"
+
+#: src/dialogs/transformation.c:457
+msgid "Scale"
+msgstr "배율"
+
+#: src/dialogs/transformation.c:584
+msgid "Rotate"
+msgstr "회전"
+
+#: src/dialogs/transformation.c:602
+msgid "deg"
+msgstr "도"
+
+#: src/dialogs/xml-tree.c:162
+msgid "Drag to reorder nodes"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:175
+msgid "New element node"
+msgstr "새 요소 마디점"
+
+#: src/dialogs/xml-tree.c:193
+msgid "New text node"
+msgstr "세 텍스트 마디점"
+
+#: src/dialogs/xml-tree.c:210
+msgid "Duplicate node"
+msgstr "마디점 복제"
+
+#: src/dialogs/xml-tree.c:226
+msgid "Delete node"
+msgstr "마디점 지우기"
+
+#: src/dialogs/xml-tree.c:239
+msgid "Unindent node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:250
+msgid "Indent node"
+msgstr ""
+
+#: src/dialogs/xml-tree.c:260
+msgid "Raise node"
+msgstr "마디점 올리기"
+
+#: src/dialogs/xml-tree.c:271
+msgid "Lower node"
+msgstr "마디점 내리기"
+
+#: src/dialogs/xml-tree.c:308
+msgid "Delete attribute"
+msgstr "속성 지우기"
+
+#: src/dialogs/xml-tree.c:338
+msgid "Attribute name"
+msgstr "속성 이름"
+
+#: src/dialogs/xml-tree.c:345
+msgid "Set attribute"
+msgstr "속성 설정"
+
+#: src/dialogs/xml-tree.c:358
+msgid "Attribute value"
+msgstr "속성 값"
+
+#: src/dialogs/xml-tree.c:830
+#, c-format
+msgid "Sodipodi: %s : XML View"
+msgstr "Sodipodi: %s: XML 보기"
+
+#: src/dialogs/xml-tree.c:853
+msgid "New element node..."
+msgstr "새 요소 마디점..."
+
+#: src/dialogs/xml-tree.c:873
+msgid "Cancel"
+msgstr "취소"
+
+#: src/dialogs/xml-tree.c:877
+msgid "Create"
+msgstr "만들기"
+
+#: src/document.c:343
+#, c-format
+msgid "New document %d"
+msgstr "New document %d"
+
+#: src/document.c:372
+#, c-format
+msgid "Memory document %d"
+msgstr "Memory document %d"
+
+#: src/document.c:458
+#, c-format
+msgid "Unnamed document %d"
+msgstr "이름 없는 문서 %d"
+
+#: src/draw-context.c:283
+msgid "Appending to selection. Press 'a' to toggle Append/New."
+msgstr "선택에 추가합니다. 추가/신규 전환은 'a'를 누릅니다."
+
+#: src/draw-context.c:288
+msgid "Creating new curve. Press 'a' to toggle Append/New."
+msgstr "새로운 곡선을 만듭니다. 추가/신규 전환은 'a'를 누릅니다."
+
+#. Angle
+#: src/dyna-draw-context.c:1070
+msgid "Angle:"
+msgstr "각도:"
+
+#. Reset
+#: src/dyna-draw-context.c:1094 src/rect-context.c:424
+#: src/spiral-context.c:389 src/star-context.c:389
+msgid "Defaults"
+msgstr "기본값"
+
+#: src/file.c:157 src/file.c:169 src/file.c:183
+msgid "Select file to open"
+msgstr "불러올 파일 선택"
+
+#: src/file.c:200 src/module.c:550
+msgid "Scalable Vector Graphic (SVG)"
+msgstr "크기 조절 가능한 벡터 그래픽(SVG)"
+
+#: src/file.c:200 src/module.c:550
+msgid "Sodipodi native file format and W3C standard"
+msgstr "W3C 표준인 Sodipodi 고유 파일 형식"
+
+#: src/file.c:206 src/file.c:280
+msgid "File type:"
+msgstr "파일 종류:"
+
+#: src/file.c:265
+msgid "Save file"
+msgstr "파일 저장"
+
+#: src/file.c:443 src/file.c:453 src/file.c:459
+msgid "Select file to import"
+msgstr "가져올 파일 선택"
+
+#: src/help.c:57
+msgid "About sodipodi"
+msgstr "Sodipodi 정보"
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:42
+msgid "Unit"
+msgstr "단위"
+
+#: src/helper/units.c:42
+msgid "Units"
+msgstr "단위"
+
+#: src/helper/units.c:43
+msgid "Point"
+msgstr "포인트"
+
+#: src/helper/units.c:43
+msgid "pt"
+msgstr "포인트"
+
+#: src/helper/units.c:43
+msgid "Points"
+msgstr "포인트"
+
+#: src/helper/units.c:43
+msgid "Pt"
+msgstr "Pt"
+
+#: src/helper/units.c:44
+msgid "Pixel"
+msgstr "픽셀"
+
+#: src/helper/units.c:44
+msgid "px"
+msgstr "px"
+
+#: src/helper/units.c:44
+msgid "Pixels"
+msgstr "픽셀"
+
+#: src/helper/units.c:44
+msgid "Px"
+msgstr "Px"
+
+#: src/helper/units.c:45
+msgid "Userspace unit"
+msgstr "사용자 공간 단위"
+
+#: src/helper/units.c:45
+msgid "User"
+msgstr "사용자"
+
+#: src/helper/units.c:45
+msgid "Userspace units"
+msgstr "사용자 공간 단위"
+
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: src/helper/units.c:48
+msgid "Percent"
+msgstr "퍼센트"
+
+#: src/helper/units.c:48
+msgid "%"
+msgstr "%"
+
+#: src/helper/units.c:48
+msgid "Percents"
+msgstr "퍼센트"
+
+#: src/helper/units.c:49
+msgid "Millimeter"
+msgstr "밀리미터"
+
+#: src/helper/units.c:49
+msgid "mm"
+msgstr "mm"
+
+#: src/helper/units.c:49
+msgid "Millimeters"
+msgstr "밀리미터"
+
+#: src/helper/units.c:50
+msgid "Centimeter"
+msgstr "센티미터"
+
+#: src/helper/units.c:50
+msgid "cm"
+msgstr "cm"
+
+#: src/helper/units.c:50
+msgid "Centimeters"
+msgstr "센티미터"
+
+#: src/helper/units.c:51
+msgid "Meter"
+msgstr "미터"
+
+#: src/helper/units.c:51
+msgid "m"
+msgstr "밀리"
+
+#: src/helper/units.c:51
+msgid "meters"
+msgstr "미터"
+
+#: src/helper/units.c:52
+msgid "Inch"
+msgstr "인치"
+
+#: src/helper/units.c:52
+msgid "in"
+msgstr "인치"
+
+#: src/helper/units.c:52
+msgid "Inches"
+msgstr "인치"
+
+#: src/helper/units.c:53
+msgid "Em square"
+msgstr ""
+
+#: src/helper/units.c:53
+msgid "em"
+msgstr "em"
+
+#: src/helper/units.c:53
+msgid "Em squares"
+msgstr ""
+
+#: src/helper/units.c:54
+msgid "Ex square"
+msgstr ""
+
+#: src/helper/units.c:54
+msgid "ex"
+msgstr "ex"
+
+#: src/helper/units.c:54
+msgid "Ex squares"
+msgstr ""
+
+#: src/interface.c:309 src/interface.c:491
+msgid "Open Recent"
+msgstr "최근 파일 열기"
+
+#: src/interface.c:329
+msgid "Close View"
+msgstr "보기 닫기"
+
+#: src/interface.c:330 src/interface.c:506
+msgid "Exit Program"
+msgstr "프로그램 종료"
+
+#: src/interface.c:332 src/interface.c:498
+msgid "About Sodipodi"
+msgstr "sodipodi 정보"
+
+#. Modules need abouts too
+#: src/interface.c:335 src/interface.c:501
+msgid "About Modules"
+msgstr "모듈 정보"
+
+#: src/interface.c:355
+msgid "Cleanup"
+msgstr "지우기"
+
+#. View:Zoom
+#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
+msgid "Zoom"
+msgstr "확대/축소"
+
+#. View:New View
+#: src/interface.c:437
+msgid "New View"
+msgstr "새 보기"
+
+#. View:New Preview
+#: src/interface.c:439
+msgid "New Preview"
+msgstr "새 미리보기"
+
+#: src/interface.c:441
+msgid "New Toplevel Toolbox"
+msgstr "새 최상위 도구 상자"
+
+#: src/interface.c:442
+msgid "New Docked Toolbox"
+msgstr "새 도킹 도구 상자"
+
+#: src/interface.c:443
+msgid "Remove Docked Toolbox"
+msgstr "도킹 도구 상자 제거"
+
+#. File
+#: src/interface.c:488 src/verbs.c:396
+msgid "New"
+msgstr "새 파일"
+
+#: src/interface.c:489
+msgid "Open"
+msgstr "열기"
+
+#. Generic menu
+#. File submenu
+#: src/interface.c:569 src/toolbox.c:361
+msgid "File"
+msgstr "파일"
+
+#. Edit submenu
+#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
+msgid "Edit"
+msgstr "편집"
+
+#. View submenu
+#: src/interface.c:587
+msgid "View"
+msgstr "보기"
+
+#. Drawing mode submenu
+#: src/interface.c:593
+msgid "Drawing Mode"
+msgstr "그리기"
+
+#. Dialog submenu
+#: src/interface.c:599
+msgid "Dialogs"
+msgstr "대화상자"
+
+#: src/interface.c:606
+msgid "Filters"
+msgstr "필터"
+
+#: src/main.c:130 src/main.c:612
+msgid "Do not use X server (only process files from console)"
+msgstr "X 서버를 사용하지 않습니다 (콘솔로 파일 처리만을 수행합니다)"
+
+#: src/main.c:133 src/main.c:613
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr "$DISPLAY 변수가 설정되지 않아도 X 서버 이용을 시도합니다"
+
+#: src/main.c:136 src/main.c:614
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr "지정한 문서 열기 (선택사항 문자열은 무시됩니다)"
+
+#: src/main.c:137 src/main.c:140 src/main.c:143 src/main.c:157
+msgid "FILENAME"
+msgstr "FILENAME"
+
+#: src/main.c:139
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr "지정된 파일에 문서 인쇄 ('| (프로그램)'과 같이 지정)"
+
+#: src/main.c:142 src/main.c:615
+msgid "Export document to png file"
+msgstr "문서를 PNG 파일로 내보내기"
+
+#: src/main.c:145 src/main.c:616
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr "SVG를 비트맵으로 변환할 때 사용한 해상도 (기본값 72.0)"
+
+#: src/main.c:146
+msgid "DPI"
+msgstr "DPI"
+
+#: src/main.c:148 src/main.c:617
+msgid ""
+"Exported area in millimeters (default is full document, 0,0 is lower-left "
+"corner)"
+msgstr "내보낼 영역를 밀리미터 단위로 지정 (기본값은 문서 전체이며 0,0은 좌-하단)"
+
+#: src/main.c:149
+msgid "x0:y0:x1:y1"
+msgstr "x0:y0:x1:y1"
+
+#: src/main.c:151 src/main.c:618
+msgid "The width of generated bitmap in pixels (overwrites dpi)"
+msgstr "생성된 비트맵 폭을 픽셀 값으로 지정 (dpi 표시)"
+
+#: src/main.c:151
+msgid "WIDTH"
+msgstr "폭"
+
+#: src/main.c:153 src/main.c:619
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr "생성된 비트맵 높이를 픽셀 값으로 지정 (dpi 표시)"
+
+#: src/main.c:153
+msgid "HEIGHT"
+msgstr "높이"
+
+#: src/main.c:155 src/main.c:620
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr "내보낼 비트맵의 바탕색 지정 (SVG가 지원하는 색상 지정 문자열)"
+
+#: src/main.c:155
+msgid "COLOR"
+msgstr "색"
+
+#: src/main.c:157 src/main.c:621
+msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+msgstr "문서를 일반 SVG 파일로 내보내기 (\"xmlns:sodipodi\" 네임 스페이스를 사용 하지 않음)"
+
+#: src/main.c:159
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr "주어진 파일을 한개씩 표시하며. 아무 키/마우스를 누르면 다음 파일로 넘어갑니다."
+
+#: src/main.c:161
+msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr "비트맵(xpm) 아이콘을 SVG 아이콘보다 선호함"
+
+#: src/main.c:622
+msgid "Print sodipodi version information"
+msgstr "Sodipodi 버전 정보 표시"
+
+#: src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr "명령행 인수에 관한 도움말 출력"
+
+#: src/module.c:558
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr "\"xmlns:sodipodi\"네임 스페이스를 포함하는 SVG"
+
+#: src/module.c:559
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr "sodipodi 확장형 크기 조절 가능한 벡터 그래픽 형식"
+
+#: src/module.c:562
+msgid "Plain SVG"
+msgstr "일반 SVG"
+
+#: src/module.c:563
+msgid "Scalable Vector Graphics format"
+msgstr "크기 조절 가능한 벡터 그래픽 형식"
+
+#: src/modules/gnome.c:133
+msgid "Select printer"
+msgstr "프린터 선택"
+
+#: src/modules/gnome.c:187
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (문서 이름 %s..): 인쇄 미리보기"
+
+#: src/modules/kde.cpp:159
+msgid "Document variant:"
+msgstr "문서 종류:"
+
+#: src/modules/kde.cpp:169
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+msgstr ""
+"*.svg *.svgz|SVG 파일\n"
+"*.xml|XML 파일\n"
+"*|모든 파일"
+
+#: src/modules/kde.cpp:171
+msgid "Save document as"
+msgstr "다른 이름으로 문서 저장"
+
+#. Print destination frame
+#: src/modules/ps.c:167 src/modules/ps.c:228
+msgid "Print destination"
+msgstr "사용자 지정 인쇄 명령"
+
+#. Print properties frame
+#: src/modules/ps.c:178
+msgid "Print properties"
+msgstr "인쇄 속성"
+
+#: src/modules/ps.c:186
+msgid "Print using PostScript operators"
+msgstr "PostScript 처리기를 사용하여 인쇄"
+
+#: src/modules/ps.c:188
+msgid ""
+"Use PostScript vector operators, resulting image will be (usually) smaller "
+"and can be arbitrarily scaled, but alpha transparency, markers and patterns "
+"will be lost"
+msgstr ""
+"PostScript 벡터 처리기를 사용하면, 출력된 이미지는 보통 크기가 작아지고"
+"임의대로 조정됩니다. 또 alpha 투명도, 표식, 패턴 정보는 잃게 됩니다"
+
+#: src/modules/ps.c:193
+msgid "Print as bitmap"
+msgstr "비트맵으로 인쇄"
+
+#: src/modules/ps.c:195
+msgid ""
+"Print everything as bitmap, resulting image will be (usualy) larger and it "
+"quality depends on zoom factor, but all graphics will be rendered identical "
+"to display"
+msgstr "전부를 비트맵로 인쇄합니다. 이럴경우, 출력한 이미지는 보통 커지며 출력 품질은 확대율에 의존합니다만, 모든 그래픽는 화면 표시와 동일하게 인쇄됩니다."
+
+#: src/modules/ps.c:209
+msgid "Preferred resolution (dots per inch) of bitmap"
+msgstr "선호하는 비트맵 해상도(DPI)"
+
+#: src/modules/ps.c:224
+msgid "Resolution:"
+msgstr "해상도:"
+
+#: src/modules/ps.c:234
+msgid ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+msgstr ""
+"출력에 사용할 lpr 큐를 입력하세요.\n"
+"파일로 출력할 때는, '> (파일명)'을 사용하세요.\n"
+"파이프를 사용하여 다른 프로그램에 출력을 건네주는 경우는 ,'| (프로그램) (인수)...'를 사용하세요."
+
+#: src/modules/ps.c:868
+msgid "write error occured"
+msgstr "쓰기 오류가 발생했습니다"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:107
+msgid "Item"
+msgstr "아이템"
+
+#. Item dialog
+#: src/object-ui.c:110 src/verbs.c:468
+msgid "Item Properties"
+msgstr "아이템 속성"
+
+#. Select item
+#: src/object-ui.c:120
+msgid "Select this"
+msgstr "선택"
+
+#. Reset transformations
+#: src/object-ui.c:130
+msgid "Reset transformation"
+msgstr "변환 재설정"
+
+#: src/object-ui.c:136
+msgid "Make sensitive"
+msgstr "민감하게 설정"
+
+#: src/object-ui.c:136
+msgid "Make insensitive"
+msgstr "둔감하게 설정"
+
+#. Create link
+#: src/object-ui.c:141
+msgid "Create link"
+msgstr "링크 만들기"
+
+#: src/object-ui.c:253 src/verbs.c:421
+msgid "Group"
+msgstr "그룹화"
+
+#. Group dialog
+#: src/object-ui.c:257
+msgid "Group Properties"
+msgstr "그룹 속성"
+
+#. "Ungroup"
+#: src/object-ui.c:270 src/verbs.c:422
+msgid "Ungroup"
+msgstr "그룹 해제"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:318
+msgid "Link"
+msgstr "링크"
+
+#. Link dialog
+#: src/object-ui.c:321
+msgid "Link Properties"
+msgstr "링크 속성"
+
+#. Select item
+#: src/object-ui.c:331
+msgid "Follow link"
+msgstr "링크 따라가기"
+
+#. Reset transformations
+#: src/object-ui.c:336
+msgid "Remove link"
+msgstr "링크 제거"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:399
+msgid "Image"
+msgstr "이미지"
+
+#. Link dialog
+#: src/object-ui.c:402
+msgid "Image Properties"
+msgstr "이미지 속성"
+
+#. Autotrace dialog
+#: src/object-ui.c:410 src/sp-image.c:776
+msgid "Trace"
+msgstr "추적"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:459
+msgid "Shape"
+msgstr "모양"
+
+#. Item dialog
+#: src/object-ui.c:462 src/toolbox.c:446
+msgid "Fill settings"
+msgstr "채우기 설정"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:489
+msgid "Rect"
+msgstr "사각형"
+
+#. Link dialog
+#: src/object-ui.c:492
+msgid "Rect Properties"
+msgstr "사각형 속성"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:525 src/verbs.c:439
+msgid "Star"
+msgstr "별"
+
+#. Link dialog
+#: src/object-ui.c:528
+msgid "Star Properties"
+msgstr "별 속성"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:561 src/verbs.c:440
+msgid "Spiral"
+msgstr "나선"
+
+#. Link dialog
+#: src/object-ui.c:564
+msgid "Spiral Properties"
+msgstr "나선 속성"
+
+#. rx_ratio
+#: src/rect-context.c:400
+msgid "Roundness ratio for x:"
+msgstr ""
+
+#. ry_ratio
+#: src/rect-context.c:412
+msgid "Roundness ratio for y:"
+msgstr ""
+
+#: src/select-context.c:569
+msgid "Visual transformation"
+msgstr "비주얼 변환"
+
+#: src/select-context.c:575
+msgid "Show content"
+msgstr "내용 표시"
+
+#: src/select-context.c:581
+msgid "Show outline"
+msgstr "외곽선 표시"
+
+#: src/select-context.c:587
+msgid "Object transformation"
+msgstr "개체 변환"
+
+#: src/select-context.c:593
+msgid "Optimize"
+msgstr "최적화"
+
+#: src/select-context.c:599
+msgid "Preserve"
+msgstr "보호"
+
+#: src/select-context.c:605
+msgid "[Tab] Cycling"
+msgstr "[Tab] 순환"
+
+#: src/select-context.c:610
+msgid "Cycle only among visible items"
+msgstr "보이는 아이템 사이에서만 순환"
+
+#: src/select-context.c:613
+msgid "Center view to selected item"
+msgstr "선택 아이템을 중심으로 보기"
+
+#: src/slideshow.c:90
+msgid "Sodipodi slideshow"
+msgstr "Sodipodi: 슬라이드 쇼"
+
+#: src/sodipodi.c:406
+msgid "Untitled document"
+msgstr "제목 없는 문서"
+
+#. Show nice dialog box
+#: src/sodipodi.c:431
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr "Sodipodi에서 내부 오류가 발생했습니다. 지금 종료합니다.\n"
+
+#: src/sodipodi.c:432
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgstr "저장하지 않은 문서는 다음 위치에 자동 백업되었습니다:\n"
+
+#: src/sodipodi.c:433
+msgid "Automatic backup of following documents failed:\n"
+msgstr "다음 문서를 자동 백업하는데 실패했습니다:\n"
+
+#: src/sodipodi.c:572
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+"%s은(는) 정상적인 파일이 아닙니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"환경 설정을 불러오거나 저장할 수 없습니다\n"
+
+#: src/sodipodi.c:575
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s가 유효한 XML 파일이 아니거나\n"
+"이 파일에 대한 읽기 권한이 없습니다.\n"
+"sodipodi가 실행은 되지만 환경 설정을\n"
+"불러오거나 저장할 수 없습니다."
+
+#: src/sodipodi.c:580
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s(은)는 유효한 sodipodi 환경설정 파일이\n"
+"아닙니다. sodopodi가 실행은 되지만,\n"
+"환경설정을 불러오거나 저장할 수\n"
+"없습니다."
+
+#: src/sodipodi.c:592
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s 은 정상적인 파일이 아닙니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"확장 기능(플러그인)은 사용할 수 없습니다.\n"
+
+#: src/sodipodi.c:595
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s가 유효한 XML 파일이 아니거나\n"
+"이 파일에 대한 읽기 권한이 없습니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"확장 기능(플러그인)은 사용할 수 없습니다.\n"
+
+#: src/sodipodi.c:599
+#, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s은(는) 유효한 sodipodi 확장 파일이\n"
+"아닙니다.sodopodi가 실행은 되지만,\n"
+"확장 기능(플러그인)은 사용할 수 없습니다.\n"
+
+#: src/sodipodi.c:938
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+msgstr ""
+"디렉토리 %s을(를) 작성할 수 없습니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"%s를 불러오거나 저장할 수\n"
+"없습니다"
+
+#: src/sodipodi.c:942
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s는 유효한 디렉토리가 아닙니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"환경 설정을 불러오거나 저장할 수\n"
+"없습니다."
+
+#: src/sodipodi.c:946
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"파일 %s을(를) 작성할 수 없습니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"환경 설정을 불러오거나 저장할 수 없습니다."
+
+#: src/sodipodi.c:950
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"파일 %s로 저장할 수 없습니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"환경설정을 불러오거나 저장할 수\n"
+"없습니다."
+
+#: src/sodipodi.c:960
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"디렉토리 %s을(를) 작성할 수 없습니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"확장 기능(플러그인)은 사용할 수 없습니다.\n"
+
+#: src/sodipodi.c:963
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s는 유효한 디렉토리가 아닙니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"확장 기능(플러그인)은 사용할 수 없습니다\n"
+
+#: src/sodipodi.c:966
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"파일 %s을(를) 작성할 수 없습니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"확장 기능(플러그인)은 사용할 수 없습니다.\n"
+
+#: src/sodipodi.c:969
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"파일 %s로 저장할 수 없습니다.\n"
+"sodipodi가 실행은 되지만,\n"
+"확장 기능(플러그인)은 사용할 수 없습니다.\n"
+
+#: src/sp-anchor.c:196
+#, c-format
+msgid "Link to %s"
+msgstr "%s에 링크"
+
+#: src/sp-image.c:373
+#, c-format
+msgid "Image with bad reference: %s"
+msgstr "잘못된 참조를 갖는 이미지: %s"
+
+#: src/sp-image.c:375
+#, c-format
+msgid "Color image %d x %d: %s"
+msgstr "컬러 이미지 %d x %d: %s"
+
+#: src/sp-image.c:922
+#, c-format
+msgid "Error to write %s: %s"
+msgstr "%s에 쓰는 중 오류: %s"
+
+#: src/sp-image.c:956
+msgid "Untitled"
+msgstr "제목 없음"
+
+#: src/sp-image.c:961
+msgid "Document Name:"
+msgstr "문서 이름:"
+
+#: src/sp-image.c:974
+msgid "Unknown"
+msgstr "알려지지 않음"
+
+#: src/sp-image.c:980
+msgid "Image URI:"
+msgstr "이미지 URI:"
+
+#: src/sp-item-group.c:457
+#, c-format
+msgid "Group of %d objects"
+msgstr "%d 개체의 그룹"
+
+#: src/sp-item.c:503
+msgid "Unknown item :-("
+msgstr "알려지지 않은 아이템 :-("
+
+#. fixme:
+#: src/sp-text.c:1428
+msgid "Text object"
+msgstr "텍스트 개체"
+
+#. T0
+#: src/spiral-context.c:377
+msgid "Inner radius:"
+msgstr "내경:"
+
+#. Proportion
+#: src/star-context.c:370
+msgid "Proportion:"
+msgstr "비율"
+
+#. Making sides flat
+#: src/star-context.c:383
+msgid "Make sides flat"
+msgstr "변을 평평하게 만들기"
+
+#: src/toolbox.c:443
+msgid "Object"
+msgstr "개체"
+
+#: src/toolbox.c:447 src/verbs.c:463
+msgid "Object size and position"
+msgstr "개체 크기와 위치"
+
+#: src/toolbox.c:448
+msgid "Text and font settings"
+msgstr "텍스트와 글꼴 설정"
+
+#: src/toolbox.c:450 src/verbs.c:464
+msgid "Object transformations"
+msgstr "개체 변환"
+
+#: src/toolbox.c:523
+msgid "Draw"
+msgstr "그리기"
+
+#: src/toolbox.c:578
+msgid "Extension"
+msgstr "확장"
+
+#: src/toolbox.c:655
+msgid "Nodes"
+msgstr "마디점"
+
+#: src/toolbox.c:658
+msgid "Insert new nodes into selected segments"
+msgstr "선택 조각에 새로운 마디점 삽입"
+
+#: src/toolbox.c:660
+msgid "Break line at selected nodes"
+msgstr "선택 마디점에서 선 분할"
+
+#: src/toolbox.c:662
+msgid "Make selected nodes corner"
+msgstr "선택 마디점을 꼭지점으로 설정"
+
+#: src/toolbox.c:664
+msgid "Make selected segments lines"
+msgstr "선택 조각을 직선으로 만들기"
+
+#: src/toolbox.c:666
+msgid "Delete selected nodes"
+msgstr "선택한 마디점 지우기"
+
+#: src/toolbox.c:668
+msgid "Join lines at selected nodes"
+msgstr "선택 마디점에서 선 결합"
+
+#: src/toolbox.c:671
+msgid "Join lines at selected nodes with new segment"
+msgstr "선택 마디점에서 새 조각과 선 결합"
+
+#: src/toolbox.c:673
+msgid "Make selected nodes smooth"
+msgstr "선택 마디점을 부드럽게 하기"
+
+#: src/toolbox.c:675
+msgid "Make selected segments curves"
+msgstr "선택 조각을 곡선으로 만들기"
+
+#: src/verbs.c:394
+msgid "Does nothing"
+msgstr "아무것도 하지 않음"
+
+#: src/verbs.c:396
+msgid "Create new SVG document"
+msgstr "새 SVG 문서 만들기"
+
+#: src/verbs.c:397
+msgid "Open..."
+msgstr "열기..."
+
+#: src/verbs.c:397
+msgid "Open existing SVG document"
+msgstr "기존 SVG 문서 열기"
+
+#: src/verbs.c:398
+msgid "Save"
+msgstr "저장"
+
+#: src/verbs.c:398
+msgid "Save document"
+msgstr "문서 저장"
+
+#: src/verbs.c:399
+msgid "Save As..."
+msgstr "다른 이름으로 저장..."
+
+#: src/verbs.c:399
+msgid "Save document under new name"
+msgstr "새 이름으로 문서 저장"
+
+#: src/verbs.c:400
+msgid "Print..."
+msgstr "인쇄..."
+
+#: src/verbs.c:400
+msgid "Print document"
+msgstr "문서 인쇄"
+
+#: src/verbs.c:401
+msgid "Print Direct..."
+msgstr "사용자 지정 인쇄..."
+
+#: src/verbs.c:401
+msgid "Print directly to file or pipe"
+msgstr "파일이나 파이프에 직접 인쇄"
+
+#: src/verbs.c:402
+msgid "Print Preview"
+msgstr "인쇄 미리보기"
+
+#: src/verbs.c:402
+msgid "Preview document printout"
+msgstr "인쇄 문서 미리보기"
+
+#: src/verbs.c:403
+msgid "Import"
+msgstr "가져오기"
+
+#: src/verbs.c:403
+msgid "Import bitmap or SVG image into document"
+msgstr "비트맵 또는 SVG 이미지를 문서로 가져오기"
+
+#: src/verbs.c:404
+msgid "Export document as PNG bitmap"
+msgstr "문서를 PNG 비트맵로 내보내기"
+
+#. Edit
+#: src/verbs.c:406
+msgid "Undo"
+msgstr "되돌리기"
+
+#: src/verbs.c:406
+msgid "Revert last action"
+msgstr "최근 작업 되돌리기"
+
+#: src/verbs.c:407
+msgid "Redo"
+msgstr "다시하기"
+
+#: src/verbs.c:407
+msgid "Do again undone action"
+msgstr "되돌린 작업 다시하기"
+
+#: src/verbs.c:408
+msgid "Cut"
+msgstr "잘라내기"
+
+#: src/verbs.c:408
+msgid "Cut selected objects to clipboard"
+msgstr "선택한 개체를 클립보드로 잘라내기"
+
+#: src/verbs.c:409
+msgid "Copy"
+msgstr "복사하기"
+
+#: src/verbs.c:409
+msgid "Copy selected objects to clipboard"
+msgstr "선택한 개체를 클립보드에 복사"
+
+#: src/verbs.c:410
+msgid "Paste"
+msgstr "붙여넣기"
+
+#: src/verbs.c:410
+msgid "Paste objects from clipboard"
+msgstr "클립보드로부터 개체 붙여넣기 "
+
+#: src/verbs.c:411
+msgid "Delete"
+msgstr "지우기"
+
+#: src/verbs.c:411
+msgid "Delete selected objects"
+msgstr "선택한 개체 지우기"
+
+#: src/verbs.c:412
+msgid "Duplicate"
+msgstr "복제하기"
+
+#: src/verbs.c:412
+msgid "Duplicate selected objects"
+msgstr "선택한 개체 복제"
+
+#: src/verbs.c:413
+msgid "Clear All"
+msgstr "전부 지우기"
+
+#: src/verbs.c:413
+msgid "Delete all objects from document"
+msgstr "문서로부터 모든 개체 지우기"
+
+#: src/verbs.c:414
+msgid "Select All"
+msgstr "전부 선택"
+
+#: src/verbs.c:414
+msgid "Select all objects in document"
+msgstr "문서 내 모든 개체를 선택"
+
+#: src/verbs.c:415
+msgid "Repeat"
+msgstr "반복하기"
+
+#: src/verbs.c:415
+msgid "Repeat last saved action"
+msgstr "최근 작업 반복"
+
+#. Selection
+#: src/verbs.c:417
+msgid "Bring to Front"
+msgstr "맨 위로 가져오기"
+
+#: src/verbs.c:417
+msgid "Raise selected objects to top"
+msgstr "선택한 개체를 맨 위로 가져오기"
+
+#: src/verbs.c:418
+msgid "Send to Back"
+msgstr "맨 뒤로 보내기"
+
+#: src/verbs.c:418
+msgid "Lower selected objects to bottom"
+msgstr "선택한 개체를 맨 아래로 보내기"
+
+#: src/verbs.c:419
+msgid "Raise"
+msgstr "올리기"
+
+#: src/verbs.c:419
+msgid "Raise selected objects one position"
+msgstr "선택한 개체를 한 단계 위로 올리기"
+
+#: src/verbs.c:420
+msgid "Lower"
+msgstr "내리기"
+
+#: src/verbs.c:420
+msgid "Lower selected objects one position"
+msgstr "선택한 개체를 한 단계 아래로 내리기"
+
+#: src/verbs.c:421
+msgid "Group selected objects"
+msgstr "선택한 개체 그룹화"
+
+#: src/verbs.c:422
+msgid "Ungroup selected group"
+msgstr "선택한 그룹의 그룹 해제"
+
+#: src/verbs.c:423
+msgid "Combine"
+msgstr "연결"
+
+#: src/verbs.c:423
+msgid "Combine multiple paths"
+msgstr "다중 경로 연결"
+
+#: src/verbs.c:424
+msgid "Break Apart"
+msgstr "분할"
+
+#: src/verbs.c:424
+msgid "Break selected path to subpaths"
+msgstr "선택한 경로를 부 경로로 분할"
+
+#: src/verbs.c:425
+msgid "Transform"
+msgstr "변환"
+
+#: src/verbs.c:425
+msgid "Applies transformation"
+msgstr "변환 적용"
+
+#. Object
+#: src/verbs.c:427
+msgid "Rotate 90 degrees"
+msgstr "90도 회전"
+
+#: src/verbs.c:427
+msgid "Rotates object 90 degrees clockwise"
+msgstr "시계 방향으로 90도 회전"
+
+#: src/verbs.c:428
+msgid "Flatten object"
+msgstr "평탄화된 개체"
+
+#: src/verbs.c:428
+msgid "Remove transformations from object"
+msgstr "개체 변환 되돌리기"
+
+#: src/verbs.c:429
+msgid "Convert to Curves"
+msgstr "곡선으로 변환"
+
+#: src/verbs.c:429
+msgid "Convert selected object to path"
+msgstr "선택한 개체를 경로로 변환"
+
+#: src/verbs.c:430
+msgid "Flip Horizontally"
+msgstr "수평 반사"
+
+#: src/verbs.c:431
+msgid "Flip selected objects horizontally"
+msgstr "선택한 개체를 수평 방향에 대해 반사"
+
+#: src/verbs.c:432
+msgid "Flip Vertically"
+msgstr "수직 반사"
+
+#: src/verbs.c:433
+msgid "Flip selected objects vertically"
+msgstr "선택한 개체를 수직 방향에 대해 반사"
+
+#. Event contexts
+#: src/verbs.c:435
+msgid "Select"
+msgstr "선택"
+
+#: src/verbs.c:435
+msgid "Select and transform objects"
+msgstr "개체 선택과 변환"
+
+#: src/verbs.c:436
+msgid "Node edit"
+msgstr "마디점 편집"
+
+#: src/verbs.c:436
+msgid "Modify existing objects by control nodes"
+msgstr "마디점 조정을 통한 개체 편집"
+
+#: src/verbs.c:437
+msgid "Rectangle"
+msgstr "사각형"
+
+#: src/verbs.c:437
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr "직사각형과 정사각형 만들기. 선택사항으로 꼭지점을 둥글게 할 수 있습니다."
+
+#: src/verbs.c:438
+msgid "Ellipse"
+msgstr "타원"
+
+#: src/verbs.c:438
+msgid "Create circles, ellipses and arcs"
+msgstr "원, 타원, 호 만들기"
+
+#: src/verbs.c:439
+msgid "Create stars and polygons"
+msgstr "별 모양과 다각형 만들기"
+
+#: src/verbs.c:440
+msgid "Create spirals"
+msgstr "나선 만들기"
+
+#: src/verbs.c:441
+msgid "Pencil"
+msgstr "연필"
+
+#: src/verbs.c:441
+msgid "Draw freehand curves and straight lines"
+msgstr "프리핸드 선과 직선 그리기"
+
+#: src/verbs.c:442
+msgid "Pen"
+msgstr "펜"
+
+#: src/verbs.c:442
+msgid "Draw precisely positioned curved and straight lines"
+msgstr "정확한 위치 지정을 통해 곡선과 직선 그리기"
+
+#: src/verbs.c:443
+msgid "Calligraphy"
+msgstr "칼리그래피"
+
+#: src/verbs.c:443
+msgid "Draw calligraphic lines"
+msgstr "칼리그래픽 선 그리기"
+
+#: src/verbs.c:444
+msgid "Create and edit text objects"
+msgstr "텍스트 개체를 만들고 편집하기"
+
+#: src/verbs.c:445
+msgid "Zoom into precisely selected area"
+msgstr "선택 영역 확대"
+
+#: src/verbs.c:446
+msgid "Dropper"
+msgstr "스포이트"
+
+#: src/verbs.c:446
+msgid "Pick averaged colors from image"
+msgstr "이미지로부터 평균 색 얻기"
+
+#. Zooming
+#: src/verbs.c:448
+msgid "In"
+msgstr "(확대)"
+
+#: src/verbs.c:448
+msgid "Zoom in drawing"
+msgstr "그림 확대"
+
+#: src/verbs.c:449
+msgid "Out"
+msgstr "(축소)"
+
+#: src/verbs.c:449
+msgid "Zoom out drawing"
+msgstr "그림 축소"
+
+#: src/verbs.c:450
+msgid "1:1"
+msgstr "1:1"
+
+#: src/verbs.c:450
+msgid "Set zoom factor to 1:1"
+msgstr "확대비를 1:1로 설정"
+
+#: src/verbs.c:451
+msgid "1:2"
+msgstr "1:2"
+
+#: src/verbs.c:451
+msgid "Set zoom factor to 1:2"
+msgstr "확대비를 1:2로 설정"
+
+#: src/verbs.c:452
+msgid "2:1"
+msgstr "2:1"
+
+#: src/verbs.c:452
+msgid "Set zoom factor to 2:1"
+msgstr "확대비를 2:1로 설정"
+
+#: src/verbs.c:453
+msgid "Fit the whole page into window"
+msgstr "쪽 전체를 창에 맞춤"
+
+#: src/verbs.c:454
+msgid "Fit the whole drawing into window"
+msgstr "그림 전체를 창에 맞춤"
+
+#: src/verbs.c:455
+msgid "Fit the whole selection into window"
+msgstr "선택한 영역 전체를 창에 맞춤"
+
+#. Dialogs
+#: src/verbs.c:457
+msgid "Display"
+msgstr "표시"
+
+#: src/verbs.c:457
+msgid "Global display settings"
+msgstr "전체 표시 설정"
+
+#: src/verbs.c:458
+msgid "Document"
+msgstr "문서"
+
+#: src/verbs.c:458
+msgid "Page layout"
+msgstr "쪽 레이아웃"
+
+#: src/verbs.c:459
+msgid "Editing Window"
+msgstr "편집 창"
+
+#: src/verbs.c:459
+msgid "Editing window properties"
+msgstr "편집 창 속성"
+
+#: src/verbs.c:460
+msgid "Tool Options"
+msgstr "도구 선택사항"
+
+#: src/verbs.c:461
+msgid "Tool Attributes"
+msgstr "도구 속성"
+
+#: src/verbs.c:462
+msgid "Fill and Stroke"
+msgstr "채우기와 스트로크"
+
+#: src/verbs.c:462
+msgid "Fill and stroke settings"
+msgstr "채우기과 스트로크 설정"
+
+#: src/verbs.c:464
+msgid "Transformations"
+msgstr "변환"
+
+#: src/verbs.c:465
+msgid "Align and Distribute"
+msgstr "정렬과 배분"
+
+#: src/verbs.c:465
+msgid "Align and distribute"
+msgstr "정렬과 배분"
+
+#: src/verbs.c:466
+msgid "Text and Font"
+msgstr "텍스트와 글꼴"
+
+#: src/verbs.c:466
+msgid "Text editing and font settings"
+msgstr "텍스트 편집과 글꼴 설정"
+
+#: src/verbs.c:467
+msgid "XML Editor"
+msgstr "XML 편집기"
+
+#. Family frame
+#: src/widgets/font-selector.c:148
+msgid "Font family"
+msgstr "글꼴"
+
+#. Style frame
+#: src/widgets/font-selector.c:176
+msgid "Style"
+msgstr "스타일"
+
+#: src/widgets/font-selector.c:211
+msgid "Font size:"
+msgstr "글꼴 크기:"
+
+#: src/widgets/font-selector.c:521
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr "AaBbCcIiPpQq12368.;/()"
+
+#: src/widgets/gradient-selector.c:143
+msgid "Add"
+msgstr "더하기"
+
+#: src/widgets/gradient-selector.c:179
+msgid "gradientUnits"
+msgstr "gradientUnits"
+
+#: src/widgets/gradient-selector.c:208
+msgid "gradientSpread"
+msgstr "gradientSpread"
+
+#: src/widgets/gradient-vector.c:250
+msgid "No document selected"
+msgstr "문서가 선택되지 않았습니다"
+
+#: src/widgets/gradient-vector.c:256
+msgid "No gradients in document"
+msgstr "문서 안에 그라데이션이 없습니다"
+
+#: src/widgets/gradient-vector.c:262
+msgid "No gradient selected"
+msgstr "그라데이션이 선택되지 않았습니다"
+
+#: src/widgets/gradient-vector.c:417
+msgid "Start color"
+msgstr "시작점 색상"
+
+#: src/widgets/gradient-vector.c:427
+msgid "End color"
+msgstr "끝점 색상"
+
+#: src/widgets/gradient-vector.c:452
+msgid "Gradient vector"
+msgstr "그라데이션 벡터"
+
+#: src/widgets/paint-selector.c:621
+msgid "No objects"
+msgstr "개체 없음"
+
+#: src/widgets/paint-selector.c:635
+msgid "Multiple styles"
+msgstr "다중 스타일"
+
+#: src/widgets/paint-selector.c:649
+msgid "No paint"
+msgstr "채우기 없음"
+
+#. Label
+#: src/widgets/paint-selector.c:739
+msgid "Mode:"
+msgstr "모드:"
+
+#: src/widgets/paint-selector.c:749
+msgid "RGB"
+msgstr "RGB"
+
+#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
+msgid "RGB Colorspace"
+msgstr "RGB 색상 공간"
+
+#: src/widgets/paint-selector.c:750
+msgid "HSV"
+msgstr "HSV"
+
+#: src/widgets/paint-selector.c:751
+msgid "CMYK"
+msgstr "CMYK"
+
+#: src/widgets/paint-selector.c:751
+msgid "CMYK Colorspace"
+msgstr "CMYK 색상 공간"
+
+#. Use dropper
+#: src/widgets/paint-selector.c:758
+msgid "Get from dropper"
+msgstr "스포이트로 선택"
+
+#: src/widgets/paint-selector.c:789
+msgid "Color paint"
+msgstr "색 채우기"
+
+#: src/widgets/paint-selector.c:859
+msgid "Linear gradient"
+msgstr "선형 그라데이션"
+
+#: src/widgets/paint-selector.c:862
+msgid "Radial gradient"
+msgstr "방사형 그라데이션"
+
+#: src/widgets/sp-color-selector.c:623
+msgid "Red:"
+msgstr "빨강:"
+
+#: src/widgets/sp-color-selector.c:624
+msgid "Green:"
+msgstr "녹색:"
+
+#: src/widgets/sp-color-selector.c:625
+msgid "Blue:"
+msgstr "파랑:"
+
+#: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
+#: src/widgets/sp-color-selector.c:668
+msgid "Alpha:"
+msgstr "투명도:"
+
+#: src/widgets/sp-color-selector.c:643
+msgid "Hue:"
+msgstr "색상:"
+
+#: src/widgets/sp-color-selector.c:644
+msgid "Saturation:"
+msgstr "채도:"
+
+#: src/widgets/sp-color-selector.c:645
+msgid "Value:"
+msgstr "값:"
+
+#: src/widgets/sp-color-selector.c:664
+msgid "Cyan:"
+msgstr "시안:"
+
+#: src/widgets/sp-color-selector.c:665
+msgid "Magenta:"
+msgstr "마젠타:"
+
+#: src/widgets/sp-color-selector.c:666
+msgid "Yellow:"
+msgstr "노랑:"
+
+#: src/widgets/sp-color-selector.c:667
+msgid "Black:"
+msgstr "검정:"
+
+#: src/widgets/sp-toolbox.c:305
+msgid "Toggle separate window and main toolbox placement"
+msgstr "도구 상자 도킹 ON/OFF"
+
+#: src/widgets/sp-xmlview-attr-list.c:55
+msgid "Attribute"
+msgstr "속성"
+
+#: src/widgets/sp-xmlview-attr-list.c:56
+msgid "Value"
+msgstr "값"
+
