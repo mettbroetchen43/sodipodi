@@ -3,7 +3,7 @@ Sodipodi coding style
 Not absolutely mandatory, but helps in getting your patches accepted,
 and keeps other developers constantly happy.
 I break these myself time to time because of laziness, or because
-after serious calculation I finf that breaking of rules gives
+after serious calculation, I find that breaking of rules gives
 prettier code in given case. But most of the time these stand
 rock solid.
 
@@ -11,7 +11,7 @@ rock solid.
 1. The rule of active maintainership
 
 * If you own file and maintain it actively, do whatever you like
-EXCEPTION - keep it compilable with normal unix/window compilers
+EXCEPTION - keep it compilable with normal unix/windows compilers
 EXCEPTION - do not use extra libraries unless made in configure options
 
 2. The unicode rulez rule
@@ -45,7 +45,7 @@ EXCEPTION - aligning arguments is allowed while initializing
 6. Function rule
 
 * Function declaration is one line
-* Function declaration has return value and name on separate lines
+* Function definition has return value and name on separate lines
 
 
 7. Curly braces inconstancy rule
@@ -57,7 +57,7 @@ EXCEPTION - aligning arguments is allowed while initializing
 8. Illegality of naked block rule
 
 * All block statements (if, for, while) have to be either one-liners
-  or enclosed in curly spaces
+  or enclosed in curly braces
 EXCEPTION - invoking virtual method in GObject implementation may
             be two-liner without curly braces
 
@@ -66,7 +66,7 @@ EXCEPTION - invoking virtual method in GObject implementation may
 
 * All case statements end with break, even if they contain return
 EXCEPTION - if many case labels are collated, there can be single
-            break at the end
+            break after the last one
 * All switch statements contain default label, even if empty
 * Default statement ends with break, even if empty
 
@@ -90,8 +90,8 @@ EXCEPTION - if many case labels are collated, there can be single
 
 13. Enumeration suppression
 
-* Avoid excessive enumerations, unless type is ordered integer
-  use #define instead
+* Avoid excessive enumerations, unless they are semantically ordered
+  integers, use #define instead
 * Do not typedef enumeration, use unsigned int instead
 
 
