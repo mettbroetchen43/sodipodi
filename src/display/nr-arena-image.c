@@ -21,9 +21,6 @@
 gint nr_arena_image_x_sample = 1;
 gint nr_arena_image_y_sample = 1;
 
-/* fixme: This should go to common header */
-#define NR_ARENA_STICKY_FLAG (1 << 16)
-
 /*
  * NRArenaCanvasImage
  *
@@ -178,8 +175,8 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 
 	dpx = NR_PIXBLOCK_PX (pb);
 	drs = pb->rs;
-	dw = area->x1 - area->x0;
-	dh = area->y1 - area->y0;
+	dw = pb->area.x1 - pb->area.x0;
+	dh = pb->area.y1 - pb->area.y0;
 
 	spx = image->px;
 	srs = image->pxrs;
@@ -190,8 +187,8 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 	d2s.c[1] = b2i.c[1];
 	d2s.c[2] = b2i.c[2];
 	d2s.c[3] = b2i.c[3];
-	d2s.c[4] = b2i.c[0] * area->x0 + b2i.c[2] * area->y0 + b2i.c[4];
-	d2s.c[5] = b2i.c[1] * area->x0 + b2i.c[3] * area->y0 + b2i.c[5];
+	d2s.c[4] = b2i.c[0] * pb->area.x0 + b2i.c[2] * pb->area.y0 + b2i.c[4];
+	d2s.c[5] = b2i.c[1] * pb->area.x0 + b2i.c[3] * pb->area.y0 + b2i.c[5];
 
 	if (pb->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 		nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE);

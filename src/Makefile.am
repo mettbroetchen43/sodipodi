@@ -48,6 +48,7 @@ sodipodi_SOURCES = \
 	sp-item.c sp-item.h \
 	sp-item-group.c sp-item-group.h \
 	sp-symbol.c sp-symbol.h \
+	sp-marker.c sp-marker.h \
 	sp-use.c sp-use.h \
 	sp-anchor.c sp-anchor.h \
 	sp-root.c sp-root.h \

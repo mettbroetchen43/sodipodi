@@ -248,7 +248,7 @@ nr_rect_s_union (NRRectS *d, const NRRectS *r0, const NRRectS *r1)
 NRRectD *
 nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, NRMatrixD *m)
 {
-	if ((d != s) && nr_rect_d_test_empty (s)) {
+	if (nr_rect_d_test_empty (s)) {
 		nr_rect_d_set_empty (d);
 	} else {
 		double x0, y0, x1, y1, x, y;
@@ -273,14 +273,13 @@ nr_rect_d_matrix_d_transform (NRRectD *d, NRRectD *s, NRMatrixD *m)
 		d->x1 = MAX (x1, x);
 		d->y1 = MAX (y1, y);
 	}
-
 	return d;
 }
 
 NRRectF *
 nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, NRMatrixF *m)
 {
-	if ((d != s) && nr_rect_f_test_empty (s)) {
+	if (nr_rect_f_test_empty (s)) {
 		nr_rect_f_set_empty (d);
 	} else {
 		float x0, y0, x1, y1, x, y;
@@ -305,7 +304,6 @@ nr_rect_f_matrix_f_transform (NRRectF *d, NRRectF *s, NRMatrixF *m)
 		d->x1 = MAX (x1, x);
 		d->y1 = MAX (y1, y);
 	}
-
 	return d;
 }
 

@@ -1,19 +1,7 @@
 2003-03-09  Lauris Kaplinski  <lauris@kaplinski.com>
-2003-03-04  MenTaLguY  <mental@rydia.net>
 
-	* src/desktop.c: changed zoom_status to a spin button with logarithmic increment and a handy context menu
-	(sp_dtw_zoom_*): added various event handlers for the new zoom spin button
-	(sp_desktop_zoom_page): factored out code duplicated with zoom-context.c
-	(sp_desktop_zoom_selection): ditto
-	(sp_desktop_zoom_drawing): ditto
-	(sp_desktop_widget_init): removed unused SPDesktopWidget::zoom member and replaced zoom label with a spin button
-
-	* src/desktop.h: removed unused SPDesktopWidget::zoom member, added new sp_desktop_zoom_* methods
-
-	* src/zoom-context.c (sp_zoom_drawing): factored out code to desktop.c
-	(sp_zoom_page): NRRectD -> NRRectF, factored out code to desktop.c
-	(sp_zoom_selection): factored out code to desktop.c
-	
+	* src/display/nr-arena-image.c (nr_arena_image_render): Use pixblock
+	area instead the active area (that may be bigger)
 
 	* src/helper/kde.cpp: Added SPModulePrintKDE object
 	(sp_kde_get_module_print): Contructor
@@ -30,6 +18,21 @@
 
 	* configure.in: Enable modules by default
 
+2003-03-04  MenTaLguY  <mental@rydia.net>
+
+	* src/desktop.c: changed zoom_status to a spin button with logarithmic increment and a handy context menu
+	(sp_dtw_zoom_*): added various event handlers for the new zoom spin button
+	(sp_desktop_zoom_page): factored out code duplicated with zoom-context.c
+	(sp_desktop_zoom_selection): ditto
+	(sp_desktop_zoom_drawing): ditto
+	(sp_desktop_widget_init): removed unused SPDesktopWidget::zoom member and replaced zoom label with a spin button
+
+	* src/desktop.h: removed unused SPDesktopWidget::zoom member, added new sp_desktop_zoom_* methods
+
+	* src/zoom-context.c (sp_zoom_drawing): factored out code to desktop.c
+	(sp_zoom_page): NRRectD -> NRRectF, factored out code to desktop.c
+	(sp_zoom_selection): factored out code to desktop.c
+	
 2003-03-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/Makefile.am: Compile KDE module if needed
