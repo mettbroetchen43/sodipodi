@@ -205,7 +205,7 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		sp_item_i2doc_affine (SP_ITEM (object), ctm);
 		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, lg->x1.computed, lg->y1.computed);
 		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, lg->x2.computed, lg->y2.computed);
-		sp_paint_selector_set_gradient_position (psel, p0.x, p0.y, p1.x, p1.y);
+		sp_paint_selector_set_lgradient_position (psel, p0.x, p0.y, p1.x, p1.y);
 		break;
 	default:
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);

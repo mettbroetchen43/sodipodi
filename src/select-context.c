@@ -18,6 +18,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include "helper/sp-canvas-util.h"
 #include "rubberband.h"
 #include "sodipodi-private.h"
 #include "document.h"

@@ -124,7 +124,6 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 			break;
 		}
 	} else {
-		unsigned int ca;
 		/* Image destination */
 		switch (dpb->mode) {
 		case NR_PIXBLOCK_MODE_A8:
@@ -177,18 +176,24 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 				d[2] = s[2];
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8A8N:
-				ca = 65025 - (255 - s[3]) * (255 - d[3]);
-				d[0] = NR_COMPOSENNN_A7 (s[0], s[3], d[0], d[3], ca);
-				d[1] = NR_COMPOSENNN_A7 (s[1], s[3], d[1], d[3], ca);
-				d[2] = NR_COMPOSENNN_A7 (s[2], s[3], d[2], d[3], ca);
-				d[3] = (ca + 127) / 255;
+				if (s[3] != 0) {
+					unsigned int ca;
+					ca = NR_A7 (s[3], d[3]);
+					d[0] = NR_COMPOSENNN_A7 (s[0], s[3], d[0], d[3], ca);
+					d[1] = NR_COMPOSENNN_A7 (s[1], s[3], d[1], d[3], ca);
+					d[2] = NR_COMPOSENNN_A7 (s[2], s[3], d[2], d[3], ca);
+					d[3] = (ca + 127) / 255;
+				}
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8A8P:
-				ca = 65025 - (255 - s[3]) * (255 - d[3]);
-				d[0] = NR_COMPOSEPNN_A7 (s[0], s[3], d[0], d[3], ca);
-				d[1] = NR_COMPOSEPNN_A7 (s[1], s[3], d[0], d[3], ca);
-				d[2] = NR_COMPOSEPNN_A7 (s[2], s[3], d[0], d[3], ca);
-				d[3] = (ca + 127) / 255;
+				if (s[3] != 0) {
+					unsigned int ca;
+					ca = NR_A7 (s[3], d[3]);
+					d[0] = NR_COMPOSEPNN_A7 (s[0], s[3], d[0], d[3], ca);
+					d[1] = NR_COMPOSEPNN_A7 (s[1], s[3], d[0], d[3], ca);
+					d[2] = NR_COMPOSEPNN_A7 (s[2], s[3], d[0], d[3], ca);
+					d[3] = (ca + 127) / 255;
+				}
 				break;
 			default:
 				break;

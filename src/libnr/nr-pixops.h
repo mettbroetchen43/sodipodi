@@ -18,6 +18,7 @@
 #define NR_RGBA32_A(v) ((v) & 0xff)
 
 #define NR_PREMUL(c,a) (((c) * (a) + 127) / 255)
+#define NR_A7(fa,ba) (65025 - (255 - fa) * (255 - ba))
 #define NR_COMPOSENNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 127) / a)
 #define NR_COMPOSEPNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 127) / a)
 #define NR_COMPOSENNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 32512) / 65025)

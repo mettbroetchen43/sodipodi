@@ -31,6 +31,7 @@ SPGradient *sp_gradient_ensure_vector_normalized (SPGradient *gradient);
  */
 
 SPGradient *sp_gradient_ensure_private_normalized (SPGradient *gradient, SPGradient *vector);
+SPGradient *sp_gradient_ensure_radial_private_normalized (SPGradient *gradient, SPGradient *vector);
 
 /*
  * Releases all stale gradient references to given gradient vector,
@@ -45,8 +46,10 @@ void sp_gradient_vector_release_references (SPGradient *gradient);
  * gr has to be normalized vector
  */
 
-void sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gradient);
-void sp_item_force_stroke_lineargradient_vector (SPItem *item, SPGradient *gradient);
+SPGradient *sp_item_force_fill_lineargradient_vector (SPItem *item, SPGradient *gradient);
+SPGradient *sp_item_force_stroke_lineargradient_vector (SPItem *item, SPGradient *gradient);
+SPGradient *sp_item_force_fill_radialgradient_vector (SPItem *item, SPGradient *gradient);
+SPGradient *sp_item_force_stroke_radialgradient_vector (SPItem *item, SPGradient *gradient);
 
 /*
  * Get default normalized gradient vector of document, create if there is none

@@ -1,5 +1,23 @@
 2002-09-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/paint-selector.c (sp_paint_selector_get_gradient_position_floatv): Set radial
+
+	* src/libnr/nr-pixblock-pixel.c (nr_compose_pixblock_pixblock_pixel): Kill
+	division by zero, if fg and bg are both fully transparent
+
+	* src/dialogs/fill-style.c (sp_fill_style_widget_update): Implement radial
+	(sp_fill_style_widget_paint_dragged): Ditto
+	(sp_fill_style_widget_paint_changed): Ditto
+
+	* src/sp-gradient.c (sp_radialgradient_set_position): New method
+
+	* src/gradient-chemistry.c (sp_gradient_ensure_radial_private_normalized): New method
+	(sp_gradient_get_radial_private_normalized): Ditto
+	(sp_item_force_fill_radialgradient_vector): Ditto
+	(sp_item_force_stroke_radialgradient_vector): Ditto
+
+2002-09-27  Lauris Kaplinski  <lauris@kaplinski.com>
+
 	* src/widgets/paint-selector.c (sp_paint_selector_set_gradient_radial): New method
 
 	* src/widgets/gradient-position.c (sp_gradient_position_set_mode): New method

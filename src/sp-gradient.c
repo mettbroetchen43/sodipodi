@@ -1650,6 +1650,23 @@ sp_radialgradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set
 	if (set_missing || rg->fy.set) sp_repr_set_double_attribute (repr, "fy", rg->fy.computed);
 }
 
+void
+sp_radialgradient_set_position (SPRadialGradient *rg, gdouble cx, gdouble cy, gdouble fx, gdouble fy, gdouble r)
+{
+	g_return_if_fail (rg != NULL);
+	g_return_if_fail (SP_IS_RADIALGRADIENT (rg));
+
+	/* fixme: units? (Lauris)  */
+	sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, cx, cx);
+	sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, cy, cy);
+	sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, fx, fx);
+	sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, fy, fy);
+	sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, r, r);
+
+	sp_object_request_modified (SP_OBJECT (rg), SP_OBJECT_MODIFIED_FLAG);
+}
+
+
 /* Builds flattened repr tree of gradient - i.e. no href */
 
 SPRepr *

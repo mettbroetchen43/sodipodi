@@ -217,6 +217,8 @@ struct _SPRadialGradientClass {
 
 GtkType sp_radialgradient_get_type (void);
 
+void sp_radialgradient_set_position (SPRadialGradient *rg, gdouble cx, gdouble cy, gdouble fx, gdouble fy, gdouble r);
+
 /* Builds flattened repr tree of gradient - i.e. no href */
 
 SPRepr *sp_radialgradient_build_repr (SPRadialGradient *lg, gboolean vector);

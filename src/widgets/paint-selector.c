@@ -315,28 +315,13 @@ sp_paint_selector_set_gradient_linear (SPPaintSelector *psel, SPGradient *vector
 }
 
 void
-sp_paint_selector_set_gradient_bbox (SPPaintSelector *psel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
+sp_paint_selector_set_lgradient_position (SPPaintSelector *psel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
 {
 	SPGradientSelector *gsel;
 
 	g_return_if_fail (psel != NULL);
 	g_return_if_fail (SP_IS_PAINT_SELECTOR (psel));
-	g_return_if_fail ((psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) ||
-			  (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL));
-
-	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
-
-	sp_gradient_selector_set_bbox (gsel, x0, y0, x1, y1);
-}
-
-void
-sp_paint_selector_set_gradient_position (SPPaintSelector *psel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
-{
-	SPGradientSelector *gsel;
-
-	g_return_if_fail (psel != NULL);
-	g_return_if_fail (SP_IS_PAINT_SELECTOR (psel));
-	g_return_if_fail ((psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) || (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR));
+	g_return_if_fail (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
 
 	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
 
@@ -356,6 +341,35 @@ sp_paint_selector_set_gradient_radial (SPPaintSelector *psel, SPGradient *vector
 
 	sp_gradient_selector_set_mode (gsel, SP_GRADIENT_SELECTOR_MODE_RADIAL);
 	sp_gradient_selector_set_vector (gsel, (vector) ? SP_OBJECT_DOCUMENT (vector) : NULL, vector);
+}
+
+void
+sp_paint_selector_set_rgradient_position (SPPaintSelector *psel, gdouble cx, gdouble cy, gdouble fx, gdouble fy, gdouble r)
+{
+	SPGradientSelector *gsel;
+
+	g_return_if_fail (psel != NULL);
+	g_return_if_fail (SP_IS_PAINT_SELECTOR (psel));
+	g_return_if_fail (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL);
+
+	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
+
+	sp_gradient_selector_set_rgradient_position (gsel, cx, cy, fx, fy, r);
+}
+
+void
+sp_paint_selector_set_gradient_bbox (SPPaintSelector *psel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
+{
+	SPGradientSelector *gsel;
+
+	g_return_if_fail (psel != NULL);
+	g_return_if_fail (SP_IS_PAINT_SELECTOR (psel));
+	g_return_if_fail ((psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) ||
+			  (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL));
+
+	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
+
+	sp_gradient_selector_set_bbox (gsel, x0, y0, x1, y1);
 }
 
 void
@@ -400,11 +414,16 @@ sp_paint_selector_get_gradient_position_floatv (SPPaintSelector *psel, gfloat *p
 {
 	SPGradientSelector *gsel;
 
-	g_return_if_fail (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
+	g_return_if_fail ((psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) ||
+			  (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL));
 
 	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
 
-	return sp_gradient_selector_get_lgradient_position_floatv (gsel, pos);
+	if (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) {
+		return sp_gradient_selector_get_lgradient_position_floatv (gsel, pos);
+	} else {
+		return sp_gradient_selector_get_rgradient_position_floatv (gsel, pos);
+	}
 }
 
 static void
