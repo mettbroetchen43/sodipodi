@@ -1,6 +1,7 @@
 	.file	"nr-compose.c"
 	.text
 	.align 2
+.globl _nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP
 .globl nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP
 	.type	nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP,@function
 
@@ -35,6 +36,7 @@
  *
 */
 
+_nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP:
 nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP:
 	pushl	%ebp
 	movl	%esp, %ebp

@@ -1,6 +1,7 @@
 	.file	"nr-compose.c"
 	.text
 	.align 2
+.globl _nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P
 .globl nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P
 	.type	nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P,@function
 
@@ -35,6 +36,7 @@
  *
 */
 
+_nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P:
 nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P:
 	pushl	%ebp
 	movl	%esp, %ebp

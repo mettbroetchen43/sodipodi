@@ -3,9 +3,11 @@
 gcc2_compiled.:
 .text
 	.align 16
+.globl _nr_have_mmx
 .globl nr_have_mmx
 	.type	 nr_have_mmx,@function
 
+_nr_have_mmx:
 nr_have_mmx:
 	push	%ebx
 

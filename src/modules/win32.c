@@ -10,6 +10,7 @@
  */
 
 #define USE_TIMER
+#define GLOBAL_USE_TIMER
 
 #include <config.h>
 
@@ -25,6 +26,18 @@
 /* Initialization */
 
 static unsigned int SPWin32Modal = FALSE;
+
+#define SP_FOREIGN_MAX_ITER 10
+
+VOID CALLBACK
+sp_win32_timer (HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
+{
+	int cdown = 0;
+	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
+		gtk_main_iteration_do (FALSE);
+	}
+	gtk_main_iteration_do (FALSE);
+}
 
 static void
 sp_win32_gdk_event_handler (GdkEvent *event)
@@ -56,27 +69,27 @@ sp_win32_gdk_event_handler (GdkEvent *event)
 	gtk_main_do_event (event);
 }
 
+#ifdef GLOBAL_USE_TIMER
+static UINT_PTR globaltimer;
+#endif
+
 void
 sp_win32_init (int argc, char **argv, const char *name)
 {
 	gdk_event_handler_set ((GdkEventFunc) sp_win32_gdk_event_handler, NULL, NULL);
+
+#ifdef GLOBAL_USE_TIMER
+	globaltimer = SetTimer (NULL, 0, 100, sp_win32_timer);
+#endif
+
 }
 
 void
 sp_win32_finish (void)
 {
-}
-
-#define SP_FOREIGN_MAX_ITER 10
-
-VOID CALLBACK
-sp_win32_timer (HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
-{
-	int cdown = 0;
-	while ((cdown++ < SP_FOREIGN_MAX_ITER) && gdk_events_pending ()) {
-		gtk_main_iteration_do (FALSE);
-	}
-	gtk_main_iteration_do (FALSE);
+#ifdef GLOBAL_USE_TIMER
+	KillTimer (NULL, globaltimer);
+#endif
 }
 
 /* Printing */
