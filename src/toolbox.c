@@ -1,17 +1,16 @@
 #define __SP_TOOLBOX_C__
 
 /*
- * Toolbox
+ * Main toolbox
  *
  * Authors:
- *   Frank Felfe  <innerspace@iname.com>
- *   Lauris Kaplinski  <lauris@kaplinski.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
  *
- * Copyright (C) 2000-2001 Frank Felfe
+ * Copyright (C) 1999-2002 authors
  * Copyright (C) 2001-2002 Ximian, Inc.
- * Copyright (C) 2002 Lauris Kaplinski
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -70,22 +69,52 @@ static void sp_maintoolbox_open_files(gchar * buffer);
 static void sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused);
 static void sp_maintoolbox_open_one_file(gchar * svg_path);
 
+static gint
+sp_maintoolbox_delete_event (GtkWidget *widget, GdkEventAny *event, gpointer data)
+{
+	sodipodi_unref ();
+
+	gtk_widget_hide (GTK_WIDGET (toolbox));
+
+	return TRUE;
+}
+
 void
 sp_maintoolbox_create (void)
 {
 	if (toolbox == NULL) {
-		GtkWidget * vbox, * t, * w;
-		GladeXML * xml;
+		GtkWidget *vbox, *mbar, *mi, *m, *t, *w;
+		GladeXML *xml;
 
-		/* Crete main toolbox */
+		/* Crete main toolbox Glade XML */
 		toolbox_xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "maintoolbox");
 		g_return_if_fail (toolbox_xml != NULL);
-		glade_xml_signal_autoconnect (toolbox_xml);
 
+		/* Create window */
+		toolbox = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_title (GTK_WINDOW (toolbox), _("Sodipodi"));
+		gtk_signal_connect (GTK_OBJECT (toolbox), "delete_event", GTK_SIGNAL_FUNC (sp_maintoolbox_delete_event), NULL);
+		vbox = gtk_vbox_new (FALSE, 0);
+		gtk_widget_show (vbox);
+		gtk_container_add (GTK_CONTAINER (toolbox), vbox);
+		mbar = gtk_menu_bar_new ();
+		gtk_widget_show (mbar);
+		gtk_box_pack_start (GTK_BOX (vbox), mbar, FALSE, FALSE, 0);
+
+		mi = gtk_menu_item_new_with_label (_("Sodipodi"));
+		gtk_widget_show (mi);
+		gtk_menu_bar_append (GTK_MENU_BAR (mbar), mi);
+
+		m = sp_ui_main_menu ();
+		gtk_widget_show (m);
+		gtk_menu_item_set_submenu (GTK_MENU_ITEM (mi), m);
+
+#if 0
+		glade_xml_signal_autoconnect (toolbox_xml);
 		toolbox = glade_xml_get_widget (toolbox_xml, "maintoolbox");
 		g_return_if_fail (toolbox != NULL);
-
 		vbox = glade_xml_get_widget (toolbox_xml, "main_vbox");
+#endif
 
 		/* File */
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "file_table");
@@ -140,16 +169,18 @@ sp_maintoolbox_create (void)
 		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
 	}
 
-	/* Reference our sodipodi engine */
-	if (!GTK_WIDGET_VISIBLE (toolbox)) sodipodi_ref ();
-
 	gnome_window_icon_set_from_default (GTK_WINDOW (toolbox));
 	gtk_drag_dest_set(toolbox, 
 			  GTK_DEST_DEFAULT_ALL,
 			  toolbox_drop_target_entries,
 			  ntoolbox_drop_target_entries,
 			  GDK_ACTION_COPY);
-	gtk_widget_show (toolbox);
+
+	if (!GTK_WIDGET_VISIBLE (toolbox)) {
+		/* Reference our sodipodi engine */
+		sodipodi_ref ();
+		gtk_widget_show (toolbox);
+	}
 }
 
 GtkWidget *
@@ -362,16 +393,6 @@ sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data)
 	sp_repr_set_int_attribute (repr, "state", state);
 
 	return FALSE;
-}
-
-gint
-sp_maintoolbox_close (GtkWidget * widget, GdkEventAny * event, gpointer data)
-{
-	sodipodi_unref ();
-
-	gtk_widget_hide (GTK_WIDGET (toolbox));
-
-	return TRUE;
 }
 
 void 

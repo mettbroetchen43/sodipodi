@@ -1,14 +1,17 @@
-#ifndef SP_TOOLBOX_H
-#define SP_TOOLBOX_H
+#ifndef __SP_TOOLBOX_H__
+#define __SP_TOOLBOX_H__
 
 /*
- * Toolbox
+ * Main toolbox
  *
  * Authors:
- *   Frank Felfe  <innerspace@iname.com>
- *   Lauris Kaplinski  <lauris@helixcode.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
  *
- * Copyright (C) 2000-2001 Helix Code, Inc. and authors
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "desktop.h"

@@ -1,5 +1,9 @@
 2002-09-08  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/toolbox.c (sp_maintoolbox_create): Construct main window by hand
+
+	* src/interface.c (sp_ui_main_menu): New method
+
 	* src/help.c (sp_help_about): Use document width and height
 
 	* src/svg-view.c (sp_svg_view_rescale): Use pixel coords

@@ -1,7 +1,7 @@
 #define __SP_INTERFACE_C__
 
 /*
- * Toplevel windows etc.
+ * Main UI stuff
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
@@ -25,6 +25,7 @@
 #include "document.h"
 #include "desktop-handles.h"
 #include "file.h"
+#include "help.h"
 #include "interface.h"
 #include "desktop.h"
 #include "selection-chemistry.h"
@@ -206,6 +207,8 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PRINT, _("Print"), sp_file_print, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PRINT, _("Print Preview"), sp_file_print_preview, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_ABOUT, _("About Sodipodi"), sp_help_about, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_CLOSE, _("Close View"), sp_ui_close_view, NULL);
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_EXIT, _("Exit Program"), sp_file_exit, NULL);
 }
@@ -339,10 +342,24 @@ sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Display Properties"), sp_display_dialog, NULL);
 }
 
-/*
- * Item properties
- *
- */
+/* Menus */
+
+GtkWidget *
+sp_ui_main_menu (void)
+{
+	GtkWidget *m;
+
+	m = gtk_menu_new ();
+
+	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_NEW, _("New"), sp_file_new, NULL);
+	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_OPEN, _("Open"), sp_file_open, NULL);
+	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_ABOUT, _("About Sodipodi"), sp_help_about, NULL);
+	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_EXIT, _("Exit Program"), sp_file_exit, NULL);
+
+	return m;
+}
 
 GtkWidget *
 sp_ui_generic_menu (SPView *v, SPItem *item)

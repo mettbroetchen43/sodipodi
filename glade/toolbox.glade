@@ -56,7 +56,7 @@
       <widget>
 	<class>GtkMenuItem</class>
 	<name>file1</name>
-	<label>_File</label>
+	<label>Sodipodi</label>
 	<right_justify>False</right_justify>
 
 	<widget>
@@ -100,6 +100,17 @@
 	  </widget>
 
 	  <widget>
+	    <class>GtkPixmapMenuItem</class>
+	    <name>abou1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_help_about</handler>
+	      <last_modification_time>Mon, 21 Aug 2000 17:59:10 GMT</last_modification_time>
+	    </signal>
+	    <stock_item>GNOMEUIINFO_MENU_ABOUT_ITEM</stock_item>
+	  </widget>
+
+	  <widget>
 	    <class>GtkMenuItem</class>
 	    <name>separator1</name>
 	    <right_justify>False</right_justify>
@@ -121,30 +132,6 @@
 	    <label>_Quit</label>
 	    <right_justify>False</right_justify>
 	    <stock_icon>GNOME_STOCK_MENU_EXIT</stock_icon>
-	  </widget>
-	</widget>
-      </widget>
-
-      <widget>
-	<class>GtkMenuItem</class>
-	<name>help1</name>
-	<label>_Help</label>
-	<right_justify>False</right_justify>
-
-	<widget>
-	  <class>GtkMenu</class>
-	  <name>help1_menu</name>
-
-	  <widget>
-	    <class>GtkMenuItem</class>
-	    <name>abou1</name>
-	    <signal>
-	      <name>activate</name>
-	      <handler>sp_help_about</handler>
-	      <last_modification_time>Mon, 21 Aug 2000 17:59:10 GMT</last_modification_time>
-	    </signal>
-	    <label>_About ...</label>
-	    <right_justify>False</right_justify>
 	  </widget>
 	</widget>
       </widget>
