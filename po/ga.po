@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: sodipodi 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2003-12-17 04:57+0100\n"
-"PO-Revision-Date: 2004-01-21 08:18+0000\n"
+"PO-Revision-Date: 2004-02-03 08:18+0000\n"
 "Last-Translator: Alastair McKinstry <mckinstry@computer.org>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -1927,7 +1927,7 @@ msgstr ""
 
 #: src/verbs.c:423
 msgid "Clear All"
-msgstr "Glan gach rud"
+msgstr "Bánaigh gach rud"
 
 #: src/verbs.c:423
 msgid "Delete all objects from document"
@@ -1935,7 +1935,7 @@ msgstr ""
 
 #: src/verbs.c:424
 msgid "Select All"
-msgstr ""
+msgstr "Roghnaigh Gach rud"
 
 #: src/verbs.c:424
 msgid "Select all objects in document"
@@ -2041,7 +2041,7 @@ msgstr ""
 
 #: src/verbs.c:440
 msgid "Flip Horizontally"
-msgstr ""
+msgstr "Cas ar Cothromach"
 
 #: src/verbs.c:441
 msgid "Flip selected objects horizontally"
@@ -2049,7 +2049,7 @@ msgstr ""
 
 #: src/verbs.c:442
 msgid "Flip Vertically"
-msgstr ""
+msgstr "Cas ar Ingearach"
 
 #: src/verbs.c:443
 msgid "Flip selected objects vertically"
@@ -2139,20 +2139,19 @@ msgstr ""
 #. Zooming
 #: src/verbs.c:458
 msgid "In"
-msgstr "In"
+msgstr "Isteach"
 
 #: src/verbs.c:458
-#, fuzzy
 msgid "Zoom in drawing"
-msgstr "Priontáil comhad"
+msgstr "Súmáil istach sa pictiúr"
 
 #: src/verbs.c:459
 msgid "Out"
-msgstr "As"
+msgstr "Amach"
 
 #: src/verbs.c:459
 msgid "Zoom out drawing"
-msgstr ""
+msgstr "iSúmáil amach sa pictiúr"
 
 #: src/verbs.c:460
 msgid "1:1"
@@ -2306,9 +2305,8 @@ msgid "End color"
 msgstr ""
 
 #: src/widgets/gradient-vector.c:452
-#, fuzzy
 msgid "Gradient vector"
-msgstr "Priontáil comhad"
+msgstr ""
 
 #: src/widgets/paint-selector.c:622
 msgid "No objects"
