@@ -2,15 +2,15 @@
 # Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>, 2003.
-# Jeroen van der Vegt <jeroen@dirck.mine.nu>, 2003.
+# Jeroen van der Vegt <jeroen (at) dirck.mine.nu>, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi cvs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-04 20:31+0100\n"
-"PO-Revision-Date: 2003-11-05 00:37+0100\n"
-"Last-Translator: Jeroen van der Vegt <jeroen@dirck.mine.nu>\n"
+"POT-Creation-Date: 2003-11-18 20:36+0100\n"
+"PO-Revision-Date: 2003-11-18 22:49+0100\n"
+"Last-Translator: Jeroen van der Vegt <jeroen (at) dirck.mine.nu>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,7 +21,7 @@ msgid "SVG Vector Illustrator"
 msgstr "SVG vector Illustrator"
 
 #. Create window
-#: sodipodi.desktop.in.h:2 src/toolbox.c:119 src/toolbox.c:140
+#: sodipodi.desktop.in.h:2 src/toolbox.c:121 src/toolbox.c:142
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
@@ -29,1147 +29,1147 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kon de sodipodi-svg fabriek niet maken"
 
-#: src/desktop.c:750
+#: src/desktop.c:752
 msgid "Zoom drawing if window size changes"
 msgstr "Tekening schalen wanneer de schermgrootte veranderd"
 
-#: src/desktop.c:830
+#: src/desktop.c:832
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:959
+#: src/desktop.c:961
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Wijzigingen in document %s zijn nog niet opgeslagen. Nu opslaan?"
 
 #. Page page
-#: src/desktop.c:1505 src/dialogs/align.c:286
-#: src/dialogs/desktop-properties.c:269 src/dialogs/document-properties.c:163
-#: src/dialogs/export.c:135 src/verbs.c:484
+#: src/desktop.c:1507 src/dialogs/align.c:288
+#: src/dialogs/desktop-properties.c:277 src/dialogs/document-properties.c:165
+#: src/dialogs/export.c:137 src/verbs.c:453
 msgid "Page"
 msgstr "Pagina"
 
-#: src/desktop.c:1509 src/dialogs/align.c:287 src/dialogs/export.c:140
-#: src/verbs.c:485
+#: src/desktop.c:1511 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/verbs.c:454
 msgid "Drawing"
 msgstr "Tekening"
 
 #. Selection submenu
-#: src/desktop.c:1513 src/dialogs/align.c:288 src/dialogs/export.c:145
-#: src/interface.c:570 src/toolbox.c:485 src/verbs.c:486
+#: src/desktop.c:1515 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/interface.c:580 src/toolbox.c:489 src/verbs.c:455
 msgid "Selection"
 msgstr "Selectie"
 
-#: src/dialogs/align.c:153 src/toolbox.c:445
+#: src/dialogs/align.c:155 src/toolbox.c:449
 msgid "Align objects"
 msgstr "Objecten oplijnen"
 
-#: src/dialogs/align.c:172
+#: src/dialogs/align.c:174
 msgid "Right side of aligned objects to left side of anchor"
 msgstr "Rechterkant van de objecten oplijnen met de linkerkant van het anker"
 
-#: src/dialogs/align.c:175
+#: src/dialogs/align.c:177
 msgid "Left side of aligned objects to left side of anchor"
 msgstr "Linkerkant van de objecten oplijnen met de linkerkant van het anker"
 
-#: src/dialogs/align.c:178
+#: src/dialogs/align.c:180
 msgid "Center horizontally"
 msgstr "Horizontaal centreren"
 
-#: src/dialogs/align.c:181
+#: src/dialogs/align.c:183
 msgid "Right side of aligned objects to right side of anchor"
 msgstr "Rechterkant van de objecten oplijnen met de rechterkant van het anker"
 
-#: src/dialogs/align.c:184
+#: src/dialogs/align.c:186
 msgid "Left side of aligned objects to right side of anchor"
 msgstr "Linkerkant van de objecten oplijnen met de rechterkant van de objecten"
 
-#: src/dialogs/align.c:188
+#: src/dialogs/align.c:190
 msgid "Bottom of aligned objects to top of anchor"
 msgstr "Onderkant van de objecten oplijnen met de bovenkant van het anker"
 
-#: src/dialogs/align.c:191 src/dialogs/align.c:200
+#: src/dialogs/align.c:193 src/dialogs/align.c:202
 msgid "Top of aligned objects to top of anchor"
 msgstr "Bovenkant van de objecten oplijnen met de bovenkant van het anker"
 
-#: src/dialogs/align.c:194
+#: src/dialogs/align.c:196
 msgid "Center vertically"
 msgstr "Vertikaal centreren"
 
-#: src/dialogs/align.c:197
+#: src/dialogs/align.c:199
 msgid "Bottom of aligned objects to bottom of anchor"
 msgstr "Onderkant van de objecten oplijnen met de onderkant van het anker"
 
-#: src/dialogs/align.c:203
+#: src/dialogs/align.c:205
 msgid "Align"
 msgstr "Uitlijnen"
 
-#: src/dialogs/align.c:221
+#: src/dialogs/align.c:223
 msgid "Distribute left sides of objects at even distances"
 msgstr "De linkerzijden van de objecten gelijkmatig verdelen"
 
-#: src/dialogs/align.c:224
+#: src/dialogs/align.c:226
 msgid "Distribute centres of objects at even distances horizontally"
 msgstr ""
 "De middens van de objecten gelijkmatig in horizontale richting verdelen"
 
-#: src/dialogs/align.c:227
+#: src/dialogs/align.c:229
 msgid "Distribute right sides of objects at even distances"
 msgstr ""
 "De afstand tussen de rechterzijden van de objecten gelijkmatig verdelen"
 
-#: src/dialogs/align.c:230
+#: src/dialogs/align.c:232
 msgid "Distribute horizontal distance between objects equally"
 msgstr "De horizontale afstand tussen objecten gelijkmatig verdelen"
 
-#: src/dialogs/align.c:234
+#: src/dialogs/align.c:236
 msgid "Distribute top sides of objects at even distances"
 msgstr "De bovenkanten van de objecten gelijkmatig verdelen"
 
-#: src/dialogs/align.c:237
+#: src/dialogs/align.c:239
 msgid "Distribute centres of objects at even distances vertically"
 msgstr "De middens van de objecten gelijkmatig in vertikale richting verdelen"
 
-#: src/dialogs/align.c:240
+#: src/dialogs/align.c:242
 msgid "Distribute bottom sides of objects at even distances"
 msgstr "De onderkanten van de objecten geijkmatig verdelen."
 
-#: src/dialogs/align.c:243
+#: src/dialogs/align.c:245
 msgid "Distribute vertical distance between objects equally"
 msgstr "De vertikale afstand tussen de objecten gelijkmatig verdelen."
 
-#: src/dialogs/align.c:246
+#: src/dialogs/align.c:248
 msgid "Distribute"
 msgstr "Verspreiden"
 
-#: src/dialogs/align.c:282
+#: src/dialogs/align.c:284
 msgid "Last selected"
 msgstr "Laatst geselecteerde"
 
-#: src/dialogs/align.c:283
+#: src/dialogs/align.c:285
 msgid "First selected"
 msgstr "Eerst geselecteerde"
 
-#: src/dialogs/align.c:284
+#: src/dialogs/align.c:286
 msgid "Biggest item"
 msgstr "Grootste onderdeel"
 
-#: src/dialogs/align.c:285
+#: src/dialogs/align.c:287
 msgid "Smallest item"
 msgstr "Kleinste onderdeel"
 
-#: src/dialogs/desktop-properties.c:191
+#: src/dialogs/desktop-properties.c:190
 msgid "Desktop settings"
 msgstr "Werkblad instellingen"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:200
+#: src/dialogs/desktop-properties.c:199
 msgid "Grid"
 msgstr "Raster"
 
-#: src/dialogs/desktop-properties.c:211
+#: src/dialogs/desktop-properties.c:212
 msgid "Show grid"
 msgstr "Raster weergeven"
 
-#: src/dialogs/desktop-properties.c:212
+#: src/dialogs/desktop-properties.c:213
 msgid "Snap to grid"
 msgstr "Uitlijnen op raster"
 
-#: src/dialogs/desktop-properties.c:214
+#: src/dialogs/desktop-properties.c:215
 msgid "Horizontal lines"
 msgstr "Horizontale lijnen"
 
-#: src/dialogs/desktop-properties.c:215
+#: src/dialogs/desktop-properties.c:216
 msgid "Vertical lines"
 msgstr "Vertikale lijnen"
 
-#: src/dialogs/desktop-properties.c:217
+#: src/dialogs/desktop-properties.c:218
 msgid "Iso grid"
 msgstr "Isometrisch raster"
 
-#: src/dialogs/desktop-properties.c:218
+#: src/dialogs/desktop-properties.c:219
 msgid "Hex grid"
 msgstr "Hexagoon raster"
 
-#: src/dialogs/desktop-properties.c:221
+#: src/dialogs/desktop-properties.c:224
 msgid "Grid units:"
 msgstr "Rastereenheden:"
 
-#: src/dialogs/desktop-properties.c:223
+#: src/dialogs/desktop-properties.c:226
 msgid "Origin X:"
 msgstr "X-oorsprong: "
 
-#: src/dialogs/desktop-properties.c:225
+#: src/dialogs/desktop-properties.c:228
 msgid "Origin Y:"
 msgstr "Y-oorsprong:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:231
 msgid "Spacing X:"
 msgstr "X tussenafstand:"
 
-#: src/dialogs/desktop-properties.c:230
+#: src/dialogs/desktop-properties.c:233
 msgid "Spacing Y:"
 msgstr "Y tussenafstand:"
 
-#: src/dialogs/desktop-properties.c:235 src/dialogs/desktop-properties.c:258
+#: src/dialogs/desktop-properties.c:237 src/dialogs/desktop-properties.c:264
+msgid "Snap units:"
+msgstr "Uitlijneenheden"
+
+#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
 msgid "Snap distance:"
 msgstr "Uitlijnafstand:"
 
-#: src/dialogs/desktop-properties.c:238
+#: src/dialogs/desktop-properties.c:242
 msgid "Grid color:"
 msgstr "Rasterkleur:"
 
-#: src/dialogs/desktop-properties.c:239
+#: src/dialogs/desktop-properties.c:243
 msgid "Grid color"
 msgstr "Rasterkleur"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:243
+#: src/dialogs/desktop-properties.c:247
 msgid "Guides"
 msgstr "Hulplijnen"
 
-#: src/dialogs/desktop-properties.c:252
+#: src/dialogs/desktop-properties.c:258
 msgid "Show guides"
 msgstr "Hulplijnen weergeven"
 
-#: src/dialogs/desktop-properties.c:253
+#: src/dialogs/desktop-properties.c:259
 msgid "Snap to guides"
 msgstr "Uitlijnen op hulplijnen"
 
-#: src/dialogs/desktop-properties.c:256
-msgid "Snap units:"
-msgstr "Uitlijneenheden"
-
-#: src/dialogs/desktop-properties.c:261
+#: src/dialogs/desktop-properties.c:269
 msgid "Guides color:"
 msgstr "Hulplijn kleur:"
 
-#: src/dialogs/desktop-properties.c:262
+#: src/dialogs/desktop-properties.c:270
 msgid "Guideline color"
 msgstr "Hulplijn kleur"
 
-#: src/dialogs/desktop-properties.c:264
+#: src/dialogs/desktop-properties.c:272
 msgid "Highlight color:"
 msgstr "Oplichtende kleur:"
 
-#: src/dialogs/desktop-properties.c:265
+#: src/dialogs/desktop-properties.c:273
 msgid "Highlighted guideline color"
 msgstr "Oplichtende hulplijn kleur"
 
-#: src/dialogs/desktop-properties.c:278
+#: src/dialogs/desktop-properties.c:288
 msgid "Show border"
 msgstr "Rand weergeven"
 
-#: src/dialogs/desktop-properties.c:280
+#: src/dialogs/desktop-properties.c:290
 msgid "Border on top of drawing"
 msgstr "Rand aan de bovenkant van de tekening"
 
-#: src/dialogs/desktop-properties.c:543
+#: src/dialogs/desktop-properties.c:553
 msgid "Close"
 msgstr "Sluiten"
 
-#: src/dialogs/display-settings.c:85
+#: src/dialogs/display-settings.c:88
 msgid "Display settings"
 msgstr "Weergave instellingen"
 
 #. Rendering settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:93
+#: src/dialogs/display-settings.c:96
 msgid "Rendering"
 msgstr "Renderen"
 
-#: src/dialogs/display-settings.c:105
+#: src/dialogs/display-settings.c:108
 msgid "Oversample bitmaps:"
 msgstr ""
 
-#: src/dialogs/display-settings.c:116 src/verbs.c:427
+#: src/dialogs/display-settings.c:119 src/verbs.c:394
 msgid "None"
 msgstr "Geen"
 
-#: src/dialogs/display-settings.c:120
+#: src/dialogs/display-settings.c:123
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:124
+#: src/dialogs/display-settings.c:127
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:128
+#: src/dialogs/display-settings.c:131
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:132
+#: src/dialogs/display-settings.c:135
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
-#: src/dialogs/display-settings.c:143
+#: src/dialogs/display-settings.c:146
 msgid "Input"
 msgstr "Invoer"
 
-#: src/dialogs/display-settings.c:154
+#: src/dialogs/display-settings.c:157
 msgid "Default cursor tolerance:"
 msgstr "Standaard cursor-tolerantie:"
 
-#: src/dialogs/document-properties.c:154
+#: src/dialogs/document-properties.c:156
 msgid "Document settings"
 msgstr "Document voorkeuren"
 
-#: src/dialogs/document-properties.c:175
+#: src/dialogs/document-properties.c:177
 msgid "Paper size:"
 msgstr "Papier grootte:"
 
-#: src/dialogs/document-properties.c:196
+#: src/dialogs/document-properties.c:198
 msgid "Custom"
 msgstr "Aangepast"
 
 #. Custom paper frame
-#: src/dialogs/document-properties.c:203
+#: src/dialogs/document-properties.c:205
 msgid "Custom paper"
 msgstr "Eigen papier formaat"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:214 src/dialogs/export.c:153
-#: src/dialogs/object-properties.c:318 src/dialogs/transformation.c:401
-#: src/dialogs/transformation.c:576
+#: src/dialogs/document-properties.c:216 src/dialogs/export.c:155
+#: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
+#: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Eenheden:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:223 src/dialogs/export.c:163
-#: src/dialogs/export.c:187 src/dialogs/object-attributes.c:68
-#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:360
-#: src/dialogs/stroke-style.c:556 src/dialogs/tool-attributes.c:120
-#: src/dyna-draw-context.c:1079
+#: src/dialogs/document-properties.c:225 src/dialogs/export.c:165
+#: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
+#: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
+#: src/dialogs/stroke-style.c:559 src/dialogs/tool-attributes.c:123
+#: src/dyna-draw-context.c:1082
 msgid "Width:"
 msgstr "Breedte:"
 
-#: src/dialogs/document-properties.c:238 src/dialogs/export.c:172
-#: src/dialogs/export.c:195 src/dialogs/object-attributes.c:69
-#: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:375
+#: src/dialogs/document-properties.c:240 src/dialogs/export.c:174
+#: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
 msgstr "Hoogte:"
 
-#: src/dialogs/export.c:115
+#: src/dialogs/export.c:117
 msgid "Export bitmap"
 msgstr "Bitmap exporteren"
 
 #. Export area frame
-#: src/dialogs/export.c:124
+#: src/dialogs/export.c:126
 msgid "Export area"
 msgstr "Gebied exporteren"
 
-#: src/dialogs/export.c:157
+#: src/dialogs/export.c:159
 msgid "x0:"
 msgstr "x0:"
 
-#: src/dialogs/export.c:160
+#: src/dialogs/export.c:162
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:166
+#: src/dialogs/export.c:168
 msgid "y0:"
 msgstr "y0:"
 
-#: src/dialogs/export.c:169
+#: src/dialogs/export.c:171
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:178
+#: src/dialogs/export.c:180
 msgid "Bitmap size"
 msgstr "Bitmap afmeting"
 
-#: src/dialogs/export.c:187 src/dialogs/export.c:195
+#: src/dialogs/export.c:189 src/dialogs/export.c:197
 msgid "pixels"
 msgstr "beeldpunten"
 
-#: src/dialogs/export.c:191 src/dialogs/export.c:199
+#: src/dialogs/export.c:193 src/dialogs/export.c:201
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:206
+#: src/dialogs/export.c:208
 msgid "Export png file"
 msgstr ".png bestand exporteren"
 
-#: src/dialogs/export.c:235 src/verbs.c:437
+#: src/dialogs/export.c:237 src/verbs.c:404
 msgid "Export"
 msgstr "Exporteren"
 
-#: src/dialogs/fill-style.c:89
+#: src/dialogs/fill-style.c:91
 msgid "Fill style"
 msgstr "Opvul eigenschappen"
 
-#: src/dialogs/fill-style.c:124
+#: src/dialogs/fill-style.c:126
 msgid "Fill Rule"
 msgstr "Opvulregel"
 
-#: src/dialogs/fill-style.c:138
+#: src/dialogs/fill-style.c:140
 msgid "nonzero"
 msgstr "niet-nul"
 
-#: src/dialogs/fill-style.c:143
+#: src/dialogs/fill-style.c:145
 msgid "evenodd"
 msgstr "even-oneven"
 
-#: src/dialogs/item-properties.c:77 src/dialogs/item-properties.c:274
-#: src/dialogs/item-properties.c:348 src/dialogs/item-properties.c:355
+#: src/dialogs/item-properties.c:80 src/dialogs/item-properties.c:277
+#: src/dialogs/item-properties.c:351 src/dialogs/item-properties.c:358
 msgid "ID"
 msgstr "ID"
 
-#: src/dialogs/item-properties.c:91
+#: src/dialogs/item-properties.c:94
 msgid "Set ID"
 msgstr "ID van de set"
 
-#: src/dialogs/item-properties.c:102
+#: src/dialogs/item-properties.c:105
 msgid "Sensitive"
 msgstr "Gevoelig"
 
-#: src/dialogs/item-properties.c:107
+#: src/dialogs/item-properties.c:110
 msgid "Visible"
 msgstr "Zichtbaar"
 
-#: src/dialogs/item-properties.c:112
+#: src/dialogs/item-properties.c:115
 msgid "Active"
 msgstr "Actief"
 
-#: src/dialogs/item-properties.c:117
+#: src/dialogs/item-properties.c:120
 msgid "Printable"
 msgstr "Afdrukbaar"
 
-#: src/dialogs/item-properties.c:128
+#: src/dialogs/item-properties.c:131
 msgid "Opacity:"
 msgstr "Ondoorzichtigheid"
 
-#: src/dialogs/item-properties.c:147
+#: src/dialogs/item-properties.c:150
 msgid "Transformation matrix"
 msgstr "Transformatie matrix"
 
-#: src/dialogs/item-properties.c:268
+#: src/dialogs/item-properties.c:271
 msgid "Ref"
 msgstr "Referentie"
 
-#: src/dialogs/item-properties.c:350
+#: src/dialogs/item-properties.c:353
 msgid "ID invalid"
 msgstr "Het ID is ongeldig"
 
-#: src/dialogs/item-properties.c:352
+#: src/dialogs/item-properties.c:355
 msgid "ID exists"
 msgstr "ID bestaat"
 
-#: src/dialogs/item-properties.c:428 src/verbs.c:499
+#: src/dialogs/item-properties.c:431 src/verbs.c:468
 msgid "Item properties"
 msgstr "Item eigenschappen"
 
-#: src/dialogs/object-attributes.c:31
+#: src/dialogs/object-attributes.c:34
 msgid "Href:"
 msgstr "Href:"
 
-#: src/dialogs/object-attributes.c:32
+#: src/dialogs/object-attributes.c:35
 msgid "Target:"
 msgstr "Doel:"
 
-#: src/dialogs/object-attributes.c:33
+#: src/dialogs/object-attributes.c:36
 msgid "Type:"
 msgstr "Type:"
 
-#: src/dialogs/object-attributes.c:34
+#: src/dialogs/object-attributes.c:37
 msgid "Role:"
 msgstr "Rol:"
 
-#: src/dialogs/object-attributes.c:35
+#: src/dialogs/object-attributes.c:38
 msgid "Arcrole:"
 msgstr ""
 
-#: src/dialogs/object-attributes.c:36
+#: src/dialogs/object-attributes.c:39
 msgid "Title:"
 msgstr "Titel:"
 
-#: src/dialogs/object-attributes.c:37 src/dialogs/tool-attributes.c:110
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:113
 msgid "Show:"
 msgstr "Tonen:"
 
-#: src/dialogs/object-attributes.c:38
+#: src/dialogs/object-attributes.c:41
 msgid "Actuate:"
 msgstr "Nauwkeurigheid:"
 
-#: src/dialogs/object-attributes.c:43
+#: src/dialogs/object-attributes.c:46
 msgid "Sides:"
 msgstr "Zijkanten"
 
-#: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
+#: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
 msgid "Center X:"
 msgstr "Midden X:"
 
-#: src/dialogs/object-attributes.c:45 src/dialogs/object-attributes.c:55
+#: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
 msgid "Center Y:"
 msgstr "Midden Y:"
 
-#: src/dialogs/object-attributes.c:46
+#: src/dialogs/object-attributes.c:49
 msgid "R1:"
 msgstr "R1:"
 
-#: src/dialogs/object-attributes.c:47
+#: src/dialogs/object-attributes.c:50
 msgid "R2:"
 msgstr "R2:"
 
-#: src/dialogs/object-attributes.c:48
+#: src/dialogs/object-attributes.c:51
 msgid "ARG1:"
 msgstr "ARG1:"
 
-#: src/dialogs/object-attributes.c:49
+#: src/dialogs/object-attributes.c:52
 msgid "ARG2:"
 msgstr "ARG2:"
 
 #. Expansion
-#: src/dialogs/object-attributes.c:56 src/spiral-context.c:362
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:365
 msgid "Expansion:"
 msgstr "Expantie"
 
 #. Revolution
-#: src/dialogs/object-attributes.c:57 src/dialogs/tool-attributes.c:90
-#: src/spiral-context.c:350
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:93
+#: src/spiral-context.c:353
 msgid "Revolution:"
 msgstr "Omwentelingen:"
 
-#: src/dialogs/object-attributes.c:58
+#: src/dialogs/object-attributes.c:61
 msgid "Radius:"
 msgstr "Straal:"
 
-#: src/dialogs/object-attributes.c:59
+#: src/dialogs/object-attributes.c:62
 msgid "Argument:"
 msgstr "Argument:"
 
-#: src/dialogs/object-attributes.c:60
+#: src/dialogs/object-attributes.c:63
 msgid "T0:"
 msgstr "T0:"
 
-#: src/dialogs/object-attributes.c:65
+#: src/dialogs/object-attributes.c:68
 msgid "URL:"
 msgstr "URL:"
 
-#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-#: src/dialogs/object-properties.c:330
+#: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
+#: src/dialogs/object-properties.c:332
 msgid "X:"
 msgstr "X:"
 
-#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
-#: src/dialogs/object-properties.c:345
+#: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
+#: src/dialogs/object-properties.c:344
 msgid "Y:"
 msgstr "Y:"
 
-#: src/dialogs/object-attributes.c:78
+#: src/dialogs/object-attributes.c:81
 msgid "RX:"
 msgstr "RX:"
 
-#: src/dialogs/object-attributes.c:79
+#: src/dialogs/object-attributes.c:82
 msgid "RY:"
 msgstr "RY:"
 
-#: src/dialogs/object-attributes.c:114
+#: src/dialogs/object-attributes.c:117
 #, c-format
 msgid "%s attributes"
 msgstr "%s eigenschappen"
 
-#: src/dialogs/object-properties.c:110
+#: src/dialogs/object-properties.c:113
 msgid "Object style"
 msgstr "Objectstijl"
 
-#: src/dialogs/object-properties.c:125
+#: src/dialogs/object-properties.c:128
 msgid "Fill"
 msgstr "Vullen"
 
-#: src/dialogs/object-properties.c:139
+#: src/dialogs/object-properties.c:142
 msgid "Stroke paint"
 msgstr "Lijnkleur"
 
-#: src/dialogs/object-properties.c:153
+#: src/dialogs/object-properties.c:156
 msgid "Stroke style"
 msgstr "Lijnstijl"
 
-#: src/dialogs/object-properties.c:173
+#: src/dialogs/object-properties.c:176
 msgid "Apply to:"
 msgstr "Toepassen op:"
 
-#: src/dialogs/object-properties.c:183
+#: src/dialogs/object-properties.c:186
 msgid "Selected objects"
 msgstr "Geselecteerde objecten"
 
-#: src/dialogs/object-properties.c:186
+#: src/dialogs/object-properties.c:189
 msgid "All shape tools"
 msgstr "All vorm-gereedschappen"
 
-#: src/dialogs/object-properties.c:189
+#: src/dialogs/object-properties.c:192
 msgid "Rectangle tool"
 msgstr "Rechthoek-gereedschap"
 
-#: src/dialogs/object-properties.c:192
+#: src/dialogs/object-properties.c:195
 msgid "Arc tool"
 msgstr "Hoek-gereedschap"
 
-#: src/dialogs/object-properties.c:195
+#: src/dialogs/object-properties.c:198
 msgid "Star tool"
 msgstr "Ster-gereedschap"
 
-#: src/dialogs/object-properties.c:198
+#: src/dialogs/object-properties.c:201
 msgid "Spiral tool"
 msgstr "Spiraal-gereedschap"
 
-#: src/dialogs/object-properties.c:201
+#: src/dialogs/object-properties.c:204
 msgid "Freehand and pen"
 msgstr "Vrije hand en pen"
 
-#: src/dialogs/object-properties.c:204
+#: src/dialogs/object-properties.c:207
 msgid "Calligraphic line"
 msgstr "Callegrafische lijn"
 
-#: src/dialogs/object-properties.c:207 src/verbs.c:475
+#: src/dialogs/object-properties.c:210 src/verbs.c:444
 msgid "Text"
 msgstr "Tekst"
 
-#: src/dialogs/object-properties.c:283
+#: src/dialogs/object-properties.c:289
 msgid "Object Size and Position"
 msgstr "Object grootte en positie"
 
-#: src/dialogs/object-properties.c:305 src/verbs.c:494
+#: src/dialogs/object-properties.c:312 src/verbs.c:463
 msgid "Size and Position"
 msgstr "Grootte en positie"
 
-#: src/dialogs/stroke-style.c:543 src/toolbox.c:441
+#: src/dialogs/stroke-style.c:546 src/toolbox.c:445
 msgid "Stroke settings"
 msgstr "Lijn instellingen"
 
 #. Join type
-#: src/dialogs/stroke-style.c:579
+#: src/dialogs/stroke-style.c:582
 msgid "Join:"
 msgstr "Samenvoegen:"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:622
+#: src/dialogs/stroke-style.c:625
 msgid "Cap:"
 msgstr "Uiteinde"
 
 #. Dash
-#: src/dialogs/stroke-style.c:665
+#: src/dialogs/stroke-style.c:668
 msgid "Pattern:"
 msgstr "Patroon:"
 
-#: src/dialogs/text-edit.c:95
+#: src/dialogs/text-edit.c:98
 msgid "Text properties"
 msgstr "Text eigenschappen"
 
 #. Layout
-#: src/dialogs/text-edit.c:134
+#: src/dialogs/text-edit.c:137
 msgid "Layout"
 msgstr "Layout"
 
-#: src/dialogs/text-edit.c:142
+#: src/dialogs/text-edit.c:145
 msgid "Alignment:"
 msgstr "Uitlijning:"
 
-#: src/dialogs/text-edit.c:167
+#: src/dialogs/text-edit.c:170
 msgid "Orientation:"
 msgstr "Oriëntatie:"
 
-#: src/dialogs/text-edit.c:185
+#: src/dialogs/text-edit.c:188
 msgid "Line spacing:"
 msgstr "Regel afstand:"
 
-#: src/dialogs/text-edit.c:210
+#: src/dialogs/text-edit.c:213
 msgid "Text and font"
 msgstr "Text en lettertype"
 
-#: src/dialogs/text-edit.c:221
+#: src/dialogs/text-edit.c:224
 msgid "Set as default"
 msgstr "Instellen als standaard"
 
-#: src/dialogs/tool-attributes.c:45 src/verbs.c:492
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:461
 msgid "Tool attributes"
 msgstr "Gereedschap instellingen"
 
-#: src/dialogs/tool-attributes.c:90
+#: src/dialogs/tool-attributes.c:93
 msgid "Expansion"
 msgstr "Expantie"
 
-#: src/dialogs/tool-attributes.c:90
+#: src/dialogs/tool-attributes.c:93
 msgid "Inner radius"
 msgstr "Binnen straal"
 
-#: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
-#: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
+#: src/dialogs/tool-attributes.c:97 src/dialogs/tool-attributes.c:107
+#: src/dialogs/tool-attributes.c:117 src/dialogs/tool-attributes.c:127
 msgid "Missing tool preferences"
 msgstr "Ontbrekende gereedschap instellingen"
 
 #. Magnitude
-#: src/dialogs/tool-attributes.c:100 src/star-context.c:355
+#: src/dialogs/tool-attributes.c:103 src/star-context.c:358
 msgid "Corners:"
 msgstr "Hoeken:"
 
-#: src/dialogs/tool-attributes.c:100
+#: src/dialogs/tool-attributes.c:103
 msgid "Proportion"
 msgstr "Verhoudingen"
 
-#: src/dialogs/tool-attributes.c:110
+#: src/dialogs/tool-attributes.c:113
 msgid "Transform:"
 msgstr "Transformatie:"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1043
+#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1046
 msgid "Mass:"
 msgstr "Massa:"
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1055
+#: src/dialogs/tool-attributes.c:123 src/dyna-draw-context.c:1058
 msgid "Drag:"
 msgstr "Traagheid:"
 
-#: src/dialogs/tool-attributes.c:120
+#: src/dialogs/tool-attributes.c:123
 msgid "Angle"
 msgstr "Hoek"
 
-#: src/dialogs/tool-attributes.c:127
+#: src/dialogs/tool-attributes.c:130
 msgid "Tool has no attributes"
 msgstr "Dit gereedschap heeft geen attributen"
 
-#: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:88
+#: src/dialogs/tool-attributes.c:133 src/dialogs/tool-options.c:91
 msgid "No active tool"
 msgstr "Geen geselecteerd gereedschap"
 
-#: src/dialogs/tool-options.c:44 src/verbs.c:491
+#: src/dialogs/tool-options.c:47 src/verbs.c:460
 msgid "Tool options"
 msgstr "Gereedschap eigenschappen"
 
-#: src/dialogs/tool-options.c:85
+#: src/dialogs/tool-options.c:88
 msgid "Tool has no options"
 msgstr "Dit gereedschap heeft geen voorkeuren"
 
-#: src/dialogs/transformation.c:193
+#: src/dialogs/transformation.c:195
 msgid "Transform selection"
 msgstr "Selectie transformeren."
 
-#: src/dialogs/transformation.c:365
+#. Apply to duplicate
+#: src/dialogs/transformation.c:216
+msgid "Apply to duplicate"
+msgstr "Toepassen op kopie"
+
+#: src/dialogs/transformation.c:313
 msgid "Move"
 msgstr "Verplaatsen"
 
-#. Relative moves
-#: src/dialogs/transformation.c:407
-msgid "Relative move"
-msgstr "Relatieve verplaatsing"
-
-#: src/dialogs/transformation.c:539
+#: src/dialogs/transformation.c:457
 msgid "Scale"
 msgstr "Schalen"
 
-#: src/dialogs/transformation.c:666
+#: src/dialogs/transformation.c:584
 msgid "Rotate"
 msgstr "Roteren"
 
-#: src/dialogs/transformation.c:684
+#: src/dialogs/transformation.c:602
 msgid "deg"
 msgstr "grd"
 
-#: src/dialogs/xml-tree.c:158
+#: src/dialogs/xml-tree.c:162
 msgid "Drag to reorder nodes"
 msgstr "Sleep om de items te herschikken"
 
-#: src/dialogs/xml-tree.c:171
+#: src/dialogs/xml-tree.c:175
 msgid "New element node"
 msgstr "Nieuw element node"
 
-#: src/dialogs/xml-tree.c:189
+#: src/dialogs/xml-tree.c:193
 msgid "New text node"
 msgstr "Nieuwe tekst node"
 
-#: src/dialogs/xml-tree.c:206
+#: src/dialogs/xml-tree.c:210
 msgid "Duplicate node"
 msgstr "Item dupliceren"
 
-#: src/dialogs/xml-tree.c:222
+#: src/dialogs/xml-tree.c:226
 msgid "Delete node"
 msgstr "Item verwijderen"
 
-#: src/dialogs/xml-tree.c:235
+#: src/dialogs/xml-tree.c:239
 msgid "Unindent node"
 msgstr "Inspring verkleinen"
 
-#: src/dialogs/xml-tree.c:246
+#: src/dialogs/xml-tree.c:250
 msgid "Indent node"
 msgstr "Inspring vergroten"
 
-#: src/dialogs/xml-tree.c:256
+#: src/dialogs/xml-tree.c:260
 msgid "Raise node"
 msgstr "Item naar voren brengen"
 
-#: src/dialogs/xml-tree.c:267
+#: src/dialogs/xml-tree.c:271
 msgid "Lower node"
 msgstr "Item naar achteren brengen"
 
-#: src/dialogs/xml-tree.c:304
+#: src/dialogs/xml-tree.c:308
 msgid "Delete attribute"
 msgstr "Attribuut verwijderen"
 
-#: src/dialogs/xml-tree.c:334
+#: src/dialogs/xml-tree.c:338
 msgid "Attribute name"
 msgstr "Attribuut naam"
 
-#: src/dialogs/xml-tree.c:341
+#: src/dialogs/xml-tree.c:345
 msgid "Set attribute"
 msgstr "Attribuut instellen"
 
-#: src/dialogs/xml-tree.c:354
+#: src/dialogs/xml-tree.c:358
 msgid "Attribute value"
 msgstr "Attribuut waarde"
 
-#: src/dialogs/xml-tree.c:826
+#: src/dialogs/xml-tree.c:830
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi: %s : XML weergave"
 
-#: src/dialogs/xml-tree.c:849
+#: src/dialogs/xml-tree.c:853
 msgid "New element node..."
 msgstr "Nieuwe item toevoegen..."
 
-#: src/dialogs/xml-tree.c:869
+#: src/dialogs/xml-tree.c:873
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: src/dialogs/xml-tree.c:873
+#: src/dialogs/xml-tree.c:877
 msgid "Create"
 msgstr "Aanmaken"
 
-#: src/document.c:340
+#: src/document.c:343
 #, c-format
 msgid "New document %d"
 msgstr "Nieuw document %d"
 
-#: src/document.c:369
+#: src/document.c:372
 #, c-format
 msgid "Memory document %d"
 msgstr "Geheugen gebruik document %d"
 
-#: src/document.c:455
+#: src/document.c:458
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Naamloos document %d"
 
-#: src/draw-context.c:280
+#: src/draw-context.c:283
 msgid "Appending to selection. Press 'a' to toggle Append/New."
 msgstr "Toevoegen aan selectie. Druk op 'a' om toevoegen te wisselen."
 
-#: src/draw-context.c:285
+#: src/draw-context.c:288
 msgid "Creating new curve. Press 'a' to toggle Append/New."
 msgstr "Nieuwe curve aan het maken. Druk op 'a' om toevoegen te wisselen."
 
 #. Angle
-#: src/dyna-draw-context.c:1067
+#: src/dyna-draw-context.c:1070
 msgid "Angle:"
 msgstr "Hoek:"
 
 #. Reset
-#: src/dyna-draw-context.c:1091 src/rect-context.c:421
-#: src/spiral-context.c:386 src/star-context.c:386
+#: src/dyna-draw-context.c:1094 src/rect-context.c:424
+#: src/spiral-context.c:389 src/star-context.c:389
 msgid "Defaults"
 msgstr "Standaardwaarden"
 
-#: src/file.c:150 src/file.c:161 src/file.c:173
+#: src/file.c:152 src/file.c:163 src/file.c:175
 msgid "Select file to open"
 msgstr "Selecteer een bestand om te openen"
 
-#: src/file.c:190 src/module.c:548
+#: src/file.c:192 src/module.c:550
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Schaalbaar Vector Bestand (SVG)"
 
-#: src/file.c:190 src/module.c:548
+#: src/file.c:192 src/module.c:550
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Sodipodi's eigen formaat en de W3C standaard."
 
-#: src/file.c:196 src/file.c:309
+#: src/file.c:198 src/file.c:269
 msgid "File type:"
 msgstr "Bestandstype:"
 
-#: src/file.c:294
+#: src/file.c:254
 msgid "Save file"
 msgstr "Bestand opslaan"
 
-#: src/file.c:470 src/file.c:480 src/file.c:486
+#: src/file.c:430 src/file.c:440 src/file.c:446
 msgid "Select file to import"
 msgstr "Selecteer een bestand om te importeren"
 
-#: src/help.c:49
+#: src/help.c:57
 msgid "About sodipodi"
 msgstr "Over Sodipodi"
 
 #. Do not insert any elements before/between first 4
-#: src/helper/units.c:40
+#: src/helper/units.c:42
 msgid "Unit"
 msgstr "Eenheid"
 
-#: src/helper/units.c:40
+#: src/helper/units.c:42
 msgid "Units"
 msgstr "Eenheden"
 
-#: src/helper/units.c:41
+#: src/helper/units.c:43
 msgid "Point"
 msgstr "Punt"
 
-#: src/helper/units.c:41
+#: src/helper/units.c:43
 msgid "pt"
 msgstr "pt"
 
-#: src/helper/units.c:41
+#: src/helper/units.c:43
 msgid "Points"
 msgstr "Punten"
 
-#: src/helper/units.c:41
+#: src/helper/units.c:43
 msgid "Pt"
 msgstr "Pt"
 
-#: src/helper/units.c:42
+#: src/helper/units.c:44
 msgid "Pixel"
 msgstr "Pixel"
 
-#: src/helper/units.c:42
+#: src/helper/units.c:44
 msgid "px"
 msgstr "px"
 
-#: src/helper/units.c:42
+#: src/helper/units.c:44
 msgid "Pixels"
 msgstr "Beeldpunten"
 
-#: src/helper/units.c:42
+#: src/helper/units.c:44
 msgid "Px"
 msgstr "Px"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:45
 msgid "Userspace unit"
 msgstr "Gebruikerseenheid"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:45
 msgid "User"
 msgstr "Gebruiker"
 
-#: src/helper/units.c:43
+#: src/helper/units.c:45
 msgid "Userspace units"
 msgstr "Gebruikerseenheden"
 
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
-#: src/helper/units.c:46
+#: src/helper/units.c:48
 msgid "Percent"
 msgstr "Percentage"
 
-#: src/helper/units.c:46
+#: src/helper/units.c:48
 msgid "%"
 msgstr "%"
 
-#: src/helper/units.c:46
+#: src/helper/units.c:48
 msgid "Percents"
 msgstr "Procenten"
 
-#: src/helper/units.c:47
+#: src/helper/units.c:49
 msgid "Millimeter"
 msgstr "Millimeter"
 
-#: src/helper/units.c:47
+#: src/helper/units.c:49
 msgid "mm"
 msgstr "mm"
 
-#: src/helper/units.c:47
+#: src/helper/units.c:49
 msgid "Millimeters"
 msgstr "Millimeter"
 
-#: src/helper/units.c:48
+#: src/helper/units.c:50
 msgid "Centimeter"
 msgstr "Centimeter"
 
-#: src/helper/units.c:48
+#: src/helper/units.c:50
 msgid "cm"
 msgstr "cm"
 
-#: src/helper/units.c:48
+#: src/helper/units.c:50
 msgid "Centimeters"
 msgstr "Centimeter"
 
-#: src/helper/units.c:49
+#: src/helper/units.c:51
 msgid "Meter"
 msgstr "Meter"
 
-#: src/helper/units.c:49
+#: src/helper/units.c:51
 msgid "m"
 msgstr "m"
 
-#: src/helper/units.c:49
+#: src/helper/units.c:51
 msgid "meters"
 msgstr "meters"
 
-#: src/helper/units.c:50
+#: src/helper/units.c:52
 msgid "Inch"
 msgstr "Inch"
 
-#: src/helper/units.c:50
+#: src/helper/units.c:52
 msgid "in"
 msgstr "in"
 
-#: src/helper/units.c:50
+#: src/helper/units.c:52
 msgid "Inches"
 msgstr "Inch"
 
-#: src/helper/units.c:51
+#: src/helper/units.c:53
 msgid "Em square"
 msgstr ""
 
-#: src/helper/units.c:51
+#: src/helper/units.c:53
 msgid "em"
 msgstr ""
 
-#: src/helper/units.c:51
+#: src/helper/units.c:53
 msgid "Em squares"
 msgstr ""
 
-#: src/helper/units.c:52
+#: src/helper/units.c:54
 msgid "Ex square"
 msgstr ""
 
-#: src/helper/units.c:52
+#: src/helper/units.c:54
 msgid "ex"
 msgstr ""
 
-#: src/helper/units.c:52
+#: src/helper/units.c:54
 msgid "Ex squares"
 msgstr ""
 
-#: src/interface.c:303 src/interface.c:480
+#: src/interface.c:308 src/interface.c:490
 msgid "Open Recent"
 msgstr "Recen_te bestanden"
 
-#: src/interface.c:323
+#: src/interface.c:328
 msgid "Close View"
 msgstr "Weergave sluiten"
 
-#: src/interface.c:324 src/interface.c:495
+#: src/interface.c:329 src/interface.c:505
 msgid "Exit Program"
 msgstr "Prorgamma afsluiten"
 
-#: src/interface.c:326 src/interface.c:487
+#: src/interface.c:331 src/interface.c:497
 msgid "About Sodipodi"
 msgstr "Over Sodipodi"
 
 #. Modules need abouts too
-#: src/interface.c:329 src/interface.c:490
+#: src/interface.c:334 src/interface.c:500
 msgid "About Modules"
 msgstr "Over modules"
 
-#: src/interface.c:347
+#: src/interface.c:354
 msgid "Cleanup"
 msgstr "Opschonen"
 
 #. View:Zoom
-#: src/interface.c:417 src/toolbox.c:617 src/verbs.c:476
+#: src/interface.c:424 src/toolbox.c:621 src/verbs.c:445
 msgid "Zoom"
 msgstr "Zoomen"
 
 #. View:New View
-#: src/interface.c:429
+#: src/interface.c:436
 msgid "New View"
 msgstr "Nieuwe weergave"
 
 #. View:New Preview
-#: src/interface.c:431
+#: src/interface.c:438
 msgid "New Preview"
 msgstr "Nieuw voorbeeld"
 
-#: src/interface.c:433
+#: src/interface.c:440
 msgid "New Toplevel Toolbox"
 msgstr "Nieuwe losse gereedschapskist"
 
-#: src/interface.c:434
+#: src/interface.c:441
 msgid "New Docked Toolbox"
 msgstr "Nieuwe gekoppelde gereedschapskist"
 
-#: src/interface.c:435
+#: src/interface.c:442
 msgid "Remove Docked Toolbox"
 msgstr "Verwijder gekoppelde gereedschapskist"
 
 #. File
-#: src/interface.c:477 src/verbs.c:429
+#: src/interface.c:487 src/verbs.c:396
 msgid "New"
 msgstr "Nieuw"
 
-#: src/interface.c:478
+#: src/interface.c:488
 msgid "Open"
 msgstr "Openen"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:558 src/toolbox.c:348
+#: src/interface.c:568 src/toolbox.c:361
 msgid "File"
 msgstr "Bestand"
 
 #. Edit submenu
-#: src/interface.c:564 src/toolbox.c:405 src/widgets/gradient-selector.c:135
+#: src/interface.c:574 src/toolbox.c:409 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Bewerken"
 
 #. View submenu
-#: src/interface.c:576
+#: src/interface.c:586
 msgid "View"
 msgstr "Beeld"
 
 #. Drawing mode submenu
-#: src/interface.c:582
+#: src/interface.c:592
 msgid "Drawing Mode"
 msgstr "Teken modus"
 
 #. Dialog submenu
-#: src/interface.c:588
+#: src/interface.c:598
 msgid "Dialogs"
 msgstr "Weergeven"
 
-#: src/interface.c:595
+#: src/interface.c:605
 msgid "Filters"
 msgstr "Filters"
 
-#: src/main.c:126
+#: src/main.c:128
 msgid "Do not use X server (only process files from console)"
 msgstr "X-server niet gebruiken (verwerk alleen bestanden van de terminal)"
 
-#: src/main.c:129
+#: src/main.c:131
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Probeer X-server te gebruiken zelfs als $DISPLAY geen waarde heeft"
 
-#: src/main.c:132
+#: src/main.c:134
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 "Open de aangeduidde documenten (optie-tekenreeks hoeft niet te worden "
 "opgegeven)"
 
-#: src/main.c:133 src/main.c:136 src/main.c:139 src/main.c:153
+#: src/main.c:135 src/main.c:138 src/main.c:141 src/main.c:155
 msgid "FILENAME"
 msgstr "BESTANDSNAAM"
 
-#: src/main.c:135
+#: src/main.c:137
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Druk de documenten af naar het opgegeven bestand (gebruik '| programma' voor "
 "een pipe)"
 
-#: src/main.c:138
+#: src/main.c:140
 msgid "Export document to png file"
 msgstr "Document exporteren naar .png bestand."
 
-#: src/main.c:141
+#: src/main.c:143
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "De resolutie die gebruikt is om SVG naar bitmap om te zeten (standaard 72.0)"
 
-#: src/main.c:142
+#: src/main.c:144
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:144
+#: src/main.c:146
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1177,67 +1177,67 @@ msgstr ""
 "Oppervlakte van het geëxporteerde  ebied (standaard het hele documenten; 0,0 "
 "is de hoek linksonder)"
 
-#: src/main.c:145
+#: src/main.c:147
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:147
+#: src/main.c:149
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "De breedte van de gegenereerde bitmap in pixels (dit overschijft de DPI)"
 
-#: src/main.c:147
+#: src/main.c:149
 msgid "WIDTH"
 msgstr "BREEDTE"
 
-#: src/main.c:149
+#: src/main.c:151
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "De hoogte van de gegenereerde bitmap in pixels (dit overschijft de DPI)"
 
-#: src/main.c:149
+#: src/main.c:151
 msgid "HEIGHT"
 msgstr "HOOGTE"
 
-#: src/main.c:151
+#: src/main.c:153
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Achtergrondkleur van de geëxporteerde bitmap (kan iedere door SVG "
 "ondersteunde kleur zijn)"
 
-#: src/main.c:151
+#: src/main.c:153
 msgid "COLOR"
 msgstr "KLEUR"
 
-#: src/main.c:153
+#: src/main.c:155
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Document exporteren naar gewoon SVG bestand (geen \"xmlns:sodipodi\" "
 "naamruimte)"
 
-#: src/main.c:155
+#: src/main.c:157
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "De geselecteerde bestanden één voor één weergeven, en naar de volgende gaan "
 "bij muisklik of toetsenbord gebruik"
 
-#: src/main.c:157
+#: src/main.c:159
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Geef bitmap (xpm) pictogrammen de voorkeur boven de SVG versies."
 
-#: src/module.c:556
+#: src/module.c:558
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG met  \"xmlns:sodipodi\" naamruimte"
 
-#: src/module.c:557
+#: src/module.c:559
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Schaalbare Vector Afbeelding (SVG) met sodipodi uitbreidingen."
 
-#: src/module.c:560
+#: src/module.c:562
 msgid "Plain SVG"
 msgstr "Standaard SVG"
 
-#: src/module.c:561
+#: src/module.c:563
 msgid "Scalable Vector Graphics format"
 msgstr "Schaalbare Vector Afbeelding (SVG) formaat"
 
@@ -1269,20 +1269,20 @@ msgid "Save document as"
 msgstr "Document opslaan als"
 
 #. Print destination frame
-#: src/modules/ps.c:157 src/modules/ps.c:218
+#: src/modules/ps.c:159 src/modules/ps.c:220
 msgid "Print destination"
 msgstr "Afdrukbestemming"
 
 #. Print properties frame
-#: src/modules/ps.c:168
+#: src/modules/ps.c:170
 msgid "Print properties"
 msgstr "Afdruk eigenschappen"
 
-#: src/modules/ps.c:176
+#: src/modules/ps.c:178
 msgid "Print using PostScript operators"
 msgstr "Afdrukken met Postscript bewerkingen"
 
-#: src/modules/ps.c:178
+#: src/modules/ps.c:180
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1292,11 +1292,11 @@ msgstr ""
 "resulterendeafbeelding (gewoonlijk) kleiner en beter schaalbaar zijn. "
 "Transparantie,markeringen en patronen zullen echter verloren gaan."
 
-#: src/modules/ps.c:183
+#: src/modules/ps.c:185
 msgid "Print as bitmap"
 msgstr "Afdrukken als bitmap"
 
-#: src/modules/ps.c:185
+#: src/modules/ps.c:187
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1306,15 +1306,15 @@ msgstr ""
 "gewoonlijkgroter zijn, en de kwaliteit hangt af van de zoom-factor. De "
 "afbeelding zaler wel altijd precies zo uitzien als op het scherm."
 
-#: src/modules/ps.c:199
+#: src/modules/ps.c:201
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Gewenste resolutie van de bitmap (in punten per inch)"
 
-#: src/modules/ps.c:214
+#: src/modules/ps.c:216
 msgid "Resolution:"
 msgstr "Resolutie:"
 
-#: src/modules/ps.c:224
+#: src/modules/ps.c:226
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1324,151 +1324,151 @@ msgstr ""
 "af te drukken naar een bestand, of '| programma argument....' \n"
 "om het naar een programma te sturen."
 
-#: src/modules/ps.c:837
+#: src/modules/ps.c:839
 msgid "write error occured"
 msgstr "schrijffout vond plaats"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:105
+#: src/object-ui.c:107
 msgid "Item"
 msgstr "Item"
 
 #. Item dialog
-#: src/object-ui.c:108 src/verbs.c:499
+#: src/object-ui.c:110 src/verbs.c:468
 msgid "Item Properties"
 msgstr "Item eigenschappen"
 
 #. Select item
-#: src/object-ui.c:118
+#: src/object-ui.c:120
 msgid "Select this"
 msgstr "Dit selecteren"
 
 #. Reset transformations
-#: src/object-ui.c:128
+#: src/object-ui.c:130
 msgid "Reset transformation"
 msgstr "Transformatie herstellen"
 
-#: src/object-ui.c:134
+#: src/object-ui.c:136
 msgid "Make sensitive"
 msgstr "Maak gevoellig"
 
-#: src/object-ui.c:134
+#: src/object-ui.c:136
 msgid "Make insensitive"
 msgstr "Maak ongevoellig"
 
 #. Create link
-#: src/object-ui.c:139
+#: src/object-ui.c:141
 msgid "Create link"
 msgstr "Koppeling maken"
 
-#: src/object-ui.c:251 src/verbs.c:453
+#: src/object-ui.c:253 src/verbs.c:421
 msgid "Group"
 msgstr "Groep"
 
 #. Group dialog
-#: src/object-ui.c:255
+#: src/object-ui.c:257
 msgid "Group Properties"
 msgstr "Groepsinstellingen"
 
 #. "Ungroup"
-#: src/object-ui.c:268 src/verbs.c:454
+#: src/object-ui.c:270 src/verbs.c:422
 msgid "Ungroup"
 msgstr "Groepering opheffen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:316
+#: src/object-ui.c:318
 msgid "Link"
 msgstr "Verwijzing"
 
 #. Link dialog
-#: src/object-ui.c:319
+#: src/object-ui.c:321
 msgid "Link Properties"
 msgstr "Koppeling eigenschappen"
 
 #. Select item
-#: src/object-ui.c:329
+#: src/object-ui.c:331
 msgid "Follow link"
 msgstr "Koppeling volgen"
 
 #. Reset transformations
-#: src/object-ui.c:334
+#: src/object-ui.c:336
 msgid "Remove link"
 msgstr "Verwijder link"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:397
+#: src/object-ui.c:399
 msgid "Image"
 msgstr "Afbeelding"
 
 #. Link dialog
-#: src/object-ui.c:400
+#: src/object-ui.c:402
 msgid "Image Properties"
 msgstr "Afbeeldingseigenschappen"
 
 #. Autotrace dialog
-#: src/object-ui.c:408 src/sp-image.c:780
+#: src/object-ui.c:410 src/sp-image.c:776
 msgid "Trace"
 msgstr ""
 
 #. Create toplevel menuitem
-#: src/object-ui.c:457
+#: src/object-ui.c:459
 msgid "Shape"
 msgstr "Vorm"
 
 #. Item dialog
-#: src/object-ui.c:460 src/toolbox.c:442
+#: src/object-ui.c:462 src/toolbox.c:446
 msgid "Fill settings"
 msgstr "Opvul eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:487
+#: src/object-ui.c:489
 msgid "Rect"
 msgstr "Rechthoek"
 
 #. Link dialog
-#: src/object-ui.c:490
+#: src/object-ui.c:492
 msgid "Rect Properties"
 msgstr "Rechthoek eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:523 src/verbs.c:470
+#: src/object-ui.c:525 src/verbs.c:439
 msgid "Star"
 msgstr "Ster"
 
 #. Link dialog
-#: src/object-ui.c:526
+#: src/object-ui.c:528
 msgid "Star Properties"
 msgstr "Ster eigenschappen"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:559 src/verbs.c:471
+#: src/object-ui.c:561 src/verbs.c:440
 msgid "Spiral"
 msgstr "Spiraal"
 
 #. Link dialog
-#: src/object-ui.c:562
+#: src/object-ui.c:564
 msgid "Spiral Properties"
 msgstr "Spiraal eigenschappen"
 
 #. rx_ratio
-#: src/rect-context.c:397
+#: src/rect-context.c:400
 msgid "Roundness ratio for x:"
 msgstr "Afrondingsfactor in x-richting:"
 
 #. ry_ratio
-#: src/rect-context.c:409
+#: src/rect-context.c:412
 msgid "Roundness ratio for y:"
 msgstr "Afrondingsfactor in y-richting:"
 
-#: src/select-context.c:564
+#: src/select-context.c:568
 msgid "Visual transformation"
 msgstr "Weergave bij transformatie"
 
-#: src/select-context.c:572
+#: src/select-context.c:574
 msgid "Show content"
 msgstr "Inhoud weergeven"
 
-#: src/select-context.c:579
+#: src/select-context.c:580
 msgid "Show outline"
 msgstr "Omhulsel weergeven"
 
@@ -1476,42 +1476,54 @@ msgstr "Omhulsel weergeven"
 msgid "Object transformation"
 msgstr "Object transformatie"
 
-#: src/select-context.c:594
+#: src/select-context.c:592
 msgid "Optimize"
 msgstr "Optimaliseren"
 
-#: src/select-context.c:601
+#: src/select-context.c:598
 msgid "Preserve"
 msgstr "Behouden"
 
-#: src/slideshow.c:88
+#: src/select-context.c:604
+msgid "[Tab] Cycling"
+msgstr "[Tab] Bladeren"
+
+#: src/select-context.c:609
+msgid "Cycle only among visible items"
+msgstr "Blader door de verschillende items"
+
+#: src/select-context.c:612
+msgid "Center view to selected item"
+msgstr "Centreer het beeld op het geselecteerde item"
+
+#: src/slideshow.c:90
 msgid "Sodipodi slideshow"
 msgstr "Sodipodi diavoorstelling"
 
-#: src/sodipodi.c:395
+#: src/sodipodi.c:405
 msgid "Untitled document"
 msgstr "Namaloos document"
 
 #. Show nice dialog box
-#: src/sodipodi.c:420
+#: src/sodipodi.c:430
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 "Er is een fout op getreden in Sodipodi, en het zal nu worden afgesloten.\n"
 
-#: src/sodipodi.c:421
+#: src/sodipodi.c:431
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Automatische reservekopieën van niet opgeslagen documenten werden gemaakt op "
 "de volgende lokaties:\n"
 
-#: src/sodipodi.c:422
+#: src/sodipodi.c:432
 msgid "Automatic backup of following documents failed:\n"
 msgstr ""
 "Het automatisch maken van een reservekopie is mislukt voor de volgende "
 "bestanden:\n"
 
-#: src/sodipodi.c:561
+#: src/sodipodi.c:571
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1522,7 +1534,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "kunt u uw instellingen niet laden of opslaan\n"
 
-#: src/sodipodi.c:564
+#: src/sodipodi.c:574
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1537,7 +1549,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:569
+#: src/sodipodi.c:579
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1550,7 +1562,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:581
+#: src/sodipodi.c:591
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1561,7 +1573,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:584
+#: src/sodipodi.c:594
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1574,7 +1586,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:588
+#: src/sodipodi.c:598
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1585,7 +1597,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:927
+#: src/sodipodi.c:937
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1597,7 +1609,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "kunt u %s niet kunnen laden of opslaan."
 
-#: src/sodipodi.c:931
+#: src/sodipodi.c:941
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1610,7 +1622,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:935
+#: src/sodipodi.c:945
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1623,7 +1635,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:939
+#: src/sodipodi.c:949
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1636,7 +1648,7 @@ msgstr ""
 "kunt u uw instellingen niet\n"
 "laden of opslaan."
 
-#: src/sodipodi.c:949
+#: src/sodipodi.c:959
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1647,7 +1659,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:952
+#: src/sodipodi.c:962
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1658,7 +1670,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) kunnen gebruiken\n"
 
-#: src/sodipodi.c:955
+#: src/sodipodi.c:965
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1669,7 +1681,7 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) gebruiken\n"
 
-#: src/sodipodi.c:958
+#: src/sodipodi.c:968
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1680,724 +1692,740 @@ msgstr ""
 "Hoewel Sodipodi wel zal starten,\n"
 "zult u geen uitbreidingen (plugins) gebruiken\n"
 
-#: src/sp-anchor.c:193
+#: src/sp-anchor.c:196
 #, c-format
 msgid "Link to %s"
 msgstr "Koppeling naar %s"
 
-#: src/sp-image.c:370
+#: src/sp-image.c:373
 #, c-format
 msgid "Image with bad reference: %s"
 msgstr "Afbeelding met slechte referentie: %s"
 
-#: src/sp-image.c:372
+#: src/sp-image.c:375
 #, c-format
 msgid "Color image %d x %d: %s"
 msgstr "Kleurenafbeelding %d x %d: %s"
 
-#: src/sp-image.c:926
+#: src/sp-image.c:922
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Fout bij het schrijven naar bestand %s: %s"
 
-#: src/sp-image.c:960
+#: src/sp-image.c:956
 msgid "Untitled"
 msgstr "Naamloos"
 
-#: src/sp-image.c:965
+#: src/sp-image.c:961
 msgid "Document Name:"
 msgstr "Document naam:"
 
-#: src/sp-image.c:978
+#: src/sp-image.c:974
 msgid "Unknown"
 msgstr "Onbekend"
 
-#: src/sp-image.c:984
+#: src/sp-image.c:980
 msgid "Image URI:"
 msgstr "Afbeeldings URI:"
 
-#: src/sp-item-group.c:455
+#: src/sp-item-group.c:457
 #, c-format
 msgid "Group of %d objects"
 msgstr "Groep van %d objecten"
 
-#: src/sp-item.c:497
+#: src/sp-item.c:503
 msgid "Unknown item :-("
 msgstr "Onbekend item :-("
 
 #. fixme:
-#: src/sp-text.c:1460
+#: src/sp-text.c:1461
 msgid "Text object"
 msgstr "Tekst object"
 
 #. T0
-#: src/spiral-context.c:374
+#: src/spiral-context.c:377
 msgid "Inner radius:"
 msgstr "Binnen straal"
 
 #. Proportion
-#: src/star-context.c:367
+#: src/star-context.c:370
 msgid "Proportion:"
 msgstr "Verhouding:"
 
 #. Making sides flat
-#: src/star-context.c:380
+#: src/star-context.c:383
 msgid "Make sides flat"
 msgstr "Maak zijkanten vlak"
 
-#: src/toolbox.c:439
+#: src/toolbox.c:443
 msgid "Object"
 msgstr "Object"
 
-#: src/toolbox.c:443 src/verbs.c:494
+#: src/toolbox.c:447 src/verbs.c:463
 msgid "Object size and position"
 msgstr "Object grootte en positie"
 
-#: src/toolbox.c:444
+#: src/toolbox.c:448
 msgid "Text and font settings"
 msgstr "Text en lettertype voorkeuren"
 
-#: src/toolbox.c:446 src/verbs.c:495
+#: src/toolbox.c:450 src/verbs.c:464
 msgid "Object transformations"
 msgstr "Object transformaties"
 
-#: src/toolbox.c:519
+#: src/toolbox.c:523
 msgid "Draw"
 msgstr "Tekenen"
 
-#: src/toolbox.c:574
+#: src/toolbox.c:578
 msgid "Extension"
 msgstr "Extensie"
 
-#: src/toolbox.c:651
+#: src/toolbox.c:655
 msgid "Nodes"
 msgstr "Nodes"
 
-#: src/toolbox.c:654
+#: src/toolbox.c:658
 msgid "Insert new nodes into selected segments"
 msgstr "Nieuwe nodes invoegen in de geselecteerde segmenten"
 
-#: src/toolbox.c:656
+#: src/toolbox.c:660
 msgid "Break line at selected nodes"
 msgstr "De lijnen op de geselecteerde knooppunten breken"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:662
 msgid "Make selected nodes corner"
 msgstr "De geselecteerde knooppunten onder een hoek zetten"
 
-#: src/toolbox.c:660
+#: src/toolbox.c:664
 msgid "Make selected segments lines"
 msgstr "De geselecteerde segmenten omzetten naar rechtelijnen\t"
 
-#: src/toolbox.c:662
+#: src/toolbox.c:666
 msgid "Delete selected nodes"
 msgstr "De geselecteerde knooppunten verwijderen"
 
-#: src/toolbox.c:664
+#: src/toolbox.c:668
 msgid "Join lines at selected nodes"
 msgstr "Lijnen op de geselecteerde knooppunten samenvoegen"
 
-#: src/toolbox.c:667
+#: src/toolbox.c:671
 msgid "Join lines at selected nodes with new segment"
 msgstr ""
 "Lijnen op de geselecteerde knooppunten samenvoegen met een nieuw segment"
 
-#: src/toolbox.c:669
+#: src/toolbox.c:673
 msgid "Make selected nodes smooth"
 msgstr "De geselecteerde knopen vloeiend"
 
-#: src/toolbox.c:671
+#: src/toolbox.c:675
 msgid "Make selected segments curves"
 msgstr "Gekromde lijnen maken van de geselecteerde segmenten."
 
-#: src/verbs.c:427
+#: src/verbs.c:394
 msgid "Does nothing"
 msgstr "(Doet niets)"
 
-#: src/verbs.c:429
+#: src/verbs.c:396
 msgid "Create new SVG document"
 msgstr "Maak een nieuw SVG document"
 
-#: src/verbs.c:430
+#: src/verbs.c:397
 msgid "Open..."
 msgstr "Openen..."
 
-#: src/verbs.c:430
+#: src/verbs.c:397
 msgid "Open existing SVG document"
 msgstr "Open een bestaand SVG document"
 
-#: src/verbs.c:431
+#: src/verbs.c:398
 msgid "Save"
 msgstr "Opslaan"
 
-#: src/verbs.c:431
+#: src/verbs.c:398
 msgid "Save document"
 msgstr "Document opslaan"
 
-#: src/verbs.c:432
+#: src/verbs.c:399
 msgid "Save As..."
 msgstr "Opslaan als..."
 
-#: src/verbs.c:432
+#: src/verbs.c:399
 msgid "Save document under new name"
 msgstr "Document opslana onder een nieuw naam"
 
-#: src/verbs.c:433
+#: src/verbs.c:400
 msgid "Print..."
 msgstr "Afdrukken..."
 
-#: src/verbs.c:433
+#: src/verbs.c:400
 msgid "Print document"
 msgstr "Document afdrukken"
 
-#: src/verbs.c:434
+#: src/verbs.c:401
 msgid "Print Direct..."
 msgstr "Direct afdrukken..."
 
-#: src/verbs.c:434
+#: src/verbs.c:401
 msgid "Print directly to file or pipe"
 msgstr "Direct afdrukken naar een pipe of een bestand"
 
-#: src/verbs.c:435
+#: src/verbs.c:402
 msgid "Print Preview"
 msgstr "Afdrukvoorbeeld"
 
-#: src/verbs.c:435
+#: src/verbs.c:402
 msgid "Preview document printout"
 msgstr "Afdrukvoorbeeld"
 
-#: src/verbs.c:436
+#: src/verbs.c:403
 msgid "Import"
 msgstr "Importeren"
 
-#: src/verbs.c:436
+#: src/verbs.c:403
 msgid "Import bitmap or SVG image into document"
 msgstr "Bitmap of SVG-bestand in het document importeren"
 
-#: src/verbs.c:437
+#: src/verbs.c:404
 msgid "Export document as PNG bitmap"
 msgstr "Document als PNG bitmap exporteren"
 
 #. Edit
-#: src/verbs.c:439
+#: src/verbs.c:406
 msgid "Undo"
 msgstr "Ongedaan maken"
 
-#: src/verbs.c:439
+#: src/verbs.c:406
 msgid "Revert last action"
 msgstr "De laatste handeling herhalen"
 
-#: src/verbs.c:440
+#: src/verbs.c:407
 msgid "Redo"
 msgstr "Opnieuw"
 
-#: src/verbs.c:440
+#: src/verbs.c:407
 msgid "Do again undone action"
 msgstr "Ongedaanmaken herstellen"
 
-#: src/verbs.c:441
+#: src/verbs.c:408
 msgid "Cut"
 msgstr "Knippen"
 
-#: src/verbs.c:441
+#: src/verbs.c:408
 msgid "Cut selected objects to clipboard"
 msgstr "Geselecteerde objecten knippen naar het klembord"
 
-#: src/verbs.c:442
+#: src/verbs.c:409
 msgid "Copy"
 msgstr "Kopiëren"
 
-#: src/verbs.c:442
+#: src/verbs.c:409
 msgid "Copy selected objects to clipboard"
 msgstr "Geselecteerde objecten naar het klembord kopieëren"
 
-#: src/verbs.c:443
+#: src/verbs.c:410
 msgid "Paste"
 msgstr "Plakken"
 
-#: src/verbs.c:443
+#: src/verbs.c:410
 msgid "Paste objects from clipboard"
 msgstr "Objecten plakken van het klembord"
 
-#: src/verbs.c:444
+#: src/verbs.c:411
 msgid "Delete"
 msgstr "Verwijderen"
 
-#: src/verbs.c:444
+#: src/verbs.c:411
 msgid "Delete selected objects"
 msgstr "Geselecteerde objecten verwijderen"
 
-#: src/verbs.c:445
+#: src/verbs.c:412
 msgid "Duplicate"
 msgstr "Dupliceren"
 
-#: src/verbs.c:445
+#: src/verbs.c:412
 msgid "Duplicate selected objects"
 msgstr "Geselecteerde objecten verdubbelen"
 
-#: src/verbs.c:446
+#: src/verbs.c:413
 msgid "Clear All"
 msgstr "Alles verwijderen"
 
-#: src/verbs.c:446
+#: src/verbs.c:413
 msgid "Delete all objects from document"
 msgstr "Alle objecten van het documenten verwijderen."
 
-#: src/verbs.c:447
+#: src/verbs.c:414
 msgid "Select All"
 msgstr "Alles selecteren"
 
-#: src/verbs.c:447
+#: src/verbs.c:414
 msgid "Select all objects in document"
 msgstr "Alle objecten in het document selecteren"
 
+#: src/verbs.c:415
+msgid "Repeat"
+msgstr "Herhalen"
+
+#: src/verbs.c:415
+msgid "Repeat last saved action"
+msgstr "De laatste opgeslagen handeling herhalen"
+
 #. Selection
-#: src/verbs.c:449
+#: src/verbs.c:417
 msgid "Bring to Front"
 msgstr "Naar voren brengen"
 
-#: src/verbs.c:449
+#: src/verbs.c:417
 msgid "Raise selected objects to top"
 msgstr "De geselecteerde objecten naar voren brengen"
 
-#: src/verbs.c:450
+#: src/verbs.c:418
 msgid "Send to Back"
 msgstr "Naar achteren sturen"
 
-#: src/verbs.c:450
+#: src/verbs.c:418
 msgid "Lower selected objects to bottom"
 msgstr "De geselecteerde objecten naar de achtergrond sturen"
 
-#: src/verbs.c:451
+#: src/verbs.c:419
 msgid "Raise"
 msgstr "Verhoog"
 
-#: src/verbs.c:451
+#: src/verbs.c:419
 msgid "Raise selected objects one position"
 msgstr "De geselecteerde objecten één n veau naar voren brengen"
 
-#: src/verbs.c:452
+#: src/verbs.c:420
 msgid "Lower"
 msgstr "Verlaag"
 
-#: src/verbs.c:452
+#: src/verbs.c:420
 msgid "Lower selected objects one position"
 msgstr "De geselecteerde objecten één n veau naar achteren brengen"
 
-#: src/verbs.c:453
+#: src/verbs.c:421
 msgid "Group selected objects"
 msgstr "De geselecteerde objecten groeperen"
 
-#: src/verbs.c:454
+#: src/verbs.c:422
 msgid "Ungroup selected group"
 msgstr "De geselecteerde groep de-goeperen"
 
-#: src/verbs.c:455
+#: src/verbs.c:423
 msgid "Combine"
 msgstr "Combineren"
 
-#: src/verbs.c:455
+#: src/verbs.c:423
 msgid "Combine multiple paths"
 msgstr "Meerdere paden samenvoegen"
 
-#: src/verbs.c:456
+#: src/verbs.c:424
 msgid "Break Apart"
 msgstr "Degroeperen"
 
-#: src/verbs.c:456
+#: src/verbs.c:424
 msgid "Break selected path to subpaths"
 msgstr "Verdeel het geselecteerde pad naar subpaden"
 
+#: src/verbs.c:425
+msgid "Transform"
+msgstr "Transformatie"
+
+#: src/verbs.c:425
+msgid "Applies transformation"
+msgstr "Transformatie toepassen"
+
 #. Object
-#: src/verbs.c:458
+#: src/verbs.c:427
 msgid "Rotate 90 degrees"
 msgstr "90 graden draaien"
 
-#: src/verbs.c:458
+#: src/verbs.c:427
 msgid "Rotates object 90 degrees clockwise"
 msgstr "Het object 90 graden met de klok mee draaien"
 
-#: src/verbs.c:459
+#: src/verbs.c:428
 msgid "Flatten object"
 msgstr "Object egaliseren"
 
-#: src/verbs.c:459
+#: src/verbs.c:428
 msgid "Remove transformations from object"
 msgstr "Transformaties verwijderen van het object"
 
-#: src/verbs.c:460
+#: src/verbs.c:429
 msgid "Convert to Curves"
 msgstr "Omzetten naar rondingen"
 
-#: src/verbs.c:460
+#: src/verbs.c:429
 msgid "Convert selected object to path"
 msgstr "Het geselecteerde object omzetten naar pad"
 
-#: src/verbs.c:461
+#: src/verbs.c:430
 msgid "Flip Horizontally"
 msgstr "Tuimelen"
 
-#: src/verbs.c:462
+#: src/verbs.c:431
 msgid "Flip selected objects horizontally"
 msgstr "Tuimelt het object horizontaal"
 
-#: src/verbs.c:463
+#: src/verbs.c:432
 msgid "Flip Vertically"
 msgstr "Spiegelen"
 
-#: src/verbs.c:464
+#: src/verbs.c:433
 msgid "Flip selected objects vertically"
 msgstr "Spiegelt het object vertikaal"
 
 #. Event contexts
-#: src/verbs.c:466
+#: src/verbs.c:435
 msgid "Select"
 msgstr "Selecteren"
 
-#: src/verbs.c:466
+#: src/verbs.c:435
 msgid "Select and transform objects"
 msgstr "Selecteer en transformeer objecten"
 
-#: src/verbs.c:467
+#: src/verbs.c:436
 msgid "Node edit"
 msgstr "Punten wijzigen"
 
-#: src/verbs.c:467
+#: src/verbs.c:436
 msgid "Modify existing objects by control nodes"
 msgstr "Bestaande objecten aanpassen via controle-punten"
 
-#: src/verbs.c:468
+#: src/verbs.c:437
 msgid "Rectangle"
 msgstr "Rechthoek"
 
-#: src/verbs.c:468
+#: src/verbs.c:437
 msgid "Create rectangles and squares with optional rounded corners"
 msgstr "Rechthoeken en vierkanten maken met mogelijk afgeronde hoeken"
 
-#: src/verbs.c:469
+#: src/verbs.c:438
 msgid "Ellipse"
 msgstr "Ellips"
 
-#: src/verbs.c:469
+#: src/verbs.c:438
 msgid "Create circles, ellipses and arcs"
 msgstr "Circels, ellipsen en taartpunten maken"
 
-#: src/verbs.c:470
+#: src/verbs.c:439
 msgid "Create stars and polygons"
 msgstr "Sterren en veelhoeken maken"
 
-#: src/verbs.c:471
+#: src/verbs.c:440
 msgid "Create spirals"
 msgstr "Spiralen maken"
 
-#: src/verbs.c:472
+#: src/verbs.c:441
 msgid "Pencil"
-msgstr "Vrije·hand"
+msgstr "Vrije hand"
 
-#: src/verbs.c:472
+#: src/verbs.c:441
 msgid "Draw freehand curves and straight lines"
 msgstr "Rechte lijnen en lijnen uit de losse hand tekenen"
 
-#: src/verbs.c:473
+#: src/verbs.c:442
 msgid "Pen"
 msgstr "Pen"
 
-#: src/verbs.c:473
+#: src/verbs.c:442
 msgid "Draw precisely positioned curved and straight lines"
 msgstr "Teken nauwkeurig gepositioneerde kromme en rechte lijnen"
 
-#: src/verbs.c:474
+#: src/verbs.c:443
 msgid "Calligraphy"
 msgstr "Calligraphy"
 
-#: src/verbs.c:474
+#: src/verbs.c:443
 msgid "Draw calligraphic lines"
 msgstr "Calligraphische lijnen tekenen"
 
-#: src/verbs.c:475
+#: src/verbs.c:444
 msgid "Create and edit text objects"
 msgstr "Tekstobjecten maken en aanpassen"
 
-#: src/verbs.c:476
+#: src/verbs.c:445
 msgid "Zoom into precisely selected area"
 msgstr "Inzoomen op een nauwkeurig geselecteerd gebied"
 
-#: src/verbs.c:477
+#: src/verbs.c:446
 msgid "Dropper"
 msgstr "Pipet"
 
-#: src/verbs.c:477
+#: src/verbs.c:446
 msgid "Pick averaged colors from image"
 msgstr "Selecteer gemiddelde kleuren van de afbeelding"
 
 #. Zooming
-#: src/verbs.c:479
+#: src/verbs.c:448
 msgid "In"
 msgstr "In"
 
-#: src/verbs.c:479
+#: src/verbs.c:448
 msgid "Zoom in drawing"
 msgstr "Afbeelding inzoomen"
 
-#: src/verbs.c:480
+#: src/verbs.c:449
 msgid "Out"
 msgstr "Uit"
 
-#: src/verbs.c:480
+#: src/verbs.c:449
 msgid "Zoom out drawing"
 msgstr "Afbeeldingen uitzoomen"
 
-#: src/verbs.c:481
+#: src/verbs.c:450
 msgid "1:1"
 msgstr "1:1"
 
-#: src/verbs.c:481
+#: src/verbs.c:450
 msgid "Set zoom factor to 1:1"
 msgstr "Zoomfactor instellen op 1:1"
 
-#: src/verbs.c:482
+#: src/verbs.c:451
 msgid "1:2"
 msgstr "1:2"
 
-#: src/verbs.c:482
+#: src/verbs.c:451
 msgid "Set zoom factor to 1:2"
 msgstr "Zoomfactor instellen op 1:2"
 
-#: src/verbs.c:483
+#: src/verbs.c:452
 msgid "2:1"
 msgstr "2:1"
 
-#: src/verbs.c:483
+#: src/verbs.c:452
 msgid "Set zoom factor to 2:1"
 msgstr "Zoomfactor instellen op 2:1"
 
-#: src/verbs.c:484
+#: src/verbs.c:453
 msgid "Fit the whole page into window"
 msgstr "De hele pagina in het scherm passen"
 
-#: src/verbs.c:485
+#: src/verbs.c:454
 msgid "Fit the whole drawing into window"
 msgstr "De hele tekening in het scherm passen"
 
-#: src/verbs.c:486
+#: src/verbs.c:455
 msgid "Fit the whole selection into window"
 msgstr "De hele selectie in het scherm passen"
 
 #. Dialogs
-#: src/verbs.c:488
+#: src/verbs.c:457
 msgid "Display"
 msgstr "Weergave"
 
-#: src/verbs.c:488
+#: src/verbs.c:457
 msgid "Global display settings"
 msgstr "Algemene weergave voorkeuren"
 
-#: src/verbs.c:489
+#: src/verbs.c:458
 msgid "Document"
 msgstr "Document"
 
-#: src/verbs.c:489
+#: src/verbs.c:458
 msgid "Page layout"
 msgstr "Pagina layout"
 
-#: src/verbs.c:490
+#: src/verbs.c:459
 msgid "Editing Window"
 msgstr "Document instellingen"
 
-#: src/verbs.c:490
+#: src/verbs.c:459
 msgid "Editing window properties"
 msgstr "Eigenschappen van het 'document instellingen' scherm"
 
-#: src/verbs.c:491
+#: src/verbs.c:460
 msgid "Tool Options"
 msgstr "Tool opties"
 
-#: src/verbs.c:492
+#: src/verbs.c:461
 msgid "Tool Attributes"
 msgstr "Gereedschaps instellingen"
 
-#: src/verbs.c:493
+#: src/verbs.c:462
 msgid "Fill and Stroke"
 msgstr "Opvulling en lijnen"
 
-#: src/verbs.c:493
+#: src/verbs.c:462
 msgid "Fill and stroke settings"
 msgstr "Opvul- en lijninstellingen"
 
-#: src/verbs.c:495
+#: src/verbs.c:464
 msgid "Transformations"
 msgstr "Transformaties"
 
-#: src/verbs.c:496
+#: src/verbs.c:465
 msgid "Align and Distribute"
 msgstr "Uitlijnen en verdelen"
 
-#: src/verbs.c:496
+#: src/verbs.c:465
 msgid "Align and distribute"
 msgstr "Uitlijnen en verdelen"
 
-#: src/verbs.c:497
+#: src/verbs.c:466
 msgid "Text and Font"
 msgstr "Tekst en lettertype"
 
-#: src/verbs.c:497
+#: src/verbs.c:466
 msgid "Text editing and font settings"
 msgstr "Tekst en lettertype aanpassen"
 
-#: src/verbs.c:498
+#: src/verbs.c:467
 msgid "XML Editor"
 msgstr "XML aanpasser"
 
 #. Family frame
-#: src/widgets/font-selector.c:144
+#: src/widgets/font-selector.c:146
 msgid "Font family"
 msgstr "Lettertypefamilie"
 
 #. Style frame
-#: src/widgets/font-selector.c:172
+#: src/widgets/font-selector.c:174
 msgid "Style"
 msgstr "Stijl"
 
-#: src/widgets/font-selector.c:207
+#: src/widgets/font-selector.c:209
 msgid "Font size:"
 msgstr "Tekstgrootte:"
 
-#: src/widgets/font-selector.c:517
+#: src/widgets/font-selector.c:519
 msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "AaBbCcIiPpQq12368.;/()"
 
-#: src/widgets/gradient-selector.c:140
+#: src/widgets/gradient-selector.c:143
 msgid "Add"
 msgstr "Toevoegen"
 
-#: src/widgets/gradient-selector.c:176
+#: src/widgets/gradient-selector.c:179
 msgid "gradientUnits"
 msgstr "Overgang eenheden"
 
-#: src/widgets/gradient-selector.c:205
+#: src/widgets/gradient-selector.c:208
 msgid "gradientSpread"
 msgstr "Overgang spreiding"
 
-#: src/widgets/gradient-vector.c:245
+#: src/widgets/gradient-vector.c:248
 msgid "No document selected"
 msgstr "Geen document geselecteerd"
 
-#: src/widgets/gradient-vector.c:251
+#: src/widgets/gradient-vector.c:254
 msgid "No gradients in document"
 msgstr "Geen overgangen in het document"
 
-#: src/widgets/gradient-vector.c:257
+#: src/widgets/gradient-vector.c:260
 msgid "No gradient selected"
 msgstr "Geen overgang geselecteerd"
 
-#: src/widgets/gradient-vector.c:412
+#: src/widgets/gradient-vector.c:415
 msgid "Start color"
 msgstr "Begin kleur"
 
-#: src/widgets/gradient-vector.c:422
+#: src/widgets/gradient-vector.c:425
 msgid "End color"
 msgstr "Eind kleur"
 
-#: src/widgets/gradient-vector.c:447
+#: src/widgets/gradient-vector.c:450
 msgid "Gradient vector"
 msgstr "Overgang vector"
 
-#: src/widgets/paint-selector.c:620
+#: src/widgets/paint-selector.c:621
 msgid "No objects"
 msgstr "Geen objecten"
 
-#: src/widgets/paint-selector.c:634
+#: src/widgets/paint-selector.c:635
 msgid "Multiple styles"
 msgstr "Meerdere stijlen"
 
-#: src/widgets/paint-selector.c:648
+#: src/widgets/paint-selector.c:649
 msgid "No paint"
 msgstr "Geen opvulling"
 
 #. Label
-#: src/widgets/paint-selector.c:738
+#: src/widgets/paint-selector.c:739
 msgid "Mode:"
 msgstr "Modus:"
 
-#: src/widgets/paint-selector.c:748
+#: src/widgets/paint-selector.c:749
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:748 src/widgets/paint-selector.c:749
+#: src/widgets/paint-selector.c:749 src/widgets/paint-selector.c:750
 msgid "RGB Colorspace"
 msgstr "RGB kleurenpalet"
 
-#: src/widgets/paint-selector.c:749
+#: src/widgets/paint-selector.c:750
 msgid "HSV"
 msgstr "HSV"
 
-#: src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:751
 msgid "CMYK"
 msgstr "CMYK"
 
-#: src/widgets/paint-selector.c:750
+#: src/widgets/paint-selector.c:751
 msgid "CMYK Colorspace"
 msgstr "CMYK kleurenpalet"
 
 #. Use dropper
-#: src/widgets/paint-selector.c:757
+#: src/widgets/paint-selector.c:758
 msgid "Get from dropper"
 msgstr "Ophalen via pipet"
 
-#: src/widgets/paint-selector.c:788
+#: src/widgets/paint-selector.c:789
 msgid "Color paint"
 msgstr "Effen opvulling"
 
-#: src/widgets/paint-selector.c:858
+#: src/widgets/paint-selector.c:859
 msgid "Linear gradient"
 msgstr "Lineaire overgang"
 
-#: src/widgets/paint-selector.c:861
+#: src/widgets/paint-selector.c:862
 msgid "Radial gradient"
 msgstr "Circelvormige overgang"
 
-#: src/widgets/sp-color-selector.c:620
+#: src/widgets/sp-color-selector.c:623
 msgid "Red:"
 msgstr "Rood:"
 
-#: src/widgets/sp-color-selector.c:621
+#: src/widgets/sp-color-selector.c:624
 msgid "Green:"
 msgstr "Groen:"
 
-#: src/widgets/sp-color-selector.c:622
+#: src/widgets/sp-color-selector.c:625
 msgid "Blue:"
 msgstr "Blauw:"
 
-#: src/widgets/sp-color-selector.c:623 src/widgets/sp-color-selector.c:643
-#: src/widgets/sp-color-selector.c:665
+#: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
+#: src/widgets/sp-color-selector.c:668
 msgid "Alpha:"
 msgstr "Alfa:"
 
-#: src/widgets/sp-color-selector.c:640
+#: src/widgets/sp-color-selector.c:643
 msgid "Hue:"
 msgstr "Hue:"
 
-#: src/widgets/sp-color-selector.c:641
+#: src/widgets/sp-color-selector.c:644
 msgid "Saturation:"
 msgstr "Saturation:"
 
-#: src/widgets/sp-color-selector.c:642
+#: src/widgets/sp-color-selector.c:645
 msgid "Value:"
 msgstr "Waarde:"
 
-#: src/widgets/sp-color-selector.c:661
+#: src/widgets/sp-color-selector.c:664
 msgid "Cyan:"
 msgstr "Cyaan:"
 
-#: src/widgets/sp-color-selector.c:662
+#: src/widgets/sp-color-selector.c:665
 msgid "Magenta:"
 msgstr "Magenta:"
 
-#: src/widgets/sp-color-selector.c:663
+#: src/widgets/sp-color-selector.c:666
 msgid "Yellow:"
 msgstr "Geel (Y):"
 
-#: src/widgets/sp-color-selector.c:664
+#: src/widgets/sp-color-selector.c:667
 msgid "Black:"
 msgstr "Zwart (K):"
 
