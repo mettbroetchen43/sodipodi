@@ -1,3 +1,8 @@
+2002-11-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/dash-selector.c (sp_dash_selector_menu_item_new): Use created
+	GC, as widget is not mapped yet
+
 2002-11-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sodipodi-ctrl.c (sp_ctrl_build_cache): Cleaned up bitmap build

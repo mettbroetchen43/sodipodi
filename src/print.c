@@ -196,15 +196,15 @@ sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm
 		opacity = SP_SCALE24_TO_FLOAT (style->stroke_opacity.value) * SP_SCALE24_TO_FLOAT (style->opacity.value);
 		gnome_print_setopacity (ctx->gpc, opacity);
 
-		gnome_print_setlinewidth (ctx->gpc, style->stroke_width.computed);
-		gnome_print_setlinejoin (ctx->gpc, style->stroke_linejoin.value);
-		gnome_print_setlinecap (ctx->gpc, style->stroke_linecap.value);
-
 		if (style->stroke_dash.n_dash > 0) {
 			gnome_print_setdash (ctx->gpc, style->stroke_dash.n_dash, style->stroke_dash.dash, style->stroke_dash.offset);
 		} else {
 			gnome_print_setdash (ctx->gpc, 0, NULL, 0.0);
 		}
+
+		gnome_print_setlinewidth (ctx->gpc, style->stroke_width.computed);
+		gnome_print_setlinejoin (ctx->gpc, style->stroke_linejoin.computed);
+		gnome_print_setlinecap (ctx->gpc, style->stroke_linecap.computed);
 
 		gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
 

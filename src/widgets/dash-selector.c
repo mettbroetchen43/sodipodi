@@ -214,7 +214,9 @@ sp_dash_selector_menu_item_new (SPDashSelector *dsel, double *pattern)
 	pixmap = gdk_pixmap_new (GTK_WIDGET (dsel)->window, 64, 16, gdk_visual_get_best_depth ());
 	gc = gdk_gc_new (pixmap);
 
-	gdk_draw_rectangle (pixmap, GTK_WIDGET (dsel)->style->white_gc, TRUE, 0, 0, 64, 16);
+	gdk_rgb_gc_set_foreground (gc, 0xffffffff);
+	gdk_draw_rectangle (pixmap, gc, TRUE, 0, 0, 64, 16);
+	gdk_rgb_gc_set_foreground (gc, 0x00000000);
 	for (ndash = 0; pattern[ndash] >= 0.0; ndash ++) idash[ndash] = (gint8) (DASH_PREVIEW_WIDTH * pattern[ndash] + 0.5);
 	if (ndash > 0) {
 		gdk_gc_set_line_attributes (gc, DASH_PREVIEW_WIDTH, GDK_LINE_ON_OFF_DASH, GDK_CAP_BUTT, GDK_JOIN_MITER);
@@ -227,7 +229,9 @@ sp_dash_selector_menu_item_new (SPDashSelector *dsel, double *pattern)
 	gdk_gc_unref (gc);
 
 	px = gtk_pixmap_new (pixmap, NULL);
+#if 1
 	gdk_pixmap_unref (pixmap);
+#endif
 	gtk_widget_show (px);
 	gtk_container_add (GTK_CONTAINER (mi), px);
 
