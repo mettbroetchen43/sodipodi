@@ -259,6 +259,8 @@ sp_gradient_selector_set_spread (SPGradientSelector *sel, guint spread)
 
 	sel->gradientSpread = spread;
 
+	sp_gradient_position_set_spread (SP_GRADIENT_POSITION (sel->position), sel->gradientSpread);
+
 	gtk_option_menu_set_history (GTK_OPTION_MENU (sel->spread), sel->gradientSpread);
 }
 
@@ -448,6 +450,7 @@ static void
 sp_gradient_selector_spread_activate (GtkWidget *widget, SPGradientSelector *sel)
 {
 	sel->gradientSpread = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (widget), "gradientSpread"));
+	sp_gradient_position_set_spread (SP_GRADIENT_POSITION (sel->position), sel->gradientSpread);
 
 	gtk_signal_emit (GTK_OBJECT (sel), signals[CHANGED]);
 }

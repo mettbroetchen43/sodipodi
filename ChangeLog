@@ -1,3 +1,9 @@
+2002-11-22  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/gradient-selector.c (sp_gradient_selector_set_spread): Set
+	position widget spread as well
+	(sp_gradient_selector_spread_activate): Ditto
+
 2002-11-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/curve.c (sp_curve_closepath): Reinitialize pointers, as we may
