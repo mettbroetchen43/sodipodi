@@ -511,33 +511,13 @@ sp_marker_private_hide (SPItem *item, unsigned int key)
 static void
 sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
-	SPMarker *marker;
-	NRMatrixD a[6];
-
-	marker = SP_MARKER (item);
-
-	nr_matrix_multiply_ddd (a, &marker->c2p, transform);
-
-	if (((SPItemClass *) (parent_class))->bbox)
-		((SPItemClass *) (parent_class))->bbox (item, bbox, a, flags);
+	/* Break propagation */
 }
 
 static void
 sp_marker_print (SPItem *item, SPPrintContext *ctx)
 {
-	SPMarker *marker;
-	NRMatrixF t;
-
-	marker = SP_MARKER (item);
-
-	nr_matrix_f_from_d (&t, &marker->c2p);
-	sp_print_bind (ctx, &t, 1.0);
-
-	if (((SPItemClass *) (parent_class))->print) {
-		((SPItemClass *) (parent_class))->print (item, ctx);
-	}
-
-	sp_print_release (ctx);
+	/* Break propagation */
 }
 
 void
@@ -557,6 +537,7 @@ sp_marker_show_dimension (SPMarker *marker, unsigned int key, unsigned int size)
 			view = ref->next;
 		}
 	}
+	/* fixme: Remove link if zero-sized (Lauris) */
 	new = malloc (sizeof (SPMarkerView) + (size - 1) * sizeof (NRArenaItem *));
 	if (ref) {
 		ref->next = new;
@@ -585,7 +566,9 @@ sp_marker_show_dimension (SPMarker *marker, unsigned int key, unsigned int size)
 }
 
 NRArenaItem *
-sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent, unsigned int key, unsigned int pos, NRMatrixF *base, float linewidth)
+sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent,
+			 unsigned int key, unsigned int pos,
+			 NRMatrixF *base, float linewidth)
 {
 	SPMarkerView *v;
 

@@ -310,7 +310,7 @@ sp_icon_image_load_svg (const unsigned char *name, unsigned int size)
 			/* Create new arena */
 			arena = g_object_new (NR_TYPE_ARENA, NULL);
 			/* Create ArenaItem and set transform */
-			visionkey = sp_item_display_key_new ();
+			visionkey = sp_item_display_key_new (1);
 			root = sp_item_show (SP_ITEM (SP_DOCUMENT_ROOT (doc)), arena, visionkey);
 			/* Update to renderable state */
 			nr_matrix_d_set_scale (&gc.transform, 0.8, 0.8);

@@ -25,6 +25,12 @@ typedef struct _SPMarker SPMarker;
 typedef struct _SPMarkerClass SPMarkerClass;
 typedef struct _SPMarkerView SPMarkerView;
 
+enum {
+	SP_MARKER_START,
+	SP_MARKER_MID,
+	SP_MARKER_END
+};
+
 #include <libnr/nr-types.h>
 #include "svg/svg-types.h"
 #include "enums.h"
@@ -73,7 +79,8 @@ struct _SPMarkerClass {
 GType sp_marker_get_type (void);
 
 void sp_marker_show_dimension (SPMarker *marker, unsigned int key, unsigned int size);
-NRArenaItem *sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent, unsigned int key, unsigned int pos,
+NRArenaItem *sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent,
+				      unsigned int key, unsigned int pos,
 				      NRMatrixF *base, float linewidth);
 void sp_marker_hide (SPMarker *marker, unsigned int key);
 

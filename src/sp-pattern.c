@@ -537,7 +537,7 @@ sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectD *bb
 	/* fixme: But to do that, we need actual arena implementaion */
 	pp->arena = g_object_new (NR_TYPE_ARENA, NULL);
 
-	pp->dkey = sp_item_display_key_new ();
+	pp->dkey = sp_item_display_key_new (1);
 
 	/* fixme: Create group */
 	pp->root = nr_arena_item_new (pp->arena, NR_TYPE_ARENA_GROUP);

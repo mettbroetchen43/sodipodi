@@ -917,7 +917,7 @@ sp_print_document (SPDocument *doc)
 	/* Create new arena */
 	mod->base = SP_ITEM (sp_document_root (doc));
 	mod->arena = g_object_new (NR_TYPE_ARENA, NULL);
-	mod->dkey = sp_item_display_key_new ();
+	mod->dkey = sp_item_display_key_new (1);
 	mod->root = sp_item_show (mod->base, mod->arena, mod->dkey);
 
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->setup)

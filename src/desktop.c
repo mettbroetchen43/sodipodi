@@ -335,7 +335,7 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	g_signal_connect (G_OBJECT (desktop->selection), "modified", G_CALLBACK (sp_desktop_selection_modified), desktop);
 
-	desktop->dkey = sp_item_display_key_new ();
+	desktop->dkey = sp_item_display_key_new (1);
 	ai = sp_item_show (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey);
 	if (ai) {
 		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);

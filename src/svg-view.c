@@ -151,7 +151,7 @@ sp_svg_view_set_document (SPView *view, SPDocument *doc)
 
 	svgview = SP_SVG_VIEW (view);
 
-	if (!svgview->dkey) svgview->dkey = sp_item_display_key_new ();
+	if (!svgview->dkey) svgview->dkey = sp_item_display_key_new (1);
 
 	if (svgview->drawing) {
 		sp_item_hide (SP_ITEM (sp_document_root (view->doc)), svgview->dkey);

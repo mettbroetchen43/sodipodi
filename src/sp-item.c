@@ -264,7 +264,7 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;
-					if (!v->pkey) v->pkey = sp_item_display_key_new ();
+					if (!v->pkey) v->pkey = sp_item_display_key_new (3);
 					ai = sp_clippath_show (SP_CLIPPATH (item->clip), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
 					nr_arena_item_set_clip (v->arenaitem, ai);
 					nr_arena_item_unref (ai);
@@ -298,7 +298,7 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;
-					if (!v->pkey) v->pkey = sp_item_display_key_new ();
+					if (!v->pkey) v->pkey = sp_item_display_key_new (3);
 					ai = sp_mask_show (SP_MASK (item->mask), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
 					nr_arena_item_set_mask (v->arenaitem, ai);
 					nr_arena_item_unref (ai);
@@ -546,11 +546,13 @@ sp_item_description (SPItem * item)
 }
 
 unsigned int
-sp_item_display_key_new (void)
+sp_item_display_key_new (unsigned int numkeys)
 {
 	static unsigned int dkey = 0;
 
-	return ++dkey;
+	dkey += numkeys;
+
+	return dkey - numkeys;
 }
 
 NRArenaItem *
@@ -575,14 +577,14 @@ sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
 		nr_arena_item_set_sensitive (ai, item->sensitive);
 		if (item->clip) {
 			NRArenaItem *ac;
-			if (!item->display->pkey) item->display->pkey = sp_item_display_key_new ();
+			if (!item->display->pkey) item->display->pkey = sp_item_display_key_new (3);
 			ac = sp_clippath_show (SP_CLIPPATH (item->clip), arena, item->display->pkey);
 			nr_arena_item_set_clip (ai, ac);
 			nr_arena_item_unref (ac);
 		}
 		if (item->mask) {
 			NRArenaItem *ac;
-			if (!item->display->pkey) item->display->pkey = sp_item_display_key_new ();
+			if (!item->display->pkey) item->display->pkey = sp_item_display_key_new (3);
 			ac = sp_mask_show (SP_MASK (item->mask), arena, item->display->pkey);
 			nr_arena_item_set_mask (ai, ac);
 			nr_arena_item_unref (ac);

@@ -239,32 +239,63 @@ sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 		}
 	}
 
-	if (shape->marker_start && shape->curve) {
+	if (shape->curve && (shape->marker_start || shape->marker_mid || shape->marker_end)) {
 		SPItemView *v;
 		ArtBpath *bp;
-		int nstart, npos;
+		int nstart, nmid, nend;
 		/* Determine the number of markers needed */
-		printf ("ara ara\n");
 		nstart = 0;
+		nmid = 0;
+		nend = 0;
 		for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
-			if ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN)) nstart += 1;
+			if ((bp[0].code == ART_MOVETO) || (bp[0].code == ART_MOVETO_OPEN)) {
+				nstart += 1;
+			} else if ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO)) {
+				nend += 1;
+			} else {
+				nmid += 1;
+			}
 		}
 		/* Dimension marker views */
 		for (v = item->display; v != NULL; v = v->next) {
-			if (!v->pkey) v->pkey = sp_item_display_key_new ();
-			sp_marker_show_dimension ((SPMarker *) shape->marker_start, v->pkey, nstart);
+			if (!v->pkey) v->pkey = sp_item_display_key_new (3);
+			if (shape->marker_start) sp_marker_show_dimension ((SPMarker *) shape->marker_start, v->pkey + SP_MARKER_START, nstart);
+			if (shape->marker_mid) sp_marker_show_dimension ((SPMarker *) shape->marker_mid, v->pkey + SP_MARKER_MID, nmid);
+			if (shape->marker_end) sp_marker_show_dimension ((SPMarker *) shape->marker_end, v->pkey + SP_MARKER_END, nend);
 		}
-		npos = 0;
+		nstart = 0;
+		nmid = 0;
+		nend = 0;
 		for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
-			if ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN)) {
-				NRMatrixF m;
-				nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
+			NRMatrixF m;
+			nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
+			if (shape->marker_start && ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN))) {
 				for (v = item->display; v != NULL; v = v->next) {
 					/* NRArenaItem *ai; */
-					sp_marker_show_instance (SP_MARKER (shape->marker_start), v->arenaitem, v->pkey, npos,
-								      &m, object->style->stroke_width.computed);
+					sp_marker_show_instance ((SPMarker *) shape->marker_start, v->arenaitem,
+								 v->pkey + SP_MARKER_START, nstart,
+								 &m, object->style->stroke_width.computed);
 					/* nr_arena_item_set_transform (ai, &m); */
 				}
+				nstart += 1;
+			} else if (shape->marker_end && ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO))) {
+				for (v = item->display; v != NULL; v = v->next) {
+					/* NRArenaItem *ai; */
+					sp_marker_show_instance ((SPMarker *) shape->marker_end, v->arenaitem,
+								 v->pkey + SP_MARKER_END, nend,
+								 &m, object->style->stroke_width.computed);
+					/* nr_arena_item_set_transform (ai, &m); */
+				}
+				nend += 1;
+			} else if (shape->marker_mid) {
+				for (v = item->display; v != NULL; v = v->next) {
+					/* NRArenaItem *ai; */
+					sp_marker_show_instance ((SPMarker *) shape->marker_mid, v->arenaitem,
+								 v->pkey + SP_MARKER_MID, nmid,
+								 &m, object->style->stroke_width.computed);
+					/* nr_arena_item_set_transform (ai, &m); */
+				}
+				nmid += 1;
 			}
 		}
 	}
@@ -407,13 +438,13 @@ sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 /* Marker stuff */
 
 static void
-sp_shape_marker_start_release (SPObject *marker, SPShape *shape)
+sp_shape_marker_release (SPObject *marker, SPShape *shape)
 {
 	SPItem *item;
 
 	item = (SPItem *) shape;
 
-	if (shape->marker_start) {
+	if (marker == shape->marker_start) {
 		SPItemView *v;
 		/* Hide marker */
 		for (v = item->display; v != NULL; v = v->next) {
@@ -425,10 +456,34 @@ sp_shape_marker_start_release (SPObject *marker, SPShape *shape)
 		sp_signal_disconnect_by_data (shape->marker_start, item);
 		shape->marker_start = sp_object_hunref (shape->marker_start, item);
 	}
+	if (marker == shape->marker_mid) {
+		SPItemView *v;
+		/* Hide marker */
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) (shape->marker_mid), v->pkey);
+			/* fixme: Do we need explicit remove here? (Lauris) */
+			/* nr_arena_item_set_mask (v->arenaitem, NULL); */
+		}
+		/* Detach marker */
+		sp_signal_disconnect_by_data (shape->marker_mid, item);
+		shape->marker_mid = sp_object_hunref (shape->marker_mid, item);
+	}
+	if (marker == shape->marker_end) {
+		SPItemView *v;
+		/* Hide marker */
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) (shape->marker_end), v->pkey);
+			/* fixme: Do we need explicit remove here? (Lauris) */
+			/* nr_arena_item_set_mask (v->arenaitem, NULL); */
+		}
+		/* Detach marker */
+		sp_signal_disconnect_by_data (shape->marker_end, item);
+		shape->marker_end = sp_object_hunref (shape->marker_end, item);
+	}
 }
 
 static void
-sp_shape_marker_start_modified (SPObject *marker, guint flags, SPItem *item)
+sp_shape_marker_modified (SPObject *marker, guint flags, SPItem *item)
 {
 	/* I think mask does update automagically */
 	/* g_warning ("Item %s mask %s modified", SP_OBJECT_ID (item), SP_OBJECT_ID (mask)); */
@@ -439,13 +494,13 @@ sp_shape_set_marker (SPObject *object, unsigned int key, const unsigned char *va
 {
 	SPItem *item;
 	SPShape *shape;
+	SPObject *mrk;
 
 	item = (SPItem *) object;
 	shape = (SPShape *) object;
 
 	switch (key) {
-	case SP_PROP_MARKER_START: {
-		SPObject *mrk;
+	case SP_PROP_MARKER_START:
 		mrk = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), value);
 		if (mrk != shape->marker_start) {
 			if (shape->marker_start) {
@@ -461,27 +516,59 @@ sp_shape_set_marker (SPObject *object, unsigned int key, const unsigned char *va
 				shape->marker_start = sp_object_hunref (shape->marker_start, object);
 			}
 			if (SP_IS_MARKER (mrk)) {
-#if 0
-				SPItemView *v;
-#endif
 				shape->marker_start = sp_object_href (mrk, object);
-				g_signal_connect (G_OBJECT (shape->marker_start), "release", G_CALLBACK (sp_shape_marker_start_release), shape);
-				g_signal_connect (G_OBJECT (shape->marker_start), "modified", G_CALLBACK (sp_shape_marker_start_modified), shape);
-#if 0
-				for (v = item->display; v != NULL; v = v->next) {
-					NRArenaItem *ai;
-					if (!v->pkey) v->pkey = sp_item_display_key_new ();
-					ai = sp_marker_show (SP_MARKER (shape->marker_start), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
-					/* fixme: Order (Lauris) */
-					nr_arena_item_add_child (v->arenaitem, ai, NULL);
-					nr_arena_item_unref (ai);
-				}
-#endif
+				g_signal_connect (G_OBJECT (shape->marker_start), "release", G_CALLBACK (sp_shape_marker_release), shape);
+				g_signal_connect (G_OBJECT (shape->marker_start), "modified", G_CALLBACK (sp_shape_marker_modified), shape);
 			}
 			sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		}
 		break;
-	}
+	case SP_PROP_MARKER_MID:
+		mrk = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), value);
+		if (mrk != shape->marker_mid) {
+			if (shape->marker_mid) {
+				SPItemView *v;
+				/* Detach marker */
+				sp_signal_disconnect_by_data (shape->marker_mid, item);
+				/* Hide marker */
+				for (v = item->display; v != NULL; v = v->next) {
+					sp_marker_hide ((SPMarker *) (shape->marker_mid), v->pkey);
+					/* fixme: Do we need explicit remove here? (Lauris) */
+					/* nr_arena_item_set_mask (v->arenaitem, NULL); */
+				}
+				shape->marker_mid = sp_object_hunref (shape->marker_mid, object);
+			}
+			if (SP_IS_MARKER (mrk)) {
+				shape->marker_mid = sp_object_href (mrk, object);
+				g_signal_connect (G_OBJECT (shape->marker_mid), "release", G_CALLBACK (sp_shape_marker_release), shape);
+				g_signal_connect (G_OBJECT (shape->marker_mid), "modified", G_CALLBACK (sp_shape_marker_modified), shape);
+			}
+			sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		}
+		break;
+	case SP_PROP_MARKER_END:
+		mrk = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), value);
+		if (mrk != shape->marker_end) {
+			if (shape->marker_end) {
+				SPItemView *v;
+				/* Detach marker */
+				sp_signal_disconnect_by_data (shape->marker_end, item);
+				/* Hide marker */
+				for (v = item->display; v != NULL; v = v->next) {
+					sp_marker_hide ((SPMarker *) (shape->marker_end), v->pkey);
+					/* fixme: Do we need explicit remove here? (Lauris) */
+					/* nr_arena_item_set_mask (v->arenaitem, NULL); */
+				}
+				shape->marker_end = sp_object_hunref (shape->marker_end, object);
+			}
+			if (SP_IS_MARKER (mrk)) {
+				shape->marker_end = sp_object_href (mrk, object);
+				g_signal_connect (G_OBJECT (shape->marker_end), "release", G_CALLBACK (sp_shape_marker_release), shape);
+				g_signal_connect (G_OBJECT (shape->marker_end), "modified", G_CALLBACK (sp_shape_marker_modified), shape);
+			}
+			sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		}
+		break;
 	default:
 		break;
 	}
