@@ -1,5 +1,7 @@
 2002-10-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/font-selector.c (sp_font_selector_set_font): Implement
+
 	* src/libnrtype/nr-rasterfont.c (nr_rasterfont_ensure_glyph_slot): Oops, alloc
 	and clear the right number of blocks
 

@@ -33,6 +33,12 @@ nr_typeface_get_family_name (NRTypeFace *tf)
 }
 
 const unsigned char *
+nr_typeface_get_style (NRTypeFace *tf)
+{
+	return gnome_font_face_get_species_name (tf->face);
+}
+
+const unsigned char *
 nr_typeface_get_attribute (NRTypeFace *tf, const unsigned char *key)
 {
 	if (!strcmp (key, "weight")) {

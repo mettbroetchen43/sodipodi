@@ -15,6 +15,7 @@
 
 #include "config.h"
 
+#include <string.h>
 #include <stdlib.h>
 
 #include <libnr/nr-matrix.h>
@@ -337,11 +338,51 @@ sp_font_selector_new (void)
 void
 sp_font_selector_set_font (SPFontSelector *fsel, NRFont *font)
 {
+	GtkCList *fcl, *scl;
+
+	fcl = GTK_CLIST (fsel->family);
+	scl = GTK_CLIST (fsel->style);
+
+	if (font) {
+		NRTypeFace *tf;
+		const unsigned char *fn, *sn;
+		unsigned char s[8];
+		int i;
+		tf = nr_font_get_typeface (font);
+		fn = nr_typeface_get_family_name (tf);
+		for (i = 0; i < fcl->rows; i++) {
+			gchar *rtxt;
+			gtk_clist_get_text (fcl, i, 0, &rtxt);
+			if (rtxt && !strcmp (fn, rtxt)) {
+				gtk_clist_select_row (fcl, i, 0);
+				break;
+			}
+		}
+		sn = nr_typeface_get_style (tf);
+		for (i = 0; i < scl->rows; i++) {
+			gchar *rtxt;
+			gtk_clist_get_text (scl, i, 0, &rtxt);
+			if (rtxt && !strcmp (sn, rtxt)) {
+				gtk_clist_select_row (scl, i, 0);
+				break;
+			}
+		}
+		g_snprintf (s, 8, "%.2g", nr_font_get_size (font));
+		gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (fsel->size)->entry), s);
+	}
 }
 
 void
 sp_font_selector_set_font_fuzzy (SPFontSelector *fsel, const guchar *family, const guchar *style)
 {
+	NRTypeFace *tf;
+	NRFont *font;
+
+	tf = nr_type_directory_lookup_fuzzy (fsel->familyname, fsel->stylename);
+	font = nr_font_new_default (tf, NR_TYPEFACE_METRICS_DEFAULT, fsel->fontsize);
+	nr_typeface_unref (tf);
+	sp_font_selector_set_font (fsel, font);
+	if (font) nr_font_unref (font);
 }
 
 NRFont*
@@ -570,259 +611,3 @@ sp_font_preview_set_phrase (SPFontPreview *fprev, const guchar *phrase)
 	if (GTK_WIDGET_DRAWABLE (fprev)) gtk_widget_queue_draw (GTK_WIDGET (fprev));
 }
 
-#if 0
-/*****************************************************************************
- * These functions are the main public interface for getting/setting the font.
- *****************************************************************************/
-
-gdouble
-gnome_font_selection_get_size (GnomeFontSelection * fontsel)
-{
-	return fontsel->selectedsize;
-}
-
-void
-gnome_font_selection_set_font (GnomeFontSelection * fontsel, GnomeFont * font)
-{
-	const GnomeFontFace * face;
-	const gchar * familyname, * stylename;
-	gdouble size;
-	gchar b[32];
-	gint rows, row;
-
-	g_return_if_fail (fontsel != NULL);
-	g_return_if_fail (GNOME_IS_FONT_SELECTION (fontsel));
-	g_return_if_fail (font != NULL);
-	g_return_if_fail (GNOME_IS_FONT (font));
-
-	face = gnome_font_get_face (font);
-	familyname = gnome_font_face_get_family_name (face);
-	stylename = gnome_font_face_get_species_name (face);
-	size = gnome_font_get_size (font);
-
-	rows = ((GtkCList *) fontsel->family)->rows;
-	for (row = 0; row < rows; row++) {
-		gchar * text;
-		gtk_clist_get_text ((GtkCList *) fontsel->family, row, 0, &text);
-		if (strcmp (text, familyname) == 0) break;
-	}
-	gtk_clist_select_row ((GtkCList *) fontsel->family, row, 0);
-
-	rows = ((GtkCList *) fontsel->style)->rows;
-	for (row = 0; row < rows; row++) {
-		gchar * text;
-		gtk_clist_get_text ((GtkCList *) fontsel->style, row, 0, &text);
-		if (strcmp (text, stylename) == 0) break;
-	}
-	gtk_clist_select_row ((GtkCList *) fontsel->style, row, 0);
-
-	g_snprintf (b, 32, "%2.1f", size);
-	b[31] = '\0';
-	gtk_entry_set_text ((GtkEntry *) ((GtkCombo *) fontsel->size)->entry, b);
-	fontsel->selectedsize = size;
-}
-
-/********************************************
- * GnomeFontPreview
- ********************************************/
-
-struct _GnomeFontPreview
-{
-	GnomeCanvas canvas;
-
-	GtkObject * phrase;
-
-	gchar * text;
-	GnomeFont * font;
-	guint32 color;
-};
-
-
-struct _GnomeFontPreviewClass
-{
-	GnomeCanvasClass parent_class;
-};
-
-static void gnome_font_preview_class_init (GnomeFontPreviewClass *klass);
-static void gnome_font_preview_init (GnomeFontPreview * preview);
-static void gnome_font_preview_destroy (GtkObject *object);
-static void gnome_font_preview_update (GnomeFontPreview * preview);
-
-static GnomeCanvasClass *gfp_parent_class = NULL;
-
-GtkType
-gnome_font_preview_get_type()
-{
-	static GtkType font_preview_type = 0;
-	if (!font_preview_type) {
-		static const GtkTypeInfo gfp_type_info = {
-			"GnomeFontPreview",
-			sizeof (GnomeFontPreview),
-			sizeof (GnomeFontPreviewClass),
-			(GtkClassInitFunc) gnome_font_preview_class_init,
-			(GtkObjectInitFunc) gnome_font_preview_init,
-			NULL, NULL,
-			(GtkClassInitFunc) NULL,
-		};
-		font_preview_type = gtk_type_unique (GNOME_TYPE_CANVAS, &gfp_type_info);
-	}
-	return font_preview_type;
-}
-
-static void
-gnome_font_preview_class_init (GnomeFontPreviewClass *klass)
-{
-	GtkObjectClass *object_class;
-  
-	object_class = (GtkObjectClass *) klass;
-  
-	gfp_parent_class = gtk_type_class (GNOME_TYPE_CANVAS);
-  
-	object_class->destroy = gnome_font_preview_destroy;
-}
-
-static void
-gnome_font_preview_init (GnomeFontPreview * preview)
-{
-	GtkWidget * w;
-	GtkStyle * style;
-	GnomeCanvasItem * phrase;
-
-	w = (GtkWidget *) preview;
-
-	preview->text = NULL;
-	preview->font = NULL;
-	preview->color = 0x000000ff;
-
-	style = gtk_style_copy (w->style);
-	style->bg[GTK_STATE_NORMAL] = style->white;
-	gtk_widget_set_style (w, style);
-
-	gtk_widget_set_usize (w, 64, MIN_PREVIEW_HEIGHT);
-
-	phrase = gnome_canvas_item_new (gnome_canvas_root ((GnomeCanvas *) preview),
-					GNOME_TYPE_CANVAS_HACKTEXT,
-					"fill_color_rgba", preview->color,
-					NULL);
-
-	preview->phrase = (GtkObject *) phrase;
-}
-
-static void
-gnome_font_preview_destroy (GtkObject *object)
-{
-	GnomeFontPreview *preview;
-  
-	preview = (GnomeFontPreview *) object;
-
-	if (preview->text) {
-		g_free (preview->text);
-		preview->text = NULL;
-	}
-
-	if (preview->font) {
-		gnome_font_unref (preview->font);
-		preview->font = NULL;
-	}
-
-	preview->phrase = NULL;
-
-  	if (GTK_OBJECT_CLASS (gfp_parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (gfp_parent_class)->destroy) (object);
-}
-
-GtkWidget *
-gnome_font_preview_new (void)
-{
-	GnomeFontPreview * preview;
-  
-	preview = gtk_type_new (GNOME_TYPE_FONT_PREVIEW);
-
-	return GTK_WIDGET (preview);
-}
-
-void
-gnome_font_preview_set_phrase (GnomeFontPreview * preview, const gchar *phrase)
-{
-	g_return_if_fail (preview != NULL);
-	g_return_if_fail (GNOME_IS_FONT_PREVIEW (preview));
-
-	if (preview->text) g_free (preview->text);
-
-	if (phrase) {
-		preview->text = g_strdup (phrase);
-	} else {
-		preview->text = NULL;
-	}
-
-	gnome_font_preview_update (preview);
-}
-
-
-void
-gnome_font_preview_set_font (GnomeFontPreview * preview, GnomeFont * font)
-{
-	g_return_if_fail (preview != NULL);
-	g_return_if_fail (GNOME_IS_FONT_PREVIEW (preview));
-	g_return_if_fail (font != NULL);
-	g_return_if_fail (GNOME_IS_FONT (font));
-
-	gnome_font_ref (font);
-
-	if (preview->font) gnome_font_unref (preview->font);
-
-	preview->font = font;
-
-	gnome_font_preview_update (preview);
-}
-
-void
-gnome_font_preview_set_color (GnomeFontPreview * preview, guint32 color)
-{
-	g_return_if_fail (preview != NULL);
-	g_return_if_fail (GNOME_IS_FONT_PREVIEW (preview));
-
-	preview->color = color;
-
-	gnome_font_preview_update (preview);
-}
-
-void
-gnome_font_preview_bind_editable_enters (GnomeFontPreview * gfp, GnomeDialog * dialog)
-{
-}
-
-void
-gnome_font_preview_bind_accel_group (GnomeFontPreview * gfp, GtkWindow * window)
-{
-}
-
-static void
-gnome_font_preview_update (GnomeFontPreview * preview)
-{
-	const gchar * sample;
-	gdouble ascender, descender, width;
-
-	if (!preview->font) return;
-
-	if (preview->text) {
-		sample = preview->text;
-	} else {
-		sample = gnome_font_face_get_sample (gnome_font_get_face (preview->font));
-	}
-
-	ascender = gnome_font_get_ascender (preview->font);
-	descender = gnome_font_get_descender (preview->font);
-	width = gnome_font_get_width_string (preview->font, sample);
-
-	gnome_canvas_set_scroll_region (GNOME_CANVAS (preview),
-					-16.0, -ascender, width + 16.0, descender);
-
-	gnome_canvas_item_set ((GnomeCanvasItem *) preview->phrase,
-			       "font", preview->font,
-			       "text", sample,
-			       "fill_color_rgba", preview->color,
-			       NULL);
-}
-
-#endif
