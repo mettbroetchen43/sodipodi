@@ -24,7 +24,8 @@
 struct _NRArenaGroup {
 	NRArenaItem item;
 	guint transparent : 1;
-	NRArenaItem *children, *last;
+	NRArenaItem *children;
+	NRArenaItem *last;
 	NRMatrixF child_transform;
 };
 

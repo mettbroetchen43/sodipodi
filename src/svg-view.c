@@ -98,12 +98,14 @@ sp_svg_view_dispose (GObject *object)
 /* fixme: */
 
 static gint
-arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPSVGView *svgview)
+arena_handler (SPCanvasArena *arena, NRArenaItem *ai, GdkEvent *event, SPSVGView *svgview)
 {
 	static gdouble x, y;
 	static gboolean active = FALSE;
 	SPItem *spitem;
 	SPEvent spev;
+
+	spitem = (ai) ? NR_ARENA_ITEM_GET_DATA (ai) : NULL;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
@@ -116,8 +118,6 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPSVGVi
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 1) {
 			if (active && (event->button.x == x) && (event->button.y == y)) {
-				g_print ("Invoking event\n");
-				spitem = g_object_get_data (G_OBJECT (item), "sp-item");
 				spev.type = SP_EVENT_ACTIVATE;
 				sp_item_event (spitem, &spev);
 			}
@@ -128,13 +128,11 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPSVGVi
 		active = FALSE;
 		break;
 	case GDK_ENTER_NOTIFY:
-		spitem = g_object_get_data (G_OBJECT (item), "sp-item");
 		spev.type = SP_EVENT_MOUSEOVER;
 		spev.data = svgview;
 		sp_item_event (spitem, &spev);
 		break;
 	case GDK_LEAVE_NOTIFY:
-		spitem = g_object_get_data (G_OBJECT (item), "sp-item");
 		spev.type = SP_EVENT_MOUSEOUT;
 		spev.data = svgview;
 		sp_item_event (spitem, &spev);

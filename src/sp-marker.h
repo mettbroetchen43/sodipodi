@@ -68,4 +68,7 @@ struct _SPMarkerClass {
 
 GType sp_marker_get_type (void);
 
+NRArenaItem *sp_marker_show (SPMarker *marker, NRArena *arena, unsigned int key);
+void sp_marker_hide (SPMarker *marker, unsigned int key);
+
 #endif

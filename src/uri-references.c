@@ -37,7 +37,7 @@ sp_uri_reference_resolve (SPDocument *document, const guchar *uri)
 	e = uri + 5;
 	while (*e) {
 		if (*e == ')') break;
-		if (!isalnum (*e)) return NULL;
+		if (!isalnum (*e) && (*e != '_') && (*e != '-')) return NULL;
 		e += 1;
 		if (!*e) return NULL;
 	}

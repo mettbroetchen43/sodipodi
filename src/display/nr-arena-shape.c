@@ -39,6 +39,11 @@ static void nr_arena_shape_class_init (NRArenaShapeClass *klass);
 static void nr_arena_shape_init (NRArenaShape *shape);
 static void nr_arena_shape_dispose (GObject *object);
 
+static NRArenaItem *nr_arena_shape_children (NRArenaItem *item);
+static void nr_arena_shape_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
+static void nr_arena_shape_remove_child (NRArenaItem *item, NRArenaItem *child);
+static void nr_arena_shape_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref);
+
 static guint nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset);
 static unsigned int nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags);
 static guint nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
@@ -78,6 +83,10 @@ nr_arena_shape_class_init (NRArenaShapeClass *klass)
 
 	object_class->dispose = nr_arena_shape_dispose;
 
+	item_class->children = nr_arena_shape_children;
+	item_class->add_child = nr_arena_shape_add_child;
+	item_class->set_child_position = nr_arena_shape_set_child_position;
+	item_class->remove_child = nr_arena_shape_remove_child;
 	item_class->update = nr_arena_shape_update;
 	item_class->render = nr_arena_shape_render;
 	item_class->clip = nr_arena_shape_clip;
@@ -138,6 +147,74 @@ nr_arena_shape_dispose (GObject *object)
 
 	if (G_OBJECT_CLASS (shape_parent_class)->dispose)
 		(* G_OBJECT_CLASS (shape_parent_class)->dispose) (object);
+}
+
+static NRArenaItem *
+nr_arena_shape_children (NRArenaItem *item)
+{
+	NRArenaShape *shape;
+
+	shape = (NRArenaShape *) item;
+
+	return shape->markers;
+}
+
+static void
+nr_arena_shape_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref)
+{
+	NRArenaShape *shape;
+
+	shape = (NRArenaShape *) item;
+
+	if (!ref) {
+		shape->markers = nr_arena_item_attach_ref (item, child, NULL, shape->markers);
+	} else {
+		ref->next = nr_arena_item_attach_ref (item, child, ref, ref->next);
+	}
+
+	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, FALSE);
+}
+
+static void
+nr_arena_shape_remove_child (NRArenaItem *item, NRArenaItem *child)
+{
+	NRArenaShape *shape;
+
+	shape = (NRArenaShape *) item;
+
+	if (child->prev) {
+		nr_arena_item_detach_unref (item, child);
+	} else {
+		shape->markers = nr_arena_item_detach_unref (item, child);
+	}
+
+	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, FALSE);
+}
+
+static void
+nr_arena_shape_set_child_position (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref)
+{
+	NRArenaShape *shape;
+
+	shape = (NRArenaShape *) item;
+
+	nr_arena_item_ref (child);
+
+	if (child->prev) {
+		nr_arena_item_detach_unref (item, child);
+	} else {
+		shape->markers = nr_arena_item_detach_unref (item, child);
+	}
+
+	if (!ref) {
+		shape->markers = nr_arena_item_attach_ref (item, child, NULL, shape->markers);
+	} else {
+		ref->next = nr_arena_item_attach_ref (item, child, ref, ref->next);
+	}
+
+	nr_arena_item_unref (child);
+
+	nr_arena_item_request_render (child);
 }
 
 static guint

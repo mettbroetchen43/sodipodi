@@ -88,7 +88,7 @@ sp_icon_class_init (SPIconClass *klass)
 static void
 sp_icon_init (SPIcon *icon)
 {
-	GTK_WIDGET_SET_FLAGS (icon, GTK_NO_WINDOW);
+	GTK_WIDGET_FLAGS (icon) |= GTK_NO_WINDOW;
 }
 
 static void
@@ -148,7 +148,7 @@ sp_icon_new (unsigned int size, const unsigned char *name)
 
 	icon->size = CLAMP (size, 1, 128);
 
-	GTK_OBJECT_UNSET_FLAGS (icon, SP_ICON_FLAG_STATIC_DATA);
+	GTK_OBJECT_FLAGS (icon) &= ~SP_ICON_FLAG_STATIC_DATA;
 	icon->px = sp_icon_image_load (name, icon->size);
 
 	return (GtkWidget *) icon;
@@ -163,7 +163,7 @@ sp_icon_new_from_data (unsigned int size, const unsigned char *px)
 
 	icon->size = CLAMP (size, 1, 128);
 
-	GTK_OBJECT_SET_FLAGS (icon, SP_ICON_FLAG_STATIC_DATA);
+	GTK_OBJECT_FLAGS (icon) |= SP_ICON_FLAG_STATIC_DATA;
 	icon->px = (unsigned char *) px;
 
 	return (GtkWidget *) icon;
@@ -258,12 +258,12 @@ sp_icon_image_load_pixmap (const unsigned char *name, unsigned int size)
 	unsigned char *px;
 	GdkPixbuf *pb;
 
-	path = g_strdup_printf ("%s/%s.png", SODIPODI_PIXMAPDIR, name);
-	pb = gdk_pixbuf_new_from_file (path, NULL);
+	path = (unsigned char *) g_strdup_printf ("%s/%s.png", SODIPODI_PIXMAPDIR, name);
+	pb = gdk_pixbuf_new_from_file ((const char *) path, NULL);
 	g_free (path);
 	if (!pb) {
-		path = g_strdup_printf ("%s/%s.xpm", SODIPODI_PIXMAPDIR, name);
-		pb = gdk_pixbuf_new_from_file (path, NULL);
+		path = (unsigned char *) g_strdup_printf ("%s/%s.xpm", SODIPODI_PIXMAPDIR, name);
+		pb = gdk_pixbuf_new_from_file ((const char *) path, NULL);
 		g_free (path);
 	}
 	if (pb) {

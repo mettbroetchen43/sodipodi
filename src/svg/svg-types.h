@@ -34,8 +34,8 @@ enum {
 };
 
 struct _SPSVGLength {
-	unsigned long set : 1;
-	unsigned long unit : 4;
+	unsigned int set : 1;
+	unsigned int unit : 4;
 	float value;
 	float computed;
 };

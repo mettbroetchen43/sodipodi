@@ -50,7 +50,7 @@ struct _SPItemView {
 	SPItemView *next;
 	unsigned int key;
 	unsigned int pkey;
-	SPItem *item;
+	/* SPItem *item; */
 	NRArenaItem *arenaitem;
 };
 

@@ -107,6 +107,10 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	}
 
 	sp_object_read_attr (object, "d");
+	sp_object_read_attr (object, "marker");
+	sp_object_read_attr (object, "marker-start");
+	sp_object_read_attr (object, "marker-mid");
+	sp_object_read_attr (object, "marker-end");
 
 	if ((version > 0) && (version < 25)) {
 		SPShape *shape;
@@ -171,6 +175,12 @@ sp_path_set (SPObject *object, unsigned int key, const unsigned char *value)
 			sp_shape_set_curve ((SPShape *) path, NULL, TRUE);
 		}
 		break;
+	case SP_PROP_MARKER:
+	case SP_PROP_MARKER_START:
+	case SP_PROP_MARKER_MID:
+	case SP_PROP_MARKER_END:
+		sp_shape_set_marker (object, key, value);
+		break;
 	default:
 		if (((SPObjectClass *) parent_class)->set)
 			((SPObjectClass *) parent_class)->set (object, key, value);
@@ -201,4 +211,59 @@ sp_path_write (SPObject *object, SPRepr *repr, guint flags)
 
 	return repr;
 }
+
+#if 0
+static void
+sp_shape_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
+{
+	SPPath *path;
+	SPShape *shape;
+
+	path = SP_PATH (item);
+	shape = SP_SHAPE (item);
+
+	if (path->independent) {
+		SPPathComp *comp;
+		NRBPath dpath, spath;
+		NRMatrixF ctm;
+		double ex;
+		gchar *svgpath;
+		SPStyle *style;
+		ex = NR_MATRIX_DF_EXPANSION (transform);
+		comp = (SPPathComp *) path->comp->data;
+		nr_matrix_multiply_fdf (&ctm, NR_MATRIX_D_FROM_DOUBLE (comp->affine), &item->transform);
+		spath.path = comp->curve->bpath;
+		nr_path_duplicate_transform (&dpath, &spath, &ctm);
+		svgpath = sp_svg_write_path (dpath.path);
+		sp_repr_set_attr (repr, "d", svgpath);
+		g_free (svgpath);
+		nr_free (dpath.path);
+		/* And last but not least */
+		style = SP_OBJECT_STYLE (item);
+		if (style->stroke.type != SP_PAINT_TYPE_NONE) {
+			if (!NR_DF_TEST_CLOSE (ex, 1.0, NR_EPSILON_D)) {
+				guchar *str;
+				/* Scale changed, so we have to adjust stroke width */
+				style->stroke_width.computed *= ex;
+				if (style->stroke_dash.n_dash != 0) {
+					int i;
+					for (i = 0; i < style->stroke_dash.n_dash; i++) style->stroke_dash.dash[i] *= ex;
+					style->stroke_dash.offset *= ex;
+				}
+				str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
+				sp_repr_set_attr (repr, "style", str);
+				g_free (str);
+			}
+		}
+		sp_repr_set_attr (repr, "transform", NULL);
+	} else {
+		guchar t[80];
+		if (sp_svg_transform_write (t, 80, &item->transform)) {
+			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+		} else {
+			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
+		}
+	}
+}
+#endif
 

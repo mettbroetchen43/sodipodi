@@ -21,11 +21,14 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 
+#include "macros.h"
 #include "helper/sp-intl.h"
 #include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "dialogs/fill-style.h"
 #include "display/nr-arena-shape.h"
+#include "uri-references.h"
+#include "attributes.h"
 #include "print.h"
 #include "document.h"
 #include "desktop.h"
@@ -34,6 +37,7 @@
 #include "sp-paint-server.h"
 #include "style.h"
 #include "sp-root.h"
+#include "sp-marker.h"
 #include "sp-shape.h"
 
 #define noSHAPE_VERBOSE
@@ -47,20 +51,11 @@ static void sp_shape_release (SPObject *object);
 static void sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 static void sp_shape_modified (SPObject *object, unsigned int flags);
 
-#if 0
-static SPRepr *sp_shape_write (SPObject *object, SPRepr *repr, guint flags);
-#endif
-
 static void sp_shape_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 void sp_shape_print (SPItem * item, SPPrintContext * ctx);
 static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena, unsigned int key);
 
 static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
-
-#if 0
-static gchar * sp_shape_description (SPItem * item);
-static void sp_shape_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
-#endif
 
 static SPItemClass *parent_class;
 
@@ -182,6 +177,18 @@ sp_shape_release (SPObject *object)
 
 	shape = (SPShape *) object;
 
+	if (shape->marker_start) {
+		sp_signal_disconnect_by_data (shape->marker_start, object);
+		shape->marker_start = sp_object_hunref (shape->marker_start, object);
+	}
+	if (shape->marker_mid) {
+		sp_signal_disconnect_by_data (shape->marker_mid, object);
+		shape->marker_mid = sp_object_hunref (shape->marker_mid, object);
+	}
+	if (shape->marker_end) {
+		sp_signal_disconnect_by_data (shape->marker_end, object);
+		shape->marker_end = sp_object_hunref (shape->marker_end, object);
+	}
 	if (shape->curve) {
 		shape->curve = sp_curve_unref (shape->curve);
 	}
@@ -193,12 +200,30 @@ sp_shape_release (SPObject *object)
 static void
 sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 {
+	SPItem *item;
 	SPShape *shape;
 
-	shape = SP_SHAPE (object);
+	item = (SPItem *) object;
+	shape = (SPShape *) object;
 
 	if (((SPObjectClass *) (parent_class))->update)
 		(* ((SPObjectClass *) (parent_class))->update) (object, ctx, flags);
+
+	if (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
+		SPStyle *style;
+		style = SP_OBJECT_STYLE (object);
+		if (style->stroke_width.unit == SP_CSS_UNIT_PERCENT) {
+			SPItemCtx *ictx;
+			SPItemView *v;
+			double aw;
+			ictx = (SPItemCtx *) ctx;
+			aw = 1.0 / NR_MATRIX_DF_EXPANSION (&ictx->i2vp);
+			style->stroke_width.computed = style->stroke_width.value * aw;
+			for (v = ((SPItem *) (shape))->display; v != NULL; v = v->next) {
+				nr_arena_shape_set_style ((NRArenaShape *) v->arenaitem, style);
+			}
+		}
+	}
 
 	if (flags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG)) {
 		SPItemView *v;
@@ -211,6 +236,30 @@ sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 				nr_arena_shape_set_path (NR_ARENA_SHAPE (v->arenaitem), shape->curve, TRUE, NULL);
 			}
 			nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (v->arenaitem), &paintbox);
+		}
+	}
+
+	if (shape->marker_start && shape->curve) {
+		SPItemView *v;
+		ArtBpath *bp;
+		for (v = item->display; v != NULL; v = v->next) {
+			if (v->pkey) sp_marker_hide ((SPMarker *) shape->marker_start, v->pkey);
+		}
+		for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
+			if ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN)) {
+				NRMatrixF m;
+				nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
+				for (v = item->display; v != NULL; v = v->next) {
+					NRArenaItem *ai;
+					if (!v->pkey) v->pkey = sp_item_display_key_new ();
+					ai = sp_marker_show (SP_MARKER (shape->marker_start), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
+					/* fixme: Order (Lauris) */
+					nr_arena_item_add_child (v->arenaitem, ai, NULL);
+					/* fixme: This is not correct (Lauris) */
+					nr_arena_item_set_transform (ai, &m);
+					nr_arena_item_unref (ai);
+				}
+			}
 		}
 	}
 }
@@ -346,7 +395,92 @@ sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 	gtk_widget_show (i);
 }
 
+/* Marker stuff */
+
+static void
+sp_shape_marker_start_release (SPObject *marker, SPShape *shape)
+{
+	SPItem *item;
+
+	item = (SPItem *) shape;
+
+	if (shape->marker_start) {
+		SPItemView *v;
+		/* Hide marker */
+		for (v = item->display; v != NULL; v = v->next) {
+			sp_marker_hide ((SPMarker *) (shape->marker_start), v->pkey);
+			/* fixme: Do we need explicit remove here? (Lauris) */
+			/* nr_arena_item_set_mask (v->arenaitem, NULL); */
+		}
+		/* Detach marker */
+		sp_signal_disconnect_by_data (shape->marker_start, item);
+		shape->marker_start = sp_object_hunref (shape->marker_start, item);
+	}
+}
+
+static void
+sp_shape_marker_start_modified (SPObject *marker, guint flags, SPItem *item)
+{
+	/* I think mask does update automagically */
+	/* g_warning ("Item %s mask %s modified", SP_OBJECT_ID (item), SP_OBJECT_ID (mask)); */
+}
+
+void
+sp_shape_set_marker (SPObject *object, unsigned int key, const unsigned char *value)
+{
+	SPItem *item;
+	SPShape *shape;
+
+	item = (SPItem *) object;
+	shape = (SPShape *) object;
+
+	switch (key) {
+	case SP_PROP_MARKER_START: {
+		SPObject *mrk;
+		mrk = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), value);
+		if (mrk != shape->marker_start) {
+			if (shape->marker_start) {
+				SPItemView *v;
+				/* Detach marker */
+				sp_signal_disconnect_by_data (shape->marker_start, item);
+				/* Hide marker */
+				for (v = item->display; v != NULL; v = v->next) {
+					sp_marker_hide ((SPMarker *) (shape->marker_start), v->pkey);
+					/* fixme: Do we need explicit remove here? (Lauris) */
+					/* nr_arena_item_set_mask (v->arenaitem, NULL); */
+				}
+				shape->marker_start = sp_object_hunref (shape->marker_start, object);
+			}
+			if (SP_IS_MARKER (mrk)) {
+#if 0
+				SPItemView *v;
+#endif
+				shape->marker_start = sp_object_href (mrk, object);
+				g_signal_connect (G_OBJECT (shape->marker_start), "release", G_CALLBACK (sp_shape_marker_start_release), shape);
+				g_signal_connect (G_OBJECT (shape->marker_start), "modified", G_CALLBACK (sp_shape_marker_start_modified), shape);
+#if 0
+				for (v = item->display; v != NULL; v = v->next) {
+					NRArenaItem *ai;
+					if (!v->pkey) v->pkey = sp_item_display_key_new ();
+					ai = sp_marker_show (SP_MARKER (shape->marker_start), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
+					/* fixme: Order (Lauris) */
+					nr_arena_item_add_child (v->arenaitem, ai, NULL);
+					nr_arena_item_unref (ai);
+				}
+#endif
+			}
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+
+
+
 /* Shape section */
+
 void
 sp_shape_set_shape (SPShape *shape)
 {
@@ -398,156 +532,4 @@ sp_shape_set_curve_insync (SPShape *shape, SPCurve *curve, unsigned int owner)
 		}
 	}
 }
-
-#if 0
-static SPRepr *
-sp_shape_write (SPObject *object, SPRepr *repr, guint flags)
-{
-	SPPath *path;
-
-	path = SP_PATH (object);
-
-	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
-		if (!path->comp) return NULL;
-		repr = sp_repr_new ("path");
-	}
-
-	if (path->independent || (flags & SP_SHAPE_WRITE_PATH)) {
-		SPPathComp *pathcomp;
-		ArtBpath *abp;
-		gchar *str;
-
-		/* fixme: Here used to be [g_assert (path->comp)] (Lauris) */
-
-		pathcomp = path->comp->data;
-		g_assert (pathcomp);
-		abp = sp_curve_first_bpath (pathcomp->curve);
-		str = sp_svg_write_path (abp);
-		g_assert (str != NULL);
-		sp_repr_set_attr (repr, "d", str);
-		g_free (str);
-	}
-
-	if (((SPObjectClass *) (parent_class))->write)
-		((SPObjectClass *) (parent_class))->write (object, repr, flags);
-
-	return repr;
-}
-#endif
-
-#if 0
-static void
-sp_shape_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
-{
-	SPPath *path;
-	SPShape *shape;
-
-	path = SP_PATH (item);
-	shape = SP_SHAPE (item);
-
-	if (path->independent) {
-		SPPathComp *comp;
-		NRBPath dpath, spath;
-		NRMatrixF ctm;
-		double ex;
-		gchar *svgpath;
-		SPStyle *style;
-		ex = NR_MATRIX_DF_EXPANSION (transform);
-		comp = (SPPathComp *) path->comp->data;
-		nr_matrix_multiply_fdf (&ctm, NR_MATRIX_D_FROM_DOUBLE (comp->affine), &item->transform);
-		spath.path = comp->curve->bpath;
-		nr_path_duplicate_transform (&dpath, &spath, &ctm);
-		svgpath = sp_svg_write_path (dpath.path);
-		sp_repr_set_attr (repr, "d", svgpath);
-		g_free (svgpath);
-		nr_free (dpath.path);
-		/* And last but not least */
-		style = SP_OBJECT_STYLE (item);
-		if (style->stroke.type != SP_PAINT_TYPE_NONE) {
-			if (!NR_DF_TEST_CLOSE (ex, 1.0, NR_EPSILON_D)) {
-				guchar *str;
-				/* Scale changed, so we have to adjust stroke width */
-				style->stroke_width.computed *= ex;
-				if (style->stroke_dash.n_dash != 0) {
-					int i;
-					for (i = 0; i < style->stroke_dash.n_dash; i++) style->stroke_dash.dash[i] *= ex;
-					style->stroke_dash.offset *= ex;
-				}
-				str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
-				sp_repr_set_attr (repr, "style", str);
-				g_free (str);
-			}
-		}
-		sp_repr_set_attr (repr, "transform", NULL);
-	} else {
-		guchar t[80];
-		if (sp_svg_transform_write (t, 80, &item->transform)) {
-			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
-		} else {
-			sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", t);
-		}
-	}
-}
-#endif
-
-#if 0
-void
-sp_shape_remove_comp (SPPath *path, SPPathComp *comp)
-{
-	SPItem * item;
-	SPShape * shape;
-	SPItemView * v;
-
-	item = SP_ITEM (path);
-	shape = SP_SHAPE (path);
-
-	/* fixme: */
-	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_shape_set_path (NR_ARENA_SHAPE (v->arenaitem), NULL, FALSE, NULL);
-	}
-
-	if (SP_PATH_CLASS (parent_class)->remove_comp)
-		SP_PATH_CLASS (parent_class)->remove_comp (path, comp);
-}
-
-void
-sp_shape_add_comp (SPPath *path, SPPathComp *comp)
-{
-	SPItem * item;
-	SPShape * shape;
-	SPItemView * v;
-
-	item = SP_ITEM (path);
-	shape = SP_SHAPE (path);
-
-	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_shape_set_path (NR_ARENA_SHAPE (v->arenaitem), comp->curve, comp->private, comp->affine);
-	}
-
-	if (SP_PATH_CLASS (parent_class)->add_comp)
-		SP_PATH_CLASS (parent_class)->add_comp (path, comp);
-}
-
-void
-sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
-{
-	SPItem * item;
-	SPShape * shape;
-	SPItemView * v;
-
-	item = SP_ITEM (path);
-	shape = SP_SHAPE (path);
-
-	/* fixme: */
-	for (v = item->display; v != NULL; v = v->next) {
-#if 0
-		cs = (SPCanvasShape *) v->canvasitem;
-		sp_canvas_shape_change_bpath (cs, comp->curve);
-#endif
-	}
-
-	if (SP_PATH_CLASS (parent_class)->change_bpath)
-		SP_PATH_CLASS (parent_class)->change_bpath (path, comp, curve);
-}
-#endif
 

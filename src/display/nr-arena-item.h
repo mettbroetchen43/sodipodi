@@ -81,18 +81,21 @@ struct _NRArenaItem {
 	unsigned int sensitive : 1;
 	/* Whether items renders opacity itself */
 	unsigned int render_opacity : 1;
+	/* Opacity itself */
+	unsigned int opacity : 8;
 	/* BBox in grid coordinates */
 	NRRectL bbox;
 	/* Our affine */
 	NRMatrixF *transform;
-	/* Our opacity */
-	float opacity;
 	/* Clip item */
 	NRArenaItem *clip;
 	/* Mask item */
 	NRArenaItem *mask;
 	/* Rendered buffer */
 	unsigned char *px;
+
+	/* Single data member */
+	void *data;
 };
 
 struct _NRArenaItemClass {
@@ -168,5 +171,8 @@ void nr_arena_item_set_order (NRArenaItem *item, gint order);
 
 NRArenaItem *nr_arena_item_attach_ref (NRArenaItem *parent, NRArenaItem *child, NRArenaItem *prev, NRArenaItem *next);
 NRArenaItem *nr_arena_item_detach_unref (NRArenaItem *parent, NRArenaItem *child);
+
+#define NR_ARENA_ITEM_SET_DATA(i,v) (((NRArenaItem *) (i))->data = (v))
+#define NR_ARENA_ITEM_GET_DATA(i) (((NRArenaItem *) (i))->data)
 
 #endif

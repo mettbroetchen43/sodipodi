@@ -170,7 +170,7 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 
 	if (!image->px) return item->state;
 
-	Falpha = (guint32) floor (item->opacity * 255.9999);
+	Falpha = item->opacity;
 	if (Falpha < 1) return item->state;
 
 	dpx = NR_PIXBLOCK_PX (pb);

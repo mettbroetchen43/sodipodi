@@ -30,7 +30,6 @@ static void sp_marker_set (SPObject *object, unsigned int key, const unsigned ch
 static void sp_marker_update (SPObject *object, SPCtx *ctx, guint flags);
 static SPRepr *sp_marker_write (SPObject *object, SPRepr *repr, guint flags);
 
-static NRArenaItem *sp_marker_show (SPItem *item, NRArena *arena, unsigned int key);
 static void sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_marker_print (SPItem *item, SPPrintContext *ctx);
 
@@ -73,7 +72,6 @@ sp_marker_class_init (SPMarkerClass *klass)
 	sp_object_class->update = sp_marker_update;
 	sp_object_class->write = sp_marker_write;
 
-	sp_item_class->show = sp_marker_show;
 	sp_item_class->bbox = sp_marker_bbox;
 	sp_item_class->print = sp_marker_print;
 }
@@ -385,6 +383,11 @@ sp_marker_update (SPObject *object, SPCtx *ctx, guint flags)
 		nr_matrix_d_set_identity (&rctx.i2vp);
 	}
 
+	/* Append reference translation */
+	nr_matrix_d_set_translate (&q, -marker->refX.computed, -marker->refY.computed);
+	nr_matrix_multiply_ddd (&rctx.i2doc, &q, &rctx.i2doc);
+	nr_matrix_multiply_ddd (&rctx.i2vp, &q, &rctx.i2vp);
+
 	/* And invoke parent method */
 	if (((SPObjectClass *) (parent_class))->update)
 		((SPObjectClass *) (parent_class))->update (object, (SPCtx *) &rctx, flags);
@@ -456,28 +459,6 @@ sp_marker_write (SPObject *object, SPRepr *repr, guint flags)
 	return repr;
 }
 
-static NRArenaItem *
-sp_marker_show (SPItem *item, NRArena *arena, unsigned int key)
-{
-	SPMarker *marker;
-	NRArenaItem *ai;
-
-	marker = SP_MARKER (item);
-
-	if (((SPItemClass *) (parent_class))->show) {
-		ai = ((SPItemClass *) (parent_class))->show (item, arena, key);
-		if (ai) {
-			NRMatrixF vbf;
-			nr_matrix_f_from_d (&vbf, &marker->c2p);
-			nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &vbf);
-		}
-	} else {
-		ai = NULL;
-	}
-
-	return ai;
-}
-
 static void
 sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
@@ -509,3 +490,30 @@ sp_marker_print (SPItem *item, SPPrintContext *ctx)
 
 	sp_print_release (ctx);
 }
+
+NRArenaItem *
+sp_marker_show (SPMarker *marker, NRArena *arena, unsigned int key)
+{
+	NRArenaItem *ai;
+
+	if (((SPItemClass *) (parent_class))->show) {
+		ai = ((SPItemClass *) (parent_class))->show ((SPItem *) marker, arena, key);
+		if (ai) {
+			NRMatrixF vbf;
+			nr_matrix_f_from_d (&vbf, &marker->c2p);
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &vbf);
+		}
+	} else {
+		ai = NULL;
+	}
+
+	return ai;
+}
+
+void
+sp_marker_hide (SPMarker *marker, unsigned int key)
+{
+	if (((SPItemClass *) (parent_class))->hide)
+		((SPItemClass *) (parent_class))->hide ((SPItem *) marker, key);
+}
+

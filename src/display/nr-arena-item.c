@@ -84,7 +84,7 @@ nr_arena_item_init (NRArenaItem *item)
 
 	/* fixme: Initialize bbox */
 	item->transform = NULL;
-	item->opacity = 1.0;
+	item->opacity = 255;
 }
 
 static void
@@ -324,7 +324,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 	}
 
 	/* Determine, whether we need temporary buffer */
-	if (item->clip || item->mask || ((item->opacity < 1.0) && !item->render_opacity)) {
+	if (item->clip || item->mask || ((item->opacity != 255) && !item->render_opacity)) {
 		NRPixBlock ipb, mpb;
 
 		/* Setup and render item buffer */
@@ -404,10 +404,10 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 				nr_pixblock_release (&tpb);
 			}
 			/* Multiply with opacity if needed */
-			if ((item->opacity < 1.0) && !item->render_opacity) {
+			if ((item->opacity != 255) && !item->render_opacity) {
 				int x, y;
 				unsigned int a;
-				a = (int) (item->opacity * 255.9999);
+				a = item->opacity;
 				for (y = carea.y0; y < carea.y1; y++) {
 					unsigned char *d;
 					d = NR_PIXBLOCK_PX (&mpb) + (y - carea.y0) * mpb.rs;
@@ -422,7 +422,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 			nr_pixblock_release (&mpb);
 		} else {
 			/* Opacity only */
-			nr_blit_pixblock_pixblock_alpha (dpb, &ipb, (int) (item->opacity * 255.9999));
+			nr_blit_pixblock_pixblock_alpha (dpb, &ipb, item->opacity);
 		}
 		nr_pixblock_release (&ipb);
 		dpb->empty = FALSE;
@@ -635,14 +635,14 @@ nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform)
 }
 
 void
-nr_arena_item_set_opacity (NRArenaItem *item, gdouble opacity)
+nr_arena_item_set_opacity (NRArenaItem *item, double opacity)
 {
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 
 	nr_arena_item_request_render (item);
 
-	item->opacity = opacity;
+	item->opacity = (unsigned int) (opacity * 255.9999);
 }
 
 void

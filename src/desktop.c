@@ -250,11 +250,11 @@ sp_desktop_set_active (SPDesktop *desktop, gboolean active)
 /* fixme: */
 
 static gint
-arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPDesktop *desktop)
+arena_handler (SPCanvasArena *arena, NRArenaItem *ai, GdkEvent *event, SPDesktop *desktop)
 {
-	if (item) {
+	if (ai) {
 		SPItem *spi;
-		spi = g_object_get_data (G_OBJECT (item), "sp-item");
+		spi = NR_ARENA_ITEM_GET_DATA (ai);
 		sp_event_context_item_handler (desktop->event_context, spi, event);
 	} else {
 		sp_event_context_root_handler (desktop->event_context, event);

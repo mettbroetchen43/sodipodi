@@ -36,6 +36,8 @@ struct _NRArenaShape {
 	SPPainter *stroke_painter;
 	ArtSVP *fill_svp;
 	ArtSVP *stroke_svp;
+	/* Markers */
+	NRArenaItem *markers;
 };
 
 struct _NRArenaShapeClass {

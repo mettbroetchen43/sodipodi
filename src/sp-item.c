@@ -51,13 +51,11 @@ static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_item_release (SPObject *object);
 static void sp_item_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_item_update (SPObject *object, SPCtx *ctx, guint flags);
-static void sp_item_modified (SPObject *object, guint flags);
 static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_item_private_description (SPItem * item);
 static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size);
 
-static NRArenaItem *sp_item_private_show (SPItem *item, NRArena *arena, unsigned int key);
 static void sp_item_private_hide (SPItem * item, unsigned int key);
 
 static void sp_item_private_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
@@ -103,11 +101,9 @@ sp_item_class_init (SPItemClass *klass)
 	sp_object_class->release = sp_item_release;
 	sp_object_class->set = sp_item_set;
 	sp_object_class->update = sp_item_update;
-	sp_object_class->modified = sp_item_modified;
 	sp_object_class->write = sp_item_write;
 
 	klass->description = sp_item_private_description;
-	klass->show = sp_item_private_show;
 	klass->hide = sp_item_private_hide;
 	klass->knot_holder = NULL;
 	klass->menu = sp_item_private_menu;
@@ -375,30 +371,6 @@ sp_item_update (SPObject *object, SPCtx *ctx, guint flags)
 	}
 }
 
-static void
-sp_item_modified (SPObject *object, guint flags)
-{
-	SPItem *item;
-	SPStyle *style;
-
-	item = SP_ITEM (object);
-	style = SP_OBJECT_STYLE (object);
-
-#ifdef SP_ITEM_DEBUG_IDLE
-	g_print ("M");
-#endif
-
-	if (style->stroke_width.unit == SP_CSS_UNIT_PERCENT) {
-		NRMatrixF i2vp, vp2i;
-		gdouble aw;
-		/* fixme: It is somewhat dangerous, yes (lauris) */
-		sp_item_i2vp_affine (item, &i2vp);
-		nr_matrix_f_invert (&vp2i, &i2vp);
-		aw = NR_MATRIX_DF_EXPANSION (&vp2i);
-		style->stroke_width.computed = style->stroke_width.value * aw;
-	}
-}
-
 static SPRepr *
 sp_item_write (SPObject *object, SPRepr *repr, guint flags)
 {
@@ -581,12 +553,6 @@ sp_item_display_key_new (void)
 	return ++dkey;
 }
 
-static NRArenaItem *
-sp_item_private_show (SPItem *item, NRArena *arena, unsigned int key)
-{
-	return NULL;
-}
-
 NRArenaItem *
 sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
 {
@@ -621,7 +587,7 @@ sp_item_show (SPItem *item, NRArena *arena, unsigned int key)
 			nr_arena_item_set_mask (ai, ac);
 			nr_arena_item_unref (ac);
 		}
-		g_object_set_data (G_OBJECT (ai), "sp-item", item);
+		NR_ARENA_ITEM_SET_DATA (ai, item);
 	}
 
 	return ai;
@@ -1038,7 +1004,6 @@ sp_item_view_new_prepend (SPItemView * list, SPItem * item, unsigned int key, NR
 	new->next = list;
 	new->key = key;
 	new->pkey = 0;
-	new->item = item;
 	new->arenaitem = arenaitem;
 
 	return new;

@@ -219,28 +219,10 @@ nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 
 	ret = item->state;
 
-	if (1 || (item->opacity == 1.0)) {
-		/* Just compose children into parent buffer */
-		for (child = group->children; child != NULL; child = child->next) {
-			ret = nr_arena_item_invoke_render (child, area, pb, flags);
-			if (ret & NR_ARENA_ITEM_STATE_INVALID) break;
-		}
-	} else {
-		NRPixBlock nb;
-		/* Need intermediate composing */
-		/* fixme: */
-		nr_pixblock_setup_fast (&nb, NR_PIXBLOCK_MODE_R8G8B8A8P, area->x0, area->y0, area->x1, area->y1, TRUE);
-		/* fixme: */
-		nb.empty = FALSE;
-		for (child = group->children; child != NULL; child = child->next) {
-			ret = nr_arena_item_invoke_render (child, area, &nb, flags);
-			if (ret & NR_ARENA_ITEM_STATE_INVALID) break;
-		}
-		if (!(ret & NR_ARENA_ITEM_STATE_INVALID)) {
-			/* Compose */
-			nr_blit_pixblock_pixblock_alpha (pb, &nb, (unsigned int) (item->opacity * 255.9999));
-		}
-		nr_pixblock_release (&nb);
+	/* Just compose children into parent buffer */
+	for (child = group->children; child != NULL; child = child->next) {
+		ret = nr_arena_item_invoke_render (child, area, pb, flags);
+		if (ret & NR_ARENA_ITEM_STATE_INVALID) break;
 	}
 
 	return ret;
@@ -260,7 +242,7 @@ nr_arena_group_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 	/* Just compose children into parent buffer */
 	for (child = group->children; child != NULL; child = child->next) {
 		ret = nr_arena_item_invoke_clip (child, area, pb);
-		if (!(ret & NR_ARENA_ITEM_STATE_CLIP)) break;
+		if (ret & NR_ARENA_ITEM_STATE_INVALID) break;
 	}
 
 	return ret;

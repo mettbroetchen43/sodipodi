@@ -29,6 +29,10 @@ struct _SPShape {
 	SPItem item;
 
 	SPCurve *curve;
+
+	SPObject *marker_start;
+	SPObject *marker_mid;
+	SPObject *marker_end;
 };
 
 struct _SPShapeClass {
@@ -49,5 +53,8 @@ void sp_shape_set_curve (SPShape *shape, SPCurve *curve, unsigned int owner);
 
 /* NOT FOR GENERAL PUBLIC UNTIL SORTED OUT (Lauris) */
 void sp_shape_set_curve_insync (SPShape *shape, SPCurve *curve, unsigned int owner);
+
+/* PROTECTED */
+void sp_shape_set_marker (SPObject *object, unsigned int key, const unsigned char *value);
 
 #endif

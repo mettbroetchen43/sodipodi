@@ -1,3 +1,12 @@
+2003-03-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/uri-references.c (sp_uri_reference_resolve): Allow '_' and
+	'-' in xlink names.
+
+2003-03-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-item.h: Made opacity 8-bit integer
+
 2003-03-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-marker.c (sp_marker_update): Do it properly
