@@ -1,7 +1,7 @@
 # Note that this is NOT a relocatable package
 %define name		@PACKAGE@
 %define ver		@VERSION@
-%define  RELEASE	0
+%define  RELEASE	1
 %define  rel		%{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix		/usr
 %define sysconfdir	/etc
@@ -13,7 +13,7 @@ Release:	%rel
 Copyright:	GPL
 Group:		Applications/Graphics
 Source:		%{name}-%{ver}.tar.gz
-URL:		http://www.ariman.ee/linux/sodipodi/
+URL:		http://sodipodi.sourceforge.net/
 BuildRoot:	/var/tmp/%{name}-root
 Docdir:		%{prefix}/doc
 
@@ -21,8 +21,9 @@ Docdir:		%{prefix}/doc
 Sodipodi is a gneneral vector drawing program for GNOME environment.
 
 %changelog
-* Mon Mar 27 2000 Lauris Kaplinski <lauris@ariman.ee>
-- First RPM version
+2001-03-09  Lauris Kaplinski  <lauris@ximian.com>
+
+	* configure.in: Version 0.22
 
 %prep
 %setup -q

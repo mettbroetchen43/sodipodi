@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-03-08 01:46+0100\n"
+"POT-Creation-Date: 2001-03-09 19:23+0200\n"
 "PO-Revision-Date: 2001-03-08 02:07+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -1304,23 +1304,23 @@ msgstr "Kunde inte skapa sodipodi-svg-doc-fabrik"
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokumentet %s har osparade ändringar, spara dem?"
 
-#: src/file.c:81
+#: src/file.c:82
 msgid "Select file to open"
 msgstr "Välj fil att öppna"
 
-#: src/file.c:158
+#: src/file.c:170
 msgid "Save file"
 msgstr "Spara fil"
 
-#: src/file.c:258
+#: src/file.c:282
 msgid "Select file to import"
 msgstr "Välj fil att importera"
 
-#: src/file.c:330
+#: src/file.c:361
 msgid "Export file"
 msgstr "Exportera fil"
 
-#: src/file.c:390
+#: src/file.c:422
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokumentnamn %s...): Förhandsgranska"
