@@ -2,9 +2,10 @@
 
 tmp:=$(shell pwd)/debian/tmp
 
-CFLAGS = -O2
-ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
-CFLAGS += -g
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+CFLAGS += -O0
+else
+CFLAGS += -O2
 endif
 ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
 INSTALL_PROGRAM += -s
@@ -13,17 +14,23 @@ endif
 build: build-stamp
 build-stamp:
 	dh_testdir
-	CFLAGS="$(CFLAGS)" ./configure --prefix=/usr --sysconfdir=/etc --with-gtk-prefix=/usr --mandir=$(tmp)/usr/share/man --without-bonobo --without-arena --without-new-render 
+	CFLAGS="$(CFLAGS)" ./configure --prefix=/usr --sysconfdir=/etc --with-gtk-prefix=/usr --mandir=$(tmp)/usr/share/man --without-bonobo --without-arena --without-new-render \
+	--with-xft --with-popt --without-gnome-print --disable-mmx
 	$(MAKE)
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
-	[ ! -f Makefile ] || $(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) clean
 	rm -f build-stamp 
-	rm -f po/*.gmo po/messages config.log src/bonobo/Makefile src/display/nr/Makefile
-	rm -f sodipodi.desktop intltool-extract intltool-merge intltool-update GNOME_Sodipodi.oaf
+	-test -r /usr/share/misc/config.sub && \
+	cp -f /usr/share/misc/config.sub $(CURDIR)/config.sub
+	-test -r /usr/share/misc/config.guess && \
+	cp -f /usr/share/misc/config.guess $(CURDIR)/config.guess
+	rm -f conftest.o po/*.gmo po/messages config.log src/bonobo/Makefile src/display/nr/Makefile
+	rm -f sodipodi.spec sodipodi.desktop intltool-extract intltool-merge intltool-update GNOME_Sodipodi.oaf
+	rm -f config.status intl/Makefile po/Makefile.in po/POTFILES po/.intltool-merge-cache
 	dh_clean 
 
 binary-indep: 
@@ -37,8 +44,7 @@ binary-arch: build
 	dh_installmenu
 	dh_installexamples samples/*.svg
 	dh_installchangelogs ChangeLog
-	dh_link
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))	
+ifeq "$(findstring nostrip,$(DEB_BUILD_OPTIONS))" ""
 	dh_strip
 endif
 	dh_compress -X.svg
