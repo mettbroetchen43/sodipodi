@@ -1,3 +1,7 @@
+2003-02-01  Daniel Yacob  <locales@geez.org>
+
+	* am.po: Added Amharic translation.
+	
 2003-01-28  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.in.in: New file, from gettext-0.11.2.

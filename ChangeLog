@@ -1,3 +1,7 @@
+2003-02-01  Daniel Yacob  <locales@geez.org>
+
+	* configure.in: Added "am" (Amharic) to ALL_LINGUAS.
+
 2003-02-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-use.c (sp_use_init): Set width and height default to 100%
