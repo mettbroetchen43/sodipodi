@@ -24,6 +24,7 @@
 #endif
 #include <stdio.h>
 #include <ctype.h>
+#include <libarikkei/arikkei-token.h>
 #include <libnr/nr-macros.h>
 #include <libnr/nr-values.h>
 #include "nr-type-primitives.h"
@@ -68,12 +69,6 @@ static float nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *
 static void nr_type_read_private_list (void);
 #ifdef WIN32
 static void nr_type_read_w32_list (void);
-#endif
-#ifdef WITH_GNOME_PRINT
-static void nr_type_read_gnome_list (void);
-#endif
-#ifdef WITH_XFT
-static void nr_type_read_xft_list (void);
 #endif
 
 static NRTypeDict *typedict = NULL;
@@ -183,6 +178,31 @@ nr_type_directory_family_list_get (NRNameList *flist)
 	return flist;
 }
 
+unsigned int
+nr_type_register (NRTypeFaceDef *def)
+{
+	NRFamilyDef *fdef;
+
+	if (nr_type_dict_lookup (typedict, def->name)) return 0;
+
+	fdef = nr_type_dict_lookup (familydict, def->family);
+	if (!fdef) {
+		fdef = nr_new (NRFamilyDef, 1);
+		fdef->name = strdup (def->family);
+		fdef->faces = NULL;
+		fdef->next = families;
+		families = fdef;
+		nr_type_dict_insert (familydict, fdef->name, fdef);
+	}
+
+	def->next = fdef->faces;
+	fdef->faces = def;
+
+	nr_type_dict_insert (typedict, def->name, def);
+
+	return 1;
+}
+
 static void
 nr_type_directory_style_list_destructor (NRNameList *list)
 {
@@ -218,31 +238,6 @@ nr_type_directory_style_list_get (const unsigned char *family, NRNameList *style
 	}
 
 	return styles;
-}
-
-static int
-nr_type_register (NRTypeFaceDef *def)
-{
-	NRFamilyDef *fdef;
-
-	if (nr_type_dict_lookup (typedict, def->name)) return 0;
-
-	fdef = nr_type_dict_lookup (familydict, def->family);
-	if (!fdef) {
-		fdef = nr_new (NRFamilyDef, 1);
-		fdef->name = strdup (def->family);
-		fdef->faces = NULL;
-		fdef->next = families;
-		families = fdef;
-		nr_type_dict_insert (familydict, fdef->name, fdef);
-	}
-
-	def->next = fdef->faces;
-	fdef->faces = def;
-
-	nr_type_dict_insert (typedict, def->name, def);
-
-	return 1;
 }
 
 static int
@@ -432,6 +427,7 @@ nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float be
 
 static unsigned char privatename[] = "/.sodipodi/private-fonts";
 
+#if 0
 static unsigned int
 nr_type_next_token (const unsigned char *img, unsigned int len, unsigned int p, int *tokenp)
 {
@@ -443,6 +439,10 @@ nr_type_next_token (const unsigned char *img, unsigned int len, unsigned int p, 
 	while (!iscntrl (img[p]) && (img[p] != ',') && (p < len)) p++;
 	return p;
 }
+#endif
+
+#include <unistd.h>
+#include <sys/mman.h>
 
 static void
 nr_type_read_private_list (void)
@@ -462,6 +462,63 @@ nr_type_read_private_list (void)
 #define S_ISREG(st) 1
 #endif
 
+#ifndef O_BINARY
+#define O_BINARY 0
+#endif
+
+#if 1
+	if (!stat (filename, &st) && S_ISREG (st.st_mode) && (st.st_size > 8)) {
+		unsigned char *cdata;
+		ArikkeiToken ft, lt;
+		int fd;
+		fd = open (filename, O_RDONLY | O_BINARY);
+		if (!fd) return;
+		cdata = mmap (NULL, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+		close (fd);
+		if ((cdata == NULL) || (cdata == (unsigned char *) -1)) return;
+		arikkei_token_set_from_data (&ft, cdata, 0, st.st_size);
+		arikkei_token_get_first_line (&ft, &lt);
+		while (lt.start < lt.end) {
+			if (!arikkei_token_is_empty (&lt) && (lt.cdata[lt.start] != '#')) {
+				ArikkeiToken tokens[4];
+				int ntokens;
+				ntokens = arikkei_token_tokenize_ws (&lt, tokens, 4, ",", FALSE);
+				if (ntokens >= 3) {
+					ArikkeiToken fnt[2];
+					ArikkeiToken filet, namet, familyt;
+					int nfnt, face;
+					nfnt = arikkei_token_tokenize_ws (&tokens[0], fnt, 2, ":", FALSE);
+					arikkei_token_strip (&fnt[0], &filet);
+					arikkei_token_strip (&tokens[1], &namet);
+					arikkei_token_strip (&tokens[2], &familyt);
+					face = 0;
+					if (nfnt > 0) {
+						unsigned char b[32];
+						arikkei_token_strncpy (&fnt[1], b, 32);
+						face = atoi (b);
+					}
+					if (!arikkei_token_is_empty (&filet) &&
+					    !arikkei_token_is_empty (&namet) &&
+					    !arikkei_token_is_empty (&familyt)) {
+						NRTypeFaceDefFT2 *dft2;
+						unsigned char f[1024], n[1024], m[1024];
+						dft2 = nr_new (NRTypeFaceDefFT2, 1);
+						dft2->def.next = NULL;
+						dft2->def.pdef = NULL;
+						arikkei_token_strncpy (&filet, f, 1024);
+						arikkei_token_strncpy (&namet, n, 1024);
+						arikkei_token_strncpy (&familyt, m, 1024);
+						nr_type_ft2_build_def (dft2, f, n, m, face);
+						nr_type_register ((NRTypeFaceDef *) dft2);
+						printf ("Regstered %s : %d, %s, %s\n", f, face, n, m);
+					}
+				}
+			}
+			arikkei_token_next_line (&ft, &lt, &lt);
+		}
+		munmap (cdata, st.st_size);
+	}
+#else
 	if (!stat (filename, &st) && S_ISREG (st.st_mode) && (st.st_size > 8)) {
 		unsigned char *img;
 		int fh, rbytes, nentries, p;
@@ -532,125 +589,24 @@ nr_type_read_private_list (void)
 		if (nentries > 0) {
 		}
 	}
+#endif
 
 	nr_free (filename);
 }
 
-#ifdef WIN32
-static void
-nr_type_read_w32_list (void)
+NRTypeFace *
+nr_type_build (const unsigned char *name, const unsigned char *family,
+	       const unsigned char *data, unsigned int size, unsigned int face)
 {
-	NRNameList wnames, wfamilies;
-	int i, j;
+	if (!typedict) nr_type_directory_build ();
 
-	nr_type_w32_typefaces_get (&wnames);
-	nr_type_w32_families_get (&wfamilies);
+	NRTypeFaceDefFT2 *dft2;
+	dft2 = nr_new (NRTypeFaceDefFT2, 1);
+	dft2->def.next = NULL;
+	dft2->def.pdef = NULL;
+	nr_type_ft2_build_def_data (dft2, name, family, data, size, face);
+	nr_type_register ((NRTypeFaceDef *) dft2);
 
-	for (i = wnames.length - 1; i >= 0; i--) {
-		NRTypeFaceDef *tdef;
-		const unsigned char *family;
-		family = NULL;
-		for (j = wfamilies.length - 1; j >= 0; j--) {
-			int len;
-			len = strlen (wfamilies.names[j]);
-			if (!strncmp (wfamilies.names[j], wnames.names[i], len)) {
-				family = wfamilies.names[j];
-				break;
-			}
-		}
-		if (family) {
-			tdef = nr_new (NRTypeFaceDef, 1);
-			tdef->next = NULL;
-			tdef->pdef = NULL;
-			nr_type_w32_build_def (tdef, wnames.names[i], family);
-			nr_type_register (tdef);
-		}
-	}
-
-	nr_name_list_release (&wfamilies);
-	nr_name_list_release (&wnames);
+	return nr_type_directory_lookup (name);
 }
-#endif
-
-#ifdef WITH_XFT
-static void
-nr_type_read_xft_list (void)
-{
-	NRNameList gnames, gfamilies;
-	const char *debugenv;
-	int debug;
-	int i, j;
-
-	debugenv = getenv ("SODIPODI_DEBUG_XFT");
-	debug = (debugenv && *debugenv && (*debugenv != '0'));
-
-	nr_type_xft_typefaces_get (&gnames);
-	nr_type_xft_families_get (&gfamilies);
-
-	if (debug) {
-		fprintf (stderr, "Number of usable Xft familes: %lu\n", gfamilies.length);
-		fprintf (stderr, "Number of usable Xft typefaces: %lu\n", gnames.length);
-	}
-
-	for (i = gnames.length - 1; i >= 0; i--) {
-		NRTypeFaceDefFT2 *tdef;
-		const unsigned char *family;
-		family = NULL;
-		for (j = gfamilies.length - 1; j >= 0; j--) {
-			int len;
-			len = strlen (gfamilies.names[j]);
-			if (!strncmp (gfamilies.names[j], gnames.names[i], len)) {
-				family = gfamilies.names[j];
-				break;
-			}
-		}
-		if (family) {
-			tdef = nr_new (NRTypeFaceDefFT2, 1);
-			tdef->def.next = NULL;
-			tdef->def.pdef = NULL;
-			nr_type_xft_build_def (tdef, gnames.names[i], family);
-			nr_type_register ((NRTypeFaceDef *) tdef);
-		}
-	}
-
-	nr_name_list_release (&gfamilies);
-	nr_name_list_release (&gnames);
-}
-#endif
-
-#ifdef WITH_GNOME_PRINT
-static void
-nr_type_read_gnome_list (void)
-{
-	NRNameList gnames, gfamilies;
-	int i, j;
-
-	nr_type_gnome_typefaces_get (&gnames);
-	nr_type_gnome_families_get (&gfamilies);
-
-	for (i = gnames.length - 1; i >= 0; i--) {
-		NRTypeFaceDef *tdef;
-		const unsigned char *family;
-		family = NULL;
-		for (j = gfamilies.length - 1; j >= 0; j--) {
-			int len;
-			len = strlen (gfamilies.names[j]);
-			if (!strncmp (gfamilies.names[j], gnames.names[i], len)) {
-				family = gfamilies.names[j];
-				break;
-			}
-		}
-		if (family) {
-			tdef = nr_new (NRTypeFaceDef, 1);
-			tdef->next = NULL;
-			tdef->pdef = NULL;
-			nr_type_gnome_build_def (tdef, gnames.names[i], family);
-			nr_type_register (tdef);
-		}
-	}
-
-	nr_name_list_release (&gfamilies);
-	nr_name_list_release (&gnames);
-}
-#endif
 

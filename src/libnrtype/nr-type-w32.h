@@ -76,5 +76,7 @@ void nr_type_w32_families_get (NRNameList *names);
 
 void nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family);
 
+void nr_type_read_w32_list (void);
+
 #endif
 

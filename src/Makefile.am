@@ -8,7 +8,7 @@ kdeldadd = $(LIB_KDECORE) $(LIB_KDEUI) $(LIB_KIO) $(LIB_KDEPRINT) $(LIB_QT)
 kdeldflags = $(KDE_RPATH)
 endif
 
-SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display modules
+SUBDIRS = libarikkei libnr libnrtype xml svg helper widgets dialogs display modules
 
 AM_CPPFLAGS = \
 	-DSODIPODI_VERSION=\""$(VERSION)"\"
@@ -146,7 +146,7 @@ sodipodi_private_libs = \
 	helper/libspchelp.a \
 	libnrtype/libnrtype.a \
 	libnr/libnr.a \
-	libnrtype/libnrtype.a \
+	libarikkei/libarikkei.a \
 	$(module_libs)
 
 
@@ -179,6 +179,7 @@ spsvgview_LDADD = \
 	helper/libspchelp.a \
 	libnrtype/libnrtype.a \
 	libnr/libnr.a \
+	libarikkei/libarikkei.a \
 	$(SODIPODI_LIBS) \
 	$(GNOME_PRINT_LIBS) \
 	$(XFT_LIBS) \

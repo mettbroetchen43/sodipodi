@@ -17,6 +17,7 @@
 #include <glib.h>
 #include <gdk/gdkx.h>
 
+#include "nr-type-directory.h"
 #include "nr-type-xft.h"
 
 static void nr_type_xft_init (void);
@@ -61,6 +62,50 @@ nr_type_xft_build_def (NRTypeFaceDefFT2 *dft2, const unsigned char *name, const 
 			nr_type_ft2_build_def (dft2, name, family, file, index);
 		}
 	}
+}
+
+void
+nr_type_read_xft_list (void)
+{
+	NRNameList gnames, gfamilies;
+	const char *debugenv;
+	int debug;
+	int i, j;
+
+	debugenv = getenv ("SODIPODI_DEBUG_XFT");
+	debug = (debugenv && *debugenv && (*debugenv != '0'));
+
+	nr_type_xft_typefaces_get (&gnames);
+	nr_type_xft_families_get (&gfamilies);
+
+	if (debug) {
+		fprintf (stderr, "Number of usable Xft familes: %lu\n", gfamilies.length);
+		fprintf (stderr, "Number of usable Xft typefaces: %lu\n", gnames.length);
+	}
+
+	for (i = gnames.length - 1; i >= 0; i--) {
+		NRTypeFaceDefFT2 *tdef;
+		const unsigned char *family;
+		family = NULL;
+		for (j = gfamilies.length - 1; j >= 0; j--) {
+			int len;
+			len = strlen (gfamilies.names[j]);
+			if (!strncmp (gfamilies.names[j], gnames.names[i], len)) {
+				family = gfamilies.names[j];
+				break;
+			}
+		}
+		if (family) {
+			tdef = nr_new (NRTypeFaceDefFT2, 1);
+			tdef->def.next = NULL;
+			tdef->def.pdef = NULL;
+			nr_type_xft_build_def (tdef, gnames.names[i], family);
+			nr_type_register ((NRTypeFaceDef *) tdef);
+		}
+	}
+
+	nr_name_list_release (&gfamilies);
+	nr_name_list_release (&gnames);
 }
 
 static void

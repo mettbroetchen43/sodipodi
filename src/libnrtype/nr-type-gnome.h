@@ -40,4 +40,6 @@ NRNameList *nr_type_gnome_typefaces_get (NRNameList *typefaces);
 NRNameList *nr_type_gnome_families_get (NRNameList *families);
 void nr_type_gnome_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family);
 
+void nr_type_read_gnome_list (void);
+
 #endif

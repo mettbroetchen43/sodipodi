@@ -25,7 +25,12 @@ typedef struct _NRTypeFaceGlyphFT2 NRTypeFaceGlyphFT2;
 
 struct _NRTypeFaceDefFT2 {
 	NRTypeFaceDef def;
-	unsigned char *file;
+	unsigned int is_file : 1;
+	union {
+		unsigned char *file;
+		const unsigned char *data;
+	} data;
+	unsigned int size;
 	unsigned int face;
 };
 
@@ -65,4 +70,11 @@ nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2,
 		       const unsigned char *file,
 		       unsigned int face);
 
+void
+nr_type_ft2_build_def_data (NRTypeFaceDefFT2 *dft2,
+			    const unsigned char *name,
+			    const unsigned char *family,
+			    const unsigned char *data,
+			    unsigned int size,
+			    unsigned int face);
 #endif

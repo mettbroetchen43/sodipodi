@@ -53,7 +53,7 @@ nr_uta_mark_area (NRUTA *uta, int x0, int y0, int x1, int y1)
 }
 
 /* This takes area as blocks */
-NRUTA *
+void
 nr_uta_move_resize (NRUTA *uta, int x0, int y0, int x1, int y1)
 {
 	int x, y;

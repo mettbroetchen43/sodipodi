@@ -688,6 +688,9 @@ nr_vertex_new_xy (NRCoord x, NRCoord y)
 {
 	NRVertex * v;
 
+	assert (fabs (x) < 1e17);
+	assert (fabs (y) < 1e17);
+
 	v = nr_vertex_new ();
 
 	v->x = x;

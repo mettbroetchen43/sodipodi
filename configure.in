@@ -288,6 +288,7 @@ dnl Have to add module makefiles (lauris)
 AC_CONFIG_FILES([
 Makefile
 src/Makefile
+src/libarikkei/Makefile
 src/libnr/Makefile
 src/libnrtype/Makefile
 src/xml/Makefile

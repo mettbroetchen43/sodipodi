@@ -14,6 +14,8 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libart_lgpl/art_misc.h>
+
+#include "nr-type-directory.h"
 #include "nr-type-gnome.h"
 
 static void nr_typeface_gnome_class_init (NRTypeFaceGnomeClass *klass);
@@ -189,6 +191,40 @@ nr_type_gnome_build_def (NRTypeFaceDef *def, const unsigned char *name, const un
 	def->name = g_strdup (name);
 	def->family = g_strdup (family);
 	def->typeface = NULL;
+}
+
+void
+nr_type_read_gnome_list (void)
+{
+	NRNameList gnames, gfamilies;
+	int i, j;
+
+	nr_type_gnome_typefaces_get (&gnames);
+	nr_type_gnome_families_get (&gfamilies);
+
+	for (i = gnames.length - 1; i >= 0; i--) {
+		NRTypeFaceDef *tdef;
+		const unsigned char *family;
+		family = NULL;
+		for (j = gfamilies.length - 1; j >= 0; j--) {
+			int len;
+			len = strlen (gfamilies.names[j]);
+			if (!strncmp (gfamilies.names[j], gnames.names[i], len)) {
+				family = gfamilies.names[j];
+				break;
+			}
+		}
+		if (family) {
+			tdef = nr_new (NRTypeFaceDef, 1);
+			tdef->next = NULL;
+			tdef->pdef = NULL;
+			nr_type_gnome_build_def (tdef, gnames.names[i], family);
+			nr_type_register (tdef);
+		}
+	}
+
+	nr_name_list_release (&gfamilies);
+	nr_name_list_release (&gnames);
 }
 
 static unsigned int

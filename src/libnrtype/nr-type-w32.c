@@ -22,6 +22,7 @@
 
 #include "codepages.h"
 
+#include "nr-type-directory.h"
 #include "nr-type-w32.h"
 
 #define NR_SLOTS_BLOCK 32
@@ -133,6 +134,40 @@ nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsi
     def->name = g_strdup (name);
     def->family = g_strdup (family);
     def->typeface = NULL;
+}
+
+static void
+nr_type_read_w32_list (void)
+{
+	NRNameList wnames, wfamilies;
+	int i, j;
+
+	nr_type_w32_typefaces_get (&wnames);
+	nr_type_w32_families_get (&wfamilies);
+
+	for (i = wnames.length - 1; i >= 0; i--) {
+		NRTypeFaceDef *tdef;
+		const unsigned char *family;
+		family = NULL;
+		for (j = wfamilies.length - 1; j >= 0; j--) {
+			int len;
+			len = strlen (wfamilies.names[j]);
+			if (!strncmp (wfamilies.names[j], wnames.names[i], len)) {
+				family = wfamilies.names[j];
+				break;
+			}
+		}
+		if (family) {
+			tdef = nr_new (NRTypeFaceDef, 1);
+			tdef->next = NULL;
+			tdef->pdef = NULL;
+			nr_type_w32_build_def (tdef, wnames.names[i], family);
+			nr_type_register (tdef);
+		}
+	}
+
+	nr_name_list_release (&wfamilies);
+	nr_name_list_release (&wnames);
 }
 
 static void

@@ -260,7 +260,7 @@ nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
 	svlb.right.refvx = NULL;
 	svlb.right.dir = 0;
 	svlb.right.reverse = TRUE;
-	svlb.right.sx = svlb.left.sy = 0.0;
+	svlb.right.sx = svlb.right.sy = 0.0;
 	nr_rect_f_set_empty (&svlb.right.bbox);
 
 	x = y = 0.0;
@@ -353,7 +353,7 @@ nr_vpath_stroke (const ArtVpath *path, NRMatrixF *transform,
 	svlb.right.refvx = NULL;
 	svlb.right.dir = 0;
 	svlb.right.reverse = TRUE;
-	svlb.right.sx = svlb.left.sy = 0.0;
+	svlb.right.sx = svlb.right.sy = 0.0;
 	nr_rect_f_set_empty (&svlb.right.bbox);
 
 	x = y = 0.0;

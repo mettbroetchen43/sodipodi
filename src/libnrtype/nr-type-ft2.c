@@ -43,10 +43,10 @@ static FT_Library ft_library = NULL;
 
 static NRTypeFaceClass *parent_class;
 
-NRType
+unsigned int
 nr_typeface_ft2_get_type (void)
 {
-	static NRType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_TYPEFACE,
 						"NRTypeFaceFT2",
@@ -142,10 +142,18 @@ nr_typeface_ft2_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 		}
 	}
 
-	ft_result = FT_New_Face (ft_library, dft2->file, dft2->face, &ft_face);
-	if (ft_result != FT_Err_Ok) {
-		fprintf (stderr, "Error loading typeface from file %s:%d", dft2->file, dft2->face);
-		return;
+	if (dft2->is_file) {
+		ft_result = FT_New_Face (ft_library, dft2->data.file, dft2->face, &ft_face);
+		if (ft_result != FT_Err_Ok) {
+			fprintf (stderr, "Error loading typeface %s from file %s:%d", dft2->def.name, dft2->data.file, dft2->face);
+			return;
+		}
+	} else {
+		ft_result = FT_New_Memory_Face (ft_library, dft2->data.data, dft2->size, dft2->face, &ft_face);
+		if (ft_result != FT_Err_Ok) {
+			fprintf (stderr, "Error loading typeface %s from memory", dft2->def.name);
+			return;
+		}
 	}
 
 	/* fixme: Test scalability */
@@ -199,7 +207,26 @@ nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2,
 	dft2->def.name = strdup (name);
 	dft2->def.family = strdup (family);
 	dft2->def.typeface = NULL;
-	dft2->file = strdup (file);
+	dft2->is_file = TRUE;
+	dft2->data.file = strdup (file);
+	dft2->face = face;
+}
+
+void
+nr_type_ft2_build_def_data (NRTypeFaceDefFT2 *dft2,
+			    const unsigned char *name,
+			    const unsigned char *family,
+			    const unsigned char *data,
+			    unsigned int size,
+			    unsigned int face)
+{
+	dft2->def.type = NR_TYPE_TYPEFACE_FT2;
+	dft2->def.name = strdup (name);
+	dft2->def.family = strdup (family);
+	dft2->def.typeface = NULL;
+	dft2->is_file = FALSE;
+	dft2->data.data = data;
+	dft2->size = size;
 	dft2->face = face;
 }
 

@@ -1,3 +1,17 @@
+2003-10-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libarikkei/Makefile.am: New stuff from ariariki
+
+	* src/libnrtype/nr-type-xft.c (nr_type_read_xft_list): Moved here
+
+	* src/libnrtype/nr-type-directory.c (nr_type_build): From ariariki
+	(nr_type_read_private_list): Use libarikkei tokenizer
+	(nr_type_register): Made public
+
+	* src/libnrtype/Makefile.am: Added libarikkei stuff
+
+	* configure.in: Added libarikkei/Makefile
+
 2003-09-18  Mitsuru Oka <oka@mediasite.co.jp>
 
 	* Initial IA-64 Linux support.
