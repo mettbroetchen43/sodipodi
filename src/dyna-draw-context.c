@@ -505,7 +505,7 @@ sp_dyna_draw_timeout_handler (gpointer data)
 
   dc = SP_DYNA_DRAW_CONTEXT (data);
   desktop = SP_EVENT_CONTEXT(dc)->desktop;
-  canvas = GNOME_CANVAS (desktop->canvas);
+  canvas = GNOME_CANVAS (SP_DT_CANVAS (desktop));
 
   dc->dragging = TRUE;
   dc->dynahand = TRUE;

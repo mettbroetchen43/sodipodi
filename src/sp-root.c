@@ -1,7 +1,19 @@
-#define SP_ROOT_C
+#define __SP_ROOT_C__
+
+/*
+ * SVG <svg> element
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ *
+ */
 
 #include <string.h>
-#include "helper/sodipodi-ctrlrect.h"
 #include "svg/svg.h"
 #include "display/nr-arena-item.h"
 #include "document.h"
@@ -10,82 +22,66 @@
 #include "sp-namedview.h"
 #include "sp-root.h"
 
-enum {
-	ARG_0,
-	ARG_WIDTH,
-	ARG_HEIGHT,
-	ARG_NAMEDVIEWS
-};
-
 #define SP_SVG_DEFAULT_WIDTH 595.27
 #define SP_SVG_DEFAULT_HEIGHT 841.89
 
-static void sp_root_class_init (SPRootClass * klass);
-static void sp_root_init (SPRoot * root);
-static void sp_root_destroy (GtkObject * object);
-static void sp_root_get_arg (GtkObject * object, GtkArg * arg, guint id);
+static void sp_root_class_init (SPRootClass *klass);
+static void sp_root_init (SPRoot *root);
+static void sp_root_destroy (GtkObject *object);
 
-static void sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_root_read_attr (SPObject * object, const gchar * key);
-static void sp_root_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
-static void sp_root_remove_child (SPObject * object, SPRepr * child);
+static void sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static void sp_root_read_attr (SPObject *object, const gchar *key);
+static void sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
+static void sp_root_remove_child (SPObject *object, SPRepr *child);
+static void sp_root_modified (SPObject *object, guint flags);
 
-static void sp_root_print (SPItem * item, GnomePrintContext * gpc);
-
-static SPGroupClass * parent_class;
+static SPGroupClass *parent_class;
 
 GtkType
 sp_root_get_type (void)
 {
-	static GtkType root_type = 0;
-	if (!root_type) {
-		GtkTypeInfo root_info = {
+	static GtkType type = 0;
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPRoot",
 			sizeof (SPRoot),
 			sizeof (SPRootClass),
 			(GtkClassInitFunc) sp_root_class_init,
 			(GtkObjectInitFunc) sp_root_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		root_type = gtk_type_unique (sp_group_get_type (), &root_info);
+		type = gtk_type_unique (SP_TYPE_GROUP, &info);
 	}
-	return root_type;
+	return type;
 }
 
 static void
 sp_root_class_init (SPRootClass *klass)
 {
-	GtkObjectClass * gtk_object_class;
-	SPObjectClass * sp_object_class;
-	SPItemClass * item_class;
+	GtkObjectClass *gtk_object_class;
+	SPObjectClass *sp_object_class;
 
-	gtk_object_class = (GtkObjectClass *) klass;
-	sp_object_class = (SPObjectClass *) klass;
-	item_class = (SPItemClass *) klass;
+	gtk_object_class = GTK_OBJECT_CLASS (klass);
+	sp_object_class = SP_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (sp_group_get_type ());
-
-	gtk_object_add_arg_type ("SPRoot::width", GTK_TYPE_DOUBLE, GTK_ARG_READABLE, ARG_WIDTH);
-	gtk_object_add_arg_type ("SPRoot::height", GTK_TYPE_DOUBLE, GTK_ARG_READABLE, ARG_HEIGHT);
-	gtk_object_add_arg_type ("SPRoot::namedviews", GTK_TYPE_POINTER, GTK_ARG_READABLE, ARG_NAMEDVIEWS);
+	parent_class = gtk_type_class (SP_TYPE_GROUP);
 
 	gtk_object_class->destroy = sp_root_destroy;
-	gtk_object_class->get_arg = sp_root_get_arg;
 
 	sp_object_class->build = sp_root_build;
 	sp_object_class->read_attr = sp_root_read_attr;
 	sp_object_class->child_added = sp_root_child_added;
 	sp_object_class->remove_child = sp_root_remove_child;
-
-	item_class->print = sp_root_print;
+	sp_object_class->modified = sp_root_modified;
 }
 
 static void
 sp_root_init (SPRoot *root)
 {
 	root->group.transparent = TRUE;
+
+	root->resized = FALSE;
+
 	root->width = SP_SVG_DEFAULT_WIDTH;
 	root->height = SP_SVG_DEFAULT_HEIGHT;
 	root->viewbox.x0 = root->viewbox.y0 = 0.0;
@@ -109,29 +105,6 @@ sp_root_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-}
-
-static void
-sp_root_get_arg (GtkObject * object, GtkArg * arg, guint id)
-{
-	SPRoot * root;
-
-	root = SP_ROOT (object);
-
-	switch (id) {
-	case ARG_WIDTH:
-		GTK_VALUE_DOUBLE (* arg) = root->width;
-		break;
-	case ARG_HEIGHT:
-		GTK_VALUE_DOUBLE (* arg) = root->height;
-		break;
-	case ARG_NAMEDVIEWS:
-		GTK_VALUE_POINTER (* arg) = root->namedviews;
-		break;
-	default:
-		arg->type = GTK_TYPE_INVALID;
-		break;
-	}
 }
 
 static void
@@ -168,29 +141,6 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	}
 }
 
-/* fixme: */
-
-static void
-set_page (SPRoot * root)
-{
-#if 0
-	ArtDRect pdim;
-#endif
-	SPItemView * v;
-
-	for (v = SP_ITEM (root)->display; v != NULL; v = v->next) {
-#if 0
-		/* fixme: */
-		SPDesktop * dt;
-		dt = gtk_object_get_data (GTK_OBJECT (v->canvasitem->canvas), "SPDesktop");
-		pdim.x0 = pdim.y0 = 0.0;
-		pdim.x1 = root->width;
-		pdim.y1 = root->height;
-		sp_ctrlrect_set_rect ((SPCtrlRect *) dt->page, &pdim);
-#endif
-	}
-}
-
 static void
 sp_root_read_attr (SPObject * object, const gchar * key)
 {
@@ -206,29 +156,25 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 
 	astr = sp_repr_attr (object->repr, key);
 
-	if (strcmp (key, "width") == 0) {
+	if (!strcmp (key, "width")) {
 		len = sp_svg_read_length (&unit, astr, 0.0);
-		if (len >= 1.0) root->width = len;
-		set_page (root);
-		return;
-	}
-	if (strcmp (key, "height") == 0) {
-		len = sp_svg_read_length (&unit, astr, 0.0);
-		if (len >= 1.0) root->height = len;
-		/* fixme: */
-		art_affine_scale (item->affine, 1.0, -1.0);
-		item->affine[5] = root->height;
-		for (v = item->display; v != NULL; v = v->next) {
-			nr_arena_item_set_transform (v->arenaitem, item->affine);
+		if (len >= 1.0) {
+			root->resized = TRUE;
+			root->width = len;
 		}
-		set_page (root);
-		return;
-	}
-	/* fixme: */
-	if (strcmp (key, "viewBox") == 0) {
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else if (!strcmp (key, "height")) {
+		len = sp_svg_read_length (&unit, astr, 0.0);
+		if (len >= 1.0) {
+			root->height = len;
+			root->resized = TRUE;
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else if (!strcmp (key, "viewBox")) {
+		/* fixme: We have to take original item affine into account */
 		gdouble x, y, width, height;
 		gchar * eptr;
-		gdouble t0[6], s[6], t1[6], a[6];
+		gdouble t0[6], s[6], a[6];
 
 		if (!astr) return;
 		eptr = (gchar *) astr;
@@ -246,20 +192,16 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 			root->viewbox.x1 = x + width;
 			root->viewbox.y1 = y + height;
 			art_affine_translate (t0, x, y);
-			art_affine_scale (s, root->width / width, -root->height / height);
-			art_affine_translate (t1, 0, root->height);
+			art_affine_scale (s, root->width / width, root->height / height);
 			art_affine_multiply (a, t0, s);
-			art_affine_multiply (a, a, t1);
 			memcpy (item->affine, a, 6 * sizeof (gdouble));
 			for (v = item->display; v != NULL; v = v->next) {
 				nr_arena_item_set_transform (v->arenaitem, item->affine);
 			}
-			return;
 		}
-	}
-
-	if (((SPObjectClass *) parent_class)->read_attr)
+	} else if (((SPObjectClass *) parent_class)->read_attr) {
 		(* ((SPObjectClass *) parent_class)->read_attr) (object, key);
+	}
 }
 
 static void
@@ -324,16 +266,15 @@ sp_root_remove_child (SPObject * object, SPRepr * child)
 }
 
 static void
-sp_root_print (SPItem * item, GnomePrintContext * gpc)
+sp_root_modified (SPObject *object, guint flags)
 {
-	/* We translate here from SVG to PS coordinates */
+	SPRoot *root;
 
-	gnome_print_gsave (gpc);
-	gnome_print_concat (gpc, item->affine);
+	root = SP_ROOT (object);
 
-	if (((SPItemClass *) parent_class)->print)
-		(* ((SPItemClass *) parent_class)->print) (item, gpc);
-
-	gnome_print_grestore (gpc);
+	if (root->resized) {
+		sp_document_set_size (SP_OBJECT_DOCUMENT (root), root->width, root->height);
+		root->resized = FALSE;
+	}
 }
 

@@ -574,7 +574,6 @@ static void
 sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document)
 {
 	guint32 color;
-	SPObject *ps;
 
 	if (!strncmp (str, "url", 3)) {
 		SPObject *ps;

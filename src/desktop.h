@@ -1,50 +1,48 @@
-#ifndef SP_DESKTOP_H
-#define SP_DESKTOP_H
+#ifndef __SP_DESKTOP_H__
+#define __SP_DESKTOP_H__
 
 /*
- * SPDesktop
+ * Editable view and widget implementation
  *
- * A per view drawing object which implements:
- *   - scrollbars
- *   - postscript coordinates
- *   - comfortable canvas groups
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
  *
  */
 
-#define SP_TYPE_DESKTOP            (sp_desktop_get_type ())
-#define SP_DESKTOP(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_DESKTOP, SPDesktop))
-#define SP_DESKTOP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DESKTOP, SPDesktopClass))
-#define SP_IS_DESKTOP(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_DESKTOP))
-#define SP_IS_DESKTOP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_DESKTOP))
+#define SP_TYPE_DESKTOP (sp_desktop_get_type ())
+#define SP_DESKTOP(o) (GTK_CHECK_CAST ((o), SP_TYPE_DESKTOP, SPDesktop))
+#define SP_DESKTOP_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_DESKTOP, SPDesktopClass))
+#define SP_IS_DESKTOP(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP))
+#define SP_IS_DESKTOP_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_DESKTOP))
 
-#include <gtk/gtk.h>
+typedef struct _SPDesktopWidget SPDesktopWidget;
+typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
+
+#define SP_TYPE_DESKTOP_WIDGET (sp_desktop_widget_get_type ())
+#define SP_DESKTOP_WIDGET(o) (GTK_CHECK_CAST ((o), SP_TYPE_DESKTOP_WIDGET, SPDesktopWidget))
+#define SP_DESKTOP_WIDGET_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_DESKTOP_WIDGET, SPDesktopWidgetClass))
+#define SP_IS_DESKTOP_WIDGET(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP_WIDGET))
+#define SP_IS_DESKTOP_WIDGET_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_DESKTOP_WIDGET))
+
 #include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-appbar.h>
 #include "forward.h"
-#include "sp-namedview.h"
+#include "view.h"
 
 struct _SPDesktop {
-	GtkEventBox eventbox;
-	gint decorations : 1;
-	guint guides_active : 1;
-	GtkBox * table;
-	GtkScrollbar * hscrollbar;
-	GtkScrollbar * vscrollbar;
-	GtkRuler * hruler;
-	GtkRuler * vruler;
-        GtkWidget * active;
-        GtkWidget * inactive;
-        GtkWidget * menubutton;   
-        GnomeAppBar * select_status, * coord_status;
+	SPView view;
 
-        gint coord_status_id, select_status_id;
-        GtkWidget * zoom;
+	SPDesktopWidget *owner;
 
 	SPDocument * document;
 	SPNamedView * namedview;
 	SPSelection * selection;
 	SPEventContext * event_context;
-	GnomeCanvas * canvas;
+
 	GnomeCanvasItem * acetate;
 	GnomeCanvasGroup * main;
 	GnomeCanvasGroup * grid;
@@ -53,37 +51,34 @@ struct _SPDesktop {
 	GnomeCanvasGroup * sketch;
 	GnomeCanvasGroup * controls;
 	GnomeCanvasItem * page;
-	gdouble d2w[6], w2d[6];
+	gdouble d2w[6], w2d[6], doc2dt[6];
         gint number;
 };
 
 struct _SPDesktopClass {
 	GtkEventBoxClass parent_class;
+
+	void (* modified) (SPDesktop *desktop, guint flags);
 };
 
-#ifndef SP_DESKTOP_C
+#ifndef __SP_DESKTOP_C__
 extern gboolean SPShowFullFielName;
 #else
 gboolean SPShowFullFielName = TRUE;
 #endif
 
-
-
-
-/* Standard Gtk function */
-
 GtkType sp_desktop_get_type (void);
 
 /* Constructor */
 
-SPDesktop * sp_desktop_new (SPDocument * document, SPNamedView * namedview);
+SPView *sp_desktop_new (SPDesktopWidget *widget);
 
 /* Show/hide rulers & scrollbars */
 
-void sp_desktop_show_decorations (SPDesktop * desktop, gboolean show);
-void sp_desktop_activate_guides (SPDesktop * desktop, gboolean activate);
+void sp_desktop_show_decorations (SPDesktop *desktop, gboolean show);
+void sp_desktop_activate_guides (SPDesktop *desktop, gboolean activate);
 
-void sp_desktop_change_document (SPDesktop * desktop, SPDocument * document);
+void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
 
 /* Zooming, viewport, position & similar */
 #define SP_DESKTOP_SCROLL_LIMIT 10000.0
@@ -104,16 +99,50 @@ gint sp_desktop_set_focus (GtkWidget * widget, GtkWidget * widget2, SPDesktop * 
 
 void sp_desktop_set_event_context (SPDesktop * desktop, GtkType type);
 
-void sp_desktop_set_title (SPDesktop * desktop);
-
-
 // statusbars
 void sp_desktop_default_status (SPDesktop *desktop, const gchar * text);
 void sp_desktop_set_status (SPDesktop * desktop, const gchar * stat);
 void sp_desktop_clear_status (SPDesktop * desktop);
 void sp_desktop_coordinate_status (SPDesktop * desktop, gdouble x, gdouble y, gint8 underline);
 
+#include <gtk/gtkscrollbar.h>
+#include <gtk/gtkruler.h>
+#include <libgnomeui/gnome-appbar.h>
 
-void sp_desktop_connect_item (SPDesktop * desktop, SPItem * item, GnomeCanvasItem * canvasitem);
+struct _SPDesktopWidget {
+	SPViewWidget viewwidget;
+
+	SPDocument *document;
+	SPNamedView *namedview;
+
+	SPDesktop *desktop;
+
+	gint decorations : 1;
+	guint guides_active : 1;
+	GtkBox * table;
+	GtkScrollbar * hscrollbar;
+	GtkScrollbar * vscrollbar;
+	GtkRuler * hruler;
+	GtkRuler * vruler;
+        GtkWidget * active;
+        GtkWidget * inactive;
+        GtkWidget * menubutton;   
+        GnomeAppBar * select_status, * coord_status;
+
+        gint coord_status_id, select_status_id;
+        GtkWidget * zoom;
+
+	GnomeCanvas * canvas;
+};
+
+struct _SPDesktopWidgetClass {
+	SPViewWidgetClass parent_class;
+};
+
+GtkType sp_desktop_widget_get_type (void);
+
+/* Constructor */
+
+SPViewWidget *sp_desktop_widget_new (SPDocument *document, SPNamedView *namedview);
 
 #endif

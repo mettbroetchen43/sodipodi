@@ -1,3 +1,35 @@
+2001-10-23  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/file.c (sp_file_new): Use new signatures
+	(file_open_ok): Ditto
+
+	* src/interface.c (sp_create_window): New signature
+
+	* src/desktop.c: Break desktop functionality into SPView/SPViewWidget
+	parts, wrap most of the old code in ugly way, but we can go on
+	cleaning it up method-by-method
+
+	* src/desktop.h: Ditto
+
+	* src/view.h: New file
+
+	* src/view.c: New file, we implement abstract base classes for
+	all document views (editable, noneditable, widget, non-widget)
+	here
+
+	* src/svg-view.h: New file
+
+	* src/svg-view.c: New file, implementing SVG preview
+
+	* src/marshal.h: New file
+
+	* src/marshal.c: New file
+
+2001-10-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-root.c (sp_root_read_attr): Removed desktop->document coordinate
+	setup from here - it has to be done in desktop instead
+
 2001-10-19  Frank Felfe <innerspace@iname.com>
 
 	* src/widgets/sp-toolbox.*: patch from MenTaLguY <mental@rydia.net>
@@ -12,6 +44,13 @@
 
 	* src/desktop-events.c (sp_desktop_root_handler): don't grab focus here
 	
+2001-10-18  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/display/nr-arena-image.c (nr_arena_image_render): Use right
+	pixel coposers
+
+	* configure.in: Version 0.25
+
 2001-10-18  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-item-group.c: Removed paint virtual method implementation

@@ -64,11 +64,11 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 	namedview = sp_document_namedview (desktop->document->document, NULL);
 	g_assert (namedview != NULL);
 
-	desktop->desktop = sp_desktop_new (desktop->document->document, namedview);
+	desktop->desktop = (SPDesktopWidget *) sp_desktop_widget_new (desktop->document->document, namedview);
 
 	/* Hide scrollbars and rulers */
 
-	sp_desktop_show_decorations (desktop->desktop, FALSE);
+	sp_desktop_show_decorations (desktop->desktop->desktop, FALSE);
 
 	gtk_signal_connect (GTK_OBJECT (desktop->desktop), "size_allocate",
 		GTK_SIGNAL_FUNC (sp_embeddable_desktop_size_allocate), desktop);
@@ -105,7 +105,7 @@ sp_embeddable_desktop_activate (BonoboView * view, gboolean activate, gpointer d
 
 	desktop = SP_EMBEDDABLE_DESKTOP (view);
 
-	sp_desktop_show_decorations (desktop->desktop, activate);
+	sp_desktop_show_decorations (desktop->desktop->desktop, activate);
 
 	bonobo_view_activate_notify (view, activate);
 }
@@ -117,7 +117,7 @@ sp_embeddable_desktop_new_doc (BonoboView * view, gpointer data)
 
 	desktop = SP_EMBEDDABLE_DESKTOP (view);
 
-	sp_desktop_change_document (desktop->desktop, desktop->document->document);
+	sp_desktop_change_document (desktop->desktop->desktop, desktop->document->document);
 }
 
 /* fixme:
@@ -130,15 +130,15 @@ void
 sp_embeddable_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation, gpointer data)
 {
 	SPEmbeddableDesktop * ed;
-	SPDesktop * desktop;
+	SPDesktopWidget *dtw;
 
-	desktop = SP_DESKTOP (widget);
+	dtw = SP_DESKTOP_WIDGET (widget);
 	ed = SP_EMBEDDABLE_DESKTOP (data);
-	g_assert (ed->desktop = desktop);
+	g_assert (ed->desktop == dtw);
 	
-	sp_desktop_show_region (desktop, 0.0, 0.0,
-		sp_document_width (desktop->document),
-		sp_document_height (desktop->document),
+	sp_desktop_show_region (dtw->desktop, 0.0, 0.0,
+		sp_document_width (dtw->document),
+		sp_document_height (dtw->document),
 				10);
 }
 

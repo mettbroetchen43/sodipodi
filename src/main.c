@@ -297,19 +297,19 @@ main (int argc, char *argv[])
 
 			while (fl) {
 				SPDocument * doc;
-				SPDesktop * dt;
+				SPViewWidget *dtw;
 				doc = sp_document_new ((const gchar *) fl->data);
 				if (doc) {
-					dt = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
+					dtw = sp_desktop_widget_new (doc, sp_document_namedview (doc, NULL));
 					sp_document_unref (doc);
-					if (dt) sp_create_window (dt, TRUE);
+					if (dtw) sp_create_window (dtw, TRUE);
 				}
 				fl = g_slist_remove (fl, fl->data);
 			}
 		} else {
 			GSList *slides = NULL;
 			SPDocument * doc;
-			SPDesktop * dt;
+			SPViewWidget *dtw;
 			/* fixme: This is terrible hack */
 			sodipodi = sodipodi_application_new ();
 			sodipodi_load_preferences (sodipodi);
@@ -329,11 +329,11 @@ main (int argc, char *argv[])
 			if (slides) {
 				doc = slides->data;
 				slides = g_slist_remove (slides, doc);
-				dt = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
-				if (dt) {
-					sp_desktop_set_event_context (dt, SP_TYPE_SLIDE_CONTEXT);
-					gtk_object_set_data (GTK_OBJECT (dt), "slides", slides);
-					sp_create_window (dt, FALSE);
+				dtw = sp_desktop_widget_new (doc, sp_document_namedview (doc, NULL));
+				if (dtw) {
+					sp_desktop_set_event_context (SP_DESKTOP_WIDGET (dtw)->desktop, SP_TYPE_SLIDE_CONTEXT);
+					gtk_object_set_data (GTK_OBJECT (SP_DESKTOP_WIDGET (dtw)->desktop), "slides", slides);
+					sp_create_window (dtw, FALSE);
 				}
 #if 0
 				sp_document_unref (doc);

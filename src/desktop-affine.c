@@ -42,7 +42,7 @@ sp_desktop_w2doc_affine (SPDesktop * desktop, gdouble w2doc[])
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (w2doc != NULL, NULL);
 
-	art_affine_invert (d2doc, SP_ITEM (sp_document_root (desktop->document))->affine);
+	art_affine_invert (d2doc, desktop->doc2dt);
 	art_affine_multiply (w2doc, desktop->w2d, d2doc);
 
 	return w2doc;
@@ -55,7 +55,7 @@ sp_desktop_doc2w_affine (SPDesktop * desktop, gdouble doc2w[])
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (doc2w != NULL, NULL);
 
-	art_affine_multiply (doc2w, SP_ITEM (sp_document_root (desktop->document))->affine, desktop->d2w);
+	art_affine_multiply (doc2w, desktop->doc2dt, desktop->d2w);
 
 	return doc2w;
 }
@@ -67,7 +67,7 @@ sp_desktop_d2doc_affine (SPDesktop * desktop, gdouble d2doc[])
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (d2doc != NULL, NULL);
 
-	art_affine_invert (d2doc, SP_ITEM (sp_document_root (desktop->document))->affine);
+	art_affine_invert (d2doc, desktop->doc2dt);
 
 	return d2doc;
 }
@@ -81,7 +81,7 @@ sp_desktop_doc2d_affine (SPDesktop * desktop, gdouble doc2d[])
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (doc2d != NULL, NULL);
 
-	for (i = 0; i < 6; i++) doc2d[i] = SP_ITEM (sp_document_root (desktop->document))->affine[i];
+	for (i = 0; i < 6; i++) doc2d[i] = desktop->doc2dt[i];
 
 	return doc2d;
 }
@@ -123,7 +123,7 @@ sp_desktop_w2doc_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (p != NULL, NULL);
 
-	art_affine_invert (d2doc, SP_ITEM (sp_document_root (desktop->document))->affine);
+	art_affine_invert (d2doc, desktop->doc2dt);
 
 	p->x = x;
 	p->y = y;
@@ -142,7 +142,7 @@ sp_desktop_doc2w_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble
 
 	p->x = x;
 	p->y = y;
-	art_affine_point (p, p, SP_ITEM (sp_document_root (desktop->document))->affine);
+	art_affine_point (p, p, desktop->doc2dt);
 	art_affine_point (p, p, desktop->d2w);
 
 	return p;
@@ -157,7 +157,7 @@ sp_desktop_d2doc_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 	g_return_val_if_fail (p != NULL, NULL);
 
-	art_affine_invert (d2doc, SP_ITEM (sp_document_root (desktop->document))->affine);
+	art_affine_invert (d2doc, desktop->doc2dt);
 
 	p->x = x;
 	p->y = y;
@@ -175,7 +175,7 @@ sp_desktop_doc2d_xy_point (SPDesktop * desktop, ArtPoint * p, gdouble x, gdouble
 
 	p->x = x;
 	p->y = y;
-	art_affine_point (p, p, SP_ITEM (sp_document_root (desktop->document))->affine);
+	art_affine_point (p, p, desktop->doc2dt);
 
 	return p;
 }

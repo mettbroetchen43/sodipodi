@@ -295,10 +295,7 @@ sp_use_show (SPItem *item, NRArena *arena)
 	if (use->child) {
 		NRArenaItem *ai, *ac;
 		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
-#if 0
-		/* fixme: */
-		SP_CANVAS_BGROUP (ci)->transparent = FALSE;
-#endif
+		nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
 		ac = sp_item_show (use->child, arena);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);

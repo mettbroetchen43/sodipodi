@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include "sp-guide.h"
+#include "sp-namedview.h"
 #include "desktop-snap.h"
 
 // minimal distance to norm before point is considered for snap

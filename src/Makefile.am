@@ -56,6 +56,8 @@ sodipodi_SOURCES = \
 	document.c document.h document-private.h \
 	document-undo.c \
 	uri-references.c uri-references.h \
+	view.c view.h \
+	svg-view.c svg-view.h \
 	selection.c selection.h \
 	desktop.c desktop.h \
 	desktop-units.h \
@@ -85,6 +87,7 @@ sodipodi_SOURCES = \
 	main.c \
 	help.c help.h \
 	sp-cursor.c sp-cursor.h \
+	marshal.c marshal.h \
 	dir-util.c dir-util.h \
 	rubberband.c rubberband.h \
 	event-broker.c event-broker.h \

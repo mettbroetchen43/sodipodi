@@ -13,6 +13,7 @@
 #include "uri-references.h"
 #include "desktop.h"
 #include "desktop-handles.h"
+#include "desktop-affine.h"
 #include "selection.h"
 #include "style.h"
 /* fixme: I do not like that (Lauris) */
@@ -521,7 +522,7 @@ sp_item_set_item_transform (SPItem *item, const gdouble *transform)
 }
 
 gdouble *
-sp_item_i2d_affine (SPItem * item, gdouble affine[])
+sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 {
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
@@ -531,45 +532,52 @@ sp_item_i2d_affine (SPItem * item, gdouble affine[])
 
 	while (item) {
 		art_affine_multiply (affine, affine, item->affine);
-		item = (SPItem *) SP_OBJECT (item)->parent;
+		item = (SPItem *) SP_OBJECT_PARENT (item);
 	}
+
+	return affine;
+}
+
+gdouble *
+sp_item_i2d_affine (SPItem *item, gdouble affine[])
+{
+	gdouble doc2dt[6];
+
+	g_return_val_if_fail (item != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
+	g_return_val_if_fail (affine != NULL, NULL);
+
+	sp_item_i2doc_affine (item, affine);
+	art_affine_identity (doc2dt);
+	doc2dt[3] = -1.0;
+	doc2dt[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
+	art_affine_multiply (affine, affine, doc2dt);
 
 	return affine;
 }
 
 void
-sp_item_set_i2d_affine (SPItem * item, gdouble affine[])
+sp_item_set_i2d_affine (SPItem *item, gdouble affine[])
 {
-	gdouble p2d[6], d2p[6];
+	gdouble p2d[6], d2p[6], i2p[6];
 
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_ITEM (item));
 	g_return_if_fail (affine != NULL);
 
-	if (SP_OBJECT (item)->parent != NULL) {
-		sp_item_i2d_affine (SP_ITEM (SP_OBJECT (item)->parent), p2d);
-		art_affine_invert (d2p, p2d);
-		art_affine_multiply (affine, affine, d2p);
+	if (SP_OBJECT_PARENT (item)) {
+		sp_item_i2d_affine ((SPItem *) SP_OBJECT_PARENT (item), p2d);
+	} else {
+		art_affine_identity (p2d);
+		p2d[3] = -1.0;
+		p2d[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
 	}
 
-	sp_item_set_item_transform (item, affine);
-}
+	art_affine_invert (d2p, p2d);
 
-gdouble *
-sp_item_i2doc_affine (SPItem * item, gdouble affine[])
-{
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
-	g_return_val_if_fail (affine != NULL, NULL);
+	art_affine_multiply (i2p, affine, d2p);
 
-	art_affine_identity (affine);
-
-	while (SP_OBJECT (item)->parent) {
-		art_affine_multiply (affine, affine, item->affine);
-		item = (SPItem *) SP_OBJECT (item)->parent;
-	}
-
-	return affine;
+	sp_item_set_item_transform (item, i2p);
 }
 
 /* Generate context menu item section */

@@ -12,6 +12,7 @@
 
 #include <string.h>
 #include <xml/repr.h>
+#include "marshal.h"
 #include "sodipodi-private.h"
 #include "sp-object-repr.h"
 #include "sp-root.h"
@@ -24,6 +25,8 @@
 
 enum {
 	MODIFIED,
+	URI_SET,
+	RESIZED,
 	LAST_SIGNAL
 };
 
@@ -66,13 +69,24 @@ sp_document_class_init (SPDocumentClass * klass)
 
 	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
 
-	signals [MODIFIED] = gtk_signal_new ("modified",
-					     GTK_RUN_FIRST,
-					     object_class->type,
-					     GTK_SIGNAL_OFFSET (SPDocumentClass, modified),
-					     gtk_marshal_NONE__UINT,
-					     GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
-
+	signals[MODIFIED] = gtk_signal_new ("modified",
+					    GTK_RUN_FIRST,
+					    object_class->type,
+					    GTK_SIGNAL_OFFSET (SPDocumentClass, modified),
+					    gtk_marshal_NONE__UINT,
+					    GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+	signals[URI_SET] =  gtk_signal_new ("uri_set",
+					    GTK_RUN_FIRST,
+					    object_class->type,
+					    GTK_SIGNAL_OFFSET (SPDocumentClass, uri_set),
+					    gtk_marshal_NONE__STRING,
+					    GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+	signals[RESIZED] =  gtk_signal_new ("resized",
+					    GTK_RUN_FIRST,
+					    object_class->type,
+					    GTK_SIGNAL_OFFSET (SPDocumentClass, resized),
+					    sp_marshal_NONE__DOUBLE_DOUBLE,
+					    GTK_TYPE_NONE, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_document_destroy;
@@ -321,6 +335,28 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	return document;
 }
 
+SPDocument *
+sp_document_ref (SPDocument *doc)
+{
+	g_return_val_if_fail (doc != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (doc), NULL);
+
+	gtk_object_ref (GTK_OBJECT (doc));
+
+	return doc;
+}
+
+SPDocument *
+sp_document_unref (SPDocument *doc)
+{
+	g_return_val_if_fail (doc != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (doc), NULL);
+
+	gtk_object_unref (GTK_OBJECT (doc));
+
+	return NULL;
+}
+
 SPReprDoc *
 sp_document_repr_doc (SPDocument * document)
 {
@@ -354,29 +390,21 @@ sp_document_root (SPDocument * document)
 gdouble
 sp_document_width (SPDocument * document)
 {
-	gdouble width;
-
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
 	g_return_val_if_fail (document->private != NULL, 0.0);
 
-	gtk_object_get (GTK_OBJECT (document->private->root), "width", &width, NULL);
-
-	return width;
+	return document->private->root->width;
 }
 
 gdouble
 sp_document_height (SPDocument * document)
 {
-	gdouble height;
-
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
 	g_return_val_if_fail (document->private != NULL, 0.0);
 
-	gtk_object_get (GTK_OBJECT (document->private->root), "height", &height, NULL);
-
-	return height;
+	return document->private->root->height;
 }
 
 const gchar *
@@ -390,18 +418,32 @@ sp_document_uri (SPDocument * document)
 }
 
 void
-sp_document_set_uri (SPDocument * document, const gchar * uri)
+sp_document_set_uri (SPDocument *document, const guchar *uri)
 {
-	const GSList * l, * m;
+	g_return_if_fail (document != NULL);
+	g_return_if_fail (SP_IS_DOCUMENT (document));
 
-	g_assert (SP_IS_DOCUMENT (document));
+	if (document->private->uri) {
+		g_free (document->private->uri);
+		document->private->uri = NULL;
+	}
 
-	g_free (document->private->uri);
-	document->private->uri = g_strdup (uri);
+	if (uri) {
+		document->private->uri = g_strdup (uri);
+	}
 
-	for (l = sp_document_namedview_list (document); l != NULL; l = l->next)
-		for (m = sp_namedview_view_list(SP_NAMEDVIEW(l->data)); m != NULL; m = m->next) 
-			sp_desktop_set_title (SP_DESKTOP (m->data));
+	gtk_signal_emit (GTK_OBJECT (document), signals [URI_SET], document->private->uri);
+}
+
+void
+sp_document_set_size (SPDocument *doc, gdouble width, gdouble height)
+{
+	g_return_if_fail (doc != NULL);
+	g_return_if_fail (SP_IS_DOCUMENT (doc));
+	g_return_if_fail (width > 0.001);
+	g_return_if_fail (height > 0.001);
+
+	gtk_signal_emit (GTK_OBJECT (doc), signals [RESIZED], width, height);
 }
 
 const gchar *
@@ -419,15 +461,10 @@ sp_document_base (SPDocument * document)
 const GSList *
 sp_document_namedview_list (SPDocument * document)
 {
-	const GSList * l;
-
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
 
-	gtk_object_get (GTK_OBJECT (document->private->root), "namedviews", &l, NULL);
-	g_assert (l != NULL);
-
-	return l;
+	return document->private->root->namedviews;
 }
 
 SPNamedView *
@@ -438,7 +475,7 @@ sp_document_namedview (SPDocument * document, const gchar * id)
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
 
-	gtk_object_get (GTK_OBJECT (document->private->root), "namedviews", &nvl, NULL);
+	nvl = document->private->root->namedviews;
 	g_assert (nvl != NULL);
 
 	if (id == NULL) return SP_NAMEDVIEW (nvl->data);
@@ -521,18 +558,6 @@ sp_document_add_repr (SPDocument *document, SPRepr *repr)
 
 	return sp_document_lookup_id (document, sp_repr_attr (repr, "id"));
 }
-
-#if 0
-void
-sp_document_del_repr (SPDocument * document, SPRepr * repr)
-{
-	g_assert (document != NULL);
-	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (repr != NULL);
-
-	sp_repr_unparent (repr);
-}
-#endif
 
 /*
  * Return list of items, contained in box

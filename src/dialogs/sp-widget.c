@@ -12,6 +12,7 @@
  *
  */
 
+#include <gtk/gtksignal.h>
 #include "../sodipodi.h"
 #include "../desktop.h"
 #include "../document.h"

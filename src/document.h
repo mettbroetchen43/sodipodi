@@ -47,6 +47,9 @@ struct _SPDocumentClass {
 	GtkObjectClass parent_class;
 
 	void (* modified) (SPDocument *document, guint flags);
+
+	void (* uri_set) (SPDocument *document, const guchar *uri);
+	void (* resized) (SPDocument *document, gdouble width, gdouble height);
 };
 
 GtkType sp_document_get_type (void);
@@ -60,8 +63,8 @@ GtkType sp_document_get_type (void);
 SPDocument * sp_document_new (const gchar * uri);
 SPDocument * sp_document_new_from_mem (const gchar * buffer, gint length);
 
-#define sp_document_ref(d) gtk_object_ref (GTK_OBJECT (d))
-#define sp_document_unref(d) gtk_object_unref (GTK_OBJECT (d))
+SPDocument *sp_document_ref (SPDocument *doc);
+SPDocument *sp_document_unref (SPDocument *doc);
 
 /*
  * Access methods
@@ -69,9 +72,11 @@ SPDocument * sp_document_new_from_mem (const gchar * buffer, gint length);
 
 SPReprDoc * sp_document_repr_doc (SPDocument * document);
 SPRepr * sp_document_repr_root (SPDocument * document);
+#define SP_DOCUMENT_ROOT(d) sp_document_root (d)
 SPRoot * sp_document_root (SPDocument * document);
 gdouble sp_document_width (SPDocument * document);
 gdouble sp_document_height (SPDocument * document);
+#define SP_DOCUMENT_URI(d) sp_document_uri (d)
 const gchar * sp_document_uri (SPDocument * document);
 const gchar * sp_document_base (SPDocument * document);
 
@@ -149,7 +154,8 @@ const GSList *sp_document_get_resource_list (SPDocument *document, const guchar 
  */
 
 GSList * sp_document_items_in_box (SPDocument * document, ArtDRect * box);
-void sp_document_set_uri (SPDocument * document, const gchar * uri);
 
+void sp_document_set_uri (SPDocument *document, const guchar *uri);
+void sp_document_set_size (SPDocument *doc, gdouble width, gdouble height);
 
 #endif

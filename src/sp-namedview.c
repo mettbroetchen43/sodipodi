@@ -329,7 +329,7 @@ sp_namedview_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 		if (nv->editable) {
 			for (l = nv->views; l != NULL; l = l->next) {
 				sp_guide_show (g, SP_DESKTOP (l->data)->guides, sp_dt_guide_event);
-				if (SP_DESKTOP (l->data)->guides_active) sp_guide_sensitize (g, SP_DESKTOP (l->data)->canvas, TRUE);
+				if (SP_DESKTOP (l->data)->owner->guides_active) sp_guide_sensitize (g, SP_DESKTOP (l->data)->owner->canvas, TRUE);
 			}
 		}
 	}
@@ -373,12 +373,12 @@ sp_namedview_show (SPNamedView * nv, gpointer desktop)
 
 	for (l = nv->hguides; l != NULL; l = l->next) {
 		sp_guide_show (SP_GUIDE (l->data), dt->guides, sp_dt_guide_event);
-		if (dt->guides_active) sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, TRUE);
+		if (dt->owner->guides_active) sp_guide_sensitize (SP_GUIDE (l->data), dt->owner->canvas, TRUE);
 	}
 
 	for (l = nv->vguides; l != NULL; l = l->next) {
 		sp_guide_show (SP_GUIDE (l->data), dt->guides, sp_dt_guide_event);
-		if (dt->guides_active) sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, TRUE);
+		if (dt->owner->guides_active) sp_guide_sensitize (SP_GUIDE (l->data), dt->owner->canvas, TRUE);
 	}
 
 	nv->views = g_slist_prepend (nv->views, desktop);
@@ -403,11 +403,11 @@ sp_namedview_hide (SPNamedView * nv, gpointer desktop)
 	dt = SP_DESKTOP (desktop);
 
 	for (l = nv->hguides; l != NULL; l = l->next) {
-		sp_guide_hide (SP_GUIDE (l->data), dt->canvas);
+		sp_guide_hide (SP_GUIDE (l->data), dt->owner->canvas);
 	}
 
 	for (l = nv->vguides; l != NULL; l = l->next) {
-		sp_guide_hide (SP_GUIDE (l->data), dt->canvas);
+		sp_guide_hide (SP_GUIDE (l->data), dt->owner->canvas);
 	}
 
 	nv->views = g_slist_remove (nv->views, desktop);
@@ -437,11 +437,11 @@ sp_namedview_activate_guides (SPNamedView * nv, gpointer desktop, gboolean activ
 	dt = SP_DESKTOP (desktop);
 
 	for (l = nv->hguides; l != NULL; l = l->next) {
-		sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, active);
+		sp_guide_sensitize (SP_GUIDE (l->data), dt->owner->canvas, active);
 	}
 
 	for (l = nv->vguides; l != NULL; l = l->next) {
-		sp_guide_sensitize (SP_GUIDE (l->data), dt->canvas, active);
+		sp_guide_sensitize (SP_GUIDE (l->data), dt->owner->canvas, active);
 	}
 }
 

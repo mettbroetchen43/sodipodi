@@ -168,10 +168,21 @@ nr_arena_image_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 #define YSAMPLE nr_arena_image_y_sample
 #define b2i (image->grid2item)
 
+#define PREMUL(c,a) (((c) * (a) + 127) / 255)
+#define COMPOSENNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 127) / a)
+#define COMPOSEPNN_A7(fc,fa,bc,ba,a) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 127) / a)
+#define COMPOSENNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fa) * (fc) * 255 + 32512) / 65025)
+#define COMPOSEPNP(fc,fa,bc,ba) (((255 - (fa)) * (bc) * (ba) + (fc) * 65025 + 32512) / 65025)
+#define COMPOSENPP(fc,fa,bc,ba) (((255 - (fa)) * (bc) + (fa) * (fc) + 127) / 255)
+#define COMPOSEPPP(fc,fa,bc,ba) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
+#define COMPOSEP11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * 255 + 127) / 255)
+#define COMPOSEN11(fc,fa,bc) (((255 - (fa)) * (bc) + (fc) * (fa) + 127) / 255)
+
 static guint
-nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
+nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *buf)
 {
 	NRArenaImage *image;
+	guint xnsample, ynsample, dsample;
 	gint x, y, dw, dh, drs, dx0, dy0;
 	gint srs, sw, sh;
 	gdouble Fs_x_x, Fs_x_y, Fs_y_x, Fs_y_y, Fs__x, Fs__y;
@@ -185,9 +196,14 @@ nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 	if (!image->pixbuf) return item->state;
 
 	Falpha = (guint32) floor (item->opacity * 255.9999);
+	if (Falpha < 1) return item->state;
 
-	dpx = b->px;
-	drs = b->rs;
+	xnsample = 1 << XSAMPLE;
+	ynsample = 1 << YSAMPLE;
+	dsample = XSAMPLE + YSAMPLE;
+
+	dpx = buf->px;
+	drs = buf->rs;
 	dw = area->x1 - area->x0;
 	dh = area->y1 - area->y0;
 	dx0 = area->x0;
@@ -218,7 +234,7 @@ nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 		guchar *s0, *s, *d;
 		gdouble Fsx, Fsy;
 		gint FFsx0, FFsy0, FFdsx, FFdsy, sx, sy;
-		d = b->px + y * drs;
+		d = buf->px + y * drs;
 		Fsx = (y + dy0) * Fs_y_x + (0 + dx0) * Fs_x_x + Fs__x;
 		Fsy = (y + dy0) * Fs_y_y + (0 + dx0) * Fs_x_y + Fs__y;
 		s0 = spx + (gint) Fsy * srs + (gint) Fsx * 4;
@@ -233,10 +249,10 @@ nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 			FFdsy0 = FFdsy;
 			FFdsx0 = FFdsx;
 			r = g = b = a = 0;
-			for (yy = 0; yy < (1 << YSAMPLE); yy++) {
+			for (yy = 0; yy < ynsample; yy++) {
 				FFdsy = FFdsy0 + yy * (FFs_y_y_S);
 				FFdsx = FFdsx0 + yy * (FFs_y_x_S);
-				for (xx = 0; xx < (1 << XSAMPLE); xx++) {
+				for (xx = 0; xx < xnsample; xx++) {
 					sx = (FFsx0 + FFdsx) >> FBITS;
 					sy = (FFsy0 + FFdsy) >> FBITS;
 					if ((sx >= 0) && (sx < sw) && (sy >= 0) && (sy < sh)) {
@@ -250,16 +266,44 @@ nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 					FFdsy += FFs_x_y_S;
 				}
 			}
-			if (a > 0) {
+			if (a > dsample) {
 				/* fixme: do it right, plus premul stuff */
-				r = r >> (XSAMPLE + YSAMPLE);
-				g = g >> (XSAMPLE + YSAMPLE);
-				b = b >> (XSAMPLE + YSAMPLE);
-				a = a * Falpha >> (XSAMPLE + YSAMPLE);
-				d[0] = d[0] + (r - d[0]) * a / 65025;
-				d[1] = d[1] + (g - d[1]) * a / 65025;
-				d[2] = d[2] + (b - d[2]) * a / 65025;
-				d[3] = d[3] + (0xff - d[3]) * a / 65025;
+				r = r >> dsample;
+				g = g >> dsample;
+				b = b >> dsample;
+				a = ((a * Falpha >> dsample) + 127) / 255;
+				if (a > 0) {
+					if (buf->premul) {
+						if ((a == 255) || (d[3] == 0)) {
+							/* Transparent BG, premul src */
+							d[0] = PREMUL (r, a);
+							d[1] = PREMUL (g, a);
+							d[2] = PREMUL (b, a);
+							d[3] = a;
+						} else {
+							d[0] = COMPOSENPP (r, a, d[0], d[3]);
+							d[1] = COMPOSENPP (g, a, d[1], d[3]);
+							d[2] = COMPOSENPP (b, a, d[2], d[3]);
+							d[3] = (65025 - (255 - a) * (255 - d[3]) + 127) / 255;
+						}
+					} else {
+						if ((a == 255) || (d[3] == 0)) {
+							/* Full coverage, COPY */
+							d[0] = r;
+							d[1] = g;
+							d[2] = b;
+							d[3] = a;
+						} else {
+							guint ca;
+							/* Full composition */
+							ca = 65025 - (255 - a) * (255 - d[3]);
+							d[0] = COMPOSENNN_A7 (r, a, d[0], d[3], ca);
+							d[1] = COMPOSENNN_A7 (g, a, d[1], d[3], ca);
+							d[2] = COMPOSENNN_A7 (b, a, d[2], d[3], ca);
+							d[3] = (ca + 127) / 255;
+						}
+					}
+				}
 			}
 			FFdsy = FFdsy0;
 			FFdsx = FFdsx0;

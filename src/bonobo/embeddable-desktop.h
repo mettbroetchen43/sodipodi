@@ -5,6 +5,7 @@
 #include <gnome.h>
 #include <bonobo.h>
 #include "../forward.h"
+#include "../desktop.h"
 #include "embeddable-document.h"
 
 #define SP_EMBEDDABLE_DESKTOP_TYPE	(sp_embeddable_desktop_get_type ())
@@ -24,7 +25,7 @@ typedef struct _SPEmbeddableDesktopClass SPEmbeddableDesktopClass;
 struct _SPEmbeddableDesktop {
 	BonoboView view;
 	SPEmbeddableDocument * document;
-	SPDesktop * desktop;
+	SPDesktopWidget * desktop;
 };
 
 struct _SPEmbeddableDesktopClass {

@@ -6,6 +6,7 @@
 #include "desktop.h"
 #include "document.h"
 #include "sp-guide.h"
+#include "sp-namedview.h"
 #include "desktop-affine.h"
 #include "event-context.h"
 #include "sp-metrics.h"
@@ -66,9 +67,11 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 	static gboolean dragging = FALSE;
 	static GnomeCanvasItem * guide = NULL;
 	static ArtPoint p;
-	SPDesktop * desktop;
+	SPDesktopWidget *dtw;
+	SPDesktop *desktop;
 
-	desktop = SP_DESKTOP (data);
+	dtw = SP_DESKTOP_WIDGET (data);
+	desktop = dtw->desktop;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
@@ -89,7 +92,7 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 		if (dragging) {
 		    /* we have to substract (x|y)thickness to the position 
 		     * since there is a frame between ruler and canvas */
-			gnome_canvas_window_to_world (desktop->canvas,
+			gnome_canvas_window_to_world (desktop->owner->canvas,
 						      event->motion.x - 
 						      (horiz ? 0//-widget->style->klass->xthickness
 						             : widget->allocation.width + 

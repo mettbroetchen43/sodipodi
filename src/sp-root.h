@@ -1,28 +1,35 @@
-#ifndef SP_ROOT_H
-#define SP_ROOT_H
+#ifndef __SP_ROOT_H__
+#define __SP_ROOT_H__
 
 /*
- * SPRoot is child of SPGroup, its main reason is to have a object
- * which renders itself to <svg></svg>
- * It does not have any attributes
- * It's parend DOES NOT have to be SPGroup
+ * SVG <svg> element
  *
- * Idea: should we derive SPGroup from SPRoot?
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ *
  */
 
 #include "sp-item-group.h"
 
 BEGIN_GNOME_DECLS
 
-#define SP_TYPE_ROOT            (sp_root_get_type ())
-#define SP_ROOT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_ROOT, SPRoot))
-#define SP_ROOT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ROOT, SPRootClass))
-#define SP_IS_ROOT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_ROOT))
-#define SP_IS_ROOT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ROOT))
+#define SP_TYPE_ROOT (sp_root_get_type ())
+#define SP_ROOT(o) (GTK_CHECK_CAST ((o), SP_TYPE_ROOT, SPRoot))
+#define SP_ROOT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_ROOT, SPRootClass))
+#define SP_IS_ROOT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_ROOT))
+#define SP_IS_ROOT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_ROOT))
 
 struct _SPRoot {
 	SPGroup group;
-	double width, height;
+
+	guint resized : 1;
+
+	gdouble width, height;
 	ArtDRect viewbox;
 	/* List of namedviews */
 	/* fixme: use single container instead */
@@ -34,9 +41,6 @@ struct _SPRoot {
 struct _SPRootClass {
 	SPGroupClass parent_class;
 };
-
-
-/* Standard Gtk function */
 
 GtkType sp_root_get_type (void);
 

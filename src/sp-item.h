@@ -104,9 +104,12 @@ void sp_item_set_item_transform (SPItem *item, const gdouble *transform);
 
 /* Utility */
 
-gdouble * sp_item_i2d_affine (SPItem * item, gdouble affine[]);
-void sp_item_set_i2d_affine (SPItem * item, gdouble affine[]);
-gdouble * sp_item_i2doc_affine (SPItem * item, gdouble affine[]);
+gdouble *sp_item_i2doc_affine (SPItem *item, gdouble affine[]);
+
+/* fixme: - these are evil, but OK */
+
+gdouble *sp_item_i2d_affine (SPItem *item, gdouble affine[]);
+void sp_item_set_i2d_affine (SPItem *item, gdouble affine[]);
 
 /* Context menu stuff */
 

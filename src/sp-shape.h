@@ -2,8 +2,6 @@
 #define SP_SHAPE_H
 
 #include <libart_lgpl/art_bpath.h>
-#include "display/fill.h"
-#include "display/stroke.h"
 #include "sp-path.h"
 
 #define SP_TYPE_SHAPE            (sp_shape_get_type ())

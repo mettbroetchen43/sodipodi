@@ -25,30 +25,33 @@
 
 void fake_dialogs (void);
 
-static gint sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPDesktop *desktop);
+static gint sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPViewWidget *vw);
 
 void
-sp_create_window (SPDesktop * desktop, gboolean editable)
+sp_create_window (SPViewWidget *vw, gboolean editable)
 {
 	GtkWidget * w, * vb, * hb;
 
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
+	g_return_if_fail (vw != NULL);
+	g_return_if_fail (SP_IS_VIEW_WIDGET (vw));
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
-	gtk_object_set_data (GTK_OBJECT (desktop), "window", w);
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
-        gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), desktop);
-        gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_set_focus), desktop);
+	gtk_object_set_data (GTK_OBJECT (vw), "window", w);
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", SP_DESKTOP_WIDGET (vw)->desktop);
+	gtk_object_set_data (GTK_OBJECT (w), "desktopwidget", vw);
+        gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), vw);
+        gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_set_focus), SP_DESKTOP_WIDGET (vw)->desktop);
+#if 0
 	sp_desktop_set_title (desktop);
+#endif
 
 	vb = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vb);
 	gtk_container_add (GTK_CONTAINER (w), vb);
 
-	gtk_box_pack_start (GTK_BOX (vb), GTK_WIDGET (desktop), TRUE, TRUE, 0);
-	gtk_widget_show (GTK_WIDGET (desktop));
+	gtk_box_pack_start (GTK_BOX (vb), GTK_WIDGET (vw), TRUE, TRUE, 0);
+	gtk_widget_show (GTK_WIDGET (vw));
 
 	hb = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hb);
@@ -63,15 +66,15 @@ void
 sp_ui_new_view (GtkWidget * widget)
 {
 	SPDocument * document;
-	SPDesktop * desktop;
+	SPViewWidget *dtw;
 
 	document = SP_ACTIVE_DOCUMENT;
 	if (!document) return;
 
-	desktop = sp_desktop_new (document, sp_document_namedview (document, NULL));
-	g_return_if_fail (desktop != NULL);
+	dtw = sp_desktop_widget_new (document, sp_document_namedview (document, NULL));
+	g_return_if_fail (dtw != NULL);
 
-	sp_create_window (desktop, TRUE);
+	sp_create_window (dtw, TRUE);
 }
 
 void
@@ -81,7 +84,7 @@ sp_ui_close_view (GtkWidget * widget)
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;
 
-	if (sp_ui_delete (NULL, NULL, SP_ACTIVE_DESKTOP)) return;
+	if (sp_ui_delete (NULL, NULL, SP_VIEW_WIDGET ((SP_ACTIVE_DESKTOP)->owner))) return;
 
 	w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
 
@@ -96,35 +99,9 @@ sp_ui_close_view (GtkWidget * widget)
 }
 
 static gint
-sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPDesktop *desktop)
+sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPViewWidget *vw)
 {
-	SPDocument *doc;
-
-	doc = SP_DT_DOCUMENT (desktop);
-
-	if (((GtkObject *) doc)->ref_count == 1) {
-		if (sp_repr_attr (sp_document_repr_root (doc), "sodipodi:modified") != NULL) {
-			GtkWidget *dlg;
-			gchar *msg;
-			gint b;
-			msg = g_strdup_printf (_("Document %s has unsaved changes, save them?"), sp_document_uri (doc));
-			dlg = gnome_message_box_new (msg, "warning", "Save", "Don't save", GNOME_STOCK_BUTTON_CANCEL, NULL);
-			g_free (msg);
-			b = gnome_dialog_run_and_close (GNOME_DIALOG (dlg));
-			switch (b) {
-			case 0:
-				sp_file_save_document (doc);
-				break;
-			case 1:
-				break;
-			case 2:
-				return TRUE;
-				break;
-			}
-		}
-	}
-
-	return FALSE;
+	return sp_view_widget_shutdown (vw);
 }
 
 void

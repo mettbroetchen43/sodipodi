@@ -10,6 +10,7 @@
 
 #include "xml/repr-private.h"
 #include "document.h"
+#include "view.h"
 #include "dir-util.h"
 #include "helper/png-write.h"
 #include "sodipodi.h"
@@ -30,23 +31,23 @@ static void sp_do_file_print_preview (SPDocument * doc);
 void sp_file_new (void)
 {
 	SPDocument * doc;
-	SPDesktop * desktop;
+	SPViewWidget *dtw;
 
 	doc = sp_document_new (NULL);
 	g_return_if_fail (doc != NULL);
 
-	desktop = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
+	dtw = sp_desktop_widget_new (doc, sp_document_namedview (doc, NULL));
 	sp_document_unref (doc);
-	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (dtw != NULL);
 
-	sp_create_window (desktop, TRUE);
+	sp_create_window (dtw, TRUE);
 }
 
 static void
 file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 {
 	SPDocument * doc;
-	SPDesktop * desktop;
+	SPViewWidget *dtw;
 	gchar * filename;
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
@@ -63,11 +64,11 @@ file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 	g_free (filename);
 	g_return_if_fail (doc != NULL);
 
-	desktop = sp_desktop_new (doc, sp_document_namedview (doc, NULL));
+	dtw = sp_desktop_widget_new (doc, sp_document_namedview (doc, NULL));
 	sp_document_unref (doc);
-	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (dtw != NULL);
 
-	sp_create_window (desktop, TRUE);
+	sp_create_window (dtw, TRUE);
 }
 
 static void
@@ -415,6 +416,9 @@ sp_do_file_print_preview (SPDocument * doc)
 	g_return_if_fail (gpc != NULL);
 
 	gnome_print_beginpage (gpc, sp_document_uri (doc) ? sp_document_uri (doc) : "Sodipodi");
+	gnome_print_translate (gpc, 0.0, sp_document_height (doc));
+	gnome_print_scale (gpc, 1.0, -1.0);
+	gnome_print_concat (gpc, SP_ITEM (SP_DOCUMENT_ROOT (doc))->affine);
 	sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (gpc));
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
