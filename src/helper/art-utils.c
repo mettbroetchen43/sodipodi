@@ -7,6 +7,7 @@
 #include <libart_lgpl/art_rgb.h>
 #include <libart_lgpl/art_rgb_svp.h>
 #include <libart_lgpl/art_uta.h>
+#include <libart_lgpl/art_uta_svp.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_uta_vpath.h>
 #include <libart_lgpl/art_vpath_svp.h>
@@ -21,21 +22,45 @@ art_affine_is_identity (double affine[])
 	return art_affine_equal (affine, identity);
 }
 
+ArtSVP *
+art_svp_translate (const ArtSVP * svp, double dx, double dy)
+{
+	ArtSVP * new;
+	int i, j;
+
+	new = (ArtSVP *) art_alloc (sizeof (ArtSVP) + (svp->n_segs - 1) * sizeof (ArtSVPSeg));
+
+	new->n_segs = svp->n_segs;
+
+	for (i = 0; i < new->n_segs; i++) {
+		new->segs[i].n_points = svp->segs[i].n_points;
+		new->segs[i].dir = svp->segs[i].dir;
+		new->segs[i].bbox.x0 = svp->segs[i].bbox.x0 + dx;
+		new->segs[i].bbox.y0 = svp->segs[i].bbox.y0 + dy;
+		new->segs[i].bbox.x1 = svp->segs[i].bbox.x1 + dx;
+		new->segs[i].bbox.y1 = svp->segs[i].bbox.y1 + dy;
+		new->segs[i].points = art_new (ArtPoint, new->segs[i].n_points);
+
+		for (j = 0; j < new->segs[i].n_points; j++) {
+			new->segs[i].points[j].x = svp->segs[i].points[j].x + dx;
+			new->segs[i].points[j].y = svp->segs[i].points[j].y + dy;
+		}
+	}
+
+	return new;
+}
+
 ArtUta *
 art_uta_from_svp_translated (const ArtSVP * svp, double x, double y)
 {
-	double affine[6];
-	ArtVpath * va, * vb;
+	ArtSVP * tsvp;
 	ArtUta * uta;
 
-	art_affine_translate (affine, x, y);
+	tsvp = art_svp_translate (svp, x, y);
 
-	va = art_vpath_from_svp (svp);
-	vb = art_vpath_affine_transform (va, affine);
+	uta = art_uta_from_svp (tsvp);
 
-	uta = art_uta_from_vpath (vb);
-	art_free (vb);
-	art_free (va);
+	art_svp_free (tsvp);
 
 	return uta;
 }

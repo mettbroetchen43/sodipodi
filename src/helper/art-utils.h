@@ -15,6 +15,7 @@ art_rgb_svp_rgba (const ArtSVP *svp,
                   art_u8 *buf, int rowstride,
                   ArtAlphaGamma *alphagamma);
 
+ArtSVP * art_svp_translate (const ArtSVP * svp, double dx, double dy);
 ArtUta * art_uta_from_svp_translated (const ArtSVP * svp, double cx, double cy);
 
 int art_affine_is_identity (double affine[]);

@@ -8,6 +8,13 @@
 
 	* src/sp-text.c (sp_text_set_shape): Use helvetica for unknown font
 
+	* src/helper/art-utils.* (art_svp_translate): New function
+	(art_uta_from_svp_translated): Use art_svp_translate ()
+
+	* draw-context.*: Use experimental spline fitting for freehand
+	lines, during drawing generate many small lines, instead of
+	one big.
+
 2000-09-13  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* desktop-snap.c, desktop-snap.h (sp_desktop_horizontal_snap):

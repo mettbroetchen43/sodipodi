@@ -18,9 +18,12 @@ typedef struct _SPDrawCtrl SPDrawCtrl;
 
 struct _SPDrawContext {
 	SPEventContext event_context;
-	SPCurve * curve;
-	SPCanvasShape * shape;
-	SPDrawCtrl * ctrl;
+	SPCurve * accumulated;
+	ArtPoint p[16];
+	gint npoints;
+	GSList * segments;
+	SPCurve * currentcurve;
+	SPCanvasShape * currentshape;
 };
 
 struct _SPDrawContextClass {
