@@ -1,3 +1,7 @@
+2003-12-18  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/main.c (main): Add --display argument check if we use gui
+
 2003-12-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/module.c (sp_modules_init): Fixed argv extra indirection bug

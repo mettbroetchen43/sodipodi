@@ -206,7 +206,9 @@ main (int argc, const char **argv)
 		    !strcmp (argv[i], "--help")) {
 			use_gui = FALSE;
 			break;
-		} else if (!strcmp (argv[i], "-x") || !strcmp (argv[i], "--with-gui")) {
+		} else if (!strcmp (argv[i], "-x") ||
+			   !strcmp (argv[i], "--with-gui") ||
+			   !strncmp (argv[i], "--display", 9)) {
 			use_gui = TRUE;
 			break;
 		}
