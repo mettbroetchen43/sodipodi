@@ -1229,7 +1229,7 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 						/* Set end anchor */
 						dc->ea = anchor;
 						spdc_pen_set_point (pc, &p, event->motion.state);
-						if (dc->green_anchor->active) {
+						if (dc->green_anchor && dc->green_anchor->active) {
 							pc->state = SP_PEN_CONTEXT_CLOSE;
 							ret = TRUE;
 							break;
