@@ -11,6 +11,7 @@
 #include <math.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
+#include "helper/curve.h"
 #include "helper/sodipodi-ctrl.h"
 #include "display/canvas-shape.h"
 
@@ -24,9 +25,6 @@
 #define MIN_FREEHAND_LEN 5.0
 
 struct _SPDrawCtrl {
-#if 0
-	SPDesktop * desktop;
-#endif
 	GnomeCanvasItem * item;
 	gint inside;
 	guint fill_color;
@@ -41,20 +39,12 @@ static void sp_draw_context_setup (SPEventContext * event_context, SPDesktop * d
 static gint sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_draw_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
+static void sp_draw_finish_item (SPDrawContext * draw_context);
+
 static void sp_draw_ctrl_test_inside (SPDrawContext * draw_context, double x, double y);
 static void sp_draw_move_ctrl (SPDrawContext * draw_context, double x, double y);
 static void sp_draw_remove_ctrl (SPDrawContext * draw_context);
 static SPCanvasShape * sp_draw_create_item (SPDrawContext * draw_context);
-static SPRepr * sp_draw_finish_item (SPDrawContext * draw_context);
-
-static void draw_bpath_init (SPDrawContext * draw_context);
-static void draw_stretch (SPDrawContext * draw_context);
-static void draw_moveto (SPDrawContext * draw_context, gdouble x, gdouble y);
-static void draw_lineto (SPDrawContext * draw_context, gdouble x, gdouble y);
-static void draw_curveto (SPDrawContext * draw_context, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gdouble x2, gdouble y2);
-static void draw_closepath (SPDrawContext * draw_context);
-static void draw_closepath_current (SPDrawContext * draw_context);
-static void draw_setend (SPDrawContext * draw_context, gdouble x, gdouble y);
 
 static void sp_draw_path_startline (SPDrawContext * draw_context, double x, double y);
 static void sp_draw_path_freehand (SPDrawContext * draw_context, double x, double y);
@@ -110,7 +100,7 @@ static void
 sp_draw_context_init (SPDrawContext * draw_context)
 {
 	draw_context->shape = NULL;
-	draw_context->bpath = NULL;
+	draw_context->curve = sp_curve_new ();
 	draw_context->ctrl = NULL;
 }
 
@@ -121,8 +111,10 @@ sp_draw_context_destroy (GtkObject * object)
 
 	draw_context = SP_DRAW_CONTEXT (object);
 
-	if (draw_context->shape)
+	if (draw_context->curve) {
 		sp_draw_finish_item (draw_context);
+		sp_curve_unref (draw_context->curve);
+	}
 
 	if (draw_context->ctrl) {
 		if (draw_context->ctrl->item)
@@ -152,7 +144,7 @@ sp_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 	draw_context->ctrl->p.x = draw_context->ctrl->p.y = 0.0;
 }
 
-static SPRepr *
+static void
 sp_draw_finish_item (SPDrawContext * draw_context)
 {
 	SPRepr * repr;
@@ -161,35 +153,28 @@ sp_draw_finish_item (SPDrawContext * draw_context)
 	gdouble d2doc[6];
 	ArtBpath * abp;
 
-	g_return_val_if_fail (draw_context != NULL, NULL);
+	g_return_if_fail (draw_context != NULL);
+	g_return_if_fail (draw_context->curve != NULL);
 
-	if (draw_context->shape == NULL) return NULL;
-
-	repr = NULL;
-
-	gtk_object_destroy ((GtkObject *) draw_context->shape);
+	if (draw_context->shape != NULL) gtk_object_destroy (GTK_OBJECT (draw_context->shape));
 	draw_context->shape = NULL;
 
-	if ((draw_context->bpath != NULL) && (draw_context->pos >= 2)) {
-		/* fixme: d2doc */
+	if (sp_curve_first_bpath (draw_context->curve)) {
 		sp_desktop_d2doc_affine (SP_EVENT_CONTEXT (draw_context)->desktop, d2doc);
-		abp = art_bpath_affine_transform (draw_context->bpath, d2doc);
+		abp = art_bpath_affine_transform (sp_curve_first_bpath (draw_context->curve), d2doc);
 		str = sp_svg_write_path (abp);
-		g_assert (str != NULL);
+		art_free (abp);
+		g_return_if_fail (str != NULL);
 		repr = sp_repr_new_with_name ("path");
 		sp_repr_set_attr (repr, "d", str);
+		g_free (str);
 		sp_repr_set_attr (repr, "style", "stroke:#000; stroke-width:1");
 		item = sp_document_add_repr (SP_DT_DOCUMENT (SP_EVENT_CONTEXT (draw_context)->desktop), repr);
 		sp_repr_unref (repr);
 		sp_selection_set_item (SP_DT_SELECTION (SP_EVENT_CONTEXT (draw_context)->desktop), item);
-		g_free (str);
-		art_free (abp);
 	}
 
-	art_free (draw_context->bpath);
-	draw_context->bpath = NULL;
-
-	return repr;
+	sp_curve_reset (draw_context->curve);
 }
 
 static gint
@@ -339,18 +324,16 @@ static void
 sp_draw_path_startline (SPDrawContext * draw_context, double x, double y)
 {
 	if (draw_context->shape != NULL) {
-		g_assert (draw_context->pos >= 2);
-
 		if (draw_context->ctrl->inside == 1) {
-			draw_setend (draw_context, x, y);
+			sp_curve_lineto_moving (draw_context->curve, x, y);
 			return;
 		} else {
 			sp_draw_finish_item (draw_context);
 		}
 	}
 	draw_context->shape = sp_draw_create_item (draw_context);
-	draw_moveto (draw_context, x, y);
-	sp_draw_move_ctrl (draw_context, draw_context->bpath->x3, draw_context->bpath->y3);
+	sp_curve_moveto (draw_context->curve, x, y);
+	sp_draw_move_ctrl (draw_context, draw_context->curve->bpath->x3, draw_context->curve->bpath->y3);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 }
 
@@ -359,22 +342,22 @@ sp_draw_path_endline (SPDrawContext * draw_context, double x, double y)
 {
 	if (draw_context->ctrl->inside == 1) {
 		/* we are closed path */
-		if (draw_context->pos < 3) {
+		if (draw_context->curve->end < 3) {
 			/* path is too small :-( */
 			gtk_object_destroy (GTK_OBJECT (draw_context->shape));
 			draw_context->shape = NULL;
-			art_free (draw_context->bpath);
-			draw_context->bpath = NULL;
+			sp_curve_reset (draw_context->curve);
 			sp_draw_remove_ctrl (draw_context);
 			return;
 		}
-		draw_closepath_current (draw_context);
+		sp_curve_closepath_current (draw_context->curve);
 		sp_draw_finish_item (draw_context);
 		sp_draw_remove_ctrl (draw_context);
 		return;
 	}
-	draw_lineto (draw_context, x, y);
-	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->bpath);
+	sp_curve_lineto (draw_context->curve, x, y);
+	/* fixme: all these */
+	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve->bpath);
 	sp_draw_move_ctrl (draw_context, x, y);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 	return;
@@ -383,18 +366,18 @@ sp_draw_path_endline (SPDrawContext * draw_context, double x, double y)
 static void
 sp_draw_path_lineendpoint (SPDrawContext * draw_context, double x, double y)
 {
-	draw_setend (draw_context, x, y);
-	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->bpath);
-	sp_draw_move_ctrl (draw_context, draw_context->bpath->x3, draw_context->bpath->y3);
+	sp_curve_lineto_moving (draw_context->curve, x, y);
+	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve->bpath);
+	sp_draw_move_ctrl (draw_context, draw_context->curve->bpath->x3, draw_context->curve->bpath->y3);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 }
 
 static void
 sp_draw_path_freehand (SPDrawContext * draw_context, double x, double y)
 {
-	draw_lineto (draw_context, x, y);
-	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->bpath);
-	sp_draw_move_ctrl (draw_context, draw_context->bpath->x3, draw_context->bpath->y3);
+	sp_curve_lineto (draw_context->curve, x, y);
+	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve->bpath);
+	sp_draw_move_ctrl (draw_context, draw_context->curve->bpath->x3, draw_context->curve->bpath->y3);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 }
 
@@ -403,26 +386,26 @@ sp_draw_path_endfreehand (SPDrawContext * draw_context, double x, double y)
 {
 	if (draw_context->ctrl->inside == 1) {
 		/* we are closed path */
-		if (draw_context->pos < 3) {
+		if (draw_context->curve->end < 3) {
 			/* path is too small :-( */
 			gtk_object_destroy (GTK_OBJECT (draw_context->shape));
 			draw_context->shape = NULL;
-			art_free (draw_context->bpath);
-			draw_context->bpath = NULL;
+			sp_curve_reset (draw_context->curve);
 			sp_draw_remove_ctrl (draw_context);
 			return;
 		}
-		draw_closepath (draw_context);
+		sp_curve_closepath (draw_context->curve);
 		sp_draw_finish_item (draw_context);
 		sp_draw_remove_ctrl (draw_context);
 		return;
 	}
-	draw_lineto (draw_context, x, y);
-	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->bpath);
+	sp_curve_lineto (draw_context->curve, x, y);
+	sp_canvas_shape_change_bpath (draw_context->shape, draw_context->curve->bpath);
 	sp_draw_move_ctrl (draw_context, x, y);
 	sp_draw_ctrl_test_inside (draw_context, x, y);
 }
 
+#if 0
 static void
 draw_bpath_init (SPDrawContext * draw_context)
 {
@@ -589,6 +572,7 @@ draw_setend (SPDrawContext * draw_context, double x, double y)
 		bp->y3 = y;
 	}
 }
+#endif
 
 static SPCanvasShape *
 sp_draw_create_item (SPDrawContext * draw_context)

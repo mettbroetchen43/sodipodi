@@ -1,3 +1,9 @@
+2000-01-18  Lauris Kaplinski <lauris@ariman.ee>
+
+    * helper/curve.*: It is refcounted path constructor/container with
+      handful of useful creating methods.
+    * draw-context.*: Hacked to use SPCurve interface
+
 2000-01-16  Lauris Kaplinski <lauris@ariman.ee>
 
     * Bumped version to 0.17

@@ -14,6 +14,7 @@ noinst_LIBRARIES = libspchelp.a libspgt1.a
 libspchelp_a_SOURCES = \
 	art-utils.c art-utils.h \
 	sp-canvas-util.c sp-canvas-util.h \
+	curve.c curve.h \
 	gnome-canvas-acetate.c gnome-canvas-acetate.h \
 	sodipodi-ctrl.c sodipodi-ctrl.h \
 	sodipodi-ctrlrect.c sodipodi-ctrlrect.h \

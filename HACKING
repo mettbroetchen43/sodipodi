@@ -1,23 +1,31 @@
 If you are interested in hacking sodipodi source, you are welcome. But be
-cautious, as every single thing in structure/API may change yet.
+cautious, as every single thing in structure/API may change yet. If you ever
+have a good idea, how some subsystem should work, let me too know.
 
 Some things that should be done (in random order):
 - printing from command line, without display (should work without X)
 - bonobo support
 - plugin support
-- use GnomeMDI for App<->Desktop hierarchy
+- use GnomeMDI for App<->Desktop hierarchy (mostly done)
 - good and clean API for dealing with sealection changes
 - extracting available fonts from gnome-print
 - gradient fills
-- 'fastart' rendering of svp-s (without antialiasing)
+- 'fast_art' rendering of svp-s (vpaths?) (without antialiasing)
 - exporting bitmaps (png-s, at least). Also from command line
 - undo/redo, cut/copy/paste
-- all fancy filling types
+- all fancy filling types (fractals & so on)
 - automake chemistry, creating package files
 - import and export filters
 
 Please consult with separate HACKING files in subdirs. Some modules
 are only placeholders for something better and standardized (repr et al.)
+
+You are always welcome to correct my spelling (except in variable names,
+of course ;-)).
+
+As of translating, be first sure, that the english phrases are correct
+and meaningful (if they are not, somebody will replace these with better
+ones)
 
 This code should be quite modular and will become even more. A rough
 blueprint is as follows:
@@ -34,6 +42,10 @@ Reprs know, who are their editable (canvas) object, canvas objects do not
 know anything about reprs.
 
 2. Items
+
+These are typed backbone of everything under the Sun. They know both about
+reprs and canvas things, update itself (at least they should) if reprs change
+and update canvas items, if they themselves change.
 
 3. Graphics layout
 desktop.c, drawing.c
@@ -55,4 +67,29 @@ vertically to produce postscript coordinates. I.e. desktop unit = 1/72 in.
 While reading svg, the drawing group will be mirrored once more, to produce
 svg coords (y grows downwards)
 
+The desktop will probably be broken into hierarchical trees of things like:
+Desktop
+    EditableDesktop
+    PreviewDesktop
+    BonoboContainer
+& so on.
 
+4. Selection
+This is per desktop object, that keep track, which items are currently
+selected. It is capable of emitting "changed" signal (probably in future
+"attrmodified" too), to notice all interested parties about selection
+changes (fill & stroke dialogs for example use this method)
+
+Here is one caveat - it is impossible to set selection to reprs, only to items
+(opposite is very possible). This cannot be easily circumvented, as reprs
+do not know anything about items, but selected items are needed anyway. One
+possibility (what I probably do in future) is implementing some repr
+chemistry through document interface (sp_document_add_repr already exist)
+
+5. Context
+This object (hierarchy) defines, how mouse events on desktop are interpreted.
+Every desktop has its own context (select, node, rect & so on)
+
+
+Lauris Kaplinski
+<lauris@ariman.ee>

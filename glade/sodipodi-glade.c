@@ -89,17 +89,19 @@ gchar *s = N_("Fill");
 gchar *s = N_("Not here");
 gchar *s = N_("Stroke");
 gchar *s = N_("window1");
+gchar *s = N_("Color settings");
 gchar *s = N_("Gradient settings");
-gchar *s = N_("label26");
-gchar *s = N_("label27");
-gchar *s = N_("label28");
+gchar *s = N_("Preview (object binding box)");
+gchar *s = N_("Valige värv");
 gchar *s = N_("Valige värv");
 gchar *s = N_("Linear\n"
               "Radial\n"
               "");
-gchar *s = N_("Valige värv");
+gchar *s = N_("Color 1");
+gchar *s = N_("Color2");
+gchar *s = N_("Document coordinates");
+gchar *s = N_("Fractal settings");
 gchar *s = N_("Preview");
-gchar *s = N_("label29");
 gchar *s = N_("Node Edit");
 gchar *s = N_("Add");
 gchar *s = N_("Delete");

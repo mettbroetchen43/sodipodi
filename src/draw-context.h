@@ -1,6 +1,7 @@
 #ifndef SP_DRAW_CONTEXT_H
 #define SP_DRAW_CONTEXT_H
 
+#include "helper/curve.h"
 #include "display/canvas-shape.h"
 #include "event-context.h"
 
@@ -17,11 +18,8 @@ typedef struct _SPDrawCtrl SPDrawCtrl;
 
 struct _SPDrawContext {
 	SPEventContext event_context;
+	SPCurve * curve;
 	SPCanvasShape * shape;
-	ArtBpath * bpath;
-	gint pos;
-	gint length;
-	gboolean moving_end;
 	SPDrawCtrl * ctrl;
 };
 
