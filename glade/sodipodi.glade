@@ -234,6 +234,18 @@
 
 	    <widget>
 	      <class>GtkMenuItem</class>
+	      <name>manu_file_print_preview</name>
+	      <signal>
+		<name>activate</name>
+		<handler>sp_file_print_preview</handler>
+		<last_modification_time>Thu, 22 Jun 2000 01:19:28 GMT</last_modification_time>
+	      </signal>
+	      <label>Print Pre_view</label>
+	      <right_justify>False</right_justify>
+	    </widget>
+
+	    <widget>
+	      <class>GtkMenuItem</class>
 	      <name>separator3</name>
 	      <right_justify>False</right_justify>
 	    </widget>
@@ -1323,7 +1335,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>9.92665</position>
+	<position>6.44444</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>1</left_attach>
@@ -1382,6 +1394,11 @@ Released under GPL</comments>
     <handler>sp_object_fill_close</handler>
     <last_modification_time>Wed, 15 Dec 1999 20:01:16 GMT</last_modification_time>
   </signal>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>False</auto_shrink>
 
   <widget>
     <class>GtkNotebook</class>
@@ -2261,6 +2278,11 @@ Radial
     <handler>sp_object_stroke_close</handler>
     <last_modification_time>Fri, 14 Jan 2000 20:50:32 GMT</last_modification_time>
   </signal>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>False</auto_shrink>
 
   <widget>
     <class>GtkNotebook</class>

@@ -13,6 +13,7 @@ void sp_file_import (GtkWidget * widget);
 void sp_file_export (GtkWidget * widget);
 
 void sp_file_print (GtkWidget * widget);
+void sp_file_print_preview (GtkWidget * widget);
 
 void sp_do_file_print (SPDocument * doc);
 

@@ -12,6 +12,7 @@ gchar *s = N_("_Export");
 gchar *s = N_("_Drawing");
 gchar *s = N_("_Selection");
 gchar *s = N_("_Page");
+gchar *s = N_("Print Pre_view");
 gchar *s = N_("D_uplicate");
 gchar *s = N_("_Delete");
 gchar *s = N_("Node Editing...");

@@ -5,6 +5,9 @@
 #include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-printer-dialog.h>
+#include <libgnomeprint/gnome-print-master.h>
+#include <libgnomeprint/gnome-print-master-preview.h>
+
 #include "xml/repr.h"
 #include "dir-util.h"
 #include "helper/png-write.h"
@@ -344,6 +347,51 @@ void sp_do_file_print (SPDocument * doc)
         sp_do_file_print_to_printer (doc, printer);
 }
 
+static void
+sp_print_preview_destroy_cb (GtkObject *obj, gpointer data)
+{
+
+}
+
+void sp_do_file_print_preview (SPDocument * doc)
+{
+        GnomePrintContext * gpc;
+        GnomePrintMaster * gpm;
+	GnomePrintMasterPreview *gpmp;
+	gchar * title;
+#ifdef ENABLE_FRGBA
+        GnomePrintFRGBA * frgba;
+#endif
+	gpm = gnome_print_master_new();
+	gpc = gnome_print_master_get_context (gpm);
+
+	g_return_if_fail (gpm != NULL);
+	g_return_if_fail (gpc != NULL);
+
+#ifdef ENABLE_FRGBA
+	frgba = gnome_print_frgba_new (gpc);
+        sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (frgba));
+        gnome_print_showpage (GNOME_PRINT_CONTEXT (frgba));
+        gnome_print_context_close (GNOME_PRINT_CONTEXT (frgba));
+#else
+	sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (gpc));
+        gnome_print_showpage (gpc);
+        gnome_print_context_close (gpc);
+#endif	
+	title = g_strdup_printf (_("Sodipodi (doc name %s..): Print Preview"),"");
+	gpmp = gnome_print_master_preview_new (gpm, title);
+
+        /* Conect the signals and display the preview window */
+	gtk_signal_connect (GTK_OBJECT(gpmp), "destroy",
+			    GTK_SIGNAL_FUNC(sp_print_preview_destroy_cb), NULL);
+	gtk_widget_show (GTK_WIDGET(gpmp));
+
+	gnome_print_master_close (gpm);
+
+	g_free (title);
+
+}
+
 void sp_do_file_print_to_file (SPDocument * doc, gchar *filename)
 {
         GnomePrinter * printer;
@@ -362,4 +410,14 @@ void sp_file_print (GtkWidget * widget)
 	g_return_if_fail (doc != NULL);
 
 	sp_do_file_print (doc);
+}
+
+void sp_file_print_preview (GtkWidget * widget)
+{
+	SPDocument * doc;
+
+	doc = SP_ACTIVE_DOCUMENT;
+	g_return_if_fail (doc != NULL);
+
+	sp_do_file_print_preview (doc);
 }

@@ -1,3 +1,11 @@
+2000-06-21  Chema Celorio  <chema@celorio.com>
+
+	* src/file.c (sp_do_file_print_preview): added print preview
+	stuff. new function
+	(sp_print_preview_destroy_cb): new function
+	(sp_file_print_preview): new function
+	modified the menu to include a print preview item
+
 2000-06-21  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/selection.c (sp_selection_update_statusbar): Added original
