@@ -25,6 +25,9 @@
 #ifndef MIN
 #define MIN(a,b) (((a) > (b)) ? (b) : (a))
 #endif
+#ifndef CLAMP
+#define CLAMP(v,a,b) (((v) < (a)) ? (a) : ((v) > (b)) ? (b) : (v))
+#endif
 
 #define NR_DF_TEST_CLOSE(a,b,e) (fabs ((a) - (b)) <= (e))
 #define NR_MATRIX_DF_TEST_CLOSE(a,b,e) (NR_DF_TEST_CLOSE ((a)->c[4], (b)->c[4], e) && \

@@ -15,6 +15,9 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+
+#include <libnr/nr-gradient.h>
+
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtksignal.h>
 
@@ -29,7 +32,7 @@
 #include "macros.h"
 
 /* Has to be power of 2 */
-#define NCOLORS 1024
+#define NCOLORS NR_GRADIENT_VECTOR_LENGTH
 
 static void sp_stop_class_init (SPStopClass * klass);
 static void sp_stop_init (SPStop * stop);
@@ -1009,8 +1012,8 @@ typedef struct _SPLGPainter SPLGPainter;
 struct _SPLGPainter {
 	SPPainter painter;
 	SPLinearGradient *lg;
-	gdouble x0, y0;
-	gdouble dx, dy;
+
+	NRLGradientRenderer lgr;
 };
 
 static void sp_lineargradient_class_init (SPLinearGradientClass * klass);
@@ -1162,7 +1165,8 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 	SPLinearGradient *lg;
 	SPGradient *gr;
 	SPLGPainter *lgp;
-	gdouble color2norm[6];
+	gdouble color2norm[6], color2px[6];
+	NRMatrixF v2px;
 
 	lg = SP_LINEARGRADIENT (ps);
 	gr = SP_GRADIENT (ps);
@@ -1180,13 +1184,17 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 	/* fixme: I almost think, we should fill color array start and end in that case (Lauris) */
 	/* fixme: The alternative would be to leave these just empty garbage or something similar (Lauris) */
 	/* fixme: Originally I had 1023.9999 here - not sure, whether we have really to cut out ceil int (Lauris) */
+#if 0
 	art_affine_scale (color2norm, gr->len / (gdouble) NCOLORS, gr->len / (gdouble) NCOLORS);
 	SP_PRINT_TRANSFORM ("color2norm", color2norm);
 	/* Now we have normalized vector */
+#else
+	art_affine_identity (color2norm);
+#endif
 
 	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
 		gdouble norm2pos[6], bbox2user[6];
-		gdouble color2pos[6], color2tpos[6], color2user[6], color2px[6], px2color[6];
+		gdouble color2pos[6], color2tpos[6], color2user[6];
 
 		/* This is easy case, as we can just ignore percenting here */
 		/* fixme: Still somewhat tricky, but I think I got it correct (lauris) */
@@ -1221,7 +1229,7 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		SP_PRINT_TRANSFORM ("color2user", color2user);
 		art_affine_multiply (color2px, color2user, ctm);
 		SP_PRINT_TRANSFORM ("color2px", color2px);
-
+#if 0
 		art_affine_invert (px2color, color2px);
 		SP_PRINT_TRANSFORM ("px2color", px2color);
 
@@ -1229,9 +1237,10 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		lgp->y0 = color2px[5];
 		lgp->dx = px2color[0];
 		lgp->dy = px2color[2];
+#endif
 	} else {
 		gdouble norm2pos[6];
-		gdouble color2pos[6], color2tpos[6], color2px[6], px2color[6];
+		gdouble color2pos[6], color2tpos[6];
 		/* Problem: What to do, if we have mixed lengths and percentages? */
 		/* Currently we do ignore percentages at all, but that is not good (lauris) */
 
@@ -1256,7 +1265,7 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		SP_PRINT_TRANSFORM ("color2tpos", color2tpos);
 		art_affine_multiply (color2px, color2tpos, ctm);
 		SP_PRINT_TRANSFORM ("color2px", color2px);
-
+#if 0
 		art_affine_invert (px2color, color2px);
 		SP_PRINT_TRANSFORM ("px2color", px2color);
 
@@ -1264,7 +1273,17 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		lgp->y0 = color2px[5];
 		lgp->dx = px2color[0];
 		lgp->dy = px2color[2];
+#endif
 	}
+
+	v2px.c[0] = color2px[0];
+	v2px.c[1] = color2px[1];
+	v2px.c[2] = color2px[2];
+	v2px.c[3] = color2px[3];
+	v2px.c[4] = color2px[4];
+	v2px.c[5] = color2px[5];
+
+	nr_lgradient_renderer_setup (&lgp->lgr, gr->color, gr->spread, &v2px);
 
 	return (SPPainter *) lgp;
 }
@@ -1411,6 +1430,18 @@ sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector)
 static void
 sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
+#if 1
+	SPLGPainter *lgp;
+	NRPixBlock pb;
+
+	lgp = (SPLGPainter *) painter;
+
+	nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, x0, y0, x0 + width, y0 + height, px, rowstride, FALSE, FALSE);
+
+	nr_lgradient_render (&lgp->lgr, &pb);
+
+	nr_pixblock_release (&pb);
+#else
 	SPLGPainter *lgp;
 	SPLinearGradient *lg;
 	SPGradient *g;
@@ -1449,6 +1480,7 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 			pos += lgp->dx;
 		}
 	}
+#endif
 }
 
 /*
@@ -1460,8 +1492,10 @@ typedef struct _SPRGPainter SPRGPainter;
 struct _SPRGPainter {
 	SPPainter painter;
 	SPRadialGradient *rg;
+	NRRGradientRenderer rgr;
+#if 0
 	NRMatrixF px2gs;
-	NRRectF bbox;
+#endif
 };
 
 static void sp_radialgradient_class_init (SPRadialGradientClass *klass);
@@ -1609,6 +1643,7 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 	SPRadialGradient *rg;
 	SPGradient *gr;
 	SPRGPainter *rgp;
+	NRMatrixF gs2px;
 
 	rg = SP_RADIALGRADIENT (ps);
 	gr = SP_GRADIENT (ps);
@@ -1626,7 +1661,7 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 
 	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
 		NRMatrixF bbox2user;
-		NRMatrixF gs2user, gs2px;
+		NRMatrixF gs2user;
 
 		/* fixme: We may try to normalize here too, look at linearGradient (Lauris) */
 
@@ -1643,11 +1678,10 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		/* fixme: (Lauris) */
 		nr_matrix_multiply_fdf (&gs2user, (NRMatrixD *) gr->transform, &bbox2user);
 		nr_matrix_multiply_ffd (&gs2px, &gs2user, (NRMatrixD *) ctm);
-
+#if 0
 		nr_matrix_f_invert (&rgp->px2gs, &gs2px);
+#endif
 	} else {
-		NRMatrixF gs2px;
-
 		/* Problem: What to do, if we have mixed lengths and percentages? */
 		/* Currently we do ignore percentages at all, but that is not good (lauris) */
 
@@ -1655,14 +1689,16 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 
 		/* fixme: (Lauris) */
 		nr_matrix_multiply_fdd (&gs2px, (NRMatrixD *) gr->transform, (NRMatrixD *) ctm);
-
+#if 0
 		nr_matrix_f_invert (&rgp->px2gs, &gs2px);
+#endif
 	}
 
-	rgp->bbox.x0 = bbox->x0;
-	rgp->bbox.y0 = bbox->y0;
-	rgp->bbox.x1 = bbox->x1;
-	rgp->bbox.y1 = bbox->y1;
+	nr_rgradient_renderer_setup (&rgp->rgr, gr->color, gr->spread,
+				     &gs2px,
+				     rg->cx.computed, rg->cy.computed,
+				     rg->fx.computed, rg->fy.computed,
+				     rg->r.computed);
 
 	return (SPPainter *) rgp;
 }
@@ -1718,6 +1754,18 @@ sp_radialgradient_build_repr (SPRadialGradient *rg, gboolean vector)
 static void
 sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
+#if 1
+	SPRGPainter *rgp;
+	NRPixBlock pb;
+
+	rgp = (SPRGPainter *) painter;
+
+	nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, x0, y0, x0 + width, y0 + height, px, rowstride, FALSE, FALSE);
+
+	nr_rgradient_render (&rgp->rgr, &pb);
+
+	nr_pixblock_release (&pb);
+#else
 	SPRGPainter *rgp;
 	SPRadialGradient *rg;
 	SPGradient *gr;
@@ -1840,5 +1888,6 @@ sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 			}
 		}
 	}
+#endif
 }
 

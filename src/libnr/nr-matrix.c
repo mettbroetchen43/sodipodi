@@ -191,7 +191,7 @@ nr_matrix_multiply_fff (NRMatrixF *d, const NRMatrixF *m0, const NRMatrixF *m1)
 }
 
 NRMatrixD *
-nr_matrix_d_invert (NRMatrixD *d, NRMatrixD *m)
+nr_matrix_d_invert (NRMatrixD *d, const NRMatrixD *m)
 {
 	if (m) {
 		double det;
@@ -218,7 +218,7 @@ nr_matrix_d_invert (NRMatrixD *d, NRMatrixD *m)
 }
 
 NRMatrixF *
-nr_matrix_f_invert (NRMatrixF *d, NRMatrixF *m)
+nr_matrix_f_invert (NRMatrixF *d, const NRMatrixF *m)
 {
 	if (m) {
 		float det;

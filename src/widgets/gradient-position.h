@@ -10,8 +10,8 @@
  *
  */
 
+#include <libnr/nr-gradient.h>
 #include <gtk/gtkwidget.h>
-#include "../helper/nr-gradient.h"
 #include "../sp-gradient.h"
 
 typedef struct _SPGradientPosition SPGradientPosition;
@@ -37,8 +37,10 @@ struct _SPGradientPosition {
 	GdkGC *gc;
 	GdkPixmap *px;
 
-	NRGradientSpreadType spread;
+	/* Spread type from libnr */
+	guint spread : 2;
 
+	unsigned char *cv;
 	NRLGradientRenderer lgr;
 };
 
@@ -61,7 +63,7 @@ void sp_gradient_position_set_gradient (SPGradientPosition *pos, SPGradient *gra
 void sp_gradient_position_set_bbox (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 void sp_gradient_position_set_vector (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 void sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[]);
-void sp_gradient_position_set_spread (SPGradientPosition *pos, NRGradientSpreadType spread);
+void sp_gradient_position_set_spread (SPGradientPosition *pos, unsigned int spread);
 
 void sp_gradient_position_get_position_floatv (SPGradientPosition *gp, gfloat *pos);
 

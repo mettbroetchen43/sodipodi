@@ -518,7 +518,7 @@ sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[]
 }
 
 void
-sp_gradient_position_set_spread (SPGradientPosition *pos, NRGradientSpreadType spread)
+sp_gradient_position_set_spread (SPGradientPosition *pos, unsigned int spread)
 {
 	if (spread != pos->spread) {
 		pos->spread = spread;
@@ -544,6 +544,7 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	GtkWidget *widget;
 	gdouble xs, ys, xp, yp;
 	gdouble v2bb[6], bb2d[6], n2d[6];
+	NRMatrixF v2px;
 
 	widget = GTK_WIDGET (pos);
 
@@ -573,8 +574,8 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	pos->vbox.x1 = widget->allocation.width - pos->vbox.x0;
 	pos->vbox.y1 = widget->allocation.height - pos->vbox.y0;
 
-	if (!pos->lgr.vector) pos->lgr.vector = g_new (guchar, 4 * NR_GRADIENT_VECTOR_LENGTH);
-	sp_gradient_render_vector_line_rgba (pos->gradient, pos->lgr.vector, NR_GRADIENT_VECTOR_LENGTH, 0 , NR_GRADIENT_VECTOR_LENGTH);
+	if (!pos->cv) pos->cv = g_new (guchar, 4 * NR_GRADIENT_VECTOR_LENGTH);
+	sp_gradient_render_vector_line_rgba (pos->gradient, pos->cv, NR_GRADIENT_VECTOR_LENGTH, 0 , NR_GRADIENT_VECTOR_LENGTH);
 
 	/* Vector -> BBox */
 	v2bb[0] = pos->p1.x - pos->p0.x;
@@ -590,10 +591,17 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	bb2d[3] = pos->vbox.y1 - pos->vbox.y0;
 	bb2d[4] = pos->vbox.x0;
 	bb2d[5] = pos->vbox.y0;
-	art_affine_multiply (n2d, pos->transform, v2bb);
+	art_affine_multiply (n2d, v2bb, pos->transform);
 	art_affine_multiply (n2d, n2d, bb2d);
 
-	nr_lgradient_renderer_setup_r8g8b8 (&pos->lgr, pos->spread, n2d);
+	v2px.c[0] = n2d[0];
+	v2px.c[1] = n2d[1];
+	v2px.c[2] = n2d[2];
+	v2px.c[3] = n2d[3];
+	v2px.c[4] = n2d[4];
+	v2px.c[5] = n2d[5];
+
+	nr_lgradient_renderer_setup (&pos->lgr, pos->cv, pos->spread, &v2px);
 }
 
 static void
@@ -607,9 +615,9 @@ sp_gradient_position_free_image_data (SPGradientPosition *pos)
 		gdk_gc_unref (pos->gc);
 		pos->gc = NULL;
 	}
-	if (pos->lgr.vector) {
-		g_free (pos->lgr.vector);
-		pos->lgr.vector = NULL;
+	if (pos->cv) {
+		g_free (pos->cv);
+		pos->cv = NULL;
 	}
 }
 
@@ -642,17 +650,25 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 	for (y = area->y; y < area->y + area->height; y += 64) {
 		for (x = area->x; x < area->x + area->width; x += 64) {
 			gint x0, y0, x1, y1, w, h;
+			NRPixBlock pb;
 
 			w = MIN (x + 64, area->x + area->width) - x;
 			h = MIN (y + 64, area->y + area->height) - y;
 
 			/* Draw checkerboard */
 			nr_render_checkerboard_rgb (rgb, w, h, 3 * w, x, y);
-			nr_lgradient_render (&gp->lgr, rgb, x, y, w, h, 3 * w);
+			/* Set up pixblock */
+			nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8, x, y, x + w, y + h, rgb, 3 * w, FALSE, FALSE);
+			/* Render gradient */
+			nr_lgradient_render (&gp->lgr, &pb);
 
 			/* Draw pixmap */
 			gdk_gc_set_function (gp->gc, GDK_COPY);
 			gdk_draw_rgb_image (gp->px, gp->gc, 0, 0, w, h, GDK_RGB_DITHER_MAX, rgb, 3 * w);
+
+			/* Release pixblock */
+			nr_pixblock_release (&pb);
+
 			/* Draw start */
 			gdk_gc_set_function (gp->gc, GDK_INVERT);
 			x0 = gp->vbox.x0 + gp->p0.x * (gp->vbox.x1 - gp->vbox.x0) - x;

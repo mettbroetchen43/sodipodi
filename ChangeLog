@@ -1,5 +1,14 @@
 2002-09-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/nr-gradient.c: New file
+
+	* src/libnr/nr-gradient.h: New file
+
+	* src/sp-gradient.c (sp_lineargradient_painter_new): Construct libnr renderer
+	(sp_lg_fill): Use it
+	(sp_radialgradient_painter_new): Construct renderer
+	(sp_rg_fill): Use it
+
 	* src/sp-shape.c (sp_shape_print): Clear pixelstore
 
 	* src/sp-chars.c (sp_chars_print_bpath): Clear pixelstore before each rendering

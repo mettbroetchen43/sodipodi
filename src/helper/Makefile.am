@@ -25,7 +25,6 @@ libspchelp_a_SOURCES = \
 	nr-buffers.c nr-buffers.h \
 	nr-plain-stuff.c nr-plain-stuff.h \
 	nr-plain-stuff-gdk.c nr-plain-stuff-gdk.h \
-	nr-gradient.c nr-gradient.h \
 	bezier-utils.c bezier-utils.h \
 	units.c units.h \
 	unit-menu.c unit-menu.h
