@@ -2,9 +2,11 @@
 Name=Sodipodi
 Name[da]=Sodipodi
 Name[et]=Sodipodi
+Name[sv]=Sodipodi
 Comment=Vector illustrator
 Comment[da]=Vektor-tegning
 Comment[et]=Vektorjoonistusprogramm
+Comment[sv]=Vektor-illustrationsprogram
 Exec=sodipodi
 Terminal=0
 Type=Application

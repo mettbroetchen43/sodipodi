@@ -21,7 +21,7 @@ AC_CHECK_HEADER(libgnomeprint/gnome-print-frgba.h,AC_DEFINE(ENABLE_FRGBA))
 AC_CHECK_HEADER(libgnomeprint/gnome-print-rbuf.h,AC_DEFINE(ENABLE_RBUF))
 
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="da et no ru uk"
+ALL_LINGUAS="da et no ru sv uk"
 AM_GNU_GETTEXT
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
