@@ -194,7 +194,7 @@ sp_namedview_remove_child (SPObject * object, SPRepr * child)
 		if (g->orientation == SP_GUIDE_HORIZONTAL) {
 			nv->hguides = g_slist_remove (nv->hguides, g);
 		} else {
-			nv->vguides = g_slist_remove (nv->hguides, g);
+			nv->vguides = g_slist_remove (nv->vguides, g);
 		}
 	}
 

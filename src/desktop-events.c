@@ -146,12 +146,14 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	case GDK_BUTTON_RELEASE:
 		if (dragging && event->button.button == 1) {
 			GtkWidget * w;
+			double winx, winy;
 			gnome_canvas_item_ungrab (item, event->button.time);
 			dragging = FALSE;
 			w = GTK_WIDGET (item->canvas);
-			if ((event->button.x >= 0) && (event->button.y >= 0) &&
-			    (event->button.x < w->allocation.width) &&
-			    (event->button.y < w->allocation.height)) {
+			gnome_canvas_world_to_window (item->canvas, event->button.x, event->button.y, &winx, &winy);
+			if ((winx >= 0) && (winy >= 0) &&
+			    (winx < w->allocation.width) &&
+			    (winy < w->allocation.height)) {
 #if 0
 				gnome_canvas_window_to_world (item->canvas,
 							      event->button.x, event->button.y,

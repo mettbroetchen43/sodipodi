@@ -184,7 +184,7 @@ sp_desktop_init (SPDesktop * desktop)
 		GTK_EXPAND | GTK_FILL,
 		GTK_EXPAND | GTK_FILL,
 		0,0);
-	// menu button
+	/* menu button */
 	menu_button = gtk_button_new ();
 	gtk_widget_show (menu_button);
 	gtk_table_attach (desktop->table,
@@ -197,7 +197,7 @@ sp_desktop_init (SPDesktop * desktop)
 	gtk_widget_show (menu_arrow);
 	gtk_container_add ((GtkContainer *)menu_button, menu_arrow);
 	gtk_signal_connect (GTK_OBJECT (menu_button), "button_press_event", GTK_SIGNAL_FUNC (sp_event_root_menu_popup), NULL);
-	// indicator for active desktop
+	/* indicator for active desktop */
 	hbox = gtk_vbox_new (FALSE, 0);
 	gtk_table_attach (desktop->table,
 		GTK_WIDGET (hbox),
@@ -287,11 +287,11 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->main), "event",
 		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
+	desktop->drawing = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
+		GNOME_TYPE_CANVAS_GROUP, NULL);
 	desktop->grid = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 	desktop->guides = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
-		GNOME_TYPE_CANVAS_GROUP, NULL);
-	desktop->drawing = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 	desktop->sketch = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);

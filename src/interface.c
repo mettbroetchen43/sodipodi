@@ -17,7 +17,7 @@ static void fake_dialogs (void);
 void
 sp_create_window (SPDesktop * desktop, gboolean editable)
 {
-	GtkWidget * w;
+	GtkWidget * w, * vb, * hb, * b;
 
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
@@ -25,9 +25,27 @@ sp_create_window (SPDesktop * desktop, gboolean editable)
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
 	gtk_object_set_data (GTK_OBJECT (desktop), "window", w);
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
 
-	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (desktop));
+	vb = gtk_vbox_new (FALSE, 0);
+	gtk_widget_show (vb);
+	gtk_container_add (GTK_CONTAINER (w), vb);
+
+	gtk_box_pack_start (GTK_BOX (vb), GTK_WIDGET (desktop), TRUE, TRUE, 4);
 	gtk_widget_show (GTK_WIDGET (desktop));
+
+	hb = gtk_hbox_new (FALSE, 4);
+	gtk_widget_show (hb);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 4);
+
+	b = gtk_toggle_button_new_with_label ("Show guides");
+	gtk_widget_show (b);
+	gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
+
+	b = gtk_toggle_button_new_with_label ("Snap to guides");
+	gtk_widget_show (b);
+	gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
+
 	gtk_widget_show (w);
 }
 
@@ -49,7 +67,6 @@ sp_ui_new_view (GtkWidget * widget)
 void
 sp_ui_close_view (GtkWidget * widget)
 {
-	SPDesktop * desktop;
 	gpointer w;
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;

@@ -29,7 +29,7 @@ sp_event_context_set_node_edit (GtkWidget * widget)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_NODE_CONTEXT);
-		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
+		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, TRUE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
 }
