@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
-"POT-Creation-Date: 2000-05-01 01:44+0200\n"
+"POT-Creation-Date: 2000-05-01 10:10+0200\n"
 "PO-Revision-Date: 2000-05-01 01:45+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -513,19 +513,19 @@ msgstr "Bak fyll"
 
 #: glade/sodipodi-glade.c:138
 msgid "Join & cap"
-msgstr ""
+msgstr "Saml & cap"
 
 #: glade/sodipodi-glade.c:140
 msgid "Cap"
-msgstr ""
+msgstr "Cap"
 
 #: glade/sodipodi-glade.c:141
 msgid "miter"
-msgstr ""
+msgstr "miter"
 
 #: glade/sodipodi-glade.c:142
 msgid "butt"
-msgstr "ende"
+msgstr "avkort"
 
 #: glade/sodipodi-glade.c:143 glade/sodipodi-glade.c:145
 msgid "round"
@@ -537,7 +537,7 @@ msgstr "kant"
 
 #: glade/sodipodi-glade.c:146
 msgid "square"
-msgstr "rute"
+msgstr "kvadrat"
 
 #: glade/sodipodi-glade.c:149
 msgid "Export picture to png"
