@@ -97,10 +97,10 @@ AC_ARG_WITH(xft,
 
 if test "x$with_xft" != "xno" ; then
 	dnl Test fontconfig package
-	PKG_CHECK_MODULES(XFT, fontconfig, xft_ok=yes, xft_ok=no)
+	PKG_CHECK_MODULES(XFT, xft, xft_ok=yes, xft_ok=no)
 	if test "x$xft_ok" != "xyes"; then
 		dnl test xft package
-		PKG_CHECK_MODULES(XFT, xft, xft_ok=yes, xft_ok=no)
+		PKG_CHECK_MODULES(XFT, fontconfig, xft_ok=yes, xft_ok=no)
 		if test "x$xft_ok" != "xyes"; then
 			dnl Have to test xft presence
 			AC_CHECK_HEADER(X11/Xft/Xft.h, xft_ok=yes, xft_ok=no)
