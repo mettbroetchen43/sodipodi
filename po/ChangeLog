@@ -1,3 +1,8 @@
+2003-07-09  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* ja.po: Update Japanese translation.
+	* ja.po: Use UTF-8 now.
+
 2003-07-07  Vincent van Adrighem  <V.vanAdrighem@dirck.mine.nu>
 
 	* nl.po: Dutch translation added.
