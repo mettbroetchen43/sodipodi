@@ -14,6 +14,8 @@ typedef struct _SPEllipseContextClass SPEllipseContextClass;
 
 struct _SPEllipseContext {
 	SPEventContext event_context;
+	SPItem * item;
+	ArtPoint center;
 };
 
 struct _SPEllipseContextClass {

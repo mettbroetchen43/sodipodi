@@ -86,6 +86,8 @@ sp_rect_context_destroy (GtkObject * object)
 
 	rc = SP_RECT_CONTEXT (object);
 
+	g_assert (!rc->item);
+
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
