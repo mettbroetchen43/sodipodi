@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-27 23:09+0200\n"
-"PO-Revision-Date: 2002-03-24 01:22+0100\n"
+"POT-Creation-Date: 2003-07-28 02:05+0200\n"
+"PO-Revision-Date: 2003-07-28 02:03+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -782,14 +782,12 @@ msgid "New text node"
 msgstr "Nowy węzeł tekstu"
 
 #: src/dialogs/xml-tree.c:206
-#, fuzzy
 msgid "Duplicate node"
-msgstr "Zduplikuj"
+msgstr "Duplikuj węzeł"
 
 #: src/dialogs/xml-tree.c:222
-#, fuzzy
 msgid "Delete node"
-msgstr "Usuń"
+msgstr "Usuń węzeł"
 
 #: src/dialogs/xml-tree.c:235
 #, fuzzy
@@ -802,38 +800,33 @@ msgid "Indent node"
 msgstr "Modyfikuje węzły"
 
 #: src/dialogs/xml-tree.c:256
-#, fuzzy
 msgid "Raise node"
-msgstr "Wysuń"
+msgstr "Wysuń węzeł"
 
 #: src/dialogs/xml-tree.c:267
-#, fuzzy
 msgid "Lower node"
-msgstr "Wsuń"
+msgstr "Wsuń węzeł"
 
 #: src/dialogs/xml-tree.c:304
 msgid "Delete attribute"
 msgstr "Usuń atrybut"
 
 #: src/dialogs/xml-tree.c:334
-#, fuzzy
 msgid "Attribute name"
-msgstr "Atrybut:"
+msgstr "Nazwa atrybutu"
 
 #: src/dialogs/xml-tree.c:341
-#, fuzzy
 msgid "Set attribute"
-msgstr "Usuń atrybut"
+msgstr "Ustaw atrybut"
 
 #: src/dialogs/xml-tree.c:354
-#, fuzzy
 msgid "Attribute value"
-msgstr "Atrybuty"
+msgstr "Wartość atrybutu"
 
 #: src/dialogs/xml-tree.c:826
-#, fuzzy, c-format
+#, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi: %s: Widok XML"
 
 #: src/dialogs/xml-tree.c:849
 msgid "New element node..."
@@ -855,7 +848,7 @@ msgstr "Nowy dokument %d"
 #: src/document.c:368
 #, c-format
 msgid "Memory document %d"
-msgstr "Dokument w pamieci %d"
+msgstr "Dokument w pamięci %d"
 
 #: src/document.c:454
 #, c-format
@@ -1145,7 +1138,7 @@ msgstr ""
 
 #: src/main.c:132
 msgid "Open specified document(s) (option string may be excluded)"
-msgstr "Otwiera podany(-e) dokument(y) (tekst opcji może zostać wyłaczony)"
+msgstr "Otwiera podany(-e) dokument(y) (tekst opcji może zostać wyłączony)"
 
 #: src/main.c:133 src/main.c:136 src/main.c:139 src/main.c:153
 msgid "FILENAME"
@@ -1224,7 +1217,7 @@ msgstr "SVG z przestrzenią danych \"xmlns:sodipodi\""
 
 #: src/module.c:557
 msgid "Scalable Vector Graphics format with sodipodi extensions"
-msgstr "Format skalowalnej grafiki wektorowej z rozszerzeniami sodipodi"
+msgstr "Format skalowalnej grafiki wektorowej z rozszerzeniami Sodipodi"
 
 #: src/module.c:560
 msgid "Plain SVG"
@@ -1454,9 +1447,8 @@ msgid "Visual transformation"
 msgstr "Wyczyść przekształcenia"
 
 #: src/select-context.c:572
-#, fuzzy
 msgid "Show content"
-msgstr "Zawartość"
+msgstr "Wyświetl zawartość"
 
 #: src/select-context.c:579
 #, fuzzy
@@ -1464,9 +1456,8 @@ msgid "Show outline"
 msgstr "Wyświetlanie prowadnic"
 
 #: src/select-context.c:586
-#, fuzzy
 msgid "Object transformation"
-msgstr "Wyczyść przekształcenia"
+msgstr "Przekształcenie obiektu"
 
 #: src/select-context.c:594
 msgid "Optimize"
@@ -1740,14 +1731,12 @@ msgid "Object"
 msgstr "Obiekt"
 
 #: src/toolbox.c:442 src/verbs.c:494
-#, fuzzy
 msgid "Object size and position"
-msgstr "Rozmiar i położenie"
+msgstr "Rozmiar i położenie obiektu"
 
 #: src/toolbox.c:443
-#, fuzzy
 msgid "Text and font settings"
-msgstr "Ustawienia biurka"
+msgstr "Ustawienia tekstu i czcionki"
 
 #: src/toolbox.c:445 src/verbs.c:495
 msgid "Object transformations"
@@ -1766,9 +1755,8 @@ msgid "Nodes"
 msgstr "Węzły"
 
 #: src/toolbox.c:652
-#, fuzzy
 msgid "Insert new nodes into selected segments"
-msgstr "Dołącza jeden węzeł do zaznaczonych segmentów"
+msgstr "Dołącza nowe węzły do zaznaczonych segmentów"
 
 #: src/toolbox.c:653
 #, fuzzy
@@ -1776,12 +1764,10 @@ msgid "Break line at selected nodes"
 msgstr "Ostrze krzywej przy zaznaczonych węzłach"
 
 #: src/toolbox.c:654
-#, fuzzy
 msgid "Make selected nodes corner"
-msgstr "Usuwa zaznaczone węzły"
+msgstr "Konwertuje zaznaczone węzły na narożniki"
 
 #: src/toolbox.c:655
-#, fuzzy
 msgid "Make selected segments lines"
 msgstr "Konwertuje zaznaczone segmenty na linie"
 
@@ -1790,9 +1776,8 @@ msgid "Delete selected nodes"
 msgstr "Usuwa zaznaczone węzły"
 
 #: src/toolbox.c:657
-#, fuzzy
 msgid "Join lines at selected nodes"
-msgstr "Wygładza linię przy zaznaczonych węzłach"
+msgstr "Łączy linie w zaznaczonych węzłach"
 
 #: src/toolbox.c:658
 #, fuzzy
@@ -1800,7 +1785,6 @@ msgid "Make selected nodes smooth"
 msgstr "Usuwa zaznaczone węzły"
 
 #: src/toolbox.c:659
-#, fuzzy
 msgid "Make selected segments curves"
 msgstr "Konwertuje zaznaczone segmenty na krzywe"
 
@@ -1813,9 +1797,8 @@ msgid "Create new SVG document"
 msgstr "Tworzy nowy dokument SVG"
 
 #: src/verbs.c:430
-#, fuzzy
 msgid "Open..."
-msgstr "Otwórz"
+msgstr "Otwórz..."
 
 #: src/verbs.c:430
 msgid "Open existing SVG document"
@@ -2099,7 +2082,7 @@ msgstr "Pióro"
 
 #: src/verbs.c:473
 msgid "Draw precisely positioned curved and straight lines"
-msgstr "Rysuje precyzujnie umieszkone krzywe i linie proste"
+msgstr "Rysuje precyzyjnie umieszczone krzywe i linie proste"
 
 #: src/verbs.c:474
 msgid "Calligraphy"
@@ -2169,7 +2152,7 @@ msgstr "Ustawia współczynnik powiększenia na 2:1"
 
 #: src/verbs.c:484
 msgid "Fit the whole page into window"
-msgstr "Dopasowuuje rozmiar całej strony do okna"
+msgstr "Dopasowuje rozmiar całej strony do okna"
 
 #: src/verbs.c:485
 msgid "Fit the whole drawing into window"
@@ -2338,7 +2321,6 @@ msgid "CMYK"
 msgstr "CMYK"
 
 #: src/widgets/paint-selector.c:750
-#, fuzzy
 msgid "CMYK Colorspace"
 msgstr "Przestrzeń kolorów CMYK"
 
