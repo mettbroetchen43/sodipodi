@@ -1,5 +1,8 @@
 2003-02-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/file.c (file_open_ok): Set directory if OK clicked on it (thanks to Aron Rubin)
+	(file_import_ok): Ditto
+
 	* src/sp-ellipse.c (sp_round): Fix sp_round
 
 2003-02-15  Lauris Kaplinski  <lauris@kaplinski.com>

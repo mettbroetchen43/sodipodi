@@ -89,14 +89,26 @@ file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
 
+	if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
+		if (open_path) g_free (open_path);
+		if (filename[strlen(filename) - 1] != '/') {
+			open_path = g_strconcat (filename, "/", NULL);
+			g_free (filename);
+		} else {
+			open_path = filename;
+		}
+		gtk_file_selection_set_filename (fs, open_path);
+		return;
+	}
+
 	gtk_widget_destroy (GTK_WIDGET (fs));
 
 	if (filename == NULL) return;
-
+	
 	if (open_path) g_free (open_path);
 	open_path = g_dirname (filename);
 	if (open_path) open_path = g_strconcat (open_path, "/", NULL);
-
+	
 	sp_file_open (filename);
 	g_free (filename);
 }
@@ -299,6 +311,18 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	if (!SP_IS_DOCUMENT(doc)) return;
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
+
+	if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
+		if (import_path) g_free (import_path);
+		if (filename[strlen(filename) - 1] != '/') {
+			import_path = g_strconcat (filename, "/", NULL);
+			g_free (filename);
+		} else {
+			import_path = filename;
+		}
+		gtk_file_selection_set_filename (fs, import_path);
+		return;
+	}
 
 	gtk_widget_destroy (GTK_WIDGET (fs));
 
