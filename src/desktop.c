@@ -186,8 +186,32 @@ static void
 sp_desktop_dispose (GObject *object)
 {
 	SPDesktop *dt;
+	SPView *view;
 
-	dt = SP_DESKTOP (object);
+	dt = (SPDesktop *) object;
+	view = (SPView *) object;
+
+#if 0
+	/* Detach existing namedview if needed */
+	if (dt->namedview) {
+		sp_signal_disconnect_by_data ((GObject *) dt->namedview, dt);
+		sp_namedview_hide (dt->namedview, dt);
+		dt->namedview = NULL;
+	}
+	/* Hide drawing */
+	/* Hide existing root if needed */
+	if (view->root) {
+		sp_item_invoke_hide (view->root, dt->dkey);
+		/* Root and document are detached in base caller */
+	}
+
+	if (dt->drawing) {
+		sp_item_invoke_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), dt->dkey);
+		dt->drawing = NULL;
+	}
+#else
+	sp_view_set_root (view, NULL, NULL);
+#endif
 
 	if (dt->sodipodi) {
 		sodipodi_remove_desktop (dt);
@@ -204,11 +228,6 @@ sp_desktop_dispose (GObject *object)
 	if (dt->selection) {
 		g_object_unref (G_OBJECT (dt->selection));
 		dt->selection = NULL;
-	}
-
-	if (dt->drawing) {
-		sp_item_invoke_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), dt->dkey);
-		dt->drawing = NULL;
 	}
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
@@ -262,6 +281,24 @@ sp_desktop_root_modified (SPObject *root, unsigned int flags, SPDesktop *desktop
 	/* mask = SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG; */
 	mask = SP_OBJECT_VIEWPORT_MODIFIED_FLAG;
 	if (flags & mask) {
+#if 0
+		SPView *view;
+		SPItem *vpitem;
+		NRRectF vbox;
+		NRMatrixD i2vp;
+		view = (SPView *) desktop;
+		/* We should use i2vp to set up drawing group transformation */
+		/* Only have to think, how to handle vpitem == root case */
+		vpitem = sp_item_get_viewport (view->root, &vbox, &i2vp);
+		if (vpitem) {
+			desktop->doc2dt[5] = vbox.y1 - vbox.y0;
+			sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing),
+							NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt));
+			sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), vbox.x0, vbox.y0, vbox.x1, vbox.y1);
+		} else {
+			/* fixme: Implement (Lauris) */
+		}
+#else
 		SPView *view;
 		/* fixme: Implement (Lauris) */
 		view = (SPView *) desktop;
@@ -269,6 +306,7 @@ sp_desktop_root_modified (SPObject *root, unsigned int flags, SPDesktop *desktop
 		sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt));
 		sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0,
 				      sp_document_width (view->doc), sp_document_height (view->doc));
+#endif
 	}
 }
 
@@ -354,14 +392,6 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
 		nr_arena_item_unref (ai);
 	}
-
-#if 0
-	/* Happens in ::set_root */
-	/* Ugly hack */
-	sp_desktop_activate_guides (desktop, TRUE);
-	/* Ugly hack */
-	sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
-#endif
 
 	/* sp_active_desktop_set (desktop); */
 	sodipodi_add_desktop (desktop);
@@ -473,7 +503,7 @@ sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 
 	desktop = (SPDesktop *) view;
 
-	newdoc = SP_OBJECT_DOCUMENT (root);
+	newdoc = (root) ? SP_OBJECT_DOCUMENT (root) : NULL;
 	newnv = (SPNamedView *) layout;
 
 	/* Detach existing namedview if needed */
@@ -496,19 +526,20 @@ sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 		desktop->number = sp_namedview_viewcount (desktop->namedview);
 	}
 
-	/* Set up drawing */
-	aitem = sp_item_invoke_show (root, SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey, SP_ITEM_SHOW_DISPLAY);
-	if (aitem) {
-		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, aitem, NULL);
-		nr_arena_item_unref (aitem);
+	if (root) {
+		/* Set up drawing */
+		aitem = sp_item_invoke_show (root, SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey, SP_ITEM_SHOW_DISPLAY);
+		if (aitem) {
+			nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, aitem, NULL);
+			nr_arena_item_unref (aitem);
+		}
+		/* Update namedview an such */
+		sp_namedview_show (desktop->namedview, desktop);
+		/* Ugly hack */
+		sp_desktop_activate_guides (desktop, TRUE);
+		/* Ugly hack */
+		sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
 	}
-
-	/* Update namedview an such */
-	sp_namedview_show (desktop->namedview, desktop);
-	/* Ugly hack */
-	sp_desktop_activate_guides (desktop, TRUE);
-	/* Ugly hack */
-	sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
 }
 
 void
@@ -750,9 +781,6 @@ static void sp_dtw_status_frame_size_request (GtkWidget *widget, GtkRequisition 
 static void sp_desktop_widget_view_position_set (SPView *view, gdouble x, gdouble y, SPDesktopWidget *dtw);
 static void sp_desktop_widget_view_status_set (SPView *view, const guchar *status, gboolean isdefault, SPDesktopWidget *dtw);
 
-static void sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw);
-static void sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw);
-
 static void sp_desktop_widget_adjustment_value_changed (GtkAdjustment *adj, SPDesktopWidget *dtw);
 static void sp_desktop_widget_namedview_modified (SPNamedView *nv, guint flags, SPDesktopWidget *dtw);
 
@@ -928,6 +956,12 @@ sp_desktop_widget_destroy (GtkObject *object)
 
 	dtw = SP_DESKTOP_WIDGET (object);
 
+	if (dtw->namedview) {
+		/* Disconnect namedview signals */
+		sp_signal_disconnect_by_data (dtw->namedview, dtw);
+		dtw->namedview = NULL;
+	}
+
 	if (dtw->desktop) {
 		g_object_unref (G_OBJECT (dtw->desktop));
 		dtw->desktop = NULL;
@@ -1055,28 +1089,6 @@ sp_dtw_status_frame_size_request (GtkWidget *widget, GtkRequisition *req, gpoint
 	req->width = 1;
 }
 
-void
-sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw)
-{
-#if 0
-	gtk_widget_set_sensitive (dtw->hruler, TRUE);
-	gtk_widget_set_sensitive (dtw->vruler, TRUE);
-	gtk_widget_set_sensitive (dtw->hscrollbar, TRUE);
-	gtk_widget_set_sensitive (dtw->vscrollbar, TRUE);
-#endif
-}
-
-void
-sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw)
-{
-#if 0
-	gtk_widget_set_sensitive (dtw->hruler, FALSE);
-	gtk_widget_set_sensitive (dtw->vruler, FALSE);
-	gtk_widget_set_sensitive (dtw->hscrollbar, FALSE);
-	gtk_widget_set_sensitive (dtw->vscrollbar, FALSE);
-#endif
-}
-
 static unsigned int
 sp_dtw_desktop_request_shutdown (SPView *view, SPDesktopWidget *dtw)
 {
@@ -1149,13 +1161,10 @@ sp_desktop_widget_new (SPNamedView *namedview)
 	g_signal_connect (G_OBJECT (dtw->desktop), "position_set", G_CALLBACK (sp_desktop_widget_view_position_set), dtw);
 	g_signal_connect (G_OBJECT (dtw->desktop), "status_set", G_CALLBACK (sp_desktop_widget_view_status_set), dtw);
 
-	/* Connect activation signals to update indicator */
-	g_signal_connect (G_OBJECT (dtw->desktop), "activate", G_CALLBACK (sp_dtw_desktop_activate), dtw);
-	g_signal_connect (G_OBJECT (dtw->desktop), "desactivate", G_CALLBACK (sp_dtw_desktop_desactivate), dtw);
-
 	g_signal_connect (G_OBJECT (dtw->desktop), "request_shutdown", G_CALLBACK (sp_dtw_desktop_request_shutdown), dtw);
 
 	/* Listen on namedview modification */
+	dtw->namedview = namedview;
 	g_signal_connect (G_OBJECT (namedview), "modified", G_CALLBACK (sp_desktop_widget_namedview_modified), dtw);
 
 	// gtk_widget_grab_focus ((GtkWidget *) dtw->canvas);

@@ -25,6 +25,8 @@
 #include "document.h"
 #include "style.h"
 
+#include "enums.h"
+#include "attributes.h"
 #include "sp-root.h"
 #include "sp-item-group.h"
 #include "helper/sp-intl.h"
@@ -53,22 +55,20 @@ static SPItemClass * parent_class;
 GType
 sp_group_get_type (void)
 {
-	static GType group_type = 0;
-	if (!group_type) {
-		GTypeInfo group_info = {
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SPGroupClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_group_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPGroup),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_group_init,
 		};
-		group_type = g_type_register_static (SP_TYPE_ITEM, "SPGroup", &group_info, 0);
+		type = g_type_register_static (SP_TYPE_ITEM, "SPGroup", &info, 0);
 	}
-	return group_type;
+	return type;
 }
 
 static void
@@ -82,7 +82,7 @@ sp_group_class_init (SPGroupClass *klass)
 	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
-	parent_class = g_type_class_ref (SP_TYPE_ITEM);
+	parent_class = g_type_class_peek_parent (klass);
 
 	sp_object_class->build = sp_group_build;
 	sp_object_class->release = sp_group_release;
@@ -623,6 +623,8 @@ sp_item_group_item_list (SPGroup * group)
 	return g_slist_reverse (s);
 }
 
+/* fixme: Make SPObject method (Lauris) */
+
 SPObject *
 sp_item_group_get_child_by_name (SPGroup *group, SPObject *ref, const unsigned char *name)
 {
@@ -632,3 +634,372 @@ sp_item_group_get_child_by_name (SPGroup *group, SPObject *ref, const unsigned c
 	return child;
 }
 
+/* SPVPGroup */
+
+static void sp_vpgroup_class_init (SPVPGroupClass *klass);
+static void sp_vpgroup_init (SPVPGroup *vpgroup);
+
+static void sp_vpgroup_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static void sp_vpgroup_set (SPObject *object, unsigned int key, const unsigned char *value);
+static void sp_vpgroup_update (SPObject *object, SPCtx *ctx, guint flags);
+
+static SPGroupClass *vpgroup_parent_class;
+
+GType
+sp_vpgroup_get_type (void)
+{
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
+			sizeof (SPVPGroupClass),
+			NULL, NULL,
+			(GClassInitFunc) sp_vpgroup_class_init,
+			NULL, NULL,
+			sizeof (SPVPGroup),
+			16,
+			(GInstanceInitFunc) sp_vpgroup_init,
+		};
+		type = g_type_register_static (SP_TYPE_GROUP, "SPVPGroup", &info, 0);
+	}
+	return type;
+}
+
+static void
+sp_vpgroup_class_init (SPVPGroupClass *klass)
+{
+	SPObjectClass *sp_object_class;
+	SPItemClass *item_class;
+
+	sp_object_class = (SPObjectClass *) klass;
+	item_class = (SPItemClass *) klass;
+
+	vpgroup_parent_class = g_type_class_peek_parent (klass);
+
+	sp_object_class->build = sp_vpgroup_build;
+	sp_object_class->set = sp_vpgroup_set;
+	sp_object_class->update = sp_vpgroup_update;
+}
+
+static void
+sp_vpgroup_init (SPVPGroup *vpgroup)
+{
+	sp_svg_length_unset (&vpgroup->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&vpgroup->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&vpgroup->width, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
+	sp_svg_length_unset (&vpgroup->height, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
+
+	nr_matrix_d_set_identity (&vpgroup->c2p);
+}
+
+static void
+sp_vpgroup_build (SPObject *object, SPDocument *document, SPRepr *repr)
+{
+	/* It is important to parse these here, so objects will have viewport build-time */
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "width");
+	sp_object_read_attr (object, "height");
+	sp_object_read_attr (object, "viewBox");
+	sp_object_read_attr (object, "preserveAspectRatio");
+
+	if (((SPObjectClass *) vpgroup_parent_class)->build)
+		(* ((SPObjectClass *) vpgroup_parent_class)->build) (object, document, repr);
+}
+
+static void
+sp_vpgroup_set (SPObject *object, unsigned int key, const unsigned char *value)
+{
+	SPVPGroup *vpgroup;
+	unsigned long unit;
+
+	vpgroup = (SPVPGroup *) object;
+
+	switch (key) {
+	case SP_ATTR_X:
+		if (sp_svg_length_read_lff (value, &unit, &vpgroup->x.value, &vpgroup->x.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX)) {
+			vpgroup->x.set = TRUE;
+			vpgroup->x.unit = unit;
+		} else {
+			sp_svg_length_unset (&vpgroup->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		/* fixme: I am almost sure these do not require viewport flag (Lauris) */
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_Y:
+		if (sp_svg_length_read_lff (value, &unit, &vpgroup->y.value, &vpgroup->y.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX)) {
+			vpgroup->y.set = TRUE;
+			vpgroup->y.unit = unit;
+		} else {
+			sp_svg_length_unset (&vpgroup->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		/* fixme: I am almost sure these do not require viewport flag (Lauris) */
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_WIDTH:
+		if (sp_svg_length_read_lff (value, &unit, &vpgroup->width.value, &vpgroup->width.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX) &&
+		    (vpgroup->width.computed > 0.0)) {
+			vpgroup->width.set = TRUE;
+			vpgroup->width.unit = unit;
+		} else {
+			sp_svg_length_unset (&vpgroup->width, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_HEIGHT:
+		if (sp_svg_length_read_lff (value, &unit, &vpgroup->height.value, &vpgroup->height.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX) &&
+		    (vpgroup->height.computed >= 0.0)) {
+			vpgroup->height.set = TRUE;
+			vpgroup->height.unit = unit;
+		} else {
+			sp_svg_length_unset (&vpgroup->height, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_VIEWBOX:
+		if (sp_svg_viewbox_read (value, &vpgroup->viewBox)) {
+			vpgroup->viewBox.set = 1;
+		} else {
+			vpgroup->viewBox.set = 0;
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_PRESERVEASPECTRATIO:
+		/* Do setup before, so we can use break to escape */
+		vpgroup->aspect_set = FALSE;
+		vpgroup->aspect_align = SP_ASPECT_XMID_YMID;
+		vpgroup->aspect_clip = SP_ASPECT_MEET;
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
+		if (value) {
+			int len;
+			unsigned char c[256];
+			const unsigned char *p, *e;
+			unsigned int align, clip;
+			p = value;
+			while (*p && *p == 32) p += 1;
+			if (!*p) break;
+			e = p;
+			while (*e && *e != 32) e += 1;
+			len = e - p;
+			if (len > 8) break;
+			memcpy (c, value, len);
+			c[len] = 0;
+			/* Now the actual part */
+			if (!strcmp (c, "none")) {
+				align = SP_ASPECT_NONE;
+			} else if (!strcmp (c, "xMinYMin")) {
+				align = SP_ASPECT_XMIN_YMIN;
+			} else if (!strcmp (c, "xMidYMin")) {
+				align = SP_ASPECT_XMID_YMIN;
+			} else if (!strcmp (c, "xMaxYMin")) {
+				align = SP_ASPECT_XMAX_YMIN;
+			} else if (!strcmp (c, "xMinYMid")) {
+				align = SP_ASPECT_XMIN_YMID;
+			} else if (!strcmp (c, "xMidYMid")) {
+				align = SP_ASPECT_XMID_YMID;
+			} else if (!strcmp (c, "xMaxYMin")) {
+				align = SP_ASPECT_XMAX_YMID;
+			} else if (!strcmp (c, "xMinYMax")) {
+				align = SP_ASPECT_XMIN_YMAX;
+			} else if (!strcmp (c, "xMidYMax")) {
+				align = SP_ASPECT_XMID_YMAX;
+			} else if (!strcmp (c, "xMaxYMax")) {
+				align = SP_ASPECT_XMAX_YMAX;
+			} else {
+				break;
+			}
+			clip = SP_ASPECT_MEET;
+			while (*e && *e == 32) e += 1;
+			if (*e) {
+				if (!strcmp (e, "meet")) {
+					clip = SP_ASPECT_MEET;
+				} else if (!strcmp (e, "slice")) {
+					clip = SP_ASPECT_SLICE;
+				} else {
+					break;
+				}
+			}
+			vpgroup->aspect_set = TRUE;
+			vpgroup->aspect_align = align;
+			vpgroup->aspect_clip = clip;
+		}
+		break;
+	default:
+		if (((SPObjectClass *) vpgroup_parent_class)->set)
+			((SPObjectClass *) vpgroup_parent_class)->set (object, key, value);
+		break;
+	}
+}
+
+static void
+sp_vpgroup_update (SPObject *object, SPCtx *ctx, guint flags)
+{
+	SPItem *item;
+	SPVPGroup *vpgroup;
+	SPItemCtx *ictx, rctx;
+	SPItemView *v;
+
+	item = (SPItem *) object;
+	vpgroup = (SPVPGroup *) object;
+	ictx = (SPItemCtx *) ctx;
+
+	/* fixme: This will be invoked too often (Lauris) */
+	/* fixme: We should calculate only if parent viewport has changed (Lauris) */
+	/* If position is specified as percentage, calculate actual values */
+	if (vpgroup->x.unit == SP_SVG_UNIT_PERCENT) {
+		vpgroup->x.computed = vpgroup->x.value * (ictx->vp.x1 - ictx->vp.x0);
+	}
+	if (vpgroup->y.unit == SP_SVG_UNIT_PERCENT) {
+		vpgroup->y.computed = vpgroup->y.value * (ictx->vp.y1 - ictx->vp.y0);
+	}
+	if (vpgroup->width.unit == SP_SVG_UNIT_PERCENT) {
+		vpgroup->width.computed = vpgroup->width.value * (ictx->vp.x1 - ictx->vp.x0);
+	}
+	if (vpgroup->height.unit == SP_SVG_UNIT_PERCENT) {
+		vpgroup->height.computed = vpgroup->height.value * (ictx->vp.y1 - ictx->vp.y0);
+	}
+
+#if 0
+	g_print ("<svg> raw %g %g %g %g\n",
+		 vpgroup->x.value, vpgroup->y.value,
+		 vpgroup->width.value, vpgroup->height.value);
+
+	g_print ("<svg> computed %g %g %g %g\n",
+		 vpgroup->x.computed, vpgroup->y.computed,
+		 vpgroup->width.computed, vpgroup->height.computed);
+#endif
+
+	/* Create copy of item context */
+	rctx = *ictx;
+
+	/* Calculate child to parent transformation */
+	nr_matrix_d_set_identity (&vpgroup->c2p);
+
+	if (object->parent) {
+		/*
+		 * fixme: I am not sure whether setting x and y does or does not
+		 * fixme: translate the content of inner SVG.
+		 * fixme: Still applying translation and setting viewport to width and
+		 * fixme: height seems natural, as this makes the inner svg element
+		 * fixme: self-contained. The spec is vague here.
+		 */
+		nr_matrix_d_set_translate (&vpgroup->c2p, vpgroup->x.computed, vpgroup->y.computed);
+	}
+
+	if (vpgroup->viewBox.set) {
+		double x, y, width, height;
+		NRMatrixD q;
+		/* Determine actual viewbox in viewport coordinates */
+		if (vpgroup->aspect_align == SP_ASPECT_NONE) {
+			x = 0.0;
+			y = 0.0;
+			width = vpgroup->width.computed;
+			height = vpgroup->height.computed;
+		} else {
+			double scalex, scaley, scale;
+			/* Things are getting interesting */
+			scalex = vpgroup->width.computed / (vpgroup->viewBox.x1 - vpgroup->viewBox.x0);
+			scaley = vpgroup->height.computed / (vpgroup->viewBox.y1 - vpgroup->viewBox.y0);
+			scale = (vpgroup->aspect_clip == SP_ASPECT_MEET) ? MIN (scalex, scaley) : MAX (scalex, scaley);
+			width = (vpgroup->viewBox.x1 - vpgroup->viewBox.x0) * scale;
+			height = (vpgroup->viewBox.y1 - vpgroup->viewBox.y0) * scale;
+			/* Now place viewbox to requested position */
+			switch (vpgroup->aspect_align) {
+			case SP_ASPECT_XMIN_YMIN:
+				x = 0.0;
+				y = 0.0;
+				break;
+			case SP_ASPECT_XMID_YMIN:
+				x = 0.5 * (vpgroup->width.computed - width);
+				y = 0.0;
+				break;
+			case SP_ASPECT_XMAX_YMIN:
+				x = 1.0 * (vpgroup->width.computed - width);
+				y = 0.0;
+				break;
+			case SP_ASPECT_XMIN_YMID:
+				x = 0.0;
+				y = 0.5 * (vpgroup->height.computed - height);
+				break;
+			case SP_ASPECT_XMID_YMID:
+				x = 0.5 * (vpgroup->width.computed - width);
+				y = 0.5 * (vpgroup->height.computed - height);
+				break;
+			case SP_ASPECT_XMAX_YMID:
+				x = 1.0 * (vpgroup->width.computed - width);
+				y = 0.5 * (vpgroup->height.computed - height);
+				break;
+			case SP_ASPECT_XMIN_YMAX:
+				x = 0.0;
+				y = 1.0 * (vpgroup->height.computed - height);
+				break;
+			case SP_ASPECT_XMID_YMAX:
+				x = 0.5 * (vpgroup->width.computed - width);
+				y = 1.0 * (vpgroup->height.computed - height);
+				break;
+			case SP_ASPECT_XMAX_YMAX:
+				x = 1.0 * (vpgroup->width.computed - width);
+				y = 1.0 * (vpgroup->height.computed - height);
+				break;
+			default:
+				x = 0.0;
+				y = 0.0;
+				break;
+			}
+		}
+		/* Compose additional transformation from scale and position */
+		q.c[0] = width / (vpgroup->viewBox.x1 - vpgroup->viewBox.x0);
+		q.c[1] = 0.0;
+		q.c[2] = 0.0;
+		q.c[3] = height / (vpgroup->viewBox.y1 - vpgroup->viewBox.y0);
+		q.c[4] = -vpgroup->viewBox.x0 * q.c[0] + x;
+		q.c[5] = -vpgroup->viewBox.y0 * q.c[3] + y;
+		/* Append viewbox transformation */
+		nr_matrix_multiply_ddd (&vpgroup->c2p, &q, &vpgroup->c2p);
+	}
+
+	nr_matrix_multiply_ddd (&rctx.i2doc, &vpgroup->c2p, &rctx.i2doc);
+
+	/* Initialize child viewport */
+	if (vpgroup->viewBox.set) {
+		rctx.vp.x0 = vpgroup->viewBox.x0;
+		rctx.vp.y0 = vpgroup->viewBox.y0;
+		rctx.vp.x1 = vpgroup->viewBox.x1;
+		rctx.vp.y1 = vpgroup->viewBox.y1;
+	} else {
+		/* fixme: I wonder whether this logic is correct (Lauris) */
+		if (object->parent) {
+			rctx.vp.x0 = vpgroup->x.computed;
+			rctx.vp.y0 = vpgroup->y.computed;
+		} else {
+			rctx.vp.x0 = 0.0;
+			rctx.vp.y0 = 0.0;
+		}
+		rctx.vp.x1 = vpgroup->width.computed;
+		rctx.vp.y1 = vpgroup->height.computed;
+	}
+
+	nr_matrix_d_set_identity (&rctx.i2vp);
+
+	/* And invoke parent method */
+	if (((SPObjectClass *) (vpgroup_parent_class))->update)
+		((SPObjectClass *) (vpgroup_parent_class))->update (object, (SPCtx *) &rctx, flags);
+
+	/* As last step set additional transform of arena group */
+	for (v = item->display; v != NULL; v = v->next) {
+		NRMatrixF vbf;
+		nr_matrix_f_from_d (&vbf, &vpgroup->c2p);
+		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &vbf);
+	}
+}

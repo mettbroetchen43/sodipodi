@@ -59,6 +59,7 @@ static unsigned int sp_pattern_remove_child (SPObject *object, SPRepr *child);
 static void sp_pattern_update (SPObject *object, SPCtx *ctx, unsigned int flags);
 static void sp_pattern_modified (SPObject *object, unsigned int flags);
 static unsigned int sp_pattern_sequence (SPObject *object, SPObject *target, unsigned int *seq);
+static unsigned int sp_pattern_extra_transform (SPItem *item, NRMatrixD *transform);
 
 static void sp_pattern_href_destroy (SPObject *href, SPPattern *pattern);
 static void sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern);
@@ -75,13 +76,11 @@ sp_pattern_get_type (void)
 	if (!pattern_type) {
 		GTypeInfo pattern_info = {
 			sizeof (SPPatternClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_pattern_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPPattern),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_pattern_init,
 		};
 		pattern_type = g_type_register_static (SP_TYPE_PAINT_SERVER, "SPPattern", &pattern_info, 0);
@@ -108,6 +107,7 @@ sp_pattern_class_init (SPPatternClass *klass)
 	sp_object_class->update = sp_pattern_update;
 	sp_object_class->modified = sp_pattern_modified;
 	sp_object_class->sequence = sp_pattern_sequence;
+
 
 	ps_class->painter_new = sp_pattern_painter_new;
 	ps_class->painter_free = sp_pattern_painter_free;

@@ -85,7 +85,12 @@ struct _SPItem {
 
 	unsigned int sensitive : 1;
 	unsigned int printable : 1;
-	unsigned int stop_paint: 1;
+	/* unsigned int stop_paint: 1; */
+
+	/* True if item establishes new viewport */
+	unsigned int has_vieport : 1;
+	/* True if item has additional transform (viewBox) */
+	unsigned int has_extra_transform : 1;
 
 	NRMatrixF transform;
 
@@ -119,6 +124,12 @@ struct _SPItemClass {
 
 	/* Emit event, if applicable */
 	gint (* event) (SPItem *item, SPEvent *event);
+
+	/* Appends item extra transform (child -> item) */
+	unsigned int (* extra_transform) (SPItem *item, NRMatrixD *tranfrom);
+	/* fixme: This does not work at moment (Lauris) */
+	/* Get item establishing viewport, viewport and transform to viewport */
+	SPItem * (* get_viewport) (SPItem *item, NRRectF *vieport, NRMatrixD *i2vp);
 };
 
 /* Flag testing macros */
@@ -129,6 +140,9 @@ struct _SPItemClass {
 
 void sp_item_invoke_bbox (SPItem *item, NRRectF *bb, const NRMatrixD *t, unsigned int clear);
 void sp_item_invoke_bbox_full (SPItem *item, NRRectF *bb, const NRMatrixD *t, unsigned int flags, unsigned int clear);
+
+unsigned int sp_item_extra_transform (SPItem *item, NRMatrixD *transform);
+SPItem *sp_item_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp);
 
 void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
 unsigned char * sp_item_description (SPItem * item);

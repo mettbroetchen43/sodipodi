@@ -40,9 +40,11 @@ static SPRepr *sp_root_write (SPObject *object, SPRepr *repr, guint flags);
 
 static NRArenaItem *sp_root_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_root_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
+static unsigned int sp_root_extra_transform (SPItem *item, NRMatrixD *transform);
+static SPItem *sp_root_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp);
 static void sp_root_print (SPItem *item, SPPrintContext *ctx);
 
-static SPGroupClass *parent_class;
+static SPVPGroupClass *parent_class;
 
 GType
 sp_root_get_type (void)
@@ -58,7 +60,7 @@ sp_root_get_type (void)
 			16,
 			(GInstanceInitFunc) sp_root_init,
 		};
-		type = g_type_register_static (SP_TYPE_GROUP, "SPRoot", &info, 0);
+		type = g_type_register_static (SP_TYPE_VPGROUP, "SPRoot", &info, 0);
 	}
 	return type;
 }
@@ -74,7 +76,7 @@ sp_root_class_init (SPRootClass *klass)
 	sp_object_class = (SPObjectClass *) klass;
 	sp_item_class = (SPItemClass *) klass;
 
-	parent_class = g_type_class_ref (SP_TYPE_GROUP);
+	parent_class = g_type_class_peek_parent (klass);
 
 	sp_object_class->build = sp_root_build;
 	sp_object_class->release = sp_root_release;
@@ -87,13 +89,22 @@ sp_root_class_init (SPRootClass *klass)
 
 	sp_item_class->show = sp_root_show;
 	sp_item_class->bbox = sp_root_bbox;
+	sp_item_class->extra_transform = sp_root_extra_transform;
+	sp_item_class->get_viewport = sp_root_get_viewport;
 	sp_item_class->print = sp_root_print;
 }
 
 static void
 sp_root_init (SPRoot *root)
 {
-	root->group.transparent = TRUE;
+	SPItem *item;
+	SPGroup *group;
+
+	item = (SPItem *) root;
+	group = (SPGroup *) root;
+
+	item->has_extra_transform = 1;
+	group->transparent = 1;
 
 	root->version = 1.0;
 
@@ -101,15 +112,14 @@ sp_root_init (SPRoot *root)
 	root->sodipodi = 0;
 	root->original = 0;
 
+#if 0
 	sp_svg_length_unset (&root->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&root->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&root->width, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 	sp_svg_length_unset (&root->height, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 
-	/* nr_matrix_d_set_identity (&root->viewbox); */
-	root->viewBox.set = FALSE;
-
 	nr_matrix_d_set_identity (&root->c2p);
+#endif
 
 	/* root->namedviews = NULL; */
 	root->defs = NULL;
@@ -131,6 +141,7 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	}
 	sp_object_read_attr (object, "version");
 	sp_object_read_attr (object, "sodipodi:version");
+#if 0
 	/* It is important to parse these here, so objects will have viewport build-time */
 	sp_object_read_attr (object, "x");
 	sp_object_read_attr (object, "y");
@@ -138,19 +149,10 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	sp_object_read_attr (object, "height");
 	sp_object_read_attr (object, "viewBox");
 	sp_object_read_attr (object, "preserveAspectRatio");
+#endif
 
 	if (((SPObjectClass *) parent_class)->build)
 		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
-
-#if 0
-	/* Collect all our namedviews */
-	for (o = group->children; o != NULL; o = o->next) {
-		if (SP_IS_NAMEDVIEW (o)) {
-			root->namedviews = g_slist_prepend (root->namedviews, o);
-		}
-	}
-	root->namedviews = g_slist_reverse (root->namedviews);
-#endif
 
 	/* Search for first <defs> node */
 	for (o = object->children; o != NULL; o = o->next) {
@@ -173,10 +175,6 @@ sp_root_release (SPObject *object)
 		sp_object_set_blocked (root->defs, FALSE);
 		root->defs = NULL;
 	}
-#if 0
-	g_slist_free (root->namedviews);
-	root->namedviews = NULL;
-#endif
 
 	if (((SPObjectClass *) parent_class)->release)
 		((SPObjectClass *) parent_class)->release (object);
@@ -187,7 +185,9 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPItem *item;
 	SPRoot *root;
+#if 0
 	gulong unit;
+#endif
 
 	item = SP_ITEM (object);
 	root = SP_ROOT (object);
@@ -207,6 +207,7 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 			root->sodipodi = root->original;
 		}
 		break;
+#if 0
 	case SP_ATTR_X:
 		if (sp_svg_length_read_lff (value, &unit, &root->x.value, &root->x.computed) &&
 		    /* fixme: These are probably valid, but require special treatment (Lauris) */
@@ -265,35 +266,6 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 		} else {
 			root->viewBox.set = 0;
 		}
-#if 0
-		if (value) {
-			double x, y, width, height;
-			char *eptr;
-			/* fixme: We have to take original item affine into account */
-			/* fixme: Think (Lauris) */
-			eptr = (gchar *) value;
-			eptr += arikkei_strtod_exp (eptr, 1024, &x);
-			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			eptr += arikkei_strtod_exp (eptr, 1024, &y);
-			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			eptr += arikkei_strtod_exp (eptr, 1024, &width);
-			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			eptr += arikkei_strtod_exp (eptr, 1024, &height);
-			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
-			if ((width > 0) && (height > 0)) {
-				/* Set viewbox */
-				root->viewBox.x0 = x;
-				root->viewBox.y0 = y;
-				root->viewBox.x1 = x + width;
-				root->viewBox.y1 = y + height;
-				root->viewBox.set = TRUE;
-			} else {
-				root->viewBox.set = FALSE;
-			}
-		} else {
-			root->viewBox.set = FALSE;
-		}
-#endif
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_PRESERVEASPECTRATIO:
@@ -356,6 +328,7 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 			root->aspect_clip = clip;
 		}
 		break;
+#endif
 	default:
 		if (((SPObjectClass *) parent_class)->set)
 			((SPObjectClass *) parent_class)->set (object, key, value);
@@ -381,11 +354,6 @@ sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	co = sp_document_lookup_id (object->document, id);
 	g_assert (co != NULL);
 
-#if 0
-	if (SP_IS_NAMEDVIEW (co)) {
-		root->namedviews = g_slist_append (root->namedviews, co);
-	}
-#endif
 	if (SP_IS_DEFS (co)) {
 		SPObject *c;
 		/* We search for first <defs> node - it is not beautiful, but works */
@@ -434,7 +402,9 @@ sp_root_update (SPObject *object, SPCtx *ctx, guint flags)
 	SPItem *item;
 	SPRoot *root;
 	SPItemCtx *ictx, rctx;
+#if 0
 	SPItemView *v;
+#endif
 
 	item = SP_ITEM (object);
 	root = SP_ROOT (object);
@@ -444,6 +414,7 @@ sp_root_update (SPObject *object, SPCtx *ctx, guint flags)
 	g_print ("viewPort %g %g %g %g\n", ictx->vp.x0, ictx->vp.y0, ictx->vp.x1, ictx->vp.y1);
 #endif
 
+#if 0
 	/* fixme: This will be invoked too often (Lauris) */
 	/* fixme: We should calculate only if parent viewport has changed (Lauris) */
 	/* If position is specified as percentage, calculate actual values */
@@ -581,32 +552,37 @@ sp_root_update (SPObject *object, SPCtx *ctx, guint flags)
 	}
 
 	nr_matrix_d_set_identity (&rctx.i2vp);
+#endif
 
 	/* And invoke parent method */
 	if (((SPObjectClass *) (parent_class))->update)
 		((SPObjectClass *) (parent_class))->update (object, (SPCtx *) &rctx, flags);
 
+#if 0
 	/* As last step set additional transform of arena group */
 	for (v = item->display; v != NULL; v = v->next) {
 		NRMatrixF vbf;
 		nr_matrix_f_from_d (&vbf, &root->c2p);
 		nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &vbf);
 	}
+#endif
 }
 
 static void
 sp_root_modified (SPObject *object, guint flags)
 {
 	SPRoot *root;
+	SPVPGroup *vpgroup;
 
-	root = SP_ROOT (object);
+	root = (SPRoot *) object;
+	vpgroup = (SPVPGroup *) object;
 
 	if (((SPObjectClass *) (parent_class))->modified)
 		(* ((SPObjectClass *) (parent_class))->modified) (object, flags);
 
 	/* fixme: (Lauris) */
 	if (!object->parent && (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
-		sp_document_set_size_px (SP_OBJECT_DOCUMENT (root), root->width.computed, root->height.computed);
+		sp_document_set_size_px (SP_OBJECT_DOCUMENT (root), vpgroup->width.computed, vpgroup->height.computed);
 	}
 }
 
@@ -614,8 +590,10 @@ static SPRepr *
 sp_root_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPRoot *root;
+	SPVPGroup *vpgroup;
 
-	root = SP_ROOT (object);
+	root = (SPRoot *) object;
+	vpgroup = (SPVPGroup *) object;
 
 	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
 		repr = sp_repr_new ("svg");
@@ -630,10 +608,10 @@ sp_root_write (SPObject *object, SPRepr *repr, guint flags)
 	}
 
 	sp_repr_set_attr (repr, "version", "1.0");
-	sp_repr_set_double (repr, "x", root->x.computed);
-	sp_repr_set_double (repr, "y", root->y.computed);
-	sp_repr_set_double (repr, "width", root->width.computed);
-	sp_repr_set_double (repr, "height", root->height.computed);
+	sp_repr_set_double (repr, "x", vpgroup->x.computed);
+	sp_repr_set_double (repr, "y", vpgroup->y.computed);
+	sp_repr_set_double (repr, "width", vpgroup->width.computed);
+	sp_repr_set_double (repr, "height", vpgroup->height.computed);
 	sp_repr_set_attr (repr, "viewBox", sp_repr_get_attr (object->repr, "viewBox"));
 
 	if (((SPObjectClass *) (parent_class))->write)
@@ -646,15 +624,17 @@ static NRArenaItem *
 sp_root_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags)
 {
 	SPRoot *root;
+	SPVPGroup *vpgroup;
 	NRArenaItem *ai;
 
-	root = SP_ROOT (item);
+	root = (SPRoot *) item;
+	vpgroup = (SPVPGroup *) item;
 
 	if (((SPItemClass *) (parent_class))->show) {
 		ai = ((SPItemClass *) (parent_class))->show (item, arena, key, flags);
 		if (ai) {
 			NRMatrixF vbf;
-			nr_matrix_f_from_d (&vbf, &root->c2p);
+			nr_matrix_f_from_d (&vbf, &vpgroup->c2p);
 			nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &vbf);
 		}
 	} else {
@@ -668,15 +648,48 @@ static void
 sp_root_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
 	SPRoot *root;
+	SPVPGroup *vpgroup;
 	NRMatrixD a[6];
 
-	root = SP_ROOT (item);
+	root = (SPRoot *) item;
+	vpgroup = (SPVPGroup *) item;
 
-	nr_matrix_multiply_ddd (a, &root->c2p, transform);
+	nr_matrix_multiply_ddd (a, &vpgroup->c2p, transform);
 
 	if (((SPItemClass *) (parent_class))->bbox) {
 		((SPItemClass *) (parent_class))->bbox (item, bbox, a, flags);
 	}
+}
+
+static unsigned int
+sp_root_extra_transform (SPItem *item, NRMatrixD *transform)
+{
+	SPRoot *root;
+	root = (SPRoot *) item;
+	nr_matrix_multiply_ddd (transform, transform, &root->group.c2p);
+	return 1;
+}
+
+static SPItem *
+sp_root_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp)
+{
+	SPRoot *root;
+
+	root = (SPRoot *) item;
+
+	*i2vp = root->group.c2p;
+
+	/* lala - this is not correct */
+	/* if dt->root == root, i2vp has to be identity */
+
+	/* fixme: I think this is correct (Lauris) */
+	/* viewBox is represented as c2p and viewport is size */
+	viewport->x0 = root->group.x.computed;
+	viewport->y0 = root->group.y.computed;
+	viewport->x1 = viewport->x0 + root->group.width.computed;
+	viewport->y1 = viewport->y0 + root->group.height.computed;
+
+	return item;
 }
 
 static void
@@ -687,7 +700,7 @@ sp_root_print (SPItem *item, SPPrintContext *ctx)
 
 	root = SP_ROOT (item);
 
-	nr_matrix_f_from_d (&t, &root->c2p);
+	nr_matrix_f_from_d (&t, &root->group.c2p);
 	sp_print_bind (ctx, &t, 1.0);
 
 	if (((SPItemClass *) (parent_class))->print) {

@@ -1,3 +1,13 @@
+2004-02-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-root.c: Inherit from SPVPGroup
+
+	* src/sp-root.h: Inherit from SPVPGroup
+
+	* src/sp-item-group.c: Added SPVPGroup subclass
+
+	* src/sp-item-group.h: Added SPVPGroup subclass
+
 2004-02-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-root.c (sp_root_set): Use SVG viewbox parser, fixed

@@ -53,6 +53,7 @@ static SPRepr *sp_marker_write (SPObject *object, SPRepr *repr, guint flags);
 static NRArenaItem *sp_marker_private_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_marker_private_hide (SPItem *item, unsigned int key);
 static void sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
+static unsigned int sp_marker_extra_transform (SPItem *item, NRMatrixD *transform);
 static void sp_marker_print (SPItem *item, SPPrintContext *ctx);
 
 static void sp_marker_view_remove (SPMarker *marker, SPMarkerView *view, unsigned int destroyitems);
@@ -100,14 +101,16 @@ sp_marker_class_init (SPMarkerClass *klass)
 	sp_item_class->show = sp_marker_private_show;
 	sp_item_class->hide = sp_marker_private_hide;
 	sp_item_class->bbox = sp_marker_bbox;
+	sp_item_class->extra_transform = sp_marker_extra_transform;
 	sp_item_class->print = sp_marker_print;
 }
 
 static void
 sp_marker_init (SPMarker *marker)
 {
-	marker->viewBox_set = FALSE;
-
+	SPItem *item;
+	item = (SPItem *) marker;
+	item->has_extra_transform = 1;
 	nr_matrix_d_set_identity (&marker->c2p);
 }
 
@@ -526,6 +529,15 @@ static void
 sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
 	/* Break propagation */
+}
+
+static unsigned int
+sp_marker_extra_transform (SPItem *item, NRMatrixD *transform)
+{
+	SPMarker *marker;
+	marker = (SPMarker *) item;
+	nr_matrix_multiply_ddd (transform, transform, &marker->c2p);
+	return 1;
 }
 
 static void

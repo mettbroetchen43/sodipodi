@@ -423,7 +423,7 @@ sp_document_width (SPDocument * document)
 	g_return_val_if_fail (document->priv != NULL, 0.0);
 	g_return_val_if_fail (document->root != NULL, 0.0);
 
-	return SP_ROOT (document->root)->width.computed / 1.25;
+	return SP_ROOT (document->root)->group.width.computed / 1.25;
 }
 
 gdouble
@@ -434,7 +434,7 @@ sp_document_height (SPDocument * document)
 	g_return_val_if_fail (document->priv != NULL, 0.0);
 	g_return_val_if_fail (document->root != NULL, 0.0);
 
-	return SP_ROOT (document->root)->height.computed / 1.25;
+	return SP_ROOT (document->root)->group.height.computed / 1.25;
 }
 
 const unsigned char *

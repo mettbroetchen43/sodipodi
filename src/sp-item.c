@@ -34,7 +34,9 @@
 
 #include "style.h"
 #include "print.h"
+#if 0
 #include "sp-root.h"
+#endif
 #include "sp-anchor.h"
 #include "sp-clippath.h"
 #include "sp-mask.h"
@@ -447,6 +449,39 @@ sp_item_invoke_bbox_full (SPItem *item, NRRectF *bbox, const NRMatrixD *transfor
 		((SPItemClass *) G_OBJECT_GET_CLASS (item))->bbox (item, bbox, transform, flags);
 }
 
+unsigned int
+sp_item_extra_transform (SPItem *item, NRMatrixD *transform)
+{
+	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->extra_transform)
+		return ((SPItemClass *) G_OBJECT_GET_CLASS (item))->extra_transform (item, transform);
+
+	return 0;
+}
+
+/* fixme: Logic (Lauris) */
+
+SPItem *
+sp_item_get_viewport (SPItem *item, NRRectF *viewport, NRMatrixD *i2vp)
+{
+	SPObject *object;
+
+	object = (SPObject *) item;
+
+	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->get_viewport)
+		return ((SPItemClass *) G_OBJECT_GET_CLASS (item))->get_viewport (item, viewport, i2vp);
+
+	if (object->parent && SP_IS_ITEM (object->parent)) {
+		SPItem *vpitem;
+		NRMatrixD p2vp;
+		vpitem = sp_item_get_viewport ((SPItem *) object->parent, viewport, &p2vp);
+		if (!vpitem) return NULL;
+		nr_matrix_multiply_dfd (i2vp, &item->transform, &p2vp);
+		return vpitem;
+	}
+
+	return NULL;
+}
+
 static int
 sp_item_private_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
@@ -648,7 +683,6 @@ NRMatrixF *
 sp_item_i2doc_affine (SPItem *item, NRMatrixF *affine)
 {
 	NRMatrixD td;
-	SPRoot *root;
 
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
@@ -659,14 +693,17 @@ sp_item_i2doc_affine (SPItem *item, NRMatrixF *affine)
 	while (SP_OBJECT_PARENT (item)) {
 		nr_matrix_multiply_ddf (&td, &td, &item->transform);
 		item = (SPItem *) SP_OBJECT_PARENT (item);
+		/* We may hit <defs> or similar (Lauris) */
+		if (!SP_IS_ITEM (item)) break;
+		if (item->has_extra_transform) {
+			/* Apply parent extra transform so we stay in master coordinates */
+			sp_item_extra_transform (item, &td);
+		}
 	}
 
-	g_return_val_if_fail (SP_IS_ROOT (item), NULL);
-
-	root = SP_ROOT (item);
-
+	/* g_return_val_if_fail (SP_IS_ROOT (item), NULL); */
+	/* root = SP_ROOT (item); */
 	/* fixme: (Lauris) */
-	nr_matrix_multiply_ddd (&td, &td, &root->c2p);
 	nr_matrix_multiply_ddf (&td, &td, &item->transform);
 
 	nr_matrix_f_from_d (affine, &td);
@@ -691,9 +728,13 @@ sp_item_i2root_affine (SPItem *item, NRMatrixF *affine)
 	while (SP_OBJECT_PARENT (item)) {
 		nr_matrix_multiply_ddf (&td, &td, &item->transform);
 		item = (SPItem *) SP_OBJECT_PARENT (item);
+		/* We may hit <defs> or similar (Lauris) */
+		if (!SP_IS_ITEM (item)) break;
+		/* For some reason we do not use c2p here */
+		/* fixme: Which coordinate system we want after all (Lauris) */
 	}
 
-	g_return_val_if_fail (SP_IS_ROOT (item), NULL);
+	/* g_return_val_if_fail (SP_IS_ROOT (item), NULL); */
 
 #if 0
 	root = SP_ROOT (item);
@@ -720,13 +761,14 @@ sp_item_get_bbox_document (SPItem *item, NRRectF *bb, unsigned int flags, unsign
 	sp_item_invoke_bbox_full (item, bb, &i2docd, flags, clear);
 }
 
+/* fixme: This does not work as intended (Lauris) */
 /* Transformation to normalized (0,0-1,1) viewport */
 
 NRMatrixF *
 sp_item_i2vp_affine (SPItem *item, NRMatrixF *affine)
 {
 	NRMatrixD td;
-	SPRoot *root;
+	SPVPGroup *vpgroup;
 
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
@@ -740,17 +782,17 @@ sp_item_i2vp_affine (SPItem *item, NRMatrixF *affine)
 		item = (SPItem *) SP_OBJECT_PARENT (item);
 	}
 
-	g_return_val_if_fail (SP_IS_ROOT (item), NULL);
+	g_return_val_if_fail (SP_IS_VPGROUP (item), NULL);
 
-	root = SP_ROOT (item);
+	vpgroup = (SPVPGroup *) item;
 
 	/* fixme: (Lauris) */
-	nr_matrix_multiply_ddd (&td, &td, &root->c2p);
+	nr_matrix_multiply_ddd (&td, &td, &vpgroup->c2p);
 
-	td.c[0] /= root->width.computed;
-	td.c[1] /= root->height.computed;
-	td.c[2] /= root->width.computed;
-	td.c[3] /= root->height.computed;
+	td.c[0] /= vpgroup->width.computed;
+	td.c[1] /= vpgroup->height.computed;
+	td.c[2] /= vpgroup->width.computed;
+	td.c[3] /= vpgroup->height.computed;
 
 	nr_matrix_f_from_d (affine, &td);
 

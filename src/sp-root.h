@@ -15,17 +15,17 @@
 
 #define SP_TYPE_ROOT (sp_root_get_type ())
 #define SP_ROOT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_ROOT, SPRoot))
-#define SP_ROOT_CLASS(k) (G_TYPE_CHECK_CLASS_CAST ((k), SP_TYPE_ROOT, SPRootClass))
 #define SP_IS_ROOT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_ROOT))
-#define SP_IS_ROOT_CLASS(k) (G_TYPE_CHECK_CLASS_TYPE ((k), SP_TYPE_ROOT))
 
+#if 0
 #include <libnr/nr-matrix.h>
 #include "svg/svg-types.h"
 #include "enums.h"
+#endif
 #include "sp-item-group.h"
 
 struct _SPRoot {
-	SPGroup group;
+	SPVPGroup group;
 
 	float version;
 
@@ -33,6 +33,7 @@ struct _SPRoot {
 	guint sodipodi : 8;
 	guint original : 8;
 
+#if 0
 	SPSVGLength x;
 	SPSVGLength y;
 	SPSVGLength width;
@@ -47,6 +48,7 @@ struct _SPRoot {
 
 	/* Child to parent additional transform */
 	NRMatrixD c2p;
+#endif
 
 	/* List of namedviews */
 	/* fixme: use single container instead */
@@ -56,7 +58,7 @@ struct _SPRoot {
 };
 
 struct _SPRootClass {
-	SPGroupClass parent_class;
+	SPVPGroupClass parent_class;
 };
 
 GType sp_root_get_type (void);

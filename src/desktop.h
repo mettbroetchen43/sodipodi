@@ -79,14 +79,6 @@ struct _SPDesktopClass {
 
 void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
 
-#if 0
-#ifndef __SP_DESKTOP_C__
-extern gboolean SPShowFullFielName;
-#else
-gboolean SPShowFullFielName = TRUE;
-#endif
-#endif
-
 /* Show/hide rulers & scrollbars */
 
 void sp_desktop_activate_guides (SPDesktop *desktop, gboolean activate);
@@ -139,6 +131,8 @@ struct _SPDesktopWidget {
 	unsigned int statusbar : 1;
 
 	SPDesktop *desktop;
+
+	SPNamedView *namedview;
 
 	GtkWidget *mbtn;
 

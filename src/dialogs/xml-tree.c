@@ -410,7 +410,8 @@ set_tree_desktop (SPDesktop * desktop)
 		SPDocument *doc;
 		SPSelection *sel;
 		sel = sp_desktop_get_selection (desktop);
-		g_signal_connect (G_OBJECT (desktop), "shutdown", G_CALLBACK (on_desktop_shutdown), dialog);
+		/* fixme: This is probably not the right signal to listen (Lauris) */
+		g_signal_connect (G_OBJECT (desktop), "request_shutdown", G_CALLBACK (on_desktop_shutdown), dialog);
 		g_signal_connect ((GObject *) sel, "changed", G_CALLBACK (on_desktop_selection_changed), dialog);
 		doc = sp_desktop_get_document (desktop);
 		set_tree_document (doc);

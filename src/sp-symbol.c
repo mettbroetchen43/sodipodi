@@ -40,6 +40,7 @@ static SPRepr *sp_symbol_write (SPObject *object, SPRepr *repr, guint flags);
 static NRArenaItem *sp_symbol_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_symbol_hide (SPItem *item, unsigned int key);
 static void sp_symbol_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
+static unsigned int sp_symbol_extra_transform (SPItem *item, NRMatrixD *transform);
 static void sp_symbol_print (SPItem *item, SPPrintContext *ctx);
 
 static SPGroupClass *parent_class;
@@ -88,14 +89,16 @@ sp_symbol_class_init (SPSymbolClass *klass)
 	sp_item_class->show = sp_symbol_show;
 	sp_item_class->hide = sp_symbol_hide;
 	sp_item_class->bbox = sp_symbol_bbox;
+	sp_item_class->extra_transform = sp_symbol_extra_transform;
 	sp_item_class->print = sp_symbol_print;
 }
 
 static void
 sp_symbol_init (SPSymbol *symbol)
 {
-	symbol->viewBox_set = FALSE;
-
+	SPItem *item;
+	item = (SPItem *) symbol;
+	item->has_extra_transform = 1;
 	nr_matrix_d_set_identity (&symbol->c2p);
 }
 
@@ -473,6 +476,15 @@ sp_symbol_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigne
 			((SPItemClass *) (parent_class))->bbox (item, bbox, a, flags);
 		}
 	}
+}
+
+static unsigned int
+sp_symbol_extra_transform (SPItem *item, NRMatrixD *transform)
+{
+	SPSymbol *symbol;
+	symbol = (SPSymbol *) item;
+	nr_matrix_multiply_ddd (transform, transform, &symbol->c2p);
+	return 1;
 }
 
 static void
