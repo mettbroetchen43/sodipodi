@@ -152,7 +152,7 @@ WinMain (HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, i
 
 	sodipodi = sodipodi_application_new ();
 	sodipodi_load_preferences (sodipodi);
-	sp_maintoolbox_create ();
+	sp_maintoolbox_create_toplevel ();
 	sodipodi_unref ();
 
 	gtk_main ();

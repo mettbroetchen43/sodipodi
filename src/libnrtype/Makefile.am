@@ -22,3 +22,7 @@ libnrtype_a_SOURCES = \
 	nr-type-ft2.c nr-type-ft2.h \
 	$(gnome_print_sources) \
 	$(xft_sources)
+
+EXTRA_DIST = \
+	nr-type-w32.c nr-type-w32.h \
+	codepages.h

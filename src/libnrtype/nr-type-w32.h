@@ -20,6 +20,24 @@ typedef struct _NRTypeFaceGlyphW32 NRTypeFaceGlyphW32;
 #include <libnrtype/nr-type-primitives.h>
 #include <libnrtype/nr-typeface.h>
 
+enum {
+    NR_TYPE_W32_CP_1250,
+    NR_TYPE_W32_CP_1251,
+    NR_TYPE_W32_CP_1252,
+    NR_TYPE_W32_CP_1253,
+    NR_TYPE_W32_CP_1254,
+    NR_TYPE_W32_CP_1255,
+    NR_TYPE_W32_CP_1256,
+    NR_TYPE_W32_CP_1257,
+    NR_TYPE_W32_CP_1258,
+    NR_TYPE_W32_CP_874,
+    NR_TYPE_W32_CP_932,
+    NR_TYPE_W32_CP_936,
+    NR_TYPE_W32_CP_949,
+    NR_TYPE_W32_CP_950,
+    NR_TYPE_W32_CP_LAST
+};
+
 struct _NRTypeFaceGlyphW32 {
 	NRRectF area;
 	NRPointF advance;
@@ -32,7 +50,9 @@ struct _NRTypeFaceW32 {
 
 	NRFont *fonts;
 
-	int *gidx;
+	/* Glyph slots */
+	int *hgidx;
+	int *vgidx;
 	NRTypeFaceGlyphW32 *slots;
 	unsigned int slots_length;
 	unsigned int slots_size;

@@ -1,5 +1,11 @@
 2003-01-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnrtype/codepages.h: Win9x codepage declarations
+
+	* src/main.c (WinMain): Use new toplevel toolbox constructor
+
+	* src/text-context.c (sp_text_context_root_handler): Added Gdk_U to unimode
+
 	* src/libnrtype/nr-type-w32.c: Implement ANSI charset and styles
 
 	* src/libnrtype/nr-type-directory.c (nr_type_directory_build): Honour

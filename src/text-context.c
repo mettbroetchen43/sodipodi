@@ -313,6 +313,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, "\302\240", TRUE);
 				sp_document_done (SP_DT_DOCUMENT (ec->desktop));
 				return TRUE;
+			case GDK_U:
 			case GDK_u:
 				/* fixme: We need indication etc. for unicode mode */
 				if (tc->unimode) {

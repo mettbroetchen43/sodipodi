@@ -16,6 +16,8 @@
 
 /* fixme: */
 #include <glib.h>
+#include <libart_lgpl/art_affine.h>
+#include <libart_lgpl/art_bpath.h>
 
 #include "codepages.h"
 #include "nr-type-w32.h"
@@ -73,7 +75,7 @@ static NRNameList NRW32Typefaces = {0, NULL, NULL};
 static NRNameList NRW32Families = {0, NULL, NULL};
 
 static void nr_type_w32_init (void);
-static NRTypeFaceGlyphW32 *nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph);
+static NRTypeFaceGlyphW32 *nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned int metrics);
 static NRBPath *nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, unsigned int glyph, unsigned int metrics);
 
 void
@@ -129,7 +131,8 @@ nr_typeface_w32_new (NRTypeFaceDef *def)
 
 	tfw32->typeface.nglyphs = tfw32->otm->otmTextMetrics.tmLastChar - tfw32->otm->otmTextMetrics.tmFirstChar + 1;
 
-	tfw32->gidx = NULL;
+	tfw32->hgidx = NULL;
+	tfw32->vgidx = NULL;
 	tfw32->slots = NULL;
 	tfw32->slots_length = 0;
 	tfw32->slots_size = 0;
@@ -151,12 +154,13 @@ nr_typeface_w32_free (NRTypeFace *tf)
         int i;
         for (i = 0; i < tfw32->slots_length; i++) {
             if (tfw32->slots[i].outline.path > 0) {
-				nr_free (tfw32->slots[i].outline.path);
+				art_free (tfw32->slots[i].outline.path);
             }
         }
 		nr_free (tfw32->slots);
     }
-    if (tfw32->gidx) nr_free (tfw32->gidx);
+    if (tfw32->hgidx) nr_free (tfw32->hgidx);
+    if (tfw32->vgidx) nr_free (tfw32->vgidx);
 
     nr_free (tf);
 }
@@ -234,7 +238,7 @@ nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 
 	tfw32 = (NRTypeFaceW32 *) tf;
 
-	slot = nr_typeface_w32_ensure_slot (tfw32, glyph);
+	slot = nr_typeface_w32_ensure_slot (tfw32, glyph, metrics);
 
 	if (slot) {
 		nr_typeface_w32_ensure_outline (tfw32, slot, glyph, metrics);
@@ -261,7 +265,7 @@ nr_typeface_w32_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigne
 
 	tfw32 = (NRTypeFaceW32 *) tf;
 
-	slot = nr_typeface_w32_ensure_slot (tfw32, glyph);
+	slot = nr_typeface_w32_ensure_slot (tfw32, glyph, metrics);
 
 	if (slot && slot->olref > 0) {
 		slot->olref -= 1;
@@ -280,7 +284,7 @@ nr_typeface_w32_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 
 	tfw32 = (NRTypeFaceW32 *) tf;
 
-	slot = nr_typeface_w32_ensure_slot (tfw32, glyph);
+	slot = nr_typeface_w32_ensure_slot (tfw32, glyph, metrics);
 
 	if (slot) {
 		*adv = slot->advance;
@@ -300,8 +304,8 @@ nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 
 	tfw32 = (NRTypeFaceW32 *) tf;
 
-	uc2cp = tt_cp1250;
-	uc2cp_size = tt_cp1250_size;
+	uc2cp = tt_cp1252;
+	uc2cp_size = tt_cp1252_size;
 
 	switch (tfw32->logfont->lfCharSet) {
 	    case ANSI_CHARSET:
@@ -309,19 +313,52 @@ nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 	         uc2cp_size = tt_cp1252_size;
 	         break;
 	    case BALTIC_CHARSET:
+	         uc2cp = tt_cp1257;
+	         uc2cp_size = tt_cp1257_size;
+	         break;
 	    case CHINESEBIG5_CHARSET:
+	         uc2cp = tt_cp950;
+	         uc2cp_size = tt_cp950_size;
+	         break;
 	    case DEFAULT_CHARSET:
+	         break;
 	    case EASTEUROPE_CHARSET:
+	         uc2cp = tt_cp1250;
+	         uc2cp_size = tt_cp1250_size;
+	         break;
 	    case GB2312_CHARSET:
+	         uc2cp = tt_cp936;
+	         uc2cp_size = tt_cp936_size;
+	         break;
 	    case GREEK_CHARSET:
+	         uc2cp = tt_cp1253;
+	         uc2cp_size = tt_cp1253_size;
+	         break;
 	    case HANGUL_CHARSET:
+	         uc2cp = tt_cp949;
+	         uc2cp_size = tt_cp949_size;
+	         break;
 	    case MAC_CHARSET:
+	         break;
 	    case OEM_CHARSET:
+	         break;
 	    case RUSSIAN_CHARSET:
+	         uc2cp = tt_cp1251;
+	         uc2cp_size = tt_cp1251_size;
+	         break;
 	    case SHIFTJIS_CHARSET:
+	         uc2cp = tt_cp932;
+	         uc2cp_size = tt_cp932_size;
+	         break;
 	    case SYMBOL_CHARSET:
+	         break;
 	    case TURKISH_CHARSET:
+	         uc2cp = tt_cp1254;
+	         uc2cp_size = tt_cp1254_size;
+	         break;
 	    case VIETNAMESE_CHARSET:
+	         uc2cp = tt_cp1258;
+	         uc2cp_size = tt_cp1258_size;
 	         break;
 	    default:
 	         break;
@@ -389,6 +426,16 @@ static int CALLBACK
 nr_type_w32_inner_enum_proc (ENUMLOGFONTEX *elfex, NEWTEXTMETRICEX *tmex, DWORD fontType, LPARAM lParam)
 {
     unsigned char *name;
+
+	switch (elfex->elfLogFont.lfCharSet) {
+	    case MAC_CHARSET:
+	    case OEM_CHARSET:
+	    case SYMBOL_CHARSET:
+	         return 1;
+	         break;
+	    default:
+	         break;
+	}
 
     if (!g_hash_table_lookup (familydict, elfex->elfLogFont.lfFaceName)) {
         unsigned char *s;
@@ -467,17 +514,31 @@ nr_type_w32_init (void)
 }
 
 static NRTypeFaceGlyphW32 *
-nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph)
+nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned int metrics)
 {
-	if (!tfw32->gidx) {
+	int gidx;
+
+	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
+		if (!tfw32->vgidx) {
 		int i;
-		tfw32->gidx = nr_new (int, tfw32->typeface.nglyphs);
+			tfw32->vgidx = nr_new (int, tfw32->typeface.nglyphs);
 		for (i = 0; i < tfw32->typeface.nglyphs; i++) {
-			tfw32->gidx[i] = -1;
+				tfw32->vgidx[i] = -1;
 		}
 	}
+		gidx = tfw32->vgidx[glyph];
+	} else {
+		if (!tfw32->hgidx) {
+			int i;
+			tfw32->hgidx = nr_new (int, tfw32->typeface.nglyphs);
+			for (i = 0; i < tfw32->typeface.nglyphs; i++) {
+				tfw32->hgidx[i] = -1;
+			}
+		}
+		gidx = tfw32->hgidx[glyph];
+	}
 
-	if (tfw32->gidx[glyph] < 0) {
+	if (gidx < 0) {
 		NRTypeFaceGlyphW32 *slot;
 		static MAT2 mat = {{0, 1}, {0, 0}, {0, 0}, {0, 1}};
 		GLYPHMETRICS gmetrics;
@@ -495,21 +556,39 @@ nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph)
 		/* Have to select font */
 		SelectFont (hdc, tfw32->hfont);
 		GetGlyphOutline (hdc, glyph + tfw32->otm->otmTextMetrics.tmFirstChar, GGO_METRICS, &gmetrics, 0, NULL, &mat);
+
+		if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
+			slot->area.x0 = -0.5 * gmetrics.gmBlackBoxX;
+			slot->area.x1 =  0.5 * gmetrics.gmBlackBoxX;
+			slot->area.y1 = gmetrics.gmptGlyphOrigin.y - 1000.0;
+			slot->area.y0 = slot->area.y1 - gmetrics.gmBlackBoxY;
+			slot->advance.x = 0.0;
+        		slot->advance.y = -1000.0;
+		} else {
 		slot->area.x0 = gmetrics.gmptGlyphOrigin.x;
 		slot->area.y1 = gmetrics.gmptGlyphOrigin.y;
 		slot->area.x1 = slot->area.x0 + gmetrics.gmBlackBoxX;
 		slot->area.y0 = slot->area.y1 - gmetrics.gmBlackBoxY;
 		slot->advance.x = gmetrics.gmCellIncX;
         slot->advance.y = gmetrics.gmCellIncY;
+		}
 
 		slot->olref = 0;
 		slot->outline.path = NULL;
 
-		tfw32->gidx[glyph] = tfw32->slots_length;
+		if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
+			tfw32->vgidx[glyph] = tfw32->slots_length;
+		} else {
+			tfw32->hgidx[glyph] = tfw32->slots_length;
+		}
 		tfw32->slots_length += 1;
 	}
 
-	return tfw32->slots + tfw32->gidx[glyph];
+	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
+		return tfw32->slots + tfw32->vgidx[glyph];
+	} else {
+		return tfw32->slots + tfw32->hgidx[glyph];
+	}
 }
 
 #define FIXED_TO_FLOAT(p) ((p)->value + (double) (p)->fract / 65536.0)
@@ -602,8 +681,20 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
 
     bp->code = ART_END;
 
-    slot->outline.path = nr_new (ArtBpath, bp - bpath + 1);
+	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
+		double a[6];
+		static MAT2 mat = {{0, 1}, {0, 0}, {0, 0}, {0, 1}};
+		GLYPHMETRICS gmetrics;
+		/* Have to select font */
+		SelectFont (hdc, tfw32->hfont);
+		GetGlyphOutline (hdc, glyph + tfw32->otm->otmTextMetrics.tmFirstChar, GGO_METRICS, &gmetrics, 0, NULL, &mat);
+		art_affine_translate (a, -0.5 * gmetrics.gmBlackBoxX - gmetrics.gmptGlyphOrigin.x,
+			gmetrics.gmptGlyphOrigin.y - 1000.0 - gmetrics.gmptGlyphOrigin.y);
+		slot->outline.path = art_bpath_affine_transform (bpath, a);
+	} else {
+		slot->outline.path = art_new (ArtBpath, bp - bpath + 1);
     memcpy (slot->outline.path, bpath, (bp - bpath + 1) * sizeof (ArtBpath));
+	}
 
     nr_free (gol);
 
