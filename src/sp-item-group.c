@@ -131,14 +131,16 @@ static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * r
 		name = sp_repr_name (crepr);
 		g_assert (name != NULL);
 		type = sp_object_type_lookup (name);
-		child = gtk_type_new (type);
-		child->parent = object;
-		if (SP_IS_ITEM (child)) {
-			group->children = g_slist_append (group->children, child);
-		} else {
-			group->other = g_slist_append (group->other, child);
+		if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
+			child = gtk_type_new (type);
+			child->parent = object;
+			if (SP_IS_ITEM (child)) {
+				group->children = g_slist_append (group->children, child);
+			} else {
+				group->other = g_slist_append (group->other, child);
+			}
+			sp_object_invoke_build (child, document, crepr);
 		}
-		sp_object_invoke_build (child, document, crepr);
 		l = l->next;
 	}
 }

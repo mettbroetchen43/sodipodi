@@ -1,5 +1,10 @@
 2000-05-02  Lauris Kaplinski  <lauris@ariman.ee>
 
+	* src/sp-item-group.c (sp_group_build): Check that xml node is
+	known, before trying to build object from it
+
+2000-05-02  Lauris Kaplinski  <lauris@ariman.ee>
+
 	* src/sp-gradient.*: Implemented skeleton for gradient fills
 	* src/sp-object-repr.c: Gradient parsing
 
