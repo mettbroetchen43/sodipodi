@@ -6,6 +6,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "display/nr-arena.h"
 #include "display/nr-arena-item.h"
@@ -19,6 +20,7 @@
 /* fixme: I do not like that (Lauris) */
 #include "dialogs/item-properties.h"
 #include "dialogs/object-attributes.h"
+#include "sp-root.h"
 #include "sp-anchor.h"
 #include "sp-clippath.h"
 #include "sp-item.h"
@@ -29,6 +31,7 @@ static void sp_item_destroy (GtkObject * object);
 
 static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_item_read_attr (SPObject *object, const gchar *key);
+static void sp_item_modified (SPObject *object, guint flags);
 static void sp_item_style_modified (SPObject *object, guint flags);
 
 static gchar * sp_item_private_description (SPItem * item);
@@ -81,6 +84,7 @@ sp_item_class_init (SPItemClass * klass)
 
 	sp_object_class->build = sp_item_build;
 	sp_object_class->read_attr = sp_item_read_attr;
+	sp_object_class->modified = sp_item_modified;
 	sp_object_class->style_modified = sp_item_style_modified;
 
 	klass->description = sp_item_private_description;
@@ -168,8 +172,6 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 		art_affine_identity (a);
 		if (astr != NULL) sp_svg_read_affine (a, astr);
 		sp_item_set_item_transform (item, a);
-		/* fixme: in update */
-		object->style->real_stroke_width_set = FALSE;
 	}
 
 	if (!strcmp (key, "clip-path")) {
@@ -220,6 +222,28 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 }
 
 static void
+sp_item_modified (SPObject *object, guint flags)
+{
+	SPItem *item;
+	SPStyle *style;
+
+	item = SP_ITEM (object);
+	style = SP_OBJECT_STYLE (object);
+
+	if (!style->stroke_width.unit == SP_CSS_UNIT_PERCENT) {
+		gdouble i2vp[6], vp2i[6];
+		gdouble aw, ah;
+		/* fixme: It is somewhat dangerous, yes (lauris) */
+		sp_item_i2vp_affine (item, i2vp);
+		art_affine_invert (vp2i, i2vp);
+		aw = sp_distance_d_matrix_d_transform (1.0, vp2i);
+		ah = sp_distance_d_matrix_d_transform (1.0, vp2i);
+		/* sqrt ((actual_width) ** 2 + (actual_height) ** 2)) / sqrt (2) */
+		style->stroke_width.computed = style->stroke_width.value * sqrt (aw * aw + ah * ah) * M_SQRT1_2;
+	}
+}
+
+static void
 sp_item_style_modified (SPObject *object, guint flags)
 {
 	SPItem *item;
@@ -243,19 +267,6 @@ sp_item_style_modified (SPObject *object, guint flags)
 	}
 #endif
 
-	if (!style->real_stroke_width_set) {
-		gdouble i2doc[6], dx, dy;
-		gdouble a2u, u2a;
-		sp_item_i2doc_affine (item, i2doc);
-		dx = i2doc[0] + i2doc[2];
-		dy = i2doc[1] + i2doc[3];
-		u2a = sqrt (dx * dx + dy * dy) * 0.707106781;
-		a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
-		/* Calculate actual stroke width */
-		style->absolute_stroke_width = sp_item_distance_to_svg_viewport (item, style->stroke_width.distance, style->stroke_width.unit);
-		style->user_stroke_width = style->absolute_stroke_width * a2u;
-		style->real_stroke_width_set = TRUE;
-	}
 
 	for (v = item->display; v != NULL; v = v->next) {
 		nr_arena_item_set_opacity (v->arenaitem, SP_SCALE24_TO_FLOAT (object->style->opacity.value));
@@ -570,6 +581,41 @@ sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 	return affine;
 }
 
+/* Transformation to normalized (0,0-1,1) viewport */
+
+gdouble *
+sp_item_i2vp_affine (SPItem *item, gdouble affine[])
+{
+	SPRoot *root;
+
+	g_return_val_if_fail (item != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
+	g_return_val_if_fail (affine != NULL, NULL);
+
+	art_affine_identity (affine);
+
+	while (SP_OBJECT_PARENT (item)) {
+		art_affine_multiply (affine, affine, item->affine);
+		item = (SPItem *) SP_OBJECT_PARENT (item);
+	}
+
+	g_return_val_if_fail (SP_IS_ROOT (item), NULL);
+
+	/* fixme: Viewbox is specified using root transformation (Lauris) */
+	art_affine_multiply (affine, affine, item->affine);
+
+	root = SP_ROOT (item);
+
+	affine[0] /= root->width.computed;
+	affine[1] /= root->height.computed;
+	affine[2] /= root->width.computed;
+	affine[3] /= root->height.computed;
+
+	return affine;
+}
+
+/* fixme: This is EVIL!!! */
+
 gdouble *
 sp_item_i2d_affine (SPItem *item, gdouble affine[])
 {
@@ -580,8 +626,7 @@ sp_item_i2d_affine (SPItem *item, gdouble affine[])
 	g_return_val_if_fail (affine != NULL, NULL);
 
 	sp_item_i2doc_affine (item, affine);
-	art_affine_identity (doc2dt);
-	doc2dt[3] = -1.0;
+	art_affine_scale (doc2dt, 0.8, -0.8);
 	doc2dt[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
 	art_affine_multiply (affine, affine, doc2dt);
 
@@ -600,8 +645,7 @@ sp_item_set_i2d_affine (SPItem *item, gdouble affine[])
 	if (SP_OBJECT_PARENT (item)) {
 		sp_item_i2d_affine ((SPItem *) SP_OBJECT_PARENT (item), p2d);
 	} else {
-		art_affine_identity (p2d);
-		p2d[3] = -1.0;
+		art_affine_scale (p2d, 0.8, -0.8);
 		p2d[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
 	}
 

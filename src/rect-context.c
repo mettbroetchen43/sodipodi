@@ -314,10 +314,11 @@ sp_rect_finish (SPRectContext * rc)
 		rect = SP_RECT (rc->item);
 		repr = SP_OBJECT (rc->item)->repr;
 
-		sp_repr_set_double_attribute (repr, "x", rect->x);
-		sp_repr_set_double_attribute (repr, "y", rect->y);
-		sp_repr_set_double_attribute (repr, "width", rect->width);
-		sp_repr_set_double_attribute (repr, "height", rect->height);
+		/* fixme: Set shape or some other convenience method */
+		sp_repr_set_double_attribute (repr, "x", rect->x.computed);
+		sp_repr_set_double_attribute (repr, "y", rect->y.computed);
+		sp_repr_set_double_attribute (repr, "width", rect->width.computed);
+		sp_repr_set_double_attribute (repr, "height", rect->height.computed);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), rc->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));

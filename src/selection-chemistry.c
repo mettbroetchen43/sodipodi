@@ -106,6 +106,28 @@ void sp_selection_duplicate (GtkWidget * widget)
 	g_slist_free (newsel);
 }
 
+void
+sp_edit_clear_all (gpointer data)
+{
+	SPDesktop *dt;
+	SPDocument *doc;
+	GSList *items;
+
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	doc = SP_DT_DOCUMENT (dt);
+	sp_selection_set_empty (SP_DT_SELECTION (dt));
+
+	items = sp_item_group_item_list (SP_GROUP (sp_document_root (doc)));
+
+	while (items) {
+		sp_repr_unparent (SP_OBJECT_REPR (items->data));
+		items = g_slist_remove (items, items->data);
+	}
+
+	sp_document_done (doc);
+}
+
 /* fixme: sequencing */
 
 void

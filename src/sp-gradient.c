@@ -1,18 +1,15 @@
 #define __SP_GRADIENT_C__
 
 /*
- * SPGradient
- *
- * TODO: Implement radial & other fancy gradients
- * TODO: Implement linking attributes
+ * SVG <stop> <linearGradient> and <radialGradient> implementation
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <math.h>
@@ -39,9 +36,9 @@ static SPObjectClass * stop_parent_class;
 GtkType
 sp_stop_get_type (void)
 {
-	static GtkType stop_type = 0;
-	if (!stop_type) {
-		GtkTypeInfo stop_info = {
+	static GtkType type = 0;
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPStop",
 			sizeof (SPStop),
 			sizeof (SPStopClass),
@@ -49,9 +46,9 @@ sp_stop_get_type (void)
 			(GtkObjectInitFunc) sp_stop_init,
 			NULL, NULL, NULL
 		};
-		stop_type = gtk_type_unique (sp_object_get_type (), &stop_info);
+		type = gtk_type_unique (SP_TYPE_OBJECT, &info);
 	}
-	return stop_type;
+	return type;
 }
 
 static void
@@ -61,7 +58,7 @@ sp_stop_class_init (SPStopClass * klass)
 
 	sp_object_class = (SPObjectClass *) klass;
 
-	stop_parent_class = gtk_type_class (sp_object_get_type ());
+	stop_parent_class = gtk_type_class (SP_TYPE_OBJECT);
 
 	sp_object_class->build = sp_stop_build;
 	sp_object_class->read_attr = sp_stop_read_attr;
@@ -93,8 +90,9 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 
 	stop = SP_STOP (object);
 
-	if (strcmp (key, "style") == 0) {
+	if (!strcmp (key, "style")) {
 		const guchar *p;
+		/* fixme: We need presentation attributes etc. */
 		p = sp_object_get_style_property (object, "stop-color", "black");
 		color = sp_svg_read_color (p, 0x00000000);
 		sp_color_set_rgb_rgba32 (&stop->color, color);
@@ -102,22 +100,15 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 		opacity = sp_svg_read_percentage (p, 1.0);
 		stop->opacity = opacity;
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
-		return;
-	}
-	if (strcmp (key, "offset") == 0) {
-		static const SPUnit *percent = NULL;
-		const SPUnit *unit;
-		const guchar *val;
-		if (!percent) percent = sp_unit_get_by_abbreviation ("%");
-		val = sp_repr_attr (object->repr, key);
-		stop->offset = sp_svg_read_length (&unit, val, 0.0);
-		if (unit == percent) stop->offset /= 100.0;
+	} else if (!strcmp (key, "offset")) {
+		const guchar *str;
+		str = sp_repr_attr (object->repr, key);
+		stop->offset = sp_svg_read_percentage (str, 0.0);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
+	} else {
+		if (SP_OBJECT_CLASS (stop_parent_class)->read_attr)
+			(* SP_OBJECT_CLASS (stop_parent_class)->read_attr) (object, key);
 	}
-
-	if (SP_OBJECT_CLASS (stop_parent_class)->read_attr)
-		(* SP_OBJECT_CLASS (stop_parent_class)->read_attr) (object, key);
 }
 
 /*
@@ -1036,14 +1027,10 @@ sp_lineargradient_class_init (SPLinearGradientClass * klass)
 static void
 sp_lineargradient_init (SPLinearGradient * lg)
 {
-	lg->x1.distance = 0.0;
-	lg->x1.unit = sp_unit_get_by_abbreviation ("%");
-	lg->y1.distance = 0.0;
-	lg->y1.unit = sp_unit_get_by_abbreviation ("%");
-	lg->x2.distance = 100.0;
-	lg->x2.unit = sp_unit_get_by_abbreviation ("%");
-	lg->y2.distance = 0.0;
-	lg->y2.unit = sp_unit_get_by_abbreviation ("%");
+	sp_svg_length_unset (&lg->x1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
+	sp_svg_length_unset (&lg->y1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
+	sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 100.0);
+	sp_svg_length_unset (&lg->y2, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
 }
 
 static void
@@ -1077,36 +1064,36 @@ static void
 sp_lineargradient_read_attr (SPObject * object, const gchar * key)
 {
 	SPLinearGradient * lg;
-	const gchar *val;
+	const guchar *str;
 
 	lg = SP_LINEARGRADIENT (object);
 
-	val = sp_repr_attr (object->repr, key);
+	str = sp_repr_attr (object->repr, key);
 
 	if (!strcmp (key, "x1")) {
-		lg->x1.distance = sp_svg_read_length (&lg->x1.unit, val, 0.0);
-		lg->x1_set = (val != NULL);
+		if (!sp_svg_length_read (str, &lg->x1)) {
+			sp_svg_length_unset (&lg->x1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
+		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "y1")) {
-		lg->y1.distance = sp_svg_read_length (&lg->y1.unit, val, 0.0);
-		lg->y1_set = (val != NULL);
+		if (!sp_svg_length_read (str, &lg->y1)) {
+			sp_svg_length_unset (&lg->y1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
+		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "x2")) {
-		lg->x2.distance = sp_svg_read_length (&lg->x2.unit, val, 1.0);
-		lg->x2_set = (val != NULL);
+		if (!sp_svg_length_read (str, &lg->x2)) {
+			sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 100.0);
+		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
 	} else if (!strcmp (key, "y2")) {
-		lg->y2.distance = sp_svg_read_length (&lg->y2.unit, val, 0.0);
-		lg->y2_set = (val != NULL);
+		if (!sp_svg_length_read (str, &lg->y2)) {
+			sp_svg_length_unset (&lg->y2, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
+		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
+	} else {
+		if (SP_OBJECT_CLASS (lg_parent_class)->read_attr)
+			(* SP_OBJECT_CLASS (lg_parent_class)->read_attr) (object, key);
 	}
-
-	if (SP_OBJECT_CLASS (lg_parent_class)->read_attr)
-		(* SP_OBJECT_CLASS (lg_parent_class)->read_attr) (object, key);
 }
 
 static SPPainter *
@@ -1145,12 +1132,12 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, gdouble
 		g_print ("\nnorm2vec: ");for (i = 0; i < 6; i++) g_print ("%g ", norm2vec[i]);g_print ("\n");
 #endif
 		/* fixme: gradient transform somewhere here */
-		vec2b[0] = lg->x2.distance - lg->x1.distance;
-		vec2b[1] = lg->y2.distance - lg->y1.distance;
-		vec2b[2] = lg->y2.distance - lg->y1.distance;
-		vec2b[3] = lg->x1.distance - lg->x2.distance;
-		vec2b[4] = lg->x1.distance;
-		vec2b[5] = lg->y1.distance;
+		vec2b[0] = lg->x2.computed - lg->x1.computed;
+		vec2b[1] = lg->y2.computed - lg->y1.computed;
+		vec2b[2] = lg->y2.computed - lg->y1.computed;
+		vec2b[3] = lg->x1.computed - lg->x2.computed;
+		vec2b[4] = lg->x1.computed;
+		vec2b[5] = lg->y1.computed;
 #if 0
 		g_print ("vec2b: ");for (i = 0; i < 6; i++) g_print ("%g ", vec2b[i]);g_print ("\n");
 #endif
@@ -1204,10 +1191,11 @@ sp_lineargradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set
 
 	lg = SP_LINEARGRADIENT (gr);
 
-	if (set_missing || lg->x1_set) sp_repr_set_double_attribute (repr, "x1", lg->x1.distance);
-	if (set_missing || lg->y1_set) sp_repr_set_double_attribute (repr, "y1", lg->y1.distance);
-	if (set_missing || lg->x2_set) sp_repr_set_double_attribute (repr, "x2", lg->x2.distance);
-	if (set_missing || lg->y2_set) sp_repr_set_double_attribute (repr, "y2", lg->y2.distance);
+	/* fixme: Write real units etc. (Lauris) */
+	if (set_missing || lg->x1.set) sp_repr_set_double_attribute (repr, "x1", lg->x1.computed);
+	if (set_missing || lg->y1.set) sp_repr_set_double_attribute (repr, "y1", lg->y1.computed);
+	if (set_missing || lg->x2.set) sp_repr_set_double_attribute (repr, "x2", lg->x2.computed);
+	if (set_missing || lg->y2.set) sp_repr_set_double_attribute (repr, "y2", lg->y2.computed);
 }
 
 void
@@ -1216,11 +1204,11 @@ sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gd
 	g_return_if_fail (lg != NULL);
 	g_return_if_fail (SP_IS_LINEARGRADIENT (lg));
 
-	/* fixme: units */
-	lg->x1.distance = x1;
-	lg->y1.distance = y1;
-	lg->x2.distance = x2;
-	lg->y2.distance = y2;
+	/* fixme: units? (Lauris)  */
+	sp_svg_length_unset (&lg->x1, SP_SVG_UNIT_NONE, x1, x1);
+	sp_svg_length_unset (&lg->y1, SP_SVG_UNIT_NONE, y1, y1);
+	sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_NONE, x2, x2);
+	sp_svg_length_unset (&lg->y2, SP_SVG_UNIT_NONE, y2, y2);
 
 	sp_object_request_modified (SP_OBJECT (lg), SP_OBJECT_MODIFIED_FLAG);
 }
@@ -1379,16 +1367,11 @@ sp_radialgradient_class_init (SPRadialGradientClass * klass)
 static void
 sp_radialgradient_init (SPRadialGradient *rg)
 {
-	rg->cx.distance = 0.5;
-	rg->cx.unit = sp_unit_get_by_abbreviation ("%");
-	rg->cy.distance = 0.5;
-	rg->cy.unit = sp_unit_get_by_abbreviation ("%");
-	rg->r.distance = 0.5;
-	rg->r.unit = sp_unit_get_by_abbreviation ("%");
-	rg->fx.distance = 0.5;
-	rg->fx.unit = sp_unit_get_by_abbreviation ("%");
-	rg->fy.distance = 0.5;
-	rg->fy.unit = sp_unit_get_by_abbreviation ("%");
+	sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+	sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+	sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+	sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+	sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
 }
 
 static void
@@ -1423,36 +1406,41 @@ static void
 sp_radialgradient_read_attr (SPObject *object, const gchar *key)
 {
 	SPRadialGradient *rg;
-	const gchar *val;
+	const guchar *str;
 
 	rg = SP_RADIALGRADIENT (object);
 
-	val = sp_repr_attr (object->repr, key);
+	str = sp_repr_attr (object->repr, key);
 
 	if (!strcmp (key, "cx")) {
-		rg->cx.distance = sp_svg_read_length (&rg->cx.unit, val, 0.0);
-		rg->cx_set = (val != NULL);
-		return;
+		if (!sp_svg_length_read (str, &rg->cx)) {
+			sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "cy")) {
-		rg->cy.distance = sp_svg_read_length (&rg->cy.unit, val, 0.0);
-		rg->cy_set = (val != NULL);
-		return;
+		if (!sp_svg_length_read (str, &rg->cy)) {
+			sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "r")) {
-		rg->r.distance = sp_svg_read_length (&rg->r.unit, val, 0.0);
-		rg->r_set = (val != NULL);
-		return;
+		if (!sp_svg_length_read (str, &rg->r)) {
+			sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "fx")) {
-		rg->fx.distance = sp_svg_read_length (&rg->fx.unit, val, 1.0);
-		rg->fx_set = (val != NULL);
-		return;
+		if (!sp_svg_length_read (str, &rg->fx)) {
+			sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "fy")) {
-		rg->fy.distance = sp_svg_read_length (&rg->fy.unit, val, 0.0);
-		rg->fy_set = (val != NULL);
-		return;
+		if (!sp_svg_length_read (str, &rg->fy)) {
+			sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 50.0);
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+	} else {
+		if (SP_OBJECT_CLASS (rg_parent_class)->read_attr)
+			(* SP_OBJECT_CLASS (rg_parent_class)->read_attr) (object, key);
 	}
-
-	if (SP_OBJECT_CLASS (rg_parent_class)->read_attr)
-		(* SP_OBJECT_CLASS (rg_parent_class)->read_attr) (object, key);
 }
 
 static SPPainter *
@@ -1551,11 +1539,11 @@ sp_radialgradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set
 
 	rg = SP_RADIALGRADIENT (gr);
 
-	if (set_missing || rg->cx_set) sp_repr_set_double_attribute (repr, "cx", rg->cx.distance);
-	if (set_missing || rg->cy_set) sp_repr_set_double_attribute (repr, "cy", rg->cy.distance);
-	if (set_missing || rg->r_set) sp_repr_set_double_attribute (repr, "r", rg->r.distance);
-	if (set_missing || rg->fx_set) sp_repr_set_double_attribute (repr, "fx", rg->fx.distance);
-	if (set_missing || rg->fy_set) sp_repr_set_double_attribute (repr, "fy", rg->fy.distance);
+	if (set_missing || rg->cx.set) sp_repr_set_double_attribute (repr, "cx", rg->cx.computed);
+	if (set_missing || rg->cy.set) sp_repr_set_double_attribute (repr, "cy", rg->cy.computed);
+	if (set_missing || rg->r.set) sp_repr_set_double_attribute (repr, "r", rg->r.computed);
+	if (set_missing || rg->fx.set) sp_repr_set_double_attribute (repr, "fx", rg->fx.computed);
+	if (set_missing || rg->fy.set) sp_repr_set_double_attribute (repr, "fy", rg->fy.computed);
 }
 
 /* Builds flattened repr tree of gradient - i.e. no href */

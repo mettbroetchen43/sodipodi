@@ -26,6 +26,7 @@
 #include <libart_lgpl/art_gray_svp.h>
 #include "../helper/nr-buffers.h"
 #include "../helper/nr-plain-stuff.h"
+#include "../helper/art-utils.h"
 #include "../style.h"
 #include "nr-arena.h"
 #include "nr-arena-shape.h"
@@ -185,11 +186,10 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 	}
 
 	if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {
-		gdouble wx, wy;
-		wx = gc->affine[0] + gc->affine[2];
-		wy = gc->affine[1] + gc->affine[3];
+		gdouble width;
+		width = sp_distance_d_matrix_d_transform (shape->style->stroke_width.computed, gc->affine);
 		shape->stroke_svp = art_svp_vpath_stroke (pvp, shape->style->stroke_linejoin.value, shape->style->stroke_linecap.value,
-							  shape->style->user_stroke_width * hypot (wx, wy) * M_SQRT1_2,
+							  width,
 							  shape->style->stroke_miterlimit.value, 0.25);
 	}
 

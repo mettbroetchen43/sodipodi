@@ -140,6 +140,6 @@ GSList * sp_document_items_in_box (SPDocument * document, ArtDRect * box);
 GSList * sp_document_partial_items_in_box (SPDocument * document, ArtDRect * box);
 
 void sp_document_set_uri (SPDocument *document, const guchar *uri);
-void sp_document_set_size (SPDocument *doc, gdouble width, gdouble height);
+void sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height);
 
 #endif

@@ -295,7 +295,7 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 				gnome_print_gsave (gpc);
 				gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 				gnome_print_setopacity (gpc, opacity);
-				gnome_print_setlinewidth (gpc, object->style->user_stroke_width);
+				gnome_print_setlinewidth (gpc, object->style->stroke_width.computed);
 				gnome_print_setlinejoin (gpc, object->style->stroke_linejoin.value);
 				gnome_print_setlinecap (gpc, object->style->stroke_linecap.value);
 				gnome_print_stroke (gpc);

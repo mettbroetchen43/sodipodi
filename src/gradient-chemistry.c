@@ -16,6 +16,7 @@
 #include <ctype.h>
 
 #include "xml/repr-private.h"
+#include "style.h"
 #include "document-private.h"
 #include "sp-root.h"
 #include "gradient-chemistry.h"

@@ -1,16 +1,16 @@
 #define __SP_SPIRAL_C__
 
 /*
- * SPSpiral
+ * <sodipodi:spiral> implementation
  *
  * Authors:
  *   Mitsuru Oka <oka326@parkcity.ne.jp>
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001 Mitsuru Oka
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Licensed under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -20,11 +20,11 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"
-#include "sp-shape.h"
-#include "sp-spiral.h"
 #include "knotholder.h"
 #include "helper/bezier-utils.h"
 #include "dialogs/object-attributes.h"
+
+#include "sp-spiral.h"
 
 #define noSPIRAL_VERBOSE
 
@@ -172,23 +172,9 @@ sp_spiral_write_repr (SPObject * object, SPRepr * repr)
 		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
 }
 
-static void
-sp_spiral_read_attr (SPObject * object, const gchar * attr)
-{
-	SPSpiral *spiral;
-	SPShape  *shape;
-	const gchar *astr;
-	const SPUnit *unit;
-
-	spiral = SP_SPIRAL (object);
-	shape  = SP_SHAPE (object);
-
-#ifdef SPIRAL_VERBOSE
-	g_print ("sp_spiral_read_attr: attr %s\n", attr);
-#endif
-
-	astr = sp_repr_attr (object->repr, attr);
-
+#if 0
+/* Yeah, this is nice, but values are of different type */
+/* How would you interpet sodipodi:expansion="10mm" ;-() (Lauris) */
 	/* I use dirty macro */
 #define sp_spiral_test_new_dvalue(dst,defval) { 				\
 		gdouble dvalue = dst;					\
@@ -199,27 +185,88 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 			return;						\
 		}							\
 	}
+#endif
+
+static void
+sp_spiral_read_attr (SPObject * object, const gchar * attr)
+{
+	SPSpiral *spiral;
+	SPShape  *shape;
+	const gchar *str;
+	gulong unit;
+
+	spiral = SP_SPIRAL (object);
+	shape  = SP_SHAPE (object);
+
+#ifdef SPIRAL_VERBOSE
+	g_print ("sp_spiral_read_attr: attr %s\n", attr);
+#endif
+
+	str = sp_repr_attr (object->repr, attr);
+
 
 	/* fixme: we should really collect updates */
-	if (strcmp (attr, "sodipodi:cx") == 0) {
-		sp_spiral_test_new_dvalue (spiral->cx, 0.0);
-	} else if (strcmp (attr, "sodipodi:cy") == 0) {
-		sp_spiral_test_new_dvalue (spiral->cy, 0.0);
-	} else if (strcmp (attr, "sodipodi:expansion") == 0) {
-		sp_spiral_test_new_dvalue (spiral->exp, 1.0);
-	} else if (strcmp (attr, "sodipodi:revolution") == 0) {
-		sp_spiral_test_new_dvalue (spiral->revo, 3.0);
-	} else if (strcmp (attr, "sodipodi:radius") == 0) {
-		sp_spiral_test_new_dvalue (spiral->rad, 0.0);
+	if (!strcmp (attr, "sodipodi:cx")) {
+		if (!sp_svg_length_read_lff (str, &unit, NULL, &spiral->cx) ||
+		    (unit != SP_SVG_UNIT_EM) ||
+		    (unit != SP_SVG_UNIT_EX) ||
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			spiral->cx = 0.0;
+		}
+		sp_shape_set_shape (shape);
+	} else if (!strcmp (attr, "sodipodi:cy")) {
+		if (!sp_svg_length_read_lff (str, &unit, NULL, &spiral->cy) ||
+		    (unit != SP_SVG_UNIT_EM) ||
+		    (unit != SP_SVG_UNIT_EX) ||
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			spiral->cy = 0.0;
+		}
+		sp_shape_set_shape (shape);
+	} else if (!strcmp (attr, "sodipodi:expansion")) {
+		if (str) {
+			spiral->exp = atof (str);
+			spiral->exp = MAX (spiral->exp, 0.0);
+		} else {
+			spiral->exp = 1.0;
+		}
+		sp_shape_set_shape (shape);
+	} else if (!strcmp (attr, "sodipodi:revolution")) {
+		if (str) {
+			spiral->revo = atof (str);
+			spiral->revo = CLAMP (spiral->revo, 0.05, 20.0);
+		} else {
+			spiral->revo = 3.0;
+		}
+		sp_shape_set_shape (shape);
+	} else if (!strcmp (attr, "sodipodi:radius")) {
+		if (!sp_svg_length_read_lff (str, &unit, NULL, &spiral->rad) ||
+		    (unit != SP_SVG_UNIT_EM) ||
+		    (unit != SP_SVG_UNIT_EX) ||
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			spiral->rad = MAX (spiral->rad, 0.0);
+		}
+		sp_shape_set_shape (shape);
 	} else if (strcmp (attr, "sodipodi:argument") == 0) {
-		sp_spiral_test_new_dvalue (spiral->arg, 0.0);
+		if (str) {
+			spiral->arg = atof (str);
+			spiral->arg = CLAMP (spiral->arg, 0.0, (2 * M_PI));
+		} else {
+			spiral->arg = 0.0;
+		}
+		sp_shape_set_shape (shape);
 	} else if (strcmp (attr, "sodipodi:t0") == 0) {
-		sp_spiral_test_new_dvalue (spiral->t0, 0.0);
-	} else if (SP_OBJECT_CLASS (parent_class)->read_attr) {
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
-		return;
+		if (str) {
+			spiral->t0 = atof (str);
+			spiral->t0 = CLAMP (spiral->t0, -1.0, 1.0);
+		} else {
+			spiral->t0 = 0.0;
+		}
+		sp_shape_set_shape (shape);
+	} else {
+		if (SP_OBJECT_CLASS (parent_class)->read_attr) {
+			SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+		}
 	}
-	sp_shape_set_shape (shape);
 }
 
 static gchar *
@@ -415,7 +462,8 @@ sp_spiral_outer_set (SPItem   *item,
 	dy = p->y - spiral->cy;
 	spiral->arg = atan2(dy, dx) - 2.0*M_PI*spiral->revo;
 	spiral->rad = hypot(dx, dy);
-#if 0 /* we need round function */
+#if 0
+ /* we need round function */
 /*  	arg  = -atan2(p->y, p->x) - spiral->arg; */
 	if (state & GDK_CONTROL_MASK) {
 		spiral->revo = (round(arg/(0.25*M_PI))*0.25*M_PI)/(2.0*M_PI);
@@ -540,10 +588,7 @@ sp_spiral_get_xy (SPSpiral *spiral,
 }
 
 void
-sp_spiral_get_polar	(SPSpiral      *spiral,
-			 gdouble	t,
-			 gdouble       *rad,
-			 gdouble       *arg)
+sp_spiral_get_polar (SPSpiral *spiral, gdouble t, gdouble *rad, gdouble *arg)
 {
 	g_return_if_fail (spiral != NULL);
 	g_return_if_fail (SP_IS_SPIRAL(spiral));

@@ -12,6 +12,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <math.h>
 #include <glib.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_rect.h>
@@ -28,10 +29,12 @@ extern double SP_MATRIX_D_IDENTITY[];
 
 #define SP_MATRIX_D_IS_IDENTITY(m) art_affine_equal (m, SP_MATRIX_D_IDENTITY);
 
-ArtSVP *art_svp_translate (const ArtSVP * svp, double dx, double dy);
-ArtUta *art_uta_from_svp_translated (const ArtSVP * svp, double cx, double cy);
+ArtSVP *art_svp_translate (const ArtSVP *svp, double dx, double dy);
+ArtUta *art_uta_from_svp_translated (const ArtSVP *svp, double cx, double cy);
 
-ArtDRect *sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const gdouble *m, ArtDRect *bbox, gdouble tolerance);
+ArtDRect *sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const double *m, ArtDRect *bbox, double tolerance);
+
+#define sp_distance_d_matrix_d_transform(d,m) (d * sqrt (fabs ((m)[0] * (m)[3] - (m)[1] * (m)[2])))
 
 #endif
 

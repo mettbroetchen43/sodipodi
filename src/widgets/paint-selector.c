@@ -19,7 +19,7 @@
 
 #include <gtk/gtksignal.h>
 #include <gtk/gtkhbox.h>
-#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkradiobutton.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtklabel.h>
@@ -31,7 +31,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <libgnome/gnome-util.h>
 
-#include <libgnomeui/gnome-pixmap.h>
+#include <libgnomeui/gnome-stock.h>
 
 #include "../sp-object.h"
 
@@ -54,7 +54,7 @@ static void sp_paint_selector_class_init (SPPaintSelectorClass *klass);
 static void sp_paint_selector_init (SPPaintSelector *slider);
 static void sp_paint_selector_destroy (GtkObject *object);
 
-static GtkWidget *sp_paint_selector_style_button_add (SPPaintSelector *psel, const guchar *pixmap, SPPaintSelectorMode mode);
+static GtkWidget *sp_paint_selector_style_button_add (SPPaintSelector *psel, const guchar *px, SPPaintSelectorMode mode, GtkRadioButton *last);
 static void sp_paint_selector_style_button_toggled (GtkToggleButton *tb, SPPaintSelector *psel);
 
 static void sp_paint_selector_set_mode_empty (SPPaintSelector *psel);
@@ -151,12 +151,17 @@ sp_paint_selector_init (SPPaintSelector *psel)
 	gtk_box_pack_start (GTK_BOX (psel), psel->style, FALSE, FALSE, 0);
 
 	/* Buttons */
-	psel->none = sp_paint_selector_style_button_add (psel, "fill_none.xpm", SP_PAINT_SELECTOR_MODE_NONE);
-	psel->solid = sp_paint_selector_style_button_add (psel, "fill_solid.xpm", SP_PAINT_SELECTOR_MODE_COLOR_RGB);
-	psel->gradient = sp_paint_selector_style_button_add (psel, "fill_gradient.xpm", SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
-	psel->pattern = sp_paint_selector_style_button_add (psel, "fill_pattern.xpm", SP_PAINT_SELECTOR_MODE_PATTERN);
+	psel->none = sp_paint_selector_style_button_add (psel, "fill_none.xpm",
+							 SP_PAINT_SELECTOR_MODE_NONE, NULL);
+	psel->solid = sp_paint_selector_style_button_add (psel, "fill_solid.xpm",
+							  SP_PAINT_SELECTOR_MODE_COLOR_RGB, GTK_RADIO_BUTTON (psel->none));
+	psel->gradient = sp_paint_selector_style_button_add (psel, "fill_gradient.xpm",
+							     SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR, GTK_RADIO_BUTTON (psel->solid));
+	psel->pattern = sp_paint_selector_style_button_add (psel, "fill_pattern.xpm",
+							    SP_PAINT_SELECTOR_MODE_PATTERN, GTK_RADIO_BUTTON (psel->gradient));
 	gtk_widget_set_sensitive (psel->pattern, FALSE);
-	psel->fractal = sp_paint_selector_style_button_add (psel, "fill_fractal.xpm", SP_PAINT_SELECTOR_MODE_FRACTAL);
+	psel->fractal = sp_paint_selector_style_button_add (psel, "fill_fractal.xpm",
+							    SP_PAINT_SELECTOR_MODE_FRACTAL, GTK_RADIO_BUTTON (psel->pattern));
 	gtk_widget_set_sensitive (psel->fractal, FALSE);
 
 	/* Horizontal separator */
@@ -183,22 +188,22 @@ sp_paint_selector_destroy (GtkObject *object)
 }
 
 static GtkWidget *
-sp_paint_selector_style_button_add (SPPaintSelector *psel, const guchar *pixmap, SPPaintSelectorMode mode)
+sp_paint_selector_style_button_add (SPPaintSelector *psel, const guchar *pixmap, SPPaintSelectorMode mode, GtkRadioButton *last)
 {
 	GtkWidget *b, *w;
 	gchar *path;
 
-	b = gtk_toggle_button_new ();
+	b = gtk_radio_button_new ((last) ? gtk_radio_button_group (last) : NULL);
 	gtk_widget_show (b);
+	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (b), FALSE);
 	gtk_object_set_data (GTK_OBJECT (b), "mode", GUINT_TO_POINTER (mode));
 	path = g_concat_dir_and_file (SODIPODI_GLADEDIR, pixmap);
-	w = gnome_pixmap_new_from_file (path);
+	w = gnome_stock_pixmap_widget (GTK_WIDGET (psel), path);
 	g_free (path);
 	gtk_widget_show (w);
 	gtk_container_add (GTK_CONTAINER (b), w);
 	gtk_box_pack_start (GTK_BOX (psel->style), b, FALSE, FALSE, 0);
-	gtk_signal_connect (GTK_OBJECT (b), "toggled",
-			    GTK_SIGNAL_FUNC (sp_paint_selector_style_button_toggled), psel);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled", GTK_SIGNAL_FUNC (sp_paint_selector_style_button_toggled), psel);
 
 	return b;
 }
@@ -688,16 +693,9 @@ static void
 sp_paint_selector_set_style_buttons (SPPaintSelector *psel, GtkWidget *active)
 {
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->none), (active == psel->none));
-	gtk_widget_set_sensitive (psel->none, (active != psel->none));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->solid), (active == psel->solid));
-	gtk_widget_set_sensitive (psel->solid, (active != psel->solid));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->gradient), (active == psel->gradient));
-	gtk_widget_set_sensitive (psel->gradient, (active != psel->gradient));
-#if 0
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->pattern), (active == psel->pattern));
-	gtk_widget_set_sensitive (psel->pattern, (active != psel->pattern));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->fractal), (active == psel->fractal));
-	gtk_widget_set_sensitive (psel->fractal, (active != psel->fractal));
-#endif
 }
 

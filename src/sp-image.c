@@ -1,9 +1,9 @@
 #define __SP_IMAGE_C__
 
 /*
- * SPImage - SVG <image> element
+ * SVG <image> implementation
  *
- * Author:
+ * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
  * Copyright (C) 1999-2002 Lauris Kaplinski
@@ -109,11 +109,12 @@ sp_image_class_init (SPImageClass * klass)
 static void
 sp_image_init (SPImage *image)
 {
-	image->width_set = FALSE;
-	image->height_set = FALSE;
+	sp_svg_length_unset (&image->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&image->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&image->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&image->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
+
 	image->href = NULL;
-	image->x = image->y = 0.0;
-	image->width = image->height = 0.0;
 
 	image->pixbuf = NULL;
 }
@@ -145,7 +146,7 @@ sp_image_destroy (GtkObject *object)
 }
 
 static void
-sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr)
+sp_image_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
 	if (SP_OBJECT_CLASS (parent_class)->build)
 		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
@@ -164,11 +165,12 @@ static void
 sp_image_read_attr (SPObject * object, const gchar *key)
 {
 	SPImage *image;
-	const guchar *val;
-	const SPUnit *unit;
+	const guchar *str;
+	gulong unit;
 
 	image = SP_IMAGE (object);
-	val = sp_repr_attr (SP_OBJECT_REPR (object), key);
+
+	str = sp_repr_attr (SP_OBJECT_REPR (object), key);
 
 	if (!strcmp (key, "xlink:href")) {
 		if (image->href) {
@@ -179,9 +181,9 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 			gdk_pixbuf_unref (image->pixbuf);
 			image->pixbuf = NULL;
 		}
-		if (val) {
+		if (str) {
 			GdkPixbuf *pixbuf;
-			image->href = g_strdup (val);
+			image->href = g_strdup (str);
 			pixbuf = sp_image_repr_read_image (object->repr);
 			if (pixbuf) {
 				pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
@@ -189,29 +191,73 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 			}
 		}
 		sp_image_update_canvas_image (image);
-		return;
 	} else if (!strcmp (key, "x")) {
-		image->x = sp_svg_read_length (&unit, val, 0.0);
+		if (sp_svg_length_read_lff (str, &unit, &image->x.value, &image->x.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX) &&
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			image->x.set = TRUE;
+			image->x.unit = unit;
+		} else {
+			image->x.set = FALSE;
+			image->x.unit = SP_SVG_UNIT_NONE;
+			image->x.computed = 0.0;
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		/* fixme: Do async (Lauris) */
 		sp_image_update_canvas_image (image);
-		return;
 	} else if (!strcmp (key, "y")) {
-		image->y = sp_svg_read_length (&unit, val, 0.0);
+		if (sp_svg_length_read_lff (str, &unit, &image->y.value, &image->y.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX) &&
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			image->y.set = TRUE;
+			image->y.unit = unit;
+		} else {
+			image->y.set = FALSE;
+			image->y.unit = SP_SVG_UNIT_NONE;
+			image->y.computed = 0.0;
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		/* fixme: Do async (Lauris) */
 		sp_image_update_canvas_image (image);
-		return;
 	} else if (!strcmp (key, "width")) {
-		image->width = sp_svg_read_length (&unit, val, -1.0);
-		image->width_set = (image->width >= 0.0) ? TRUE : FALSE;
+		if (sp_svg_length_read_lff (str, &unit, &image->width.value, &image->width.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX) &&
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			image->width.set = TRUE;
+			image->width.unit = unit;
+		} else {
+			image->width.set = FALSE;
+			image->width.unit = SP_SVG_UNIT_NONE;
+			image->width.computed = 0.0;
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		/* fixme: Do async (Lauris) */
 		sp_image_update_canvas_image (image);
-		return;
 	} else if (!strcmp (key, "height")) {
-		image->height = sp_svg_read_length (&unit, val, -1.0);
-		image->height_set = (image->height >= 0.0) ? TRUE : FALSE;
+		if (sp_svg_length_read_lff (str, &unit, &image->height.value, &image->height.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX) &&
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			image->height.set = TRUE;
+			image->height.unit = unit;
+		} else {
+			image->height.set = FALSE;
+			image->height.unit = SP_SVG_UNIT_NONE;
+			image->height.computed = 0.0;
+		}
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		/* fixme: Do async (Lauris) */
 		sp_image_update_canvas_image (image);
-		return;
-	}
-
-	if (((SPObjectClass *) (parent_class))->read_attr)
+	} else if (((SPObjectClass *) (parent_class))->read_attr) {
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
+	}
 }
 
 static void
@@ -221,31 +267,31 @@ sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 
 	image = SP_IMAGE (item);
 
-	if ((image->width > 0.0) && (image->height > 0.0)) {
+	if ((image->width.computed > 0.0) && (image->height.computed > 0.0)) {
 		ArtDRect dim;
 
-		dim.x0 = image->x;
-		dim.y0 = image->y;
-		dim.x1 = image->x + image->width;
-		dim.y1 = image->y + image->height;
+		dim.x0 = image->x.computed;
+		dim.y0 = image->y.computed;
+		dim.x1 = dim.x0 + image->width.computed;
+		dim.y1 = dim.y0 + image->height.computed;
 
 		art_drect_affine_transform (bbox, &dim, transform);
 	}
 }
 
 static void
-sp_image_print (SPItem * item, GnomePrintContext * gpc)
+sp_image_print (SPItem *item, GnomePrintContext *gpc)
 {
 	SPObject *object;
 	SPImage *image;
-	guchar * pixels;
+	guchar *pixels;
 	gint width, height, rowstride;
 
 	object = SP_OBJECT (item);
 	image = SP_IMAGE (item);
 
 	if (!image->pixbuf) return;
-	if ((image->width <= 0.0) || (image->height <= 0.0)) return;
+	if ((image->width.computed <= 0.0) || (image->height.computed <= 0.0)) return;
 
 	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
 	width = gdk_pixbuf_get_width (image->pixbuf);
@@ -254,8 +300,8 @@ sp_image_print (SPItem * item, GnomePrintContext * gpc)
 
 	gnome_print_gsave (gpc);
 
-	gnome_print_translate (gpc, image->x, image->y);
-	gnome_print_scale (gpc, image->width, -image->height);
+	gnome_print_translate (gpc, image->x.computed, image->y.computed);
+	gnome_print_scale (gpc, image->width.computed, -image->height.computed);
 	gnome_print_translate (gpc, 0.0, -1.0);
 
 	if (object->style->opacity.value != SP_SCALE24_MAX) {
@@ -290,8 +336,14 @@ sp_image_description (SPItem * item)
 
 	image = SP_IMAGE (item);
 
-	if (image->pixbuf == NULL) return g_strdup (_("Broken bitmap"));
-	return g_strdup (_("Color bitmap"));
+	if (image->pixbuf == NULL) {
+		return g_strdup_printf (_("Image with bad reference: %s"), image->href);
+	} else {
+		return g_strdup_printf (_("Color image %d x %d: %s"),
+					  gdk_pixbuf_get_width (image->pixbuf),
+					  gdk_pixbuf_get_height (image->pixbuf),
+					  image->href);
+	}
 }
 
 static NRArenaItem *
@@ -305,7 +357,7 @@ sp_image_show (SPItem *item, NRArena *arena)
 	ai = nr_arena_item_new (arena, NR_TYPE_ARENA_IMAGE);
 
 	nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (ai), image->pixbuf);
-	nr_arena_image_set_geometry (NR_ARENA_IMAGE (ai), image->x, image->y, image->width, image->height);
+	nr_arena_image_set_geometry (NR_ARENA_IMAGE (ai), image->x.computed, image->y.computed, image->width.computed, image->height.computed);
 
 	return ai;
 }
@@ -389,51 +441,58 @@ sp_image_update_canvas_image (SPImage *image)
 	item = SP_ITEM (image);
 
 	if (image->pixbuf) {
-		if (!image->width_set) image->width = gdk_pixbuf_get_width (image->pixbuf);
-		if (!image->height_set) image->height = gdk_pixbuf_get_height (image->pixbuf);
+		/* fixme: We are slightly violating spec here (Lauris) */
+		if (!image->width.set) {
+			image->width.computed = gdk_pixbuf_get_width (image->pixbuf);
+		}
+		if (!image->height.set) {
+			image->height.computed = gdk_pixbuf_get_height (image->pixbuf);
+		}
 	}
 
 	for (v = item->display; v != NULL; v = v->next) {
 		nr_arena_image_set_pixbuf (NR_ARENA_IMAGE (v->arenaitem), image->pixbuf);
-		nr_arena_image_set_geometry (NR_ARENA_IMAGE (v->arenaitem), image->x, image->y, image->width, image->height);
+		nr_arena_image_set_geometry (NR_ARENA_IMAGE (v->arenaitem),
+					     image->x.computed, image->y.computed,
+					     image->width.computed, image->height.computed);
 	}
 }
 
 static GSList * 
 sp_image_snappoints (SPItem * item, GSList * points)
 {
-  ArtPoint *p, p1, p2, p3, p4;
-  gdouble affine[6];
-  SPImage *image;
+	ArtPoint *p, p1, p2, p3, p4;
+	gdouble affine[6];
+	SPImage *image;
 
-  image = SP_IMAGE (item);
+	image = SP_IMAGE (item);
 
-  sp_item_i2d_affine (item, affine);
+	sp_item_i2d_affine (item, affine);
 
-  /* we use corners of image only */
-  p1.x = image->x;
-  p1.y = image->y;
-  p2.x = image->x + image->width;
-  p2.y = image->y;
-  p3.x = image->x;
-  p3.y = image->y + image->height;
-  p4.x = image->x + image->width;
-  p4.y = image->y + image->height;
+	/* we use corners of image only */
+	p1.x = image->x.computed;
+	p1.y = image->y.computed;
+	p2.x = p1.x + image->width.computed;
+	p2.y = p1.y;
+	p3.x = p1.x;
+	p3.y = p1.y + image->height.computed;
+	p4.x = p2.x;
+	p4.y = p3.y;
 
-  p = g_new (ArtPoint,1);
-  art_affine_point (p, &p1, affine);
-  points = g_slist_append (points, p);
-  p = g_new (ArtPoint,1);
-  art_affine_point (p, &p2, affine);
-  points = g_slist_append (points, p);
-  p = g_new (ArtPoint,1);
-  art_affine_point (p, &p3, affine);
-  points = g_slist_append (points, p);
-  p = g_new (ArtPoint,1);
-  art_affine_point (p, &p4, affine);
-  points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	art_affine_point (p, &p1, affine);
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	art_affine_point (p, &p2, affine);
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	art_affine_point (p, &p3, affine);
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	art_affine_point (p, &p4, affine);
+	points = g_slist_append (points, p);
 
-  return points;
+	return points;
 }
 
 /*
@@ -451,8 +510,8 @@ sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	image = SP_IMAGE (item);
 
 	/* Calculate text start in parent coords */
-	px = transform[0] * image->x + transform[2] * image->y + transform[4];
-	py = transform[1] * image->x + transform[3] * image->y + transform[5];
+	px = transform[0] * image->x.computed + transform[2] * image->y.computed + transform[4];
+	py = transform[1] * image->x.computed + transform[3] * image->y.computed + transform[5];
 
 	/* Clear translation */
 	transform[4] = 0.0;
@@ -475,8 +534,8 @@ sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 		transform[2] = 0.0;
 		transform[3] = 1.0;
 	}
-	sp_repr_set_double_attribute (repr, "width", image->width * sw);
-	sp_repr_set_double_attribute (repr, "height", image->height * sh);
+	sp_repr_set_double_attribute (repr, "width", image->width.computed * sw);
+	sp_repr_set_double_attribute (repr, "height", image->height.computed * sh);
 
 	/* Find start in item coords */
 	art_affine_invert (rev, transform);

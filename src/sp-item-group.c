@@ -3,10 +3,10 @@
 /*
  * SVG <g> implementation
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 1999-2002 authors
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
@@ -577,16 +577,17 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 GSList * 
 sp_item_group_item_list (SPGroup * group)
 {
-        GSList * s;
-	SPObject * o;
+        GSList *s;
+	SPObject *o;
 
 	g_return_val_if_fail (group != NULL, NULL);
 	g_return_val_if_fail (SP_IS_GROUP (group), NULL);
 
 	s = NULL;
 
-	for (o = group->children; o != NULL; o = o->next) 
-		if (SP_IS_ITEM (o)) s = g_slist_append (s, o);
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_ITEM (o)) s = g_slist_prepend (s, o);
+	}
 
-	return s;
+	return g_slist_reverse (s);
 }

@@ -65,12 +65,12 @@ art_uta_from_svp_translated (const ArtSVP * svp, double x, double y)
 }
 
 static void
-sp_bpath_segment_bbox_d (gdouble x000, gdouble y000,
-			 gdouble x001, gdouble y001,
-			 gdouble x011, gdouble y011,
-			 gdouble x111, gdouble y111,
+sp_bpath_segment_bbox_d (double x000, double y000,
+			 double x001, double y001,
+			 double x011, double y011,
+			 double x111, double y111,
 			 ArtDRect *bbox,
-			 gdouble tolerance)
+			 double tolerance)
 {
 	/* We only check end here to avoid duplication */
 	bbox->x0 = MIN (bbox->x0, x111);
@@ -86,9 +86,9 @@ sp_bpath_segment_bbox_d (gdouble x000, gdouble y000,
 	    ((x011 - bbox->x1) > tolerance) ||
 	    ((bbox->y0 - y011) > tolerance) ||
 	    ((y011 - bbox->y1) > tolerance)) {
-		gdouble x00t, x0tt, xttt, x1tt, x11t, x01t;
-		gdouble y00t, y0tt, yttt, y1tt, y11t, y01t;
-		gdouble s, t;
+		double x00t, x0tt, xttt, x1tt, x11t, x01t;
+		double y00t, y0tt, yttt, y1tt, y11t, y01t;
+		double s, t;
 
 		t = 0.5;
 		s = 1 - t;
@@ -114,9 +114,9 @@ sp_bpath_segment_bbox_d (gdouble x000, gdouble y000,
 }
 
 ArtDRect *
-sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const gdouble *m, ArtDRect *bbox, gdouble tolerance)
+sp_bpath_matrix_d_bbox_d_union (const ArtBpath *bpath, const double *m, ArtDRect *bbox, double tolerance)
 {
-	gdouble x0, y0, x3, y3;
+	double x0, y0, x3, y3;
 	const ArtBpath *p;
 	ArtDRect b;
 

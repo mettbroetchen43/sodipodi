@@ -45,6 +45,7 @@
 #include "dialogs/desktop-properties.h"
 #include "dialogs/document-properties.h"
 #include "dialogs/display-settings.h"
+#include "dialogs/tool-options.h"
 #include "dialogs/tool-attributes.h"
 
 void fake_dialogs (void);
@@ -194,68 +195,32 @@ sp_ui_menu_append_item (GtkMenu *menu, const guchar *stock, const guchar *label,
 static void
 sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 {
-	/* File:New */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_NEW, _("New"), sp_file_new, NULL);
-	/* File:Open */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_OPEN, _("Open"), sp_file_open, NULL);
-	/* File:Save */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_SAVE, _("Save"), sp_file_save, NULL);
-	/* File:Save As */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_SAVE_AS, _("Save as"), sp_file_save_as, NULL);
-	/* Separator */
 	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
-	/* File:Import */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Import"), sp_file_import, NULL);
-	/* File:Export */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Export"), sp_export_dialog, NULL);
-	/* Separator */
 	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
-	/* File:Print */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PRINT, _("Print"), sp_file_print, NULL);
-	/* File:Print Preview */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PRINT, _("Print Preview"), sp_file_print_preview, NULL);
-	/* Separator */
 	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
-	/* File:Close */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_CLOSE, _("Close View"), sp_ui_close_view, NULL);
-	/* File:Exit */
 	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_EXIT, _("Exit Program"), sp_file_exit, NULL);
 }
 
 static void
-sp_ui_edit_menu (GtkMenu *menu, SPDocument *doc)
+sp_ui_edit_menu (GtkMenu *fm, SPDocument *doc)
 {
-	GtkWidget *i;
-
-	/* Edit:Cut */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_CUT, _("Cut"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_cut), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Edit:Copy */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_COPY, _("Copy"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_copy), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Edit:Paste */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_PASTE, _("Paste"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_paste), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Separator */
-	i = gtk_menu_item_new ();
-	gtk_widget_show (i);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* Edit:Duplicate */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Duplicate"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_duplicate), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
-	/* File:Export */
-	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Delete"));
-	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_delete), NULL);
-	gtk_menu_append (GTK_MENU (menu), i);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_CUT, _("Cut"), sp_selection_cut, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_COPY, _("Copy"), sp_selection_copy, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_PASTE, _("Paste"), sp_selection_paste, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Duplicate"), sp_selection_duplicate, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Delete"), sp_selection_delete, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), NULL, NULL, NULL, NULL);
+	sp_ui_menu_append_item (GTK_MENU (fm), GNOME_STOCK_MENU_BLANK, _("Clear all"), sp_edit_clear_all, NULL);
 }
 
 static void
@@ -366,6 +331,7 @@ sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Align Objects"), sp_quick_align_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Text Editing"), sp_text_edit_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Transformations"), sp_transformation_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Tool Options"), sp_tool_options_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Tool Attributes"), sp_tool_attributes_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Document"), sp_document_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Editing Window"), sp_desktop_dialog, NULL);

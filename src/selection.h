@@ -63,6 +63,7 @@ void sp_selection_remove_item (SPSelection * selection, SPItem * item);
 void sp_selection_remove_repr (SPSelection * selection, SPRepr * repr);
 void sp_selection_set_item_list (SPSelection * selection, const GSList * list);
 void sp_selection_set_repr_list (SPSelection * selection, const GSList * list);
+#define sp_selection_set_empty(s) sp_selection_empty (s)
 void sp_selection_empty (SPSelection * selection);
 const GSList * sp_selection_item_list (SPSelection * selection);
 const GSList * sp_selection_repr_list (SPSelection * selection);

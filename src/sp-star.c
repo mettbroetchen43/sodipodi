@@ -1,16 +1,16 @@
 #define __SP_STAR_C__
 
 /*
- * SPStar
+ * <sodipodi:star> implementation
  *
  * Authors:
  *   Mitsuru Oka <oka326@parkcity.ne.jp>
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001 Mitsuru Oka
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Licensed under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -27,7 +27,7 @@
 
 #define noSTAR_VERBOSE
 
-#define SP_EPSILON       1e-5
+#define SP_EPSILON 1e-9
 
 static void sp_star_class_init (SPStarClass *class);
 static void sp_star_init (SPStar *star);
@@ -51,22 +51,20 @@ static SPPolygonClass *parent_class;
 GtkType
 sp_star_get_type (void)
 {
-	static GtkType star_type = 0;
+	static GtkType type = 0;
 
-	if (!star_type) {
-		GtkTypeInfo star_info = {
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPStar",
 			sizeof (SPStar),
 			sizeof (SPStarClass),
 			(GtkClassInitFunc) sp_star_class_init,
 			(GtkObjectInitFunc) sp_star_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		star_type = gtk_type_unique (sp_polygon_get_type (), &star_info);
+		type = gtk_type_unique (SP_TYPE_POLYGON, &info);
 	}
-	return star_type;
+	return type;
 }
 
 static void
@@ -104,20 +102,18 @@ static void
 sp_star_init (SPStar * star)
 {
 	SP_PATH (star)->independent = FALSE;
-	star->cx    = 0.0;
-	star->cy    = 0.0;
-	star->sides = 3;
-	star->r1    = star->r2 = 0.0;
-	star->arg1  = star->arg2 = 0.0;
+
+	star->sides = 5;
+	star->cx = 0.0;
+	star->cy = 0.0;
+	star->r1 = star->r2 = 0.0;
+	star->arg1 = star->arg2 = 0.0;
 }
 
 static void
 sp_star_destroy (GtkObject *object)
 {
 	SPStar *star;
-
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_STAR (object));
 
 	star = SP_STAR (object);
 
@@ -131,6 +127,7 @@ sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr)
 
 	if (SP_OBJECT_CLASS(parent_class)->build)
 		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
+
 	sp_star_read_attr (object, "sodipodi:cx");
 	sp_star_read_attr (object, "sodipodi:cy");
 	sp_star_read_attr (object, "sodipodi:sides");
@@ -147,12 +144,13 @@ sp_star_write_repr (SPObject * object, SPRepr * repr)
 
 	star = SP_STAR (object);
 
-	
-        if ((star->cx > SP_EPSILON) || (star->cx < -SP_EPSILON))
-		sp_repr_set_double_attribute (repr, "sodipodi:cx", star->cx);
-        if ((star->cy > SP_EPSILON) || (star->cy < -SP_EPSILON))
-		sp_repr_set_double_attribute (repr, "sodipodi:cy", star->cy);
 	sp_repr_set_int_attribute (repr, "sodipodi:sides", star->sides);
+        if (fabs (star->cx) > SP_EPSILON) {
+		sp_repr_set_double_attribute (repr, "sodipodi:cx", star->cx);
+	}
+        if (fabs (star->cy) > SP_EPSILON) {
+		sp_repr_set_double_attribute (repr, "sodipodi:cy", star->cy);
+	}
 	sp_repr_set_double_attribute (repr, "sodipodi:r1", star->r1);
 	sp_repr_set_double_attribute (repr, "sodipodi:r2", star->r2);
 	sp_repr_set_double_attribute (repr, "sodipodi:arg1", star->arg1);
@@ -166,10 +164,9 @@ static void
 sp_star_read_attr (SPObject * object, const gchar * attr)
 {
 	SPShape *shape;
-	SPStar * star;
-	const gchar * astr;
-	const SPUnit *unit;
-	double n;
+	SPStar *star;
+	const guchar *str;
+	gulong unit;
 
 	shape = SP_SHAPE (object);
 	star = SP_STAR (object);
@@ -178,69 +175,90 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 	g_print ("sp_star_read_attr: attr %s\n", attr);
 #endif
 
-	astr = sp_repr_attr (object->repr, attr);
+	str = sp_repr_attr (object->repr, attr);
 
 	/* fixme: we should really collect updates */
-	if (strcmp (attr, "sodipodi:cx") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		star->cx = n;
+	if (!strcmp (attr, "sodipodi:sides")) {
+		if (str) {
+			star->sides = atoi (str);
+			star->sides = CLAMP (star->sides, 3, 16);
+		} else {
+			star->sides = 5;
+		}
+		sp_shape_set_shape (shape);
+	} else if (!strcmp (attr, "sodipodi:cx")) {
+		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->cx) ||
+		    (unit != SP_SVG_UNIT_EM) ||
+		    (unit != SP_SVG_UNIT_EX) ||
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			star->cx = 0.0;
+		}
+		sp_shape_set_shape (shape);
+	} else if (!strcmp (attr, "sodipodi:cy")) {
+		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->cy) ||
+		    (unit != SP_SVG_UNIT_EM) ||
+		    (unit != SP_SVG_UNIT_EX) ||
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			star->cy = 0.0;
+		}
+		sp_shape_set_shape (shape);
+	} else if (!strcmp (attr, "sodipodi:r1")) {
+		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->r1) ||
+		    (unit != SP_SVG_UNIT_EM) ||
+		    (unit != SP_SVG_UNIT_EX) ||
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			star->r1 = 0.0;
+		}
+		sp_shape_set_shape (shape);
+	} else if (!strcmp (attr, "sodipodi:r2")) {
+		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->r2) ||
+		    (unit != SP_SVG_UNIT_EM) ||
+		    (unit != SP_SVG_UNIT_EX) ||
+		    (unit != SP_SVG_UNIT_PERCENT)) {
+			star->r2 = 0.0;
+		}
 		sp_shape_set_shape (shape);
 		return;
-	} else if (strcmp (attr, "sodipodi:cy") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		star->cy = n;
+	} else if (!strcmp (attr, "sodipodi:arg1")) {
+		if (str) {
+			star->arg1 = atof (str);
+		} else {
+			star->arg1 = 0.0;
+		}
 		sp_shape_set_shape (shape);
-		return;
-	} else if (strcmp (attr, "sodipodi:sides") == 0) {
-		if (astr)
-			star->sides = (gint) strtol (astr, NULL, 10);
+	} else if (!strcmp (attr, "sodipodi:arg2")) {
+		if (str) {
+			star->arg2 = atof (str);
+		} else {
+			star->arg2 = 0.0;
+		}
 		sp_shape_set_shape (shape);
-		return;
-	} else if (strcmp (attr, "sodipodi:r1") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		star->r1 = n;
-		sp_shape_set_shape (shape);
-		return;
-	} else if (strcmp (attr, "sodipodi:r2") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		star->r2 = n;
-		sp_shape_set_shape (shape);
-		return;
-	} else if (strcmp (attr, "sodipodi:arg1") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		star->arg1 = n;
-		sp_shape_set_shape (shape);
-		return;
-	} else if (strcmp (attr, "sodipodi:arg2") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		star->arg2 = n;
-		sp_shape_set_shape (shape);
-		return;
+	} else {
+		if (SP_OBJECT_CLASS (parent_class)->read_attr)
+			SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
 	}
-
-	if (SP_OBJECT_CLASS (parent_class)->read_attr)
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
-
 }
 
 static gchar *
-sp_star_description (SPItem * item)
+sp_star_description (SPItem *item)
 {
-	return g_strdup ("Star");
+	SPStar *star;
+
+	star = SP_STAR (item);
+
+	return g_strdup_printf ("Star of %d sides", star->sides);
 }
 
 static void
 sp_star_set_shape (SPShape *shape)
 {
 	SPStar *star;
-	gint   i;
-	gint   sides;
-	SPCurve * c;
+	gint i;
+	gint sides;
+	SPCurve *c;
 	ArtPoint p;
 	
 	star = SP_STAR (shape);
-
-	sp_object_request_modified (SP_OBJECT (star), SP_OBJECT_MODIFIED_FLAG);
 
 	sp_path_clear (SP_PATH (shape));
 	
@@ -266,12 +284,12 @@ sp_star_set_shape (SPShape *shape)
 	sp_curve_closepath (c);
 	sp_path_add_bpath (SP_PATH (star), c, TRUE, NULL);
 	sp_curve_unref (c);
+
+	sp_object_request_modified (SP_OBJECT (star), SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
-sp_star_knot1_set (SPItem   *item,
-		   const ArtPoint *p,
-		   guint state)
+sp_star_knot1_set (SPItem *item, const ArtPoint *p, guint state)
 {
 	SPStar *star;
 	gdouble dx, dy, arg1, darg1;
@@ -294,9 +312,7 @@ sp_star_knot1_set (SPItem   *item,
 }
 
 static void
-sp_star_knot2_set (SPItem   *item,
-		   const ArtPoint *p,
-		   guint state)
+sp_star_knot2_set (SPItem *item, const ArtPoint *p, guint state)
 {
 	SPStar *star;
 	gdouble dx, dy;
@@ -316,8 +332,7 @@ sp_star_knot2_set (SPItem   *item,
 }
 
 static void
-sp_star_knot1_get (SPItem *item,
-		   ArtPoint *p)
+sp_star_knot1_get (SPItem *item, ArtPoint *p)
 {
 	SPStar *star;
 
@@ -330,8 +345,7 @@ sp_star_knot1_get (SPItem *item,
 }
 
 static void
-sp_star_knot2_get (SPItem *item,
-		   ArtPoint *p)
+sp_star_knot2_get (SPItem *item, ArtPoint *p)
 {
 	SPStar *star;
 
@@ -344,8 +358,7 @@ sp_star_knot2_get (SPItem *item,
 }
 
 static SPKnotHolder *
-sp_star_knot_holder (SPItem    *item,
-		     SPDesktop *desktop)
+sp_star_knot_holder (SPItem *item, SPDesktop *desktop)
 {
 	SPStar  *star;
 	SPKnotHolder *knot_holder;

@@ -1,7 +1,7 @@
 #define __SP_TEXT_C__
 
 /*
- * SPText - a SVG <text> element
+ * SVG <text> and <tspan> implementation
  *
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
@@ -102,9 +102,6 @@ sp_string_init (SPString *string)
 	string->length = 0;
 	string->bbox.x0 = string->bbox.y0 = 0.0;
 	string->bbox.x1 = string->bbox.y1 = 0.0;
-#if 0
-	string->initial.x = string->initial.y = 0.0;
-#endif
 	string->advance.x = string->advance.y = 0.0;
 }
 
@@ -232,10 +229,6 @@ sp_string_calculate_dimensions (SPString *string)
 
 	string->bbox.x0 = string->bbox.y0 = 1e18;
 	string->bbox.x1 = string->bbox.y1 = -1e18;
-#if 0
-	string->initial.x = 0.0;
-	string->initial.y = 0.0;
-#endif
 	string->advance.x = 0.0;
 	string->advance.y = 0.0;
 
@@ -313,37 +306,6 @@ sp_string_calculate_dimensions (SPString *string)
 		string->bbox.x1 = string->bbox.y1 = 0.0;
 	}
 
-#if 0
-	switch (style->text_anchor.computed) {
-	case SP_CSS_TEXT_ANCHOR_START:
-		break;
-	case SP_CSS_TEXT_ANCHOR_MIDDLE:
-		/* Ink midpoint */
-		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-			string->initial.y -= (string->bbox.y0 + string->bbox.y1) / 2;
-		} else {
-			string->initial.x -= (string->bbox.x0 + string->bbox.x1) / 2;
-		}
-		break;
-	case SP_CSS_TEXT_ANCHOR_END:
-		/* Ink endpoint */
-		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-			string->initial.y -= string->bbox.y1;
-		} else {
-			string->initial.x -= string->bbox.x1;
-		}
-		break;
-	default:
-		break;
-	}
-
-	string->bbox.x0 += string->initial.x;
-	string->bbox.y0 += string->initial.y;
-	string->bbox.x1 += string->initial.x;
-	string->bbox.y1 += string->initial.y;
-	string->advance.x += string->initial.x;
-	string->advance.y += string->initial.y;
-#endif
 }
 
 /* fixme: Should values be parsed by parent? */
@@ -376,13 +338,9 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	spwidth = (spglyph > 0) ? gnome_font_get_glyph_width (font, spglyph) : size;
 
 	/* fixme: Find a way how to manipulate these */
-#if 0
-	x = cp->x + string->initial.x;
-	y = cp->y + string->initial.y;
-#else
 	x = cp->x;
 	y = cp->y;
-#endif
+
 	g_print ("Drawing string (%s) at %g %g\n", string->text, x, y);
 
 	art_affine_scale (a, size * 0.001, size * -0.001);
@@ -510,7 +468,10 @@ static void
 sp_tspan_init (SPTSpan *tspan)
 {
 	/* fixme: Initialize layout */
-	tspan->ly.x = tspan->ly.y = 0.0;
+	sp_svg_length_unset (&tspan->ly.x, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&tspan->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&tspan->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&tspan->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	tspan->string = NULL;
 }
 
@@ -567,50 +528,54 @@ static void
 sp_tspan_read_attr (SPObject *object, const gchar *attr)
 {
 	SPTSpan *tspan;
-	const guchar *astr;
-	const SPUnit *unit;
+	const guchar *str;
 
 	tspan = SP_TSPAN (object);
 
-	astr = sp_repr_attr (SP_OBJECT_REPR (object), attr);
+	str = sp_repr_attr (SP_OBJECT_REPR (object), attr);
 
-	if (strcmp (attr, "x") == 0) {
-		if (astr) tspan->ly.x = sp_svg_read_length (&unit, astr, 0.0);
-		tspan->ly.x_set = (astr != NULL);
+	/* fixme: Vectors */
+	if (!strcmp (attr, "x")) {
+		if (!sp_svg_length_read (str, &tspan->ly.x)) {
+			tspan->ly.x.set = FALSE;
+			tspan->ly.x.computed = 0.0;
+		}
 		/* fixme: Re-layout it */
 		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	} else if (strcmp (attr, "y") == 0) {
-		if (astr) tspan->ly.y = sp_svg_read_length (&unit, astr, 0.0);
-		tspan->ly.y_set = (astr != NULL);
+	} else if (!strcmp (attr, "y")) {
+		if (!sp_svg_length_read (str, &tspan->ly.y)) {
+			tspan->ly.y.set = FALSE;
+			tspan->ly.y.computed = 0.0;
+		}
 		/* fixme: Re-layout it */
 		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	} else if (strcmp (attr, "dx") == 0) {
-		if (astr) tspan->ly.dx = sp_svg_read_length (&unit, astr, 0.0);
-		tspan->ly.dx_set = (astr != NULL);
+	} else if (!strcmp (attr, "dx")) {
+		if (!sp_svg_length_read (str, &tspan->ly.dx)) {
+			tspan->ly.dx.set = FALSE;
+			tspan->ly.dx.computed = 0.0;
+		}
 		/* fixme: Re-layout it */
-		return;
-	} else if (strcmp (attr, "dy") == 0) {
-		if (astr) tspan->ly.dy = sp_svg_read_length (&unit, astr, 0.0);
-		tspan->ly.dy_set = (astr != NULL);
+	} else if (!strcmp (attr, "dy")) {
+		if (!sp_svg_length_read (str, &tspan->ly.dy)) {
+			tspan->ly.dy.set = FALSE;
+			tspan->ly.dy.computed = 0.0;
+		}
 		/* fixme: Re-layout it */
-		return;
 	} else if (strcmp (attr, "rotate") == 0) {
-		if (astr) tspan->ly.rotate = sp_svg_read_length (&unit, astr, 0.0);
-		tspan->ly.rotate_set = (astr != NULL);
+		/* fixme: Implement SVGNumber or something similar (Lauris) */
+		tspan->ly.rotate = (str) ? atof (str) : 0.0;
+		tspan->ly.rotate_set = (str != NULL);
 		/* fixme: Re-layout it */
-		return;
 	} else if (!strcmp (attr, "sodipodi:role")) {
-		if (astr && (!strcmp (astr, "line") || !strcmp (astr, "paragraph"))) {
+		if (str && (!strcmp (str, "line") || !strcmp (str, "paragraph"))) {
 			tspan->role = SP_TSPAN_ROLE_LINE;
 		} else {
 			tspan->role = SP_TSPAN_ROLE_UNSPECIFIED;
 		}
+	} else {
+		if (SP_OBJECT_CLASS (tspan_parent_class)->read_attr)
+			(SP_OBJECT_CLASS (tspan_parent_class)->read_attr) (object, attr);
 	}
-
-	if (SP_OBJECT_CLASS (tspan_parent_class)->read_attr)
-		(SP_OBJECT_CLASS (tspan_parent_class)->read_attr) (object, attr);
 }
 
 static void
@@ -717,34 +682,6 @@ sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean fir
 
 	style = SP_OBJECT_STYLE (tspan);
 
-#if 0
-	switch (tspan->role) {
-	case SP_TSPAN_ROLE_PARAGRAPH:
-	case SP_TSPAN_ROLE_LINE:
-		if (!firstline) {
-			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-				cp->x -= style->font_size.computed;
-				cp->y = ly->y;
-			} else {
-				cp->x = ly->x;
-				cp->y += style->font_size.computed;
-			}
-		}
-		/* fixme: This is extremely (EXTREMELY) dangerous (Lauris) */
-		/* fixme: Our only hope is to ensure LINE tspans do not request ::modified */
-		sp_repr_set_double (SP_OBJECT_REPR (tspan), "x", cp->x);
-		sp_repr_set_double (SP_OBJECT_REPR (tspan), "y", cp->y);
-		break;
-	case SP_TSPAN_ROLE_UNSPECIFIED:
-		if (tspan->ly.x_set) cp->x = tspan->ly.x;
-		if (tspan->ly.y_set) cp->y = tspan->ly.y;
-		break;
-	default:
-		/* Error */
-		break;
-	}
-#endif
-
 	sp_string_set_shape (SP_STRING (tspan->string), &tspan->ly, cp, inspace);
 }
 
@@ -828,7 +765,10 @@ static void
 sp_text_init (SPText *text)
 {
 	/* fixme: Initialize layout */
-	text->ly.x = text->ly.y = text->ly.dx = text->ly.dy = 0.0;
+	sp_svg_length_unset (&text->ly.x, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&text->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&text->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&text->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	text->children = NULL;
 }
 
@@ -894,46 +834,48 @@ static void
 sp_text_read_attr (SPObject *object, const gchar *attr)
 {
 	SPText *text;
-	const guchar *astr;
-	const SPUnit *unit;
+	const guchar *str;
 
 	text = SP_TEXT (object);
 
-	astr = sp_repr_attr (SP_OBJECT_REPR (object), attr);
+	str = sp_repr_attr (SP_OBJECT_REPR (object), attr);
 
-	if (strcmp (attr, "x") == 0) {
-		text->ly.x = sp_svg_read_length (&unit, astr, 0.0);
-		text->ly.x_set = (astr != NULL);
-		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
-		return;
+	/* fixme: Vectors (Lauris) */
+	if (!strcmp (attr, "x")) {
+		if (!sp_svg_length_read (str, &text->ly.x)) {
+			text->ly.x.set = FALSE;
+			text->ly.x.computed = 0.0;
+		}
+		/* fixme: Re-layout it */
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
+	} else if (!strcmp (attr, "y")) {
+		if (!sp_svg_length_read (str, &text->ly.y)) {
+			text->ly.y.set = FALSE;
+			text->ly.y.computed = 0.0;
+		}
+		/* fixme: Re-layout it */
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
+	} else if (!strcmp (attr, "dx")) {
+		if (!sp_svg_length_read (str, &text->ly.dx)) {
+			text->ly.dx.set = FALSE;
+			text->ly.dx.computed = 0.0;
+		}
+		/* fixme: Re-layout it */
+	} else if (!strcmp (attr, "dy")) {
+		if (!sp_svg_length_read (str, &text->ly.dy)) {
+			text->ly.dy.set = FALSE;
+			text->ly.dy.computed = 0.0;
+		}
+		/* fixme: Re-layout it */
+	} else if (strcmp (attr, "rotate") == 0) {
+		/* fixme: Implement SVGNumber or something similar (Lauris) */
+		text->ly.rotate = (str) ? atof (str) : 0.0;
+		text->ly.rotate_set = (str != NULL);
+		/* fixme: Re-layout it */
+	} else {
+		if (SP_OBJECT_CLASS (text_parent_class)->read_attr)
+			(SP_OBJECT_CLASS (text_parent_class)->read_attr) (object, attr);
 	}
-	if (strcmp (attr, "y") == 0) {
-		text->ly.y = sp_svg_read_length (&unit, astr, 0.0);
-		text->ly.y_set = (astr != NULL);
-		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	}
-	if (strcmp (attr, "dx") == 0) {
-		text->ly.dx = sp_svg_read_length (&unit, astr, 0.0);
-		text->ly.dx_set = (astr != NULL);
-		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	}
-	if (strcmp (attr, "dy") == 0) {
-		text->ly.dy = sp_svg_read_length (&unit, astr, 0.0);
-		text->ly.dy_set = (astr != NULL);
-		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	}
-	if (strcmp (attr, "rotate") == 0) {
-		text->ly.rotate = sp_svg_read_length (&unit, astr, 0.0);
-		text->ly.rotate_set = (astr != NULL);
-		sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	}
-
-	if (SP_OBJECT_CLASS (text_parent_class)->read_attr)
-		(SP_OBJECT_CLASS (text_parent_class)->read_attr) (object, attr);
 }
 
 static void
@@ -1059,7 +1001,7 @@ sp_text_modified (SPObject *object, guint flags)
 		sp_object_unref (SP_OBJECT (child), object);
 	}
 
-	if (text->relayout || (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+	if (text->relayout || (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG))) {
 		/* fixme: It is not nice to have it here, but otherwise children content changes does not work */
 		/* fixme: Even now it may not work, as we are delayed */
 		/* fixme: So check modification flag everywhere immediate state is used */
@@ -1194,15 +1136,56 @@ sp_text_font_weight_to_gp (gint weight)
 	return GNOME_FONT_BOOK;
 }
 
-#if 0
-static gboolean
-sp_text_font_italic_to_gp (SPCSSFontStyle style)
+static void
+sp_text_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
 {
-	if (style == SP_CSS_FONT_STYLE_NORMAL) return FALSE;
-
-	return TRUE;
+	if (length->unit == SP_SVG_UNIT_EM) {
+		length->computed = length->value * em;
+	} else if (length->unit == SP_SVG_UNIT_EX) {
+		length->computed = length->value * ex;
+	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
+		length->computed = length->value * scale;
+	}
 }
-#endif
+
+static void
+sp_text_compute_values (SPText *text)
+{
+	SPObject *child;
+	SPStyle *style;
+	gdouble i2vp[6], vp2i[6];
+	gdouble aw, ah;
+	gdouble d;
+
+	style = SP_OBJECT_STYLE (text);
+
+	/* fixme: It is somewhat dangerous, yes (Lauris) */
+	/* fixme: And it is terribly slow too (Lauris) */
+	/* fixme: In general we want to keep viewport scales around */
+	sp_item_i2vp_affine (SP_ITEM (text), i2vp);
+	art_affine_invert (vp2i, i2vp);
+	aw = sp_distance_d_matrix_d_transform (1.0, vp2i);
+	ah = sp_distance_d_matrix_d_transform (1.0, vp2i);
+	/* sqrt ((actual_width) ** 2 + (actual_height) ** 2)) / sqrt (2) */
+	d = sqrt (aw * aw + ah * ah) * M_SQRT1_2;
+
+	sp_text_update_length (&text->ly.x, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&text->ly.y, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&text->ly.dx, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_text_update_length (&text->ly.dy, style->font_size.computed, style->font_size.computed * 0.5, d);
+
+	for (child = text->children; child != NULL; child = child->next) {
+		if (SP_IS_TSPAN (child)) {
+			SPTSpan *tspan;
+			tspan = SP_TSPAN (child);
+			style = SP_OBJECT_STYLE (tspan);
+			sp_text_update_length (&tspan->ly.x, style->font_size.computed, style->font_size.computed * 0.5, d);
+			sp_text_update_length (&tspan->ly.y, style->font_size.computed, style->font_size.computed * 0.5, d);
+			sp_text_update_length (&tspan->ly.dx, style->font_size.computed, style->font_size.computed * 0.5, d);
+			sp_text_update_length (&tspan->ly.dy, style->font_size.computed, style->font_size.computed * 0.5, d);
+		}
+	}
+}
 
 /* fixme: Do text chunks here (Lauris) */
 /* fixme: We'll remove string bbox adjustment and bring it here for the whole chunk (Lauris) */
@@ -1214,18 +1197,16 @@ sp_text_set_shape (SPText *text)
 	SPObject *child;
 	gboolean isfirstline, haslast, lastwastspan;
 
+	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
+	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
+	sp_text_compute_values (text);
+
 	/* The logic should be: */
 	/* 1. Calculate attributes */
 	/* 2. Iterate through children asking them to set shape */
 
-#if 0
-	cp.x = cp.y = 0.0;
-	if (text->ly.x_set) cp.x = text->ly.x;
-	if (text->ly.y_set) cp.y = text->ly.y;
-#else
-	cp.x = text->ly.x;
-	cp.y = text->ly.y;
-#endif
+	cp.x = text->ly.x.computed;
+	cp.y = text->ly.y.computed;
 
 	isfirstline = TRUE;
 	haslast = FALSE;
@@ -1248,9 +1229,9 @@ sp_text_set_shape (SPText *text)
 				if (!isfirstline) {
 					if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 						cp.x -= child->style->font_size.computed;
-						cp.y = text->ly.y;
+						cp.y = text->ly.y.computed;
 					} else {
-						cp.x = text->ly.x;
+						cp.x = text->ly.x.computed;
 						cp.y += child->style->font_size.computed;
 					}
 				}
@@ -1260,8 +1241,8 @@ sp_text_set_shape (SPText *text)
 				sp_repr_set_double (SP_OBJECT_REPR (tspan), "y", cp.y);
 				break;
 			case SP_TSPAN_ROLE_UNSPECIFIED:
-				if (tspan->ly.x_set) cp.x = tspan->ly.x;
-				if (tspan->ly.y_set) cp.y = tspan->ly.y;
+				if (tspan->ly.x.set) cp.x = tspan->ly.x.computed;
+				if (tspan->ly.y.set) cp.y = tspan->ly.y.computed;
 				break;
 			default:
 				/* Error */
@@ -1278,7 +1259,7 @@ sp_text_set_shape (SPText *text)
 			if (SP_IS_TSPAN (next)) {
 				SPTSpan *tspan;
 				tspan = SP_TSPAN (next);
-				if ((tspan->ly.x_set) || (tspan->ly.y_set)) break;
+				if ((tspan->ly.x.set) || (tspan->ly.y.set)) break;
 				string = SP_TSPAN_STRING (tspan);
 			} else {
 				string = SP_STRING (next);
@@ -1342,8 +1323,8 @@ sp_text_snappoints (SPItem *item, GSList *points)
 		points = SP_ITEM_CLASS (text_parent_class)->snappoints (item, points);
 
 	p = g_new (ArtPoint,1);
-	p->x = SP_TEXT (item)->ly.x;
-	p->y = SP_TEXT (item)->ly.y;
+	p->x = SP_TEXT (item)->ly.x.computed;
+	p->y = SP_TEXT (item)->ly.y.computed;
 	sp_item_i2d_affine (item, affine);
 	art_affine_point (p, p, affine);
 	g_slist_append (points, p);
@@ -1375,8 +1356,8 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	if (fabs (d) > 1e-18) {
 		gdouble px, py, x, y;
 		SPObject *child;
-		px = transform[0] * text->ly.x + transform[2] * text->ly.y + transform[4];
-		py = transform[1] * text->ly.x + transform[3] * text->ly.y + transform[5];
+		px = transform[0] * text->ly.x.computed + transform[2] * text->ly.y.computed + transform[4];
+		py = transform[1] * text->ly.x.computed + transform[3] * text->ly.y.computed + transform[5];
 		x = (transform[3] * px - transform[2] * py) / d;
 		y = (transform[0] * py - transform[1] * px) / d;
 		sp_repr_set_double_attribute (repr, "x", x);
@@ -1385,9 +1366,9 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 			if (SP_IS_TSPAN (child)) {
 				SPTSpan *tspan;
 				tspan = SP_TSPAN (child);
-				if (tspan->ly.x_set || tspan->ly.y_set) {
-					x = (tspan->ly.x_set) ? tspan->ly.x : text->ly.x;
-					y = (tspan->ly.y_set) ? tspan->ly.y : text->ly.y;
+				if (tspan->ly.x.set || tspan->ly.y.set) {
+					x = (tspan->ly.x.set) ? tspan->ly.x.computed : text->ly.x.computed;
+					y = (tspan->ly.y.set) ? tspan->ly.y.computed : text->ly.y.computed;
 					px = transform[0] * x + transform[2] * y + transform[4];
 					py = transform[1] * x + transform[3] * y + transform[5];
 					x = (transform[3] * px - transform[2] * py) / d;
@@ -1514,8 +1495,8 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 	content = g_strdup (str);
 	p = content;
 
-	cp.x = text->ly.x;
-	cp.y = text->ly.y;
+	cp.x = text->ly.x.computed;
+	cp.y = text->ly.y.computed;
 
 	while (p) {
 		SPRepr *rtspan, *rstr;
@@ -1594,16 +1575,16 @@ sp_text_append_line (SPText *text)
 
 	style = SP_OBJECT_STYLE (text);
 
-	cp.x = text->ly.x;
-	cp.y = text->ly.y;
+	cp.x = text->ly.x.computed;
+	cp.y = text->ly.y.computed;
 
 	for (child = text->children; child != NULL; child = child->next) {
 		if (SP_IS_TSPAN (child)) {
 			SPTSpan *tspan;
 			tspan = SP_TSPAN (child);
 			if (tspan->role == SP_TSPAN_ROLE_LINE) {
-				cp.x = tspan->ly.x;
-				cp.y = tspan->ly.y;
+				cp.x = tspan->ly.x.computed;
+				cp.y = tspan->ly.y.computed;
 			}
 		}
 	}

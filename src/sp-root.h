@@ -2,18 +2,18 @@
 #define __SP_ROOT_H__
 
 /*
- * SVG <svg> element
+ * SVG <svg> implementation
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include "svg/svg-types.h"
 #include "sp-item-group.h"
 
 BEGIN_GNOME_DECLS
@@ -27,9 +27,9 @@ BEGIN_GNOME_DECLS
 struct _SPRoot {
 	SPGroup group;
 
-	guint resized : 1;
+	SPSVGLength width;
+	SPSVGLength height;
 
-	gdouble width, height;
 	ArtDRect viewbox;
 	/* List of namedviews */
 	/* fixme: use single container instead */

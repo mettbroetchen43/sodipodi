@@ -2,22 +2,21 @@
 #define __SP_SPIRAL_H__
 
 /*
- * SPStar
+ * <sodipodi:spiral> implementation
  *
  * Authors:
  *   Mitsuru Oka <oka326@parkcity.ne.jp>
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001 Mitsuru Oka
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Licensed under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "sp-shape.h"
 
 BEGIN_GNOME_DECLS
-
 
 #define SP_TYPE_SPIRAL            (sp_spiral_get_type ())
 #define SP_SPIRAL(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_SPIRAL, SPSpiral))
@@ -39,12 +38,12 @@ struct _SPSpiral {
 	 * rad and arg parameters can also be represented by
 	 * transformation. shoud I remove these attributes?
 	 */
-	gdouble  cx, cy;
-	gdouble  exp;           /* Spiral expansion factor */
-	gdouble  revo;		/* Spiral revolution factor */
-	gdouble  rad;		/* Spiral radius */
-	gdouble  arg;		/* Spiral argument */
-	gdouble  t0;
+	float cx, cy;
+	float exp; /* Spiral expansion factor */
+	float revo; /* Spiral revolution factor */
+	float rad; /* Spiral radius */
+	float arg; /* Spiral argument */
+	float t0;
 };
 
 struct _SPSpiralClass {

@@ -1,16 +1,15 @@
 #define __SP_ROOT_C__
 
 /*
- * SVG <svg> element
+ * SVG <svg> implementation
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <string.h>
@@ -22,8 +21,8 @@
 #include "sp-namedview.h"
 #include "sp-root.h"
 
-#define SP_SVG_DEFAULT_WIDTH 595.27
-#define SP_SVG_DEFAULT_HEIGHT 841.89
+#define SP_SVG_DEFAULT_WIDTH_PX SP_SVG_PX_FROM_MM (210.0)
+#define SP_SVG_DEFAULT_HEIGHT_PX SP_SVG_PX_FROM_MM (297.0)
 
 static void sp_root_class_init (SPRootClass *klass);
 static void sp_root_init (SPRoot *root);
@@ -80,13 +79,12 @@ sp_root_init (SPRoot *root)
 {
 	root->group.transparent = TRUE;
 
-	root->resized = FALSE;
+	sp_svg_length_unset (&root->width, SP_SVG_UNIT_NONE, SP_SVG_DEFAULT_WIDTH_PX, SP_SVG_DEFAULT_WIDTH_PX);
+	sp_svg_length_unset (&root->height, SP_SVG_UNIT_NONE, SP_SVG_DEFAULT_HEIGHT_PX, SP_SVG_DEFAULT_HEIGHT_PX);
 
-	root->width = SP_SVG_DEFAULT_WIDTH;
-	root->height = SP_SVG_DEFAULT_HEIGHT;
 	root->viewbox.x0 = root->viewbox.y0 = 0.0;
-	root->viewbox.x1 = root->width;
-	root->viewbox.y1 = root->height;
+	root->viewbox.x1 = root->width.computed;
+	root->viewbox.y1 = root->height.computed;
 
 	root->namedviews = NULL;
 	root->defs = NULL;
@@ -117,14 +115,16 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	group = (SPGroup *) object;
 	root = (SPRoot *) object;
 
-	if (((SPObjectClass *) parent_class)->build)
-		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
+	/* It is important to parse these here, so objects will have viewport build-time */
 
 	sp_root_read_attr (object, "width");
 	sp_root_read_attr (object, "height");
 	sp_root_read_attr (object, "viewBox");
 
-	/* Collect all out namedviews */
+	if (((SPObjectClass *) parent_class)->build)
+		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
+
+	/* Collect all our namedviews */
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_NAMEDVIEW (o)) {
 			root->namedviews = g_slist_prepend (root->namedviews, o);
@@ -144,40 +144,56 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 static void
 sp_root_read_attr (SPObject * object, const gchar * key)
 {
-	SPItem * item;
-	SPRoot * root;
-	const gchar * astr;
-	const SPUnit *unit;
-	gdouble len;
-	SPItemView * v;
+	SPItem *item;
+	SPRoot *root;
+	const guchar *str;
+	gulong unit;
+	SPItemView *v;
 
 	item = SP_ITEM (object);
 	root = SP_ROOT (object);
 
-	astr = sp_repr_attr (object->repr, key);
+	str = sp_repr_attr (object->repr, key);
 
 	if (!strcmp (key, "width")) {
-		len = sp_svg_read_length (&unit, astr, 0.0);
-		if (len >= 1.0) {
-			root->resized = TRUE;
-			root->width = len;
+		if (sp_svg_length_read_lff (str, &unit, &root->width.value, &root->width.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX) &&
+		    (unit != SP_SVG_UNIT_PERCENT) &&
+		    (root->width.computed >= 1.0)) {
+			root->width.set = TRUE;
+			root->width.unit = unit;
+		} else {
+			root->width.set = FALSE;
+			root->width.unit = SP_SVG_UNIT_NONE;
+			root->width.computed = SP_SVG_DEFAULT_WIDTH_PX;
 		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "height")) {
-		len = sp_svg_read_length (&unit, astr, 0.0);
-		if (len >= 1.0) {
-			root->height = len;
-			root->resized = TRUE;
+		if (sp_svg_length_read_lff (str, &unit, &root->height.value, &root->height.computed) &&
+		    /* fixme: These are probably valid, but require special treatment (Lauris) */
+		    (unit != SP_SVG_UNIT_EM) &&
+		    (unit != SP_SVG_UNIT_EX) &&
+		    (unit != SP_SVG_UNIT_PERCENT) &&
+		    (root->height.computed >= 1.0)) {
+			root->height.set = TRUE;
+			root->height.unit = unit;
+		} else {
+			root->height.set = FALSE;
+			root->height.unit = SP_SVG_UNIT_NONE;
+			root->height.computed = SP_SVG_DEFAULT_WIDTH_PX;
 		}
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "viewBox")) {
 		/* fixme: We have to take original item affine into account */
+		/* fixme: Think (Lauris) */
 		gdouble x, y, width, height;
 		gchar * eptr;
 		gdouble t0[6], s[6], a[6];
 
-		if (!astr) return;
-		eptr = (gchar *) astr;
+		if (!str) return;
+		eptr = (gchar *) str;
 		x = strtod (eptr, &eptr);
 		while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
 		y = strtod (eptr, &eptr);
@@ -192,12 +208,13 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 			root->viewbox.x1 = x + width;
 			root->viewbox.y1 = y + height;
 			art_affine_translate (t0, x, y);
-			art_affine_scale (s, root->width / width, root->height / height);
+			art_affine_scale (s, root->width.computed / width, root->height.computed / height);
 			art_affine_multiply (a, t0, s);
 			memcpy (item->affine, a, 6 * sizeof (gdouble));
 			for (v = item->display; v != NULL; v = v->next) {
 				nr_arena_item_set_transform (v->arenaitem, item->affine);
 			}
+			sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		}
 	} else if (((SPObjectClass *) parent_class)->read_attr) {
 		(* ((SPObjectClass *) parent_class)->read_attr) (object, key);
@@ -274,9 +291,8 @@ sp_root_modified (SPObject *object, guint flags)
 	if (((SPObjectClass *) (parent_class))->modified)
 		(* ((SPObjectClass *) (parent_class))->modified) (object, flags);
 
-	if (root->resized) {
-		sp_document_set_size (SP_OBJECT_DOCUMENT (root), root->width, root->height);
-		root->resized = FALSE;
+	if (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG) {
+		sp_document_set_size_px (SP_OBJECT_DOCUMENT (root), root->width.computed, root->height.computed);
 	}
 }
 

@@ -16,11 +16,13 @@
 BEGIN_GNOME_DECLS
 
 #include <gtk/gtkwidget.h>
-#include "../forward.h"
 
-GtkWidget *sp_stroke_style_widget_new (void);
+GtkWidget *sp_stroke_style_paint_widget_new (void);
+GtkWidget *sp_stroke_style_line_widget_new (void);
 
+#if 0
 void sp_stroke_style_dialog (void);
+#endif
 
 END_GNOME_DECLS
 

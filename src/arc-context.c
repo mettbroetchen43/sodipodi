@@ -298,10 +298,10 @@ sp_arc_finish (SPArcContext * ac)
 		ellipse = SP_GENERICELLIPSE (ac->item);
 		repr = SP_OBJECT (ac->item)->repr;
 
-		sp_repr_set_double_attribute (repr, "cx", ellipse->x);
-		sp_repr_set_double_attribute (repr, "cy", ellipse->y);
-		sp_repr_set_double_attribute (repr, "rx", ellipse->rx);
-		sp_repr_set_double_attribute (repr, "ry", ellipse->ry);
+		sp_repr_set_double_attribute (repr, "cx", ellipse->cx.computed);
+		sp_repr_set_double_attribute (repr, "cy", ellipse->cy.computed);
+		sp_repr_set_double_attribute (repr, "rx", ellipse->rx.computed);
+		sp_repr_set_double_attribute (repr, "ry", ellipse->ry.computed);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), ac->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));

@@ -2,35 +2,39 @@
 #define __SP_ELLIPSE_H__
 
 /*
- * SPGenericEllipse, SPEllipse, SPCircle
+ * SVG <ellipse> and related implementations
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Mitsuru Oka
  *
- * Copyright (C) 1999-2001 Ximian, Inc. and author
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * You can distribute and modify that code under terms
- * of GNU GPL. See file COPYING for more information.
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include "svg/svg-types.h"
 #include "sp-shape.h"
 
 /* Common parent class */
 
 #define SP_TYPE_GENERICELLIPSE (sp_genericellipse_get_type ())
-#define SP_GENERICELLIPSE(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_GENERICELLIPSE, SPGenericEllipse))
-#define SP_GENERICELLIPSE_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_GENERICELLIPSE, SPGenericEllipseClass))
-#define SP_IS_GENERICELLIPSE(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_GENERICELLIPSE))
-#define SP_IS_GENERICELLIPSE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_GENERICELLIPSE))
+#define SP_GENERICELLIPSE(o) (GTK_CHECK_CAST ((o), SP_TYPE_GENERICELLIPSE, SPGenericEllipse))
+#define SP_GENERICELLIPSE_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_GENERICELLIPSE, SPGenericEllipseClass))
+#define SP_IS_GENERICELLIPSE(o) (GTK_CHECK_TYPE ((o), SP_TYPE_GENERICELLIPSE))
+#define SP_IS_GENERICELLIPSE_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_GENERICELLIPSE))
 
 typedef struct _SPGenericEllipse SPGenericEllipse;
 typedef struct _SPGenericEllipseClass SPGenericEllipseClass;
 
 struct _SPGenericEllipse {
 	SPShape shape;
-	gdouble x, y;
-	gdouble rx, ry;
+	SPSVGLength cx;
+	SPSVGLength cy;
+	SPSVGLength rx;
+	SPSVGLength ry;
+
 	gdouble start, end;
 	gint closed;
 };
@@ -44,10 +48,10 @@ GtkType sp_genericellipse_get_type (void);
 /* SVG <ellipse> element */
 
 #define SP_TYPE_ELLIPSE (sp_ellipse_get_type ())
-#define SP_ELLIPSE(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_ELLIPSE, SPEllipse))
-#define SP_ELLIPSE_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_ELLIPSE, SPEllipseClass))
-#define SP_IS_ELLIPSE(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_ELLIPSE))
-#define SP_IS_ELLIPSE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ELLIPSE))
+#define SP_ELLIPSE(o) (GTK_CHECK_CAST ((o), SP_TYPE_ELLIPSE, SPEllipse))
+#define SP_ELLIPSE_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_ELLIPSE, SPEllipseClass))
+#define SP_IS_ELLIPSE(o) (GTK_CHECK_TYPE ((o), SP_TYPE_ELLIPSE))
+#define SP_IS_ELLIPSE_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_ELLIPSE))
 
 struct _SPEllipse {
 	SPGenericEllipse genericellipse;
@@ -97,7 +101,7 @@ struct _SPArcClass {
 };
 
 GtkType sp_arc_get_type (void);
-void sp_arc_set (SPArc * arc, gdouble x, gdouble y, gdouble rx, gdouble ry);
+void sp_arc_set (SPArc *arc, gdouble x, gdouble y, gdouble rx, gdouble ry);
 void sp_arc_get_xy (SPArc *ge, gdouble arg, ArtPoint *p);
 
 #endif

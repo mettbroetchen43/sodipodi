@@ -26,6 +26,7 @@
 #include <libart_lgpl/art_gray_svp.h>
 #include "../helper/nr-buffers.h"
 #include "../helper/nr-plain-stuff.h"
+#include "../helper/art-utils.h"
 #include "../style.h"
 #include "nr-arena.h"
 #include "nr-arena-glyphs.h"
@@ -185,12 +186,11 @@ nr_arena_glyphs_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state,
 	}
 
 	if (glyphs->style->stroke.type != SP_PAINT_TYPE_NONE) {
-		gdouble wx, wy;
-		wx = gc->affine[0] + gc->affine[2];
-		wy = gc->affine[1] + gc->affine[3];
+		gdouble width;
+		width = sp_distance_d_matrix_d_transform (glyphs->style->stroke_width.computed, gc->affine);
 		glyphs->stroke_svp = art_svp_vpath_stroke (pvp, glyphs->style->stroke_linejoin.value, glyphs->style->stroke_linecap.value,
-							  glyphs->style->user_stroke_width * hypot (wx, wy) * M_SQRT1_2,
-							  glyphs->style->stroke_miterlimit.value, 0.25);
+							   width,
+							   glyphs->style->stroke_miterlimit.value, 0.25);
 	}
 
 	art_free (pvp);

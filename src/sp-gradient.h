@@ -2,38 +2,59 @@
 #define __SP_GRADIENT_H__
 
 /*
- * SPGradient
- *
- * TODO: Implement radial & other fancy gradients
- * TODO: Implement via SPObjectGroup
+ * SVG <stop> <linearGradient> and <radialGradient> implementation
  *
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include "forward.h"
-#include "style.h"
-#include "sp-paint-server.h"
 
 /*
  * Gradient Stop
  */
 
-#define SP_TYPE_STOP            (sp_stop_get_type ())
-#define SP_STOP(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_STOP, SPStop))
-#define SP_STOP_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_STOP, SPStopClass))
-#define SP_IS_STOP(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_STOP))
-#define SP_IS_STOP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_STOP))
+#define SP_TYPE_STOP (sp_stop_get_type ())
+#define SP_STOP(o) (GTK_CHECK_CAST ((o), SP_TYPE_STOP, SPStop))
+#define SP_STOP_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_STOP, SPStopClass))
+#define SP_IS_STOP(o) (GTK_CHECK_TYPE ((o), SP_TYPE_STOP))
+#define SP_IS_STOP_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_STOP))
+
+#define SP_TYPE_GRADIENT (sp_gradient_get_type ())
+#define SP_GRADIENT(o) (GTK_CHECK_CAST ((o), SP_TYPE_GRADIENT, SPGradient))
+#define SP_GRADIENT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_GRADIENT, SPGradientClass))
+#define SP_IS_GRADIENT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_GRADIENT))
+#define SP_IS_GRADIENT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_GRADIENT))
+
+#define SP_TYPE_LINEARGRADIENT (sp_lineargradient_get_type ())
+#define SP_LINEARGRADIENT(o) (GTK_CHECK_CAST ((o), SP_TYPE_LINEARGRADIENT, SPLinearGradient))
+#define SP_LINEARGRADIENT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_LINEARGRADIENT, SPLinearGradientClass))
+#define SP_IS_LINEARGRADIENT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_LINEARGRADIENT))
+#define SP_IS_LINEARGRADIENT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_LINEARGRADIENT))
+
+#define SP_TYPE_RADIALGRADIENT (sp_radialgradient_get_type ())
+#define SP_RADIALGRADIENT(o) (GTK_CHECK_CAST ((o), SP_TYPE_RADIALGRADIENT, SPRadialGradient))
+#define SP_RADIALGRADIENT_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_RADIALGRADIENT, SPRadialGradientClass))
+#define SP_IS_RADIALGRADIENT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_RADIALGRADIENT))
+#define SP_IS_RADIALGRADIENT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_RADIALGRADIENT))
+
+#include "svg/svg-types.h"
+#include "color.h"
+#include "sp-paint-server.h"
 
 struct _SPStop {
 	SPObject object;
-	gdouble offset;
+
+	/* fixme: Should be SPSVGPercentage */
+	gfloat offset;
+
 	SPColor color;
+	/* fixme: Implement SPSVGNumber or something similar */
 	gfloat opacity;
 };
 
@@ -81,12 +102,6 @@ typedef enum {
 	SP_GRADIENT_SPREAD_REFLECT,
 	SP_GRADIENT_SPREAD_REPEAT
 } SPGradientSpread;
-
-#define SP_TYPE_GRADIENT (sp_gradient_get_type ())
-#define SP_GRADIENT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_GRADIENT, SPGradient))
-#define SP_GRADIENT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_GRADIENT, SPGradientClass))
-#define SP_IS_GRADIENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_GRADIENT))
-#define SP_IS_GRADIENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_GRADIENT))
 
 #define SP_GRADIENT_STATE_IS_SET(g) (SP_GRADIENT(g)->state != SP_GRADIENT_STATE_UNKNOWN)
 #define SP_GRADIENT_IS_VECTOR(g) (SP_GRADIENT(g)->state == SP_GRADIENT_STATE_VECTOR)
@@ -159,22 +174,13 @@ void sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gin
  * Linear Gradient
  */
 
-#define SP_TYPE_LINEARGRADIENT            (sp_lineargradient_get_type ())
-#define SP_LINEARGRADIENT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_LINEARGRADIENT, SPLinearGradient))
-#define SP_LINEARGRADIENT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_LINEARGRADIENT, SPLinearGradientClass))
-#define SP_IS_LINEARGRADIENT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_LINEARGRADIENT))
-#define SP_IS_LINEARGRADIENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_LINEARGRADIENT))
-
 struct _SPLinearGradient {
 	SPGradient gradient;
-	SPDistance x1;
-	guint x1_set : 1;
-	SPDistance y1;
-	guint y1_set : 1;
-	SPDistance x2;
-	guint x2_set : 1;
-	SPDistance y2;
-	guint y2_set : 1;
+
+	SPSVGLength x1;
+	SPSVGLength y1;
+	SPSVGLength x2;
+	SPSVGLength y2;
 };
 
 struct _SPLinearGradientClass {
@@ -193,24 +199,14 @@ SPRepr *sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector);
  * Radial Gradient
  */
 
-#define SP_TYPE_RADIALGRADIENT (sp_radialgradient_get_type ())
-#define SP_RADIALGRADIENT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_RADIALGRADIENT, SPRadialGradient))
-#define SP_RADIALGRADIENT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_RADIALGRADIENT, SPRadialGradientClass))
-#define SP_IS_RADIALGRADIENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_RADIALGRADIENT))
-#define SP_IS_RADIALGRADIENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_RADIALGRADIENT))
-
 struct _SPRadialGradient {
 	SPGradient gradient;
-	SPDistance cx;
-	guint cx_set : 1;
-	SPDistance cy;
-	guint cy_set : 1;
-	SPDistance r;
-	guint r_set : 1;
-	SPDistance fx;
-	guint fx_set : 1;
-	SPDistance fy;
-	guint fy_set : 1;
+
+	SPSVGLength cx;
+	SPSVGLength cy;
+	SPSVGLength r;
+	SPSVGLength fx;
+	SPSVGLength fy;
 };
 
 struct _SPRadialGradientClass {

@@ -1,15 +1,15 @@
 #define __SP_RECT_C__
 
 /*
- * SPRect
+ * SVG <rect> implementation
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -18,7 +18,10 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include "helper/art-utils.h"
 #include "svg/svg.h"
+#include "style.h"
+#include "document.h"
 #include "dialogs/object-attributes.h"
 #include "sp-rect.h"
 
@@ -28,8 +31,9 @@ static void sp_rect_class_init (SPRectClass *class);
 static void sp_rect_init (SPRect *rect);
 static void sp_rect_destroy (GtkObject *object);
 
-static void sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_rect_read_attr (SPObject * object, const gchar * attr);
+static void sp_rect_build (SPObject *object, SPDocument *document, SPRepr *repr);
+static void sp_rect_read_attr (SPObject *object, const gchar *attr);
+static void sp_rect_modified (SPObject *object, guint flags);
 
 static gchar * sp_rect_description (SPItem * item);
 static GSList * sp_rect_snappoints (SPItem * item, GSList * points);
@@ -48,22 +52,19 @@ static SPShapeClass *parent_class;
 GtkType
 sp_rect_get_type (void)
 {
-	static GtkType rect_type = 0;
-
-	if (!rect_type) {
-		GtkTypeInfo rect_info = {
+	static GtkType type = 0;
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPRect",
 			sizeof (SPRect),
 			sizeof (SPRectClass),
 			(GtkClassInitFunc) sp_rect_class_init,
 			(GtkObjectInitFunc) sp_rect_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		rect_type = gtk_type_unique (sp_shape_get_type (), &rect_info);
+		type = gtk_type_unique (SP_TYPE_SHAPE, &info);
 	}
-	return rect_type;
+	return type;
 }
 
 static void
@@ -86,6 +87,7 @@ sp_rect_class_init (SPRectClass *class)
 	sp_object_class->build = sp_rect_build;
 	sp_object_class->write_repr = sp_rect_write_repr;
 	sp_object_class->read_attr = sp_rect_read_attr;
+	sp_object_class->modified = sp_rect_modified;
 
 	item_class->description = sp_rect_description;
 	item_class->snappoints = sp_rect_snappoints;
@@ -100,9 +102,18 @@ static void
 sp_rect_init (SPRect * rect)
 {
 	SP_PATH (rect) -> independent = FALSE;
-	rect->x = rect->y = 0.0;
-	rect->width = rect->height = 0.0;
-	rect->rx = rect->ry = 0.0;
+	rect->x.set = FALSE;
+	rect->x.computed = 0.0;
+	rect->y.set = FALSE;
+	rect->y.computed = 0.0;
+	rect->width.set = FALSE;
+	rect->width.computed = 0.0;
+	rect->height.set = FALSE;
+	rect->height.computed = 0.0;
+	rect->rx.set = FALSE;
+	rect->rx.computed = 0.0;
+	rect->ry.set = FALSE;
+	rect->ry.computed = 0.0;
 }
 
 static void
@@ -110,13 +121,9 @@ sp_rect_destroy (GtkObject *object)
 {
 	SPRect *rect;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_RECT (object));
-
 	rect = SP_RECT (object);
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
@@ -135,12 +142,11 @@ sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr)
 }
 
 static void
-sp_rect_read_attr (SPObject * object, const gchar * attr)
+sp_rect_read_attr (SPObject *object, const gchar *attr)
 {
-	SPRect * rect;
-	const gchar * astr;
-	const SPUnit *unit;
-	double n;
+	SPRect *rect;
+	const gchar *str;
+	gulong unit;
 
 	rect = SP_RECT (object);
 
@@ -148,45 +154,65 @@ sp_rect_read_attr (SPObject * object, const gchar * attr)
 	g_print ("sp_rect_read_attr: attr %s\n", attr);
 #endif
 
-	astr = sp_repr_attr (object->repr, attr);
+	str = sp_repr_attr (object->repr, attr);
 
-	/* fixme: we should really collect updates */
+	/* fixme: We should really collect updates */
+	/* fixme: We need real error processing some time */
 
-	if (strcmp (attr, "x") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		rect->x = n;
+	if (!strcmp (attr, "x")) {
+		if (sp_svg_length_read_lff (str, &unit, &rect->x.value, &rect->x.computed)) {
+			rect->x.set = TRUE;
+			rect->x.unit = unit;
+		} else {
+			rect->x.set = FALSE;
+			rect->x.computed = 0.0;
+		}
 		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "y") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		rect->y = n;
+	} else if (!strcmp (attr, "y")) {
+		if (sp_svg_length_read_lff (str, &unit, &rect->y.value, &rect->y.computed)) {
+			rect->y.set = TRUE;
+			rect->y.unit = unit;
+		} else {
+			rect->y.set = FALSE;
+			rect->y.computed = 0.0;
+		}
 		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "width") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		rect->width = n;
+	} else if (!strcmp (attr, "width")) {
+		if (sp_svg_length_read_lff (str, &unit, &rect->width.value, &rect->width.computed) && (rect->width.value > 0.0)) {
+			rect->width.set = TRUE;
+			rect->width.unit = unit;
+		} else {
+			rect->width.set = FALSE;
+			rect->width.computed = 0.0;
+		}
 		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "height") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		rect->height = n;
+	} else if (!strcmp (attr, "height")) {
+		if (sp_svg_length_read_lff (str, &unit, &rect->height.value, &rect->height.computed) && (rect->height.value > 0.0)) {
+			rect->height.set = TRUE;
+			rect->height.unit = unit;
+		} else {
+			rect->height.set = FALSE;
+			rect->height.computed = 0.0;
+		}
 		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "rx") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		rect->rx = n;
+	} else if (!strcmp (attr, "rx")) {
+		if (sp_svg_length_read_lff (str, &unit, &rect->rx.value, &rect->rx.computed) && (rect->rx.value > 0.0)) {
+			rect->rx.set = TRUE;
+			rect->rx.unit = unit;
+		} else {
+			rect->rx.set = FALSE;
+			rect->rx.computed = 0.0;
+		}
 		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "ry") == 0) {
-		n = sp_svg_read_length (&unit, astr, 0.0);
-		rect->ry = n;
+	} else if (!strcmp (attr, "ry")) {
+		if (sp_svg_length_read_lff (str, &unit, &rect->ry.value, &rect->ry.computed) && rect->ry.value > 0.0) {
+			rect->ry.set = TRUE;
+			rect->ry.unit = unit;
+		} else {
+			rect->ry.set = FALSE;
+			rect->ry.computed = 0.0;
+		}
 		sp_rect_set_shape (rect);
-		return;
 	}
 
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
@@ -194,60 +220,131 @@ sp_rect_read_attr (SPObject * object, const gchar * attr)
 
 }
 
+static void
+sp_rect_modified (SPObject *object, guint flags)
+{
+	if (SP_OBJECT_CLASS (parent_class)->modified)
+		SP_OBJECT_CLASS (parent_class)->modified (object, flags);
+
+	if ((flags & SP_OBJECT_STYLE_MODIFIED_FLAG) || (flags & SP_OBJECT_VIEWPORT_MODIFIED_FLAG)) {
+		sp_rect_set_shape (SP_RECT (object));
+	}
+}
+
 static gchar *
 sp_rect_description (SPItem * item)
 {
-	return g_strdup ("Rectangle");
+	SPRect *rect;
+
+	rect = SP_RECT (item);
+
+	return g_strdup_printf ("Rectangle %g %g %g %g", rect->x.computed, rect->y.computed, rect->width.computed, rect->height.computed);
+}
+
+static void
+sp_rect_glue_set_shape (SPShape *shape)
+{
+	SPRect *rect;
+
+	rect = SP_RECT (shape);
+
+	sp_rect_set_shape (rect);
+}
+
+static void
+sp_rect_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
+{
+	if (length->unit == SP_SVG_UNIT_EM) {
+		length->computed = length->value * em;
+	} else if (length->unit == SP_SVG_UNIT_EX) {
+		length->computed = length->value * ex;
+	} else if (length->unit == SP_SVG_UNIT_PERCENT) {
+		length->computed = length->value * scale;
+	}
+}
+
+static void
+sp_rect_compute_values (SPRect *rect)
+{
+	SPStyle *style;
+	gdouble i2vp[6], vp2i[6];
+	gdouble aw, ah;
+	gdouble d;
+
+	style = SP_OBJECT_STYLE (rect);
+
+	/* fixme: It is somewhat dangerous, yes (Lauris) */
+	/* fixme: And it is terribly slow too (Lauris) */
+	/* fixme: In general we want to keep viewport scales around */
+	sp_item_i2vp_affine (SP_ITEM (rect), i2vp);
+	art_affine_invert (vp2i, i2vp);
+	aw = sp_distance_d_matrix_d_transform (1.0, vp2i);
+	ah = sp_distance_d_matrix_d_transform (1.0, vp2i);
+	/* sqrt ((actual_width) ** 2 + (actual_height) ** 2)) / sqrt (2) */
+	d = sqrt (aw * aw + ah * ah) * M_SQRT1_2;
+
+	sp_rect_update_length (&rect->x, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_rect_update_length (&rect->y, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_rect_update_length (&rect->width, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_rect_update_length (&rect->height, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_rect_update_length (&rect->rx, style->font_size.computed, style->font_size.computed * 0.5, d);
+	sp_rect_update_length (&rect->ry, style->font_size.computed, style->font_size.computed * 0.5, d);
 }
 
 #define C1 0.554
 
 static void
-sp_rect_glue_set_shape (SPShape *shape)
-{
-	SPRect *rect = SP_RECT(shape);
-	sp_rect_set_shape(rect);
-}
-
-static void
 sp_rect_set_shape (SPRect * rect)
 {
-	double x, y, rx, ry;
+	double x, y, w, h, w2, h2, rx, ry;
 	SPCurve * c;
 	
 	sp_path_clear (SP_PATH (rect));
 
-	if ((rect->height < 1e-12) || (rect->width < 1e-12)) return;
+	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
+	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
+	sp_rect_compute_values (rect);
+
+	if ((rect->height.computed < 1e-18) || (rect->width.computed < 1e-18)) return;
 
 	c = sp_curve_new ();
 
-	x = rect->x;
-	y = rect->y;
+	x = rect->x.computed;
+	y = rect->y.computed;
+	w = rect->width.computed;
+	h = rect->height.computed;
+	w2 = w / 2;
+	h2 = h / 2;
+	if (rect->rx.set) {
+		rx = CLAMP (rect->rx.computed, 0.0, rect->width.computed / 2);
+	} else if (rect->ry.set) {
+		rx = CLAMP (rect->ry.computed, 0.0, rect->width.computed / 2);
+	} else {
+		rx = 0.0;
+	}
+	if (rect->ry.set) {
+		ry = CLAMP (rect->ry.computed, 0.0, rect->height.computed / 2);
+	} else if (rect->rx.set) {
+		ry = CLAMP (rect->rx.computed, 0.0, rect->height.computed / 2);
+	} else {
+		ry = 0.0;
+	}
 
-	if ((rect->rx != 0.0) && (rect->ry != 0.0)) {
-		rx = rect->rx;
-		ry = rect->ry;
-		if (rx > rect->width / 2) rx = rect->width / 2;
-		if (ry > rect->height / 2) ry = rect->height / 2;
-
+	if ((rx > 1e-18) && (ry > 1e-18)) {
 		sp_curve_moveto (c, x + rx, y + 0.0);
 		sp_curve_curveto (c, x + rx * (1 - C1), y + 0.0, x + 0.0, y + ry * (1 - C1), x + 0.0, y + ry);
-		if (ry < rect->height / 2)
-			sp_curve_lineto (c, x + 0.0, y + rect->height - ry);
-		sp_curve_curveto (c, x + 0.0, y + rect->height - ry * (1 - C1), x + rx * (1 - C1), y + rect->height, x + rx, y + rect->height);
-		if (rx < rect->width / 2)
-			sp_curve_lineto (c, x + rect->width - rx, y + rect->height);
-		sp_curve_curveto (c, x + rect->width - rx * (1 - C1), y + rect->height, x + rect->width, y + rect->height - ry * (1 - C1), x + rect->width, y + rect->height - ry);
-		if (ry < rect->height / 2)
-			sp_curve_lineto (c, x + rect->width, y + ry);
-		sp_curve_curveto (c, x + rect->width, y + ry * (1 - C1), x + rect->width - rx * (1 - C1), y + 0.0, x + rect->width - rx, y + 0.0);
-		if (rx < rect->width / 2)
-			sp_curve_lineto (c, x + rx, y + 0.0);
+		if (ry < h2) sp_curve_lineto (c, x + 0.0, y + h - ry);
+		sp_curve_curveto (c, x + 0.0, y + h - ry * (1 - C1), x + rx * (1 - C1), y + h, x + rx, y + h);
+		if (rx < w2) sp_curve_lineto (c, x + w - rx, y + h);
+		sp_curve_curveto (c, x + w - rx * (1 - C1), y + h, x + w, y + h - ry * (1 - C1), x + w, y + h - ry);
+		if (ry < h2) sp_curve_lineto (c, x + w, y + ry);
+		sp_curve_curveto (c, x + w, y + ry * (1 - C1), x + w - rx * (1 - C1), y + 0.0, x + w - rx, y + 0.0);
+		if (rx < w2) sp_curve_lineto (c, x + rx, y + 0.0);
 	} else {
 		sp_curve_moveto (c, x + 0.0, y + 0.0);
-		sp_curve_lineto (c, x + 0.0, y + rect->height);
-		sp_curve_lineto (c, x + rect->width, y + rect->height);
-		sp_curve_lineto (c, x + rect->width, y + 0.0);
+		sp_curve_lineto (c, x + 0.0, y + h);
+		sp_curve_lineto (c, x + w, y + h);
+		sp_curve_lineto (c, x + w, y + 0.0);
 		sp_curve_lineto (c, x + 0.0, y + 0.0);
 	}
 
@@ -256,57 +353,66 @@ sp_rect_set_shape (SPRect * rect)
 	sp_curve_unref (c);
 }
 
+/* fixme: Think (Lauris) */
+
 void
 sp_rect_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdouble height)
 {
 	g_return_if_fail (rect != NULL);
 	g_return_if_fail (SP_IS_RECT (rect));
 
-	rect->x = x;
-	rect->y = y;
-	rect->width = width;
-	rect->height = height;
+	rect->x.computed = x;
+	rect->y.computed = y;
+	rect->width.computed = width;
+	rect->height.computed = height;
 
 	sp_rect_set_shape (rect);
 }
 
 static GSList * 
-sp_rect_snappoints (SPItem * item, GSList * points)
+sp_rect_snappoints (SPItem *item, GSList *points)
 {
-  ArtPoint * p, p1, p2, p3, p4;
-  gdouble affine[6];
+	SPRect *rect;
+	ArtPoint * p, p1, p2, p3, p4;
+	gdouble affine[6];
 
-  /* we use corners of rect only */
-  p1.x = SP_RECT(item)->x;
-  p1.y = SP_RECT(item)->y;
-  p2.x = p1.x + SP_RECT(item)->width;
-  p2.y = p1.y;
-  p3.x = p1.x;
-  p3.y = p1.y + SP_RECT(item)->height;
-  p4.x = p1.x + SP_RECT(item)->width;
-  p4.y = p1.y + SP_RECT(item)->height;
-  sp_item_i2d_affine (item, affine);
+	rect = SP_RECT (item);
 
-  p = g_new (ArtPoint,1);
-  art_affine_point (p, &p1, affine);
-  points = g_slist_append (points, p);
-  p = g_new (ArtPoint,1);
-  art_affine_point (p, &p2, affine);
-  points = g_slist_append (points, p);
-  p = g_new (ArtPoint,1);
-  art_affine_point (p, &p3, affine);
-  points = g_slist_append (points, p);
-  p = g_new (ArtPoint,1);
-  art_affine_point (p, &p4, affine);
-  points = g_slist_append (points, p);
+	/* we use corners of rect only */
+	p1.x = rect->x.computed;
+	p1.y = rect->y.computed;
+	p2.x = p1.x + rect->width.computed;
+	p2.y = p1.y;
+	p3.x = p1.x;
+	p3.y = p1.y + rect->height.computed;
+	p4.x = p2.x;
+	p4.y = p3.y;
 
-  return points;
+	sp_item_i2d_affine (item, affine);
+
+	p = g_new (ArtPoint,1);
+	art_affine_point (p, &p1, affine);
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	art_affine_point (p, &p2, affine);
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	art_affine_point (p, &p3, affine);
+	points = g_slist_append (points, p);
+	p = g_new (ArtPoint,1);
+	art_affine_point (p, &p4, affine);
+	points = g_slist_append (points, p);
+
+	return points;
 }
 
 /*
  * Initially we'll do:
  * Transform x, y, set x, y, clear translation
  */
+
+/* fixme: Use preferred units somehow (Lauris) */
+/* fixme: Alternately preserve whatever units there are (lauris) */
 
 static void
 sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
@@ -318,8 +424,8 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	rect = SP_RECT (item);
 
 	/* Calculate text start in parent coords */
-	px = transform[0] * rect->x + transform[2] * rect->y + transform[4];
-	py = transform[1] * rect->x + transform[3] * rect->y + transform[5];
+	px = transform[0] * rect->x.computed + transform[2] * rect->y.computed + transform[4];
+	py = transform[1] * rect->x.computed + transform[3] * rect->y.computed + transform[5];
 
 	/* Clear translation */
 	transform[4] = 0.0;
@@ -342,10 +448,10 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 		transform[2] = 0.0;
 		transform[3] = 1.0;
 	}
-	sp_repr_set_double_attribute (repr, "width", rect->width * sw);
-	sp_repr_set_double_attribute (repr, "height", rect->height * sh);
-	sp_repr_set_double_attribute (repr, "rx", rect->rx * sw);
-	sp_repr_set_double_attribute (repr, "ry", rect->ry * sh);
+	sp_repr_set_double_attribute (repr, "width", rect->width.computed * sw);
+	sp_repr_set_double_attribute (repr, "height", rect->height.computed * sh);
+	sp_repr_set_double_attribute (repr, "rx", rect->rx.computed * sw);
+	sp_repr_set_double_attribute (repr, "ry", rect->ry.computed * sh);
 
 	/* Find start in item coords */
 	art_affine_invert (rev, transform);
@@ -362,7 +468,6 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	} else {
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "transform", NULL);
 	}
-
 }
 
 static void
@@ -372,12 +477,12 @@ sp_rect_write_repr (SPObject * object, SPRepr *repr)
 
 	rect = SP_RECT (object);
 
-	sp_repr_set_double_attribute (repr, "width", rect->width);
-	sp_repr_set_double_attribute (repr, "height", rect->height);
-	sp_repr_set_double_attribute (repr, "rx", rect->rx);
-	sp_repr_set_double_attribute (repr, "ry", rect->ry);
-	sp_repr_set_double_attribute (repr, "x", rect->x);
-	sp_repr_set_double_attribute (repr, "y", rect->y);
+	sp_repr_set_double_attribute (repr, "width", rect->width.computed);
+	sp_repr_set_double_attribute (repr, "height", rect->height.computed);
+	sp_repr_set_double_attribute (repr, "rx", rect->rx.computed);
+	sp_repr_set_double_attribute (repr, "ry", rect->ry.computed);
+	sp_repr_set_double_attribute (repr, "x", rect->x.computed);
+	sp_repr_set_double_attribute (repr, "y", rect->y.computed);
 }
 
 /* Generate context menu item section */
@@ -421,8 +526,8 @@ sp_rect_rx_get (SPItem *item, ArtPoint *p)
 
 	rect = SP_RECT(item);
 
-	p->x = rect->x + rect->rx;
-	p->y = rect->y;
+	p->x = rect->x.computed + rect->rx.computed;
+	p->y = rect->y.computed;
 }
 
 static void
@@ -433,10 +538,10 @@ sp_rect_rx_set (SPItem *item, const ArtPoint *p, guint state)
 	rect = SP_RECT(item);
 	
 	if (state & GDK_CONTROL_MASK) {
-		gdouble temp = MIN(rect->height, rect->width)/2.0;
-		rect->rx = rect->ry = CLAMP(p->x - rect->x, 0.0, temp);
+		gdouble temp = MIN (rect->height.computed, rect->width.computed) / 2.0;
+		rect->rx.computed = rect->ry.computed = CLAMP (p->x - rect->x.computed, 0.0, temp);
 	} else {
-		rect->rx = CLAMP(p->x - rect->x, 0.0, rect->width/2.0);
+		rect->rx.computed = CLAMP (p->x - rect->x.computed, 0.0, rect->width.computed / 2.0);
 	}
 }
 
@@ -448,8 +553,8 @@ sp_rect_ry_get (SPItem *item, ArtPoint *p)
 
 	rect = SP_RECT(item);
 
-	p->x = rect->x;
-	p->y = rect->y + rect->ry;
+	p->x = rect->x.computed;
+	p->y = rect->y.computed + rect->ry.computed;
 }
 
 static void
@@ -460,10 +565,10 @@ sp_rect_ry_set (SPItem *item, const ArtPoint *p, guint state)
 	rect = SP_RECT(item);
 	
 	if (state & GDK_CONTROL_MASK) {
-		gdouble temp = MIN(rect->height, rect->width)/2.0;
-		rect->rx = rect->ry = CLAMP(p->y - rect->y, 0.0, temp);
+		gdouble temp = MIN (rect->height.computed, rect->width.computed) / 2.0;
+		rect->rx.computed = rect->ry.computed = CLAMP (p->y - rect->y.computed, 0.0, temp);
 	} else {
-		rect->ry = CLAMP(p->y - rect->y, 0.0, rect->height/2.0);
+		rect->ry.computed = CLAMP (p->y - rect->y.computed, 0.0, rect->height.computed / 2.0);
 	}
 }
 
@@ -477,12 +582,8 @@ sp_rect_knot_holder (SPItem *item, SPDesktop *desktop)
 	rect = SP_RECT (item);
 	knot_holder = sp_knot_holder_new (desktop, item);
 	
-	sp_knot_holder_add (knot_holder,
-			    sp_rect_rx_set,
-			    sp_rect_rx_get);
-	sp_knot_holder_add (knot_holder,
-			    sp_rect_ry_set,
-			    sp_rect_ry_get);
+	sp_knot_holder_add (knot_holder, sp_rect_rx_set, sp_rect_rx_get);
+	sp_knot_holder_add (knot_holder, sp_rect_ry_set, sp_rect_ry_get);
 	
 	return knot_holder;
 }

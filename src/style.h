@@ -26,21 +26,15 @@ BEGIN_GNOME_DECLS
 #include "color.h"
 #include "forward.h"
 
-typedef struct _SPIString SPIString;
 typedef struct _SPIFloat SPIFloat;
 typedef struct _SPIScale24 SPIScale24;
 typedef struct _SPIInt SPIInt;
 typedef struct _SPIShort SPIShort;
 typedef struct _SPIEnum SPIEnum;
+typedef struct _SPIString SPIString;
+typedef struct _SPILength SPILength;
 typedef struct _SPIPaint SPIPaint;
 typedef struct _SPIFontSize SPIFontSize;
-
-struct _SPIString {
-	guint set : 1;
-	guint inherit : 1;
-	guint data : 30;
-	guchar *value;
-};
 
 struct _SPIFloat {
 	guint set : 1;
@@ -78,6 +72,34 @@ struct _SPIEnum {
 	guint inherit : 1;
 	guint value : 8;
 	guint computed : 8;
+};
+
+struct _SPIString {
+	guint set : 1;
+	guint inherit : 1;
+	guint data : 30;
+	guchar *value;
+};
+
+enum {
+	SP_CSS_UNIT_NONE,
+	SP_CSS_UNIT_PX,
+	SP_CSS_UNIT_PT,
+	SP_CSS_UNIT_PC,
+	SP_CSS_UNIT_MM,
+	SP_CSS_UNIT_CM,
+	SP_CSS_UNIT_IN,
+	SP_CSS_UNIT_EM,
+	SP_CSS_UNIT_EX,
+	SP_CSS_UNIT_PERCENT
+};
+
+struct _SPILength {
+	guint set : 1;
+	guint inherit : 1;
+	guint unit : 4;
+	gfloat value;
+	gfloat computed;
 };
 
 #define SP_STYLE_FILL_SERVER(s) (((SPStyle *) (s))->fill.value.server)
@@ -169,8 +191,7 @@ struct _SPStyle {
 	/* stroke */
 	SPIPaint stroke;
 	/* stroke-width */
-	SPDistance stroke_width;
-	guint stroke_width_set : 1;
+	SPILength stroke_width;
 	/* stroke-linecap */
 	SPIEnum stroke_linecap;
 	/* stroke-linejoin */
@@ -184,10 +205,6 @@ struct _SPStyle {
 	/* stroke-opacity */
 	SPIScale24 stroke_opacity;
 	/* fixme: remove this */
-	/* Computed value */
-	gdouble absolute_stroke_width;
-	gdouble user_stroke_width;
-	guint real_stroke_width_set : 1;
 
 	/* SVG */
 	SPIEnum text_anchor;

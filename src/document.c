@@ -1,18 +1,15 @@
-#define SP_DOCUMENT_C
+#define __SP_DOCUMENT_C__
 
 /*
- * SPDocument
- *
- * This is toplevel class, implementing a gateway from repr to most
- * editing properties, like canvases (desktops), undo stacks etc.
+ * SVG document implementation
  *
  * Authors:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
- * Copyright (C) 2001-2002 Lauris Kaplinski and Ximian, Inc.
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Distributed under GNU General Public License
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define noSP_DOCUMENT_DEBUG_UNDO
@@ -30,8 +27,8 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
-#define A4_WIDTH  (21.0 * 72.0 / 2.54)
-#define A4_HEIGHT (29.7 * 72.0 / 2.54)
+#define A4_WIDTH_STR "210mm"
+#define A4_HEIGHT_STR "297mm"
 
 enum {
 	MODIFIED,
@@ -214,16 +211,17 @@ sp_document_new (const gchar * uri)
 		rroot = sp_repr_document_root (rdoc);
 		g_return_val_if_fail (rroot != NULL, NULL);
 		sp_repr_set_attr (rroot, "style",
-			"fill:#000000;fill-opacity:0.5;stroke:none");
+			"fill:#000000;stroke:none;");
 	}
 	/* A quick hack to get namespaces into doc */
 	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/2000/svg");
 	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
 	sp_repr_set_attr (rroot, "xmlns:xlink", "http://www.w3.org/1999/xlink");
+	sp_repr_set_attr (rroot, "sodipodi:version", VERSION);
 	/* End of quick hack */
 	/* Quick hack 2 - get default image size into document */
-	if (!sp_repr_attr (rroot, "width")) sp_repr_set_double_attribute (rroot, "width", A4_WIDTH);
-	if (!sp_repr_attr (rroot, "height")) sp_repr_set_double_attribute (rroot, "height", A4_HEIGHT);
+	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
+	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
 	/* End of quick hack 2 */
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
@@ -305,10 +303,11 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	sp_repr_set_attr (rroot, "xmlns", "http://www.w3.org/2000.svg");
 	sp_repr_set_attr (rroot, "xmlns:sodipodi", "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd");
 	sp_repr_set_attr (rroot, "xmlns:xlink", "http://www.w3.org/1999/xlink");
+	sp_repr_set_attr (rroot, "sodipodi:version", VERSION);
 	/* End of quick hack */
 	/* Quick hack 2 - get default image size into document */
-	if (!sp_repr_attr (rroot, "width")) sp_repr_set_double_attribute (rroot, "width", A4_WIDTH);
-	if (!sp_repr_attr (rroot, "height")) sp_repr_set_double_attribute (rroot, "height", A4_HEIGHT);
+	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
+	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
 	/* End of quick hack 2 */
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);
@@ -413,8 +412,9 @@ sp_document_width (SPDocument * document)
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
 	g_return_val_if_fail (document->private != NULL, 0.0);
+	g_return_val_if_fail (document->private->root != NULL, 0.0);
 
-	return document->private->root->width;
+	return document->private->root->width.computed / 1.25;
 }
 
 gdouble
@@ -423,8 +423,9 @@ sp_document_height (SPDocument * document)
 	g_return_val_if_fail (document != NULL, 0.0);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), 0.0);
 	g_return_val_if_fail (document->private != NULL, 0.0);
+	g_return_val_if_fail (document->private->root != NULL, 0.0);
 
-	return document->private->root->height;
+	return document->private->root->height.computed / 1.25;
 }
 
 const gchar *
@@ -456,14 +457,14 @@ sp_document_set_uri (SPDocument *document, const guchar *uri)
 }
 
 void
-sp_document_set_size (SPDocument *doc, gdouble width, gdouble height)
+sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height)
 {
 	g_return_if_fail (doc != NULL);
 	g_return_if_fail (SP_IS_DOCUMENT (doc));
 	g_return_if_fail (width > 0.001);
 	g_return_if_fail (height > 0.001);
 
-	gtk_signal_emit (GTK_OBJECT (doc), signals [RESIZED], width, height);
+	gtk_signal_emit (GTK_OBJECT (doc), signals [RESIZED], width / 1.25, height / 1.25);
 }
 
 const gchar *

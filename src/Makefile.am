@@ -43,7 +43,6 @@ sodipodi_SOURCES = \
 	sp-image.c sp-image.h \
 	sp-path-component.c sp-path-component.h \
 	sp-path.c sp-path.h \
-	sp-shape-style.c sp-shape-style.h \
 	sp-shape.c sp-shape.h \
 	sp-rect.c sp-rect.h \
 	sp-ellipse.c sp-ellipse.h \

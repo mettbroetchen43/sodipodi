@@ -29,6 +29,7 @@ libspdialogs_a_SOURCES = \
 	object-properties.c object-properties.h \
 	item-properties.c item-properties.h \
 	object-attributes.c object-attributes.h \
+	tool-options.c tool-options.h \
 	tool-attributes.c tool-attributes.h \
 	fill-style.c fill-style.h \
 	stroke-style.c stroke-style.h

@@ -66,16 +66,29 @@ sp_object_properties_dialog (void)
 		gtk_widget_show (page);
 		gtk_notebook_append_page (GTK_NOTEBOOK (nb), page, hb);
 
-		/* Stroke page */
+		/* Stroke paint page */
 		hb = gtk_hbox_new (FALSE, 0);
 		gtk_widget_show (hb);
-		l = gtk_label_new (_("Stroke"));
+		l = gtk_label_new (_("Stroke paint"));
 		gtk_widget_show (l);
 		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
 		px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
 		gtk_widget_show (px);
 		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
-		page = sp_stroke_style_widget_new ();
+		page = sp_stroke_style_paint_widget_new ();
+		gtk_widget_show (page);
+		gtk_notebook_append_page (GTK_NOTEBOOK (nb), page, hb);
+
+		/* Stroke line page */
+		hb = gtk_hbox_new (FALSE, 0);
+		gtk_widget_show (hb);
+		l = gtk_label_new (_("Stroke style"));
+		gtk_widget_show (l);
+		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
+		px = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/properties_stroke.xpm");
+		gtk_widget_show (px);
+		gtk_box_pack_start (GTK_BOX (hb), px, FALSE, FALSE, 0);
+		page = sp_stroke_style_line_widget_new ();
 		gtk_widget_show (page);
 		gtk_notebook_append_page (GTK_NOTEBOOK (nb), page, hb);
 	}

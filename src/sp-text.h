@@ -2,15 +2,15 @@
 #define __SP_TEXT_H__
 
 /*
- * SPText - a SVG <text> element
+ * SVG <text> and <tspan> implementation
  *
  * Author:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2000, 2002 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libgnome/gnome-defs.h>
@@ -37,22 +37,22 @@ BEGIN_GNOME_DECLS
 
 /* Text specific flags */
 #define SP_TEXT_CONTENT_MODIFIED_FLAG SP_OBJECT_USER_MODIFIED_FLAG_A
+#define SP_TEXT_LAYOUT_MODIFIED_FLAG SP_OBJECT_USER_MODIFIED_FLAG_A
 
 #define SP_TSPAN_STRING(t) ((SPString *) SP_TSPAN (t)->string)
 
+#include "svg/svg-types.h"
 #include "sp-chars.h"
 
 typedef struct _SPLayoutData SPLayoutData;
 
 struct _SPLayoutData {
 	/* fixme: Vectors */
-	guint x_set : 1;
-	guint y_set : 1;
-	guint dx_set : 1;
-	guint dy_set : 1;
+	SPSVGLength x;
+	SPSVGLength y;
+	SPSVGLength dx;
+	SPSVGLength dy;
 	guint rotate_set : 1;
-	gfloat x, y;
-	gfloat dx, dy;
 	gfloat rotate;
 };
 
@@ -74,9 +74,6 @@ struct _SPString {
 	guint length;
 	/* Using current direction and style */
 	ArtDRect bbox;
-#if 0
-	ArtPoint initial;
-#endif
 	ArtPoint advance;
 };
 

@@ -167,7 +167,7 @@ sp_desktop_init (SPDesktop *desktop)
 
 	art_affine_identity (desktop->d2w);
 	art_affine_identity (desktop->w2d);
-	art_affine_identity (desktop->doc2dt);
+	art_affine_scale (desktop->doc2dt, 0.8, -0.8);
 
 	desktop->guides_active = FALSE;
 }
@@ -220,7 +220,6 @@ sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdoub
 
 	desktop = SP_DESKTOP (view);
 
-	desktop->doc2dt[3] = -1.0;
 	desktop->doc2dt[5] = height;
 
 	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
@@ -322,8 +321,6 @@ sp_desktop_new (SPNamedView *namedview, GnomeCanvas *canvas)
 	sp_ctrlrect_set_shadow (SP_CTRLRECT (desktop->page), 5, 0x3f3f3fff);
 
 	/* Connect event for page resize */
-	art_affine_identity (desktop->doc2dt);
-	desktop->doc2dt[3] = -1.0;
 	desktop->doc2dt[5] = sp_document_height (document);
 	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
 
