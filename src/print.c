@@ -345,13 +345,28 @@ sp_print_document (SPDocument *doc)
 {
 #ifdef WITH_GNOME_PRINT
         GnomePrintConfig *config;
-	GtkWidget *dlg;
+	GtkWidget *dlg, *vbox, *sel;
 	SPPrintContext ctx;
         GnomePrintContext *gpc;
 	int btn;
 
 	config = gnome_print_config_default ();
-        dlg = gnome_printer_dialog_new (config);
+
+	dlg = gtk_dialog_new_with_buttons (_("Select printer"), NULL,
+					   GTK_DIALOG_MODAL,
+					   GTK_STOCK_PRINT,
+					   GTK_RESPONSE_OK,
+					   GTK_STOCK_CANCEL,
+					   GTK_RESPONSE_CANCEL,
+					   NULL);
+
+	vbox = GTK_DIALOG (dlg)->vbox;
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
+
+        sel = gnome_printer_selection_new (config);
+	gtk_widget_show (sel);
+	gtk_box_pack_start (GTK_BOX (vbox), sel, TRUE, TRUE, 0);
+
 	btn = gtk_dialog_run (GTK_DIALOG (dlg));
 	gtk_widget_destroy (dlg);
         if (btn != GTK_RESPONSE_OK) return;
