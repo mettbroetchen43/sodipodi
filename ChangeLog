@@ -1,3 +1,10 @@
+2002-09-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas-util.c (sp_canvas_item_grab): new method to
+	circumvent GnomeCanvas bug
+
+	* src/knot.c (sp_knot_handler): Use sp_canvas_item_grab
+
 2002-09-23  Masatake YAMATO  <jet@gyve.org>
 
 	* src/knot.c (sp_knot_class_init): Added "stamped" signal

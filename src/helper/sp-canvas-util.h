@@ -1,9 +1,30 @@
-#ifndef SP_CANVAS_UTILS_H
-#define SP_CANVAS_UTILS_H
+#ifndef __SP_CANVAS_UTILS_H__
+#define __SP_CANVAS_UTILS_H__
+
+/*
+ * Helper stuff for GnomeCanvas
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <libgnomeui/gnome-canvas.h>
 
 /* Miscellaneous utility & convenience functions for general canvas objects */
+
+/*
+ * Grabs canvas item, but unlike the original method does not pass
+ * illegal key event mask to canvas, who passes it ahead to Gdk, but
+ * instead sets event mask in canvas struct by hand
+ */
+int sp_canvas_item_grab (GnomeCanvasItem *item, unsigned int event_mask, GdkCursor *cursor, guint32 etime);
+
+
 
 /* fill buffer with background color */
 

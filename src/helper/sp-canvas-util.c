@@ -1,4 +1,16 @@
-#define SP_CANVAS_UTILS_C
+#define __SP_CANVAS_UTILS_C__
+
+/*
+ * Helper stuff for GnomeCanvas
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_svp.h>
@@ -6,6 +18,33 @@
 #include <libgnomeui/gnome-canvas.h>
 #include <libgnomeui/gnome-canvas-util.h>
 #include "sp-canvas-util.h"
+
+/*
+ * Grabs canvas item, but unlike the original method does not pass
+ * illegal key event mask to canvas, who passes it ahead to Gdk, but
+ * instead sets event mask in canvas struct by hand
+ */
+
+int
+sp_canvas_item_grab (GnomeCanvasItem *item, unsigned int event_mask, GdkCursor *cursor, guint32 etime)
+{
+	int ret;
+
+	g_return_val_if_fail (item != NULL, -1);
+	g_return_val_if_fail (GNOME_IS_CANVAS_ITEM (item), -1);
+
+	ret = gnome_canvas_item_grab (item,
+				      event_mask & (~(GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK)),
+				      cursor,
+				      etime);
+			
+	/* fixme: Top hack (Lauris) */
+	/* fixme: If we add key masks to event mask, Gdk will abort (Lauris) */
+	/* fixme: But Canvas actualle does get key events, so all we need is routing these here */
+	item->canvas->grabbed_event_mask = event_mask;
+
+	return ret;
+}
 
 void
 gnome_canvas_clear_buffer (GnomeCanvasBuf * buf)
