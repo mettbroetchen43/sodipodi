@@ -13,7 +13,7 @@ test -z "$srcdir" && srcdir=.
 
 echo '============================================================================='
 echo 'When you report a trouble about building CVS version of sodipdoi,            '
-echo 'Please report following information about information and tools version, too.'
+echo 'Please report following information about distro and tools version, too.     '
 echo 
 (echo '--1. distribution------------------------------------------------------------'
 $srcdir/distro -a
