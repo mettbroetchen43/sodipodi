@@ -10,6 +10,7 @@ endif
 
 INCLUDES = \
 	-I.. \
+	$(FREETYPE_CFLAGS) \
 	$(SODIPODI_CFLAGS) \
 	$(GNOME_PRINT_CFLAGS) \
 	$(XFT_CFLAGS)

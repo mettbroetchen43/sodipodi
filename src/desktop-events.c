@@ -59,7 +59,7 @@ sp_desktop_item_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 	SPDesktop * desktop;
 
 	ddata = gtk_object_get_data (GTK_OBJECT (item->canvas), "SPDesktop");
-	g_return_if_fail (ddata != NULL);
+	g_return_val_if_fail (ddata != NULL, FALSE);
 
 	desktop = SP_DESKTOP (ddata);
 

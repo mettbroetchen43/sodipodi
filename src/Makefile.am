@@ -157,6 +157,7 @@ sodipodi_LDADD = \
 	$(SODIPODI_LIBS) \
 	$(GNOME_PRINT_LIBS) \
 	$(XFT_LIBS) \
+	$(FREETYPE_LIBS) \
 	$(kdeldadd)
 
 sodipodi_LDFLAGS = -Wl,--export-dynamic $(kdeldflags)

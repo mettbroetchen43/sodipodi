@@ -47,6 +47,15 @@ if test "x$png_ok" != "xyes"; then
 	AC_MSG_ERROR([Libpng is needed to compile sodipodi])
 fi
 
+AC_PATH_PROG(FREETYPE_CONFIG, freetype-config, no)
+if test "x$FREETYPE_CONFIG" = "xno"; then
+	AC_MSG_ERROR([Cannot find freetype-config])
+fi
+FREETYPE_CFLAGS=`$FREETYPE_CONFIG --cflags`
+FREETYPE_LIBS=`$FREETYPE_CONFIG --libs`
+AC_SUBST(FREETYPE_CFLAGS)
+AC_SUBST(FREETYPE_LIBS)
+
 dnl ******************************
 dnl Popt checking
 dnl ******************************

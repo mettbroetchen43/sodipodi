@@ -28,6 +28,7 @@
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
+#include "selection.h"
 #include "event-context.h"
 #include "event-broker.h"
 #include "sp-item.h"
@@ -262,10 +263,16 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 	      ret = TRUE;
 	    }
 	    break;
-	  case GDK_space: // Space - root menu
-	    sp_event_root_menu_popup (desktop, NULL, event);
-	    ret= TRUE;
-	    break;
+		case GDK_space: // Space - root menu
+			sp_event_root_menu_popup (desktop, NULL, event);
+			ret= TRUE;
+			break;
+		case GDK_F10:
+			if (event->key.state & GDK_SHIFT_MASK) {
+				sp_event_root_menu_popup (desktop, NULL, event);
+				ret= TRUE;
+			}
+			break;
           }
 #if 0
 		g_print ("What a funny key: %d \n", event->key.keyval);
@@ -476,6 +483,10 @@ sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 {
 	GtkWidget *menu;
 
+	/* fixme: This is not what I want but works for now (Lauris) */
+	if (event->type == GDK_KEY_PRESS) {
+		item = sp_selection_item (SP_DT_SELECTION (desktop));
+	}
 	menu = sp_ui_generic_menu (SP_VIEW (desktop), item);
 	gtk_widget_show (menu);
 
