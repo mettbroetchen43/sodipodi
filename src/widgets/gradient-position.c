@@ -339,6 +339,8 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 				    !NR_DF_TEST_CLOSE (cy, pos->gdata.radial.cy, NR_EPSILON_F)) {
 					pos->gdata.radial.cx = cx;
 					pos->gdata.radial.cy = cy;
+					pos->gdata.radial.fx = cx;
+					pos->gdata.radial.fy = cy;
 					gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
 					pos->changed = TRUE;
 					pos->need_update = TRUE;
@@ -415,14 +417,9 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 				s2n.c[4] = 0.0;
 				s2n.c[5] = 0.0;
 
-#if 0
-				nr_matrix_multiply_fff (&n2w, &s2n, &n2w);
-				nr_matrix_multiply_fff (&pos->gs2w, &gs2n, &n2w);
-#else
 				nr_matrix_multiply_fff (&gs2n, &gs2n, &s2n);
 				nr_matrix_multiply_fff (&gs2n, &gs2n, &n2gs);
 				nr_matrix_multiply_fff (&pos->gs2w, &gs2n, &pos->gs2w);
-#endif
 
 				nr_matrix_f_invert (&pos->w2gs, &pos->gs2w);
 				nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
@@ -443,95 +440,14 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 			fx = pos->gdata.radial.fx;
 			fy = pos->gdata.radial.fy;
 			r = pos->gdata.radial.r;
-			if (event->state & GDK_CONTROL_MASK) {
-				NRMatrixF n2gs, gs2n, n2w, w2n;
-				float x, y, ncx, ncy, nx, ny;
-
-				n2gs.c[0] = r;
-				n2gs.c[1] = 0.0;
-				n2gs.c[2] = 0.0;
-				n2gs.c[3] = r;
-				n2gs.c[4] = cx;
-				n2gs.c[5] = cy;
-				nr_matrix_f_invert (&gs2n, &n2gs);
-				nr_matrix_multiply_fff (&n2w, &n2gs, &pos->gs2w);
-				nr_matrix_f_invert (&w2n, &n2w);
-
-				x = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
-				y = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
-				ncx = NR_MATRIX_DF_TRANSFORM_X (&gs2n, cx, cy);
-				ncy = NR_MATRIX_DF_TRANSFORM_Y (&gs2n, cx, cy);
-				nx = NR_MATRIX_DF_TRANSFORM_X (&w2n, event->x, event->y);
-				ny = NR_MATRIX_DF_TRANSFORM_Y (&w2n, event->x, event->y);
-
-				if (!NR_DF_TEST_CLOSE (ny, ncy, NR_EPSILON_F)) {
-					NRMatrixF s2n;
-
-#if 0
-					r2n.c[0] = 1.0;
-					r2n.c[1] = 0.0;
-					r2n.c[2] = 0.0;
-					r2n.c[3] = ny - ncy;
-					r2n.c[4] = 0.0;
-					r2n.c[5] = 0.0;
-#else
-					s2n.c[0] = 1.0;
-					s2n.c[1] = 0.0;
-					s2n.c[2] = !NR_DF_TEST_CLOSE (ncy, ny, NR_EPSILON_F) ? (nx - ncx) / (ny - ncy) : 0.0;
-					s2n.c[3] = 1.0;
-					s2n.c[4] = 0.0;
-					s2n.c[5] = 0.0;
-#endif
-
-					nr_matrix_multiply_fff (&gs2n, &gs2n, &s2n);
-					nr_matrix_multiply_fff (&gs2n, &gs2n, &n2gs);
-					nr_matrix_multiply_fff (&pos->gs2w, &gs2n, &pos->gs2w);
-
-					nr_matrix_f_invert (&pos->w2gs, &pos->gs2w);
-					nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
-				}
-			} else if (event->state & GDK_SHIFT_MASK) {
+			if (event->state & GDK_SHIFT_MASK) {
 				pos->gdata.radial.fx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				pos->gdata.radial.fy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 			} else {
-				NRMatrixF n2gs, gs2n, n2w, w2n;
-				float x, y, ncx, ncy, nx, ny, nr;
-
-				n2gs.c[0] = r;
-				n2gs.c[1] = 0.0;
-				n2gs.c[2] = 0.0;
-				n2gs.c[3] = r;
-				n2gs.c[4] = cx;
-				n2gs.c[5] = cy;
-				nr_matrix_f_invert (&gs2n, &n2gs);
-				nr_matrix_multiply_fff (&n2w, &n2gs, &pos->gs2w);
-				nr_matrix_f_invert (&w2n, &n2w);
+				float x, y;
 
 				x = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				y = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
-				ncx = NR_MATRIX_DF_TRANSFORM_X (&gs2n, cx, cy);
-				ncy = NR_MATRIX_DF_TRANSFORM_Y (&gs2n, cx, cy);
-				nx = NR_MATRIX_DF_TRANSFORM_X (&w2n, event->x, event->y);
-				ny = NR_MATRIX_DF_TRANSFORM_Y (&w2n, event->x, event->y);
-				nr = hypot (nx - ncx, ny - ncy);
-
-				if (1 && !NR_DF_TEST_CLOSE (nr, 0.0, NR_EPSILON_F)) {
-					NRMatrixF r2n;
-
-					r2n.c[0] = (nx - ncx) / nr;
-					r2n.c[1] = (ny - ncy) / nr;
-					r2n.c[2] = (ncy - ny) / nr;
-					r2n.c[3] = (nx - ncx) / nr;;
-					r2n.c[4] = 0.0;
-					r2n.c[5] = 0.0;
-
-					nr_matrix_multiply_fff (&gs2n, &gs2n, &r2n);
-					nr_matrix_multiply_fff (&gs2n, &gs2n, &n2gs);
-					nr_matrix_multiply_fff (&pos->gs2w, &gs2n, &pos->gs2w);
-
-					nr_matrix_f_invert (&pos->w2gs, &pos->gs2w);
-					nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
-				}
 
 				pos->gdata.radial.r = hypot (x - cx, y - cy);
 
