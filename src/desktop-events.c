@@ -75,17 +75,15 @@ sp_desktop_enter_notify (GtkWidget * widget, GdkEventCrossing * event)
 }
 
 static gint
-sp_dt_ruler_event (GtkWidget *widget, GdkEvent *event, gpointer data, gboolean horiz)
+sp_dt_ruler_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw, gboolean horiz)
 {
 	static gboolean dragging = FALSE;
 	static SPCanvasItem * guide = NULL;
-	SPDesktopWidget *dtw;
 	SPDesktop *desktop;
 	NRPointF p;
 	double px, py;
 	int wx, wy;
 
-	dtw = SP_DESKTOP_WIDGET (data);
 	desktop = dtw->desktop;
 
 	gdk_window_get_pointer (GTK_WIDGET (dtw->canvas)->window, &wx, &wy, NULL);
@@ -106,8 +104,6 @@ sp_dt_ruler_event (GtkWidget *widget, GdkEvent *event, gpointer data, gboolean h
 		break;
 	case GDK_MOTION_NOTIFY:
 		if (dragging) {
-			/* we have to substract (x|y) thickness from the position */
-			/* since there is a frame between ruler and canvas */
 			sp_canvas_window_to_world (dtw->canvas, wx, wy, &px, &py);
 			sp_desktop_w2d_xy_point (desktop, &p, px, py);
 			sp_guideline_set_position (SP_GUIDELINE (guide), (horiz) ? p.y : p.x);
@@ -123,14 +119,13 @@ sp_dt_ruler_event (GtkWidget *widget, GdkEvent *event, gpointer data, gboolean h
 		if (dragging && event->button.button == 1) {
 			NRPointF p;
 			double px, py;
+		        gdk_pointer_ungrab (event->button.time);
 			sp_canvas_window_to_world (dtw->canvas, wx, wy, &px, &py);
 			sp_desktop_w2d_xy_point (desktop, &p, px, py);
-		        gdk_pointer_ungrab (event->button.time);
 			dragging = FALSE;
 			gtk_object_destroy (GTK_OBJECT (guide));
 			guide = NULL;
-			if ((horiz && (event->button.y > widget->allocation.height)) ||
-				(!horiz && (event->button.x > widget->allocation.width))) {
+			if ((horiz && (wy >= 0)) || (!horiz && (wx >= 0))) {
 				SPRepr *repr;
 				repr = sp_repr_new ("sodipodi:guide");
 				sp_repr_set_attr (repr, "orientation", (horiz) ? "horizontal" : "vertical");
@@ -144,19 +139,20 @@ sp_dt_ruler_event (GtkWidget *widget, GdkEvent *event, gpointer data, gboolean h
 	default:
 		break;
 	}
+
 	return FALSE;
 }
 
-gint
-sp_dt_hruler_event (GtkWidget * widget, GdkEvent * event, gpointer data)
+int
+sp_dt_hruler_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw)
 {
-	return sp_dt_ruler_event (widget, event, data, TRUE);
+	return sp_dt_ruler_event (widget, event, dtw, TRUE);
 }
 
-gint
-sp_dt_vruler_event (GtkWidget * widget, GdkEvent * event, gpointer data)
+int
+sp_dt_vruler_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw)
 {
-	return sp_dt_ruler_event (widget, event, data, FALSE);
+	return sp_dt_ruler_event (widget, event, dtw, FALSE);
 }
 
 /* Guides */

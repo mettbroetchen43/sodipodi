@@ -9,7 +9,8 @@ TODO for 0.29
 - GtkIMContext support for text-context (?)
 - More works for XML Editor (DONE?)
 - Fix unstable SPMenuButton/SPToolbox behavior
-- Fix GuideLine bug
+- Fix GuideLine bug (DONE)
+- Fix snapping
 - Test gnome-print support
 - Replacement for uri lists
 - Replacement for uri handler

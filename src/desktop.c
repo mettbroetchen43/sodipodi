@@ -513,7 +513,7 @@ void sp_desktop_zoom_update (SPDesktop *desktop)
 void 
 sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw) {
 	const gchar * zoom_str;
-	ArtDRect d;
+	NRRectF d;
 	gdouble any;
 	
 	g_return_if_fail (SP_IS_DESKTOP_WIDGET (dtw));
@@ -524,7 +524,7 @@ sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw) {
 	any = strtod(zoom_str,NULL) /100;
 	if (any < SP_DESKTOP_ZOOM_MIN/2) return;
 	
-	sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
+	sp_desktop_get_display_area (SP_ACTIVE_DESKTOP, &d);
 	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, any);
 	// give focus back to canvas
 #if 1
@@ -1247,7 +1247,7 @@ sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, float 
 #endif
 }
 
-static void
+NRRectF *
 sp_desktop_get_display_area (SPDesktop *dt, NRRectF *area)
 {
 	SPDesktopWidget *dtw;
@@ -1255,7 +1255,7 @@ sp_desktop_get_display_area (SPDesktop *dt, NRRectF *area)
 	float scale;
 
 	dtw = g_object_get_data (G_OBJECT (dt), "widget");
-	if (!dtw) return;
+	if (!dtw) return NULL;
 
 	sp_canvas_get_viewbox (dtw->canvas, &viewbox);
 
@@ -1265,23 +1265,9 @@ sp_desktop_get_display_area (SPDesktop *dt, NRRectF *area)
 	area->y0 = viewbox.y1 / -scale;
 	area->x1 = viewbox.x1 / scale;
 	area->y1 = viewbox.y0 / -scale;
-}
-
-ArtDRect *
-sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area)
-{
-	NRRectF da;
-
-	sp_desktop_get_display_area (desktop, &da);
-
-	area->x0 = da.x0;
-	area->y0 = da.y0;
-	area->x1 = da.x1;
-	area->y1 = da.y1;
 
 	return area;
 }
-
 
 void
 sp_desktop_zoom_absolute (SPDesktop *dt, float cx, float cy, float zoom)

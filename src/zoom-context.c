@@ -243,43 +243,42 @@ sp_zoom_page (GtkWidget * widget)
 
 void
 sp_zoom_in (GtkWidget * widget) {
-  SPDesktop * desktop;
-  ArtDRect d;
+	SPDesktop * desktop;
+	NRRectF d;
 
-  desktop = SP_ACTIVE_DESKTOP;
-  if (desktop == NULL) return;
-  g_return_if_fail (SP_IS_DESKTOP (desktop));
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
   
-  sp_desktop_get_visible_area (desktop, &d);
+	sp_desktop_get_display_area (desktop, &d);
 
-  sp_desktop_zoom_relative (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, SP_DESKTOP_ZOOM_INC);
-
+	sp_desktop_zoom_relative (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, SP_DESKTOP_ZOOM_INC);
 }
 
 void
 sp_zoom_out (GtkWidget * widget) {
-  SPDesktop * desktop;
-  ArtDRect d;
+	SPDesktop * desktop;
+	NRRectF d;
 
-  desktop = SP_ACTIVE_DESKTOP;
-  if (desktop == NULL) return;
-  g_return_if_fail (SP_IS_DESKTOP (desktop));
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	g_return_if_fail (SP_IS_DESKTOP (desktop));
   
-  sp_desktop_get_visible_area (desktop, &d);
+	sp_desktop_get_display_area (desktop, &d);
 
-  sp_desktop_zoom_relative (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, 1/SP_DESKTOP_ZOOM_INC);
+	sp_desktop_zoom_relative (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, 1/SP_DESKTOP_ZOOM_INC);
 }
 
 void
 sp_zoom_1_to_2 (GtkWidget * widget)
 {
 	SPDesktop * desktop;
-	ArtDRect d;
+	NRRectF d;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
-	sp_desktop_get_visible_area (desktop, &d);
+	sp_desktop_get_display_area (desktop, &d);
 
 	sp_desktop_zoom_absolute (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, 0.5);
 
@@ -289,12 +288,13 @@ void
 sp_zoom_1_to_1 (GtkWidget * widget)
 {
 	SPDesktop * desktop;
-	ArtDRect d;
+	NRRectF d;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
-	sp_desktop_get_visible_area (desktop, &d);
+	sp_desktop_get_display_area (desktop, &d);
+
 	sp_desktop_zoom_absolute (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, 1.0);
 }
 
@@ -302,12 +302,12 @@ void
 sp_zoom_2_to_1 (GtkWidget * widget)
 {
 	SPDesktop * desktop;
-	ArtDRect d;
+	NRRectF d;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
-	sp_desktop_get_visible_area (desktop, &d);
+	sp_desktop_get_display_area (desktop, &d);
 
 	sp_desktop_zoom_absolute (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, 2.0);
 }
@@ -316,7 +316,7 @@ void
 sp_zoom_string (const gchar * zoom_str) {
 	SPDesktop * desktop;
 	gchar * zoom_str2;
-	ArtDRect d;
+	NRRectF d;
 	gdouble any;
 	
 	desktop = SP_ACTIVE_DESKTOP;
@@ -328,7 +328,7 @@ sp_zoom_string (const gchar * zoom_str) {
 	g_free (zoom_str2);
 	if (any < 0.001) return;
 	
-	sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
+	sp_desktop_get_display_area (SP_ACTIVE_DESKTOP, &d);
 	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, any);
 }
 

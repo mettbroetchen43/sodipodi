@@ -12,7 +12,6 @@
  */
 
 #include <string.h>
-#include <glib-object.h>
 #include "helper/guideline.h"
 #include "svg/svg.h"
 #include "attributes.h"

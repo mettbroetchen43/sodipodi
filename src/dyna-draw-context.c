@@ -283,14 +283,14 @@ sp_dyna_draw_get_npoint (const SPDynaDrawContext *dc,
                          gdouble           *ny)
 {
 #ifdef NORMALIZED_COORDINATE
-  ArtDRect drect;
+	NRRectF drect;
 
-  sp_desktop_get_visible_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
-  *nx = (vx - drect.x0)/(drect.x1 - drect.x0);
-  *ny = (vy - drect.y0)/(drect.y1 - drect.y0);
+	sp_desktop_get_display_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
+	*nx = (vx - drect.x0)/(drect.x1 - drect.x0);
+	*ny = (vy - drect.y0)/(drect.y1 - drect.y0);
 #else
-  *nx = vx;
-  *ny = vy;
+	*nx = vx;
+	*ny = vy;
 #endif
 
 /*    g_print ("NP:: vx:%g vy:%g => nx:%g ny:%g\n", vx, vy, *nx, *ny); */
@@ -306,14 +306,14 @@ sp_dyna_draw_get_vpoint (const SPDynaDrawContext *dc,
                          gdouble           *vy)
 {
 #ifdef NORMALIZED_COORDINATE
-  ArtDRect drect;
+	NRRectF drect;
 
-  sp_desktop_get_visible_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
-  *vx = nx * (drect.x1 - drect.x0) + drect.x0;
-  *vy = ny * (drect.y1 - drect.y0) + drect.y0;
+	sp_desktop_get_display_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
+	*vx = nx * (drect.x1 - drect.x0) + drect.x0;
+	*vy = ny * (drect.y1 - drect.y0) + drect.y0;
 #else
-  *vx = nx;
-  *vy = ny;
+	*vx = nx;
+	*vy = ny;
 #endif
 
 /*    g_print ("VP:: nx:%g ny:%g => vx:%g vy:%g\n", nx, ny, *vx, *vy); */
@@ -326,14 +326,14 @@ sp_dyna_draw_get_curr_vpoint (const SPDynaDrawContext * dc,
                               gdouble *vy)
 {
 #ifdef NORMALIZED_COORDINATE
-  ArtDRect drect;
+	NRRectF drect;
 
-  sp_desktop_get_visible_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
-  *vx = dc->curx * (drect.x1 - drect.x0) + drect.x0;
-  *vy = dc->cury * (drect.y1 - drect.y0) + drect.y0;
+	sp_desktop_get_display_area (SP_EVENT_CONTEXT(dc)->desktop, &drect);
+	*vx = dc->curx * (drect.x1 - drect.x0) + drect.x0;
+	*vy = dc->cury * (drect.y1 - drect.y0) + drect.y0;
 #else
-  *vx = dc->curx;
-  *vy = dc->cury;
+	*vx = dc->curx;
+	*vy = dc->cury;
 #endif
 }
 

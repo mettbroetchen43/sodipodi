@@ -17,8 +17,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <gdk/gdk.h>
-#include <gtk/gtkobject.h>
+#include <glib-object.h>
 #include <gtk/gtkwidget.h>
 #include "xml/repr.h"
 #include "forward.h"

@@ -765,7 +765,7 @@ sp_selection_item_next (void)
 	SPSelection *selection;
 	SPItem *item = NULL;
 	GSList *children = NULL, *l = NULL;
-	ArtDRect dbox;
+	NRRectF dbox;
 	NRRectF sbox;
 	ArtPoint s,d;
 	gint dx=0, dy=0;
@@ -780,8 +780,13 @@ sp_selection_item_next (void)
   
 	// get item list
 	if (SP_CYCLING == SP_CYCLE_VISIBLE) {
-		sp_desktop_get_visible_area (desktop, &dbox);
-		children = sp_document_items_in_box (document, &dbox);
+		ArtDRect d;
+		sp_desktop_get_display_area (desktop, &dbox);
+		d.x0 = dbox.x0;
+		d.y0 = dbox.y0;
+		d.x1 = dbox.x1;
+		d.y1 = dbox.y1;
+		children = sp_document_items_in_box (document, &d);
 	} else {
 		children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
 	}
@@ -810,7 +815,7 @@ sp_selection_item_next (void)
 
 	// adjust visible area to see whole new selection
 	if (SP_CYCLING == SP_CYCLE_FOCUS) {
-		sp_desktop_get_visible_area (desktop, &dbox);
+		sp_desktop_get_display_area (desktop, &dbox);
 		sp_item_bbox_desktop (item, &sbox);
 		if (dbox.x0 > sbox.x0 || dbox.y0 > sbox.y0 || dbox.x1 < sbox.x1 || dbox.y1 < sbox.y1 ) {
 			s.x = (sbox.x0 + sbox.x1) / 2;
@@ -834,7 +839,7 @@ sp_selection_item_prev (void)
   SPSelection * selection;
   SPItem * item = NULL;
   GSList * children = NULL, * l = NULL;
-  ArtDRect dbox;
+  NRRectF dbox;
   NRRectF sbox;
   ArtPoint s,d;
   gint dx=0, dy=0;
@@ -849,8 +854,13 @@ sp_selection_item_prev (void)
   
   // get item list
   if (SP_CYCLING == SP_CYCLE_VISIBLE) {
-    sp_desktop_get_visible_area (desktop, &dbox);
-    children = sp_document_items_in_box (document, &dbox);
+	  ArtDRect d;
+	  sp_desktop_get_display_area (desktop, &dbox);
+	  d.x0 = dbox.x0;
+	  d.y0 = dbox.y0;
+	  d.x1 = dbox.x1;
+	  d.y1 = dbox.y1;
+	  children = sp_document_items_in_box (document, &d);
   } else {
     children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
   }
@@ -875,7 +885,7 @@ sp_selection_item_prev (void)
 
   // adjust visible area to see whole new selection
   if (SP_CYCLING == SP_CYCLE_FOCUS) {
-    sp_desktop_get_visible_area (desktop, &dbox);
+    sp_desktop_get_display_area (desktop, &dbox);
     sp_item_bbox_desktop (item, &sbox);
     if (dbox.x0>sbox.x0 || dbox.y0>sbox.y0 || dbox.x1<sbox.x1 || dbox.y1<sbox.y1 ) {
       s.x = (sbox.x0+sbox.x1)/2;

@@ -13,8 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "helper/helper-forward.h"
-#include "forward.h"
+#include "desktop.h"
 
 /* Item handlers */
 
@@ -30,8 +29,8 @@ gint sp_canvas_motion_notify (GtkWidget *widget,GdkEventMotion *motion, SPDeskto
 
 /* Rulers */
 
-gint sp_dt_hruler_event (GtkWidget *widget, GdkEvent *event, gpointer data);
-gint sp_dt_vruler_event (GtkWidget *widget, GdkEvent *event, gpointer data);
+int sp_dt_hruler_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw);
+int sp_dt_vruler_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw);
 
 /* Guides */
 
