@@ -112,15 +112,16 @@ static void sp_do_export_png (SPDocument *doc);
 /* fixme: We need this non-static, but better arrange it another way (Lauris) */
 gboolean sp_bitmap_icons = FALSE;
 
+static unsigned int stop = FALSE;
 static guchar *sp_global_printer = NULL;
 static gboolean sp_global_slideshow = FALSE;
 static const unsigned char *sp_export_png = NULL;
-static guchar *sp_export_dpi = NULL;
-static guchar *sp_export_area = NULL;
-static guchar *sp_export_width = NULL;
-static guchar *sp_export_height = NULL;
-static guchar *sp_export_background = NULL;
-static guchar *sp_export_svg = NULL;
+static const unsigned char *sp_export_dpi = NULL;
+static const unsigned char *sp_export_area = NULL;
+static const unsigned char *sp_export_width = NULL;
+static const unsigned char *sp_export_height = NULL;
+static const unsigned char *sp_export_background = NULL;
+static const unsigned char *sp_export_svg = NULL;
 
 #ifdef WITH_POPT
 static GSList *sp_process_args (poptContext ctx);
@@ -148,7 +149,7 @@ struct poptOption options[] = {
 	 N_("x0:y0:x1:y1")},
 	{"export-width", 'w', POPT_ARG_STRING, &sp_export_width, SP_ARG_EXPORT_WIDTH,
 	 N_("The width of generated bitmap in pixels (overwrites dpi)"), N_("WIDTH")},
-	{"export-height", 'h', POPT_ARG_STRING, &sp_export_height, SP_ARG_EXPORT_HEIGHT,
+	{"export-height", 't', POPT_ARG_STRING, &sp_export_height, SP_ARG_EXPORT_HEIGHT,
 	 N_("The height of generated bitmap in pixels (overwrites dpi)"), N_("HEIGHT")},
 	{"export-background", 'b', POPT_ARG_STRING, &sp_export_background, SP_ARG_EXPORT_HEIGHT,
 	 N_("Background color of exported bitmap (any SVG supported color string)"), N_("COLOR")},
@@ -199,7 +200,11 @@ main (int argc, const char **argv)
 		    !strncmp (argv[i], "--print", 7) ||
 		    !strcmp (argv[i], "-e") ||
 		    !strncmp (argv[i], "--export-png", 12) ||
-		    !strncmp (argv[i], "--export-svg", 12)) {
+		    !strncmp (argv[i], "--export-svg", 12) ||
+		    !strcmp (argv[i], "-v") ||
+		    !strcmp (argv[i], "--version") ||
+		    !strcmp (argv[i], "-h") ||
+		    !strcmp (argv[i], "--help")) {
 			use_gui = FALSE;
 			break;
 		} else if (!strcmp (argv[i], "-x") || !strcmp (argv[i], "--with-gui")) {
@@ -245,6 +250,7 @@ sp_main_gui (int argc, const char **argv)
 	poptFreeContext (ctx);
 #else
 	fl = sp_process_args (argc, argv);
+	if (stop) exit (1);
 #endif
 
 #ifdef WITH_KDE
@@ -322,15 +328,12 @@ sp_main_console (int argc, const char **argv)
 	guchar *printer;
 
 	/* We are started in text mode */
+	g_type_init ();
 
 #ifdef WITH_XFT
 	/* Still have to init gdk, or Xft does not work */
 	gdk_init (&argc, (char ***) &argv);
 #endif
-
-	/* fixme: Move these to some centralized location (Lauris) */
-	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
-	sp_object_type_register ("sodipodi:guide", SP_TYPE_GUIDE);
 
 #ifdef WITH_POPT
 	ctx = poptGetContext (NULL, argc, argv, options, 0);
@@ -338,8 +341,13 @@ sp_main_console (int argc, const char **argv)
 	fl = sp_process_args (ctx);
 	poptFreeContext (ctx);
 #else
-	sp_process_args (argc, argv);
+	fl = sp_process_args (argc, argv);
+	if (stop) exit (1);
 #endif
+
+	/* fixme: Move these to some centralized location (Lauris) */
+	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
+	sp_object_type_register ("sodipodi:guide", SP_TYPE_GUIDE);
 
 	if (fl == NULL) {
 		g_print ("Nothing to do!\n");
@@ -532,40 +540,88 @@ startcmp (const char *s, const char *t)
 	return strncmp (s, t, len);
 }
 
-#if 0
-static const char *
-getargparam (int *aidx, const char **argv, int shortarg, const char *longarg)
+/* Returns TRUE if parsing is successful */
+/* Sets aidx to -1 on error */
+static unsigned int
+parsearg (int *aidx, int argc, const char **argv, int shortarg, const char *longarg, const char **argval)
 {
-	const char *arg, *val;
-	arg = argv[*aidx];
-	if (arg[0] == '-') {
-		if (arg[1] != '-') {
-			// Short arg
-			if ((*aidx + 1) < argc) {
-				// Has parameter
+	const char *curarg;
+	unsigned int isthis;
+	curarg = argv[*aidx];
+	isthis = FALSE;
+	if (curarg[0] == '-') {
+		if ((curarg[1] == shortarg) && !curarg[2]) {
+			/* Is short arg */
+			if (argval) {
+				/* Needs parameter */
+				if ((*aidx + 1) < argc) {
+					/* Has parameter */
+					*aidx += 1;
+					*argval = argv[*aidx];
+					isthis = TRUE;
+					*aidx += 1;
+				} else {
+					/* Missing parameter */
+					*aidx = -1;
+					return FALSE;
+				}
+			} else {
+				/* Parameter not needed */
+				isthis = TRUE;
 				*aidx += 1;
-				val = argv[*aidx];
-			} else {
-				// Has not
-				val = NULL;
 			}
-		} else {
-			const char *eqp;
-			// Long arg
-			eqp = strchr (arg, '=');
-			if (eqp && eqp[1]) {
-				// Has parameter
-				val = eqp + 1;
-			} else {
-				// Has not
-				val = NULL;
+		} else if ((curarg[1] == '-') && curarg[2]) {
+			unsigned int len;
+			/* Long arg */
+			len = strlen (longarg);
+			if (!strncmp (curarg + 2, longarg, len)) {
+				/* Is long arg */
+				if (argval) {
+					/* Needs parameter */
+					if (curarg[2 + len] == '=') {
+						/* Really is this */
+						if (curarg[2 + len + 1]) {
+							/* Has parameter */
+							*argval = curarg + 2 + len + 1;
+							isthis = TRUE;
+							*aidx += 1;
+						} else {
+							/* Missing parameter */
+							*aidx = -1;
+							return FALSE;
+						}
+					}
+					/* Otherwise is not this */
+				} else {
+					// Parameter not needed
+					isthis = TRUE;
+					*aidx += 1;
+				}
 			}
+			/* Otherwise is not this */
 		}
 	}
-	*aidx += 1;
-	return val;
+	return isthis;
 }
-#endif
+
+static void
+printusage (void)
+{
+	g_print ("Usage: sodipodi [options] [files]\n");
+	g_print ("Options:\n");
+	g_print ("%s, %s %s\n", "-z", "--without-gui", N_("Do not use X server (only process files from console)"));
+	g_print ("%s, %s %s\n", "-x", "--with-gui", N_("Try to use X server even if $DISPLAY is not set)"));
+	g_print ("%s, %s %s\n", "-f", "--file=FILE", N_("Open specified document(s) (option string may be excluded)"));
+	g_print ("%s, %s %s\n", "-e", "--export-png=FILE", N_("Export document to png file"));
+	g_print ("%s, %s %s\n", "-d", "--export-dpi=DPI", N_("The resolution used for converting SVG into bitmap (default 72.0)"));
+	g_print ("%s, %s %s\n", "-a", "--export-area=x0:y0:x1:y1", N_("Exported area in millimeters (default is full document, 0,0 is lower-left corner)"));
+	g_print ("%s, %s %s\n", "-w", "--export-width=WIDTH", N_("The width of generated bitmap in pixels (overwrites dpi)"));
+	g_print ("%s, %s %s\n", "-t", "--export-height=HEIGHT", N_("The height of generated bitmap in pixels (overwrites dpi)"));
+	g_print ("%s, %s %s\n", "-b", "--export-background=COLOR", N_("Background color of exported bitmap (any SVG supported color string)"));
+	g_print ("%s, %s %s\n", "  ", "--export-svg=FILE", N_("Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"));
+	g_print ("%s, %s %s\n", "  ", "--version", N_("Print sodipodi version information"));
+	g_print ("%s, %s %s\n", "-h", "--help", N_("Print help about command-line arguments"));
+}
 
 static GSList *
 sp_process_args (int argc, const char **argv)
@@ -574,96 +630,57 @@ sp_process_args (int argc, const char **argv)
 	int aidx;
 
 	filelist = NULL;
-	aidx = 0;
+	aidx = 1;
 
-	while (aidx < argc) {
-		const char *arg;
+	while ((aidx >= 0) && (aidx < argc)) {
+		const char *arg, *val;
 		arg = argv[aidx];
-		if (arg[0] == '-') {
-			// arg is argument
-			if (arg[1] != '-') {
-				// Short argument
-				if (arg[1] == 'z') {
-					// --without-gui
-				} else if (arg[1] == 'x') {
-					// --with-gui
-				} else if (arg[1] == 'f') {
-					// --file
-					aidx += 1;
-					if (aidx < argc) {
-						filelist = g_slist_append (filelist, (gpointer) argv[aidx]);
-					} else {
-						// Should print usage
-						return filelist;
-					}
-				} else if (arg[1] == 'e') {
-					// --export-png
-					aidx += 1;
-					if (aidx < argc) {
-						sp_export_png = argv[aidx];
-					} else {
-						// Should print usage
-						return filelist;
-					}
-				}
-			} else {
-				char *eqp;
-				// Long argument
-				eqp = strchr (arg, '=');
-				if (!startcmp (arg, "--without-gui")) {
-					// --without-gui
-				} else if (!startcmp (arg, "--with-gui")) {
-					// --with-gui
-				} else if (!startcmp (arg, "--file")) {
-					// --file
-					if (eqp && eqp[1]) {
-						sp_export_png = argv[aidx];
-					} else {
-						// Should print usage
-						return filelist;
-					}
-				} else if (!startcmp (arg, "--export-png")) {
-					// --file
-					if (eqp && eqp[1]) {
-						filelist = g_slist_append (filelist, eqp + 1);
-					} else {
-						// Should print usage
-						return filelist;
-					}
-				}
-			}
-		} else if (arg[0] != '\0') {
-			// Unorganized filename
+		if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'z', "without-gui", NULL)) {
+			/* --without-gui */
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'x', "with-gui", NULL)) {
+			/* --with-gui */
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'f', "file", &val)) {
+			/* --file */
+			filelist = g_slist_append (filelist, (gpointer) val);
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'e', "export-png", &val)) {
+			/* --export-png */
+			sp_export_png = val;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'd', "export-dpi", &val)) {
+			/* --export-dpi */
+			sp_export_dpi = val;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'a', "export-area", &val)) {
+			/* --export-area */
+			sp_export_area = val;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'w', "export-width", &val)) {
+			/* --export-width */
+			sp_export_width = val;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 't', "export-height", &val)) {
+			/* --export-height */
+			sp_export_height = val;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'b', "export-background", &val)) {
+			/* --export-background */
+			sp_export_background = val;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'b', "export-svg", &val)) {
+			/* --export-svg */
+			sp_export_svg = val;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'h', "help", NULL)) {
+			/* --help */
+			printusage ();
+			stop = TRUE;
+		} else if ((aidx >= 0) && parsearg (&aidx, argc, argv, 'v', "version", NULL)) {
+			/* --help */
+			g_print ("Sodipodi version %s\n", VERSION);
+			stop = TRUE;
+		} else if (aidx >= 0) {
 			filelist = g_slist_append (filelist, (gpointer) arg);
+			aidx += 1;
+		} else {
+			g_print ("Invalid optio(s) specified\n");
+			printusage ();
+			stop = TRUE;
+			break;
 		}
-		aidx += 1;
 	}
-#if 0
-	{"print", 'p', POPT_ARG_STRING, &sp_global_printer, SP_ARG_PRINT,
-	 N_("Print document(s) to specified output file (use '| program' for pipe)"),
-	 N_("FILENAME")},
-	{"export-dpi", 'd', POPT_ARG_STRING, &sp_export_dpi, SP_ARG_EXPORT_DPI,
-	 N_("The resolution used for converting SVG into bitmap (default 72.0)"),
-	 N_("DPI")},
-	{"export-area", 'a', POPT_ARG_STRING, &sp_export_area, SP_ARG_EXPORT_AREA,
-	 N_("Exported area in millimeters (default is full document, 0,0 is lower-left corner)"),
-	 N_("x0:y0:x1:y1")},
-	{"export-width", 'w', POPT_ARG_STRING, &sp_export_width, SP_ARG_EXPORT_WIDTH,
-	 N_("The width of generated bitmap in pixels (overwrites dpi)"), N_("WIDTH")},
-	{"export-height", 'h', POPT_ARG_STRING, &sp_export_height, SP_ARG_EXPORT_HEIGHT,
-	 N_("The height of generated bitmap in pixels (overwrites dpi)"), N_("HEIGHT")},
-	{"export-background", 'b', POPT_ARG_STRING, &sp_export_background, SP_ARG_EXPORT_HEIGHT,
-	 N_("Background color of exported bitmap (any SVG supported color string)"), N_("COLOR")},
-	{"export-svg", 0, POPT_ARG_STRING, &sp_export_svg, SP_ARG_EXPORT_SVG,
-	 N_("Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"), N_("FILENAME")},
-	{"slideshow", 's', POPT_ARG_NONE, &sp_global_slideshow, SP_ARG_SLIDESHOW,
-	 N_("Show given files one-by-one, switch to next on any key/mouse event"), NULL},
-	{"bitmap-icons", 'i', POPT_ARG_NONE, &sp_bitmap_icons, SP_ARG_BITMAP_ICONS,
-	 N_("Prefer bitmap (xpm) icons to SVG ones"),
-	 NULL},
-	POPT_AUTOHELP POPT_TABLEEND
-#endif
-
 	return filelist;
 }
 
