@@ -294,15 +294,34 @@ sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 	image = SP_IMAGE (item);
 
 	if ((image->width.computed > 0.0) && (image->height.computed > 0.0)) {
+		float x0, y0, x1, y1;
 		float x, y;
-		x = NR_MATRIX_DF_TRANSFORM_X (transform, image->x.computed, image->y.computed);
-		y = NR_MATRIX_DF_TRANSFORM_Y (transform, image->x.computed, image->y.computed);
+
+		x0 = image->x.computed;
+		y0 = image->y.computed;
+		x1 = x0 + image->width.computed;
+		y1 = y0 + image->height.computed;
+
+		x = NR_MATRIX_DF_TRANSFORM_X (transform, x0, y0);
+		y = NR_MATRIX_DF_TRANSFORM_Y (transform, x0, y0);
 		bbox->x0 = MIN (bbox->x0, x);
 		bbox->y0 = MIN (bbox->y0, y);
 		bbox->x1 = MAX (bbox->x1, x);
 		bbox->y1 = MAX (bbox->y1, y);
-		x = NR_MATRIX_DF_TRANSFORM_X (transform, image->x.computed + image->width.computed, image->y.computed + image->height.computed);
-		y = NR_MATRIX_DF_TRANSFORM_Y (transform, image->x.computed + image->width.computed, image->y.computed + image->height.computed);
+		x = NR_MATRIX_DF_TRANSFORM_X (transform, x1, y0);
+		y = NR_MATRIX_DF_TRANSFORM_Y (transform, x1, y0);
+		bbox->x0 = MIN (bbox->x0, x);
+		bbox->y0 = MIN (bbox->y0, y);
+		bbox->x1 = MAX (bbox->x1, x);
+		bbox->y1 = MAX (bbox->y1, y);
+		x = NR_MATRIX_DF_TRANSFORM_X (transform, x1, y1);
+		y = NR_MATRIX_DF_TRANSFORM_Y (transform, x1, y1);
+		bbox->x0 = MIN (bbox->x0, x);
+		bbox->y0 = MIN (bbox->y0, y);
+		bbox->x1 = MAX (bbox->x1, x);
+		bbox->y1 = MAX (bbox->y1, y);
+		x = NR_MATRIX_DF_TRANSFORM_X (transform, x0, y1);
+		y = NR_MATRIX_DF_TRANSFORM_Y (transform, x0, y1);
 		bbox->x0 = MIN (bbox->x0, x);
 		bbox->y0 = MIN (bbox->y0, y);
 		bbox->x1 = MAX (bbox->x1, x);

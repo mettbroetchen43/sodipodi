@@ -1,3 +1,9 @@
+2003-01-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Version 0.30pre
+
+	* src/sp-image.c (sp_image_bbox): Calculate bbox properly
+
 2003-01-28  gettextize  <bug-gnu-gettext@gnu.org>
 
 	* Makefile.am (SUBDIRS): Add intl, m4.
