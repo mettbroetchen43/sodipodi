@@ -1,3 +1,10 @@
+2001-01-09  Lauris Kaplinski  <lauris@ximian.com>
+
+	* samples/mangatips1.svg: New file
+	* samples/mangatips2.svg: New file
+
+	* src/xml/Makefile.am: Use SODIPODI_CFLAGS
+
 2001-01-08  Frank Felfe  <innerspace@iname.com>
 	
 	* desktop.*: use gnomeappbar in desktop-window,
