@@ -2,11 +2,13 @@
 Name=Sodipodi
 Name[da]=Sodipodi
 Name[et]=Sodipodi
+Name[lt]=Sodipodi
 Name[sv]=Sodipodi
 Name[tr]=Sodipodi
 Comment=Vector illustrator
 Comment[da]=Vektor-tegning
 Comment[et]=Vektorjoonistusprogramm
+Comment[lt]=Vektorinis iliustratorius
 Comment[sv]=Vektor-illustrationsprogram
 Comment[tr]=Vektör boyama uygulamasý
 Exec=sodipodi
