@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Sodipodi\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-27 06:36+0100\n"
+"POT-Creation-Date: 2003-11-30 17:37+0200\n"
 "PO-Revision-Date: 2003-11-27 06:37+0100\n"
 "Last-Translator: Danilo Segan <danilo@prevod.org>\n"
 "Language-Team: Serbian (sr) <serbiangnome-lista@nongnu.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -903,27 +903,27 @@ msgstr "Угао:"
 msgid "Defaults"
 msgstr "Подразумевано"
 
-#: src/file.c:154 src/file.c:166 src/file.c:180
+#: src/file.c:157 src/file.c:169 src/file.c:183
 msgid "Select file to open"
 msgstr "Изаберите коју датотеку да отворите"
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:200 src/module.c:550
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Скалабилна векторска графика (SVG)"
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:200 src/module.c:550
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Матичан запис Содиподија и W3C стандард"
 
-#: src/file.c:203 src/file.c:277
+#: src/file.c:206 src/file.c:280
 msgid "File type:"
 msgstr "Врста датотеке:"
 
-#: src/file.c:262
+#: src/file.c:265
 msgid "Save file"
 msgstr "Сачувај датотеку"
 
-#: src/file.c:440 src/file.c:450 src/file.c:456
+#: src/file.c:443 src/file.c:453 src/file.c:459
 msgid "Select file to import"
 msgstr "Одаберите датотеку за увоз"
 
@@ -1303,20 +1303,20 @@ msgid "Save document as"
 msgstr "Сачувај документ као"
 
 #. Print destination frame
-#: src/modules/ps.c:159 src/modules/ps.c:220
+#: src/modules/ps.c:167 src/modules/ps.c:228
 msgid "Print destination"
 msgstr "Одредиште штампе"
 
 #. Print properties frame
-#: src/modules/ps.c:170
+#: src/modules/ps.c:178
 msgid "Print properties"
 msgstr "Особине штампе"
 
-#: src/modules/ps.c:178
+#: src/modules/ps.c:186
 msgid "Print using PostScript operators"
 msgstr "Штампај помоћу ПостСкрипт оператора"
 
-#: src/modules/ps.c:180
+#: src/modules/ps.c:188
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1326,11 +1326,11 @@ msgstr ""
 "мања и моћи ће се произвољно увећавати, али провидност, обележја и обрасци "
 "ће бити изгубљени"
 
-#: src/modules/ps.c:185
+#: src/modules/ps.c:193
 msgid "Print as bitmap"
 msgstr "Штампај као битмапу"
 
-#: src/modules/ps.c:187
+#: src/modules/ps.c:195
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1340,15 +1340,15 @@ msgstr ""
 "зависити од размере увећања, али сва графика ће се исцртати исто као што је "
 "приказана"
 
-#: src/modules/ps.c:201
+#: src/modules/ps.c:209
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Жељена резолуција (тачака по инчу) битмапе"
 
-#: src/modules/ps.c:216
+#: src/modules/ps.c:224
 msgid "Resolution:"
 msgstr "Резолуција:"
 
-#: src/modules/ps.c:226
+#: src/modules/ps.c:234
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1358,7 +1358,7 @@ msgstr ""
 "Користите „> датотека“ да штампате у датотеку.\n"
 "Користите „| програм аргумент...“ да проследите у програм"
 
-#: src/modules/ps.c:839
+#: src/modules/ps.c:868
 msgid "write error occured"
 msgstr "грешка при писању"
 
@@ -1775,7 +1775,7 @@ msgid "Unknown item :-("
 msgstr "Непозната ставка :-("
 
 #. fixme:
-#: src/sp-text.c:1432
+#: src/sp-text.c:1428
 msgid "Text object"
 msgstr "Објекат за текст"
 

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2003-11-23 14:42+0200\n"
+"POT-Creation-Date: 2003-11-30 17:37+0200\n"
 "PO-Revision-Date: 2003-11-02 16:43+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -29,6 +29,11 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunde inte skapa sodipodi-svg-doc-fabrik"
 
+#: src/arc-context.c:303
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr ""
+
 #: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
 msgstr "Zooma in teckning om fönsterstorleken ändras"
@@ -45,7 +50,7 @@ msgstr "Dokumentet %s har osparade ändringar, spara dem?"
 
 #. Page page
 #: src/desktop.c:1535 src/dialogs/align.c:288
-#: src/dialogs/desktop-properties.c:279 src/dialogs/document-properties.c:165
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:137 src/verbs.c:453
 msgid "Page"
 msgstr "Sida"
@@ -89,7 +94,7 @@ msgstr "Vänstersida på justerade objekt mot högerkanten på ankare"
 msgid "Bottom of aligned objects to top of anchor"
 msgstr "Nederkanten på justerade objekt mot överkanten på ankare"
 
-#: src/dialogs/align.c:193 src/dialogs/align.c:202
+#: src/dialogs/align.c:193
 msgid "Top of aligned objects to top of anchor"
 msgstr "Överkanten på justerade objekt mot överkanten på ankare"
 
@@ -100,6 +105,11 @@ msgstr "Centrera vertikalt"
 #: src/dialogs/align.c:199
 msgid "Bottom of aligned objects to bottom of anchor"
 msgstr "Nederkanten på justerade objekt mot nederkanten på ankare"
+
+#: src/dialogs/align.c:202
+#, fuzzy
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "Överkanten på justerade objekt mot överkanten på ankare"
 
 #: src/dialogs/align.c:205
 msgid "Align"
@@ -157,133 +167,133 @@ msgstr "Största objekt"
 msgid "Smallest item"
 msgstr "Minsta objekt"
 
-#: src/dialogs/desktop-properties.c:190
+#: src/dialogs/desktop-properties.c:195
 msgid "Desktop settings"
 msgstr "Skrivbordsinställningar"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:199
+#: src/dialogs/desktop-properties.c:204
 msgid "Grid"
 msgstr "Rutnät"
 
-#: src/dialogs/desktop-properties.c:212
+#: src/dialogs/desktop-properties.c:217
 msgid "Show grid"
 msgstr "Visa rutnät"
 
-#: src/dialogs/desktop-properties.c:213
+#: src/dialogs/desktop-properties.c:218
 msgid "Snap to grid"
 msgstr "Fäst vid rutnät"
 
-#: src/dialogs/desktop-properties.c:216
+#: src/dialogs/desktop-properties.c:221
 msgid "Horizontal lines"
 msgstr "Horisontella linjer"
 
-#: src/dialogs/desktop-properties.c:217
+#: src/dialogs/desktop-properties.c:222
 msgid "Vertical lines"
 msgstr "Vertikala linjer"
 
-#: src/dialogs/desktop-properties.c:219
+#: src/dialogs/desktop-properties.c:224
 msgid "Iso grid"
 msgstr "Iso-rutnät"
 
-#: src/dialogs/desktop-properties.c:220
+#: src/dialogs/desktop-properties.c:225
 msgid "Hex grid"
 msgstr "Hex-rutnät"
 
-#: src/dialogs/desktop-properties.c:226
+#: src/dialogs/desktop-properties.c:231
 msgid "Grid units:"
 msgstr "Enheter för rutnät:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:233
 msgid "Origin X:"
 msgstr "X-origo:"
 
-#: src/dialogs/desktop-properties.c:230
+#: src/dialogs/desktop-properties.c:235
 msgid "Origin Y:"
 msgstr "Y-origo:"
 
-#: src/dialogs/desktop-properties.c:233
+#: src/dialogs/desktop-properties.c:238
 msgid "Spacing X:"
 msgstr "X-avstånd:"
 
-#: src/dialogs/desktop-properties.c:235
+#: src/dialogs/desktop-properties.c:240
 msgid "Spacing Y:"
 msgstr "Y-avstånd:"
 
-#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
 msgid "Snap units:"
 msgstr "Enheter för fästande:"
 
-#: src/dialogs/desktop-properties.c:241 src/dialogs/desktop-properties.c:268
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
 msgid "Snap distance:"
 msgstr "Fästavstånd:"
 
-#: src/dialogs/desktop-properties.c:244
+#: src/dialogs/desktop-properties.c:249
 msgid "Grid color:"
 msgstr "Färg på rutnät:"
 
-#: src/dialogs/desktop-properties.c:245
+#: src/dialogs/desktop-properties.c:250
 msgid "Grid color"
 msgstr "Färg på rutnät"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:249
+#: src/dialogs/desktop-properties.c:254
 msgid "Guides"
 msgstr "Hjälplinjer"
 
-#: src/dialogs/desktop-properties.c:260
+#: src/dialogs/desktop-properties.c:265
 msgid "Show guides"
 msgstr "Visa hjälplinjer"
 
-#: src/dialogs/desktop-properties.c:261
+#: src/dialogs/desktop-properties.c:266
 msgid "Snap to guides"
 msgstr "Fäst vid hjälplinjer"
 
-#: src/dialogs/desktop-properties.c:271
+#: src/dialogs/desktop-properties.c:276
 msgid "Guides color:"
 msgstr "Färg på hjälplinjer:"
 
-#: src/dialogs/desktop-properties.c:272
+#: src/dialogs/desktop-properties.c:277
 msgid "Guideline color"
 msgstr "Färg på hjälplinjer"
 
-#: src/dialogs/desktop-properties.c:274
+#: src/dialogs/desktop-properties.c:279
 msgid "Highlight color:"
 msgstr "Markeringsfärg:"
 
-#: src/dialogs/desktop-properties.c:275
+#: src/dialogs/desktop-properties.c:280
 msgid "Highlighted guideline color"
 msgstr "Färg på markerade hjälplinjer"
 
-#: src/dialogs/desktop-properties.c:290
+#: src/dialogs/desktop-properties.c:295
 msgid "Show border"
 msgstr "Visa ram"
 
-#: src/dialogs/desktop-properties.c:296
+#: src/dialogs/desktop-properties.c:301
 msgid "Border on top of drawing"
 msgstr "Ram överst på teckning"
 
-#: src/dialogs/desktop-properties.c:301
+#: src/dialogs/desktop-properties.c:306
 #, fuzzy
 msgid "Border color:"
 msgstr "Färg på rutnät:"
 
-#: src/dialogs/desktop-properties.c:302
+#: src/dialogs/desktop-properties.c:307
 msgid "Page border color"
 msgstr ""
 
-#: src/dialogs/desktop-properties.c:303
+#: src/dialogs/desktop-properties.c:308
 #, fuzzy
 msgid "Page color:"
 msgstr "Välj en färg"
 
-#: src/dialogs/desktop-properties.c:304
+#: src/dialogs/desktop-properties.c:309
 #, fuzzy
 msgid "Page color"
 msgstr "Välj en färg"
 
-#: src/dialogs/desktop-properties.c:575
+#: src/dialogs/desktop-properties.c:580
 msgid "Close"
 msgstr "Stäng"
 
@@ -331,40 +341,40 @@ msgstr "Indata"
 msgid "Default cursor tolerance:"
 msgstr "Standardmarkörtolerans:"
 
-#: src/dialogs/document-properties.c:156
+#: src/dialogs/document-properties.c:159
 msgid "Document settings"
 msgstr "Dokumentinställningar"
 
-#: src/dialogs/document-properties.c:177
+#: src/dialogs/document-properties.c:180
 msgid "Paper size:"
 msgstr "Pappersstorlek:"
 
-#: src/dialogs/document-properties.c:198
+#: src/dialogs/document-properties.c:201
 msgid "Custom"
 msgstr "Egen"
 
 #. Custom paper frame
-#: src/dialogs/document-properties.c:205
+#: src/dialogs/document-properties.c:208
 msgid "Custom paper"
 msgstr "Egen pappersstorlek"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:216 src/dialogs/export.c:155
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Enheter:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:225 src/dialogs/export.c:165
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
 #: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
-#: src/dialogs/stroke-style.c:559 src/dialogs/tool-attributes.c:123
+#: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
 #: src/dyna-draw-context.c:1082
 msgid "Width:"
 msgstr "Bredd:"
 
-#: src/dialogs/document-properties.c:240 src/dialogs/export.c:174
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
 #: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
@@ -416,68 +426,68 @@ msgstr "Exportera png-fil"
 msgid "Export"
 msgstr "Exportera"
 
-#: src/dialogs/fill-style.c:91
+#: src/dialogs/fill-style.c:86
 msgid "Fill style"
 msgstr "Fyllningsstil"
 
-#: src/dialogs/fill-style.c:126
+#: src/dialogs/fill-style.c:121
 msgid "Fill Rule"
 msgstr "Fyllningsregel"
 
-#: src/dialogs/fill-style.c:140
+#: src/dialogs/fill-style.c:135
 msgid "nonzero"
 msgstr "ickenoll"
 
-#: src/dialogs/fill-style.c:145
+#: src/dialogs/fill-style.c:140
 msgid "evenodd"
 msgstr "jämnudda"
 
-#: src/dialogs/item-properties.c:80 src/dialogs/item-properties.c:277
-#: src/dialogs/item-properties.c:351 src/dialogs/item-properties.c:358
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:281
+#: src/dialogs/item-properties.c:355 src/dialogs/item-properties.c:362
 msgid "ID"
 msgstr "ID"
 
-#: src/dialogs/item-properties.c:94
+#: src/dialogs/item-properties.c:98
 msgid "Set ID"
 msgstr "Ställ in ID"
 
-#: src/dialogs/item-properties.c:105
+#: src/dialogs/item-properties.c:109
 msgid "Sensitive"
 msgstr "Känslig"
 
-#: src/dialogs/item-properties.c:110
+#: src/dialogs/item-properties.c:114
 msgid "Visible"
 msgstr "Synlig"
 
-#: src/dialogs/item-properties.c:115
+#: src/dialogs/item-properties.c:119
 msgid "Active"
 msgstr "Aktiv"
 
-#: src/dialogs/item-properties.c:120
+#: src/dialogs/item-properties.c:124
 msgid "Printable"
 msgstr "Utskrivbar"
 
-#: src/dialogs/item-properties.c:131
+#: src/dialogs/item-properties.c:135
 msgid "Opacity:"
 msgstr "Opacitet:"
 
-#: src/dialogs/item-properties.c:150
+#: src/dialogs/item-properties.c:154
 msgid "Transformation matrix"
 msgstr "Transformationsmatris"
 
-#: src/dialogs/item-properties.c:271
+#: src/dialogs/item-properties.c:275
 msgid "Ref"
 msgstr "Ref"
 
-#: src/dialogs/item-properties.c:353
+#: src/dialogs/item-properties.c:357
 msgid "ID invalid"
 msgstr "ID ogiltigt"
 
-#: src/dialogs/item-properties.c:355
+#: src/dialogs/item-properties.c:359
 msgid "ID exists"
 msgstr "ID finns"
 
-#: src/dialogs/item-properties.c:431 src/verbs.c:468
+#: src/dialogs/item-properties.c:435 src/verbs.c:468
 msgid "Item properties"
 msgstr "Objektegenskaper"
 
@@ -655,51 +665,51 @@ msgstr "Objektstorlek och -position"
 msgid "Size and Position"
 msgstr "Storlek och position"
 
-#: src/dialogs/stroke-style.c:546 src/toolbox.c:445
+#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
 msgid "Stroke settings"
 msgstr "Genomstrykningsinställningar"
 
 #. Join type
-#: src/dialogs/stroke-style.c:582
+#: src/dialogs/stroke-style.c:588
 msgid "Join:"
 msgstr "Anslutning:"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:625
+#: src/dialogs/stroke-style.c:631
 msgid "Cap:"
 msgstr "Lock:"
 
 #. Dash
-#: src/dialogs/stroke-style.c:668
+#: src/dialogs/stroke-style.c:674
 msgid "Pattern:"
 msgstr "Mönster:"
 
-#: src/dialogs/text-edit.c:98
+#: src/dialogs/text-edit.c:101
 msgid "Text properties"
 msgstr "Textegenskaper"
 
 #. Layout
-#: src/dialogs/text-edit.c:137
+#: src/dialogs/text-edit.c:140
 msgid "Layout"
 msgstr "Utseende"
 
-#: src/dialogs/text-edit.c:145
+#: src/dialogs/text-edit.c:148
 msgid "Alignment:"
 msgstr "Justering:"
 
-#: src/dialogs/text-edit.c:170
+#: src/dialogs/text-edit.c:173
 msgid "Orientation:"
 msgstr "Orientering:"
 
-#: src/dialogs/text-edit.c:188
+#: src/dialogs/text-edit.c:191
 msgid "Line spacing:"
 msgstr "Radavstånd:"
 
-#: src/dialogs/text-edit.c:213
+#: src/dialogs/text-edit.c:216
 msgid "Text and font"
 msgstr "Text och typsnitt"
 
-#: src/dialogs/text-edit.c:224
+#: src/dialogs/text-edit.c:227
 msgid "Set as default"
 msgstr "Ställ in som standard"
 
@@ -891,28 +901,28 @@ msgstr "Vinkel:"
 msgid "Defaults"
 msgstr "Standardalternativ"
 
-#: src/file.c:154 src/file.c:166 src/file.c:180
+#: src/file.c:157 src/file.c:169 src/file.c:183
 msgid "Select file to open"
 msgstr "Välj fil att öppna"
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:200 src/module.c:550
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Skalbar vektorgrafik (SVG)"
 
 # Osäker
-#: src/file.c:197 src/module.c:550
+#: src/file.c:200 src/module.c:550
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Inbyggt filformat för Sodipodi och W3C-standard"
 
-#: src/file.c:203 src/file.c:277
+#: src/file.c:206 src/file.c:280
 msgid "File type:"
 msgstr "Filtyp:"
 
-#: src/file.c:262
+#: src/file.c:265
 msgid "Save file"
 msgstr "Spara fil"
 
-#: src/file.c:440 src/file.c:450 src/file.c:456
+#: src/file.c:443 src/file.c:453 src/file.c:459
 msgid "Select file to import"
 msgstr "Välj fil att importera"
 
@@ -1151,42 +1161,42 @@ msgstr "Fönster"
 msgid "Filters"
 msgstr "Filter"
 
-#: src/main.c:129
+#: src/main.c:130 src/main.c:612
 msgid "Do not use X server (only process files from console)"
 msgstr "Använd inte X-server (behandla endast filer från konsollen)"
 
-#: src/main.c:132
+#: src/main.c:133 src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "Försök att använda X-server även om $DISPLAY inte är inställd)"
 
-#: src/main.c:135
+#: src/main.c:136 src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Öppna angivna dokument (flaggsträng kan utelämnas)"
 
-#: src/main.c:136 src/main.c:139 src/main.c:142 src/main.c:156
+#: src/main.c:137 src/main.c:140 src/main.c:143 src/main.c:157
 msgid "FILENAME"
 msgstr "FILNAMN"
 
-#: src/main.c:138
+#: src/main.c:139
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Skriv ut dokument till angiven utdatafil (använd \"| program\" för rör)"
 
-#: src/main.c:141
+#: src/main.c:142 src/main.c:615
 msgid "Export document to png file"
 msgstr "Exportera dokument till png-fil"
 
-#: src/main.c:144
+#: src/main.c:145 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr ""
 "Upplösningen som används för konvertering av SVG till bitmappsbild "
 "(standardvärde 72,0)"
 
-#: src/main.c:145
+#: src/main.c:146
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:147
+#: src/main.c:148 src/main.c:617
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1194,51 +1204,60 @@ msgstr ""
 "Exporterad area i millimeter (standard är hela dokumentet, 0,0 är nedre "
 "vänstra hörnet)"
 
-#: src/main.c:148
+#: src/main.c:149
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:150
+#: src/main.c:151 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr ""
 "Bredden på den genererade bimappsbilden i bildpunkter (åsidosätter dpi)"
 
-#: src/main.c:150
+#: src/main.c:151
 msgid "WIDTH"
 msgstr "BREDD"
 
-#: src/main.c:152
+#: src/main.c:153 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Höjden på den genererade bimappsbilden i bildpunkter (åsidosätter dpi)"
 
-#: src/main.c:152
+#: src/main.c:153
 msgid "HEIGHT"
 msgstr "HÖJD"
 
-#: src/main.c:154
+#: src/main.c:155 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr ""
 "Bakgrundsfärg för den exporterade bitmappsbilden (godtycklig färgsträng som "
 "stöds av SVG)"
 
-#: src/main.c:154
+#: src/main.c:155
 msgid "COLOR"
 msgstr "FÄRG"
 
-#: src/main.c:156
+#: src/main.c:157 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr ""
 "Exportera dokument till vanlig SVG-fil (inget \"xmlns:sodipodi\"-namnutrymme)"
 
-#: src/main.c:158
+#: src/main.c:159
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Visa angivna filer en och en, byt till nästa vid någon tangent- eller "
 "mushändelse"
 
-#: src/main.c:160
+#: src/main.c:161
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Föredra bitmappsikoner (xpm) över SVG-ikoner"
+
+#: src/main.c:622
+#, fuzzy
+msgid "Print sodipodi version information"
+msgstr "Utskriftsdestination"
+
+#: src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr ""
 
 #: src/module.c:558
 msgid "SVG with \"xmlns:sodipodi\" namespace"
@@ -1284,20 +1303,20 @@ msgid "Save document as"
 msgstr "Spara dokument som"
 
 #. Print destination frame
-#: src/modules/ps.c:159 src/modules/ps.c:220
+#: src/modules/ps.c:167 src/modules/ps.c:228
 msgid "Print destination"
 msgstr "Utskriftsdestination"
 
 #. Print properties frame
-#: src/modules/ps.c:170
+#: src/modules/ps.c:178
 msgid "Print properties"
 msgstr "Utskriftsegenskaper"
 
-#: src/modules/ps.c:178
+#: src/modules/ps.c:186
 msgid "Print using PostScript operators"
 msgstr "Skriv ut genom användning av PostScript-operatorer"
 
-#: src/modules/ps.c:180
+#: src/modules/ps.c:188
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1307,11 +1326,11 @@ msgstr ""
 "att bli mindre och kan skalas godtyckligt, men alfatransparens, markörer och "
 "mönster kommer att gå förlorade"
 
-#: src/modules/ps.c:185
+#: src/modules/ps.c:193
 msgid "Print as bitmap"
 msgstr "Skriv ut som bitmappsbild"
 
-#: src/modules/ps.c:187
+#: src/modules/ps.c:195
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1321,15 +1340,15 @@ msgstr ""
 "att bli större och dess kvalitet beror på zoomfaktorn, men all grafik kommer "
 "att renderas identiskt till displayen"
 
-#: src/modules/ps.c:201
+#: src/modules/ps.c:209
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Föredragen upplösning (punkter per tum) av bitmappsbild"
 
-#: src/modules/ps.c:216
+#: src/modules/ps.c:224
 msgid "Resolution:"
 msgstr "Upplösning:"
 
-#: src/modules/ps.c:226
+#: src/modules/ps.c:234
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1339,7 +1358,7 @@ msgstr ""
 "Använd \"> filnamn\" för att skriva till fil.\n"
 "Använd \"| prog arg...\" för att skicka via rör till program"
 
-#: src/modules/ps.c:839
+#: src/modules/ps.c:868
 msgid "write error occured"
 msgstr "skrivfel inträffade"
 
@@ -1475,39 +1494,39 @@ msgstr "Rundhetsgrad för x:"
 msgid "Roundness ratio for y:"
 msgstr "Rundhetsgrad för y:"
 
-#: src/select-context.c:568
+#: src/select-context.c:569
 msgid "Visual transformation"
 msgstr "Visuell transformering"
 
-#: src/select-context.c:574
+#: src/select-context.c:575
 msgid "Show content"
 msgstr "Visa innehåll"
 
-#: src/select-context.c:580
+#: src/select-context.c:581
 msgid "Show outline"
 msgstr "Visa kontur"
 
-#: src/select-context.c:586
+#: src/select-context.c:587
 msgid "Object transformation"
 msgstr "Objekttransformering"
 
-#: src/select-context.c:592
+#: src/select-context.c:593
 msgid "Optimize"
 msgstr "Optimera"
 
-#: src/select-context.c:598
+#: src/select-context.c:599
 msgid "Preserve"
 msgstr "Bevara"
 
-#: src/select-context.c:604
+#: src/select-context.c:605
 msgid "[Tab] Cycling"
 msgstr ""
 
-#: src/select-context.c:609
+#: src/select-context.c:610
 msgid "Cycle only among visible items"
 msgstr ""
 
-#: src/select-context.c:612
+#: src/select-context.c:613
 #, fuzzy
 msgid "Center view to selected item"
 msgstr "Grupperar markerade objekt"
@@ -1755,7 +1774,7 @@ msgid "Unknown item :-("
 msgstr "Okänt objekt :-("
 
 #. fixme:
-#: src/sp-text.c:1432
+#: src/sp-text.c:1428
 msgid "Text object"
 msgstr "Textobjekt"
 
@@ -2297,20 +2316,20 @@ msgid "XML Editor"
 msgstr "XML-redigerare"
 
 #. Family frame
-#: src/widgets/font-selector.c:146
+#: src/widgets/font-selector.c:148
 msgid "Font family"
 msgstr "Typsnittsfamilj"
 
 #. Style frame
-#: src/widgets/font-selector.c:174
+#: src/widgets/font-selector.c:176
 msgid "Style"
 msgstr "Stil"
 
-#: src/widgets/font-selector.c:209
+#: src/widgets/font-selector.c:211
 msgid "Font size:"
 msgstr "Typsnittsstorlek:"
 
-#: src/widgets/font-selector.c:519
+#: src/widgets/font-selector.c:521
 msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "AaBbCcIiPpQqÅåÄäÖö12368.;/()"
 
@@ -2326,27 +2345,27 @@ msgstr "toningsenheter"
 msgid "gradientSpread"
 msgstr "toningsspridning"
 
-#: src/widgets/gradient-vector.c:248
+#: src/widgets/gradient-vector.c:250
 msgid "No document selected"
 msgstr "Inget dokument markerat"
 
-#: src/widgets/gradient-vector.c:254
+#: src/widgets/gradient-vector.c:256
 msgid "No gradients in document"
 msgstr "Inga toningar i dokument"
 
-#: src/widgets/gradient-vector.c:260
+#: src/widgets/gradient-vector.c:262
 msgid "No gradient selected"
 msgstr "Ingen toning markerad"
 
-#: src/widgets/gradient-vector.c:415
+#: src/widgets/gradient-vector.c:417
 msgid "Start color"
 msgstr "Startfärg"
 
-#: src/widgets/gradient-vector.c:425
+#: src/widgets/gradient-vector.c:427
 msgid "End color"
 msgstr "Slutfärg"
 
-#: src/widgets/gradient-vector.c:450
+#: src/widgets/gradient-vector.c:452
 msgid "Gradient vector"
 msgstr "Toningsvektor"
 

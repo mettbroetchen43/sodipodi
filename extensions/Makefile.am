@@ -1,22 +1,23 @@
 
 extensiondir = $(libdir)/sodipodi/extensions
 
-otherstuffdir = $(datadir)/sodipodi/extensions
+# otherstuffdir = $(datadir)/sodipodi/extensions
 
 extensions = \
-	roundhole \
-	ill2svg.pl \
-	SpSVG.pm \
-	svg_dropshadow
+	ill2svg.pl
 
-otherstuff = \
-	roundhole.xpm
+# SpSVG.pm
+# svg_dropshadow
+# roundhole
+
+# otherstuff = roundhole.xpm
 
 extension_SCRIPTS = \
 	$(extensions)
 
-otherstuff_DATA = \
-	$(otherstuff)
+# otherstuff_DATA = $(otherstuff)
 
-EXTRA_DIST = $(extension_SCRIPTS) $(otherstuff_DATA)
+EXTRA_DIST = $(extension_SCRIPTS)
+
+# $(otherstuff_DATA)
 

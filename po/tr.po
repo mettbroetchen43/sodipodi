@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2003-11-23 14:42+0200\n"
+"POT-Creation-Date: 2003-11-30 17:37+0200\n"
 "PO-Revision-Date: 2003-02-03 02:18+0200\n"
 "Last-Translator: Arman Aksoy (Armish) <armish@linux-sevenler.de>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
@@ -29,6 +29,11 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "sodipodi-svg-doc üreticisi yaratılamadı"
 
+#: src/arc-context.c:303
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr ""
+
 #: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
 msgstr ""
@@ -45,7 +50,7 @@ msgstr "%s dökümanı kaydedilmemiş değişiklikler içeriyor, kaydedilsin mi?
 
 #. Page page
 #: src/desktop.c:1535 src/dialogs/align.c:288
-#: src/dialogs/desktop-properties.c:279 src/dialogs/document-properties.c:165
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:137 src/verbs.c:453
 msgid "Page"
 msgstr "Sayfa"
@@ -89,7 +94,7 @@ msgstr "Çapanın sağına hizalanmış nesnelerin sol tarafı"
 msgid "Bottom of aligned objects to top of anchor"
 msgstr "Çapanın üstüne hizalanmış nesnelerin altı"
 
-#: src/dialogs/align.c:193 src/dialogs/align.c:202
+#: src/dialogs/align.c:193
 msgid "Top of aligned objects to top of anchor"
 msgstr "Çapanın üstüne hizalanmış nesnelerin üstü"
 
@@ -100,6 +105,11 @@ msgstr "Dikey hizala"
 #: src/dialogs/align.c:199
 msgid "Bottom of aligned objects to bottom of anchor"
 msgstr "Çapanın altına hizalanmış nesnelerin altı"
+
+#: src/dialogs/align.c:202
+#, fuzzy
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "Çapanın üstüne hizalanmış nesnelerin üstü"
 
 #: src/dialogs/align.c:205
 msgid "Align"
@@ -158,137 +168,137 @@ msgstr "En büyük birim"
 msgid "Smallest item"
 msgstr "En küçük birim"
 
-#: src/dialogs/desktop-properties.c:190
+#: src/dialogs/desktop-properties.c:195
 msgid "Desktop settings"
 msgstr "Masaüstü ayarları"
 
 #. Grid settings
 #. Notebook tab
-#: src/dialogs/desktop-properties.c:199
+#: src/dialogs/desktop-properties.c:204
 msgid "Grid"
 msgstr "Izgara"
 
-#: src/dialogs/desktop-properties.c:212
+#: src/dialogs/desktop-properties.c:217
 msgid "Show grid"
 msgstr "Izgarayı göster"
 
-#: src/dialogs/desktop-properties.c:213
+#: src/dialogs/desktop-properties.c:218
 msgid "Snap to grid"
 msgstr "Izgaraya yakala"
 
-#: src/dialogs/desktop-properties.c:216
+#: src/dialogs/desktop-properties.c:221
 #, fuzzy
 msgid "Horizontal lines"
 msgstr "yatay"
 
-#: src/dialogs/desktop-properties.c:217
+#: src/dialogs/desktop-properties.c:222
 #, fuzzy
 msgid "Vertical lines"
 msgstr "dikey"
 
-#: src/dialogs/desktop-properties.c:219
+#: src/dialogs/desktop-properties.c:224
 #, fuzzy
 msgid "Iso grid"
 msgstr "Izgarayı göster"
 
-#: src/dialogs/desktop-properties.c:220
+#: src/dialogs/desktop-properties.c:225
 msgid "Hex grid"
 msgstr ""
 
-#: src/dialogs/desktop-properties.c:226
+#: src/dialogs/desktop-properties.c:231
 msgid "Grid units:"
 msgstr "Izgara birimleri:"
 
-#: src/dialogs/desktop-properties.c:228
+#: src/dialogs/desktop-properties.c:233
 msgid "Origin X:"
 msgstr "Orijin X:"
 
-#: src/dialogs/desktop-properties.c:230
+#: src/dialogs/desktop-properties.c:235
 msgid "Origin Y:"
 msgstr "Orijin Y:"
 
-#: src/dialogs/desktop-properties.c:233
+#: src/dialogs/desktop-properties.c:238
 msgid "Spacing X:"
 msgstr "X aralığı:"
 
-#: src/dialogs/desktop-properties.c:235
+#: src/dialogs/desktop-properties.c:240
 msgid "Spacing Y:"
 msgstr "Y aralığı:"
 
-#: src/dialogs/desktop-properties.c:239 src/dialogs/desktop-properties.c:266
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
 msgid "Snap units:"
 msgstr "Yakalama birimleri:"
 
-#: src/dialogs/desktop-properties.c:241 src/dialogs/desktop-properties.c:268
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
 msgid "Snap distance:"
 msgstr "Yakalama uzaklığı:"
 
-#: src/dialogs/desktop-properties.c:244
+#: src/dialogs/desktop-properties.c:249
 msgid "Grid color:"
 msgstr "Izgara rengi"
 
-#: src/dialogs/desktop-properties.c:245
+#: src/dialogs/desktop-properties.c:250
 msgid "Grid color"
 msgstr "Izgara rengi"
 
 #. Guidelines page
-#: src/dialogs/desktop-properties.c:249
+#: src/dialogs/desktop-properties.c:254
 msgid "Guides"
 msgstr "Rehberler"
 
-#: src/dialogs/desktop-properties.c:260
+#: src/dialogs/desktop-properties.c:265
 msgid "Show guides"
 msgstr "Rehberleri göster"
 
-#: src/dialogs/desktop-properties.c:261
+#: src/dialogs/desktop-properties.c:266
 msgid "Snap to guides"
 msgstr "Rehberlere yakala"
 
-#: src/dialogs/desktop-properties.c:271
+#: src/dialogs/desktop-properties.c:276
 msgid "Guides color:"
 msgstr "Rehber rengi:"
 
-#: src/dialogs/desktop-properties.c:272
+#: src/dialogs/desktop-properties.c:277
 msgid "Guideline color"
 msgstr "Rehber satırı rengi"
 
-#: src/dialogs/desktop-properties.c:274
+#: src/dialogs/desktop-properties.c:279
 msgid "Highlight color:"
 msgstr "İşaret rengi:"
 
-#: src/dialogs/desktop-properties.c:275
+#: src/dialogs/desktop-properties.c:280
 msgid "Highlighted guideline color"
 msgstr "İşaretli rehber satırlarının rengi"
 
-#: src/dialogs/desktop-properties.c:290
+#: src/dialogs/desktop-properties.c:295
 msgid "Show border"
 msgstr "Ayrıracı göster"
 
-#: src/dialogs/desktop-properties.c:296
+#: src/dialogs/desktop-properties.c:301
 #, fuzzy
 msgid "Border on top of drawing"
 msgstr "Çizimi göster"
 
-#: src/dialogs/desktop-properties.c:301
+#: src/dialogs/desktop-properties.c:306
 #, fuzzy
 msgid "Border color:"
 msgstr "Izgara rengi"
 
-#: src/dialogs/desktop-properties.c:302
+#: src/dialogs/desktop-properties.c:307
 msgid "Page border color"
 msgstr ""
 
-#: src/dialogs/desktop-properties.c:303
+#: src/dialogs/desktop-properties.c:308
 #, fuzzy
 msgid "Page color:"
 msgstr "Renk seçiniz"
 
-#: src/dialogs/desktop-properties.c:304
+#: src/dialogs/desktop-properties.c:309
 #, fuzzy
 msgid "Page color"
 msgstr "Renk seçiniz"
 
-#: src/dialogs/desktop-properties.c:575
+#: src/dialogs/desktop-properties.c:580
 msgid "Close"
 msgstr "Kapat"
 
@@ -336,40 +346,40 @@ msgstr "Girdi"
 msgid "Default cursor tolerance:"
 msgstr "Öntanımlı kursor töleransı"
 
-#: src/dialogs/document-properties.c:156
+#: src/dialogs/document-properties.c:159
 msgid "Document settings"
 msgstr "Döküman ayarları"
 
-#: src/dialogs/document-properties.c:177
+#: src/dialogs/document-properties.c:180
 msgid "Paper size:"
 msgstr "Kağıt boyutu:"
 
-#: src/dialogs/document-properties.c:198
+#: src/dialogs/document-properties.c:201
 msgid "Custom"
 msgstr "Özel"
 
 #. Custom paper frame
-#: src/dialogs/document-properties.c:205
+#: src/dialogs/document-properties.c:208
 msgid "Custom paper"
 msgstr "Özel kağıt"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:216 src/dialogs/export.c:155
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Birimler:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:225 src/dialogs/export.c:165
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
 #: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
-#: src/dialogs/stroke-style.c:559 src/dialogs/tool-attributes.c:123
+#: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
 #: src/dyna-draw-context.c:1082
 msgid "Width:"
 msgstr "Genişlik:"
 
-#: src/dialogs/document-properties.c:240 src/dialogs/export.c:174
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
 #: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
@@ -421,69 +431,69 @@ msgstr "Png dosyasını dışarı aktar"
 msgid "Export"
 msgstr "Dışarı aktar"
 
-#: src/dialogs/fill-style.c:91
+#: src/dialogs/fill-style.c:86
 msgid "Fill style"
 msgstr "Doldurma stili"
 
-#: src/dialogs/fill-style.c:126
+#: src/dialogs/fill-style.c:121
 msgid "Fill Rule"
 msgstr "Doldurma Kuralları"
 
-#: src/dialogs/fill-style.c:140
+#: src/dialogs/fill-style.c:135
 msgid "nonzero"
 msgstr "boş değil"
 
-#: src/dialogs/fill-style.c:145
+#: src/dialogs/fill-style.c:140
 msgid "evenodd"
 msgstr "rastgele"
 
-#: src/dialogs/item-properties.c:80 src/dialogs/item-properties.c:277
-#: src/dialogs/item-properties.c:351 src/dialogs/item-properties.c:358
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:281
+#: src/dialogs/item-properties.c:355 src/dialogs/item-properties.c:362
 msgid "ID"
 msgstr ""
 
-#: src/dialogs/item-properties.c:94
+#: src/dialogs/item-properties.c:98
 msgid "Set ID"
 msgstr ""
 
-#: src/dialogs/item-properties.c:105
+#: src/dialogs/item-properties.c:109
 msgid "Sensitive"
 msgstr "Duyarlı"
 
-#: src/dialogs/item-properties.c:110
+#: src/dialogs/item-properties.c:114
 msgid "Visible"
 msgstr "Görünür"
 
-#: src/dialogs/item-properties.c:115
+#: src/dialogs/item-properties.c:119
 msgid "Active"
 msgstr "Aktif"
 
-#: src/dialogs/item-properties.c:120
+#: src/dialogs/item-properties.c:124
 msgid "Printable"
 msgstr "Yazılabilir"
 
-#: src/dialogs/item-properties.c:131
+#: src/dialogs/item-properties.c:135
 msgid "Opacity:"
 msgstr "Donukluk:"
 
-#: src/dialogs/item-properties.c:150
+#: src/dialogs/item-properties.c:154
 msgid "Transformation matrix"
 msgstr "Döünüşüm kalıbı"
 
-#: src/dialogs/item-properties.c:271
+#: src/dialogs/item-properties.c:275
 msgid "Ref"
 msgstr ""
 
-#: src/dialogs/item-properties.c:353
+#: src/dialogs/item-properties.c:357
 #, fuzzy
 msgid "ID invalid"
 msgstr "Numara geçerli"
 
-#: src/dialogs/item-properties.c:355
+#: src/dialogs/item-properties.c:359
 msgid "ID exists"
 msgstr ""
 
-#: src/dialogs/item-properties.c:431 src/verbs.c:468
+#: src/dialogs/item-properties.c:435 src/verbs.c:468
 msgid "Item properties"
 msgstr "Nesne özellikleri"
 
@@ -662,52 +672,52 @@ msgstr "Nesne boyutu ve konumu"
 msgid "Size and Position"
 msgstr "Boyut ve Konum"
 
-#: src/dialogs/stroke-style.c:546 src/toolbox.c:445
+#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
 msgid "Stroke settings"
 msgstr "Vuruş ayarları"
 
 #. Join type
-#: src/dialogs/stroke-style.c:582
+#: src/dialogs/stroke-style.c:588
 msgid "Join:"
 msgstr "Ekle:"
 
 #. Cap type
-#: src/dialogs/stroke-style.c:625
+#: src/dialogs/stroke-style.c:631
 msgid "Cap:"
 msgstr "Kapak:"
 
 #. Dash
-#: src/dialogs/stroke-style.c:668
+#: src/dialogs/stroke-style.c:674
 msgid "Pattern:"
 msgstr "Motif:"
 
-#: src/dialogs/text-edit.c:98
+#: src/dialogs/text-edit.c:101
 msgid "Text properties"
 msgstr "Metin özellikleri"
 
 #. Layout
-#: src/dialogs/text-edit.c:137
+#: src/dialogs/text-edit.c:140
 msgid "Layout"
 msgstr "Konumlama"
 
-#: src/dialogs/text-edit.c:145
+#: src/dialogs/text-edit.c:148
 msgid "Alignment:"
 msgstr "Hiza:"
 
-#: src/dialogs/text-edit.c:170
+#: src/dialogs/text-edit.c:173
 msgid "Orientation:"
 msgstr "Oran:"
 
-#: src/dialogs/text-edit.c:188
+#: src/dialogs/text-edit.c:191
 #, fuzzy
 msgid "Line spacing:"
 msgstr "X aralığı:"
 
-#: src/dialogs/text-edit.c:213
+#: src/dialogs/text-edit.c:216
 msgid "Text and font"
 msgstr "Metin ve yazı tipi"
 
-#: src/dialogs/text-edit.c:224
+#: src/dialogs/text-edit.c:227
 msgid "Set as default"
 msgstr "Öntanımlı olarak ata"
 
@@ -901,28 +911,28 @@ msgstr "açı:"
 msgid "Defaults"
 msgstr "Öntanımlı"
 
-#: src/file.c:154 src/file.c:166 src/file.c:180
+#: src/file.c:157 src/file.c:169 src/file.c:183
 msgid "Select file to open"
 msgstr "Açılacak dosyayı seçin"
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:200 src/module.c:550
 msgid "Scalable Vector Graphic (SVG)"
 msgstr ""
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:200 src/module.c:550
 msgid "Sodipodi native file format and W3C standard"
 msgstr ""
 
-#: src/file.c:203 src/file.c:277
+#: src/file.c:206 src/file.c:280
 #, fuzzy
 msgid "File type:"
 msgstr "Doldurma stili"
 
-#: src/file.c:262
+#: src/file.c:265
 msgid "Save file"
 msgstr "Dosyayı kaydet"
 
-#: src/file.c:440 src/file.c:450 src/file.c:456
+#: src/file.c:443 src/file.c:453 src/file.c:459
 msgid "Select file to import"
 msgstr "İçeri aktarılacak dosyayı seçin"
 
@@ -1161,41 +1171,41 @@ msgstr "Pencereler"
 msgid "Filters"
 msgstr "Dosya"
 
-#: src/main.c:129
+#: src/main.c:130 src/main.c:612
 msgid "Do not use X server (only process files from console)"
 msgstr "X sunucusunu kullanma (dosyaları sadece konsoldan sürdür)"
 
-#: src/main.c:132
+#: src/main.c:133 src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
 msgstr "$DISPLAY atanmamışsa bile X sunucusunu kullanmaya çalış)"
 
-#: src/main.c:135
+#: src/main.c:136 src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Belirtilen döküman(lar)ı aç (seçenekler dahil olmayacaktır)"
 
-#: src/main.c:136 src/main.c:139 src/main.c:142 src/main.c:156
+#: src/main.c:137 src/main.c:140 src/main.c:143 src/main.c:157
 msgid "FILENAME"
 msgstr "DOSYA ADI"
 
-#: src/main.c:138
+#: src/main.c:139
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
 msgstr ""
 "Dökümanları belirtilen dosyaya yazdur (başka programa yönlendirmek için '|' "
 "kullanın)"
 
-#: src/main.c:141
+#: src/main.c:142 src/main.c:615
 msgid "Export document to png file"
 msgstr "Resmi png olarak aktar"
 
-#: src/main.c:144
+#: src/main.c:145 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
 msgstr "SVG'den bitmap'e çevirim için kullanılacak çözünürlük (öntanımlı 72.0)"
 
-#: src/main.c:145
+#: src/main.c:146
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:147
+#: src/main.c:148 src/main.c:617
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1203,46 +1213,55 @@ msgstr ""
 "Milimetre değerinde aktarılan bölüm (öntanımlı olarak tüm döküman, 0,0 "
 "resmin en alt sol köşesi)"
 
-#: src/main.c:148
+#: src/main.c:149
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:150
+#: src/main.c:151 src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Yaratılan bitmap'in piksel değerinde genişliği (dpi üzerine yazar)"
 
-#: src/main.c:150
+#: src/main.c:151
 msgid "WIDTH"
 msgstr "GENİŞLİK"
 
-#: src/main.c:152
+#: src/main.c:153 src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Yaratılan bitmap'in piksel değerinde yüksekliği (dpi üzerine yazar)"
 
-#: src/main.c:152
+#: src/main.c:153
 msgid "HEIGHT"
 msgstr "YÜKSEKLİK"
 
-#: src/main.c:154
+#: src/main.c:155 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
 msgstr "Dışarı aktarılan birmap'in arkaplanı (SVG destekli herhangi bir renk)"
 
-#: src/main.c:154
+#: src/main.c:155
 msgid "COLOR"
 msgstr "RENK"
 
-#: src/main.c:156
+#: src/main.c:157 src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
 msgstr "Dökümanı düz SVG dosyasına aktar (\"xmlns:sodipodi\" alan boşluğu yok)"
 
-#: src/main.c:158
+#: src/main.c:159
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
 msgstr ""
 "Verilen dosyaları teker teker göster, herhangi bir tuşa basıldığında "
 "sonrakine geç"
 
-#: src/main.c:160
+#: src/main.c:161
 msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr ""
+
+#: src/main.c:622
+#, fuzzy
+msgid "Print sodipodi version information"
+msgstr "Hedefi yazdır"
+
+#: src/main.c:623
+msgid "Print help about command-line arguments"
 msgstr ""
 
 #: src/module.c:558
@@ -1288,49 +1307,49 @@ msgid "Save document as"
 msgstr "Dökümanı kaydet"
 
 #. Print destination frame
-#: src/modules/ps.c:159 src/modules/ps.c:220
+#: src/modules/ps.c:167 src/modules/ps.c:228
 msgid "Print destination"
 msgstr "Hedefi yazdır"
 
 #. Print properties frame
-#: src/modules/ps.c:170
+#: src/modules/ps.c:178
 #, fuzzy
 msgid "Print properties"
 msgstr "Bağlantı Özellikleri"
 
-#: src/modules/ps.c:178
+#: src/modules/ps.c:186
 msgid "Print using PostScript operators"
 msgstr ""
 
-#: src/modules/ps.c:180
+#: src/modules/ps.c:188
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
 
-#: src/modules/ps.c:185
+#: src/modules/ps.c:193
 #, fuzzy
 msgid "Print as bitmap"
 msgstr "Bitmap'i dışarı aktar"
 
-#: src/modules/ps.c:187
+#: src/modules/ps.c:195
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
 
-#: src/modules/ps.c:201
+#: src/modules/ps.c:209
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr ""
 
-#: src/modules/ps.c:216
+#: src/modules/ps.c:224
 #, fuzzy
 msgid "Resolution:"
 msgstr "Devir:"
 
-#: src/modules/ps.c:226
+#: src/modules/ps.c:234
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1340,7 +1359,7 @@ msgstr ""
 "Dosyaya yazmak için '>dosyaadi' \n"
 "Programa yönlendirmek için '|' kullanın"
 
-#: src/modules/ps.c:839
+#: src/modules/ps.c:868
 msgid "write error occured"
 msgstr ""
 
@@ -1476,39 +1495,39 @@ msgstr "X için yuvarlaklık değeri:"
 msgid "Roundness ratio for y:"
 msgstr "Y için yuvarlaklık değeri:"
 
-#: src/select-context.c:568
+#: src/select-context.c:569
 msgid "Visual transformation"
 msgstr "Görüntülü dönüşüm"
 
-#: src/select-context.c:574
+#: src/select-context.c:575
 msgid "Show content"
 msgstr "İçeriği göster"
 
-#: src/select-context.c:580
+#: src/select-context.c:581
 msgid "Show outline"
 msgstr "Taslağı göster"
 
-#: src/select-context.c:586
+#: src/select-context.c:587
 msgid "Object transformation"
 msgstr "Nesne dönüşümü"
 
-#: src/select-context.c:592
+#: src/select-context.c:593
 msgid "Optimize"
 msgstr "Optimize"
 
-#: src/select-context.c:598
+#: src/select-context.c:599
 msgid "Preserve"
 msgstr "Koru"
 
-#: src/select-context.c:604
+#: src/select-context.c:605
 msgid "[Tab] Cycling"
 msgstr ""
 
-#: src/select-context.c:609
+#: src/select-context.c:610
 msgid "Cycle only among visible items"
 msgstr ""
 
-#: src/select-context.c:612
+#: src/select-context.c:613
 #, fuzzy
 msgid "Center view to selected item"
 msgstr "Seçili birimlrı gruplar"
@@ -1747,7 +1766,7 @@ msgid "Unknown item :-("
 msgstr "Bilinmeyen birim:-("
 
 #. fixme:
-#: src/sp-text.c:1432
+#: src/sp-text.c:1428
 msgid "Text object"
 msgstr "Metin nesnesi"
 
@@ -2332,20 +2351,20 @@ msgid "XML Editor"
 msgstr "XML Düzenleyicisi"
 
 #. Family frame
-#: src/widgets/font-selector.c:146
+#: src/widgets/font-selector.c:148
 msgid "Font family"
 msgstr "Yazı tipi ailesi"
 
 #. Style frame
-#: src/widgets/font-selector.c:174
+#: src/widgets/font-selector.c:176
 msgid "Style"
 msgstr "Stil"
 
-#: src/widgets/font-selector.c:209
+#: src/widgets/font-selector.c:211
 msgid "Font size:"
 msgstr "Yazı tipi boyutu:"
 
-#: src/widgets/font-selector.c:519
+#: src/widgets/font-selector.c:521
 msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "AaBbCcIiPpQq12368.;/()"
 
@@ -2361,27 +2380,27 @@ msgstr "gradientUnits"
 msgid "gradientSpread"
 msgstr "gradientSpread"
 
-#: src/widgets/gradient-vector.c:248
+#: src/widgets/gradient-vector.c:250
 msgid "No document selected"
 msgstr "Döküman seçilmedi"
 
-#: src/widgets/gradient-vector.c:254
+#: src/widgets/gradient-vector.c:256
 msgid "No gradients in document"
 msgstr "Dökümanda geçiş yok"
 
-#: src/widgets/gradient-vector.c:260
+#: src/widgets/gradient-vector.c:262
 msgid "No gradient selected"
 msgstr "Geçiş seçilmedi"
 
-#: src/widgets/gradient-vector.c:415
+#: src/widgets/gradient-vector.c:417
 msgid "Start color"
 msgstr "Başlangıç rengi"
 
-#: src/widgets/gradient-vector.c:425
+#: src/widgets/gradient-vector.c:427
 msgid "End color"
 msgstr "Bitiş rengi"
 
-#: src/widgets/gradient-vector.c:450
+#: src/widgets/gradient-vector.c:452
 msgid "Gradient vector"
 msgstr "Geçiş vektörü"
 

@@ -8,14 +8,14 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.33\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-11-29 22:39+0900\n"
+"POT-Creation-Date: 2003-11-30 17:37+0200\n"
 "PO-Revision-Date: 2003-11-29 23:46+0900\n"
 "Last-Translator: Mitsuru Oka <oka326@parkcity.ne.jp>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -73,11 +73,15 @@ msgstr "オブジェクトの配置"
 
 #: src/dialogs/align.c:174
 msgid "Right side of aligned objects to left side of anchor"
-msgstr "各オブジェクトの右端を、マスターオブジェクトの左端のアンカーにそろえて配置します"
+msgstr ""
+"各オブジェクトの右端を、マスターオブジェクトの左端のアンカーにそろえて配置し"
+"ます"
 
 #: src/dialogs/align.c:177
 msgid "Left side of aligned objects to left side of anchor"
-msgstr "各オブジェクトの左端を、マスターオブジェクトの左端のアンカーにそろえて配置します"
+msgstr ""
+"各オブジェクトの左端を、マスターオブジェクトの左端のアンカーにそろえて配置し"
+"ます"
 
 #: src/dialogs/align.c:180
 msgid "Center horizontally"
@@ -85,19 +89,27 @@ msgstr "水平方向に関して中央に配置します"
 
 #: src/dialogs/align.c:183
 msgid "Right side of aligned objects to right side of anchor"
-msgstr "各オブジェクトの右端を、マスターオブジェクトの右端のアンカーにそろえて配置します"
+msgstr ""
+"各オブジェクトの右端を、マスターオブジェクトの右端のアンカーにそろえて配置し"
+"ます"
 
 #: src/dialogs/align.c:186
 msgid "Left side of aligned objects to right side of anchor"
-msgstr "各オブジェクトの左端を、マスターオブジェクトの右端のアンカーにそろえて配置します"
+msgstr ""
+"各オブジェクトの左端を、マスターオブジェクトの右端のアンカーにそろえて配置し"
+"ます"
 
 #: src/dialogs/align.c:190
 msgid "Bottom of aligned objects to top of anchor"
-msgstr "各オブジェクトの下端を、マスターオブジェクトの上端のアンカーにそろえて配置します"
+msgstr ""
+"各オブジェクトの下端を、マスターオブジェクトの上端のアンカーにそろえて配置し"
+"ます"
 
 #: src/dialogs/align.c:193
 msgid "Top of aligned objects to top of anchor"
-msgstr "各オブジェクトの上端を、マスターオブジェクトの上端のアンカーにそろえて配置します"
+msgstr ""
+"各オブジェクトの上端を、マスターオブジェクトの上端のアンカーにそろえて配置し"
+"ます"
 
 #: src/dialogs/align.c:196
 msgid "Center vertically"
@@ -105,11 +117,15 @@ msgstr "垂直方向に関して中央に配置します"
 
 #: src/dialogs/align.c:199
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr "各オブジェクトの下端を、マスターオブジェクトの下端のアンカーにそろえて配置します"
+msgstr ""
+"各オブジェクトの下端を、マスターオブジェクトの下端のアンカーにそろえて配置し"
+"ます"
 
 #: src/dialogs/align.c:202
 msgid "Top of aligned objects to bottom of anchor"
-msgstr "各オブジェクトの上端を、マスターオブジェクトの上端のアンカーにそろえて配置します"
+msgstr ""
+"各オブジェクトの上端を、マスターオブジェクトの上端のアンカーにそろえて配置し"
+"ます"
 
 #: src/dialogs/align.c:205
 msgid "Align"
@@ -898,27 +914,27 @@ msgstr "角度:"
 msgid "Defaults"
 msgstr "既定値"
 
-#: src/file.c:154 src/file.c:166 src/file.c:180
+#: src/file.c:157 src/file.c:169 src/file.c:183
 msgid "Select file to open"
 msgstr "開くファイルを選択"
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:200 src/module.c:550
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "スケーラブル・ベクター・グラフィック(SVG)"
 
-#: src/file.c:197 src/module.c:550
+#: src/file.c:200 src/module.c:550
 msgid "Sodipodi native file format and W3C standard"
 msgstr "SodipodiのネイティブファイルフォーマットでW3Cスタンダード"
 
-#: src/file.c:203 src/file.c:277
+#: src/file.c:206 src/file.c:280
 msgid "File type:"
 msgstr "ファイルタイプ:"
 
-#: src/file.c:262
+#: src/file.c:265
 msgid "Save file"
 msgstr "ファイルを保存"
 
-#: src/file.c:440 src/file.c:450 src/file.c:456
+#: src/file.c:443 src/file.c:453 src/file.c:459
 msgid "Select file to import"
 msgstr "読み込むファイルを選択"
 
@@ -1291,20 +1307,20 @@ msgid "Save document as"
 msgstr "名前を変えて保存"
 
 #. Print destination frame
-#: src/modules/ps.c:159 src/modules/ps.c:220
+#: src/modules/ps.c:167 src/modules/ps.c:228
 msgid "Print destination"
 msgstr "印刷出力先"
 
 #. Print properties frame
-#: src/modules/ps.c:170
+#: src/modules/ps.c:178
 msgid "Print properties"
 msgstr "印刷のプロパティ"
 
-#: src/modules/ps.c:178
+#: src/modules/ps.c:186
 msgid "Print using PostScript operators"
 msgstr "PostScriptオペレータを使って印刷"
 
-#: src/modules/ps.c:180
+#: src/modules/ps.c:188
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1313,11 +1329,11 @@ msgstr ""
 "PostScriptベクターオペレータを使うと、出力される画像は(通常)小さくなり自動的"
 "にサイズ調整されますが、α透明、マーカー、パターンは失われます"
 
-#: src/modules/ps.c:185
+#: src/modules/ps.c:193
 msgid "Print as bitmap"
 msgstr "ビットマップで印刷"
 
-#: src/modules/ps.c:187
+#: src/modules/ps.c:195
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1326,15 +1342,15 @@ msgstr ""
 "すべてをビットマップで印刷します。出力する画像は(通常)大きくなり品質はズーム"
 "ファクタに依存しますが、すべてのグラフィックは表示と同様に印刷されます"
 
-#: src/modules/ps.c:201
+#: src/modules/ps.c:209
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "希望するビットマップ解像度(インチあたりのドット数)"
 
-#: src/modules/ps.c:216
+#: src/modules/ps.c:224
 msgid "Resolution:"
 msgstr "解像度:"
 
-#: src/modules/ps.c:226
+#: src/modules/ps.c:234
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1345,7 +1361,7 @@ msgstr ""
 "パイプを使って他のプログラムに出力を渡すには、'| プログラム 引数...' を使って"
 "下さい。"
 
-#: src/modules/ps.c:839
+#: src/modules/ps.c:868
 msgid "write error occured"
 msgstr "書き込みエラーが発生しました"
 
@@ -1749,7 +1765,7 @@ msgid "Unknown item :-("
 msgstr "不明なアイテム :-("
 
 #. fixme:
-#: src/sp-text.c:1432
+#: src/sp-text.c:1428
 msgid "Text object"
 msgstr "テキストオブジェクト"
 
