@@ -1,3 +1,8 @@
+2003-05-07  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-svp-uncross.c (nr_svl_uncross_full): Break slice endpoints if
+	there can be potential crossing
+
 2003-05-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp-render.c (nr_svp_render): Fix some running sum problems

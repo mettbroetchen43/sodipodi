@@ -20,6 +20,12 @@
 #include "nr-svp-uncross.h"
 #include "nr-svp.h"
 
+#define NR_QUANT_X 64.0
+#define NR_QUANT_Y 4.0
+#define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5) / NR_QUANT_X)
+#define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
+#define NR_COORD_TO_ART(v) (v)
+
 /* Sorted vector paths */
 
 NRSVP *
@@ -277,12 +283,6 @@ nr_svp_bbox (NRSVP *svp, NRRectF *bbox, unsigned int clear)
 }
 
 #include <libart_lgpl/art_misc.h>
-
-#define NR_QUANT_X 16.0
-#define NR_QUANT_Y 16.0
-#define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5) / NR_QUANT_X)
-#define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
-#define NR_COORD_TO_ART(v) (v)
 
 typedef struct _NRSVLBuild NRSVLBuild;
 

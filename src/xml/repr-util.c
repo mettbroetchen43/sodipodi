@@ -199,7 +199,7 @@ sp_repr_next (SPRepr *repr)
 {
 	g_return_val_if_fail (repr != NULL, NULL);
 
-	return repr->children;
+	return repr->next;
 }
 
 gint sp_repr_attr_is_set (SPRepr * repr, const gchar * key)

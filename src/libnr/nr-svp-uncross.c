@@ -11,11 +11,12 @@
 
 #define noNR_EXTRA_CHECK
 
-#define NR_QUANT_Y 16.0
+#define NR_QUANT_Y 4.0
 #define NR_COORD_SNAP(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
 #define NR_COORD_SNAP_UP(v) (ceil (NR_QUANT_Y * (v)) / NR_QUANT_Y)
 #define NR_COORD_SNAP_DOWN(v) (floor (NR_QUANT_Y * (v)) / NR_QUANT_Y)
 #define NR_COORD_TOLERANCE 0.01
+#define NR_COORD_TOLERANCE2 (NR_COORD_TOLERANCE * NR_COORD_TOLERANCE)
 
 #include <math.h>
 #include <assert.h>
@@ -31,7 +32,7 @@ struct _NRSVLSlice {
 	NRSVLSlice *next;
 	NRSVL *svl;
 	NRVertex *vertex;
-	NRCoord x;
+        NRCoord x;
 	NRCoord y;
 };
 
@@ -44,6 +45,8 @@ static int nr_svl_slice_compare (NRSVLSlice *l, NRSVLSlice *r);
 static NRSVLSlice *nr_svl_slice_insert_sorted (NRSVLSlice *start, NRSVLSlice *slice);
 
 static NRSVLSlice *nr_svl_slice_stretch_list (NRSVLSlice *slices, NRCoord y);
+
+static double nr_vertex_segment_distance2 (NRVertex *v, NRVertex *s);
 
 #ifdef NR_EXTRA_CHECK
 static void
@@ -183,8 +186,52 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 				ss = NULL;
 				cs = slices;
 			} else if (cs->x == ns->x) {
+				double order;
+				/* Break if either one is new slice */
+				if ((cs->y == cs->vertex->y) || (ns->y == ns->vertex->y)) {
+					csvl = nr_svl_slice_break (cs, cs->x, yslice, csvl);
+					csvl = nr_svl_slice_break (ns, ns->x, yslice, csvl);
+				}
 				/* test continuation direction */
-				if (nr_svl_slice_compare (cs, ns) > 0.0) {
+				order = nr_svl_slice_compare (cs, ns);
+				if (fabs (order < 0.01)) {
+					double dist2;
+					/* Potentially close, test endpoint */
+					/* Bitch'o'bitches (Lauris) */
+					if (cs->vertex->next->y < ns->vertex->next->y) {
+						/* cs is shorter */
+						dist2 = nr_vertex_segment_distance2 (cs->vertex->next, ns->vertex);
+						if (dist2 < NR_COORD_TOLERANCE2) {
+							csvl = nr_svl_slice_break_y_and_continue_x (cs,
+												    cs->vertex->next->y,
+												    cs->vertex->next->x,
+												    csvl, yslice, &nflat);
+							csvl = nr_svl_slice_break_y_and_continue_x (ns,
+												    cs->vertex->next->y,
+												    cs->vertex->next->x,
+												    csvl, yslice, &nflat);
+							/* fixme: Slight disturbance is possible so we should repeat */
+						}
+					} else {
+						/* ns is equal or shorter */
+						dist2 = nr_vertex_segment_distance2 (cs->vertex->next, ns->vertex);
+						if (dist2 < NR_COORD_TOLERANCE2) {
+							csvl = nr_svl_slice_break_y_and_continue_x (cs,
+												    cs->vertex->next->y,
+												    cs->vertex->next->x,
+												    csvl, yslice, &nflat);
+							csvl = nr_svl_slice_break_y_and_continue_x (ns,
+												    cs->vertex->next->y,
+												    cs->vertex->next->x,
+												    csvl, yslice, &nflat);
+							/* fixme: Slight disturbance is possible so we should repeat */
+						}
+					}
+				}
+				if (order > 0.0) {
+					/* Ensure break */
+					csvl = nr_svl_slice_break (cs, cs->x, yslice, csvl);
+					csvl = nr_svl_slice_break (ns, ns->x, yslice, csvl);
 					/* Swap slices */
 					assert (ns->next != cs);
 					cs->next = ns->next;
@@ -197,6 +244,9 @@ nr_svl_uncross_full (NRSVL *svl, NRFlat *flats, unsigned int windrule)
 						slices = ns;
 					}
 					cs = ns;
+					/* fixme: If slices are almost paraller */
+					/* we have to ensure they will be broken at endpoint */
+					/* otherwise winding changes at end may be unnoticed */
 				} else {
 					ss = cs;
 					cs = ns;
@@ -803,6 +853,34 @@ nr_svl_slice_compare (NRSVLSlice *l, NRSVLSlice *r)
 	if (d < 0) return -1;
 	if (d > 0) return 1;
 	return 0;
+}
+
+static double
+nr_vertex_segment_distance2 (NRVertex *vx, NRVertex *seg)
+{
+	double Ax, Ay, Bx, By, Px, Py;
+	double Dx, Dy, s;
+	double dist2;
+	Ax = seg->x;
+	Ay = seg->y;
+	Bx = seg->next->x;
+	By = seg->next->y;
+	Px = vx->x;
+	Py = vx->y;
+	Dx = Bx - Ax;
+	Dy = By - Ay;
+	s = ((Px - Ax) * Dx + (Py - Ay) * Dy) / (Dx * Dx + Dy * Dy);
+	if (s <= 0.0) {
+		dist2 = (Px - Ax) * (Px - Ax) + (Py - Ay) * (Py - Ay);
+	} else if (s >= 1.0) {
+		dist2 = (Px - Bx) * (Px - Bx) + (Py - By) * (Py - By);
+	} else {
+		double Qx, Qy;
+		Qx = Ax + s * Dx;
+		Qy = Ay + s * Dy;
+		dist2 = (Px - Qx) * (Px - Qx) + (Py - Qy) * (Py - Qy);
+	}
+	return dist2;
 }
 
 /*

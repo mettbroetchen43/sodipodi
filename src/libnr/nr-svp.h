@@ -10,9 +10,6 @@
  * This code is in public domain
  */
 
-/* fixme: Move/remove this (Lauris) */
-typedef float NRCoord;
-
 /* Sorted vector paths */
 
 typedef struct _NRSVPSegment NRSVPSegment;
@@ -61,6 +58,9 @@ double nr_svp_point_distance (NRSVP *svp, float x, float y);
 void nr_svp_bbox (NRSVP *svp, NRRectF *bbox, unsigned int clear);
 
 /* Sorted vertex lists */
+
+/* fixme: Move/remove this (Lauris) */
+typedef double NRCoord;
 
 typedef struct _NRVertex NRVertex;
 typedef struct _NRSVL NRSVL;
