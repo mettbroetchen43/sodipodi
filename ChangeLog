@@ -1,3 +1,9 @@
+2002-10-31  Masatake YAMATO  <jet@gyve.org>
+
+	* src/sp-image.c (autotrace_dialog): invokeed frontline_init
+	if it is defined. in-cvs version of frontline defines 
+	frontline_init.
+
 2002-10-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/curve.c (sp_bpath_clean): Fixed warning (thanks to MenTaLguY)

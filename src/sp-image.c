@@ -835,6 +835,10 @@ autotrace_dialog (SPImage * img)
 	GtkWidget * header_sep;
 	at_bitmap_type * bitmap;
 
+#ifdef FRONTLINE_INIT
+	frontline_init();
+#endif /* Def: FRONTLINE_INIT */
+
 	trace_dialog = frontline_dialog_new();
 	gtk_window_set_title (GTK_WINDOW (trace_dialog), title);
 
