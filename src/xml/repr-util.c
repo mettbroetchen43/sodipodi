@@ -586,7 +586,7 @@ sp_repr_set_double (SPRepr *repr, const unsigned char *key, double val)
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	arikkei_dtoa_exp (c, val, 8, 0, FALSE);
+	arikkei_dtoa_exp (c, 256, val, 8, FALSE);
 
 	return sp_repr_set_attr (repr, key, c);
 }

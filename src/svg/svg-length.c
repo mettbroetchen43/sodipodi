@@ -253,10 +253,19 @@ sp_svg_read_percentage (const char * str, double def)
 }
 
 int
-sp_svg_write_percentage (char * buf, int buflen, double val)
+sp_svg_write_percentage (char *buf, int buflen, double val)
 {
 	unsigned char c[32];
-	sp_svg_number_write_d (c, val * 100.0, 4, 1, 0);
-	return snprintf (buf, buflen, "%s%%", c);
+	unsigned int len;
+	if (buflen < 1) return 0;
+	len = arikkei_dtoa_simple (c, 32, val * 100.0, 4, 1, 0);
+	if (len < (buflen - 1)) {
+		strcpy (buf, c);
+		buf[len++] = '%';
+		buf[len] = '\0';
+	} else {
+		buf[len] = '\0';
+	}
+	return len;
 }
 

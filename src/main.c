@@ -173,6 +173,10 @@ main (int argc, const char **argv)
 	fpsetmask (fpgetmask() & ~(FP_X_DZ|FP_X_INV));
 #endif
 
+	/* We must set LC_NUMERIC to default, or otherwise */
+	/* we'll end with localised SVG files :-( */
+	/* setlocale (LC_ALL, "C"); */
+
 	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
@@ -225,11 +229,6 @@ sp_main_gui (int argc, const char **argv)
 	gtk_init (&argc, (char ***) &argv);
 
 	sp_modulesys_init();
-
-	/* We must set LC_NUMERIC to default, or otherwise */
-	/* we'll end with localised SVG files :-( */
-
-	setlocale (LC_NUMERIC, "C");
 
 	/* fixme: Move these to some centralized location (Lauris) */
 	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
@@ -323,11 +322,6 @@ sp_main_console (int argc, const char **argv)
 	/* Still have to init gdk, or Xft does not work */
 	gdk_init (&argc, (char ***) &argv);
 #endif
-
-	/* We must set LC_NUMERIC to default, or otherwise */
-	/* we'll end with localised SVG files :-( */
-
-	setlocale (LC_NUMERIC, "C");
 
 	/* fixme: Move these to some centralized location (Lauris) */
 	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);

@@ -92,6 +92,9 @@
 				RelativePath="..\..\src\libarikkei\arikkei-dict.c">
 			</File>
 			<File
+				RelativePath="..\..\src\libarikkei\arikkei-strlib.c">
+			</File>
+			<File
 				RelativePath="..\..\src\libarikkei\arikkei-token.c">
 			</File>
 		</Filter>
@@ -100,6 +103,9 @@
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
 				RelativePath="..\..\src\libarikkei\arikkei-dict.h">
+			</File>
+			<File
+				RelativePath="..\..\src\libarikkei\arikkei-strlib.h">
 			</File>
 			<File
 				RelativePath="..\..\src\libarikkei\arikkei-token.h">
