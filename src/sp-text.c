@@ -484,9 +484,6 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 		pos += 1;
 	}
 
-	nr_font_unref (font);
-	nr_typeface_unref (face);
-
 	if (inspace) {
 		string->p[pos].x = x + spadv.x;
 		string->p[pos].y = y - spadv.y;
@@ -500,6 +497,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 
 	if (pinspace) *pinspace = inspace;
 #endif
+	nr_font_unref (font);
+	nr_typeface_unref (face);
 }
 
 /* SPTSpan */

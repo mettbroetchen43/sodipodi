@@ -1,3 +1,8 @@
+2003-12-12  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-text.c: (sp_string_set_shape):
+	Fixed a memory leak bug which caused with SP_TEXT_NEW_CONTENT
+
 2003-12-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/export.c (sp_export_dialog): Added background
