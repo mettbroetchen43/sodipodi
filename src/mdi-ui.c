@@ -10,6 +10,7 @@
 #include "dialogs/export.h"
 #include "dialogs/xml-tree.h"
 #include "dialogs/align.h"
+#include "dialogs/transformation.h"
 
 /* Unreachable code, which guarantees that reqd functions are linked */
 
@@ -58,4 +59,5 @@ sp_mdi_dialog_handles (void)
 	sp_export_dialog ();
 	sp_xml_tree_dialog ();
 	sp_quick_align_dialog ();
+	sp_transformation_dialog ();
 }

@@ -1,3 +1,13 @@
+2000-08-19  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* glade/transformation.glade: Transformation dialog (Frank Felfe)
+
+	* src/dilaogs/transfomration.*: Transfomration dialog (Frank Felfe)
+
+	* src/mdi-ui.c: Added transformation dialog
+
+	* po/POTFILES.in: Added glade/transformation.c
+	
 2000-08-18  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* configure.in: Version 0.19

@@ -574,6 +574,18 @@
 
 	    <widget>
 	      <class>GtkMenuItem</class>
+	      <name>transform</name>
+	      <signal>
+		<name>activate</name>
+		<handler>sp_transformation_dialog</handler>
+		<last_modification_time>Sat, 19 Aug 2000 20:03:41 GMT</last_modification_time>
+	      </signal>
+	      <label>_Transform</label>
+	      <right_justify>False</right_justify>
+	    </widget>
+
+	    <widget>
+	      <class>GtkMenuItem</class>
 	      <name>menu_arrange_order</name>
 	      <label>_Order</label>
 	      <right_justify>False</right_justify>
