@@ -186,9 +186,9 @@ static void sp_module_exec_builtin_load (SPModule * object) {
     module = SP_MODULE_EXEC_BUILTIN(object->exec);
     /* returns are used here so that the stack doesn't grow */
     if (module->load != NULL) {
-        return module->load(object, module->load_data);
+        module->load(object, module->load_data);
     } else {
-        return sp_module_exec_load(object);
+        sp_module_exec_load(object);
     }
 }
 
@@ -201,9 +201,9 @@ static void sp_module_exec_builtin_unload (SPModule * object) {
     module = SP_MODULE_EXEC_BUILTIN(object->exec);
     /* returns are used here so that the stack doesn't grow */
     if (module->unload != NULL) {
-        return module->unload(object, module->unload_data);
+        module->unload(object, module->unload_data);
     } else {
-        return sp_module_exec_unload(object);
+        sp_module_exec_unload(object);
     }
 }
 
@@ -217,9 +217,9 @@ static void sp_module_exec_builtin_prefs (SPModule * object, SPModuleDoc * doc) 
     module = SP_MODULE_EXEC_BUILTIN(object->exec);
     /* returns are used here so that the stack doesn't grow */
     if (module->prefs != NULL) {
-        return module->prefs(object, doc, module->prefs_data);
+        module->prefs(object, doc, module->prefs_data);
     } else {
-        return sp_module_exec_prefs(object, doc);
+        sp_module_exec_prefs(object, doc);
     }
 }
 
@@ -233,9 +233,9 @@ static void sp_module_exec_builtin_exec (SPModule * object, SPModuleDoc * doc) {
     module = SP_MODULE_EXEC_BUILTIN(object->exec);
     /* returns are used here so that the stack doesn't grow */
     if (module->exec != NULL) {
-        return module->exec(object, doc, module->exec_data);
+        module->exec(object, doc, module->exec_data);
     } else {
-        return sp_module_exec_exec(object, doc);
+        sp_module_exec_exec(object, doc);
     }
 }
 

@@ -423,9 +423,7 @@ void sp_module_sys_prefs_complete (SPModule * object, SPModuleDoc * doc, gboolea
 	myclass = (SPModuleExecClass *) G_OBJECT_GET_CLASS(object->exec);
 
 	if (success == TRUE) {
-		return myclass->exec(object, doc);
-	} else {
-		return;
+		myclass->exec(object, doc);
 	}
 }
 
@@ -556,7 +554,8 @@ static void sp_modulesys_init_svg_out(void) {
 	return;
 }
 
-static void svg_out_exec (SPModule * in_module, SPModuleDoc * in_doc,  gpointer in_data) {
+static void
+svg_out_exec (SPModule * in_module, SPModuleDoc * in_doc,  gpointer in_data) {
 	SPRepr *repr;
 	gboolean spns;
 	const GSList *images, *l;
@@ -567,6 +566,8 @@ static void svg_out_exec (SPModule * in_module, SPModuleDoc * in_doc,  gpointer 
 
 	g_return_if_fail(SP_IS_MODULE(in_module));
 	g_return_if_fail(SP_IS_MODULE_DOC(in_doc));
+
+	spns = TRUE;
 
 	doc = sp_module_doc_get_document(in_doc);
 	filename = sp_module_doc_get_filename(in_doc);
@@ -626,7 +627,8 @@ static void sp_modulesys_init_svg_nons_out(void) {
 	return;
 }
 
-static void svg_nons_out_exec (SPModule * in_module, SPModuleDoc * in_doc,  gpointer in_data) {
+static void
+svg_nons_out_exec (SPModule * in_module, SPModuleDoc * in_doc,  gpointer in_data) {
 	SPRepr *repr;
 	gboolean spns;
 	const GSList *images, *l;
@@ -637,6 +639,8 @@ static void svg_nons_out_exec (SPModule * in_module, SPModuleDoc * in_doc,  gpoi
 
 	g_return_if_fail(SP_IS_MODULE(in_module));
 	g_return_if_fail(SP_IS_MODULE_DOC(in_doc));
+
+	spns = FALSE;
 
 	doc = sp_module_doc_get_document(in_doc);
 	filename = sp_module_doc_get_filename(in_doc);

@@ -13,7 +13,11 @@
 
 #include <string.h>
 #include <stdlib.h>
+#ifndef WIN32
 #include <unistd.h>
+#else
+#include <monostd.h>
+#endif
 #include <errno.h>
 #include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
@@ -112,8 +116,11 @@ gchar * sp_module_exec_ext_set_command (SPModuleExecExt * object, gchar * comman
 }
 
 /* Todo:  Consider splitting into some sub-functions */
-static void sp_extension(SPModule * in_plug, SPModuleDoc * in_doc) {
-        SPDocument * document;
+static void
+sp_extension(SPModule * in_plug, SPModuleDoc * in_doc)
+{
+#ifndef WIN32
+	SPDocument * document;
         SPSelection * selection;
         SPDesktop * desktop;
         SPRepr * repr;
@@ -305,6 +312,7 @@ static void sp_extension(SPModule * in_plug, SPModuleDoc * in_doc) {
 	}
 
 	return;
+#endif
 }
 
 /*

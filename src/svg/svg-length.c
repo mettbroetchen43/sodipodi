@@ -142,12 +142,6 @@ sp_svg_number_write_d (unsigned char *buf, double val, unsigned int tprec, unsig
 }
 
 unsigned int
-sp_svg_number_write_f (unsigned char *buf, float val, unsigned int tprec, unsigned int fprec, unsigned int padf)
-{
-	return sp_svg_number_write_d (buf, val, tprec, fprec, padf);
-}
-
-unsigned int
 sp_svg_number_write_de (unsigned char *buf, double val, unsigned int tprec, unsigned int padf)
 {
 	if ((val == 0.0) || ((fabs (val) >= 0.1) && (fabs(val) < 10000000))) {
@@ -162,12 +156,6 @@ sp_svg_number_write_de (unsigned char *buf, double val, unsigned int tprec, unsi
 		p += sp_svg_number_write_i (buf + p, (int) eval);
 		return p;
 	}
-}
-
-unsigned int
-sp_svg_number_write_fe (unsigned char *buf, float val, unsigned int tprec, unsigned int padf)
-{
-	return sp_svg_number_write_de (buf, val, tprec, padf);
 }
 
 /* Length */
