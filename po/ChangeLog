@@ -1,3 +1,7 @@
+2002-09-14  Pablo Gonzalo del Campo <pablodc@bigfoot.com>
+
+	* es.po: Updated spanish translation by Jose Antonio Salgueiro
+
 2002-09-11  gettextize  <bug-gnu-utils@gnu.org>
 
 	* Makefile.in.in: Upgrade to gettext-0.10.40.
