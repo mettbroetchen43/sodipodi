@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-03-09 19:23+0200\n"
-"PO-Revision-Date: 2001-02-12 14:12+03:00\n"
+"POT-Creation-Date: 2001-03-11 17:32+0300\n"
+"PO-Revision-Date: 2001-03-11 17:33+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1297,12 +1297,12 @@ msgstr "Не удалось инициализировать Bonobo"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
-msgstr ""
+msgstr "Не удалось создать фабрику sodipodi-svg-doc"
 
 #: src/interface.c:108
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr ""
+msgstr "В документе %s есть несохраненные изменения, сохранить их?"
 
 #: src/file.c:82
 msgid "Select file to open"
@@ -1338,7 +1338,6 @@ msgid "Unknown item :-("
 msgstr "Неизвестный элемент :-("
 
 #: src/sp-item.c:397
-#, fuzzy
 msgid "Reset transformation"
 msgstr "Удалить преобразование"
 
@@ -1346,7 +1345,7 @@ msgstr "Удалить преобразование"
 #. "sensitive" attribute is handled in shape & image
 #: src/sp-item.c:404
 msgid "Toggle sensitivity"
-msgstr ""
+msgstr "Переключить чувствительность"
 
 #: src/sp-item-group.c:346
 #, c-format
