@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2000-10-31 00:23+0300\n"
-"PO-Revision-Date: 2000-10-31 00:24+03:00\n"
+"POT-Creation-Date: 2000-11-21 18:21+0300\n"
+"PO-Revision-Date: 2000-11-21 18:21+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1333,7 +1333,7 @@ msgid "move horizontal"
 msgstr "переместить горизонтально"
 
 #: glade/transformation.c:45
-msgid "move vertival"
+msgid "move vertical"
 msgstr "переместить вертикально"
 
 #: glade/transformation.c:53
