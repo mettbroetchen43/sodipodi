@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
-"POT-Creation-Date: 2001-01-26 03:07+0200\n"
-"PO-Revision-Date: 2000-12-11 20:28+01:00\n"
+"POT-Creation-Date: 2001-01-30 11:52+0100\n"
+"PO-Revision-Date: 2001-01-30 12:03+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -795,9 +795,8 @@ msgid "Join 2 selected endpoints"
 msgstr "Slå sammen 2 valgte endepunkter"
 
 #: glade/sodipodi-glade.c:98 glade/toolbox.c:47
-#, fuzzy
 msgid "Cusp line at selected nodes"
-msgstr "Slett valgte noder"
+msgstr "Gjør linjen spiss ved valgte noder"
 
 #: glade/sodipodi-glade.c:99 glade/toolbox.c:48
 msgid "Smooth line at selected nodes"
@@ -950,9 +949,8 @@ msgid "Document"
 msgstr "Dokument"
 
 #: glade/text-dialog.c:8
-#, fuzzy
 msgid "Text Properties"
-msgstr "objekt-egenskaper"
+msgstr "Egenskaper for tekst"
 
 #: glade/toolbox.c:8
 msgid "_File"
@@ -1201,113 +1199,99 @@ msgstr "Flytt"
 
 #: glade/transformation.c:9
 msgid "Y: "
-msgstr ""
+msgstr "Y: "
 
 #: glade/transformation.c:10
-#, fuzzy
 msgid "Orig. X: "
-msgstr "Opprinnelse X:"
+msgstr "Oppr. X: "
 
 #: glade/transformation.c:11
-#, fuzzy
 msgid "horizontal move"
-msgstr "horisontalt"
+msgstr "flytting horisontalt"
 
 #: glade/transformation.c:12
-#, fuzzy
 msgid "vertical move"
-msgstr "vertikalt"
+msgstr "flytting vertikalt"
 
 #: glade/transformation.c:13
 msgid "toggle absolute/relative move"
-msgstr ""
+msgstr "slå av/på absolutt/relativ flytting"
 
 #: glade/transformation.c:14 glade/transformation.c:23
-#, fuzzy
 msgid "absolute"
-msgstr "Lim inn"
+msgstr "absolutt"
 
 #: glade/transformation.c:15
 msgid "select metric for values"
-msgstr ""
+msgstr "velg enhet for verdier"
 
 #: glade/transformation.c:17
-#, fuzzy
 msgid "Orig. Width: "
-msgstr " Bredde "
+msgstr "Oppr. Bredde: "
 
 #: glade/transformation.c:18
-#, fuzzy
 msgid "Height: "
-msgstr "Høyde:"
+msgstr "Høyde: "
 
 #: glade/transformation.c:19
-#, fuzzy
 msgid "horizontal scale value"
-msgstr "horisontalt"
+msgstr "horisontal skaleringsverdi"
 
 #: glade/transformation.c:20
 msgid "vertical scale value"
-msgstr ""
+msgstr "vertikal skaleringsverdi"
 
 #: glade/transformation.c:21
 msgid "lock/unlock horizontal and vertical scale"
-msgstr ""
+msgstr "lås/lås opp horisontal og vertikal skala"
 
 #: glade/transformation.c:22
 msgid "toggle absolute/relative scale"
-msgstr ""
+msgstr "slå av/på absolutt/relativ skala"
 
 #: glade/transformation.c:24 glade/transformation.c:38
 msgid "select metric for scale"
-msgstr ""
+msgstr "velg enhet for skala"
 
 #: glade/transformation.c:25
-#, fuzzy
 msgid "flip horizontal"
-msgstr "horisontalt"
+msgstr "vend horisontalt"
 
 #: glade/transformation.c:26
-#, fuzzy
 msgid "flip vertical"
-msgstr "vertikalt"
+msgstr "vend vertikalt"
 
 #: glade/transformation.c:27
 msgid "Rotate"
 msgstr "Roter"
 
 #: glade/transformation.c:28
-#, fuzzy
 msgid "select direction"
-msgstr "Slett utvalg"
+msgstr "velg retning"
 
 #: glade/transformation.c:29
-#, fuzzy
 msgid "angle"
-msgstr "Endre"
+msgstr "vinkel"
 
 #: glade/transformation.c:30 glade/transformation.c:104
-#, fuzzy
 msgid "deg"
 msgstr "grad"
 
 #: glade/transformation.c:31
-#, fuzzy
 msgid "Set angle to 0°"
-msgstr "Sett sidebredde"
+msgstr "Sett vinkel til 0°"
 
 #: glade/transformation.c:32
-#, fuzzy
 msgid "Set angle to 90°"
-msgstr "Sett sidebredde"
+msgstr "Sett vinkel til 90°"
 
 #: glade/transformation.c:33
 msgid "Set angle to 180°"
-msgstr ""
+msgstr "Sett vinkel til 180°"
 
 #: glade/transformation.c:34
 msgid "Set angle to 270°"
-msgstr ""
+msgstr "Sett vinkel til 270°"
 
 #: glade/transformation.c:35
 msgid "Skew"
@@ -1315,182 +1299,164 @@ msgstr "Forskyv"
 
 #: glade/transformation.c:36
 msgid "select direction (horizontal/vertical skew)"
-msgstr ""
+msgstr "velg retning (horisontal/vertikal forskyvning)"
 
 #: glade/transformation.c:37
-#, fuzzy
 msgid "skew"
-msgstr "Forskyv"
+msgstr "forskyv"
 
 #: glade/transformation.c:39
 msgid "keep aspect"
-msgstr ""
+msgstr "behold aspekt"
 
 #: glade/transformation.c:40
-#, fuzzy
 msgid "Start transformation - Ctl+a"
-msgstr "Start transformering"
+msgstr "Start transformering - Ctrl+a"
 
 #: glade/transformation.c:41
-#, fuzzy
 msgid "Close dialog - Ctl+c"
-msgstr "Lukk dialog"
+msgstr "Lukk dialog - Ctrl+c"
 
 #: glade/transformation.c:42
 msgid "Expand dialog - Ctl+e"
-msgstr ""
+msgstr "Utvid dialog - Ctrl+e"
 
 #: glade/transformation.c:43
-#, fuzzy
 msgid "Use alignment during transformation"
-msgstr "Fjern transformering"
+msgstr "Bruk justering under transformering"
 
 #: glade/transformation.c:45
 msgid "Use center as transformation fixpoint"
-msgstr ""
+msgstr "Bruk senter som festepunkt for transformering"
 
 #: glade/transformation.c:46 glade/transformation.c:47
-#, fuzzy
 msgid "Center"
-msgstr "Innhold"
+msgstr "Senter"
 
 #: glade/transformation.c:48
 msgid "Horizontal center value"
-msgstr ""
+msgstr "Horisontal verdi for senter"
 
 #: glade/transformation.c:49
 msgid "Vertical center value"
-msgstr ""
+msgstr "Vertikal verdi for senter"
 
 #: glade/transformation.c:50
 msgid "Toggle center given in selection/desktop coordiantes"
-msgstr ""
+msgstr "Slå av/på visning av senter i utvalg/skrivebord koordinater"
 
 #: glade/transformation.c:51
-#, fuzzy
 msgid "desktop"
-msgstr "Skrivebord"
+msgstr "skrivebord"
 
 #: glade/transformation.c:52
-#, fuzzy
 msgid "Choose metric for center"
-msgstr "Velg farge for rutenett"
+msgstr "Velg enhet for senter"
 
 #: glade/transformation.c:53
 msgid "Keep width of selection during transformation"
-msgstr ""
+msgstr "Behold bredde for utvalget under transformering"
 
 #: glade/transformation.c:54
 msgid "Keep height of selection during transformation"
-msgstr ""
+msgstr "Behold høyde for utvalget under transformering"
 
 #: glade/transformation.c:55
 msgid "Apply transformation to copy Ctl+m"
-msgstr ""
+msgstr "Bruk transformasjonen på en kopi Ctl+m"
 
 #: glade/transformation.c:56
 msgid "Reset dialog to default - Ctl+r"
-msgstr ""
+msgstr "Nullstill dialogen til utgangsverdiene - Ctl+r"
 
 #: glade/transformation.c:58
 msgid "Align to top middle"
-msgstr ""
+msgstr "Justér til midten øverst"
 
 #: glade/transformation.c:59
-#, fuzzy
 msgid "Align to bottom right"
-msgstr "Justér eksternt objekt til høyre kant"
+msgstr "Justér til nedre høyre"
 
 #: glade/transformation.c:60
-#, fuzzy
 msgid "Align to right middle"
-msgstr "Justér objekter til horisontalt senter"
+msgstr "Justér til midtre høyre"
 
 #: glade/transformation.c:61
-#, fuzzy
 msgid "Align to top right"
-msgstr "Justér eksternt objekt til høyre kant"
+msgstr "Justér øverst til høyre"
 
 #: glade/transformation.c:62
-#, fuzzy
 msgid "Align to left middle"
-msgstr "Justér objekter til vertikalt senter"
+msgstr "Justér til midt på til venstre"
 
 #: glade/transformation.c:63
 msgid "Align to center"
-msgstr ""
+msgstr "Juster til senter"
 
 #: glade/transformation.c:64
-#, fuzzy
 msgid "Align to bottom middle"
-msgstr "Justér internt objekt til nedre kant"
+msgstr "Justér til nede midt på"
 
 #: glade/transformation.c:65
-#, fuzzy
 msgid "Align to bottom left"
-msgstr "Justér eksternt objekt til venstre kant"
+msgstr "Justér til nedre venstre"
 
 #: glade/transformation.c:66
-#, fuzzy
 msgid "Align to top left"
-msgstr "Justér eksternt objekt til venstre kant"
+msgstr "Justér til øvre venstre"
 
 #: glade/transformation.c:67 glade/transformation.c:77
 #: glade/transformation.c:85 glade/transformation.c:95
-#, fuzzy
 msgid "Points"
-msgstr "Skriv ut"
+msgstr "Punkter"
 
 #: glade/transformation.c:68 glade/transformation.c:78
 #: glade/transformation.c:86 glade/transformation.c:96
 msgid "pt"
-msgstr ""
+msgstr "pt"
 
 #: glade/transformation.c:69 glade/transformation.c:79
 #: glade/transformation.c:87 glade/transformation.c:97
-#, fuzzy
 msgid "Millimeter"
-msgstr "Millimeter\n"
+msgstr "Millimeter"
 
 #: glade/transformation.c:70 glade/transformation.c:80
 #: glade/transformation.c:88 glade/transformation.c:98
 msgid "mm"
-msgstr ""
+msgstr "mm"
 
 #: glade/transformation.c:71 glade/transformation.c:81
 #: glade/transformation.c:89 glade/transformation.c:99
 msgid "Centimeter"
-msgstr ""
+msgstr "Centimeter"
 
 #: glade/transformation.c:72 glade/transformation.c:82
 #: glade/transformation.c:90 glade/transformation.c:100
 msgid "cm"
-msgstr ""
+msgstr "cm"
 
 #: glade/transformation.c:73 glade/transformation.c:83
 #: glade/transformation.c:91 glade/transformation.c:101
 msgid "Inch"
-msgstr ""
+msgstr "Tomme"
 
 #: glade/transformation.c:74 glade/transformation.c:84
 #: glade/transformation.c:92 glade/transformation.c:102
 msgid "in"
-msgstr ""
+msgstr "in"
 
 #: glade/transformation.c:75 glade/transformation.c:93
-#, fuzzy
 msgid "Percent"
-msgstr "Skriv ut"
+msgstr "Prosent"
 
 #: glade/transformation.c:76 glade/transformation.c:94
-#, fuzzy, c-format
+#, c-format
 msgid "%"
-msgstr "% "
+msgstr "%"
 
 #: glade/transformation.c:103
-#, fuzzy
 msgid "Degree"
-msgstr "grad"
+msgstr "Grad"
 
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
@@ -1581,9 +1547,8 @@ msgid "FILENAME"
 msgstr "FILNAVN"
 
 #: src/main.c:66
-#, fuzzy
 msgid "Print files to specified output file (use '| program' for pipe)"
-msgstr "Skriv ut filer til spesifisert fil (bruk '| program' for rør)"
+msgstr "Skriv ut filer til spesifisert utfil (bruk '| program' for rør)"
 
 #: src/main.c:168
 msgid "Oaf options"
