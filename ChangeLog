@@ -1,5 +1,11 @@
 2002-11-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* Makefile.am (SUBDIRS): Removed macros
+
+	* autogen.sh: Made self-contained
+
+	* configure.in: Removed macros
+
 	* src/widgets/sp-xmlview-tree.c: new file by MenTaLguY
 
 	* src/widgets/sp-xmlview-content.c: new file by MenTaLguY

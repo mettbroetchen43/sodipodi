@@ -11,6 +11,7 @@
  * Released under the GNU GPL; see COPYING for details
  */
 
+#include <string.h>
 #include <stdio.h>
 #include <glib.h>
 #include <gtk/gtkmain.h>
