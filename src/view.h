@@ -17,22 +17,20 @@ typedef struct _SPView SPView;
 typedef struct _SPViewClass SPViewClass;
 
 #define SP_TYPE_VIEW (sp_view_get_type ())
-#define SP_VIEW(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_VIEW, SPView))
-#define SP_VIEW_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_VIEW, SPViewClass))
-#define SP_IS_VIEW(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_VIEW))
-#define SP_IS_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_VIEW))
+#define SP_VIEW(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_VIEW, SPView))
+#define SP_IS_VIEW(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_VIEW))
 
 #include <gtk/gtkeventbox.h>
 #include "forward.h"
 
 struct _SPView {
-	GtkObject object;
+	GObject object;
 
 	SPDocument *doc;
 };
 
 struct _SPViewClass {
-	GtkObjectClass parent_class;
+	GObjectClass parent_class;
 
 	/* Request shutdown */
 	gboolean (* shutdown) (SPView *view);
@@ -53,7 +51,7 @@ struct _SPViewClass {
 	void (* status_set) (SPView *view, const guchar *status, gboolean isdefault);
 };
 
-GtkType sp_view_get_type (void);
+GType sp_view_get_type (void);
 
 #define SP_VIEW_DOCUMENT(v) (SP_VIEW (v)->doc)
 
@@ -94,7 +92,7 @@ struct _SPViewWidgetClass {
 	gboolean (* shutdown) (SPViewWidget *vw);
 };
 
-GtkType sp_view_widget_get_type (void);
+GType sp_view_widget_get_type (void);
 
 #define SP_VIEW_WIDGET_VIEW(w) (SP_VIEW_WIDGET (w)->view)
 #define SP_VIEW_WIDGET_DOCUMENT(w) (SP_VIEW_WIDGET (w)->view ? ((SPViewWidget *) (w))->view->doc : NULL)

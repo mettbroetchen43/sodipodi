@@ -17,8 +17,8 @@
 
 Sodipodi * sodipodi_new ();
 
-#define sodipodi_ref() gtk_object_ref (GTK_OBJECT (SODIPODI))
-#define sodipodi_unref() gtk_object_unref (GTK_OBJECT (SODIPODI))
+#define sodipodi_ref() g_object_ref (G_OBJECT (SODIPODI))
+#define sodipodi_unref() g_object_unref (G_OBJECT (SODIPODI))
 
 /*
  * These are meant solely for desktop, document etc. implementations

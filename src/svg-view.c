@@ -22,7 +22,7 @@
 
 static void sp_svg_view_class_init (SPSVGViewClass *klass);
 static void sp_svg_view_init (SPSVGView *view);
-static void sp_svg_view_destroy (GtkObject *object);
+static void sp_svg_view_dispose (GObject *object);
 
 static void sp_svg_view_set_document (SPView *view, SPDocument *doc);
 static void sp_svg_view_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height);
@@ -34,17 +34,18 @@ static SPViewClass *parent_class;
 GtkType
 sp_svg_view_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPSVGView",
-			sizeof (SPSVGView),
+		GTypeInfo info = {
 			sizeof (SPSVGViewClass),
-			(GtkClassInitFunc) sp_svg_view_class_init,
-			(GtkObjectInitFunc) sp_svg_view_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_svg_view_class_init,
+			NULL, NULL,
+			sizeof (SPSVGView),
+			4,
+			(GInstanceInitFunc) sp_svg_view_init,
 		};
-		type = gtk_type_unique (SP_TYPE_VIEW, &info);
+		type = g_type_register_static (SP_TYPE_VIEW, "SPSVGView", &info, 0);
 	}
 	return type;
 }
@@ -52,15 +53,15 @@ sp_svg_view_get_type (void)
 static void
 sp_svg_view_class_init (SPSVGViewClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	SPViewClass *view_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	view_class = SP_VIEW_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
+	view_class = (SPViewClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_VIEW);
+	parent_class = g_type_class_peek_parent (klass);
 
-	object_class->destroy = sp_svg_view_destroy;
+	object_class->dispose = sp_svg_view_dispose;
 
 	view_class->set_document = sp_svg_view_set_document;
 	view_class->document_resized = sp_svg_view_document_resized;
@@ -78,7 +79,7 @@ sp_svg_view_init (SPSVGView *view)
 }
 
 static void
-sp_svg_view_destroy (GtkObject *object)
+sp_svg_view_dispose (GObject *object)
 {
 	SPSVGView *svgview;
 
@@ -89,8 +90,7 @@ sp_svg_view_destroy (GtkObject *object)
 		svgview->drawing = NULL;
 	}
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 /* fixme: */
@@ -153,14 +153,14 @@ sp_svg_view_set_document (SPView *view, SPDocument *doc)
 
 	if (svgview->drawing) {
 		sp_item_hide (SP_ITEM (sp_document_root (view->doc)), SP_CANVAS_ARENA (svgview->drawing)->arena);
-		gtk_object_unref (GTK_OBJECT (svgview->drawing));
+		gtk_object_destroy (GTK_OBJECT (svgview->drawing));
 		svgview->drawing = NULL;
 	}
 
 	if (doc) {
 		NRArenaItem *ai;
 		svgview->drawing = sp_canvas_item_new (svgview->parent, SP_TYPE_CANVAS_ARENA, NULL);
-		gtk_signal_connect (GTK_OBJECT (svgview->drawing), "arena_event", GTK_SIGNAL_FUNC (arena_handler), svgview);
+		g_signal_connect (G_OBJECT (svgview->drawing), "arena_event", G_CALLBACK (arena_handler), svgview);
 		ai = sp_item_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (svgview->drawing)->arena);
 		if (ai) {
 			nr_arena_item_add_child (SP_CANVAS_ARENA (svgview->drawing)->root, ai, NULL);
@@ -188,7 +188,7 @@ sp_svg_view_new (SPCanvasGroup *parent)
 	g_return_val_if_fail (parent != NULL, NULL);
 	g_return_val_if_fail (SP_IS_CANVAS_GROUP (parent), NULL);
 
-	svgview = gtk_type_new (SP_TYPE_SVG_VIEW);
+	svgview = g_object_new (SP_TYPE_SVG_VIEW, NULL);
 
 	svgview->parent = parent;
 
@@ -348,7 +348,7 @@ sp_svg_view_widget_init (SPSVGViewWidget *vw)
 #if 0
 	sp_canvas_set_scroll_region (SP_CANVAS (vw->canvas), 0, 0, 200, 200);
 #endif
-	gtk_container_add (GTK_CONTAINER (vw->sw), vw->canvas);
+	gtk_scrolled_window_add_with_viewport (GTK_SCROLLED_WINDOW (vw->sw), vw->canvas);
 	gtk_widget_show (vw->canvas);
 
 	/* View */
@@ -358,7 +358,7 @@ sp_svg_view_widget_init (SPSVGViewWidget *vw)
 	sp_svg_view_set_rescale (SP_SVG_VIEW (view), TRUE, TRUE, 200.0, 200.0);
 #endif
 	sp_view_widget_set_view (SP_VIEW_WIDGET (vw), view);
-	gtk_object_unref (GTK_OBJECT (view));
+	g_object_unref (G_OBJECT (view));
 }
 
 static void

@@ -12,7 +12,6 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <gtk/gtksignal.h>
 #include "macros.h"
 #include "helper/sp-marshal.h"
 #include "document.h"
@@ -29,28 +28,29 @@ enum {
 
 static void sp_view_class_init (SPViewClass *klass);
 static void sp_view_init (SPView *view);
-static void sp_view_destroy (GtkObject *object);
+static void sp_view_dispose (GObject *object);
 
 static void sp_view_document_uri_set (SPDocument *doc, const guchar *uri, SPView *view);
 static void sp_view_document_resized (SPDocument *doc, gdouble width, gdouble height, SPView *view);
 
-static GtkObjectClass *parent_class;
+static GObjectClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
 
 GtkType
 sp_view_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		GtkTypeInfo info = {
-			"SPView",
-			sizeof (SPView),
+		GTypeInfo info = {
 			sizeof (SPViewClass),
-			(GtkClassInitFunc) sp_view_class_init,
-			(GtkObjectInitFunc) sp_view_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_view_class_init,
+			NULL, NULL,
+			sizeof (SPView),
+			4,
+			(GInstanceInitFunc) sp_view_init,
 		};
-		type = gtk_type_unique (GTK_TYPE_OBJECT, &info);
+		type = g_type_register_static (G_TYPE_OBJECT, "SPView", &info, 0);
 	}
 	return type;
 }
@@ -58,44 +58,53 @@ sp_view_get_type (void)
 static void
 sp_view_class_init (SPViewClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
 
-	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
+	parent_class = g_type_class_peek_parent (klass);
 
-	signals[SHUTDOWN] =     gtk_signal_new ("shutdown",
-						GTK_RUN_LAST,
-						GTK_CLASS_TYPE(object_class),
-						GTK_SIGNAL_OFFSET (SPViewClass, shutdown),
-						gtk_marshal_BOOL__NONE,
-						GTK_TYPE_BOOL, 0);
-	signals[URI_SET] =      gtk_signal_new ("uri_set",
-						GTK_RUN_FIRST,
-						GTK_CLASS_TYPE(object_class),
-						GTK_SIGNAL_OFFSET (SPViewClass, uri_set),
-						gtk_marshal_NONE__STRING,
-						GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-	signals[RESIZED] =      gtk_signal_new ("resized",
-						GTK_RUN_FIRST,
-						GTK_CLASS_TYPE(object_class),
-						GTK_SIGNAL_OFFSET (SPViewClass, resized),
-						sp_marshal_NONE__DOUBLE_DOUBLE,
-						GTK_TYPE_NONE, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
-	signals[POSITION_SET] = gtk_signal_new ("position_set",
-						GTK_RUN_FIRST,
-						GTK_CLASS_TYPE(object_class),
-						GTK_SIGNAL_OFFSET (SPViewClass, position_set),
-						sp_marshal_NONE__DOUBLE_DOUBLE,
-						GTK_TYPE_NONE, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
-	signals[STATUS_SET] =   gtk_signal_new ("status_set",
-						GTK_RUN_FIRST,
-						GTK_CLASS_TYPE(object_class),
-						GTK_SIGNAL_OFFSET (SPViewClass, status_set),
-						sp_marshal_NONE__STRING_BOOLEAN,
-						GTK_TYPE_NONE, 2, GTK_TYPE_STRING, GTK_TYPE_BOOL);
+	signals[SHUTDOWN] =     g_signal_new ("shutdown",
+					      G_TYPE_FROM_CLASS(klass),
+					      G_SIGNAL_RUN_LAST,
+					      G_STRUCT_OFFSET (SPViewClass, shutdown),
+					      NULL, NULL,
+					      sp_marshal_BOOLEAN__NONE,
+					      G_TYPE_BOOLEAN, 0);
+	signals[URI_SET] =      g_signal_new ("uri_set",
+					      G_TYPE_FROM_CLASS(klass),
+					      G_SIGNAL_RUN_FIRST,
+					      G_STRUCT_OFFSET (SPViewClass, uri_set),
+					      NULL, NULL,
+					      sp_marshal_NONE__POINTER,
+					      G_TYPE_NONE, 1,
+					      G_TYPE_POINTER);
+	signals[RESIZED] =      g_signal_new ("resized",
+					      G_TYPE_FROM_CLASS(klass),
+					      G_SIGNAL_RUN_FIRST,
+					      G_STRUCT_OFFSET (SPViewClass, resized),
+					      NULL, NULL,
+					      sp_marshal_NONE__DOUBLE_DOUBLE,
+					      G_TYPE_NONE, 2,
+					      G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+	signals[POSITION_SET] = g_signal_new ("position_set",
+					      G_TYPE_FROM_CLASS(klass),
+					      G_SIGNAL_RUN_FIRST,
+					      G_STRUCT_OFFSET (SPViewClass, position_set),
+					      NULL, NULL,
+					      sp_marshal_NONE__DOUBLE_DOUBLE,
+					      G_TYPE_NONE, 2,
+					      G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+	signals[STATUS_SET] =   g_signal_new ("status_set",
+					      G_TYPE_FROM_CLASS(klass),
+					      G_SIGNAL_RUN_FIRST,
+					      G_STRUCT_OFFSET (SPViewClass, status_set),
+					      NULL, NULL,
+					      sp_marshal_NONE__POINTER_BOOLEAN,
+					      G_TYPE_NONE, 2,
+					      G_TYPE_POINTER, G_TYPE_BOOLEAN);
 
-	object_class->destroy = sp_view_destroy;
+	object_class->dispose = sp_view_dispose;
 }
 
 static void
@@ -105,7 +114,7 @@ sp_view_init (SPView *view)
 }
 
 static void
-sp_view_destroy (GtkObject *object)
+sp_view_dispose (GObject *object)
 {
 	SPView *view;
 
@@ -116,8 +125,7 @@ sp_view_destroy (GtkObject *object)
 		view->doc = sp_document_unref (view->doc);
 	}
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 gboolean
@@ -130,7 +138,7 @@ sp_view_shutdown (SPView *view)
 
 	result = FALSE;
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[SHUTDOWN], &result);
+	g_signal_emit (G_OBJECT (view), signals[SHUTDOWN], 0, &result);
 
 	return result;
 }
@@ -166,7 +174,7 @@ sp_view_set_document (SPView *view, SPDocument *doc)
 		g_signal_connect (G_OBJECT (doc), "resized", G_CALLBACK (sp_view_document_resized), view);
 	}
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[URI_SET], (doc) ? SP_DOCUMENT_URI (doc) : NULL);
+	g_signal_emit (G_OBJECT (view), signals[URI_SET], 0, (doc) ? SP_DOCUMENT_URI (doc) : NULL);
 }
 
 void
@@ -175,7 +183,7 @@ sp_view_emit_resized (SPView *view, gdouble width, gdouble height)
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (SP_IS_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[RESIZED], width, height);
+	g_signal_emit (G_OBJECT (view), signals[RESIZED], 0, width, height);
 }
 
 void
@@ -184,7 +192,7 @@ sp_view_set_position (SPView *view, gdouble x, gdouble y)
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (SP_IS_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[POSITION_SET], x, y);
+	g_signal_emit (G_OBJECT (view), signals[POSITION_SET], 0, x, y);
 }
 
 void
@@ -193,20 +201,20 @@ sp_view_set_status (SPView *view, const guchar *status, gboolean isdefault)
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (SP_IS_VIEW (view));
 
-	gtk_signal_emit (GTK_OBJECT (view), signals[STATUS_SET], status, isdefault);
+	g_signal_emit (G_OBJECT (view), signals[STATUS_SET], 0, status, isdefault);
 }
 
 static void
 sp_view_document_uri_set (SPDocument *doc, const guchar *uri, SPView *view)
 {
-	gtk_signal_emit (GTK_OBJECT (view), signals[URI_SET], uri);
+	g_signal_emit (G_OBJECT (view), signals[URI_SET], 0, uri);
 }
 
 static void
 sp_view_document_resized (SPDocument *doc, gdouble width, gdouble height, SPView *view)
 {
-	if (((SPViewClass *) G_OBJECT_GET_CLASS(view))->document_resized)
-		((SPViewClass *) G_OBJECT_GET_CLASS(view))->document_resized (view, doc, width, height);
+	if (((SPViewClass *) G_OBJECT_GET_CLASS (view))->document_resized)
+		((SPViewClass *) G_OBJECT_GET_CLASS (view))->document_resized (view, doc, width, height);
 }
 
 /* SPViewWidget */
@@ -215,7 +223,6 @@ static void sp_view_widget_class_init (SPViewWidgetClass *klass);
 static void sp_view_widget_init (SPViewWidget *widget);
 static void sp_view_widget_destroy (GtkObject *object);
 
-static void sp_view_widget_view_destroy (GtkObject *object, SPViewWidget *vw);
 static void sp_view_widget_view_resized (SPView *view, gdouble width, gdouble height, SPViewWidget *vw);
 
 static GtkEventBoxClass *widget_parent_class;
@@ -264,8 +271,8 @@ sp_view_widget_destroy (GtkObject *object)
 	vw = SP_VIEW_WIDGET (object);
 
 	if (vw->view) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (vw->view), vw);
-		gtk_object_unref (GTK_OBJECT (vw->view));
+		sp_signal_disconnect_by_data (vw->view, vw);
+		g_object_unref (G_OBJECT (vw->view));
 		vw->view = NULL;
 	}
 
@@ -284,9 +291,8 @@ sp_view_widget_set_view (SPViewWidget *vw, SPView *view)
 	g_return_if_fail (vw->view == NULL);
 
 	vw->view = view;
-	gtk_object_ref (GTK_OBJECT (view));
-	gtk_signal_connect (GTK_OBJECT (view), "destroy", GTK_SIGNAL_FUNC (sp_view_widget_view_destroy), vw);
-	gtk_signal_connect (GTK_OBJECT (view), "resized", GTK_SIGNAL_FUNC (sp_view_widget_view_resized), vw);
+	g_object_ref (G_OBJECT (view));
+	g_signal_connect (G_OBJECT (view), "resized", G_CALLBACK (sp_view_widget_view_resized), vw);
 
 	if (((SPViewWidgetClass *) G_OBJECT_GET_CLASS(vw))->set_view)
 		((SPViewWidgetClass *) G_OBJECT_GET_CLASS(vw))->set_view (vw, view);
@@ -302,12 +308,6 @@ sp_view_widget_shutdown (SPViewWidget *vw)
 		return ((SPViewWidgetClass *) G_OBJECT_GET_CLASS(vw))->shutdown (vw);
 
 	return FALSE;
-}
-
-static void
-sp_view_widget_view_destroy (GtkObject *object, SPViewWidget *vw)
-{
-	vw->view = NULL;
 }
 
 static void

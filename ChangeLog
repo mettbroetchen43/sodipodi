@@ -1,3 +1,7 @@
+2002-11-30  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/view.h: Derive directly from GObject
+
 2002-11-30  Masatake YAMATO  <jet@gyve.org>
 
 	* configure.in (ENABLE_AUTOTRACE): Comment out autotrace/frontline

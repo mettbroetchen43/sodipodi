@@ -128,12 +128,6 @@ struct poptOption options[] = {
 	{NULL, '\0', 0, NULL, 0, NULL, NULL}
 };
 
-static void
-main_save_preferences (GtkObject * object, gpointer data)
-{
-	sodipodi_save_preferences (SP_SODIPODI (object));
-}
-
 int
 main (int argc, char **argv)
 {
@@ -215,7 +209,6 @@ sp_main_gui (int argc, char **argv)
 	if (!sp_global_slideshow) {
 		sodipodi = sodipodi_application_new ();
 		sodipodi_load_preferences (sodipodi);
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "destroy", GTK_SIGNAL_FUNC (main_save_preferences), NULL);
 		sp_maintoolbox_create ();
 		sodipodi_unref ();
 
@@ -237,8 +230,6 @@ sp_main_gui (int argc, char **argv)
 		/* fixme: This is terrible hack */
 		sodipodi = sodipodi_application_new ();
 		sodipodi_load_preferences (sodipodi);
-		gtk_signal_connect (GTK_OBJECT (sodipodi), "destroy",
-				    GTK_SIGNAL_FUNC (main_save_preferences), NULL);
 		sp_maintoolbox_create ();
 		sodipodi_unref ();
 		
@@ -256,7 +247,7 @@ sp_main_gui (int argc, char **argv)
 			dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
 			if (dtw) {
 				sp_desktop_set_event_context (SP_DESKTOP_WIDGET (dtw)->desktop, SP_TYPE_SLIDE_CONTEXT, NULL);
-				gtk_object_set_data (GTK_OBJECT (SP_DESKTOP_WIDGET (dtw)->desktop), "slides", slides);
+				g_object_set_data (G_OBJECT (SP_DESKTOP_WIDGET (dtw)->desktop), "slides", slides);
 				sp_create_window (dtw, FALSE);
 			}
 		}

@@ -28,8 +28,9 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmessagedialog.h>
 
-#include <xml/repr-private.h>
 #include "helper/sp-intl.h"
+#include "helper/sp-marshal.h"
+#include "xml/repr-private.h"
 #include "document.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -55,9 +56,9 @@ enum {
 
 #define DESKTOP_IS_ACTIVE(d) ((d) == sodipodi->desktops->data)
 
-static void sodipodi_class_init (SodipodiClass * klass);
-static void sodipodi_init (SPObject * object);
-static void sodipodi_destroy (GtkObject * object);
+static void sodipodi_class_init (SodipodiClass *klass);
+static void sodipodi_init (SPObject *object);
+static void sodipodi_dispose (GObject *object);
 
 static void sodipodi_activate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop);
 static void sodipodi_desactivate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop);
@@ -65,14 +66,14 @@ static void sodipodi_desactivate_desktop_private (Sodipodi *sodipodi, SPDesktop 
 static void sodipodi_init_preferences (Sodipodi * sodipodi);
 
 struct _Sodipodi {
-	GtkObject object;
+	GObject object;
 	SPReprDoc *preferences;
 	GSList *documents;
 	GSList *desktops;
 };
 
 struct _SodipodiClass {
-	GtkObjectClass object_class;
+	GObjectClass object_class;
 
 	/* Signals */
 
@@ -88,113 +89,123 @@ struct _SodipodiClass {
 	void (* destroy_document) (Sodipodi *sodipodi, SPDocument *doc);
 };
 
-static GtkObjectClass * parent_class;
+static GObjectClass * parent_class;
 static guint sodipodi_signals[LAST_SIGNAL] = {0};
 
-Sodipodi * sodipodi = NULL;
+Sodipodi *sodipodi = NULL;
 
 static void (* segv_handler) (int) = NULL;
 
 GtkType
 sodipodi_get_type (void)
 {
-	static GtkType sodipodi_type = 0;
-	if (!sodipodi_type) {
-		GtkTypeInfo sodipodi_info = {
-			"Sodipodi",
-			sizeof (Sodipodi),
+	static GType type = 0;
+	if (!type) {
+		GTypeInfo info = {
 			sizeof (SodipodiClass),
-			(GtkClassInitFunc) sodipodi_class_init,
-			(GtkObjectInitFunc) sodipodi_init,
 			NULL, NULL,
-			(GtkClassInitFunc) NULL
+			(GClassInitFunc) sodipodi_class_init,
+			NULL, NULL,
+			sizeof (Sodipodi),
+			4,
+			(GInstanceInitFunc) sodipodi_init,
 		};
-		sodipodi_type = gtk_type_unique (gtk_object_get_type (), &sodipodi_info);
+		type = g_type_register_static (G_TYPE_OBJECT, "Sodipodi", &info, 0);
 	}
-	return sodipodi_type;
+	return type;
 }
 
 static void
 sodipodi_class_init (SodipodiClass * klass)
 {
-	GtkObjectClass * object_class;
+	GObjectClass * object_class;
 
-	object_class = (GtkObjectClass *) klass;
+	object_class = (GObjectClass *) klass;
 
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	parent_class = g_type_class_peek_parent (klass);
 
-	sodipodi_signals[MODIFY_SELECTION] = gtk_signal_new ("modify_selection",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, modify_selection),
-		gtk_marshal_NONE__POINTER_UINT,
-		GTK_TYPE_NONE, 2,
-		GTK_TYPE_POINTER, GTK_TYPE_UINT);
-	sodipodi_signals[CHANGE_SELECTION] = gtk_signal_new ("change_selection",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, change_selection),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	sodipodi_signals[SET_SELECTION] = gtk_signal_new ("set_selection",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, set_selection),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	sodipodi_signals[SET_EVENTCONTEXT] = gtk_signal_new ("set_eventcontext",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, set_eventcontext),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	sodipodi_signals[NEW_DESKTOP] = gtk_signal_new ("new_desktop",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, new_desktop),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	sodipodi_signals[DESTROY_DESKTOP] = gtk_signal_new ("destroy_desktop",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, destroy_desktop),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	sodipodi_signals[ACTIVATE_DESKTOP] = gtk_signal_new ("activate_desktop",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, activate_desktop),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	sodipodi_signals[DESACTIVATE_DESKTOP] = gtk_signal_new ("desactivate_desktop",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, desactivate_desktop),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	sodipodi_signals[NEW_DOCUMENT] = gtk_signal_new ("new_document",
-		GTK_RUN_FIRST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, new_document),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
-	sodipodi_signals[DESTROY_DOCUMENT] = gtk_signal_new ("destroy_document",
-		GTK_RUN_LAST,
-		GTK_CLASS_TYPE(object_class),
-		GTK_SIGNAL_OFFSET (SodipodiClass, destroy_document),
-		gtk_marshal_NONE__POINTER,
-		GTK_TYPE_NONE, 1,
-		GTK_TYPE_POINTER);
+	sodipodi_signals[MODIFY_SELECTION] = g_signal_new ("modify_selection",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, modify_selection),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER_UINT,
+							   G_TYPE_NONE, 2,
+							   G_TYPE_POINTER, G_TYPE_UINT);
+	sodipodi_signals[CHANGE_SELECTION] = g_signal_new ("change_selection",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, change_selection),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
+	sodipodi_signals[SET_SELECTION] =    g_signal_new ("set_selection",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, set_selection),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
+	sodipodi_signals[SET_EVENTCONTEXT] = g_signal_new ("set_eventcontext",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, set_eventcontext),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
+	sodipodi_signals[NEW_DESKTOP] =      g_signal_new ("new_desktop",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, new_desktop),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
+	sodipodi_signals[DESTROY_DESKTOP] =  g_signal_new ("destroy_desktop",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, destroy_desktop),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
+	sodipodi_signals[ACTIVATE_DESKTOP] = g_signal_new ("activate_desktop",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, activate_desktop),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
+	sodipodi_signals[DESACTIVATE_DESKTOP] = g_signal_new ("desactivate_desktop",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, desactivate_desktop),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
+	sodipodi_signals[NEW_DOCUMENT] =     g_signal_new ("new_document",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, new_document),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
+	sodipodi_signals[DESTROY_DOCUMENT] = g_signal_new ("destroy_document",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, destroy_document),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER,
+							   G_TYPE_NONE, 1,
+							   G_TYPE_POINTER);
 
-	object_class->destroy = sodipodi_destroy;
+	object_class->dispose = sodipodi_dispose;
 
 	klass->activate_desktop = sodipodi_activate_desktop_private;
 	klass->desactivate_desktop = sodipodi_desactivate_desktop_private;
@@ -216,14 +227,14 @@ sodipodi_init (SPObject * object)
 }
 
 static void
-sodipodi_destroy (GtkObject * object)
+sodipodi_dispose (GObject *object)
 {
-	Sodipodi * sodipodi;
+	Sodipodi *sodipodi;
 
 	sodipodi = (Sodipodi *) object;
 
 	while (sodipodi->documents) {
-		SPDocument * document;
+		SPDocument *document;
 		document = (SPDocument *) sodipodi->documents->data;
 		gtk_object_destroy (GTK_OBJECT (document));
 		sodipodi->documents = g_slist_remove (sodipodi->documents, sodipodi->documents->data);
@@ -233,12 +244,13 @@ sodipodi_destroy (GtkObject * object)
 	g_assert (!sodipodi->desktops);
 
 	if (sodipodi->preferences) {
+		/* fixme: This is not the best place */
+		sodipodi_save_preferences (sodipodi);
 		sp_repr_document_unref (sodipodi->preferences);
 		sodipodi->preferences = NULL;
 	}
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 
 	gtk_main_quit ();
 }
@@ -420,7 +432,7 @@ sodipodi_application_new (void)
 {
 	Sodipodi *sp;
 
-	sp = gtk_type_new (SP_TYPE_SODIPODI);
+	sp = g_object_new (SP_TYPE_SODIPODI, NULL);
 	/* fixme: load application defaults */
 
 	segv_handler = signal (SIGSEGV, sodipodi_segv_handler);
@@ -553,7 +565,7 @@ sodipodi_selection_modified (SPSelection *selection, guint flags)
 	g_return_if_fail (SP_IS_SELECTION (selection));
 
 	if (DESKTOP_IS_ACTIVE (selection->desktop)) {
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[MODIFY_SELECTION], selection, flags);
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[MODIFY_SELECTION], 0, selection, flags);
 	}
 }
 
@@ -565,7 +577,7 @@ sodipodi_selection_changed (SPSelection * selection)
 	g_return_if_fail (SP_IS_SELECTION (selection));
 
 	if (DESKTOP_IS_ACTIVE (selection->desktop)) {
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], selection);
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, selection);
 	}
 }
 
@@ -577,8 +589,8 @@ sodipodi_selection_set (SPSelection * selection)
 	g_return_if_fail (SP_IS_SELECTION (selection));
 
 	if (DESKTOP_IS_ACTIVE (selection->desktop)) {
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], selection);
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], selection);
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, selection);
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, selection);
 	}
 }
 
@@ -590,7 +602,7 @@ sodipodi_eventcontext_set (SPEventContext * eventcontext)
 	g_return_if_fail (SP_IS_EVENT_CONTEXT (eventcontext));
 
 	if (DESKTOP_IS_ACTIVE (eventcontext->desktop)) {
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], eventcontext);
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, eventcontext);
 	}
 }
 
@@ -605,13 +617,13 @@ sodipodi_add_desktop (SPDesktop * desktop)
 
 	sodipodi->desktops = g_slist_append (sodipodi->desktops, desktop);
 
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[NEW_DESKTOP], desktop);
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[NEW_DESKTOP], 0, desktop);
 
 	if (DESKTOP_IS_ACTIVE (desktop)) {
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], desktop);
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], SP_DT_EVENTCONTEXT (desktop));
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], SP_DT_SELECTION (desktop));
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], SP_DT_SELECTION (desktop));
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], 0, desktop);
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (desktop));
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, SP_DT_SELECTION (desktop));
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, SP_DT_SELECTION (desktop));
 	}
 }
 
@@ -625,24 +637,24 @@ sodipodi_remove_desktop (SPDesktop * desktop)
 	g_assert (g_slist_find (sodipodi->desktops, desktop));
 
 	if (DESKTOP_IS_ACTIVE (desktop)) {
-		gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[DESACTIVATE_DESKTOP], desktop);
+		g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[DESACTIVATE_DESKTOP], 0, desktop);
 		if (sodipodi->desktops->next != NULL) {
 			SPDesktop * new;
 			new = (SPDesktop *) sodipodi->desktops->next->data;
 			sodipodi->desktops = g_slist_remove (sodipodi->desktops, new);
 			sodipodi->desktops = g_slist_prepend (sodipodi->desktops, new);
-			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], new);
-			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], SP_DT_EVENTCONTEXT (new));
-			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], SP_DT_SELECTION (new));
-			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], SP_DT_SELECTION (new));
+			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], 0, new);
+			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (new));
+			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, SP_DT_SELECTION (new));
+			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, SP_DT_SELECTION (new));
 		} else {
-			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], NULL);
-			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], NULL);
-			gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], NULL);
+			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, NULL);
+			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, NULL);
+			g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, NULL);
 		}
 	}
 
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[DESTROY_DESKTOP], desktop);
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[DESTROY_DESKTOP], 0, desktop);
 
 	sodipodi->desktops = g_slist_remove (sodipodi->desktops, desktop);
 }
@@ -662,15 +674,15 @@ sodipodi_activate_desktop (SPDesktop * desktop)
 
 	current = (SPDesktop *) sodipodi->desktops->data;
 
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[DESACTIVATE_DESKTOP], current);
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[DESACTIVATE_DESKTOP], 0, current);
 
 	sodipodi->desktops = g_slist_remove (sodipodi->desktops, desktop);
 	sodipodi->desktops = g_slist_prepend (sodipodi->desktops, desktop);
 
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], desktop);
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], SP_DT_EVENTCONTEXT (desktop));
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], SP_DT_SELECTION (desktop));
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], SP_DT_SELECTION (desktop));
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[ACTIVATE_DESKTOP], 0, desktop);
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], 0, SP_DT_EVENTCONTEXT (desktop));
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], 0, SP_DT_SELECTION (desktop));
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], 0, SP_DT_SELECTION (desktop));
 }
 
 /* fixme: These need probably signals too */
@@ -686,7 +698,7 @@ sodipodi_add_document (SPDocument *document)
 
 	sodipodi->documents = g_slist_append (sodipodi->documents, document);
 
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[NEW_DOCUMENT], document);
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[NEW_DOCUMENT], 0, document);
 }
 
 void
@@ -698,7 +710,7 @@ sodipodi_remove_document (SPDocument *document)
 
 	g_assert (g_slist_find (sodipodi->documents, document));
 
-	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[DESTROY_DOCUMENT], document);
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[DESTROY_DOCUMENT], 0, document);
 
 	sodipodi->documents = g_slist_remove (sodipodi->documents, document);
 

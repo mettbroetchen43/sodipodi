@@ -27,6 +27,7 @@
 #include <gtk/gtktooltips.h>
 #include <gtk/gtkdnd.h>
 
+#include "macros.h"
 #include "widgets/sp-toolbox.h"
 #include "widgets/sp-menu-button.h"
 #include "widgets/sp-hwrap-box.h"
@@ -111,6 +112,12 @@ static guint ntoolbox_drop_target_entries = ENTRIES_SIZE(toolbox_drop_target_ent
 static void sp_maintoolbox_open_files(gchar * buffer);
 static void sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused);
 
+static void
+sp_maintoolbox_destroy (GtkObject *object, gpointer data)
+{
+	sp_signal_disconnect_by_data (sodipodi, object);
+}
+
 static gint
 sp_maintoolbox_delete_event (GtkWidget *widget, GdkEventAny *event, gpointer data)
 {
@@ -150,9 +157,9 @@ sp_maintoolbox_create (void)
 		/* Hmmm, this does not shrink, but set_policy is deprecated. */
 		gtk_window_set_resizable (GTK_WINDOW (toolbox), TRUE);
 /*  		gtk_window_set_policy (GTK_WINDOW (toolbox), TRUE, TRUE, TRUE); */
-		gtk_signal_connect (GTK_OBJECT (toolbox), "delete_event", GTK_SIGNAL_FUNC (sp_maintoolbox_delete_event), NULL);
-		gtk_signal_connect (GTK_OBJECT (toolbox), "drag_data_received",
-				    G_CALLBACK (sp_maintoolbox_drag_data_received), NULL);
+		g_signal_connect (G_OBJECT (toolbox), "destroy", G_CALLBACK (sp_maintoolbox_destroy), NULL);
+		g_signal_connect (G_OBJECT (toolbox), "delete_event", G_CALLBACK (sp_maintoolbox_delete_event), NULL);
+		g_signal_connect (G_OBJECT (toolbox), "drag_data_received", G_CALLBACK (sp_maintoolbox_drag_data_received), NULL);
 				    
 		vbox = gtk_vbox_new (FALSE, 0);
 		gtk_widget_show (vbox);
@@ -199,8 +206,7 @@ sp_maintoolbox_create (void)
 				gtk_object_set_data (GTK_OBJECT (t), "active", t);
 			}
 		}
-		gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "set_eventcontext",
-						GTK_SIGNAL_FUNC (sp_update_draw_toolbox), t, GTK_OBJECT (t));
+		g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), t);
 
 		/* Zoom */
 		t = sp_toolbox_zoom_create ();

@@ -82,16 +82,16 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 	g_return_if_fail (SP_IS_VIEW_WIDGET (vw));
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_object_set_data (GTK_OBJECT (vw), "window", w);
-	gtk_object_set_data (GTK_OBJECT (SP_VIEW_WIDGET_VIEW (vw)), "window", w);
+	g_object_set_data (G_OBJECT (vw), "window", w);
+	g_object_set_data (G_OBJECT (SP_VIEW_WIDGET_VIEW (vw)), "window", w);
 
 	/* fixme: */
 	if (editable) {
 		gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
-		gtk_object_set_data (GTK_OBJECT (w), "desktop", SP_DESKTOP_WIDGET (vw)->desktop);
-		gtk_object_set_data (GTK_OBJECT (w), "desktopwidget", vw);
-		gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), vw->view);
-		gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_widget_set_focus), vw);
+		g_object_set_data (G_OBJECT (w), "desktop", SP_DESKTOP_WIDGET (vw)->desktop);
+		g_object_set_data (G_OBJECT (w), "desktopwidget", vw);
+		g_signal_connect (G_OBJECT (w), "delete_event", G_CALLBACK (sp_ui_delete), vw->view);
+		g_signal_connect (G_OBJECT (w), "focus_in_event", G_CALLBACK (sp_desktop_widget_set_focus), vw);
 #if 0
 		sp_desktop_set_title (desktop);
 #endif
@@ -110,9 +110,9 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 			  ui_drop_target_entries,
 			  nui_drop_target_entries,
 			  GDK_ACTION_COPY);
-	gtk_signal_connect(GTK_OBJECT(w),
+	g_signal_connect (G_OBJECT(w),
 			   "drag_data_received",
-			   GTK_SIGNAL_FUNC(sp_ui_drag_data_received),
+			   G_CALLBACK (sp_ui_drag_data_received),
 			   NULL);
 	gtk_widget_show (w);
 }
@@ -154,23 +154,23 @@ sp_ui_new_view_preview (GtkWidget *widget)
 void
 sp_ui_close_view (GtkWidget * widget)
 {
-	GtkObject *w;
+	GtkWidget *w;
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;
 
 	if (sp_view_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return;
-	w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
-	gtk_object_destroy (w);
+	w = g_object_get_data (G_OBJECT (SP_ACTIVE_DESKTOP), "window");
+	gtk_widget_destroy (w);
 }
 
 unsigned int
 sp_ui_close_all (void)
 {
 	while (SP_ACTIVE_DESKTOP) {
-		GtkObject *w;
+		GtkWidget *w;
 		if (sp_view_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return FALSE;
-		w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
-		gtk_object_destroy (w);
+		w = g_object_get_data (G_OBJECT (SP_ACTIVE_DESKTOP), "window");
+		gtk_widget_destroy (w);
 	}
 
 	return TRUE;
@@ -196,7 +196,7 @@ sp_ui_menu_append_item (GtkMenu *menu, const guchar *stock, const guchar *label,
 	}
 	gtk_widget_show (item);
 	if (callback) {
-		gtk_signal_connect (GTK_OBJECT (item), "activate", callback, data);
+		g_signal_connect (G_OBJECT (item), "activate", callback, data);
 	}
 	gtk_menu_append (GTK_MENU (menu), item);
 

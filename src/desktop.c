@@ -22,6 +22,8 @@
 #include <libart_lgpl/art_affine.h>
 #include <gtk/gtk.h>
 
+#include "helper/sp-intl.h"
+#include "helper/sp-marshal.h"
 #include "helper/gnome-canvas-acetate.h"
 #include "helper/sodipodi-ctrlrect.h"
 #include "helper/units.h"
@@ -55,7 +57,7 @@ enum {
 
 static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
-static void sp_desktop_destroy (GtkObject * object);
+static void sp_desktop_dispose (GObject *object);
 
 static void sp_desktop_request_redraw (SPView *view);
 static void sp_desktop_set_document (SPView *view, SPDocument *doc);
@@ -89,17 +91,18 @@ static guint signals[LAST_SIGNAL] = { 0 };
 unsigned int
 sp_desktop_get_type (void)
 {
-	static GtkType type = 0;
+	static GType type = 0;
 	if (!type) {
-		static const GtkTypeInfo info = {
-			"SPDesktop",
-			sizeof (SPDesktop),
+		GTypeInfo info = {
 			sizeof (SPDesktopClass),
-			(GtkClassInitFunc) sp_desktop_class_init,
-			(GtkObjectInitFunc) sp_desktop_init,
-			NULL, NULL, NULL
+			NULL, NULL,
+			(GClassInitFunc) sp_desktop_class_init,
+			NULL, NULL,
+			sizeof (SPDesktop),
+			4,
+			(GInstanceInitFunc) sp_desktop_init,
 		};
-		type = gtk_type_unique (SP_TYPE_VIEW, &info);
+		type = g_type_register_static (SP_TYPE_VIEW, "SPDesktop", &info, 0);
 	}
 	return type;
 }
@@ -107,34 +110,38 @@ sp_desktop_get_type (void)
 static void
 sp_desktop_class_init (SPDesktopClass *klass)
 {
-	GtkObjectClass *object_class;
+	GObjectClass *object_class;
 	SPViewClass *view_class;
 
-	object_class = GTK_OBJECT_CLASS (klass);
-	view_class = SP_VIEW_CLASS (klass);
+	object_class = G_OBJECT_CLASS (klass);
+	view_class = (SPViewClass *) klass;
 
-	parent_class = gtk_type_class (SP_TYPE_VIEW);
+	parent_class = g_type_class_peek_parent (klass);
 
-	signals[ACTIVATE] = gtk_signal_new ("activate",
-					    GTK_RUN_FIRST,
-					    GTK_CLASS_TYPE(object_class),
-					    GTK_SIGNAL_OFFSET (SPDesktopClass, activate),
-					    gtk_marshal_NONE__NONE,
-					    GTK_TYPE_NONE, 0);
-	signals[DESACTIVATE] = gtk_signal_new ("desactivate",
-					    GTK_RUN_FIRST,
-					    GTK_CLASS_TYPE(object_class),
-					    GTK_SIGNAL_OFFSET (SPDesktopClass, desactivate),
-					    gtk_marshal_NONE__NONE,
-					    GTK_TYPE_NONE, 0);
-	signals[MODIFIED] = gtk_signal_new ("modified",
-					    GTK_RUN_FIRST,
-					    GTK_CLASS_TYPE(object_class),
-					    GTK_SIGNAL_OFFSET (SPDesktopClass, modified),
-					    gtk_marshal_NONE__UINT,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
+	signals[ACTIVATE] = g_signal_new ("activate",
+					  G_TYPE_FROM_CLASS(klass),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (SPDesktopClass, activate),
+					  NULL, NULL,
+					  sp_marshal_NONE__NONE,
+					  G_TYPE_NONE, 0);
+	signals[DESACTIVATE] = g_signal_new ("desactivate",
+					  G_TYPE_FROM_CLASS(klass),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (SPDesktopClass, desactivate),
+					  NULL, NULL,
+					  sp_marshal_NONE__NONE,
+					  G_TYPE_NONE, 0);
+	signals[MODIFIED] = g_signal_new ("modified",
+					  G_TYPE_FROM_CLASS(klass),
+					  G_SIGNAL_RUN_FIRST,
+					  G_STRUCT_OFFSET (SPDesktopClass, modified),
+					  NULL, NULL,
+					  sp_marshal_NONE__UINT,
+					  G_TYPE_NONE, 1,
+					  G_TYPE_UINT);
 
-	object_class->destroy = sp_desktop_destroy;
+	object_class->dispose = sp_desktop_dispose;
 
 	view_class->request_redraw = sp_desktop_request_redraw;
 	view_class->set_document = sp_desktop_set_document;
@@ -163,7 +170,7 @@ sp_desktop_init (SPDesktop *desktop)
 }
 
 static void
-sp_desktop_destroy (GtkObject *object)
+sp_desktop_dispose (GObject *object)
 {
 	SPDesktop *dt;
 
@@ -191,8 +198,7 @@ sp_desktop_destroy (GtkObject *object)
 		dt->drawing = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
 static void
@@ -227,9 +233,9 @@ sp_desktop_set_active (SPDesktop *desktop, gboolean active)
 	if (active != desktop->active) {
 		desktop->active = active;
 		if (active) {
-			gtk_signal_emit (GTK_OBJECT (desktop), signals[ACTIVATE]);
+			g_signal_emit (G_OBJECT (desktop), signals[ACTIVATE], 0);
 		} else {
-			gtk_signal_emit (GTK_OBJECT (desktop), signals[DESACTIVATE]);
+			g_signal_emit (G_OBJECT (desktop), signals[DESACTIVATE], 0);
 		}
 	}
 }
@@ -265,7 +271,7 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	/* Setup widget */
 
-	desktop = (SPDesktop *) gtk_type_new (SP_TYPE_DESKTOP);
+	desktop = (SPDesktop *) g_object_new (SP_TYPE_DESKTOP, NULL);
 
 	/* Connect document */
 	sp_view_set_document (SP_VIEW (desktop), document);
@@ -275,20 +281,20 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	desktop->number = sp_namedview_viewcount (namedview);
 
 	/* Setup Canvas */
-	gtk_object_set_data (GTK_OBJECT (canvas), "SPDesktop", desktop);
+	g_object_set_data (G_OBJECT (canvas), "SPDesktop", desktop);
 
 	root = sp_canvas_root (canvas);
 
 	desktop->acetate = sp_canvas_item_new (root, GNOME_TYPE_CANVAS_ACETATE, NULL);
-	gtk_signal_connect (GTK_OBJECT (desktop->acetate), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
+	g_signal_connect (G_OBJECT (desktop->acetate), "event", G_CALLBACK (sp_desktop_root_handler), desktop);
 	/* Setup adminstrative layers */
 	desktop->main = (SPCanvasGroup *) sp_canvas_item_new (root, SP_TYPE_CANVAS_GROUP, NULL);
-	gtk_signal_connect (GTK_OBJECT (desktop->main), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
+	g_signal_connect (G_OBJECT (desktop->main), "event", G_CALLBACK (sp_desktop_root_handler), desktop);
 	/* fixme: */
 	page = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 
 	desktop->drawing = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
-	gtk_signal_connect (GTK_OBJECT (desktop->drawing), "arena_event", GTK_SIGNAL_FUNC (arena_handler), desktop);
+	g_signal_connect (G_OBJECT (desktop->drawing), "arena_event", G_CALLBACK (arena_handler), desktop);
 
 	desktop->grid = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 	desktop->guides = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
@@ -863,7 +869,7 @@ sp_desktop_widget_destroy (GtkObject *object)
 	dtw = SP_DESKTOP_WIDGET (object);
 
 	if (dtw->desktop) {
-		gtk_object_destroy (GTK_OBJECT (dtw->desktop));
+		g_object_unref (G_OBJECT (dtw->desktop));
 		dtw->desktop = NULL;
 	}
 
@@ -1010,17 +1016,17 @@ sp_desktop_widget_new (SPNamedView *namedview)
 	dtw->desktop->owner = dtw;
 	g_object_set_data (G_OBJECT (dtw->desktop), "widget", dtw);
 
-	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "uri_set", GTK_SIGNAL_FUNC (sp_desktop_uri_set), dtw);
+	g_signal_connect (G_OBJECT (dtw->desktop), "uri_set", G_CALLBACK (sp_desktop_uri_set), dtw);
 	sp_view_widget_set_view (SP_VIEW_WIDGET (dtw), SP_VIEW (dtw->desktop));
 
-	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "position_set", GTK_SIGNAL_FUNC (sp_desktop_widget_view_position_set), dtw);
-	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "status_set", GTK_SIGNAL_FUNC (sp_desktop_widget_view_status_set), dtw);
+	g_signal_connect (G_OBJECT (dtw->desktop), "position_set", G_CALLBACK (sp_desktop_widget_view_position_set), dtw);
+	g_signal_connect (G_OBJECT (dtw->desktop), "status_set", G_CALLBACK (sp_desktop_widget_view_status_set), dtw);
 
 	/* Connect activation signals to update indicator */
-	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "activate", GTK_SIGNAL_FUNC (sp_dtw_desktop_activate), dtw);
-	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "desactivate", GTK_SIGNAL_FUNC (sp_dtw_desktop_desactivate), dtw);
+	g_signal_connect (G_OBJECT (dtw->desktop), "activate", G_CALLBACK (sp_dtw_desktop_activate), dtw);
+	g_signal_connect (G_OBJECT (dtw->desktop), "desactivate", G_CALLBACK (sp_dtw_desktop_desactivate), dtw);
 
-	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "shutdown", GTK_SIGNAL_FUNC (sp_dtw_desktop_shutdown), dtw);
+	g_signal_connect (G_OBJECT (dtw->desktop), "shutdown", G_CALLBACK (sp_dtw_desktop_shutdown), dtw);
 
 	/* Listen on namedview modification */
 	g_signal_connect (G_OBJECT (namedview), "modified", G_CALLBACK (sp_desktop_widget_namedview_modified), dtw);
