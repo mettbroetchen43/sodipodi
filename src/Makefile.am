@@ -15,17 +15,12 @@ endif
 
 SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display $(module_subdirs)
 
-gladedir = $(datadir)/sodipodi
-pixmapdir = $(datadir)/sodipodi
-
 CPPFLAGS = \
 	-DSODIPODI_VERSION=\""$(VERSION)"\"
 
 INCLUDES = \
-	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
-	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" \
-	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" \
 	-DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\" \
+	-DSODIPODI_PIXMAPDIR=\""$(datadir)/sodipodi"\" \
 	-I$(srcdir) \
 	-I$(srcdir/xml) \
 	-I$(srcdir/svg) \
@@ -34,9 +29,7 @@ INCLUDES = \
 
 bin_PROGRAMS = sodipodi
 
-sodipodi_SOURCES = \
-	sodipodi.c sodipodi.h sodipodi-private.h \
-	\
+sodipodilib_src = \
 	macros.h \
 	forward.h \
 	enums.h \
@@ -78,7 +71,17 @@ sodipodi_SOURCES = \
 	\
 	document.c document.h document-private.h \
 	document-undo.c \
-	uri-references.c uri-references.h \
+	uri-references.c uri-references.h
+
+noinst_LTLIBRARIES = libsodipodi.la
+libsodipodi_la_SOURCES = $(sodipodilib_src)
+spproglibs = libsodipodi.la
+
+sodipodi_SOURCES = \
+	$(spprogsrc) \
+	\
+	sodipodi.c sodipodi.h sodipodi-private.h \
+	\
 	view.c view.h \
 	svg-view.c svg-view.h \
 	selection.c selection.h \
@@ -132,6 +135,7 @@ sodipodi_SOURCES = \
 	extensions-skeleton.h
 
 sodipodi_private_libs = \
+	$(spproglibs) \
 	dialogs/libspdialogs.a \
 	xml/libspxml.a \
 	svg/libspsvg.a \
@@ -146,7 +150,6 @@ sodipodi_private_libs = \
 
 sodipodi_LDADD = \
 	$(sodipodi_private_libs) \
-	$(bonobo_libs) \
 	$(SODIPODI_LIBS) \
 	$(GNOME_PRINT_LIBS) \
 	$(XFT_LIBS) \
@@ -154,15 +157,18 @@ sodipodi_LDADD = \
 
 sodipodi_LDFLAGS = -Wl,--export-dynamic $(kdeldflags)
 
-#	$(GNOME_LIBDIR) \
-#	-lpng \
-#	-lglade-gnome \
-#	-lglade \
-#	-lgdk_pixbuf \
-#	$(GNOMEUI_LIBS) \
-#	$(GNOME_PRINT_LIBS) \
-#	$(EXTRA_BONOBO_GNOME_LIBS) \
-#	$(INTLLIBS)
+# noinst_PROGRAMS = spsvgview
+
+# spsvgview_SOURCES =
+#	spsvgview.c
+#	view.c view.h
+#	svg-view.c svg-view.h
+
+#	sodipodi.c sodipodi.h
+#	desktop.c desktop.h
+#	desktop-handles.c desktop-handles.h
+#	selection.c selection.h
+#	event-context.c event-context.h
 
 EXTRA_DIST = \
 	brokenimage.xpm

@@ -26,6 +26,7 @@ struct _SPMarkerView {
 	SPMarkerView *next;
 	unsigned int key;
 	unsigned int size;
+	unsigned int length;
 	NRArenaItem *items[1];
 };
 
@@ -430,8 +431,8 @@ sp_marker_update (SPObject *object, SPCtx *ctx, guint flags)
 		NRMatrixF vbf;
 		int i;
 		nr_matrix_f_from_d (&vbf, &marker->c2p);
-		for (i = 0; i < v->size; i++) {
-			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->items[i]), &vbf);
+		for (i = 0; i < v->length; i++) {
+			if (v->items[i]) nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->items[i]), &vbf);
 		}
 	}
 }
@@ -535,6 +536,27 @@ sp_marker_show_dimension (SPMarker *marker, unsigned int key, unsigned int size)
 			ref = marker->views;
 			while (ref->next && (ref->next->key != key)) ref = ref->next;
 			view = ref->next;
+		}
+	}
+	if (view) {
+		if (view->size < size) {
+			/* Free old view and allocate new */
+			/* hide all children */
+#if 0
+			sp_marker_hide_children (marker, view->key);
+#endif
+			/* Destroy container items */
+			for (i = 0; i < view->size; i++) {
+				if (view->items[i]) nr_arena_item_destroy (view->items[i]);
+			}
+			/* Remove link */
+			if (ref) {
+				ref->next = view->next;
+			} else {
+				marker->views = view->next;
+			}
+			/* And free it */
+			free (view);
 		}
 	}
 	/* fixme: Remove link if zero-sized (Lauris) */

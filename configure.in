@@ -15,7 +15,8 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AM_PROG_AS
 AC_HEADER_STDC
-AC_PROG_RANLIB
+
+dnl AC_PROG_RANLIB
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
 dnl if test "x${prefix}" = "xNONE"; then
@@ -164,6 +165,15 @@ AM_CONDITIONAL(USE_MODULES, test "x$mod" = "xyes")
 if test "x$mod" = "xyes"; then
 	AC_DEFINE(WITH_MODULES, 1, [Use experimental module support])
 fi
+
+dnl ******************************
+dnl   libsodipodi
+dnl ******************************
+dnl
+dnl AC_ARG_ENABLE(libsodipodi, AC_HELP_STRING([--enable-libsodipodi], [Compile dynamic library (experimental)]), [splib=$enableval], [splib=no])
+dnl
+dnl AM_CONDITIONAL(ENABLE_LIBSODIPODI, test "x$splib" != "xno")
+dnl
 
 dnl ******************************
 dnl Frontline/Autotrace support

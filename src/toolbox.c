@@ -101,6 +101,12 @@ sp_maintoolbox_destroy (GtkObject *object, gpointer data)
 	sodipodi_unref ();
 }
 
+static void
+sp_maintoolbox_event (GtkWidget *widgt, GdkEvent *event)
+{
+	g_print ("Event %d\n", event->type);
+}
+
 void
 sp_maintoolbox_create_toplevel (void)
 {
@@ -110,6 +116,8 @@ sp_maintoolbox_create_toplevel (void)
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (window), _("Sodipodi"));
 	gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
+
+	g_signal_connect (G_OBJECT (window), "event", G_CALLBACK (sp_maintoolbox_event), NULL);
 
 	toolbox = sp_maintoolbox_new ();
 	gtk_widget_show (toolbox);

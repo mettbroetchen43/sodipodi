@@ -23,11 +23,6 @@
 
 typedef struct _NRGC NRGC;
 
-#if 0
-/* Warning: This is UNDEFINED in NR, implementations should do that */
-typedef struct _NREvent NREvent;
-#endif
-
 /*
  * NRArenaItem state flags
  */
@@ -118,7 +113,7 @@ struct _NRArenaItemClass {
 	NRArenaItem * (* pick) (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 };
 
-#define NR_ARENA_ITEM_ARENA(ai) (NR_ARENA_ITEM (ai)->arena)
+#define NR_ARENA_ITEM_ARENA(ai) (((NRArenaItem *) (ai))->arena)
 
 unsigned int nr_arena_item_get_type (void);
 
@@ -151,10 +146,6 @@ unsigned int nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPi
 
 guint nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb);
 NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
-
-#if 0
-gint nr_arena_item_emit_event (NRArenaItem *item, NREvent *event);
-#endif
 
 void nr_arena_item_request_update (NRArenaItem *item, guint reset, gboolean propagate);
 void nr_arena_item_request_render (NRArenaItem *item);

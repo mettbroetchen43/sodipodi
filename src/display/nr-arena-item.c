@@ -27,7 +27,7 @@ static void nr_arena_item_class_init (NRArenaItemClass *klass);
 static void nr_arena_item_init (NRArenaItem *item);
 static void nr_arena_item_private_finalize (GObject *object);
 
-static GObjectClass *parent_class;
+static NRObjectClass *parent_class;
 
 unsigned int
 nr_arena_item_get_type (void)
