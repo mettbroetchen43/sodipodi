@@ -1086,6 +1086,7 @@ sp_desktop_set_focus (GtkWidget *widget, GtkWidget *widget2, SPDesktop * desktop
   sodipodi_activate_desktop (desktop);
   // give focus to canvas widget
   gtk_widget_grab_focus (GTK_WIDGET (desktop->canvas));
+  gnome_canvas_item_grab_focus ((GnomeCanvasItem *) desktop->main); 
   return FALSE;
 }
  

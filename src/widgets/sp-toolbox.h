@@ -33,6 +33,8 @@ struct _SPToolBox {
 	GtkWidget * contents;
 	GtkWidget * window;
 	GtkWidget * windowvbox;
+        GtkArrow * arrow;
+        GtkToggleButton * standalonetoggle;
 	gint width;
 	gchar * name;
 	gchar * internalname;

@@ -144,35 +144,45 @@ sp_selected_path_to_curves (void)
 	gchar * str;
 	const gchar * transform, * style;
 	SPDesktop * desktop;
+	GSList * l, * sl = NULL, * nl = NULL;
 	
 	desktop = SP_ACTIVE_DESKTOP;
 	if (!SP_IS_DESKTOP(desktop)) return;
 
 	selection = SP_DT_SELECTION (desktop);
 
-	item = sp_selection_item (selection);
-	if (item == NULL) return;
-	if (!SP_IS_PATH (item)) return;
+	sl = (GSList *) sp_selection_item_list (selection);
+	l = g_slist_copy (sl);
+	sp_selection_empty (selection);
 
-	path = SP_PATH (item);
+	for (; l != NULL; l = l->next) {
+		item = (SPItem *) l->data;
+		
+		if (item == NULL) continue;
+		if (!SP_IS_PATH (item)) continue;
 
-	curve = sp_path_normalized_bpath (path);
-	str = sp_svg_write_path (curve->bpath);
-	sp_curve_unref (curve);
-	transform = sp_repr_attr (SP_OBJECT (item)->repr, "transform");
-	style = sp_repr_attr (SP_OBJECT (item)->repr, "style");
+		path = SP_PATH (item);
 
-	new = sp_repr_new ("path");
-	sp_repr_set_attr (new, "transform", transform);
-	sp_repr_set_attr (new, "style", style);
-	sp_repr_set_attr (new, "d", str);
+		curve = sp_path_normalized_bpath (path);
+		str = sp_svg_write_path (curve->bpath);
+		sp_curve_unref (curve);
+		transform = sp_repr_attr (SP_OBJECT (item)->repr, "transform");
+		style = sp_repr_attr (SP_OBJECT (item)->repr, "style");
 
-	g_free (str);
+		new = sp_repr_new ("path");
+		sp_repr_set_attr (new, "transform", transform);
+		sp_repr_set_attr (new, "style", style);
+		sp_repr_set_attr (new, "d", str);
 
-	sp_repr_unparent (SP_OBJECT_REPR (item));
-	item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), new);
+		g_free (str);
+
+		sp_repr_unparent (SP_OBJECT_REPR (item));
+		item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), new);
+		sp_repr_unref (new);
+		
+		nl = g_slist_append (nl, (gpointer)item);
+	}
 	sp_document_done (SP_DT_DOCUMENT (desktop));
-	sp_repr_unref (new);
 
-	sp_selection_set_item (selection, item);
+	sp_selection_set_item_list (selection, nl);
 }

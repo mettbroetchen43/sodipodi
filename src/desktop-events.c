@@ -23,8 +23,10 @@ void
 sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * desktop)
 {
 	if (event->type == GDK_ENTER_NOTIFY) {
-		/* fixme: should it go here? */
+		/* fixme: should it go here? 
+		   moved it to sp_desktop_set_focus (Frank)
 	  gnome_canvas_item_grab_focus ((GnomeCanvasItem *) desktop->main); 
+		*/
 	}
 	sp_event_context_root_handler (desktop->event_context, event);
 }

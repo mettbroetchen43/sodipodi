@@ -30,8 +30,11 @@ sp_selection_delete (GtkWidget * widget)
 	SPSelection * selection;
 	GSList * selected;
 
+	/*
+	  do we really need this ?
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
+	*/
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;

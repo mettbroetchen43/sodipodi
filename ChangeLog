@@ -1,3 +1,17 @@
+2001-10-19  Frank Felfe <innerspace@iname.com>
+
+	* src/widgets/sp-toolbox.*: patch from MenTaLguY <mental@rydia.net>
+	change seperate button into toggle button and add arrow to 
+	hide button indicating state of toolbox
+
+	* src/path-chemistry.c (sp_selected_path_to_curves): apply to all paths in selection
+
+	* src/selection-chemistry.c (sp_selection_delete): remove widget text
+
+	* src/desktop.c (sp_desktop_set_focus): make canvas catch key events
+
+	* src/desktop-events.c (sp_desktop_root_handler): don't grab focus here
+	
 2001-10-18  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-item-group.c: Removed paint virtual method implementation
