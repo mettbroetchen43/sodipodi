@@ -43,10 +43,6 @@ static gint sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event);
 
 static gint sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event);
 
-#if 0
-static void sp_canvas_arena_item_added (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
-static void sp_canvas_arena_remove_item (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca);
-#endif
 static void sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, void *data);
 static void sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, void *data);
 
@@ -114,18 +110,9 @@ sp_canvas_arena_init (SPCanvasArena *arena)
 
 	arena->active = NULL;
 
-#if 0
-	g_signal_connect (G_OBJECT (arena->arena), "item_added",
-			  G_CALLBACK (sp_canvas_arena_item_added), arena);
-	g_signal_connect (G_OBJECT (arena->arena), "remove_item",
-			  G_CALLBACK (sp_canvas_arena_remove_item), arena);
-	g_signal_connect (G_OBJECT (arena->arena), "request_update",
-			  G_CALLBACK (sp_canvas_arena_request_update), arena);
-	g_signal_connect (G_OBJECT (arena->arena), "request_render",
-			  G_CALLBACK (sp_canvas_arena_request_render), arena);
-#endif
-
-	nr_active_object_add_listener ((NRActiveObject *) arena->arena, (NRObjectEventVector *) &carenaev, sizeof (carenaev), arena);
+	nr_active_object_add_listener ((NRActiveObject *) arena->arena,
+				       (NRObjectEventVector *) &carenaev, sizeof (carenaev),
+				       arena);
 }
 
 static void
@@ -146,10 +133,6 @@ sp_canvas_arena_destroy (GtkObject *object)
 	}
 
 	if (arena->arena) {
-#if 0
-/*  		g_signal_disconnect_by_data (G_OBJECT (arena->arena), arena); */
-		g_signal_handlers_disconnect_matched (G_OBJECT(arena->arena), G_SIGNAL_MATCH_DATA, 0, 0, NULL, NULL, arena);
-#endif
 		nr_active_object_remove_listener_by_data ((NRActiveObject *) arena->arena, arena);
 
 		nr_object_unref ((NRObject *) arena->arena);
@@ -219,14 +202,17 @@ static void
 sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
 	SPCanvasArena *arena;
-	gint bw, bh, sw, sh;
-	gint x, y;
+	unsigned int reqflags;
+	int bw, bh, sw, sh;
+	int x, y;
 
 	arena = SP_CANVAS_ARENA (item);
 
-	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc,
-				     NR_ARENA_ITEM_STATE_BBOX | NR_ARENA_ITEM_STATE_RENDER,
-				     NR_ARENA_ITEM_STATE_NONE);
+	reqflags = NR_ARENA_ITEM_STATE_BBOX | NR_ARENA_ITEM_STATE_RENDER;
+
+	if ((arena->root->state & reqflags) != reqflags) {
+		nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, reqflags, NR_ARENA_ITEM_STATE_NONE);
+	}
 
 	sp_canvas_buf_ensure_buf (buf);
 
@@ -304,12 +290,15 @@ sp_canvas_arena_point (SPCanvasItem *item, double x, double y, SPCanvasItem **ac
 {
 	SPCanvasArena *arena;
 	NRArenaItem *picked;
+	unsigned int reqflags;
 
 	arena = SP_CANVAS_ARENA (item);
 
-	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc,
-				     NR_ARENA_ITEM_STATE_BBOX | NR_ARENA_ITEM_STATE_PICK,
-				     NR_ARENA_ITEM_STATE_NONE);
+	reqflags = NR_ARENA_ITEM_STATE_BBOX | NR_ARENA_ITEM_STATE_PICK;
+
+	if ((arena->root->state & reqflags) != reqflags) {
+		nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, reqflags, NR_ARENA_ITEM_STATE_NONE);
+	}
 
 	picked = nr_arena_item_invoke_pick (arena->root, x, y, nr_arena_global_delta, arena->sticky);
 
@@ -328,10 +317,12 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 {
 	SPCanvasArena *arena;
 	NRArenaItem *new;
-	gint ret;
+	unsigned int reqflags;
+	int ret;
 	/* fixme: This sucks, we have to handle enter/leave notifiers */
 
 	arena = SP_CANVAS_ARENA (item);
+	reqflags = NR_ARENA_ITEM_STATE_BBOX | NR_ARENA_ITEM_STATE_PICK;
 
 	ret = FALSE;
 
@@ -339,19 +330,20 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 	case GDK_ENTER_NOTIFY:
 		if (!arena->cursor) {
 			if (arena->active) {
+#ifdef DEBUG_ARENA
 				g_warning ("Cursor entered to arena with already active item");
+#endif
 				nr_object_unref ((NRObject *) arena->active);
 			}
 			arena->cursor = TRUE;
-#if 0
-			gnome_canvas_w2c_d (item->canvas, event->crossing.x, event->crossing.y, &arena->cx, &arena->cy);
-#else
 			arena->cx = event->crossing.x;
 			arena->cy = event->crossing.y;
-#endif
-			/* fixme: Not sure abut this, but seems the right thing (Lauris) */
-			nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
-			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
+			if ((arena->root->state & reqflags) != reqflags) {
+				nr_arena_item_invoke_update (arena->root, NULL, &arena->gc,
+							     reqflags, NR_ARENA_ITEM_STATE_NONE);
+			}
+			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy,
+								   nr_arena_global_delta, arena->sticky);
 			if (arena->active) nr_object_ref ((NRObject *) arena->active);
 			ret = sp_canvas_arena_send_event (arena, event);
 		}
@@ -365,15 +357,14 @@ sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event)
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
-#if 0
-		gnome_canvas_w2c_d (item->canvas, event->motion.x, event->motion.y, &arena->cx, &arena->cy);
-#else
 		arena->cx = event->motion.x;
 		arena->cy = event->motion.y;
-#endif
-		/* fixme: Not sure abut this, but seems the right thing (Lauris) */
-		nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
-		new = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
+		if ((arena->root->state & reqflags) != reqflags) {
+			nr_arena_item_invoke_update (arena->root, NULL, &arena->gc,
+						     reqflags, NR_ARENA_ITEM_STATE_NONE);
+		}
+		new = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy,
+						 nr_arena_global_delta, arena->sticky);
 		if (new != arena->active) {
 			GdkEventCrossing ec;
 			ec.window = event->motion.window;
@@ -418,18 +409,6 @@ sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event)
 
 	return ret;
 }
-
-#if 0
-static void
-sp_canvas_arena_item_added (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca)
-{
-}
-
-static void
-sp_canvas_arena_remove_item (NRArena *arena, NRArenaItem *item, SPCanvasArena *ca)
-{
-}
-#endif
 
 static void
 sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, void *data)
