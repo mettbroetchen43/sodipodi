@@ -329,7 +329,7 @@ sp_item_widget_opacity_value_changed (GtkAdjustment *a, SPWidget *spw)
 	gtk_object_set_data (GTK_OBJECT (spw), "blocked", GUINT_TO_POINTER (TRUE));
 
 	css = sp_repr_css_attr_new ();
-	g_snprintf (c, 32, "%f", a->value);
+	g_snprintf (c, 32, "%f", CLAMP (a->value, 0.0, 1.0));
 	sp_repr_css_set_property (css, "opacity", c);
 	sp_repr_css_change (SP_OBJECT_REPR (item), css, "style");
 	sp_repr_css_attr_unref (css);

@@ -494,7 +494,7 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 		case ART_MOVETO_OPEN:
 			if (close && ((x != sx) || (y != sy))) {
 				/* Add closepath */
-				nr_svl_build_moveto (&svlb, sx, sy);
+				nr_svl_build_lineto (&svlb, sx, sy);
 			}
 			if (transform) {
 				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
@@ -539,9 +539,9 @@ nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windr
 			break;
 		}
 	}
-	if ((x != sx) || (y != sy)) {
+	if (close && ((x != sx) || (y != sy))) {
 		/* Add closepath */
-		nr_svl_build_moveto (&svlb, sx, sy);
+		nr_svl_build_lineto (&svlb, sx, sy);
 	}
 	nr_svl_build_finish_segment (&svlb);
 	if (svlb.svl) {

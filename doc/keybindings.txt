@@ -25,6 +25,7 @@ F4	- rect context
 F5	- ellipse context
 F6	- freehand context
 F7	- text context
+F8	- dropper context
 
 =/+	- zoom in
 -	- zoom out
