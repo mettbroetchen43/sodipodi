@@ -1,3 +1,7 @@
+2002-11-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dyna-draw-context.c: Clamp drag to [0.0 1.0]
+
 2002-11-23  Masatake YAMATO  <jet@gyve.org>
 
 	* src/node-context.c: Inlucde document.h.

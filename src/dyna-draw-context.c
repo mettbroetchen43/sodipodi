@@ -71,6 +71,10 @@
 #define DYNA_MIN_WIDTH 1.0
 #endif
 
+#define DRAG_MIN 0.0
+#define DRAG_DEFAULT 0.5
+#define DRAG_MAX 1.0
+
 static void sp_dyna_draw_context_class_init (SPDynaDrawContextClass *klass);
 static void sp_dyna_draw_context_init (SPDynaDrawContext *ddc);
 static void sp_dyna_draw_context_destroy (GtkObject *object);
@@ -174,12 +178,12 @@ sp_dyna_draw_context_init (SPDynaDrawContext *ddc)
 
 #ifdef NORMALIZED_COORDINATE
 	ddc->mass = 0.3;
-	ddc->drag = 0.5;
+	ddc->drag = DRAG_DEFAULT;
 	ddc->angle = 30.0;
 	ddc->width = 0.2;
 #else
 	ddc->mass = 0.2;
-	ddc->drag = 0.5;
+	ddc->drag = DRAG_DEFAULT;
 	ddc->angle = 30.0;
 	ddc->width = 0.1;
 #endif
@@ -252,8 +256,8 @@ sp_dyna_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *v
 		dval = (val) ? atof (val) : 0.2;
 		ddc->mass = CLAMP (dval, -1000.0, 1000.0);
 	} else if (!strcmp (key, "drag")) {
-		dval = (val) ? atof (val) : 0.5;
-		ddc->drag = CLAMP (dval, -1000.0, 1000.0);
+		dval = (val) ? atof (val) : DRAG_DEFAULT;
+		ddc->drag = CLAMP (dval, DRAG_MIN, DRAG_MAX);
 	} else if (!strcmp (key, "angle")) {
 		dval = (val) ? atof (val) : 0.5;
 		dval = fmod (dval, 360.0);
@@ -1009,7 +1013,7 @@ sp_ddc_defaults (GtkWidget *widget, GtkObject *obj)
 	adj = gtk_object_get_data (obj, "mass");
 	gtk_adjustment_set_value (adj, 0.3);
 	adj = gtk_object_get_data (obj, "drag");
-	gtk_adjustment_set_value (adj, 0.5);
+	gtk_adjustment_set_value (adj, DRAG_DEFAULT);
 	adj = gtk_object_get_data (obj, "angle");
 	gtk_adjustment_set_value (adj, 30.0);
 	adj = gtk_object_get_data (obj, "width");
@@ -1046,7 +1050,7 @@ sp_dyna_draw_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 1, 2, 0, 0, 0, 0);
-	a = gtk_adjustment_new (ddc->drag, 0.0, 10.0, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (ddc->drag, DRAG_MIN, DRAG_MAX, 0.01, 0.1, 0.1);
 	gtk_object_set_data (GTK_OBJECT (tbl), "drag", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);
