@@ -110,6 +110,9 @@ nr_arena_image_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 
 	image = NR_ARENA_IMAGE (item);
 
+	/* Request render old */
+	nr_arena_item_request_render (item);
+
 	/* Copy affine */
 	art_affine_invert (image->grid2px, gc->affine);
 	if (image->pixbuf) {

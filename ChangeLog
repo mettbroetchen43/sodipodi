@@ -1,3 +1,17 @@
+2001-11-19  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/preferences-skeleton.h: Removed '%' from opacity
+
+2001-11-12  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/display/canvas-arena.c (sp_canvas_arena_render): Try to fit
+	buffer, instead of just using 64x64 rectangles
+
+	* src/sp-rect.c: Remove Gtk+ arguments
+
+	* src/display/nr-arena-image.c (nr_arena_image_update): Request
+	rendering previous area
+
 2001-11-11  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-rect.c (sp_rect_write_transform): Scale rx and ry

@@ -3,8 +3,8 @@
 static const char preferences_skeleton[] =
 "<sodipodi>\n"
 "  <style id=\"paint\""
-"         style=\"fill:#7f7f7f;fill-opacity:100%;fill-rule:evenodd;"
-"                 stroke:#000000;stroke-opacity:100%;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt\">\n"
+"         style=\"fill:#7f7f7f;fill-opacity:1;fill-rule:evenodd;"
+"                 stroke:#000000;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt\">\n"
 "    <style id=\"shape\" style=\"stroke:none\">\n"
 "      <style id=\"rect\"/>\n"
 "      <style id=\"ellipse\"/>\n"

@@ -189,6 +189,7 @@ static void
 sp_canvas_arena_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
 	SPCanvasArena *arena;
+	gint bw, bh, sw, sh;
 	gint x, y;
 
 	arena = SP_CANVAS_ARENA (item);
@@ -201,15 +202,37 @@ sp_canvas_arena_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 		buf->is_buf = TRUE;
 	}
 
-	for (y = buf->rect.y0; y < buf->rect.y1; y += 64) {
-		for (x = buf->rect.x0; x < buf->rect.x1; x += 64) {
+	bw = buf->rect.x1 - buf->rect.x0;
+	bh = buf->rect.y1 - buf->rect.y0;
+	if ((bw < 1) || (bh < 1)) return;
+
+	/* 65536 is max cached buffer and we need 4 channels */
+	if (bw * bh < 16384) {
+		/* We can go with single buffer */
+		sw = bw;
+		sh = bh;
+	} else if (bw <= 2048) {
+		/* Go with row buffer */
+		sw = bw;
+		sh = 16384 / bw;
+	} else if (bh <= 2048) {
+		/* Go with column buffer */
+		sw = 16384 / bh;
+		sh = bh;
+	} else {
+		sw = 128;
+		sh = 128;
+	}
+
+	for (y = buf->rect.y0; y < buf->rect.y1; y += sh) {
+		for (x = buf->rect.x0; x < buf->rect.x1; x += sw) {
 			NRIRect area;
 			NRBuffer *b;
 
 			area.x0 = x;
 			area.y0 = y;
-			area.x1 = MIN (x + 64, buf->rect.x1);
-			area.y1 = MIN (y + 64, buf->rect.y1);
+			area.x1 = MIN (x + sw, buf->rect.x1);
+			area.y1 = MIN (y + sh, buf->rect.y1);
 
 			b = nr_buffer_get (NR_IMAGE_R8G8B8A8, area.x1 - area.x0, area.y1 - area.y0, TRUE, TRUE);
 			/* fixme: */
