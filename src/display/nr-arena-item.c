@@ -298,7 +298,7 @@ nr_arena_item_invoke_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 }
 
 NRArenaItem *
-nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
+nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
 {
 	gint ix, iy;
 
@@ -312,9 +312,12 @@ nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sti
 	ix = (gint) x;
 	iy = (gint) y;
 
-	if ((ix >= item->bbox.x0) && (ix < item->bbox.x1) && (iy >= item->bbox.y0) && (iy < item->bbox.y1)) {
+	if (((x + delta) >= item->bbox.x0) &&
+	    ((x - delta) <  item->bbox.x1) &&
+	    ((y + delta) >= item->bbox.y0) &&
+	    ((y - delta) <  item->bbox.y1)) {
 		if (((NRArenaItemClass *) ((GtkObject *) item)->klass)->pick)
-			return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->pick (item, x, y, sticky);
+			return ((NRArenaItemClass *) ((GtkObject *) item)->klass)->pick (item, x, y, delta, sticky);
 	}
 
 	return NULL;

@@ -63,6 +63,7 @@ static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_destroy (GtkObject * object);
 
+static void sp_desktop_request_redraw (SPView *view);
 static void sp_desktop_set_document (SPView *view, SPDocument *doc);
 static void sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height);
 
@@ -148,6 +149,7 @@ sp_desktop_class_init (SPDesktopClass *klass)
 
 	object_class->destroy = sp_desktop_destroy;
 
+	view_class->request_redraw = sp_desktop_request_redraw;
 	view_class->set_document = sp_desktop_set_document;
 	view_class->document_resized = sp_desktop_document_resized;
 }
@@ -155,8 +157,6 @@ sp_desktop_class_init (SPDesktopClass *klass)
 static void
 sp_desktop_init (SPDesktop *desktop)
 {
-	desktop->owner = NULL;
-
 	desktop->namedview = NULL;
 	desktop->selection = NULL;
 	desktop->event_context = NULL;
@@ -202,6 +202,18 @@ sp_desktop_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_desktop_request_redraw (SPView *view)
+{
+	SPDesktop *dt;
+
+	dt = SP_DESKTOP (view);
+
+	if (dt->main) {
+		gtk_widget_queue_draw (GTK_WIDGET (GNOME_CANVAS_ITEM (dt->main)->canvas));
+	}
 }
 
 static void
@@ -869,20 +881,6 @@ sp_desktop_coordinate_status (SPDesktop * desktop, gdouble x, gdouble y, gint8 u
 }
 
 
-// we make the desktop window with focus active, signal is connected in interface.c
-gint
-sp_desktop_set_focus (GtkWidget *widget, GtkWidget *widget2, SPDesktop * desktop)
-{
-  sodipodi_activate_desktop (desktop);
-  // give focus to canvas widget
-#if 1
-  gtk_widget_grab_focus (GTK_WIDGET (desktop->owner->canvas));
-  gnome_canvas_item_grab_focus ((GnomeCanvasItem *) desktop->main); 
-#endif
-
-  return FALSE;
-}
- 
 static void
 sp_desktop_menu_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
@@ -898,8 +896,6 @@ static void sp_desktop_widget_destroy (GtkObject *object);
 static void sp_desktop_widget_realize (GtkWidget *widget);
 
 static gint sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw);
-
-static gboolean sp_desktop_widget_shutdown (SPViewWidget *vw);
 
 static void sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw);
 static void sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw);
@@ -940,8 +936,6 @@ sp_desktop_widget_class_init (SPDesktopWidgetClass *klass)
 	object_class->destroy = sp_desktop_widget_destroy;
 
 	widget_class->realize = sp_desktop_widget_realize;
-
-	vw_class->shutdown = sp_desktop_widget_shutdown;
 }
 
 static void
@@ -1244,14 +1238,30 @@ sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dt
 	return FALSE;
 }
 
-/* fixme: This is not very nice place for doing dialog and saving (Lauris) */
+void
+sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw)
+{
+	if (dtw->decorations) {
+		gtk_widget_show (GTK_WIDGET (dtw->active));
+		gtk_widget_hide (GTK_WIDGET (dtw->inactive));
+	}
+}
+
+void
+sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw)
+{
+	if (dtw->decorations) {
+		gtk_widget_hide (GTK_WIDGET (dtw->active));
+		gtk_widget_show (GTK_WIDGET (dtw->inactive));
+	}
+}
 
 static gboolean
-sp_desktop_widget_shutdown (SPViewWidget *vw)
+sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 {
 	SPDocument *doc;
 
-	doc = SP_VIEW_WIDGET_DOCUMENT (vw);
+	doc = SP_VIEW_DOCUMENT (view);
 
 	if (doc && (((GtkObject *) doc)->ref_count == 1)) {
 		if (sp_repr_attr (sp_document_repr_root (doc), "sodipodi:modified") != NULL) {
@@ -1277,24 +1287,6 @@ sp_desktop_widget_shutdown (SPViewWidget *vw)
 	return FALSE;
 }
 
-void
-sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw)
-{
-	if (dtw->decorations) {
-		gtk_widget_show (GTK_WIDGET (dtw->active));
-		gtk_widget_hide (GTK_WIDGET (dtw->inactive));
-	}
-}
-
-void
-sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw)
-{
-	if (dtw->decorations) {
-		gtk_widget_hide (GTK_WIDGET (dtw->active));
-		gtk_widget_show (GTK_WIDGET (dtw->inactive));
-	}
-}
-
 /* Constructor */
 
 
@@ -1313,6 +1305,7 @@ sp_desktop_widget_new (SPNamedView *namedview)
 
 	dtw->desktop = (SPDesktop *) sp_desktop_new (namedview, dtw->canvas);
 	dtw->desktop->owner = dtw;
+
 	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "uri_set", GTK_SIGNAL_FUNC (sp_desktop_uri_set), dtw);
 	sp_view_widget_set_view (SP_VIEW_WIDGET (dtw), SP_VIEW (dtw->desktop));
 
@@ -1321,6 +1314,8 @@ sp_desktop_widget_new (SPNamedView *namedview)
 			    GTK_SIGNAL_FUNC (sp_dtw_desktop_activate), dtw);
 	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "desactivate",
 			    GTK_SIGNAL_FUNC (sp_dtw_desktop_desactivate), dtw);
+
+	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "shutdown", GTK_SIGNAL_FUNC (sp_dtw_desktop_shutdown), dtw);
 
 	return SP_VIEW_WIDGET (dtw);
 }
@@ -1346,4 +1341,18 @@ sp_desktop_widget_update_rulers (GtkWidget *widget, SPDesktopWidget *dtw)
 	}
 }
 
+/* we make the desktop window with focus active, signal is connected in interface.c */
+
+gint
+sp_desktop_widget_set_focus (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw)
+{
+	sodipodi_activate_desktop (dtw->desktop);
+
+	/* give focus to canvas widget */
+	gtk_widget_grab_focus (GTK_WIDGET (dtw->canvas));
+	gnome_canvas_item_grab_focus ((GnomeCanvasItem *) dtw->desktop->main); 
+
+	return FALSE;
+}
+ 
 

@@ -23,6 +23,7 @@
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkspinbutton.h>
 #include "../sodipodi.h"
 #include "display-settings.h"
 
@@ -30,6 +31,7 @@ static GtkWidget *dialog = NULL;
 
 extern gint nr_arena_image_x_sample;
 extern gint nr_arena_image_y_sample;
+extern gdouble nr_arena_global_delta;
 
 static GtkWidget *sp_display_dialog_new (void);
 
@@ -67,10 +69,17 @@ sp_display_dialog_set_oversample (GtkMenuItem *item, gpointer data)
 	sodipodi_refresh_display (SODIPODI);
 }
 
+static void
+sp_display_dialog_cursor_tolerance_changed (GtkAdjustment *adj, gpointer data)
+{
+	nr_arena_global_delta = adj->value;
+}
+
 static GtkWidget *
 sp_display_dialog_new (void)
 {
-	GtkWidget *dialog, *nb, *l, *vb, *hb, *om, *m, *i;
+	GtkWidget *dialog, *nb, *l, *vb, *hb, *om, *m, *i, *sb;
+	GtkObject *a;
 
 	dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Display settings"));
@@ -80,7 +89,6 @@ sp_display_dialog_new (void)
 	gtk_container_add (GTK_CONTAINER (dialog), nb);
 
 	/* Rendering settings */
-
 	/* Notebook tab */
 	l = gtk_label_new (_("Rendering"));
 	gtk_widget_show (l);
@@ -130,6 +138,32 @@ sp_display_dialog_new (void)
 
 	gtk_option_menu_set_history (GTK_OPTION_MENU (om), nr_arena_image_x_sample);
 
+	/* Input settings */
+	/* Notebook tab */
+	l = gtk_label_new (_("Input"));
+	gtk_widget_show (l);
+	vb = gtk_vbox_new (FALSE, 4);
+	gtk_widget_show (vb);
+	gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
+	gtk_notebook_append_page (GTK_NOTEBOOK (nb), vb, l);
+
+	hb = gtk_hbox_new (FALSE, 4);
+	gtk_widget_show (hb);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
+
+	l = gtk_label_new (_("Default cursor tolerance:"));
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_widget_show (l);
+	gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
+
+	a = gtk_adjustment_new (0.0, 0.0, 10.0, 0.1, 1.0, 1.0);
+	gtk_adjustment_set_value (GTK_ADJUSTMENT (a), nr_arena_global_delta);
+	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 1);
+	gtk_widget_show (sb);
+	gtk_box_pack_start (GTK_BOX (hb), sb, TRUE, TRUE, 0);
+
+	gtk_signal_connect (GTK_OBJECT (a), "value_changed",
+			    GTK_SIGNAL_FUNC (sp_display_dialog_cursor_tolerance_changed), NULL);
 
 	return dialog;
 }

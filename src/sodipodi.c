@@ -664,13 +664,19 @@ sodipodi_refresh_display (Sodipodi *sodipodi)
 	GSList *l;
 
 	for (l = sodipodi->desktops; l != NULL; l = l->next) {
-		SPDesktop *desktop;
-		desktop = SP_DESKTOP (l->data);
-		gtk_widget_queue_draw (GTK_WIDGET (desktop->owner));
+		sp_view_request_redraw (SP_VIEW (l->data));
 	}
 }
 
+/*
+ * fixme: This also
+ */
 
+void
+sodipodi_exit (Sodipodi *sodipodi)
+{
+	/* fixme: fixme: fixme: This has to allow saving data */
 
-
+	gtk_main_quit ();
+}
 

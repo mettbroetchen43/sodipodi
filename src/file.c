@@ -27,6 +27,7 @@
 #include "dir-util.h"
 #include "helper/png-write.h"
 #include "sodipodi.h"
+#include "desktop.h"
 #include "sp-image.h"
 #include "interface.h"
 #include "file.h"
@@ -219,11 +220,6 @@ void sp_file_save_as (GtkWidget * widget)
 	gtk_widget_show (w);
 
 	gtk_main ();
-}
-
-void sp_file_exit (void)
-{
-	gtk_main_quit ();
 }
 
 static void
@@ -511,3 +507,9 @@ void sp_file_print_preview (GtkWidget * widget)
 
 	sp_do_file_print_preview (doc);
 }
+
+void sp_file_exit (void)
+{
+	sodipodi_exit (SODIPODI);
+}
+

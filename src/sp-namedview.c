@@ -438,11 +438,11 @@ sp_namedview_hide (SPNamedView * nv, gpointer desktop)
 	dt = SP_DESKTOP (desktop);
 
 	for (l = nv->hguides; l != NULL; l = l->next) {
-		sp_guide_hide (SP_GUIDE (l->data), dt->owner->canvas);
+		sp_guide_hide (SP_GUIDE (l->data), SP_DT_CANVAS (dt));
 	}
 
 	for (l = nv->vguides; l != NULL; l = l->next) {
-		sp_guide_hide (SP_GUIDE (l->data), dt->owner->canvas);
+		sp_guide_hide (SP_GUIDE (l->data), SP_DT_CANVAS (dt));
 	}
 
 	nv->views = g_slist_remove (nv->views, desktop);
@@ -472,11 +472,11 @@ sp_namedview_activate_guides (SPNamedView * nv, gpointer desktop, gboolean activ
 	dt = SP_DESKTOP (desktop);
 
 	for (l = nv->hguides; l != NULL; l = l->next) {
-		sp_guide_sensitize (SP_GUIDE (l->data), dt->owner->canvas, active);
+		sp_guide_sensitize (SP_GUIDE (l->data), SP_DT_CANVAS (dt), active);
 	}
 
 	for (l = nv->vguides; l != NULL; l = l->next) {
-		sp_guide_sensitize (SP_GUIDE (l->data), dt->owner->canvas, active);
+		sp_guide_sensitize (SP_GUIDE (l->data), SP_DT_CANVAS (dt), active);
 	}
 }
 

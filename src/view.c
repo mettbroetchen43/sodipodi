@@ -18,6 +18,7 @@
 #include "view.h"
 
 enum {
+	SHUTDOWN,
 	URI_SET,
 	RESIZED,
 	LAST_SIGNAL
@@ -60,6 +61,12 @@ sp_view_class_init (SPViewClass *klass)
 
 	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
 
+	signals[SHUTDOWN] = gtk_signal_new ("shutdown",
+					    GTK_RUN_LAST,
+					    object_class->type,
+					    GTK_SIGNAL_OFFSET (SPViewClass, shutdown),
+					    gtk_marshal_BOOL__NONE,
+					    GTK_TYPE_BOOL, 0);
 	signals[URI_SET] =  gtk_signal_new ("uri_set",
 					    GTK_RUN_FIRST,
 					    object_class->type,
@@ -97,6 +104,31 @@ sp_view_destroy (GtkObject *object)
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
+}
+
+gboolean
+sp_view_shutdown (SPView *view)
+{
+	gboolean result;
+
+	g_return_val_if_fail (view != NULL, TRUE);
+	g_return_val_if_fail (SP_IS_VIEW (view), TRUE);
+
+	result = FALSE;
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[SHUTDOWN], &result);
+
+	return result;
+}
+
+void
+sp_view_request_redraw (SPView *view)
+{
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (SP_IS_VIEW (view));
+
+	if (((SPViewClass *) ((GtkObject *) view)->klass)->request_redraw)
+		((SPViewClass *) ((GtkObject *) view)->klass)->request_redraw (view);
 }
 
 void

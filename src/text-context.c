@@ -109,11 +109,11 @@ sp_text_context_destroy (GtkObject *object)
 		sp_text_complete (text_context);
 #endif
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (ec->desktop->owner->canvas), tc);
+	gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_CANVAS (ec->desktop)), tc);
 #ifdef SP_TC_XIM
 	gdk_ic_destroy (tc->ic);
 	gdk_ic_attr_destroy (tc->ic_attr);
-	gdk_window_set_events (GTK_WIDGET (ec->desktop->owner)->window, tc->savedmask);
+	gdk_window_set_events (GTK_WIDGET (SP_DT_CANVAS (ec->desktop))->window, tc->savedmask);
 #endif
 
 	tc->item = NULL;
@@ -130,7 +130,7 @@ static gint
 sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 {
 	g_print ("focus in\n");
-	gdk_im_begin (tc->ic, GTK_WIDGET (SP_EVENT_CONTEXT (tc)->desktop->owner->canvas)->window);
+	gdk_im_begin (tc->ic, GTK_WIDGET (SP_DT_CANVAS (SP_EVENT_CONTEXT (tc)->desktop))->window);
 }
 
 static gint
@@ -164,21 +164,21 @@ sp_text_context_setup (SPEventContext *event_context, SPDesktop *desktop)
 			GDK_IM_STATUS_NOTHING;
 		attr->style = style = gdk_im_decide_style (supported_style);
 		/* fixme: is this OK? */
-		attr->client_window = GTK_WIDGET (desktop->owner)->window;
-		if ((colormap = gtk_widget_get_colormap (GTK_WIDGET (desktop->owner))) != gtk_widget_get_default_colormap ()) {
+		attr->client_window = GTK_WIDGET (SP_DT_CANVAS (desktop))->window;
+		if ((colormap = gtk_widget_get_colormap (GTK_WIDGET (SP_DT_CANVAS (desktop)))) != gtk_widget_get_default_colormap ()) {
 			attrmask |= GDK_IC_PREEDIT_COLORMAP;
 			attr->preedit_colormap = colormap;
 		}
 		tc->ic = gdk_ic_new (attr, attrmask);
 		if (tc->ic) {
-			tc->savedmask = gdk_window_get_events (GTK_WIDGET (desktop->owner)->window);
-			gdk_window_set_events (GTK_WIDGET (desktop->owner)->window, tc->savedmask | gdk_ic_get_events (tc->ic));
+			tc->savedmask = gdk_window_get_events (GTK_WIDGET (SP_DT_CANVAS (desktop))->window);
+			gdk_window_set_events (GTK_WIDGET (SP_DT_CANVAS (desktop))->window, tc->savedmask | gdk_ic_get_events (tc->ic));
 		}
-		if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (desktop->owner->canvas))) {
-			gdk_im_begin (tc->ic, GTK_WIDGET (desktop->owner->canvas)->window);
+		if (GTK_WIDGET_HAS_FOCUS (GTK_WIDGET (SP_DT_CANVAS (desktop)))) {
+			gdk_im_begin (tc->ic, GTK_WIDGET (SP_DT_CANVAS (desktop))->window);
 		}
-		gtk_signal_connect (GTK_OBJECT (desktop->owner->canvas), "focus_in_event", GTK_SIGNAL_FUNC (sptc_focus_in), tc);
-		gtk_signal_connect (GTK_OBJECT (desktop->owner->canvas), "focus_out_event", GTK_SIGNAL_FUNC (sptc_focus_out), tc);
+		gtk_signal_connect (GTK_OBJECT (SP_DT_CANVAS (desktop)), "focus_in_event", GTK_SIGNAL_FUNC (sptc_focus_in), tc);
+		gtk_signal_connect (GTK_OBJECT (SP_DT_CANVAS (desktop)), "focus_out_event", GTK_SIGNAL_FUNC (sptc_focus_out), tc);
 	}
 #endif
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)

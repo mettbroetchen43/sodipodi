@@ -34,6 +34,10 @@ struct _SPView {
 struct _SPViewClass {
 	GtkObjectClass parent_class;
 
+	/* Request shutdown */
+	gboolean (* shutdown) (SPView *view);
+	/* Request redraw of visible area */
+	void (* request_redraw) (SPView *view);
 	/* Virtual method to set/change/remove document link */
 	void (* set_document) (SPView *view, SPDocument *doc);
 	/* Virtual method about document size change */
@@ -52,6 +56,9 @@ GtkType sp_view_get_type (void);
 void sp_view_set_document (SPView *view, SPDocument *doc);
 
 void sp_view_emit_resized (SPView *view, gdouble width, gdouble height);
+
+gboolean sp_view_shutdown (SPView *view);
+void sp_view_request_redraw (SPView *view);
 
 /* SPViewWidget */
 

@@ -36,7 +36,7 @@ static void nr_arena_image_destroy (GtkObject *object);
 
 static guint nr_arena_image_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
 static guint nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-static NRArenaItem *nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky);
+static NRArenaItem *nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *parent_class;
 
@@ -315,7 +315,7 @@ nr_arena_image_render (NRArenaItem *item, NRIRect *area, NRBuffer *buf)
 }
 
 static NRArenaItem *
-nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
+nr_arena_image_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
 {
 	NRArenaImage *image;
 	art_u8 *p;

@@ -12,6 +12,10 @@
 #include "file.h"
 #include "interface.h"
 #include "desktop.h"
+#include "selection-chemistry.h"
+#include "path-chemistry.h"
+#include "zoom-context.h"
+#include "event-broker.h"
 #include "svg-view.h"
 
 #include "dialogs/text-edit.h"
@@ -26,7 +30,7 @@
 
 void fake_dialogs (void);
 
-static gint sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPViewWidget *vw);
+static gint sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPView *view);
 
 void
 sp_create_window (SPViewWidget *vw, gboolean editable)
@@ -44,8 +48,8 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 		gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
 		gtk_object_set_data (GTK_OBJECT (w), "desktop", SP_DESKTOP_WIDGET (vw)->desktop);
 		gtk_object_set_data (GTK_OBJECT (w), "desktopwidget", vw);
-		gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), vw);
-		gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_set_focus), SP_DESKTOP_WIDGET (vw)->desktop);
+		gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), vw->view);
+		gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_widget_set_focus), vw);
 #if 0
 		sp_desktop_set_title (desktop);
 #endif
@@ -102,7 +106,7 @@ sp_ui_close_view (GtkWidget * widget)
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;
 
-	if (sp_ui_delete (NULL, NULL, SP_VIEW_WIDGET ((SP_ACTIVE_DESKTOP)->owner))) return;
+	if (sp_ui_delete (NULL, NULL, SP_VIEW (SP_ACTIVE_DESKTOP))) return;
 
 	w = gtk_object_get_data (GTK_OBJECT (SP_ACTIVE_DESKTOP), "window");
 
@@ -117,9 +121,327 @@ sp_ui_close_view (GtkWidget * widget)
 }
 
 static gint
-sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPViewWidget *vw)
+sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPView *view)
 {
-	return sp_view_widget_shutdown (vw);
+	return sp_view_shutdown (view);
+}
+
+static GtkWidget *
+sp_ui_menu_append_item (GtkMenu *menu, const guchar *stock, const guchar *label, GtkSignalFunc callback, gpointer data)
+{
+	GtkWidget *item;
+
+	if (stock) {
+		item = gnome_stock_menu_item (stock, label);
+	} else {
+		item = gtk_menu_item_new ();
+	}
+	gtk_widget_show (item);
+	if (callback) {
+		gtk_signal_connect (GTK_OBJECT (item), "activate", callback, data);
+	}
+	gtk_menu_append (GTK_MENU (menu), item);
+
+	return item;
+}
+
+static void
+sp_ui_file_menu (GtkMenu *menu, SPDocument *doc)
+{
+	GtkWidget *i;
+
+	/* File:New */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_NEW, _("New"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_new), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Open */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_OPEN, _("Open"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_open), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Save */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_SAVE, _("Save"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_save), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Save As */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_SAVE_AS, _("Save As"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_save_as), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Separator */
+	i = gtk_menu_item_new ();
+	gtk_widget_show (i);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Import */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Import"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_import), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Export */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Export"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_export), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Separator */
+	i = gtk_menu_item_new ();
+	gtk_widget_show (i);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Print */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_PRINT, _("Print"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_print), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Print Preview */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Print preview"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_print_preview), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Separator */
+	i = gtk_menu_item_new ();
+	gtk_widget_show (i);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Close */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_CLOSE, _("Close view"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_ui_close_view), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Exit */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_EXIT, _("Exit"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_file_exit), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+}
+
+static void
+sp_ui_edit_menu (GtkMenu *menu, SPDocument *doc)
+{
+	GtkWidget *i;
+
+	/* Edit:Cut */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_CUT, _("Cut"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_cut), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Edit:Copy */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_COPY, _("Copy"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_copy), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Edit:Paste */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_PASTE, _("Paste"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_paste), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Separator */
+	i = gtk_menu_item_new ();
+	gtk_widget_show (i);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Edit:Duplicate */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Duplicate"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_duplicate), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* File:Export */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Delete"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_delete), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+}
+
+static void
+sp_ui_selection_menu (GtkMenu *menu, SPDocument *doc)
+{
+	GtkWidget *i, *sm, *si;
+
+	/* Selection:Group */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Group"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_group), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Selection:Ungroup */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Ungroup"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selection_ungroup), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Separator */
+	i = gtk_menu_item_new ();
+	gtk_widget_show (i);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Selection:Combine */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Combine"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selected_path_combine), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Selection:Break apart */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Break apart"));
+	gtk_widget_show (i);
+	gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_selected_path_break_apart), NULL);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Separator */
+	i = gtk_menu_item_new ();
+	gtk_widget_show (i);
+	gtk_menu_append (GTK_MENU (menu), i);
+	/* Selection:Order */
+	i = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Order"));
+	gtk_widget_show (i);
+	sm = gtk_menu_new ();
+	gtk_widget_show (sm);
+	si = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Bring to Front"));
+	gtk_widget_show (si);
+	gtk_signal_connect (GTK_OBJECT (si), "activate", GTK_SIGNAL_FUNC (sp_selection_raise_to_top), NULL);
+	gtk_menu_append (GTK_MENU (sm), si);
+	si = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Send to Back"));
+	gtk_widget_show (si);
+	gtk_signal_connect (GTK_OBJECT (si), "activate", GTK_SIGNAL_FUNC (sp_selection_lower_to_bottom), NULL);
+	gtk_menu_append (GTK_MENU (sm), si);
+	si = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Raise"));
+	gtk_widget_show (si);
+	gtk_signal_connect (GTK_OBJECT (si), "activate", GTK_SIGNAL_FUNC (sp_selection_raise), NULL);
+	gtk_menu_append (GTK_MENU (sm), si);
+	si = gnome_stock_menu_item (GNOME_STOCK_MENU_BLANK, _("Lower"));
+	gtk_widget_show (si);
+	gtk_signal_connect (GTK_OBJECT (si), "activate", GTK_SIGNAL_FUNC (sp_selection_lower), NULL);
+	gtk_menu_append (GTK_MENU (sm), si);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
+	gtk_menu_append (GTK_MENU (menu), i);
+}
+
+static void
+sp_ui_view_menu (GtkMenu *menu, SPDocument *doc)
+{
+	GtkWidget *zm, *zi, *sm, *si;
+
+	/* View:Zoom */
+	zi = sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Zoom"), NULL, NULL);
+	zm = gtk_menu_new ();
+	gtk_widget_show (zm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (zi), zm);
+	sp_ui_menu_append_item (GTK_MENU (zm), GNOME_STOCK_MENU_BLANK, _("Selection"), sp_zoom_selection, NULL);
+	sp_ui_menu_append_item (GTK_MENU (zm), GNOME_STOCK_MENU_BLANK, _("Drawing"), sp_zoom_drawing, NULL);
+	sp_ui_menu_append_item (GTK_MENU (zm), GNOME_STOCK_MENU_BLANK, _("Page"), sp_zoom_page, NULL);
+	sp_ui_menu_append_item (GTK_MENU (zm), NULL, NULL, NULL, NULL);
+	si = sp_ui_menu_append_item (GTK_MENU (zm), GNOME_STOCK_MENU_BLANK, _("Scale"), NULL, NULL);
+	sm = gtk_menu_new ();
+	gtk_widget_show (sm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (si), sm);
+	sp_ui_menu_append_item (GTK_MENU (sm), GNOME_STOCK_MENU_BLANK, _("1:2"), sp_zoom_1_to_2, NULL);
+	sp_ui_menu_append_item (GTK_MENU (sm), GNOME_STOCK_MENU_BLANK, _("1:1"), sp_zoom_1_to_1, NULL);
+	sp_ui_menu_append_item (GTK_MENU (sm), GNOME_STOCK_MENU_BLANK, _("2:1"), sp_zoom_2_to_1, NULL);
+	/* View:New View*/
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("New View"), sp_ui_new_view, NULL);
+	/* View:New Preview*/
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("New Preview"), sp_ui_new_view_preview, NULL);
+}
+
+static void
+sp_ui_event_context_menu (GtkMenu *menu, SPDocument *doc)
+{
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Select"), sp_event_context_set_select, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Node"), sp_event_context_set_node_edit, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Rectangle"), sp_event_context_set_rect, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Arc"), sp_event_context_set_arc, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Star"), sp_event_context_set_star, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Spiral"), sp_event_context_set_spiral, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Freehand"), sp_event_context_set_freehand, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Dynahand"), sp_event_context_set_dynahand, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Text"), sp_event_context_set_text, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Zoom"), sp_event_context_set_zoom, NULL);
+}
+
+static void
+sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
+{
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Fill and Stroke"), sp_object_properties_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Size and Position"), sp_object_properties_layout, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Align Objects"), sp_quick_align_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Text Editing"), sp_text_edit_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Transformations"), sp_transformation_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Document"), sp_document_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Editing Window"), sp_desktop_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("XML Editor"), sp_xml_tree_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Display Properties"), sp_display_dialog, NULL);
+}
+
+/*
+ * Item properties
+ *
+ */
+
+GtkWidget *
+sp_ui_generic_menu (SPView *v, SPItem *item)
+{
+	GtkWidget *m, *i, *sm;
+	SPDesktop *dt;
+
+	dt = (SP_IS_DESKTOP (v)) ? SP_DESKTOP (v) : NULL;
+
+	m = gtk_menu_new ();
+
+	/* Undo */
+	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_UNDO, _("Undo"), GTK_SIGNAL_FUNC (sp_undo), NULL);
+	/* File:Print Preview */
+	sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_REDO, _("Redo"), GTK_SIGNAL_FUNC (sp_redo), NULL);
+	/* Separator */
+	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
+
+	/* Item menu */
+	if (item) {
+		sp_item_menu (item, dt, GTK_MENU (m));
+		/* Separator */
+		sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
+	}
+
+#if 0
+	/* Desktop menu */
+	if (vw) {
+		sp_view_widget_menu (vw, m);
+		i = gtk_menu_item_new ();
+		gtk_widget_show (i);
+		gtk_menu_append (GTK_MENU (m), i);
+	}
+#endif
+
+	/* Generic menu */
+	/* File submenu */
+	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("File"), NULL, NULL);
+	sm = gtk_menu_new ();
+	sp_ui_file_menu (sm, NULL);
+	gtk_widget_show (sm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
+	/* Edit submenu */
+	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("Edit"), NULL, NULL);
+	sm = gtk_menu_new ();
+	sp_ui_edit_menu (sm, NULL);
+	gtk_widget_show (sm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
+	/* Selection submenu */
+	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("Selection"), NULL, NULL);
+	sm = gtk_menu_new ();
+	sp_ui_selection_menu (sm, NULL);
+	gtk_widget_show (sm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
+	/* View submenu */
+	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("View"), NULL, NULL);
+	sm = gtk_menu_new ();
+	sp_ui_view_menu (sm, NULL);
+	gtk_widget_show (sm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
+	/* Drawing mode submenu */
+	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("Drawing Mode"), NULL, NULL);
+	sm = gtk_menu_new ();
+	sp_ui_event_context_menu (sm, NULL);
+	gtk_widget_show (sm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
+	/* Dialog submenu */
+	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("Dialogs"), NULL, NULL);
+	sm = gtk_menu_new ();
+	sp_ui_dialog_menu (sm, NULL);
+	gtk_widget_show (sm);
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
+
+	return m;
 }
 
 void
@@ -132,7 +454,6 @@ fake_dialogs (void)
 	sp_text_edit_dialog ();
 	sp_export_dialog ();
 	sp_xml_tree_dialog ();
-	sp_quick_align_dialog ();
 	sp_transformation_dialog ();
 	sp_desktop_dialog ();
 	sp_document_dialog ();

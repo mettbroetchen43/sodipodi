@@ -1,3 +1,43 @@
+2002-03-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_pick): Use delta (tolerance)
+
+	* src/display/canvas-arena.c (sp_canvas_arena_update): Use global delta (tolerance)
+	(sp_canvas_arena_point): Ditto
+	(sp_canvas_arena_event): Ditto
+
+	* src/display/nr-arena-item.c (nr_arena_item_invoke_pick): Changed
+	virtual method signature
+
+	* src/dialogs/display-settings.c (sp_display_dialog_cursor_tolerance_changed): Implement
+	(sp_display_dialog_new): Create pick tolerance spinbutton
+
+	* src/view.c (sp_view_shutdown): New method and signal
+	(sp_view_request_redraw): New virtual method
+
+	* src/sodipodi.c (sodipodi_refresh_display): Use sp_view_request_redraw
+
+	* src/interface.c (sp_ui_delete): Use sp_view_shutdown
+	(sp_ui_menu_append_item): Helper
+	(sp_ui_file_menu): New method
+	(sp_ui_edit_menu): Ditto
+	(sp_ui_selection_menu): Ditto
+	(sp_ui_view_menu): Ditto
+	(sp_ui_event_context_menu): Ditto
+	(sp_ui_dialog_menu): Ditto
+	(sp_ui_generic_menu): Ditto
+
+	* src/file.c (sp_file_exit): Use sodipodi_exit method
+
+	* src/event-context.c (sp_event_root_menu_popup): Use sp_ui_generic_menu
+
+	* src/desktop.c (sp_desktop_request_redraw): New virtual method implementation
+	(sp_desktop_widget_set_focus): Do that widget method instead
+
+	* src/desktop-events.c (sp_dt_ruler_event): Do not use desktop->owner
+
+	* src/Makefile.am (INCLUDES): -DSODIPODI_PIXMAPDIR
+
 Mon Mar  4 01:23:05 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-ellipse.c (sp_genericellipse_normalize): Fixed start and

@@ -73,4 +73,10 @@ SPDesktop * sodipodi_active_desktop (void);
 
 void sodipodi_refresh_display (Sodipodi *sodipodi);
 
+/*
+ * fixme: This also
+ */
+
+void sodipodi_exit (Sodipodi *sodipodi);
+
 #endif

@@ -416,6 +416,7 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 void
 sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 {
+#if 0
 	static GtkMenu * menu = NULL;
 	static GtkWidget * objitem = NULL;
 	GladeXML * xml;
@@ -447,13 +448,19 @@ sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 		gtk_menu_item_remove_submenu (GTK_MENU_ITEM (objitem));
 		gtk_widget_set_sensitive (objitem, FALSE);
 	}
+#else
+	GtkWidget *menu;
+
+	menu = sp_ui_generic_menu (SP_VIEW (desktop), item);
+	gtk_widget_show (menu);
+#endif
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-		gtk_menu_popup (menu, NULL, NULL, 0, NULL, event->button.button, event->button.time);
+		gtk_menu_popup (GTK_MENU (menu), NULL, NULL, 0, NULL, event->button.button, event->button.time);
 		break;
 	case GDK_KEY_PRESS:
-		gtk_menu_popup (menu, NULL, NULL, 0, NULL, 0, event->key.time);
+		gtk_menu_popup (GTK_MENU (menu), NULL, NULL, 0, NULL, 0, event->key.time);
 		break;
 	default:
 		break;

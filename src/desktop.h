@@ -36,7 +36,9 @@ typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
 struct _SPDesktop {
 	SPView view;
 
+#if 1
 	SPDesktopWidget *owner;
+#endif
 
 	SPNamedView *namedview;
 	SPSelection *selection;
@@ -98,7 +100,6 @@ ArtDRect * sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area);
 void sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint border);
 void sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
 void sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
-gint sp_desktop_set_focus (GtkWidget * widget, GtkWidget * widget2, SPDesktop * desktop);
 
 /* Context */
 
@@ -150,5 +151,7 @@ GtkType sp_desktop_widget_get_type (void);
 /* Constructor */
 
 SPViewWidget *sp_desktop_widget_new (SPNamedView *namedview);
+
+gint sp_desktop_widget_set_focus (GtkWidget *widget, GdkEvent *event, SPDesktopWidget  *dtw);
 
 #endif

@@ -83,7 +83,7 @@ struct _NRArenaItemClass {
 	guint (* update) (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
 	guint (* render) (NRArenaItem *item, NRIRect *area, NRBuffer *b);
 	guint (* clip) (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-	NRArenaItem * (* pick) (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky);
+	NRArenaItem * (* pick) (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 	gint (* event) (NRArenaItem *item, NREvent *event);
 };
@@ -111,7 +111,7 @@ void nr_arena_item_set_child_position (NRArenaItem *item, NRArenaItem *child, NR
 guint nr_arena_item_invoke_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
 guint nr_arena_item_invoke_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
 guint nr_arena_item_invoke_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky);
+NRArenaItem *nr_arena_item_invoke_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 gint nr_arena_item_emit_event (NRArenaItem *item, NREvent *event);
 

@@ -93,7 +93,7 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 		if (dragging) {
 		    /* we have to substract (x|y)thickness to the position 
 		     * since there is a frame between ruler and canvas */
-			gnome_canvas_window_to_world (desktop->owner->canvas,
+			gnome_canvas_window_to_world (dtw->canvas,
 						      event->motion.x - 
 						      (horiz ? 0//-widget->style->klass->xthickness
 						             : widget->allocation.width + 

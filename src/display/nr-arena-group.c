@@ -29,7 +29,7 @@ static void nr_arena_group_set_child_position (NRArenaItem *item, NRArenaItem *c
 static guint nr_arena_group_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
 static guint nr_arena_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
 static guint nr_arena_group_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-static NRArenaItem *nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky);
+static NRArenaItem *nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *parent_class;
 
@@ -269,7 +269,7 @@ nr_arena_group_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 }
 
 static NRArenaItem *
-nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
+nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
 {
 	NRArenaGroup *group;
 	NRArenaItem *child, *picked;
@@ -277,7 +277,7 @@ nr_arena_group_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
 	group = NR_ARENA_GROUP (item);
 
 	for (child = group->last; child != NULL; child = child->prev) {
-		picked = nr_arena_item_invoke_pick (child, x, y, sticky);
+		picked = nr_arena_item_invoke_pick (child, x, y, delta, sticky);
 		if (picked) return (group->transparent) ? picked : item;
 	}
 

@@ -26,6 +26,8 @@ enum {
 	LAST_SIGNAL
 };
 
+gdouble nr_arena_global_delta = 1.0;
+
 static void sp_marshal_INT__POINTER_POINTER (GtkObject *object, GtkSignalFunc func, gpointer func_data, GtkArg *args);
 
 static void sp_canvas_arena_class_init (SPCanvasArenaClass * klass);
@@ -156,15 +158,15 @@ sp_canvas_arena_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path
 
 	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_ALL, reset);
 
-	item->x1 = arena->root->bbox.x0;
-	item->y1 = arena->root->bbox.y0;
-	item->x2 = arena->root->bbox.x1;
-	item->y2 = arena->root->bbox.y1;
+	item->x1 = arena->root->bbox.x0 - 1;
+	item->y1 = arena->root->bbox.y0 - 1;
+	item->x2 = arena->root->bbox.x1 + 1;
+	item->y2 = arena->root->bbox.y1 + 1;
 
 	if (arena->cursor) {
 		NRArenaItem *new;
 		/* Mess with enter/leave notifiers */
-		new = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, arena->sticky);
+		new = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
 		if (new != arena->active) {
 			GdkEventCrossing ec;
 			ec.window = GTK_WIDGET (item->canvas)->window;
@@ -258,7 +260,7 @@ sp_canvas_arena_point (GnomeCanvasItem *item, double x, double y, int cx, int cy
 
 	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
 
-	picked = nr_arena_item_invoke_pick (arena->root, cx, cy, arena->sticky);
+	picked = nr_arena_item_invoke_pick (arena->root, cx, cy, nr_arena_global_delta, arena->sticky);
 
 	arena->picked = picked;
 
@@ -287,7 +289,7 @@ sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
 		if (!arena->cursor) {
 			arena->cursor = TRUE;
 			gnome_canvas_w2c_d (item->canvas, event->crossing.x, event->crossing.y, &arena->cx, &arena->cy);
-			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, arena->sticky);
+			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
 			ret = sp_canvas_arena_send_event (arena, event);
 		}
 		break;
@@ -300,7 +302,7 @@ sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
 		break;
 	case GDK_MOTION_NOTIFY:
 		gnome_canvas_w2c_d (item->canvas, event->motion.x, event->motion.y, &arena->cx, &arena->cy);
-		new = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, arena->sticky);
+		new = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
 		if (new != arena->active) {
 			GdkEventCrossing ec;
 			ec.window = event->motion.window;
@@ -373,11 +375,22 @@ sp_canvas_arena_request_render (NRArena *arena, NRIRect *area, SPCanvasArena *ca
 }
 
 void
+sp_canvas_arena_set_pick_delta (SPCanvasArena *ca, gdouble delta)
+{
+	g_return_if_fail (ca != NULL);
+	g_return_if_fail (SP_IS_CANVAS_ARENA (ca));
+
+	/* fixme: repick? */
+	ca->delta = delta;
+}
+
+void
 sp_canvas_arena_set_sticky (SPCanvasArena *ca, gboolean sticky)
 {
 	g_return_if_fail (ca != NULL);
 	g_return_if_fail (SP_IS_CANVAS_ARENA (ca));
 
+	/* fixme: repick? */
 	ca->sticky = sticky;
 }
 

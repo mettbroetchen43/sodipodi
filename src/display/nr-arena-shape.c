@@ -30,7 +30,7 @@ static void nr_arena_shape_destroy (GtkObject *object);
 static guint nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, guint reset);
 static guint nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
 static guint nr_arena_shape_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-static NRArenaItem *nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky);
+static NRArenaItem *nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaItemClass *shape_parent_class;
 
@@ -325,7 +325,7 @@ nr_arena_shape_clip (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 }
 
 static NRArenaItem *
-nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
+nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
 {
 	NRArenaShape *shape;
 	SPCPathComp *comp;
@@ -343,6 +343,14 @@ nr_arena_shape_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
 	}
 	if (comp->archetype->stroke && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
 		if (art_svp_point_wind (comp->archetype->stroke, x - comp->cx, y - comp->cy)) return item;
+	}
+	if (delta > 1e-3) {
+		if (comp->closed && comp->archetype->svp && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
+			if (art_svp_point_dist (comp->archetype->svp, x - comp->cx, y - comp->cy) <= delta) return item;
+		}
+		if (comp->archetype->stroke && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
+			if (art_svp_point_dist (comp->archetype->stroke, x - comp->cx, y - comp->cy) <= delta) return item;
+		}
 	}
 
 	return NULL;
@@ -387,7 +395,7 @@ static void nr_arena_shape_group_init (NRArenaShapeGroup *group);
 static void nr_arena_shape_group_destroy (GtkObject *object);
 
 static guint nr_arena_shape_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b);
-static NRArenaItem *nr_arena_shape_group_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky);
+static NRArenaItem *nr_arena_shape_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky);
 
 static NRArenaGroupClass *group_parent_class;
 
@@ -472,7 +480,7 @@ nr_arena_shape_group_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 }
 
 static NRArenaItem *
-nr_arena_shape_group_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sticky)
+nr_arena_shape_group_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, gboolean sticky)
 {
 	NRArenaGroup *group;
 	NRArenaItem *picked;
@@ -482,7 +490,7 @@ nr_arena_shape_group_pick (NRArenaItem *item, gdouble x, gdouble y, gboolean sti
 	picked = NULL;
 
 	if (((NRArenaItemClass *) group_parent_class)->pick)
-		picked = ((NRArenaItemClass *) group_parent_class)->pick (item, x, y, sticky);
+		picked = ((NRArenaItemClass *) group_parent_class)->pick (item, x, y, delta, sticky);
 
 	if (picked) picked = item;
 

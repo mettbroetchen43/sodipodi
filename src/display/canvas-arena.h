@@ -39,6 +39,7 @@ struct _SPCanvasArena {
 	NRArenaItem *active;
 	/* fixme: */
 	NRArenaItem *picked;
+	gdouble delta;
 };
 
 struct _SPCanvasArenaClass {
@@ -49,6 +50,7 @@ struct _SPCanvasArenaClass {
 
 GtkType sp_canvas_arena_get_type (void);
 
+void sp_canvas_arena_set_pick_delta (SPCanvasArena *ca, gdouble delta);
 void sp_canvas_arena_set_sticky (SPCanvasArena *ca, gboolean sticky);
 
 #endif
