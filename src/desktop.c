@@ -895,7 +895,7 @@ sp_desktop_widget_realize (GtkWidget *widget)
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 
 	sp_desktop_set_display_area (dtw->desktop, d.x0, d.y0, d.x1, d.y1, 10);
-
+	
 	sp_desktop_widget_set_title (dtw);
 }
 

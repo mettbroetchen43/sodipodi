@@ -1,5 +1,8 @@
 2003-07-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/event-context.c (sp_event_context_private_root_handler): Handle
+	GDK_SCROLL (thanks to Tomas Znamenacek)
+
 	* src/xml/repr-util.c (sp_xml_dtoa): Do not print trailing zeroes
 
 	* src/xml/repr.c (sp_repr_document_new): Removed ATTLIST xmlns:xlink

@@ -241,36 +241,36 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				ret = TRUE;
 			}
 			break;
-	  case GDK_q: // Ctrl q - quit
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_file_exit ();
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_Left: // Ctrl Left 
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_desktop_scroll_world (event_context->desktop, 10, 0);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_Up: // Ctrl Up
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_desktop_scroll_world (event_context->desktop, 0, +10);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_Right: // Ctrl Right
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_desktop_scroll_world (event_context->desktop, -10, 0);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_Down: // Ctrl Down
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_desktop_scroll_world (event_context->desktop, 0, -10);
-	      ret = TRUE;
-	    }
-	    break;
+		case GDK_q: // Ctrl q - quit
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_file_exit ();
+				ret = TRUE;
+			}
+			break;
+		case GDK_Left: // Ctrl Left 
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_desktop_scroll_world (event_context->desktop, 10, 0);
+				ret = TRUE;
+			}
+			break;
+		case GDK_Up: // Ctrl Up
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_desktop_scroll_world (event_context->desktop, 0, +10);
+				ret = TRUE;
+			}
+			break;
+		case GDK_Right: // Ctrl Right
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_desktop_scroll_world (event_context->desktop, -10, 0);
+				ret = TRUE;
+			}
+			break;
+		case GDK_Down: // Ctrl Down
+			if (event->key.state & GDK_CONTROL_MASK) {
+				sp_desktop_scroll_world (event_context->desktop, 0, -10);
+				ret = TRUE;
+			}
+			break;
 		case GDK_space: // Space - root menu
 			sp_event_root_menu_popup (desktop, NULL, event);
 			ret= TRUE;
@@ -281,11 +281,57 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				ret= TRUE;
 			}
 			break;
-          }
+		}
 #if 0
 		g_print ("What a funny key: %d \n", event->key.keyval);
 #endif
-          break;
+		break;
+	case GDK_SCROLL:
+		/* ctrl + wheel, pan left--right */
+		if (event->scroll.state & GDK_CONTROL_MASK) {
+			switch (event->scroll.direction) {
+			case GDK_SCROLL_UP:
+				sp_desktop_scroll_world (desktop, SP_MOUSEMOVE_STEP, 0);
+				break;
+			case GDK_SCROLL_DOWN:
+				sp_desktop_scroll_world (desktop, -SP_MOUSEMOVE_STEP, 0);
+				break;
+			default:
+				break;
+			}
+			/* shift + wheel, zoom in--out */
+		} else if (event->scroll.state & GDK_SHIFT_MASK) {
+			NRRectF d;
+			switch (event->scroll.direction) {
+			case GDK_SCROLL_UP:
+				sp_desktop_get_display_area (desktop, &d);
+				sp_desktop_zoom_relative (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, SP_DESKTOP_ZOOM_INC);
+				break;
+			case GDK_SCROLL_DOWN:
+				sp_desktop_get_display_area (desktop, &d);
+				sp_desktop_zoom_relative (desktop, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, 1 / SP_DESKTOP_ZOOM_INC);
+				break;
+			default:
+				break;
+			}
+			/* no modifier, pan up--down (left--right on multiwheel mice?) */
+		} else {
+			switch (event->scroll.direction) {
+			case GDK_SCROLL_UP:
+				sp_desktop_scroll_world (desktop, 0, SP_MOUSEMOVE_STEP);
+				break;
+			case GDK_SCROLL_DOWN:
+				sp_desktop_scroll_world (desktop, 0, -SP_MOUSEMOVE_STEP);
+				break;
+			case GDK_SCROLL_LEFT:
+				sp_desktop_scroll_world (desktop, SP_MOUSEMOVE_STEP, 0);
+				break;
+			case GDK_SCROLL_RIGHT:
+				sp_desktop_scroll_world (desktop, -SP_MOUSEMOVE_STEP, 0);
+				break;
+			}
+		}
+		break;
 	default:
 		break;
 	}

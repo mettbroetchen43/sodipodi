@@ -77,6 +77,7 @@ struct _SPDesktopClass {
 #define SP_DESKTOP_ZOOM_MAX 32.0
 #define SP_DESKTOP_ZOOM_MIN 0.03125
 #define SP_DESKTOP_ZOOM(d) NR_MATRIX_DF_EXPANSION(NR_MATRIX_D_FROM_DOUBLE ((d)->d2w))
+#define SP_MOUSEMOVE_STEP 40
 
 void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
 
