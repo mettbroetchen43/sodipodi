@@ -598,9 +598,10 @@ NRTypeFace *
 nr_type_build (const unsigned char *name, const unsigned char *family,
 	       const unsigned char *data, unsigned int size, unsigned int face)
 {
+	NRTypeFaceDefFT2 *dft2;
+
 	if (!typedict) nr_type_directory_build ();
 
-	NRTypeFaceDefFT2 *dft2;
 	dft2 = nr_new (NRTypeFaceDefFT2, 1);
 	dft2->def.next = NULL;
 	dft2->def.pdef = NULL;

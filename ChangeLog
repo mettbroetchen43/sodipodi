@@ -41,6 +41,24 @@
 	
 	* src/.cvsignore: Add spsvgview
 
+2003-10-23  Ted Gould  <ted@gould.cx>
+
+	* src/*/Makefile.am: Changing the include paths to make distcheck
+	get closer to passing.
+
+2003-10-22  Ted Gould  <ted@gould.cx>
+
+	* configure.in: Changing version to 0.32-hydra1.  This is after
+	much discussion and serious contemplation (okay, we never really
+	got out the magic eight ball).
+
+2003-10-22  Ted Gould  <ted@gould.cx>
+
+	* src/dialogs/desktop-properties.c, src/widgets/spw-utilities.c,
+	src/widgets/spw-utilities.h: Cleaning up desktop properties by
+	abstracting things into functions.  This patch was written by
+	Bryce Harrington and is tracker entry #822497.
+
 2003-10-22  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* Support `white space handling' in SVG text.
@@ -74,10 +92,106 @@
 	* src/desktop.c (sp_desktop_scroll_absolute_center_desktop): New method
 	(sp_desktop_scroll_relative_canvas): Renamed
 
+2003-10-21  Ted Gould  <ted@gould.cx>
+
+	* src/interface.c: Changing it so there is an Open Recent menu on
+	the Sodipodi menu and the toolbar menu.  This removes some clutter
+	in the menu.  This is tracker entry #820223 and the author is
+	unknown.
+
+2003-10-21  Ted Gould  <ted@gould.cx>
+
+	* src/dialogs/text-edit.c: Make it so that changes can be applied
+	to multiple blocks of text.  This patch was submitted by Petr
+	Kovar and is tracker #816676.
+
 2003-10-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/node-context.c (sp_node_context_root_handler): Catch delete, so
 	default action does not destroy selected object
+
+2003-10-17  Ted Gould  <ted@gould.cx>
+
+	* src/dialogs/object-properties.c: Applying a patch by Lynn Kerby
+	which is tracker number 799363.  This makes it so that if just
+	the units are changed the object does not get updated.
+
+2003-10-16  Ted Gould  <ted@gould.cx>
+
+	* src/Makefile.am: Adding the modules to the linking of the
+	spsvgview executable.  This fixes the KDE build.  This was tracker
+	issue 819963 but unfortunately we don't know who submitted it.
+
+2003-10-15  Ted Gould  <ted@gould.cx>
+
+	* configure.in: Adding a -hydra to the version number.
+
+2003-10-15  Ted Gould  <ted@gould.cx>
+
+	* Changelog: Applying the patch from Mental to do transactions
+	in the XML.  It is tracker number: 819745.  More info to follow
+	which is (written by Mental)
+
+	* src/document-private.h: removed old SPAction struct and 
+	modified SPDocumentPrivate to use new SPReprAction type
+
+	* src/document-undo.c: removed all sp_action stuff,
+	sp_document_priv_done(), and all repr callbacks
+	(sp_document_set_sensitive): start/suspend transactions on Repr 
+	document
+	(sp_document_done): now just a wrapper for
+	sp_document_maybe_done(), of which it is a special case
+	(sp_document_maybe_done): use new transaction facility, and 
+	properly trim undo list size to MAX_UNDO
+	(sp_document_cancel): new SPDocument method for aborting (and 
+	undoing) current operation
+	(sp_document_undo, sp_document_redo): rewritten for transactions
+
+	* src/document.c (sp_document_init): updated SPDocumentPrivate
+	initialization
+	(sp_document_destroy): clean up partial action list
+	(sp_document_idle_handler): removed undo stack warning
+	(sp_document_warn_undo_stack): removed
+
+	* src/document.h: added sp_document_cancel()
+
+	* src/sp-object.c (sp_object_invoke_build): minor cleanup
+	(sp_object_repr_child_added, sp_object_repr_remove_child, 
+	sp_object_repr_order_changed, sp_object_repr_attr_changed,
+	sp_object_repr_content_changed): removed calls to document 
+	callbacks
+
+	* src/dialogs/xml-tree.c: enabled delete button for _all_ 
+	attributes [I later plann on enabling/disabling it based on
+	a call to the repr's change_attr veto callback]
+	(after_tree_move): roll back the transaction if the node
+	didn't want to be moved
+	(on_attr_select_row_enable): used to be 
+	on_attr_select_row_enable_if_not_id()
+	(cmd_indent_node, cmd_unindent_node): removed usage of 
+	sp_repr_move in favor of simple operations with transactions
+
+	* src/widgets/sp-xmlview-tree (repoint_nodes): no longer needed
+	(add_node): switched to an if cascade instead of a switch 
+	statement, since SP_REPR_TYPE (repr) is no longer an integer
+	(tree_move): use simple operations instead of sp_repr_move
+
+	* src/xml/Makefile.am: added sp-action.c to build
+
+	* src/xml/repr-action.c, src/xml/repr-action.h: transaction
+	logging facility for reprs using linked lists of SPReprAction
+	structs (conceptually, logs)
+
+	* src/xml/repr-private.h: introduced SPReprClass for different
+	node types and added SPRepr::doc field for doc pointer.
+	SPReprDoc is now a proper subclass of SPRepr.
+
+	* src/xml/repr-util.c (sp_repr_move, sp_repr_transfer_ids):
+	removed
+
+	* src/xml/repr.c: added logging macros and SPRepr subclassing
+
+	* src/xml/repr.h: removed sp_repr_move()
 
 2003-10-12  Lauris Kaplinski  <lauris@kaplinski.com>
 
@@ -88,6 +202,33 @@
 	to ArikkeiDict
 
 	* src/libarikkei/arikkei-dict.c: Implement
+
+2003-10-09  Ted Gould  <ted@gould.cx>
+
+	* src/libnrtype/nr-type-directory.c: Applying a patch to
+	fix the compile from Vitaly Lipatov.
+
+2003-10-08  Ted Gould  <ted@gould.cx>
+
+	* glade/icons.svg src/nodepath.c src/nodepath.h
+	src/toolbox.c src/dialogs/node-edit.c src/dialogs/node-edit.h:
+	Adding another patch from Bob Jamison which is in the tracker
+	under 819054.  This patch adds an alternate join function.  It
+	also adds this function to the tool box with an icon.
+
+2003-10-08  Ted Gould  <ted@gould.cx>
+
+	* src/.cvsignore: Adding in spsvgview for cleaner diff's
+
+2003-10-08  Ted Gould  <ted@gould.cx>
+
+	* src/dialogs/item-properties.c: Submitting a patch from
+	Bob Jamison which is in the tracker under 819043.  This adds
+	the ID to the item properties dialog.
+
+2003-10-06  Ted Gould  <ted@gould.cx>
+
+	* Changelog: Start of the hydra-october branch
 
 2003-10-06  Lauris Kaplinski  <lauris@kaplinski.com>
 

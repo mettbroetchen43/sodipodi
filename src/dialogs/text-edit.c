@@ -62,6 +62,8 @@ static void sp_text_edit_dialog_any_toggled (GtkToggleButton *tb, GtkWidget *dlg
 static void sp_text_edit_dialog_line_spacing_changed (GtkEditable *editable, GtkWidget *dlg);
 
 static SPText *sp_ted_get_selected_text_item (void);
+static unsigned sp_ted_get_selected_text_count (void);
+
 
 static const unsigned char *spacings[] = {"90%", "100%", "110%", "120%", "133%", "150%", "200%", NULL};
 
@@ -357,24 +359,34 @@ sp_text_edit_dialog_apply (GtkButton *button, GtkWidget *dlg)
 	GtkWidget *apply, *def;
 	SPText *text;
 	SPRepr *repr;
-
+	const GSList *item;
+	unsigned items;
+	
 	g_object_set_data (G_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
 
 	apply = g_object_get_data (G_OBJECT (dlg), "apply");
 	def = g_object_get_data (G_OBJECT (dlg), "default");
 
-	text = sp_ted_get_selected_text_item ();
-	if (text) {
+	text = NULL;
+	items = 0;
+	item = sp_selection_item_list(SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	
+	for (; item != NULL; item = item->next) {
+		if (!SP_IS_TEXT (item->data)) continue;
+		text = SP_TEXT(item->data);
 		repr = SP_OBJECT_REPR (text);
-	} else {
-		repr = sodipodi_get_repr (SODIPODI, "tools.text");
+		sp_text_edit_dialog_update_object (NULL, repr);
+		++items;
 	}
-
-	sp_text_edit_dialog_update_object (text, repr);
-
-	if (!text) {
+	
+	if (items == 1) {
+		sp_text_edit_dialog_update_object (text, NULL);
+	} else if (items == 0) {
+		repr = sodipodi_get_repr (SODIPODI, "tools.text");
+		sp_text_edit_dialog_update_object (NULL, repr);
 		gtk_widget_set_sensitive (def, FALSE);
 	}
+
 	gtk_widget_set_sensitive (apply, FALSE);
 
 	g_object_set_data (G_OBJECT (dlg), "blocked", NULL);
@@ -466,6 +478,7 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 	SPText *text;
 	SPRepr *repr;
 	SPStyle *style;
+	unsigned items;
 
 	if (g_object_get_data (G_OBJECT (dlg), "blocked")) return;
 	g_object_set_data (G_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
@@ -481,7 +494,12 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 	text = sp_ted_get_selected_text_item ();
 
 	if (text) {
-		gtk_widget_set_sensitive (textw, TRUE);
+		items = sp_ted_get_selected_text_count ();
+		if (items == 1) {
+			gtk_widget_set_sensitive (textw, TRUE);
+		} else {
+			gtk_widget_set_sensitive (textw, FALSE);
+		}
 		gtk_widget_set_sensitive (apply, FALSE);
 		gtk_widget_set_sensitive (def, TRUE);
 		style = SP_OBJECT_STYLE (text);
@@ -491,7 +509,9 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 			if (str) {
 				int pos;
 				pos = 0;
-				gtk_text_buffer_set_text (tb, str, strlen (str));
+				if (items == 1) {
+					gtk_text_buffer_set_text (tb, str, strlen (str));
+				}
 				sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), str);
 				g_free (str);
 			} else {
@@ -650,9 +670,31 @@ sp_text_edit_dialog_line_spacing_changed (GtkEditable *editable, GtkWidget *dlg)
 static SPText *
 sp_ted_get_selected_text_item (void)
 {
-	SPItem *item;
+	const GSList *item;
+	
 	if (!SP_ACTIVE_DESKTOP) return NULL;
-	item = sp_selection_item (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
-	if (item && SP_IS_TEXT (item)) return SP_TEXT (item);
+	
+	item = sp_selection_item_list(SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	for (; item != NULL; item = item->next) {
+		if (SP_IS_TEXT(item->data)) return SP_TEXT (item->data);
+	}
+	
 	return NULL;
+}
+
+static unsigned
+sp_ted_get_selected_text_count (void)
+{
+	const GSList *item;
+	unsigned items;
+
+	if (!SP_ACTIVE_DESKTOP) return 0;
+
+	items = 0;
+	item = sp_selection_item_list(SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	for (; item != NULL; item = item->next) {
+		if (SP_IS_TEXT(item->data)) ++items;
+	}
+	
+	return items;
 }

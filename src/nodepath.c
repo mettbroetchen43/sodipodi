@@ -962,6 +962,99 @@ sp_node_selected_join (void)
 }
 
 void
+sp_node_selected_join_segment (void)
+{
+	SPNodePath * nodepath;
+	SPNodeSubPath * sa, * sb;
+	SPPathNode * a, * b, * n;
+	NRPointF p;
+	ArtPathcode code;
+
+	nodepath = sp_nodepath_current ();
+	if (!nodepath) return;
+	if (g_slist_length (nodepath->selected) != 2) return;
+
+	a = (SPPathNode *) nodepath->selected->data;
+	b = (SPPathNode *) nodepath->selected->next->data;
+
+	g_assert (a != b);
+
+	if ((a->subpath->closed) || (b->subpath->closed)) return;
+	if (a->p.other && a->n.other) return;
+	g_assert (a->p.other || a->n.other);
+	if (b->p.other && b->n.other) return;
+	g_assert (b->p.other || b->n.other);
+	/* a and b are endpoints */
+
+	if (a->subpath == b->subpath) {
+		SPNodeSubPath * sp;
+
+		sp = a->subpath;
+
+                /*similar to sp_nodepath_subpath_close (sp), without the node destruction*/
+	        sp->closed = TRUE;
+
+	        sp->first->p.other = sp->last;
+	        sp->last->n.other = sp->first;
+	        sp->last->n.pos = sp->first->n.pos;
+
+		sp_nodepath_ensure_ctrls (sp->nodepath);
+
+		update_repr (nodepath);
+
+		return;
+	}
+
+	/* a and b are separate subpaths */
+	sa = a->subpath;
+	sb = b->subpath;
+
+
+	if (a == sa->first) {
+		SPNodeSubPath *t;
+		p = sa->first->pos;
+		code = sa->first->n.other->code;
+		t = sp_nodepath_subpath_new (sa->nodepath);
+		n = sa->last;
+		sp_nodepath_node_new (t, NULL, SP_PATHNODE_CUSP, ART_MOVETO, &n->n.pos, &n->pos, &n->p.pos);
+		for (n = n->p.other; n != NULL; n = n->p.other) {
+			sp_nodepath_node_new (t, NULL, n->type, n->n.other->code, &n->n.pos, &n->pos, &n->p.pos);
+		}
+		sp_nodepath_subpath_destroy (sa);
+		sa = t;
+	} else if (a == sa->last) {
+		p = sa->last->pos;
+		code = sa->last->code;
+	} else {
+		code = ART_END;
+		g_assert_not_reached ();
+	}
+
+	if (b == sb->first) {
+		n = sb->first;
+		sp_nodepath_node_new (sa, NULL, SP_PATHNODE_CUSP, code, &p, &n->pos, &n->n.pos);
+		for (n = n->n.other; n != NULL; n = n->n.other) {
+			sp_nodepath_node_new (sa, NULL, n->type, n->code, &n->p.pos, &n->pos, &n->n.pos);
+		}
+	} else if (b == sb->last) {
+		n = sb->last;
+		sp_nodepath_node_new (sa, NULL, SP_PATHNODE_CUSP, code, &p, &n->pos, &n->p.pos);
+		for (n = n->p.other; n != NULL; n = n->p.other) {
+ 			sp_nodepath_node_new (sa, NULL, n->type, n->n.other->code, &n->n.pos, &n->pos, &n->p.pos);
+		}
+	} else {
+		g_assert_not_reached ();
+	}
+	/* and now destroy sb */
+
+	sp_nodepath_subpath_destroy (sb);
+
+	sp_nodepath_ensure_ctrls (sa->nodepath);
+
+	update_repr (nodepath);
+}
+
+void
 sp_node_selected_delete (void)
 {
 	SPNodePath * nodepath;

@@ -31,6 +31,16 @@ This code should be quite modular and will become even more so in the
 future.  Consult the file doc/architecture.txt for more info, but here
 is a rough plan:
 
+0. Development compilation tips
+
+You can do some customization with options to configure; it also lets
+you specify additional options via env variables.  The INSTALL file has
+some details.
+
+Notably, $CFLAGS are the general compiler flags, $CPPFLAGS are flags
+specific to the preprocessor, and $LDFLAGS are linker flags.
+
+For instance, some do Sodipodi development with CFLAGS="-g -Wall".
 
 1. reprs & cousins
 SPRepr, SPCSSAttr ...

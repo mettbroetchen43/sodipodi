@@ -33,7 +33,7 @@ list and IRC.
 - Your interests and task status
 
 * Lauris Kaplinski  <lauris@kaplinski.com>
-- Every things
+- Everything
 
 * Masatake YAMATO<jet@gyve.org>
 - clipping
@@ -47,6 +47,11 @@ list and IRC.
 - boolean path operations
 - architecture and janitorial work
 - whatever strikes his fancy this week ^_-
+
+* Bryce Harrington <brycehar@bryceharrington.com>
+- Extensions
+- UI work / code cleanup
+- Adding support for technical drawing features (e.g. arrowheads)
  
 CVS write account
 -----------------

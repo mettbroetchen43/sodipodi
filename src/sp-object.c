@@ -278,12 +278,8 @@ sp_object_build (SPObject * object, SPDocument * document, SPRepr * repr)
 }
 
 void
-sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, unsigned int cloned)
+sp_object_invoke_build (SPObject *object, SPDocument *document, SPRepr *repr, unsigned int cloned)
 {
-	const gchar * id;
-	gchar * realid;
-	unsigned int ret;
-
 #ifdef SP_OBJECT_DEBUG
 	g_print("sp_object_invoke_build: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
 #endif
@@ -306,14 +302,20 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 
 	/* If we are not cloned, force unique id */
 	if (!SP_OBJECT_IS_CLONED (object)) {
-		id = sp_repr_attr (repr, "id");
+		const gchar * id;
+		gchar * realid;
+
+		id = sp_repr_attr (object->repr, "id");
 		realid = sp_object_get_unique_id (object, id);
 		g_assert (realid != NULL);
-		sp_document_def_id (document, realid, object);
+
+		sp_document_def_id (object->document, realid, object);
 		object->id = realid;
+
 		/* Redefine ID, if required */
 		if ((id == NULL) || (strcmp (id, realid) != 0)) {
-			ret = sp_repr_set_attr (repr, "id", realid);
+			int ret;
+			ret = sp_repr_set_attr (object->repr, "id", realid);
 			if (!ret) {
 				g_error ("Cannot change id %s -> %s - probably there is stale ref", id, realid);
 			}
@@ -377,8 +379,6 @@ sp_object_repr_child_added (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer d
 
 	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->child_added)
 		(*((SPObjectClass *)G_OBJECT_GET_CLASS(object))->child_added) (object, child, ref);
-
-	sp_document_child_added (object->document, object, child, ref);
 }
 
 static unsigned int
@@ -390,8 +390,6 @@ sp_object_repr_remove_child (SPRepr *repr, SPRepr *child, SPRepr *ref, gpointer 
 
 	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->remove_child)
 		(* ((SPObjectClass *)G_OBJECT_GET_CLASS(object))->remove_child) (object, child);
-
-	sp_document_child_removed (object->document, object, child, ref);
 
 	return TRUE;
 }
@@ -407,8 +405,6 @@ sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRep
 
 	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->order_changed)
 		(* ((SPObjectClass *)G_OBJECT_GET_CLASS(object))->order_changed) (object, child, old, new);
-
-	sp_document_order_changed (object->document, object, child, old, new);
 }
 
 static void
@@ -475,6 +471,7 @@ sp_object_repr_change_attr (SPRepr *repr, const guchar *key, const guchar *oldva
 	object = SP_OBJECT (data);
 
 	if (strcmp (key, "id") == 0) {
+		if (!newval) return FALSE;
 		defid = sp_document_lookup_id (object->document, newval);
 		if (defid == object) return TRUE;
 		if (defid) return FALSE;
@@ -491,8 +488,6 @@ sp_object_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldv
 	object = SP_OBJECT (data);
 
 	sp_object_read_attr (object, key);
-
-	sp_document_attr_changed (object->document, object, key, oldval, newval);
 }
 
 static void
@@ -504,8 +499,6 @@ sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const gu
 
 	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->read_content)
 		(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->read_content) (object);
-
-	sp_document_content_changed (object->document, object, oldcontent, newcontent);
 }
 
 void

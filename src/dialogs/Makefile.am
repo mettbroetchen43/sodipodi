@@ -11,6 +11,7 @@ gladedir = $(datadir)/sodipodi
 
 INCLUDES = \
 	-I.. \
+	-I$(top_srcdir)/src \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
 	-DSODIPODI_PIXMAPDIR=\""$(gladedir)"\" \
 	$(SODIPODI_CFLAGS)

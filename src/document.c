@@ -136,15 +136,15 @@ sp_document_init (SPDocument *doc)
 
 	p = g_new (SPDocumentPrivate, 1);
 
-
 	p->iddef = g_hash_table_new (g_str_hash, g_str_equal);
 
 	p->resources = g_hash_table_new (g_str_hash, g_str_equal);
 
 	p->sensitive = FALSE;
+	p->partial = NULL;
+	p->undo_size = 0;
 	p->undo = NULL;
 	p->redo = NULL;
-	p->actions = NULL;
 
 	doc->priv = p;
 }
@@ -161,8 +161,9 @@ sp_document_dispose (GObject *object)
 	if (priv) {
 		sodipodi_remove_document (doc);
 
-		if (priv->actions) {
-			sp_action_free_list (priv->actions);
+		if (priv->partial) {
+			sp_repr_free_log (priv->partial);
+			priv->partial = NULL;
 		}
 
 		sp_document_clear_redo (doc);
@@ -591,17 +592,6 @@ sp_document_idle_handler (gpointer data)
 
 	doc = SP_DOCUMENT (data);
 
-#ifdef SP_DOCUMENT_DEBUG_UNDO
-	/* ------------------------- */
-	if (doc->priv->actions) {
-		static gboolean warn = TRUE;
-		if (warn) {
-			warn = sp_document_warn_undo_stack (doc);
-		}
-	}
-	/* ------------------------- */
-#endif
-
 #ifdef SP_DOCUMENT_DEBUG_IDLE
 	g_print ("->\n");
 #endif
@@ -819,101 +809,3 @@ sp_document_resource_list_free (gpointer key, gpointer value, gpointer data)
 	return TRUE;
 }
 
-#ifdef SP_DOCUMENT_DEBUG_UNDO
-
-static GSList *
-sp_action_print_pending_list (SPAction *action)
-{
-	GSList *al;
-	gchar *s;
-
-	al = NULL;
-
-	while (action) {
-		s = g_strdup_printf ("SPAction: Id %s\n", action->id);
-		al = g_slist_prepend (al, s);
-		switch (action->type) {
-		case SP_ACTION_ADD:
-			s = g_strdup_printf ("SPAction: Add ref %s\n", action->act.add.ref);
-			al = g_slist_prepend (al, s);
-			break;
-		case SP_ACTION_DEL:
-			s = g_strdup_printf ("SPAction: Del ref %s\n", action->act.del.ref);
-			al = g_slist_prepend (al, s);
-			break;
-		case SP_ACTION_CHGATTR:
-			s = g_strdup_printf ("SPAction: ChgAttr %s: %s -> %s\n",
-				 g_quark_to_string (action->act.chgattr.key),
-				 action->act.chgattr.oldval,
-				 action->act.chgattr.newval);
-			al = g_slist_prepend (al, s);
-			break;
-		case SP_ACTION_CHGCONTENT:
-			s = g_strdup_printf ("SPAction: ChgContent %s -> %s\n",
-				 action->act.chgcontent.oldval,
-				 action->act.chgcontent.newval);
-			al = g_slist_prepend (al, s);
-			break;
-		case SP_ACTION_CHGORDER:
-			s = g_strdup_printf ("SPAction: ChgOrder %s: %s -> %s\n",
-				 action->act.chgorder.child,
-				 action->act.chgorder.oldref,
-				 action->act.chgorder.newref);
-			al = g_slist_prepend (al, s);
-			break;
-		default:
-			s = g_strdup_printf ("SPAction: Invalid action type %d\n", action->type);
-			al = g_slist_prepend (al, s);
-			break;
-		}
-		action = action->next;
-	}
-
-	return al;
-}
-
-static gboolean
-sp_document_warn_undo_stack (SPDocument *doc)
-{
-	GtkDialog *dlg;
-	GtkWidget *l, *t;
-	GSList *al;
-
-	dlg = (GtkDialog *) gtk_dialog_new_with_buttons ("Stale undo stack warning",
-					    NULL,
-					    GTK_DIALOG_MODAL,
-					    GTK_STOCK_OK,
-					    GTK_RESPONSE_OK,
-					    NULL);
-
-	l = gtk_label_new ("WARNING");
-	gtk_widget_show (l);
-	gtk_box_pack_start (GTK_BOX (dlg->vbox), l, FALSE, FALSE, 8);
-
-	l = gtk_label_new ("Last operation did not flush undo stack");
-	gtk_widget_show (l);
-	gtk_box_pack_start (GTK_BOX (dlg->vbox), l, FALSE, FALSE, 8);
-
-	l = gtk_label_new ("Please report following data to developers");
-	gtk_widget_show (l);
-	gtk_box_pack_start (GTK_BOX (dlg->vbox), l, FALSE, FALSE, 8);
-
-	t = gtk_text_new (NULL, NULL);
-	gtk_widget_show (t);
-	gtk_box_pack_start (GTK_BOX (dlg->vbox), t, FALSE, FALSE, 8);
-
-	al = sp_action_print_pending_list (doc->priv->actions);
-	while (al) {
-		gtk_text_set_point (GTK_TEXT (t), 0);
-		gtk_text_insert (GTK_TEXT (t), NULL, NULL, NULL, al->data, strlen (al->data));
-		g_free (al->data);
-		al = g_slist_remove (al, al->data);
-	}
-
-	gtk_dialog_run (dlg);
-	gtk_widget_destroy (GTK_WIDGET(dlg));
-
-	return TRUE;
-}
-
-#endif

@@ -285,8 +285,12 @@ sp_ui_menu_append (GtkMenu *menu, const unsigned int *verbs)
 static void
 sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 {
-	static const unsigned int file_verbs[] = {
-		SP_VERB_FILE_NEW, SP_VERB_FILE_OPEN, SP_VERB_FILE_SAVE, SP_VERB_FILE_SAVE_AS,
+	static const unsigned int file_verbs_one[] = {
+		SP_VERB_FILE_NEW, SP_VERB_FILE_OPEN, SP_VERB_LAST
+        };
+
+	static const unsigned int file_verbs_two[] = {
+		SP_VERB_FILE_SAVE, SP_VERB_FILE_SAVE_AS,
 		SP_VERB_NONE,
 		SP_VERB_FILE_IMPORT, SP_VERB_FILE_EXPORT,
 		SP_VERB_NONE,
@@ -294,7 +298,14 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 		SP_VERB_LAST
 	};
 
-	sp_ui_menu_append (fm, file_verbs);
+	sp_ui_menu_append (fm, file_verbs_one);
+
+ 	GtkWidget *item_recent = sp_ui_menu_append_item (fm, NULL, _("Open Recent"), NULL, NULL);
+ 	GtkWidget *menu_recent = gtk_menu_new ();
+ 	sp_menu_append_recent_documents (GTK_WIDGET (menu_recent));
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item_recent), menu_recent);
+
+	sp_ui_menu_append (fm, file_verbs_two);
 
 #ifdef WIN32
 	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_DIRECT);
@@ -308,7 +319,6 @@ sp_ui_file_menu (GtkMenu *fm, SPDocument *doc)
 	sp_ui_menu_append_item_from_verb (fm, SP_VERB_FILE_PRINT_PREVIEW);
 
 	sp_ui_menu_append_item_from_verb (fm, SP_VERB_NONE);
-	sp_menu_append_recent_documents ((GtkWidget *) fm);
 
 	sp_ui_menu_append_item (fm, GTK_STOCK_CLOSE, _("Close View"), G_CALLBACK (sp_ui_close_view), NULL);
 	sp_ui_menu_append_item (fm, GTK_STOCK_QUIT, _("Exit Program"), G_CALLBACK (sp_file_exit), NULL);
@@ -466,14 +476,21 @@ sp_ui_populate_main_menu(GtkWidget *m)
 {
 	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_NEW, _("New"), G_CALLBACK(sp_file_new), NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_OPEN, _("Open"), G_CALLBACK(sp_file_open_dialog), NULL);
+        
+	GtkWidget *item_recent = sp_ui_menu_append_item (GTK_MENU (m), NULL, _("Open Recent"), NULL, NULL);
+	GtkWidget *menu_recent = gtk_menu_new ();
+
+	sp_menu_append_recent_documents (GTK_WIDGET (menu_recent));
+	gtk_menu_item_set_submenu (GTK_MENU_ITEM (item_recent), menu_recent); 
+
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
-	sp_menu_append_recent_documents (m);
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, _("About Sodipodi"), G_CALLBACK(sp_help_about), NULL);
 #ifdef lalaWITH_MODULES
 	/* Modules need abouts too */
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM(sp_ui_menu_append_item (GTK_MENU (m), NULL, _("About Modules"), NULL, NULL)),
 			                   GTK_WIDGET(sp_modulesys_menu_about()));
 #endif /* WITH_MODULES */
+
 	sp_ui_menu_append_item (GTK_MENU (m), NULL, NULL, NULL, NULL);
 	sp_ui_menu_append_item (GTK_MENU (m), GTK_STOCK_QUIT, _("Exit Program"), G_CALLBACK(sp_file_exit), NULL);
 }
@@ -602,7 +619,9 @@ sp_menu_append_recent_documents (GtkWidget *menu)
 			/* fixme: I am pretty sure this is safe, but double check (Lauris) */
 			sp_ui_menu_append_item (GTK_MENU (menu), NULL, name, G_CALLBACK(sp_recent_open), (gpointer) uri);
 		}
-		sp_ui_menu_append_item (GTK_MENU (menu), NULL, NULL, NULL, NULL);
+	} else {
+		GtkWidget *item = sp_ui_menu_append_item (GTK_MENU (menu), NULL, "None", NULL, NULL);
+		gtk_widget_set_sensitive(item, FALSE);
 	}
 }
 

@@ -644,20 +644,31 @@ sp_toolbox_node_create (void)
 	GtkTooltips *tt;
 	SPRepr *repr;
 
-	t = gtk_table_new (2, 4, TRUE);
+	t = gtk_table_new (3, 4, TRUE);
 	gtk_widget_show (t);
 
 	tt = gtk_tooltips_new ();
 	tb = sp_toolbox_new (t, _("Nodes"), "node", "toolbox_node", tt);
 
-	sp_toolbox_button_new (t, 0, "node_insert", GTK_SIGNAL_FUNC (sp_node_path_edit_add), tt, _("Insert new nodes into selected segments"));
-	sp_toolbox_button_new (t, 1, "node_break", GTK_SIGNAL_FUNC (sp_node_path_edit_break), tt, _("Break line at selected nodes"));
-	sp_toolbox_button_new (t, 2, "node_cusp", GTK_SIGNAL_FUNC (sp_node_path_edit_cusp), tt, _("Make selected nodes corner"));
-	sp_toolbox_button_new (t, 3, "node_line", GTK_SIGNAL_FUNC (sp_node_path_edit_toline), tt, _("Make selected segments lines"));
-	sp_toolbox_button_new (t, 4, "node_delete", GTK_SIGNAL_FUNC (sp_node_path_edit_delete), tt, _("Delete selected nodes"));
-	sp_toolbox_button_new (t, 5, "node_join", GTK_SIGNAL_FUNC (sp_node_path_edit_join), tt, _("Join lines at selected nodes"));
-	sp_toolbox_button_new (t, 6, "node_smooth", GTK_SIGNAL_FUNC (sp_node_path_edit_smooth), tt, _("Make selected nodes smooth"));
-	sp_toolbox_button_new (t, 7, "node_curve", GTK_SIGNAL_FUNC (sp_node_path_edit_tocurve), tt, _("Make selected segments curves"));
+	sp_toolbox_button_new (t, 0, "node_insert", GTK_SIGNAL_FUNC (sp_node_path_edit_add),
+			       tt, _("Insert new nodes into selected segments"));
+	sp_toolbox_button_new (t, 1, "node_break", GTK_SIGNAL_FUNC (sp_node_path_edit_break),
+			       tt, _("Break line at selected nodes"));
+	sp_toolbox_button_new (t, 2, "node_cusp", GTK_SIGNAL_FUNC (sp_node_path_edit_cusp),
+			       tt, _("Make selected nodes corner"));
+	sp_toolbox_button_new (t, 3, "node_line", GTK_SIGNAL_FUNC (sp_node_path_edit_toline),
+			       tt, _("Make selected segments lines"));
+	sp_toolbox_button_new (t, 4, "node_delete", GTK_SIGNAL_FUNC (sp_node_path_edit_delete),
+			       tt, _("Delete selected nodes"));
+	sp_toolbox_button_new (t, 5, "node_join", GTK_SIGNAL_FUNC (sp_node_path_edit_join),
+			       tt, _("Join lines at selected nodes"));
+	sp_toolbox_button_new (t, 6, "node_join_segment",
+			       GTK_SIGNAL_FUNC (sp_node_path_edit_join_segment),
+			       tt, _("Join lines at selected nodes with new segment"));
+	sp_toolbox_button_new (t, 7, "node_smooth", GTK_SIGNAL_FUNC (sp_node_path_edit_smooth),
+			       tt, _("Make selected nodes smooth"));
+	sp_toolbox_button_new (t, 8, "node_curve", GTK_SIGNAL_FUNC (sp_node_path_edit_tocurve),
+			       tt, _("Make selected segments curves"));
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.node");
 	if (repr) {

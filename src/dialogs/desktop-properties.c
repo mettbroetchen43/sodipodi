@@ -34,6 +34,7 @@
 #include "../desktop.h"
 #include "../desktop-handles.h"
 #include "../sp-namedview.h"
+#include "widgets/spw-utilities.h"
 
 #include "desktop-properties.h"
 
@@ -46,6 +47,7 @@ static void sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop);
 static GtkWidget *sp_color_picker_new (unsigned char *colorkey, unsigned char *alphakey, unsigned char *title, guint32 rgba);
 static void sp_color_picker_set_rgba32 (GtkWidget *cp, guint32 rgba);
 static void sp_color_picker_clicked (GObject *cp, void *data);
+void sp_color_picker_button(GtkWidget * dialog, GtkWidget * t, const guchar * label, guchar * key, guchar * color_dialog_label, guchar * opacity_key, int row);
 
 static GtkWidget *dlg = NULL;
 
@@ -179,8 +181,12 @@ sp_dtw_guides_snap_distance_changed (GtkAdjustment *adjustment, GtkWidget *dialo
 static GtkWidget *
 sp_desktop_dialog_new (void)
 {
-	GtkWidget *dialog, *nb, *l, *t, *b, *us, *sb, *cp;
+	GtkWidget *dialog, *nb, *l, *t, *b, *us, *sb, *cp, *i;
 	GtkObject *a;
+	GCallback cb;
+	int row;
+
+	cb = G_CALLBACK(sp_dtw_whatever_changed);
 
 	dialog = sp_window_new (_("Desktop settings"), FALSE);
 
@@ -201,120 +207,39 @@ sp_desktop_dialog_new (void)
 	gtk_notebook_append_page (GTK_NOTEBOOK (nb), t, l);
 
 	/* Checkbuttons */
-	b = gtk_check_button_new_with_label (_("Show grid"));
-	gtk_widget_show (b);
-	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (b), "key", "showgrid");
-	gtk_object_set_data (GTK_OBJECT (dialog), "showgrid", b);
-	g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_dtw_whatever_toggled), dialog);
+	row = 0;
+	spw_checkbutton(dialog, t, _("Show grid"), "showgrid", 0, row, 0, cb);
+	spw_checkbutton(dialog, t, _("Snap to grid"), "snaptogrid", 1, row++, 0, cb);
 
-	b = gtk_check_button_new_with_label (_("Snap to grid"));
-	gtk_widget_show (b);
-	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (b), "key", "snaptogrid");
-	gtk_object_set_data (GTK_OBJECT (dialog), "snaptogrid", b);
-	g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_dtw_whatever_toggled), dialog);
+	spw_checkbutton(dialog, t, _("Horizontal lines"), "vertgrid", 0, row, 0, cb);
+	spw_checkbutton(dialog, t, _("Vertical lines"), "horizgrid", 1, row++, 0, cb);
 
-	l = gtk_label_new (_("Grid units:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	spw_checkbutton(dialog, t, _("Iso grid"), "isogrid", 0, row, 0, cb);
+	spw_checkbutton(dialog, t, _("Hex grid"), "hexgrid", 1, row++, 0, cb);
+
 	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE);
-	gtk_widget_show (us);
-	gtk_table_attach (GTK_TABLE (t), us, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (dialog), "grid_units", us);
+	spw_dropdown(dialog, t, _("Grid units:"), "grid_units", row++, us);
 
-	l = gtk_label_new (_("Origin X:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
-	gtk_object_set_data (GTK_OBJECT (a), "key", "gridoriginx");
-	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
-	gtk_object_set_data (GTK_OBJECT (dialog), "gridoriginx", a);
-	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
-	gtk_widget_show (sb);
-	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	g_signal_connect (G_OBJECT (a), "value_changed", G_CALLBACK (sp_dtw_whatever_changed), dialog);
+	spw_unit_selector(dialog, t, _("Origin X:"), "gridoriginx", row++, us,
+			  G_CALLBACK (sp_dtw_whatever_changed));
+	spw_unit_selector(dialog, t, _("Origin Y:"), "gridoriginy", row++, us,
+			  G_CALLBACK (sp_dtw_whatever_changed));
+	
+	spw_unit_selector(dialog, t, _("Spacing X:"), "gridspacingx", row++, us,
+			  G_CALLBACK (sp_dtw_whatever_changed));
+	spw_unit_selector(dialog, t, _("Spacing Y:"), "gridspacingy", row++, us,
+			  G_CALLBACK (sp_dtw_whatever_changed));
 
-	l = gtk_label_new (_("Origin Y:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
-	gtk_object_set_data (GTK_OBJECT (a), "key", "gridoriginy");
-	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
-	gtk_object_set_data (GTK_OBJECT (dialog), "gridoriginy", a);
-	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
-	gtk_widget_show (sb);
-	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	g_signal_connect (G_OBJECT (a), "value_changed", G_CALLBACK (sp_dtw_whatever_changed), dialog);
+ 	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE);
+	
+	spw_unit_selector(dialog, t, _("Snap distance:"), "gridtolerance", row++, us,
+			  G_CALLBACK (sp_dtw_grid_snap_distance_changed) );
 
-	l = gtk_label_new (_("Spacing X:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
-	gtk_object_set_data (GTK_OBJECT (a), "key", "gridspacingx");
-	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
-	gtk_object_set_data (GTK_OBJECT (dialog), "gridspacingx", a);
-	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
-	gtk_widget_show (sb);
-	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	g_signal_connect (GTK_OBJECT (a), "value_changed", G_CALLBACK (sp_dtw_whatever_changed), dialog);
-
-	l = gtk_label_new (_("Spacing Y:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 5, 6, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
-	gtk_object_set_data (GTK_OBJECT (a), "key", "gridspacingy");
-	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
-	gtk_object_set_data (GTK_OBJECT (dialog), "gridspacingy", a);
-	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
-	gtk_widget_show (sb);
-	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 5, 6, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	g_signal_connect (G_OBJECT (a), "value_changed", G_CALLBACK (sp_dtw_whatever_changed), dialog);
-
-	l = gtk_label_new (_("Snap units:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 6, 7, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE);
-	gtk_widget_show (us);
-	gtk_table_attach (GTK_TABLE (t), us, 1, 2, 6, 7, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-#if 0
-	gtk_signal_connect (GTK_OBJECT (us), "set_unit", GTK_SIGNAL_FUNC (sp_dtw_grid_snap_units_set), dialog);
-#endif
-	gtk_object_set_data (GTK_OBJECT (dialog), "grid_snap_units", us);
-
-	l = gtk_label_new (_("Snap distance:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 7, 8, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
-	gtk_object_set_data (GTK_OBJECT (dialog), "gridtolerance", a);
-	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
-	gtk_spin_button_set_adjustment (GTK_SPIN_BUTTON (sb), GTK_ADJUSTMENT (a));
-	gtk_widget_show (sb);
-	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 7, 8, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	g_signal_connect (G_OBJECT (a), "value_changed", G_CALLBACK (sp_dtw_grid_snap_distance_changed), dialog);
-
-	l = gtk_label_new (_("Grid color:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 8, 9, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	cp = sp_color_picker_new ("gridcolor", "gridopacity", _("Grid color"), 0);
-	gtk_widget_show (cp);
-	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 8, 9, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	g_object_set_data (G_OBJECT (dialog), "gridcolor", cp);
-
-	/* Guidelines page */
+	sp_color_picker_button(dialog, t, _("Grid color:"), "gridcolor",
+			       _("Grid color"), "gridhicolor", row++);
+	
+	row=0;
+ 	/* Guidelines page */
 	l = gtk_label_new (_("Guides"));
 	gtk_widget_show (l);
 	t = gtk_table_new (5, 2, FALSE);
@@ -324,63 +249,22 @@ sp_desktop_dialog_new (void)
 	gtk_table_set_col_spacings (GTK_TABLE (t), 4);
 	gtk_notebook_append_page (GTK_NOTEBOOK (nb), t, l);
 
-	b = gtk_check_button_new_with_label (_("Show guides"));
-	gtk_widget_show (b);
-	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (b), "key", "showguides");
-	gtk_object_set_data (GTK_OBJECT (dialog), "showguides", b);
-	g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_dtw_whatever_toggled), dialog);
-	gtk_widget_set_sensitive (b, FALSE);
+	spw_checkbutton(dialog, t, _("Show guides"), "showguides", 0, row, 1, cb);
+	spw_checkbutton(dialog, t, _("Snap to guides"), "snaptoguides", 1, row++, 0, cb);
 
-	b = gtk_check_button_new_with_label (_("Snap to guides"));
-	gtk_widget_show (b);
-	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (b), "key", "snaptoguides");
-	gtk_object_set_data (GTK_OBJECT (dialog), "snaptoguides", b);
-	g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_dtw_whatever_toggled), dialog);
-
-	l = gtk_label_new (_("Snap units:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	us = sp_unit_selector_new (SP_UNIT_ABSOLUTE | SP_UNIT_DEVICE);
-	gtk_widget_show (us);
-	gtk_table_attach (GTK_TABLE (t), us, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-#if 0
-	gtk_signal_connect (GTK_OBJECT (us), "set_unit", GTK_SIGNAL_FUNC (sp_dtw_guides_snap_units_set), dialog);
-#endif
-	gtk_object_set_data (GTK_OBJECT (dialog), "guide_snap_units", us);
+	spw_dropdown(dialog, t, _("Snap units:"), "guide_snap_units", row++, us);
 
-	l = gtk_label_new (_("Snap distance:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 1.0, 10.0, 10.0);
-	gtk_object_set_data (GTK_OBJECT (dialog), "guidetolerance", a);
-	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
-	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0, 2);
-	gtk_widget_show (sb);
-	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	g_signal_connect (GTK_OBJECT (a), "value_changed", G_CALLBACK (sp_dtw_guides_snap_distance_changed), dialog);
+	spw_unit_selector(dialog, t, _("Snap distance:"), "guidetolerance", row++, us,
+			  G_CALLBACK (sp_dtw_guides_snap_distance_changed) );
 
-	l = gtk_label_new (_("Guides color:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	cp = sp_color_picker_new ("guidecolor", "guideopacity", _("Guideline color"), 0);
-	gtk_widget_show (cp);
-	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (dialog), "guidecolor", cp);
+	sp_color_picker_button(dialog, t, _("Guides color:"), "guidecolor",
+			       _("Guideline color"), "guideopacity", row++);
 
-	l = gtk_label_new (_("Highlight color:"));
-	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-	gtk_widget_show (l);
-	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	cp = sp_color_picker_new ("guidehicolor", "guidehiopacity", _("Highlighted guideline color"), 0);
-	gtk_widget_show (cp);
-	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (dialog), "guidehicolor", cp);
+	sp_color_picker_button(dialog, t, _("Highlight color:"), "guidehicolor",
+			       _("Highlighted guideline color"), "guidehiopacity", row++);
 
+	row=0;
 	/* Page page */
 	l = gtk_label_new (_("Page"));
 	gtk_widget_show (l);
@@ -391,12 +275,7 @@ sp_desktop_dialog_new (void)
 	gtk_table_set_col_spacings (GTK_TABLE (t), 4);
 	gtk_notebook_append_page (GTK_NOTEBOOK (nb), t, l);
 
-	b = gtk_check_button_new_with_label (_("Show border"));
-	gtk_widget_show (b);
-	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	gtk_object_set_data (GTK_OBJECT (b), "key", "showborder");
-	gtk_object_set_data (GTK_OBJECT (dialog), "showborder", b);
-	g_signal_connect (G_OBJECT (b), "toggled", G_CALLBACK (sp_dtw_whatever_toggled), dialog);
+	spw_checkbutton(dialog, t, _("Show border"), "showborder", 0, row, 0, cb);
 
 	b = gtk_check_button_new_with_label (_("Border on top of drawing"));
 	gtk_widget_show (b);
@@ -522,6 +401,23 @@ sp_dtw_update (GtkWidget *dialog, SPDesktop *desktop)
 	}
 }
 
+void
+sp_color_picker_button(GtkWidget * dialog, GtkWidget * t,
+		       const guchar * label, guchar * key,
+		       guchar * color_dialog_label, guchar * opacity_key,
+		       int row)
+{
+  GtkWidget *l, *cp;
+  l = gtk_label_new (label);
+  gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+  gtk_widget_show (l);
+  gtk_table_attach (GTK_TABLE (t), l, 0, 1, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+  cp = sp_color_picker_new (key, opacity_key, color_dialog_label, 0);
+  gtk_widget_show (cp);
+  gtk_table_attach (GTK_TABLE (t), cp, 1, 2, row, row+1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+  g_object_set_data (G_OBJECT (dialog), key, cp);
+}
+                                                                                                
 static void
 sp_color_picker_destroy (GtkObject *cp, gpointer data)
 {

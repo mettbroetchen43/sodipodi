@@ -173,6 +173,7 @@ spsvgview_SOURCES = \
 
 spsvgview_LDADD = \
 	$(spproglibs) \
+	$(module_libs) \
 	xml/libspxml.a \
 	svg/libspsvg.a \
 	display/libspdisplay.a \

@@ -19,6 +19,7 @@ void sp_node_path_edit_add (void);
 void sp_node_path_edit_delete (void);
 void sp_node_path_edit_break (void);
 void sp_node_path_edit_join (void);
+void sp_node_path_edit_join_segment (void);
 void sp_node_path_edit_toline (void);
 void sp_node_path_edit_tocurve (void);
 void sp_node_path_edit_cusp (void);

@@ -29,6 +29,7 @@
 
 INCLUDES = \
 	-I.. \
+	-I$(top_srcdir)/src \
 	$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspdisplay.a

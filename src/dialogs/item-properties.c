@@ -41,14 +41,13 @@
 
 static GtkWidget *dlg = NULL;
 
-static void sp_item_widget_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, GtkWidget *itemw);
+static void sp_item_widget_modify_selection (SPWidget *spw, SPSelection *selection,
+					     guint flags, GtkWidget *itemw);
 static void sp_item_widget_change_selection (SPWidget *spw, SPSelection *selection, GtkWidget *itemw);
 static void sp_item_widget_setup (SPWidget *spw, SPSelection *selection);
 static void sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw);
 static void sp_item_widget_printability_toggled (GtkWidget *widget, SPWidget *spw);
-#if 0
 static void sp_item_widget_id_changed (GtkWidget *widget, SPWidget *spw);
-#endif
 static void sp_item_widget_opacity_value_changed (GtkAdjustment *a, SPWidget *spw);
 static void sp_item_widget_transform_value_changed (GtkWidget *widget, SPWidget *spw);
 
@@ -59,7 +58,7 @@ static void sp_item_dialog_destroy (GtkObject *object, gpointer data);
 GtkWidget *
 sp_item_widget_new (void)
 {
-	GtkWidget *spw, *vb, *hb, *t, *cb, *l, *sb, *f, *s;
+	GtkWidget *spw, *vb, *hb, *t, *cb, *l, *sb, *f, *s, *tf, *pb;
 	GtkObject *a;
 
 	/* Create container widget */
@@ -71,6 +70,31 @@ sp_item_widget_new (void)
 	gtk_widget_show (vb);
 	gtk_container_add (GTK_CONTAINER (spw), vb);
 
+	/* Item name */
+	hb = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hb);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
+	l = gtk_label_new (_("ID"));
+	gtk_widget_show (l);
+	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+	gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "id_label", l);
+
+
+	tf = gtk_entry_new ();
+	gtk_entry_set_max_length (GTK_ENTRY (tf), 64);
+	gtk_widget_show (tf);
+	gtk_box_pack_start (GTK_BOX (hb), tf, TRUE, TRUE, 0);
+	gtk_object_set_data (GTK_OBJECT (spw), "id", tf);
+
+
+        pb = gtk_button_new_with_label (_("Set ID"));
+        gtk_box_pack_start (GTK_BOX (hb), pb, TRUE, TRUE, 0);
+	gtk_signal_connect (GTK_OBJECT (pb), "clicked", GTK_SIGNAL_FUNC (sp_item_widget_id_changed), spw);
+        gtk_widget_show (pb);
+
+
+        /* Check boxes */
 	t = gtk_table_new (2, 2, TRUE);
 	gtk_widget_show (t);
 	gtk_box_pack_start (GTK_BOX (vb), t, FALSE, FALSE, 0);
@@ -235,22 +259,20 @@ sp_item_widget_setup (SPWidget *spw, SPSelection *selection)
 	a = gtk_object_get_data (GTK_OBJECT (spw), "t5");
 	gtk_adjustment_set_value (a, item->transform.c[5]);
 
-#if 0
 	/* Id */
-	if (SP_OBJECT_IS_CLONED (object)) {
-		w = glade_xml_get_widget (xml, "id");
+	if (SP_OBJECT_IS_CLONED (item)) {
+		w = gtk_object_get_data (GTK_OBJECT (spw), "id");
 		gtk_entry_set_text (GTK_ENTRY (w), "");
 		gtk_widget_set_sensitive (w, FALSE);
-		w = glade_xml_get_widget (xml, "id_comment");
-		gtk_label_set_text (GTK_LABEL (w), _("Item is reference"));
+		w = gtk_object_get_data (GTK_OBJECT (spw), "id_label");
+		gtk_label_set_text (GTK_LABEL (w), _("Ref"));
 	} else {
-		w = glade_xml_get_widget (xml, "id");
-		gtk_entry_set_text (GTK_ENTRY (w), object->id);
+		w = gtk_object_get_data (GTK_OBJECT (spw), "id");
+		gtk_entry_set_text (GTK_ENTRY (w), item->object.id);
 		gtk_widget_set_sensitive (w, TRUE);
-		w = glade_xml_get_widget (xml, "id_comment");
-		gtk_label_set_text (GTK_LABEL (w), _("The SVG ID of item"));
+		w = gtk_object_get_data (GTK_OBJECT (spw), "id_label");
+		gtk_label_set_text (GTK_LABEL (w), _("ID"));
 	}
-#endif
 
 	gtk_object_set_data (GTK_OBJECT (spw), "blocked", GUINT_TO_POINTER (FALSE));
 }
@@ -305,44 +327,40 @@ sp_item_widget_printability_toggled (GtkWidget *widget, SPWidget *spw)
 	gtk_object_set_data (GTK_OBJECT (spw), "blocked", GUINT_TO_POINTER (FALSE));
 }
 
-#if 0
 static void
 sp_item_widget_id_changed (GtkWidget *widget, SPWidget *spw)
 {
-	GladeXML *xml;
 	SPItem *item;
 	GtkWidget *w;
 	gchar *id;
 
-	if (blocked) return;
+	if (gtk_object_get_data (GTK_OBJECT (spw), "blocked")) return;
 
 	item = sp_selection_item (SP_WIDGET_SELECTION (spw));
 	g_return_if_fail (item != NULL);
-	xml = gtk_object_get_data (GTK_OBJECT (spw), "xml");
-	g_return_if_fail (xml != NULL);
 
-	blocked = TRUE;
+	gtk_object_set_data (GTK_OBJECT (spw), "blocked", GUINT_TO_POINTER (TRUE));
 
-	w = glade_xml_get_widget (xml, "id");
-	id = gtk_entry_get_text (GTK_ENTRY (w));
-	w = glade_xml_get_widget (xml, "id_comment");
+	w = gtk_object_get_data (GTK_OBJECT (spw), "id");
+	id = (gchar *)gtk_entry_get_text (GTK_ENTRY (w));
+	w = gtk_object_get_data (GTK_OBJECT (spw), "id_label");
 	if (!strcmp (id, ((SPObject *) item)->id)) {
-		gtk_label_set_text (GTK_LABEL (w), _("The SVG ID of item"));
+		gtk_label_set_text (GTK_LABEL (w), _("ID"));
 	} else if (!*id || !isalnum (*id)) {
-		gtk_label_set_text (GTK_LABEL (w), _("The ID is not valid"));
+		gtk_label_set_text (GTK_LABEL (w), _("ID invalid"));
 	} else if (sp_document_lookup_id (SP_WIDGET_DOCUMENT (spw), id)) {
-		gtk_label_set_text (GTK_LABEL (w), _("The ID is already defined"));
+		gtk_label_set_text (GTK_LABEL (w), _("ID exists"));
 	} else {
 		SPException ex;
-		gtk_label_set_text (GTK_LABEL (w), _("The ID is valid"));
+		gtk_label_set_text (GTK_LABEL (w), _("ID"));
 		SP_EXCEPTION_INIT (&ex);
 		sp_object_setAttribute (SP_OBJECT (item), "id", id, &ex);
 		sp_document_maybe_done (SP_WIDGET_DOCUMENT (spw), "ItemDialog:id");
 	}
 
-	blocked = FALSE;
+	gtk_object_set_data (GTK_OBJECT (spw), "blocked", GUINT_TO_POINTER (FALSE));
 }
-#endif
+
 
 static void
 sp_item_widget_opacity_value_changed (GtkAdjustment *a, SPWidget *spw)

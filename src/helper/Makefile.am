@@ -8,6 +8,7 @@ noinst_LIBRARIES = libspchelp.a
 
 INCLUDES = \
 	-I.. \
+	-I$(top_srcdir)/src \
 	$(cflags) \
 	$(SODIPODI_CFLAGS)
 

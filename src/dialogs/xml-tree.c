@@ -95,7 +95,7 @@ static void on_tree_unselect_row_hide (GtkCTree * tree, GtkCTreeNode * node, gin
 static void on_attr_select_row (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
 static void on_attr_unselect_row (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
 
-static void on_attr_select_row_enable_if_not_id (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
+static void on_attr_select_row_enable (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
 static void on_attr_unselect_row_disable (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
 
 static void on_attr_select_row_set_name_content (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data);
@@ -306,7 +306,7 @@ sp_xml_tree_dialog (void)
 						  (GCallback) cmd_delete_attr, NULL);
 
 		gtk_signal_connect_while_alive (GTK_OBJECT (attributes), "select_row",
-						(GCallback) on_attr_select_row_enable_if_not_id, button, GTK_OBJECT (button));
+						(GCallback) on_attr_select_row_enable, button, GTK_OBJECT (button));
 		gtk_signal_connect_while_alive (GTK_OBJECT (attributes), "unselect_row",
 						(GCallback) on_attr_unselect_row_disable, button, GTK_OBJECT (button));
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row",
@@ -576,7 +576,11 @@ on_tree_unselect_row (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointe
 void
 after_tree_move (GtkCTree * tree, GtkCTreeNode * node, GtkCTreeNode * new_parent, GtkCTreeNode * new_sibling, gpointer data)
 {
-	sp_document_done (current_document);
+	if (GTK_CTREE_ROW (node)->parent == new_parent && GTK_CTREE_ROW (node)->sibling == new_sibling) {
+		sp_document_done (current_document);
+	} else {
+		sp_document_cancel (current_document);
+	}
 }
 
 void
@@ -676,16 +680,6 @@ on_attr_unselect_row (GtkCList *list, gint row, gint column, GdkEventButton *eve
 }
 
 void
-on_attr_select_row_enable_if_not_id (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
-{
-	if (g_quark_from_string ("id") != sp_xmlview_attr_list_get_row_key (list, row)) {
-		gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
-	} else {
-		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
-	}
-}
-
-void
 on_attr_select_row_set_name_content (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
 {
 	GtkEditable * editable;
@@ -767,6 +761,12 @@ on_tree_select_row_enable_if_has_grandparent (GtkCTree * tree, GtkCTreeNode * no
 	} else {
 		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
 	}
+}
+
+void
+on_attr_select_row_enable (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
+{
+	gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
 }
 
 void
@@ -1026,7 +1026,8 @@ cmd_lower_node (GtkObject * object, gpointer data)
 void
 cmd_indent_node (GtkObject * object, gpointer data)
 {
-	SPRepr * prev, * parent, * repr, * moved_repr, * ref;
+	int ok;
+	SPRepr * prev, * parent, * repr, * ref;
 
 	repr = selected_repr;
 	g_assert (repr != NULL);
@@ -1047,19 +1048,23 @@ cmd_indent_node (GtkObject * object, gpointer data)
 		ref = NULL;
 	}
 
-	moved_repr = sp_repr_move (prev, repr, ref);
+	ok = sp_repr_remove_child (parent, repr) &&
+	     sp_repr_add_child (prev, repr, ref);
 
-	if (moved_repr) {
+	if (ok) {
 		sp_document_done (current_document);
-		set_tree_select (moved_repr);
-		set_dt_select (moved_repr);
+		set_tree_select (repr);
+		set_dt_select (repr);
+	} else {
+		sp_document_cancel (current_document);
 	}
 }
 
 void
 cmd_unindent_node (GtkObject * object, gpointer data)
 {
-	SPRepr * grandparent, * parent, * repr, * moved_repr;
+	SPRepr * grandparent, * parent, * repr;
+	int ok;
 
 	repr = selected_repr;
 	g_assert (repr != NULL);
@@ -1068,12 +1073,15 @@ cmd_unindent_node (GtkObject * object, gpointer data)
 	grandparent = sp_repr_parent (parent);
 	g_return_if_fail (grandparent);
 	
-	moved_repr = sp_repr_move (grandparent, repr, parent);
-
-	if (moved_repr) {
+	ok = sp_repr_remove_child (parent, repr) &&
+	     sp_repr_add_child (grandparent, repr, parent);
+	
+	if (ok) {
 		sp_document_done (current_document);
-		set_tree_select (moved_repr);
-		set_dt_select (moved_repr);
+		set_tree_select (repr);
+		set_dt_select (repr);
+	} else {
+		sp_document_cancel (current_document);
 	}
 }
 

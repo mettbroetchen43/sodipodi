@@ -40,6 +40,12 @@ sp_node_path_edit_join (void)
 }
 
 void
+sp_node_path_edit_join_segment (void)
+{
+	sp_node_selected_join_segment ();
+}
+
+void
 sp_node_path_edit_toline (void)
 {
 	sp_node_selected_set_line_type (ART_LINETO);

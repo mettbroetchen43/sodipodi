@@ -113,6 +113,9 @@ gint sp_document_ensure_up_to_date (SPDocument *doc);
 void sp_document_done (SPDocument *document);
 void sp_document_maybe_done (SPDocument *document, const guchar *key);
 
+/* Cancel (and revert) current unsaved actions */
+void sp_document_cancel (SPDocument *document);
+
 /* Undo and redo */
 void sp_document_undo (SPDocument * document);
 void sp_document_redo (SPDocument * document);

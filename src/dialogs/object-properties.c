@@ -280,7 +280,7 @@ sp_object_properties_layout (void)
 
 	if (!dialog) {
 		GtkWidget *w;
-		dialog = sp_window_new (_("Object position and size"), TRUE);
+		dialog = sp_window_new (_("Object Size and Position"), TRUE);
 		gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (sp_object_layout_dialog_destroy), &dialog);
 		w = sp_selection_layout_widget_new ();
 		gtk_widget_show (w);
@@ -302,7 +302,7 @@ sp_selection_layout_widget_new (void)
 	gtk_widget_show (vb);
 	gtk_container_add (GTK_CONTAINER (spw), vb);
 
-	f = gtk_frame_new (_("Position and size"));
+	f = gtk_frame_new (_("Size and Position"));
 	gtk_widget_show (f);
 	gtk_container_set_border_width (GTK_CONTAINER (f), 4);
 	gtk_box_pack_start (GTK_BOX (vb), f, FALSE, FALSE, 0);
@@ -462,11 +462,17 @@ sp_object_layout_any_value_changed (GtkAdjustment *adj, SPWidget *spw)
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
-	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
-
 	sel = SP_WIDGET_SELECTION (spw);
 	us = gtk_object_get_data (GTK_OBJECT (spw), "units");
 	unit = sp_unit_selector_get_unit (SP_UNIT_SELECTOR (us));
+	if (sp_unit_selector_update_test (us)) {
+		/*
+		 * When only units are being changed, don't treat changes
+		 * to adjuster values as object changes.
+		 */
+		return;
+	}
+	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
 
 	sp_selection_bbox (sel, &bbox);
 	g_return_if_fail (bbox.x1 - bbox.x0 > 1e-9);
