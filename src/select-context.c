@@ -424,6 +424,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 			}
 			if (sc->grabbed) {
 				gnome_canvas_item_ungrab (sc->grabbed, event->button.time);
+				sc->grabbed = NULL;
 			}
 			sc->button_press_shift = FALSE;
 		} 

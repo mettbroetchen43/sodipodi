@@ -445,12 +445,28 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 				pos->gdata.radial.fy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 			} else {
 				float x, y;
+				if (!NR_DF_TEST_CLOSE (pos->w2gs.c[0], pos->w2gs.c[3], NR_EPSILON_F) ||
+				    !NR_DF_TEST_CLOSE (pos->w2gs.c[1], 0.0, NR_EPSILON_F) ||
+				    !NR_DF_TEST_CLOSE (pos->w2gs.c[2], 0.0, NR_EPSILON_F)) {
+					double ex, cxw, cyw;
+					/* Have to make transform rectilinear */
+					ex = NR_MATRIX_DF_EXPANSION (&pos->w2gs);
+					cxw = NR_MATRIX_DF_TRANSFORM_X (&pos->gs2w, cx, cy);
+					cyw = NR_MATRIX_DF_TRANSFORM_Y (&pos->gs2w, cx, cy);
+					pos->w2gs.c[0] = ex;
+					pos->w2gs.c[1] = 0.0;
+					pos->w2gs.c[2] = 0.0;
+					pos->w2gs.c[3] = ex;
+					pos->w2gs.c[4] = cx - ex * cxw;
+					pos->w2gs.c[5] = cy - ex * cyw;
+					nr_matrix_f_invert (&pos->gs2w, &pos->w2gs);
+					nr_matrix_multiply_fff (&pos->gs2d, &pos->gs2w, &pos->w2d);
+				}
 
 				x = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
 				y = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 
 				pos->gdata.radial.r = hypot (x - cx, y - cy);
-
 			}
 			gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
 			pos->changed = TRUE;
@@ -720,19 +736,19 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 		x2 = gp->gdata.linear.x2;
 		y2 = gp->gdata.linear.y2;
 
-		wx1 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, x1, y1) + 0.5);
-		wy1 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, x1, y1) + 0.5);
-		wx2 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, x2, y2) + 0.5);
-		wy2 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, x2, y2) + 0.5);
+		wx1 = (short) (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, x1, y1) + 0.5);
+		wy1 = (short) (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, x1, y1) + 0.5);
+		wx2 = (short) (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, x2, y2) + 0.5);
+		wy2 = (short) (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, x2, y2) + 0.5);
 
 		cx = (x1 + x2) / 2.0 + y1 - y2;
 		cy = (y1 + y2) / 2.0 + x2 - x1;
-		c[0] = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy) + 0.5);
-		c[1] = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy) + 0.5);
+		c[0] = (short) (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy) + 0.5);
+		c[1] = (short) (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy) + 0.5);
 		dx = (x1 + x2) / 2.0 - y1 + y2;
 		dy = (y1 + y2) / 2.0 - x2 + x1;
-		c[2] = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, dx, dy) + 0.5);
-		c[3] = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, dx, dy) + 0.5);
+		c[2] = (short) (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, dx, dy) + 0.5);
+		c[3] = (short) (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, dx, dy) + 0.5);
 
 		spgp_clip_line (c, area->x + 4, area->y + 4, area->x + area->width - 4, area->y + area->height - 4);
 
@@ -796,17 +812,17 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 		fy = gp->gdata.radial.fy;
 		r = gp->gdata.radial.r;
 
-		wcx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy) + 0.5);
-		wcy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy) + 0.5);
-		wdx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx + r, cy) + 0.5);
-		wdy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx + r, cy) + 0.5);
-		wfx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, fx, fy) + 0.5);
-		wfy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, fx, fy) + 0.5);
+		wcx = (short) (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy) + 0.5);
+		wcy = (short) (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy) + 0.5);
+		wdx = (short) (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx + r, cy) + 0.5);
+		wdy = (short) (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx + r, cy) + 0.5);
+		wfx = (short) (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, fx, fy) + 0.5);
+		wfy = (short) (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, fx, fy) + 0.5);
 
 		c[0] = wcx;
 		c[1] = wcy;
-		c[2] = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy + r) + 0.5);
-		c[3] = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy + r) + 0.5);
+		c[2] = (short) (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, cx, cy + r) + 0.5);
+		c[3] = (short) (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, cx, cy + r) + 0.5);
 
 		spgp_clip_line (c, area->x + 4, area->y + 4, area->x + area->width - 4, area->y + area->height - 4);
 

@@ -15,6 +15,8 @@
 #include <config.h>
 #include <math.h>
 #include <string.h>
+#include <libnr/nr-values.h>
+#include <libnr/nr-macros.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -456,6 +458,7 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	gdouble rev[6];
 	gdouble px, py, sw, sh;
 	guchar t[80];
+	SPStyle *style;
 
 	rect = SP_RECT (item);
 
@@ -502,11 +505,11 @@ sp_rect_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	}
 
 	/* And last but not least */
-	if ((fabs (sw - 1.0) > 1e-9) || (fabs (sh - 1.0) > 1e-9)) {
-		SPStyle *style;
+	style = SP_OBJECT_STYLE (item);
+	if ((style->stroke.type != SP_PAINT_TYPE_NONE) &&
+	    (!NR_DF_TEST_CLOSE (sw, 1.0, NR_EPSILON_D) || !NR_DF_TEST_CLOSE (sh, 1.0, NR_EPSILON_D))) {
 		guchar *str;
 		/* Scale changed, so we have to adjust stroke width */
-		style = SP_OBJECT_STYLE (item);
 		style->stroke_width.computed *= sqrt (fabs (sw * sh));
 		str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
 		sp_repr_set_attr (SP_OBJECT_REPR (item), "style", str);

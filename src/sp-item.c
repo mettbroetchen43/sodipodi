@@ -628,6 +628,23 @@ sp_item_i2doc_affine (SPItem * item, gdouble affine[])
 	return affine;
 }
 
+gdouble *
+sp_item_i2root_affine (SPItem *item, gdouble affine[])
+{
+	g_return_val_if_fail (item != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
+	g_return_val_if_fail (affine != NULL, NULL);
+
+	art_affine_identity (affine);
+
+	while (SP_OBJECT_PARENT (item)) {
+		art_affine_multiply (affine, affine, item->affine);
+		item = (SPItem *) SP_OBJECT_PARENT (item);
+	}
+
+	return affine;
+}
+
 /* Transformation to normalized (0,0-1,1) viewport */
 
 gdouble *

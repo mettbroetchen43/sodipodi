@@ -1,5 +1,14 @@
 2002-10-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-item-group.c (sp_group_bbox): Do not set bbox to 0,0,0,0
+
+	* src/select-context.c (sp_select_context_root_handler): Set grabbed to NULL on release
+
+	* src/path-chemistry.c (sp_selected_path_combine): Use item2root transform
+	(sp_selected_path_break_apart): Ditto
+
+	* src/sp-item.c (sp_item_i2root_affine): New method
+
 	* src/widgets/gradient-position.c (sp_gradient_position_motion_notify): Reset
 	gradient relative transform to symmetric rectilinear if dragging
 

@@ -135,6 +135,7 @@ void sp_item_set_item_transform (SPItem *item, const gdouble *transform);
 
 void sp_item_bbox_desktop (SPItem *item, ArtDRect *bbox);
 gdouble *sp_item_i2doc_affine (SPItem *item, gdouble affine[]);
+gdouble *sp_item_i2root_affine (SPItem *item, gdouble affine[]);
 /* Transformation to normalized (0,0-1,1) viewport */
 gdouble *sp_item_i2vp_affine (SPItem *item, gdouble affine[]);
 

@@ -10,13 +10,13 @@ TODO for 0.27
 - Update .spec.in file
 - Ungroup forgetting font family bug (GONE)
 - Ungroup forgetting paintserver in group bug (DONE)
-- Fix places where bbox is not tested for emptyness
+- Fix places where bbox is not tested for emptyness (DONE)
 - Fix misplaced draws if viewBox present (DONE)
-- Text does not update paint dynamically
 
 Other tasks
 ===========
 
+- Text does not update paint dynamically
 - Illustrator import/export
 - Patterns (Lauris) (90% DONE)
 - Radial gradients (Lauris) (95% DONE)

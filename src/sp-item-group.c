@@ -384,15 +384,16 @@ sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 
 	group = SP_GROUP (item);
 
-	bbox->x0 = bbox->y0 = bbox->x1 = bbox->y1 = 0.0;
-
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			gdouble a[6];
 			child = SP_ITEM (o);
 			art_affine_multiply (a, child->affine, transform);
 			sp_item_invoke_bbox (child, &child_bbox, a);
-			art_drect_union (bbox, bbox, &child_bbox);
+			bbox->x0 = MIN (bbox->x0, child_bbox.x0);
+			bbox->y0 = MIN (bbox->y0, child_bbox.y0);
+			bbox->x1 = MAX (bbox->x1, child_bbox.x1);
+			bbox->y1 = MAX (bbox->y1, child_bbox.y1);
 		}
 	}
 }

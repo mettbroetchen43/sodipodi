@@ -28,21 +28,21 @@
 void
 sp_selected_path_combine (void)
 {
-  SPDesktop * desktop;
-  SPSelection * selection;
-  GSList * il;
-  GSList * l;
-  SPRepr * repr;
-  SPItem * item;
-  SPPath * path;
-  SPCurve * c;
-  ArtBpath * abp;
-  gdouble i2doc[6];
-  gchar * d, * str, * style;
+	SPDesktop * desktop;
+	SPSelection * selection;
+	GSList * il;
+	GSList * l;
+	SPRepr * repr;
+	SPItem * item;
+	SPPath * path;
+	SPCurve * c;
+	ArtBpath * abp;
+	gdouble i2root[6];
+	gchar * d, * str, * style;
 
-  desktop = SP_ACTIVE_DESKTOP;
-  if (!SP_IS_DESKTOP(desktop)) return;
-  selection = SP_DT_SELECTION (desktop);
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!SP_IS_DESKTOP(desktop)) return;
+	selection = SP_DT_SELECTION (desktop);
 
 	il = (GSList *) sp_selection_item_list (selection);
 
@@ -62,8 +62,8 @@ sp_selected_path_combine (void)
 	for (l = il; l != NULL; l = l->next) {
 		path = (SPPath *) l->data;
 		c = sp_path_normalized_bpath (path);
-		sp_item_i2doc_affine (SP_ITEM (path), i2doc);
-		abp = art_bpath_affine_transform (c->bpath, i2doc);
+		sp_item_i2root_affine (SP_ITEM (path), i2root);
+		abp = art_bpath_affine_transform (c->bpath, i2root);
 		sp_curve_unref (c);
 		str = sp_svg_write_path (abp);
 		art_free (abp);
@@ -95,7 +95,7 @@ sp_selected_path_break_apart (void)
 	SPPath * path;
 	SPCurve * curve;
 	ArtBpath * abp;
-	double i2doc[6];
+	double i2root[6];
 	gchar * style, * str;
 	GSList * list, * l;
 	SPDesktop * desktop;
@@ -116,10 +116,10 @@ sp_selected_path_break_apart (void)
 	curve = sp_path_normalized_bpath (path);
 	if (curve == NULL) return;
 
-	sp_item_i2doc_affine (SP_ITEM (path), i2doc);
+	sp_item_i2root_affine (SP_ITEM (path), i2root);
 	style = g_strdup (sp_repr_attr (SP_OBJECT (item)->repr, "style"));
 
-	abp = art_bpath_affine_transform (curve->bpath, i2doc);
+	abp = art_bpath_affine_transform (curve->bpath, i2root);
 
 	sp_curve_unref (curve);
 	sp_repr_unparent (SP_OBJECT_REPR (item));

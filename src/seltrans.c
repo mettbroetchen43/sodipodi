@@ -545,12 +545,6 @@ sp_sel_trans_update_volatile_state (SPSelTrans * seltrans)
 		seltrans->empty = TRUE;
 		return;
 	}
-#if 0
-	seltrans->box.x0 -= 0.125;
-	seltrans->box.y0 -= 0.125;
-	seltrans->box.x1 += 0.125;
-	seltrans->box.y1 += 0.125;
-#endif
 
 	art_affine_identity (seltrans->current);
 }
