@@ -429,14 +429,14 @@ static void
 sp_rect_rx_set (SPItem *item, ArtPoint *p, guint state)
 {
 	SPRect *rect;
-	gdouble temp;
 
 	rect = SP_RECT(item);
 	
-	temp = p->x - rect->x;
-	rect->rx = CLAMP(temp, 0.0, rect->width/2.0);
 	if (state & GDK_CONTROL_MASK) {
-		rect->ry = CLAMP(temp, 0.0, rect->height/2.0);
+		gdouble temp = MIN(rect->height, rect->width)/2.0;
+		rect->rx = rect->ry = CLAMP(p->x - rect->x, 0.0, temp);
+	} else {
+		rect->rx = CLAMP(p->x - rect->x, 0.0, rect->width/2.0);
 	}
 }
 
@@ -456,14 +456,14 @@ static void
 sp_rect_ry_set (SPItem *item, ArtPoint *p, guint state)
 {
 	SPRect *rect;
-	gdouble temp;
 
 	rect = SP_RECT(item);
 	
-	temp = p->y - rect->y;
-	rect->ry = CLAMP(temp, 0.0, rect->height/2.0);
 	if (state & GDK_CONTROL_MASK) {
-		rect->rx = CLAMP(temp, 0.0, rect->width/2.0);
+		gdouble temp = MIN(rect->height, rect->width)/2.0;
+		rect->rx = rect->ry = CLAMP(p->y - rect->y, 0.0, temp);
+	} else {
+		rect->ry = CLAMP(p->y - rect->y, 0.0, rect->height/2.0);
 	}
 }
 

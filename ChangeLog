@@ -1,3 +1,7 @@
+Sun Mar 31 19:09:25 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-rect.c (sp_rect_*_set): Fixed a little.
+
 2002-03-22  Davide Puricelli <evo@debian.org>
 	
 	* Updated debian/ directory, synced with Debian unstable.
