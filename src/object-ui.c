@@ -89,6 +89,7 @@ sp_object_type_menu (GType type, SPObject *object, SPDesktop *desktop, GtkMenu *
 static void sp_item_properties (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_select_this (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_reset_transformation (GtkMenuItem *menuitem, SPItem *item);
+static void sp_item_apply_transformation (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_toggle_sensitivity (GtkMenuItem *menuitem, SPItem *item);
 static void sp_item_create_link (GtkMenuItem *menuitem, SPItem *item);
 
@@ -110,11 +111,9 @@ sp_item_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu)
 	w = gtk_menu_item_new_with_label (_("Item Properties"));
 	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_properties), item);
-	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Separator */
 	w = gtk_menu_item_new ();
-	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Select item */
 	w = gtk_menu_item_new_with_label (_("Select this"));
@@ -124,28 +123,28 @@ sp_item_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu)
 		gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
 		gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_select_this), item);
 	}
-	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Reset transformations */
 	w = gtk_menu_item_new_with_label (_("Reset transformation"));
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_reset_transformation), item);
-	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Apply transformation */
+	w = gtk_menu_item_new_with_label (_("Apply transformation"));
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_apply_transformation), item);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Toggle sensitivity */
 	insensitive = (sp_repr_attr (SP_OBJECT_REPR (item), "sodipodi:insensitive") != NULL);
 	w = gtk_menu_item_new_with_label (insensitive ? _("Make sensitive") : _("Make insensitive"));
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_toggle_sensitivity), item);
-	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Create link */
 	w = gtk_menu_item_new_with_label (_("Create link"));
 	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_item_create_link), item);
 	gtk_widget_set_sensitive (w, !SP_IS_ANCHOR (item));
-	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
 	/* Show menu */
-	gtk_widget_show (m);
+	gtk_widget_show_all (m);
 
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), m);
 
@@ -189,6 +188,15 @@ sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item)
 	g_assert (SP_IS_ITEM (item));
 
 	sp_repr_set_attr (((SPObject *) item)->repr, "transform", NULL);
+	sp_document_done (SP_OBJECT_DOCUMENT (item));
+}
+
+static void
+sp_item_apply_transformation (GtkMenuItem * menuitem, SPItem * item)
+{
+	g_assert (SP_IS_ITEM (item));
+
+	sp_item_write_transform (item, SP_OBJECT_REPR (item), &item->transform);
 	sp_document_done (SP_OBJECT_DOCUMENT (item));
 }
 

@@ -1,5 +1,8 @@
 2003-12-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/object-ui.c (sp_item_apply_transformation): New method
+	(sp_item_menu): Added 'Apply transformation'
+
 	* src/dialogs/export.c (sp_export_progress_callback): New method
 	(sp_export_export_clicked): Added progress dialog
 
