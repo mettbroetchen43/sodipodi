@@ -1,3 +1,54 @@
+2003-05-18  Hans Breuer  <hans.breuer.org>
+
+	* src/monostd.h : (new file) some defines and includes
+	mostly to make up the WIN32 lack of unistd.h
+
+	* config.h.win32 src/makefile.msc src/*/makefile.msc :
+	(new files) to build Sodipodi on win32 with M$ toolchain
+
+	* src/winmain.c : (new file) WinMain in it's own file simply 
+	calling main()
+	* src/main.c : build the common main() for win32 too
+
+	* src/sodipodi.rc : (new file) to compile in the application
+	icon on win32
+
+	* src/file.c : use G_DIR_SEPARATOR[_S] instead of '/' ["/"]
+	make the file selection work better on win32
+
+	* src/sp-image.c : read images defined by xlink:href="file://...
+
+	* src/sodipodi.c : #inculed "monostd.h" to get S_ISDIR and 
+	S_ISREG on win32
+
+	* src/libnr/nr-values.h : when building as DLL exporting 
+	variables is quite ugly. Define some constant matrices as
+	static for win32 to avoid exporting.
+
+	* src/libnrtype/nr-type-directory.c : #include <io.h> 
+	for win32::open() etc.
+
+	* src/libnrtype/nr-type-w32.c : #ifdef HANGUL_CHARSET,
+	older SDK headers don't have it
+
+	* src/libnrtype/nr-type-w32.H : #define WIN32_LEAN_AND_MEAN
+	before including <windows.h> to reduce namespace pollution
+
+	* src/svg/svg-length.c : #include <config.h> to get WIN32
+
+	* src/widgets/icon.c : S_ISREG, S_ISDIR
+
+	* src/xml/sp-xml.def src/svg/sp-svg.def
+	  src/libnr/sp-libnr.def src/libnrtype/sp-libnrtype.def :
+	(new files) to export functios from modules built as DLLs
+
+	* src/helpers/gnome-utils.c(gnome_uri_list_extract_filenames) :
+	use g_filename_from_uri()
+	* src/toolbox.c src/interface.c : don't leak the uri list
+
+	* src/xml/repr-util.c : use g_strcasecmp for portability
+	* src/svg/svg-length.c : ... and g_snprintf
+
 2003-05-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/display/nr-arena-item.c (nr_arena_item_set_visible): New method

@@ -500,25 +500,14 @@ sp_repr_get_boolean (SPRepr *repr, const unsigned char *key, unsigned int *val)
 	v = sp_repr_attr (repr, key);
 
 	if (v != NULL) {
-#ifndef WIN32
-		if (!strcasecmp (v, "true") ||
-		    !strcasecmp (v, "yes") ||
-		    !strcasecmp (v, "y") ||
+		if (!g_strcasecmp (v, "true") ||
+		    !g_strcasecmp (v, "yes") ||
+		    !g_strcasecmp (v, "y") ||
 		    (atoi (v) != 0)) {
 			*val = TRUE;
 		} else {
 			*val = FALSE;
 		}
-#else
-		if (!stricmp (v, "true") ||
-		    !stricmp (v, "yes") ||
-		    !stricmp (v, "y") ||
-		    (atoi (v) != 0)) {
-			*val = TRUE;
-		} else {
-			*val = FALSE;
-		}
-#endif
 		return TRUE;
 	}
 

@@ -10,6 +10,7 @@
  *
  * This code is in public domain
  */
+#include <config.h>
 
 #include <math.h>
 #include <stdlib.h>

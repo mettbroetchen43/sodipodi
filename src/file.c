@@ -106,8 +106,8 @@ file_open_ok (GtkWidget *widget, GtkFileSelection *fs)
 
 	if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
 		if (open_path) g_free (open_path);
-		if (filename[strlen(filename) - 1] != '/') {
-			open_path = g_strconcat (filename, "/", NULL);
+		if (filename[strlen(filename) - 1] != G_DIR_SEPARATOR) {
+			open_path = g_strconcat (filename, G_DIR_SEPARATOR_S, NULL);
 			g_free (filename);
 		} else {
 			open_path = filename;
@@ -120,7 +120,7 @@ file_open_ok (GtkWidget *widget, GtkFileSelection *fs)
 		gpointer key;
 		if (open_path) g_free (open_path);
 		open_path = g_dirname (filename);
-		if (open_path) open_path = g_strconcat (open_path, "/", NULL);
+		if (open_path) open_path = g_strconcat (open_path, G_DIR_SEPARATOR_S, NULL);
 		key = g_object_get_data (G_OBJECT (fs), "type-key");
 		sp_file_open (filename, key);
 		g_free (filename);
@@ -356,8 +356,8 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 
 	if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
 		if (import_path) g_free (import_path);
-		if (filename[strlen(filename) - 1] != '/') {
-			import_path = g_strconcat (filename, "/", NULL);
+		if (filename[strlen(filename) - 1] != G_DIR_SEPARATOR) {
+			import_path = g_strconcat (filename, G_DIR_SEPARATOR_S, NULL);
 			g_free (filename);
 		} else {
 			import_path = filename;
@@ -371,7 +371,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	if (filename == NULL) return;
 
 	import_path = g_dirname (filename);
-	if (import_path) import_path = g_strconcat (import_path, "/", NULL);
+	if (import_path) import_path = g_strconcat (import_path, G_DIR_SEPARATOR_S, NULL);
 
 	rdoc = sp_document_repr_root (doc);
 

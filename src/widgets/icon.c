@@ -34,6 +34,10 @@
 
 #include "icon.h"
 
+#ifdef WIN32
+#include "../monostd.h"
+#endif
+
 /* fixme: (Lauris) */
 extern gboolean sp_svg_icons;
 

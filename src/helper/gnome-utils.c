@@ -96,7 +96,9 @@ gnome_uri_list_extract_filenames (const gchar* uri_list)
 		tmp_list = tmp_list->next;
 
 		if (!strncmp (s, "file:", 5)) {
-			node->data = g_strdup (s+5);
+			node->data = g_filename_from_uri (s, NULL, NULL);
+			/* not sure if this fallback is useful at all */
+			if (!node->data) node->data = g_strdup (s+5);
 		} else {
 			result = g_list_remove_link(result, node);
 			g_list_free_1 (node);

@@ -416,7 +416,15 @@ sp_image_repr_read_image (SPRepr * repr)
 	filename = sp_repr_attr (repr, "xlink:href");
 	if (filename == NULL) filename = sp_repr_attr (repr, "href"); /* FIXME */
 	if (filename != NULL) {
-		if (strncmp (filename,"data:",5) == 0) {
+		if (strncmp (filename,"file:",5) == 0) {
+			fullname = g_filename_from_uri(filename, NULL, NULL);
+			if (fullname) {
+				pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
+				g_free (fullname);
+				if (pixbuf != NULL) return pixbuf;
+			}
+		}
+		else if (strncmp (filename,"data:",5) == 0) {
 			/* data URI - embedded image */
 			filename += 5;
 			pixbuf = sp_image_repr_read_dataURI (filename);

@@ -637,6 +637,8 @@ sp_ui_import_files(gchar * buffer)
 	if (!list)
 		return;
 	g_list_foreach (list, sp_ui_import_one_file_with_check, NULL);
+	g_list_foreach (list, (GFunc) g_free, NULL);
+	g_list_free (list);
 }
 
 static void

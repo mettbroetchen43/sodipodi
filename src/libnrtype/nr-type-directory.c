@@ -14,12 +14,15 @@
 #include <config.h>
 
 #include <math.h>
+
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #ifndef WIN32
 #include <unistd.h>
+#else
+#include "../monostd.h"
 #endif
 #include <stdio.h>
 #include <ctype.h>
@@ -362,6 +365,7 @@ nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name)
 	} else {
 		pdef->weight = 128;
 	}
+
 	if (strstr (c, "narrow")) {
 		pdef->stretch = 64;
 	} else if (strstr (c, "condensed")) {

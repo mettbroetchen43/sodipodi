@@ -20,13 +20,11 @@
 #include <fcntl.h>
 #ifndef WIN32
 #include <unistd.h>
+#else
+#include "monostd.h"
 #endif
 #include <signal.h>
 #include <ctype.h>
-
-#ifdef WIN32
-#include <windows.h>
-#endif
 
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
@@ -875,11 +873,7 @@ sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, const gchar *ske
 	dn = g_build_filename (g_get_home_dir (), ".sodipodi", NULL);
 #endif
 	if (stat (dn, &s)) {
-#ifdef WIN32
-		if (!CreateDirectory (dn, NULL))
-#else
 		if (mkdir (dn, S_IRWXU | S_IRGRP | S_IXGRP))
-#endif
 		{
 			/* Cannot create directory */
 			w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_mkdir, dn);

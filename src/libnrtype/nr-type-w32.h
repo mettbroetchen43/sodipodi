@@ -19,6 +19,7 @@ typedef struct _NRTypeFaceW32Class NRTypeFaceW32Class;
 
 typedef struct _NRTypeFaceGlyphW32 NRTypeFaceGlyphW32;
 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
 #include <libnrtype/nr-type-primitives.h>

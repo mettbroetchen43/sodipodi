@@ -689,6 +689,8 @@ sp_maintoolbox_open_files (gchar *buffer)
 	list = gnome_uri_list_extract_filenames (buffer);
 	if (!list) return;
 	g_list_foreach (list, sp_maintoolbox_open_one_file_with_check, NULL);
+	g_list_foreach (list, (GFunc) g_free, NULL);
+	g_list_free (list);
 }
 
 static void

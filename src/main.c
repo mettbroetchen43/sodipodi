@@ -37,10 +37,6 @@
 #endif /* Not def: POPT_TABLEEND */
 #endif
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
 #include <libxml/tree.h>
 #include <glib-object.h>
 #include <gtk/gtkmain.h>
@@ -91,11 +87,9 @@ enum {
 };
 #endif
 
-#ifndef WIN32
 int sp_main_gui (int argc, const char **argv);
 int sp_main_console (int argc, const char **argv);
 static void sp_do_export_png (SPDocument *doc);
-#endif
 
 /* fixme: We need this non-static, but better arrange it another way (Lauris) */
 gboolean sp_svg_icons = FALSE;
@@ -151,38 +145,6 @@ struct poptOption options[] = {
 };
 #endif
 
-#ifdef WIN32
-int WINAPI
-WinMain (HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, int nFS)
-{
-	int argc;
-	char **argv;
-	char *a[] = {"Sodipodi"};
-
-	char *lala = setlocale (LC_NUMERIC, "C");
-
-	argc = 1;
-	argv = a;
-	gtk_init (&argc, &argv);
-
-	LIBXML_TEST_VERSION
-
-	/* We must set LC_NUMERIC to default, or otherwise */
-	/* we'll end with localised SVG files :-( */
-
-
-	sodipodi = sodipodi_application_new ();
-	sodipodi_load_preferences (sodipodi);
-	sp_maintoolbox_create_toplevel ();
-	sodipodi_unref ();
-
-	gtk_main ();
-
-	return 0;
-}
-#endif
-
-#ifndef WIN32
 int
 main (int argc, const char **argv)
 {
@@ -199,8 +161,11 @@ main (int argc, const char **argv)
 
 	LIBXML_TEST_VERSION
 
+#ifndef WIN32
 	use_gui = (getenv ("DISPLAY") != NULL);
-
+#else
+	use_gui = TRUE;
+#endif
 	/* Test whether with/without GUI is forced */
 	for (i = 1; i < argc; i++) {
 		if (!strcmp (argv[i], "-z") ||
@@ -543,7 +508,6 @@ sp_do_export_png (SPDocument *doc)
 		g_warning ("Calculated bitmap dimensions %d %d out of range (16 - 65535)", width, height);
 	}
 }
-#endif /* NOT WIN32 */
 
 #ifdef WITH_POPT
 static GSList *

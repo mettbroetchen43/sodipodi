@@ -17,7 +17,6 @@
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_bpath.h>
-
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>
 
@@ -468,7 +467,7 @@ nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 	         uc2cp_size = tt_cp1253_size;
 
 	         break;
-
+#ifdef HANGUL_CHARSET
 	    case HANGUL_CHARSET:
 
 	         uc2cp = tt_cp949;
@@ -476,7 +475,7 @@ nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 	         uc2cp_size = tt_cp949_size;
 
 	         break;
-
+#endif
 	    case MAC_CHARSET:
 
 	         break;
@@ -695,21 +694,13 @@ nr_type_w32_init (void)
 }
 
 static NRTypeFaceGlyphW32 *
-
 nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned int metrics)
-
 {
-
 	int gidx;
 
-
-
 	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
-
 		if (!tfw32->vgidx) {
-
 		int i;
-
 			tfw32->vgidx = nr_new (int, tfw32->typeface.nglyphs);
 
 		for (i = 0; i < tfw32->typeface.nglyphs; i++) {
@@ -849,7 +840,6 @@ nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned 
 
 
 static NRBPath *
-
 nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, unsigned int glyph, unsigned int metrics)
 
 {
