@@ -1,31 +1,26 @@
-# Slovak translation of @PACKAGE 
-# Slovak translation of @PACKAGE
-# translation of sodipodi.HEAD.sk.po to Slovak
-# sodipodi sk.po
+# Slovak translation of sodipodi.HEAD.pot
 # Copyright (C) 2002,2003 Free Software Foundation, Inc.
-# This file is distributed under the same license as the sodipodi package.
-# Zdenko Podobny <zdpo@mailbox.sk>, 2002.
 # Zdenko Podobný <zdpo@mailbox.sk>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: 2003-11-30 17:37+0200\n"
-"PO-Revision-Date: 2003-11-20 22:07+0100\n"
+"Project-Id-Version: sodipodi.HEAD.sk.po\n"
+"Report-Msgid-Bugs-To: Zdenko Podobný <zdpo@mailbox.sk>\n"
+"POT-Creation-Date: 2003-12-04 15:39+0100\n"
+"PO-Revision-Date: 2003-12-04 20:57+0100\n"
 "Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Report-Msgid-Bugs-To: \n"
-"X-Generator: KBabel 1.0.2\n"
+"X-Generator: KBabel 1.2beta3\n"
 
 #: sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
 msgstr "SVG Vektorový ilustrátor"
 
 #. Create window
-#: sodipodi.desktop.in.h:2 src/toolbox.c:121 src/toolbox.c:142
+#: sodipodi.desktop.in.h:2 src/toolbox.c:107 src/toolbox.c:128
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
@@ -36,7 +31,7 @@ msgstr "Nie je možné vytvoriť sodipodi-svg-doc továreň"
 #: src/arc-context.c:303
 #, c-format
 msgid "Drawing arc %s x %s"
-msgstr ""
+msgstr "Kreslím oblúk %s x %s"
 
 #: src/desktop.c:778
 msgid "Zoom drawing if window size changes"
@@ -66,11 +61,11 @@ msgstr "Kresba"
 
 #. Selection submenu
 #: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
-#: src/interface.c:581 src/toolbox.c:489 src/verbs.c:455
+#: src/interface.c:581 src/toolbox.c:467 src/verbs.c:455
 msgid "Selection"
 msgstr "Výber"
 
-#: src/dialogs/align.c:155 src/toolbox.c:449
+#: src/dialogs/align.c:155 src/toolbox.c:427
 msgid "Align objects"
 msgstr "Zarovnanie objektov"
 
@@ -111,9 +106,8 @@ msgid "Bottom of aligned objects to bottom of anchor"
 msgstr "Dolná strana zarovnania objektov k dolnej strane ukotvenia"
 
 #: src/dialogs/align.c:202
-#, fuzzy
 msgid "Top of aligned objects to bottom of anchor"
-msgstr "Horná strana zarovnania objektov k hornej strane ukotvenia"
+msgstr "Horná strana zarovnaných objektov k spodnej strane ukotvenia"
 
 #: src/dialogs/align.c:205
 msgid "Align"
@@ -666,7 +660,7 @@ msgstr "Veľkosť  a umiestnenie objektu"
 msgid "Size and Position"
 msgstr "Veľkosť a pozícia"
 
-#: src/dialogs/stroke-style.c:552 src/toolbox.c:445
+#: src/dialogs/stroke-style.c:552 src/toolbox.c:423
 msgid "Stroke settings"
 msgstr "Nastavenie ťahu"
 
@@ -1095,7 +1089,7 @@ msgid "Cleanup"
 msgstr "Vyčistiť"
 
 #. View:Zoom
-#: src/interface.c:425 src/toolbox.c:621 src/verbs.c:445
+#: src/interface.c:425 src/toolbox.c:597 src/verbs.c:445
 msgid "Zoom"
 msgstr "Lupa"
 
@@ -1132,12 +1126,12 @@ msgstr "Otvoriť"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:569 src/toolbox.c:361
+#: src/interface.c:569 src/toolbox.c:339
 msgid "File"
 msgstr "Súbor"
 
 #. Edit submenu
-#: src/interface.c:575 src/toolbox.c:409 src/widgets/gradient-selector.c:138
+#: src/interface.c:575 src/toolbox.c:387 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Upraviť"
 
@@ -1178,8 +1172,7 @@ msgstr "NÁZOV_SÚBORU"
 
 #: src/main.c:139
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
-msgstr ""
-"Vytlačiť súbor do určeného výstupného súboru (použite '| program' pre rúru)"
+msgstr "Vytlačiť súbor do určeného výstupného súboru (použite '| program' pre rúru)"
 
 #: src/main.c:142 src/main.c:615
 msgid "Export document to png file"
@@ -1223,8 +1216,7 @@ msgstr "VÝŠKA"
 
 #: src/main.c:155 src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr ""
-"Farba pozadia exportovanej bitmapy (akýkoľvek podporovaný SVG reťazec farby)"
+msgstr "Farba pozadia exportovanej bitmapy (akýkoľvek podporovaný SVG reťazec farby)"
 
 #: src/main.c:155
 msgid "COLOR"
@@ -1247,13 +1239,12 @@ msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Dávať prednosť bitmapovým ikonám (XPM) pred SVG"
 
 #: src/main.c:622
-#, fuzzy
 msgid "Print sodipodi version information"
-msgstr "Cieľ tlače"
+msgstr "Vytlačiť informácie o verzií sodipodi"
 
 #: src/main.c:623
 msgid "Print help about command-line arguments"
-msgstr ""
+msgstr "Vytlačiť pomocníka o argumentoch na príkazovom riadku"
 
 #: src/module.c:558
 msgid "SVG with \"xmlns:sodipodi\" namespace"
@@ -1446,7 +1437,7 @@ msgid "Shape"
 msgstr "Tvar"
 
 #. Item dialog
-#: src/object-ui.c:462 src/toolbox.c:446
+#: src/object-ui.c:462 src/toolbox.c:424
 msgid "Fill settings"
 msgstr "Nastavenie výplne"
 
@@ -1530,25 +1521,24 @@ msgstr "Dať do stredu a vybrať položku"
 msgid "Sodipodi slideshow"
 msgstr "Premietanie snímkov Sodipodi"
 
-#: src/sodipodi.c:406
+#: src/sodipodi.c:399
 msgid "Untitled document"
 msgstr "Nepomenovaný dokument"
 
 #. Show nice dialog box
-#: src/sodipodi.c:431
+#: src/sodipodi.c:424
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi našiel internú chybu a bude teraz ukončený.\n"
 
-#: src/sodipodi.c:432
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
+#: src/sodipodi.c:425
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr "Automatické zálohovanie neuložených dokumentov bolo vykonané do:\n"
 
-#: src/sodipodi.c:433
+#: src/sodipodi.c:426
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Nepodarilo sa automaticky zálohovať nasledujúce dokumenty:\n"
 
-#: src/sodipodi.c:572
+#: src/sodipodi.c:565
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1559,7 +1549,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia.\n"
 
-#: src/sodipodi.c:575
+#: src/sodipodi.c:568
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1573,7 +1563,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:580
+#: src/sodipodi.c:573
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1585,7 +1575,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:592
+#: src/sodipodi.c:585
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1596,7 +1586,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:595
+#: src/sodipodi.c:588
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1609,7 +1599,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:599
+#: src/sodipodi.c:592
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1620,7 +1610,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:938
+#: src/sodipodi.c:931
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1633,7 +1623,7 @@ msgstr ""
 "môcť ukladať alebo načítavať\n"
 "%s."
 
-#: src/sodipodi.c:942
+#: src/sodipodi.c:935
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1645,7 +1635,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:946
+#: src/sodipodi.c:939
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1657,7 +1647,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:950
+#: src/sodipodi.c:943
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1669,7 +1659,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť načítať alebo uložiť nastavenia."
 
-#: src/sodipodi.c:960
+#: src/sodipodi.c:953
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1680,7 +1670,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:963
+#: src/sodipodi.c:956
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1691,7 +1681,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:966
+#: src/sodipodi.c:959
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1702,7 +1692,7 @@ msgstr ""
 "Hoci sodipodi bude spustené, nebudete\n"
 "môcť používať rozšírenia (zásuvné moduly).\n"
 
-#: src/sodipodi.c:969
+#: src/sodipodi.c:962
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1759,7 +1749,7 @@ msgid "Unknown item :-("
 msgstr "Neznáma položka :-("
 
 #. fixme:
-#: src/sp-text.c:1428
+#: src/sp-text.c:1441
 msgid "Text object"
 msgstr "Textový objekt"
 
@@ -1778,67 +1768,67 @@ msgstr "Proporcia:"
 msgid "Make sides flat"
 msgstr "Urobiť strany ostré"
 
-#: src/toolbox.c:443
+#: src/toolbox.c:421
 msgid "Object"
 msgstr "Objekt"
 
-#: src/toolbox.c:447 src/verbs.c:463
+#: src/toolbox.c:425 src/verbs.c:463
 msgid "Object size and position"
 msgstr "Veľkosť objektu a pozícia"
 
-#: src/toolbox.c:448
+#: src/toolbox.c:426
 msgid "Text and font settings"
 msgstr "Nastavenia textu a písma"
 
-#: src/toolbox.c:450 src/verbs.c:464
+#: src/toolbox.c:428 src/verbs.c:464
 msgid "Object transformations"
 msgstr "Transformácie objektu"
 
-#: src/toolbox.c:523
+#: src/toolbox.c:501
 msgid "Draw"
 msgstr "Kreslenie"
 
-#: src/toolbox.c:578
+#: src/toolbox.c:555
 msgid "Extension"
 msgstr "Rozšírenie"
 
-#: src/toolbox.c:655
+#: src/toolbox.c:631
 msgid "Nodes"
 msgstr "Uzly"
 
-#: src/toolbox.c:658
+#: src/toolbox.c:634
 msgid "Insert new nodes into selected segments"
 msgstr "Vložiť nové uzly do vybraných segmentov"
 
-#: src/toolbox.c:660
+#: src/toolbox.c:636
 msgid "Break line at selected nodes"
 msgstr "Vrchol čiary vo vybraných uzloch"
 
-#: src/toolbox.c:662
+#: src/toolbox.c:638
 msgid "Make selected nodes corner"
 msgstr "Konvertovať vybrané uzly na rohy"
 
-#: src/toolbox.c:664
+#: src/toolbox.c:640
 msgid "Make selected segments lines"
 msgstr "Konvertovať vybrané segmenty na čiary"
 
-#: src/toolbox.c:666
+#: src/toolbox.c:642
 msgid "Delete selected nodes"
 msgstr "Zmazať zvolené uzly"
 
-#: src/toolbox.c:668
+#: src/toolbox.c:644
 msgid "Join lines at selected nodes"
 msgstr "Spojiť čiary vo vybraných uzloch"
 
-#: src/toolbox.c:671
+#: src/toolbox.c:647
 msgid "Join lines at selected nodes with new segment"
 msgstr "Spojiť čiary vo vybraných uzloch s novým segmentom"
 
-#: src/toolbox.c:673
+#: src/toolbox.c:649
 msgid "Make selected nodes smooth"
 msgstr "Konvertovať vybrané uzly na rovné"
 
-#: src/toolbox.c:675
+#: src/toolbox.c:651
 msgid "Make selected segments curves"
 msgstr "Konvertovať vybrané segmenty na krivky"
 
@@ -3216,3 +3206,4 @@ msgstr "Hodnota"
 
 #~ msgid "Radial"
 #~ msgstr "Radiálny"
+
