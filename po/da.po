@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-11-11 06:16-0500\n"
-"PO-Revision-Date: 2001-11-11 13:30+0100\n"
+"POT-Creation-Date: 2001-11-18 06:14-0500\n"
+"PO-Revision-Date: 2001-11-18 13:30+0100\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -945,7 +945,7 @@ msgstr "Zoom ind"
 
 #: glade/toolbox.c:17
 msgid "Draw rectangle"
-msgstr "Tegn rektangel"
+msgstr "Tegn firkant"
 
 #: glade/toolbox.c:18
 msgid "Draw ellipse"
@@ -1814,6 +1814,16 @@ msgstr "Beskadiget bitmap"
 msgid "Color bitmap"
 msgstr "Farve-bitmap"
 
+#. Create toplevel menuitem
+#: src/sp-image.c:507
+msgid "Image"
+msgstr "Billede"
+
+#. Link dialog
+#: src/sp-image.c:510
+msgid "Image Properties"
+msgstr "Egenskaber for billede"
+
 #: src/sp-item.c:386
 msgid "Unknown item :-("
 msgstr "Ukendt element :-("
@@ -1864,6 +1874,16 @@ msgstr "Egenskaber for gruppe"
 #: src/sp-item-group.c:511
 msgid "Ungroup"
 msgstr "Opdel gruppe"
+
+#. Create toplevel menuitem
+#: src/sp-rect.c:416
+msgid "Rect"
+msgstr "Firkant"
+
+#. Link dialog
+#: src/sp-rect.c:419
+msgid "Rect Properties"
+msgstr "Egenskaber for firkant"
 
 #: src/sp-shape.c:364
 msgid "A path - whatever it means"
