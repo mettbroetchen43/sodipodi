@@ -1,11 +1,11 @@
-# Translation of sodipodi to Croatian
-# Copyright (C) Croatian team
+# Translation of sodipodi to Croatiann
+# Copyright (C) Croatiann team
 # Translators: Automatski Prijevod <>,pr pr <delacko@192.168.0.1>,
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0\n"
-"POT-Creation-Date: 2004-02-07 00:18+0200\n"
-"PO-Revision-Date: 2003-11-10 16:55+CET\n"
+"POT-Creation-Date: 2004-02-01 17:15+0100\n"
+"PO-Revision-Date: 2004-02-05 23:52+CET\n"
 "Last-Translator: auto\n"
 "Language-Team: Croatian <lokalizacija@linux.hr>\n"
 "MIME-Version: 1.0\n"
@@ -46,20 +46,20 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s sadrži nesačuvane izmene. Sačuvati ih?"
 
 #. Page page
-#: src/desktop.c:1541 src/dialogs/align.c:290
+#: src/desktop.c:1537 src/dialogs/align.c:290
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
 #: src/dialogs/export.c:160 src/verbs.c:467
 msgid "Page"
 msgstr "Stranica"
 
-#: src/desktop.c:1545 src/dialogs/align.c:291 src/dialogs/export.c:165
+#: src/desktop.c:1541 src/dialogs/align.c:291 src/dialogs/export.c:165
 #: src/verbs.c:468
 msgid "Drawing"
 msgstr "Crtanje"
 
 #. Selection submenu
-#: src/desktop.c:1549 src/dialogs/align.c:292 src/dialogs/export.c:170
-#: src/interface.c:606 src/toolbox.c:407 src/verbs.c:469
+#: src/desktop.c:1545 src/dialogs/align.c:292 src/dialogs/export.c:170
+#: src/interface.c:596 src/toolbox.c:407 src/verbs.c:469
 msgid "Selection"
 msgstr "Odabir"
 
@@ -169,7 +169,7 @@ msgid "Desktop settings"
 msgstr "Postavke radne površine"
 
 #. Grid settings
-#. Notebook tab
+#.  Notebook tab
 #: src/dialogs/desktop-properties.c:204
 msgid "Grid"
 msgstr "Mreža"
@@ -186,11 +186,11 @@ msgstr "Prijanjaj uz mrežu"
 
 #: src/dialogs/desktop-properties.c:221
 msgid "Horizontal lines"
-msgstr ""
+msgstr "Vodoravne linije"
 
 #: src/dialogs/desktop-properties.c:222
 msgid "Vertical lines"
-msgstr ""
+msgstr "Uspravne linije"
 
 #: src/dialogs/desktop-properties.c:224
 msgid "Iso grid"
@@ -244,7 +244,7 @@ msgstr "Vodiči"
 #: src/dialogs/desktop-properties.c:265
 #, fuzzy
 msgid "Show guides"
-msgstr "Prikaži vođice"
+msgstr "Pokaži vođice"
 
 #: src/dialogs/desktop-properties.c:266
 msgid "Snap to guides"
@@ -297,63 +297,49 @@ msgstr "Početna boja"
 msgid "Close"
 msgstr "Zatvori"
 
-#: src/dialogs/display-settings.c:101
+#: src/dialogs/display-settings.c:88
 msgid "Display settings"
 msgstr "Postavke zaslona"
 
 #. Rendering settings
-#. Notebook tab
-#: src/dialogs/display-settings.c:108
+#.  Notebook tab
+#: src/dialogs/display-settings.c:96
 msgid "Rendering"
 msgstr "Iscrtavanje"
 
-#: src/dialogs/display-settings.c:117
+#: src/dialogs/display-settings.c:108
 msgid "Oversample bitmaps:"
 msgstr "Previše uvećaj bitmapu:"
 
-#: src/dialogs/display-settings.c:125 src/verbs.c:403
+#: src/dialogs/display-settings.c:119 src/verbs.c:403
 msgid "None"
 msgstr "Nijedan"
 
-#: src/dialogs/display-settings.c:128
+#: src/dialogs/display-settings.c:123
 msgid "2x2"
 msgstr "2x2"
 
-#: src/dialogs/display-settings.c:131
+#: src/dialogs/display-settings.c:127
 msgid "4x4"
 msgstr "4x4"
 
-#: src/dialogs/display-settings.c:134
+#: src/dialogs/display-settings.c:131
 msgid "8x8"
 msgstr "8x8"
 
-#: src/dialogs/display-settings.c:137
+#: src/dialogs/display-settings.c:135
 msgid "16x16"
 msgstr "16x16"
 
 #. Input settings
-#. Notebook tab
-#: src/dialogs/display-settings.c:147
+#.  Notebook tab
+#: src/dialogs/display-settings.c:146
 msgid "Input"
 msgstr "Unos"
 
-#: src/dialogs/display-settings.c:155
+#: src/dialogs/display-settings.c:157
 msgid "Default cursor tolerance:"
 msgstr "Podrazumevana trpeljivost kurzora:"
-
-#. Windows settings
-#. Notebook tab
-#: src/dialogs/display-settings.c:169
-msgid "Windows"
-msgstr ""
-
-#: src/dialogs/display-settings.c:174
-msgid "Set dialog hint for dialogs"
-msgstr ""
-
-#: src/dialogs/display-settings.c:179
-msgid "Skip taskbar entry for dialogs"
-msgstr ""
 
 #: src/dialogs/document-properties.c:159
 #, fuzzy
@@ -434,9 +420,8 @@ msgid "dpi"
 msgstr "dpi"
 
 #: src/dialogs/export.c:232
-#, fuzzy
 msgid "Background color"
-msgstr "Završna boja"
+msgstr "Boja pozadine"
 
 #: src/dialogs/export.c:234
 msgid "Bitmap background:"
@@ -464,22 +449,22 @@ msgstr "Slika u boji %d x %d: %s"
 msgid "Fill style"
 msgstr "Popuni stil"
 
-#: src/dialogs/fill-style.c:124
+#: src/dialogs/fill-style.c:122
 msgid "Fill Rule"
 msgstr "Pravila ispunjavanja"
 
-#: src/dialogs/fill-style.c:138
+#: src/dialogs/fill-style.c:136
 msgid "nonzero"
 msgstr "nenula"
 
-#: src/dialogs/fill-style.c:143
+#: src/dialogs/fill-style.c:141
 msgid "evenodd"
 msgstr "paran-neparan"
 
 #: src/dialogs/item-properties.c:85 src/dialogs/item-properties.c:282
 #: src/dialogs/item-properties.c:356 src/dialogs/item-properties.c:363
 msgid "ID"
-msgstr ""
+msgstr "Identifikacija"
 
 #: src/dialogs/item-properties.c:99
 msgid "Set ID"
@@ -631,7 +616,6 @@ msgid "RY:"
 msgstr "RY:"
 
 #: src/dialogs/object-attributes.c:117
-#, c-format
 msgid "%s attributes"
 msgstr "Osobine za %s"
 
@@ -692,8 +676,9 @@ msgid "Text"
 msgstr "Tekst"
 
 #: src/dialogs/object-properties.c:289
+#, fuzzy
 msgid "Object Size and Position"
-msgstr ""
+msgstr "Veličina i pozicija objekta"
 
 #: src/dialogs/object-properties.c:312 src/verbs.c:477
 msgid "Size and Position"
@@ -740,9 +725,8 @@ msgid "Line spacing:"
 msgstr "Prored:"
 
 #: src/dialogs/text-edit.c:212
-#, fuzzy
 msgid "Spacing:"
-msgstr "Uspravni razmaci:"
+msgstr "Razmak:"
 
 #: src/dialogs/text-edit.c:235
 msgid "Text and font"
@@ -890,7 +874,7 @@ msgstr "Postavi osobinu"
 #: src/dialogs/xml-tree.c:353
 #, fuzzy
 msgid "Attribute value"
-msgstr "Vrednost osobine"
+msgstr "Vrijednost osobine"
 
 #: src/dialogs/xml-tree.c:832
 #, c-format
@@ -909,31 +893,29 @@ msgstr "Odustani"
 msgid "Create"
 msgstr "Stvori"
 
-#: src/document.c:353
+#: src/document.c:349
 #, c-format
 msgid "New document %d"
 msgstr "Novi dokument %d"
 
-#: src/document.c:382
+#: src/document.c:378
 #, c-format
 msgid "Memory document %d"
 msgstr "Memorijski dokument %d"
 
-#: src/document.c:492
+#: src/document.c:488
 #, c-format
 msgid "Unnamed document %d"
 msgstr "Neimenovani dokument %d"
 
-#: src/draw-context.c:294
+#: src/draw-context.c:289
 msgid "Appending to selection. Press 'a' to toggle Append/New."
-msgstr ""
-"Dopunjava tekući izbor. Pritisnite „a“ da izmenite da li se dopunjava ili "
+msgstr """Dopunjava tekući izbor. Pritisnite „a“ da izmenite da li se dopunjava ili "
 "započinje novi. "
 
-#: src/draw-context.c:299
+#: src/draw-context.c:294
 msgid "Creating new curve. Press 'a' to toggle Append/New."
-msgstr ""
-"Pravi novu krivu. Pritisnite „a“ da izmenite da li se dopunjava ili "
+msgstr """Pravi novu krivu. Pritisnite „a“ da izmenite da li se dopunjava ili "
 "započinje nova. "
 
 #. Angle
@@ -958,13 +940,13 @@ msgstr "Vrsta datoteke:"
 #: src/file.c:290
 #, fuzzy
 msgid "Save file"
-msgstr "Sačuvaj datoteku"
+msgstr "Spremi datoteku"
 
-#: src/file.c:480 src/file.c:490 src/file.c:496
+#: src/file.c:472 src/file.c:482 src/file.c:488
 msgid "Select file to import"
 msgstr "Odaberite datoteku za uvoz"
 
-#: src/help.c:51
+#: src/help.c:57
 msgid "About sodipodi"
 msgstr "O sodipodiju"
 
@@ -1022,7 +1004,7 @@ msgid "Userspace units"
 msgstr "Jedinice korisničkog prostora"
 
 #. Volatiles do not have default, so there are none here
-#. You can add new elements from this point forward
+#.  You can add new elements from this point forward
 #: src/helper/units.c:48
 msgid "Percent"
 msgstr "Postotak"
@@ -1108,111 +1090,109 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "eks kvadrati"
 
-#: src/interface.c:315 src/interface.c:513
+#: src/interface.c:305 src/interface.c:503
 msgid "Open Recent"
-msgstr ""
+msgstr "Otvori skorašnje"
 
-#: src/interface.c:335
+#: src/interface.c:325
 msgid "Close View"
 msgstr "Zatvori pregled"
 
-#: src/interface.c:338 src/interface.c:519
+#: src/interface.c:328 src/interface.c:509
 msgid "About Sodipodi"
 msgstr "O Sodipodiju"
 
 #. Have modules about menu
-#: src/interface.c:344 src/interface.c:525
+#: src/interface.c:334 src/interface.c:515
 msgid "About Modules"
 msgstr "O dodacima"
 
-#: src/interface.c:364
+#: src/interface.c:354
 msgid "Cleanup"
 msgstr "Čišćenje"
 
 #. View:Zoom
-#: src/interface.c:439 src/toolbox.c:546 src/verbs.c:459
+#: src/interface.c:429 src/toolbox.c:546 src/verbs.c:459
 msgid "Zoom"
 msgstr "Uvećaj/Umanji"
 
 #. View:New View
-#: src/interface.c:451
+#: src/interface.c:441
 msgid "New View"
 msgstr "Novi pogled"
 
 #. View:New Preview
-#: src/interface.c:453
+#: src/interface.c:443
 msgid "New Preview"
 msgstr "Novi pregled"
 
-#: src/interface.c:455
+#: src/interface.c:445
 msgid "New Toplevel Toolbox"
 msgstr "Novi skup alata prvog nivoa"
 
-#: src/interface.c:456
+#: src/interface.c:446
 msgid "New Docked Toolbox"
 msgstr "Novi privezani skup alata"
 
-#: src/interface.c:457
+#: src/interface.c:447
 msgid "Remove Docked Toolbox"
 msgstr "Ukloni privezani skup alata"
 
 #. File
-#: src/interface.c:510 src/verbs.c:405
+#: src/interface.c:500 src/verbs.c:405
 msgid "New"
 msgstr "Novi"
 
-#: src/interface.c:511
+#: src/interface.c:501
 msgid "Open"
 msgstr "Otvori"
 
 #. For some reason action menu does not work on menubar :-(
-#: src/interface.c:531 src/verbs.c:414
+#: src/interface.c:521 src/verbs.c:414
 #, fuzzy
 msgid "Exit program"
 msgstr "Izađi iz programa"
 
 #. Generic menu
-#. File submenu
-#: src/interface.c:594 src/toolbox.c:270
+#.  File submenu
+#: src/interface.c:584 src/toolbox.c:270
 msgid "File"
 msgstr "Datoteka"
 
 #. Edit submenu
-#: src/interface.c:600 src/toolbox.c:321 src/widgets/gradient-selector.c:138
+#: src/interface.c:590 src/toolbox.c:321 src/widgets/gradient-selector.c:138
 msgid "Edit"
 msgstr "Uređivanje"
 
 #. View submenu
-#: src/interface.c:612
+#: src/interface.c:602
 msgid "View"
 msgstr "Pogled"
 
 #. Drawing mode submenu
-#: src/interface.c:618
+#: src/interface.c:608
 msgid "Drawing Mode"
 msgstr "Režim crtanja"
 
 #. Dialog submenu
-#: src/interface.c:624
+#: src/interface.c:614
 msgid "Dialogs"
 msgstr "Dijalozi"
 
 #. Have modules menu
-#: src/interface.c:633
-#, fuzzy
+#: src/interface.c:623
 msgid "Modules"
-msgstr "O dodacima"
+msgstr "Moduli"
 
-#: src/main.c:120 src/main.c:611
+#: src/main.c:120 src/main.c:619
 msgid "Do not use X server (only process files from console)"
 msgstr "Ne koristi X server (samo obrađuj datoteke preko konzole)"
 
-#: src/main.c:123 src/main.c:612
+#: src/main.c:123 src/main.c:620
 msgid "Try to use X server even if $DISPLAY is not set)"
-msgstr ""
-"Pokušaj da koristiš X server čak iako promenljiva $DISPLAY nije postavljena)"
+msgstr "Pokušaj da koristiš X server čak iako promenljiva $DISPLAY nije postavljena)"
 
-#: src/main.c:126 src/main.c:613
+#: src/main.c:126 src/main.c:621
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr "Otvori navedene dokumente (niska sa opcija se može preskočiti)"
 
@@ -1222,25 +1202,23 @@ msgstr "IME DATOTEKE"
 
 #: src/main.c:129
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
-msgstr ""
-"Štampaj dokumente u navedenu izlaznu datoteku (koristite „| program“ za "
+msgstr """Štampaj dokumente u navedenu izlaznu datoteku (koristite „| program“ za "
 "cevku)"
 
-#: src/main.c:132 src/main.c:614
+#: src/main.c:132 src/main.c:622
 msgid "Export document to png file"
 msgstr "Izvezi dokument u PNG datoteku"
 
-#: src/main.c:135 src/main.c:615
+#: src/main.c:135 src/main.c:623
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr ""
-"Rezolucija koja se koristi za pretvaranje SVG-a u bitmapu (podrazumevano "
+msgstr """Rezolucija koja se koristi za pretvaranje SVG-a u bitmapu (podrazumevano "
 "72,0)"
 
 #: src/main.c:136
 msgid "DPI"
 msgstr "DPI"
 
-#: src/main.c:138 src/main.c:616
+#: src/main.c:138 src/main.c:624
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
@@ -1252,7 +1230,7 @@ msgstr ""
 msgid "x0:y0:x1:y1"
 msgstr "x0:y0:x1:y1"
 
-#: src/main.c:141 src/main.c:617
+#: src/main.c:141 src/main.c:625
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
 msgstr "Širina obrazovane bitmape u tačkama (prepisuje TPI)"
 
@@ -1261,7 +1239,7 @@ msgstr "Širina obrazovane bitmape u tačkama (prepisuje TPI)"
 msgid "WIDTH"
 msgstr "ŠIRINA"
 
-#: src/main.c:143 src/main.c:618
+#: src/main.c:143 src/main.c:626
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
 msgstr "Visina obrazovane bitmape u tačkama (prepisuje TPI)"
 
@@ -1270,80 +1248,75 @@ msgstr "Visina obrazovane bitmape u tačkama (prepisuje TPI)"
 msgid "HEIGHT"
 msgstr "VISINA"
 
-#: src/main.c:145 src/main.c:619
+#: src/main.c:145 src/main.c:627
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr ""
-"Boja pozadine izvezene bitmape (bilo koja oznaka boje koju podržava SVG)"
+msgstr "Boja pozadine izvezene bitmape (bilo koja oznaka boje koju podržava SVG)"
 
 #: src/main.c:145
 msgid "COLOR"
 msgstr "BOJA"
 
-#: src/main.c:147 src/main.c:620
+#: src/main.c:147 src/main.c:628
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr ""
-"Izvezi dokument u običnu SVG datoteku (bez prostora imena „xmlns:sodipodi“)"
+msgstr "Izvezi dokument u običnu SVG datoteku (bez prostora imena „xmlns:sodipodi“)"
 
 #: src/main.c:149
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
-msgstr ""
-"Prikaži date datoteke jednu po jednu, prebaci na sledeću nakon bilo kakvog "
+msgstr """Prikaži date datoteke jednu po jednu, prebaci na sledeću nakon bilo kakvog "
 "događaja sa tasterima ili mišem"
 
 #: src/main.c:151
 msgid "Prefer bitmap (xpm) icons to SVG ones"
 msgstr "Daj prvenstvo bitmapiranim (XPM) ikonama u odnosu na SVG ikone"
 
-#: src/main.c:621
+#: src/main.c:629
 #, fuzzy
 msgid "Print sodipodi version information"
 msgstr "Odredište ispisa"
 
-#: src/main.c:622
+#: src/main.c:630
 msgid "Print help about command-line arguments"
 msgstr ""
 
-#: src/main.c:771
+#: src/main.c:779
 msgid "Untitled document"
 msgstr "Neimenovani dokument"
 
 #. Show nice dialog box
-#: src/main.c:796
+#: src/main.c:804
 msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi je naišao na unutrašnju grešku i sada će se zatvoriti.\n"
 
-#: src/main.c:797
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
-msgstr ""
-"Automatski rezervni primerci nesačuvanih dokumenata su smešteni u naredne "
+#: src/main.c:805
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgstr """Automatski rezervni primerci nesačuvanih dokumenata su smešteni u naredne "
 "putanje:\n"
 
-#: src/main.c:798
+#: src/main.c:806
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Nije uspelo automatsko snimanje rezervnih primeraka:\n"
 
-#: src/module.c:873
+#: src/module.c:854
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Skalabilna vektorska grafika (SVG)"
 
-#: src/module.c:873
+#: src/module.c:854
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Matičan zapis Sodipodija i W3C standard"
 
-#: src/module.c:880
+#: src/module.c:861
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG sa prostorom imena „xmlns:sodipodi“"
 
-#: src/module.c:881
+#: src/module.c:862
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Skalabilni vektorski grafički zapis za sodipodijevim proširenjima"
 
-#: src/module.c:884
+#: src/module.c:865
 msgid "Plain SVG"
 msgstr "Običan SVG"
 
-#: src/module.c:885
+#: src/module.c:866
 msgid "Scalable Vector Graphics format"
 msgstr "Skalabilni vektorski grafički zapis"
 
@@ -1373,23 +1346,23 @@ msgstr ""
 #: src/modules/kde.cpp:174
 #, fuzzy
 msgid "Save document as"
-msgstr "Sačuvaj dokument kao"
+msgstr "Spremi dokument kao"
 
 #. Print destination frame
-#: src/modules/ps.c:245 src/modules/ps.c:306
+#: src/modules/ps.c:192 src/modules/ps.c:253
 msgid "Print destination"
 msgstr "Odredište ispisa"
 
 #. Print properties frame
-#: src/modules/ps.c:256
+#: src/modules/ps.c:203
 msgid "Print properties"
 msgstr "Osobine štampe"
 
-#: src/modules/ps.c:264
+#: src/modules/ps.c:211
 msgid "Print using PostScript operators"
 msgstr "Štampaj pomoću PostSkript operatora"
 
-#: src/modules/ps.c:266
+#: src/modules/ps.c:213
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
@@ -1399,11 +1372,11 @@ msgstr ""
 "manja i moći će se proizvoljno uvećavati, ali providnost, obeležja i obrasci "
 "će biti izgubljeni"
 
-#: src/modules/ps.c:271
+#: src/modules/ps.c:218
 msgid "Print as bitmap"
 msgstr "Štampaj kao bitmapu"
 
-#: src/modules/ps.c:273
+#: src/modules/ps.c:220
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
@@ -1413,15 +1386,15 @@ msgstr ""
 "zavisiti od razmere uvećanja, ali sva grafika će se iscrtati isto kao što je "
 "prikazana"
 
-#: src/modules/ps.c:287
+#: src/modules/ps.c:234
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Željena rezolucija (tačaka po inču) bitmape"
 
-#: src/modules/ps.c:302
+#: src/modules/ps.c:249
 msgid "Resolution:"
 msgstr "Razlučivost:"
 
-#: src/modules/ps.c:312
+#: src/modules/ps.c:259
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1431,7 +1404,7 @@ msgstr ""
 "Koristite „> datoteka“ da štampate u datoteku.\n"
 "Koristite „| program argument...“ da prosledite u program"
 
-#: src/modules/ps.c:961
+#: src/modules/ps.c:893
 msgid "write error occured"
 msgstr "pogreška pri zapisivanju"
 
@@ -1615,7 +1588,7 @@ msgstr "Ubaci nove čvorove u izabrane delove"
 msgid "Sodipodi slideshow"
 msgstr "Sodipodi automatski prikaz"
 
-#: src/sodipodi.c:468
+#: src/sodipodi.c:453
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1626,7 +1599,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete moći\n"
 "ni da učitate ni da sačuvate postavke\n"
 
-#: src/sodipodi.c:471
+#: src/sodipodi.c:456
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1641,7 +1614,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:476
+#: src/sodipodi.c:461
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1654,7 +1627,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:488
+#: src/sodipodi.c:473
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1665,7 +1638,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:491
+#: src/sodipodi.c:476
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1678,7 +1651,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:495
+#: src/sodipodi.c:480
 #, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
@@ -1690,7 +1663,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:829
+#: src/sodipodi.c:841
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1703,7 +1676,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "%s."
 
-#: src/sodipodi.c:833
+#: src/sodipodi.c:845
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1716,7 +1689,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:837
+#: src/sodipodi.c:849
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1729,7 +1702,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:841
+#: src/sodipodi.c:853
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1742,7 +1715,7 @@ msgstr ""
 "moći ni da učitate ni da sačuvate\n"
 "postavke."
 
-#: src/sodipodi.c:851
+#: src/sodipodi.c:863
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1753,7 +1726,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:854
+#: src/sodipodi.c:866
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1764,7 +1737,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:857
+#: src/sodipodi.c:869
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1775,7 +1748,7 @@ msgstr ""
 "Iako će se Sodipodi pokrenuti, nećete\n"
 "moći da koristite proširenja (dodatke)\n"
 
-#: src/sodipodi.c:860
+#: src/sodipodi.c:872
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1832,7 +1805,7 @@ msgid "Unknown item :-("
 msgstr "Nepoznata stavka :-("
 
 #. fixme:
-#: src/sp-text.c:1292
+#: src/sp-text.c:1291
 msgid "Text object"
 msgstr "Objekat za tekst"
 
@@ -1984,9 +1957,8 @@ msgid "Export document as PNG bitmap"
 msgstr "Izvezi dokument kao PNG sliku"
 
 #: src/verbs.c:414
-#, fuzzy
 msgid "Exit"
-msgstr "Uređivanje"
+msgstr "Izađi"
 
 #. Edit
 #: src/verbs.c:416
@@ -2062,14 +2034,13 @@ msgid "Select all objects in document"
 msgstr "Izaberi sve objekte iz dokumenta"
 
 #: src/verbs.c:425
-#, fuzzy
 msgid "Repeat"
-msgstr "Pravougaonik"
+msgstr "Ponovi"
 
 #: src/verbs.c:425
 #, fuzzy
 msgid "Repeat last saved action"
-msgstr "Poništi poslednju akciju"
+msgstr "Poništi poslijednju akciju"
 
 #. Selection
 #: src/verbs.c:427
@@ -2138,36 +2109,32 @@ msgid "Break selected path at crossings"
 msgstr "Razdvoj izabranu putanju na podputanje"
 
 #: src/verbs.c:436
-#, fuzzy
 msgid "Union"
-msgstr "Vrati"
+msgstr "Unija"
 
 #: src/verbs.c:436
 msgid "Calculate union of selected paths"
 msgstr ""
 
 #: src/verbs.c:437
-#, fuzzy
 msgid "Intersection"
-msgstr "Odabir"
+msgstr "Presjek"
 
 #: src/verbs.c:437
 msgid "Calculate intersection of selected paths"
 msgstr ""
 
 #: src/verbs.c:438
-#, fuzzy
 msgid "Subtraction"
-msgstr "Zasićenje:"
+msgstr "Oduzimanje"
 
 #: src/verbs.c:438
 msgid "Subtract paths from first"
 msgstr ""
 
 #: src/verbs.c:439
-#, fuzzy
 msgid "Transform"
-msgstr "Transformacija:"
+msgstr "Transformacija"
 
 #: src/verbs.c:439
 #, fuzzy
@@ -2366,7 +2333,7 @@ msgstr "Dokument"
 #: src/verbs.c:472
 #, fuzzy
 msgid "Page layout"
-msgstr "Izgled strane"
+msgstr "Izgled stranice"
 
 #: src/verbs.c:473
 msgid "Editing Window"
@@ -2581,8 +2548,3 @@ msgstr "Atribut"
 msgid "Value"
 msgstr "Vrijednost"
 
-#~ msgid "Relative move"
-#~ msgstr "Relativno pomeranje"
-
-#~ msgid "Filters"
-#~ msgstr "Filteri"
