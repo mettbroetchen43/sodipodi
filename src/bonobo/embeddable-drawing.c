@@ -1,6 +1,7 @@
 #define SP_EMBEDDABLE_DRAWING_C
 
 #include "../sp-item.h"
+#include "canvas-translator.h"
 #include "embeddable-drawing.h"
 
 static void sp_embeddable_drawing_class_init (GtkObjectClass * klass);
@@ -70,10 +71,10 @@ sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
 	gtk_object_ref (GTK_OBJECT (drawing->spdocument));
 
 	drawing->drawing = (GnomeCanvasGroup *) gnome_canvas_item_new (gnome_canvas_root (canvas),
-		GNOME_TYPE_CANVAS_GROUP,
+		SP_TYPE_CANVAS_TRANSLATOR,
 		NULL);
 
-#if 1
+#if 0
 	gnome_canvas_item_new (drawing->drawing,
 		GNOME_TYPE_CANVAS_RECT,
 		"x1", 10.0,
@@ -86,13 +87,15 @@ sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
 		corba_drawing,
 		GNOME_CANVAS_ITEM (drawing->drawing));
 
+#if 0
 	drawing->drawing = (GnomeCanvasGroup *) gnome_canvas_item_new (drawing->drawing,
-		GNOME_TYPE_CANVAS_GROUP,
+		SP_TYPE_CANVAS_TRANSLATOR,
 		NULL);
 	art_affine_scale (affine, 0.1, 0.1);
 	affine[4] = 100.0;
 	affine[5] = 100.0;
 	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (drawing->drawing), affine);
+#endif
 
 	sp_item_show (SP_ITEM (drawing->spdocument->root),
 		drawing->drawing,

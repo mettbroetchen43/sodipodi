@@ -1,5 +1,10 @@
 200-04-09  Lauris Kaplinski  <lauris@ariman.ee>
 
+	* bonobo/canvas-translator.*: implemented a translator group, which
+          translates xlib canvas calls to antialiased canvas ones.
+	
+200-04-09  Lauris Kaplinski  <lauris@ariman.ee>
+
 	* document.c: Removed bad memory corruption bug in ::destroy
 	* embeddable-document.c: Added PersistentFile interface
 	* embeddable-drawing.*: Added BonoboCanvasComponent interface

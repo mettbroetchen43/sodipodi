@@ -14,6 +14,7 @@ libspbonobo_a_SOURCES = \
 	svg-doc-factory.c svg-doc-factory.h \
 	embeddable-document.c embeddable-document.h \
 	embeddable-desktop.c embeddable-desktop.h \
-	embeddable-drawing.c embeddable-drawing.h
+	embeddable-drawing.c embeddable-drawing.h \
+	canvas-translator.c canvas-translator.h
 
 
