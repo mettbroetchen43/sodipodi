@@ -1,5 +1,7 @@
 2002-11-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/knot.c (sp_knot_handler): Signature change, return correct value as it should
+
 	* src/helper/sp-canvas.c (scroll_to): Blit window, unless explicitly forbidden
 	(sp_canvas_size_allocate): Update onlu changed areas
 

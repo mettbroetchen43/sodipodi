@@ -64,8 +64,9 @@ static void sp_knot_class_init (SPKnotClass * klass);
 static void sp_knot_init (SPKnot * knot);
 static void sp_knot_dispose (GObject * object);
 static void sp_knot_set_property (GObject * object, guint prop_id, const GValue *value, GParamSpec *pspec);
+static void sp_knot_get_property (GObject * object, guint prop_id, GValue *value, GParamSpec *pspec);
 
-static void sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data);
+static int sp_knot_handler (SPCanvasItem *item, GdkEvent *event, SPKnot *knot);
 static void sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set);
 static void sp_knot_update_ctrl (SPKnot * knot);
 static void sp_knot_set_ctrl_state (SPKnot *knot);
@@ -105,6 +106,7 @@ sp_knot_class_init (SPKnotClass * klass)
 
 	object_class->dispose = sp_knot_dispose;
 	object_class->set_property = sp_knot_set_property;
+	object_class->get_property = sp_knot_get_property;
 
 	/* Huh :) */
 
@@ -451,17 +453,20 @@ sp_knot_set_property (GObject * object, guint prop_id, const GValue *value, GPar
 }
 
 static void
-sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
+sp_knot_get_property (GObject * object, guint prop_id, GValue *value, GParamSpec *pspec)
 {
-	SPKnot * knot;
+	g_assert_not_reached ();
+}
+
+static int
+sp_knot_handler (SPCanvasItem *item, GdkEvent *event, SPKnot *knot)
+{
 	gboolean consumed;
 	static gboolean grabbed = FALSE;
 	static gboolean moved = FALSE;
 
-	g_assert (data != NULL);
-	g_assert (SP_IS_KNOT (data));
-
-	knot = SP_KNOT (data);
+	g_assert (knot != NULL);
+	g_assert (SP_IS_KNOT (knot));
 
 	consumed = FALSE;
 
@@ -469,7 +474,7 @@ sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 
 	g_signal_emit (G_OBJECT (knot), knot_signals[EVENT], 0, event, &consumed);
 
-	if (consumed) return;
+	if (consumed) return TRUE;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
@@ -482,20 +487,11 @@ sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 			knot->hx = p.x - knot->x;
 			knot->hy = p.y - knot->y;
 #ifndef KNOT_NOGRAB
-#if 0
-			gdk_pointer_ungrab (event->button.time);
-#endif
 			sp_canvas_item_grab (knot->item,
 					     KNOT_EVENT_MASK,
 					     knot->cursor[SP_KNOT_STATE_DRAGGING],
 					     event->button.time);
 			
-#if 0
-			/* fixme: Top hack (Lauris) */
-			/* fixme: If we add key masks to event mask, Gdk will abort (Lauris) */
-			/* fixme: But Canvas actualle does get key events, so all we need is routing these here */
-			knot->item->canvas->grabbed_event_mask |= (GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
-#endif
 #endif
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, TRUE);
 			grabbed = TRUE;
@@ -507,15 +503,6 @@ sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, FALSE);
 #ifndef KNOT_NOGRAB
 			sp_canvas_item_ungrab (knot->item, event->button.time);
-#if 0
-			gdk_pointer_grab (knot->item->canvas->layout.bin_window,
-					  FALSE,
-					  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | 
-					  GDK_BUTTON_PRESS_MASK | GDK_LEAVE_NOTIFY_MASK,
-					  NULL,
-					  knot->cursor[SP_KNOT_STATE_MOUSEOVER],
-					  event->button.time);
-#endif
 #endif
 			if (moved) {
 				sp_knot_set_flag (knot,
@@ -555,23 +542,10 @@ sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 		}
 		break;
 	case GDK_ENTER_NOTIFY:
-#if 0
-		gdk_pointer_grab (knot->item->canvas->layout.bin_window,
-				  FALSE,
-				  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | 
-				  GDK_BUTTON_PRESS_MASK | GDK_LEAVE_NOTIFY_MASK,
-				  NULL,
-				  knot->cursor[SP_KNOT_STATE_MOUSEOVER],
-				  event->button.time);
-#endif
-
 		sp_knot_set_flag (knot, SP_KNOT_MOUSEOVER, TRUE);
 		consumed = TRUE;
 		break;
 	case GDK_LEAVE_NOTIFY:
-#if 0
-		gdk_pointer_ungrab (event->button.time);
-#endif
 		sp_knot_set_flag (knot, SP_KNOT_MOUSEOVER, FALSE);
 		consumed = TRUE;
 		break;
@@ -579,9 +553,8 @@ sp_knot_handler (SPCanvasItem * item, GdkEvent * event, gpointer data)
 		break;
 	}
 
-	if (!consumed) {
-		sp_desktop_root_handler (item, event, knot->desktop);
-	}
+
+	return consumed;
 }
 
 SPKnot *
