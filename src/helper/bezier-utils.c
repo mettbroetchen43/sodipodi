@@ -19,7 +19,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#define BEZIER_DEBUG
+#define notBEZIER_DEBUG
 
 #include <math.h>
 #include <malloc.h>

@@ -381,6 +381,11 @@ sp_file_do_import (SPDocument *doc, const unsigned char *filename)
 	sp_file_import (doc, filename);
 }
 
+#ifdef WIN32
+#define strcasecmp _stricmp
+
+#endif
+
 unsigned int
 sp_file_import (SPDocument *doc, const unsigned char *filename)
 {

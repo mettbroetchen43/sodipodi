@@ -229,6 +229,7 @@ sp_main_gui (int argc, const char **argv)
 	GSList *fl = NULL;
 
 #ifdef _DEBUG
+	g_print ("This is debug console. It can be minimized, but do not close it\n");
 	g_print ("Initializing Gtk+...\n");
 #endif
 	gtk_init (&argc, (char ***) &argv);

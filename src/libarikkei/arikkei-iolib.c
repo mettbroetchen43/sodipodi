@@ -30,8 +30,24 @@
 
 #include "arikkei-iolib.h"
 
-#ifndef S_ISREG
+#ifdef WIN32
 #define S_ISREG(st) 1
+#ifndef _UNICODE
+static char *
+arikkei_utf8_multibyte_strdup (const unsigned char *utf8)
+{
+	unsigned short *ucs2;
+	LPSTR mbs;
+	int mbslen;
+	ucs2 = arikkei_utf8_ucs2_strdup (utf8);
+	mbslen = WideCharToMultiByte (CP_ACP, 0, ucs2, arikkei_ucs2_strlen (ucs2), NULL, 0, NULL, NULL);
+	mbs = malloc ((mbslen + 1) * sizeof (char));
+	WideCharToMultiByte (CP_ACP, 0, ucs2, arikkei_ucs2_strlen (ucs2), mbs, mbslen, NULL, NULL);
+	mbs[mbslen] = 0;
+	free (ucs2);
+	return mbs;
+}
+#endif
 #endif
 
 const unsigned char *
@@ -48,14 +64,14 @@ arikkei_mmap (const unsigned char *filename, int *size, const unsigned char *nam
 #ifdef _UNICODE
 	tfilename = arikkei_utf8_ucs2_strdup (filename);
 #else
-	tfilename = strdup (filename);
+	tfilename = arikkei_utf8_multibyte_strdup (filename);
 #endif
 
 	if (name) {
 #ifdef _UNICODE
 		tname = arikkei_utf8_ucs2_strdup (name);
 #else
-		tname = strdup (name);
+		tname = arikkei_utf8_multibyte_strdup (name);
 #endif
 	} else {
 		static int rval = 0;

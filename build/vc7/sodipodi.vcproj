@@ -20,7 +20,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\src;..\..\src\libpng;..\..\GnuWin32\include;..\..\GnuWin32\include\libxml2;&quot;..\..\GnuWin32\lib\glib-2.0\include&quot;;&quot;..\..\GnuWin32\include\glib-2.0&quot;;&quot;..\..\GnuWin32\include\pango-1.0&quot;;&quot;..\..\GnuWin32\include\atk-1.0&quot;;&quot;..\..\GnuWin32\lib\gtk-2.0\include&quot;;&quot;..\..\GnuWin32\include\gtk-2.0&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VERSION=\&quot;0.34debug\&quot;;ENABLE_NLS=1;HAVE_BIND_TEXTDOMAIN_CODESET;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;VERSION=\&quot;0.34Beta1\&quot;;ENABLE_NLS=1;HAVE_BIND_TEXTDOMAIN_CODESET;GETTEXT_PACKAGE=\&quot;sodipodi\&quot;;SODIPODI_EXTENSIONDIR=\&quot;.\&quot;;SODIPODI_EXTENSIONDATADIR=\&quot;.\&quot;"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
@@ -74,7 +74,7 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			CharacterSet="2">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"

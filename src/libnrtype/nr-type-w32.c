@@ -52,7 +52,8 @@ static void nr_typeface_w32_font_free (NRFont *font);
 #ifdef _UNICODE
 #define nr_w32_utf8_strdup(T) arikkei_ucs2_utf8_strdup (T)
 #else
-#define nr_w32_utf8_strdup(T) strdup (T)
+#define nr_w32_utf8_strdup(T) nr_multibyte_utf8_strdup (T)
+static unsigned char *nr_multibyte_utf8_strdup (const char *mbs);
 #endif
 
 static NRTypeFaceClass *parent_class;
@@ -193,6 +194,10 @@ nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 { 
     NRTypeFaceW32 *tfw32;
     unsigned int otmsize;
+#ifndef _UNICODE
+	const unsigned short *uc2cp;
+	unsigned int uc2cp_size;
+#endif
 
     tfw32 = (NRTypeFaceW32 *) tface;
 
@@ -211,7 +216,72 @@ nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 	tfw32->otm = (LPOUTLINETEXTMETRIC) nr_new (unsigned char, otmsize);
 	GetOutlineTextMetrics (hdc, otmsize, tfw32->otm);
 
+#ifndef _UNICODE
+	uc2cp = tt_cp1252;
+	uc2cp_size = tt_cp1252_size;
+
+	switch (tfw32->logfont->lfCharSet) {
+	    case ANSI_CHARSET:
+	         uc2cp = tt_cp1252;
+	         uc2cp_size = tt_cp1252_size;
+	         break;
+	    case BALTIC_CHARSET:
+	         uc2cp = tt_cp1257;
+	         uc2cp_size = tt_cp1257_size;
+	         break;
+	    case CHINESEBIG5_CHARSET:
+	         uc2cp = tt_cp950;
+	         uc2cp_size = tt_cp950_size;
+	         break;
+	    case DEFAULT_CHARSET:
+	         break;
+	    case EASTEUROPE_CHARSET:
+	         uc2cp = tt_cp1250;
+	         uc2cp_size = tt_cp1250_size;
+	         break;
+	    case GB2312_CHARSET:
+	         uc2cp = tt_cp936;
+	         uc2cp_size = tt_cp936_size;
+	         break;
+	    case GREEK_CHARSET:
+	         uc2cp = tt_cp1253;
+	         uc2cp_size = tt_cp1253_size;
+	         break;
+#ifdef HANGUL_CHARSET
+	    case HANGUL_CHARSET:
+	         uc2cp = tt_cp949;
+	         uc2cp_size = tt_cp949_size;
+	         break;
+#endif
+	    case MAC_CHARSET:
+	         break;
+	    case OEM_CHARSET:
+	         break;
+	    case RUSSIAN_CHARSET:
+	         uc2cp = tt_cp1251;
+	         uc2cp_size = tt_cp1251_size;
+	         break;
+	    case SHIFTJIS_CHARSET:
+	         uc2cp = tt_cp932;
+	         uc2cp_size = tt_cp932_size;
+	         break;
+	    case SYMBOL_CHARSET:
+	         break;
+	    case TURKISH_CHARSET:
+	         uc2cp = tt_cp1254;
+	         uc2cp_size = tt_cp1254_size;
+	         break;
+	    case VIETNAMESE_CHARSET:
+	         uc2cp = tt_cp1258;
+	         uc2cp_size = tt_cp1258_size;
+	         break;
+	    default:
+	         break;
+	}
+	tfw32->typeface.nglyphs = uc2cp_size - tfw32->otm->otmTextMetrics.tmFirstChar + 1;
+#else
 	tfw32->typeface.nglyphs = tfw32->otm->otmTextMetrics.tmLastChar - tfw32->otm->otmTextMetrics.tmFirstChar + 1;
+#endif
 
 	tfw32->hgidx = NULL;
 	tfw32->vgidx = NULL;
@@ -444,7 +514,7 @@ nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 
 	if (unival >= uc2cp_size) unival = 0;
 	vval = uc2cp[unival];
-	vval = CLAMP (vval, tfw32->otm->otmTextMetrics.tmFirstChar, tfw32->otm->otmTextMetrics.tmLastChar);
+	vval = CLAMP (vval, tfw32->otm->otmTextMetrics.tmFirstChar, uc2cp_size);
 #else
 	vval = CLAMP (unival, tfw32->otm->otmTextMetrics.tmFirstChar, tfw32->otm->otmTextMetrics.tmLastChar);
 #endif
@@ -811,6 +881,7 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
     return &slot->outline;
 }
 
+#if 0
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -872,3 +943,22 @@ nr_w32_munmap (char *buffer, int size)
 	/* Release data */
 	UnmapViewOfFile(buffer);
 }
+#endif
+
+#ifndef _UNICODE
+static unsigned char *
+nr_multibyte_utf8_strdup (const char *mbs)
+{
+	unsigned char *utf8;
+	LPWSTR ws;
+	int wslen;
+	/* Find the number of wide chars needed */
+	wslen = MultiByteToWideChar (CP_ACP, 0, mbs, strlen (mbs), NULL, 0);
+	ws = malloc ((wslen + 1) * sizeof (wchar_t));
+	MultiByteToWideChar (CP_ACP, 0, mbs, strlen (mbs), ws, wslen);
+	ws[wslen] = 0;
+	utf8 = arikkei_ucs2_utf8_strdup (ws);
+	free (ws);
+	return utf8;
+}
+#endif
