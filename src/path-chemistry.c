@@ -305,7 +305,7 @@ void
 sp_selected_path_uncross (unsigned int operation)
 {
 	SPDesktop *desktop;
-	SPSelection * selection;
+	SPSelection *sel;
 	GSList * il;
 	GSList * l;
 	SPRepr * repr;
@@ -319,15 +319,17 @@ sp_selected_path_uncross (unsigned int operation)
 	int numpaths, i;
 	int *and;
 
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!desktop) return;
+	sel = SP_DT_SELECTION (desktop);
+	if (sp_selection_is_empty (sel)) return;
+
+	il = (GSList *) sp_selection_item_list (sel);
+	if ((operation != SP_PATH_UNCROSS) && (g_slist_length (il) < 2)) return;
+
 	sp_selected_path_to_curves0 (FALSE, 0);
 
-	desktop = SP_ACTIVE_DESKTOP;
-	if (!SP_IS_DESKTOP(desktop)) return;
-	selection = SP_DT_SELECTION (desktop);
-
-	il = (GSList *) sp_selection_item_list (selection);
-
-	if (g_slist_length (il) < 2) return;
+	il = (GSList *) sp_selection_item_list (sel);
 
 	for (l = il; l != NULL; l = l->next) {
 		item = (SPItem *) l->data;
@@ -428,6 +430,6 @@ sp_selected_path_uncross (unsigned int operation)
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 	sp_repr_unref (repr);
 
-	sp_selection_set_item (selection, item);
+	sp_selection_set_item (sel, item);
 }
 

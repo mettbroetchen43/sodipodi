@@ -1,3 +1,8 @@
+2004-02-09  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/path-chemistry.c (sp_selected_path_uncross): Allow uncrossing
+	single paths
+
 2004-02-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/xml/repr.c (sp_repr_is_cdata): New method
