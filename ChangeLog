@@ -1,3 +1,7 @@
+2004-04-10  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Added en_CA to ALL_LINGUAS.
+
 2004-03-21  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/testing.h (USE_PRINT_DRIVERS): Use plain printing by default

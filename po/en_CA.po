@@ -1,0 +1,2566 @@
+# English/Canada translation of sodipodi.
+# Copyright (C) 2004 Adam Weinberger and the GNOME Foundation
+# This file is distributed under the same license as the sodipodi package.
+# Adam Weinberger <adamw@gnome.org>, 2004.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: sodipodi\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-04-10 19:52-0400\n"
+"PO-Revision-Date: 2004-04-10 19:54-0400\n"
+"Last-Translator: Adam Weinberger <adamw@gnome.org>\n"
+"Language-Team: English/Canada <adamw@FreeBSD.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: sodipodi.desktop.in.h:1
+msgid "SVG Vector Illustrator"
+msgstr "SVG Vector Illustrator"
+
+#. Create window
+#: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:144
+#: src/toolbox.c:178
+msgid "Sodipodi"
+msgstr "Sodipodi"
+
+#: src/arc-context.c:302
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr "Drawing arc %s x %s"
+
+#: src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "Could not create sodipodi-svg-doc factory"
+
+#: src/desktop.c:959
+msgid "Zoom drawing if window size changes"
+msgstr "Zoom drawing if window size changes"
+
+#: src/desktop.c:966
+msgid "Drawing target is constrained to active group"
+msgstr "Drawing target is constrained to active group"
+
+#: src/desktop.c:1059
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi: %s: %s: %d"
+
+#: src/desktop.c:1166
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "Document %s has unsaved changes, save them?"
+
+#. Page page
+#. Page settings
+#. Notebook tab
+#: src/desktop.c:1719 src/dialogs/align.c:291
+#: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
+#: src/dialogs/export.c:161 src/verbs.c:471
+msgid "Page"
+msgstr "Page"
+
+#: src/desktop.c:1723 src/dialogs/align.c:292 src/dialogs/export.c:166
+#: src/verbs.c:472
+msgid "Drawing"
+msgstr "Drawing"
+
+#. Selection submenu
+#: src/desktop.c:1727 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
+msgid "Selection"
+msgstr "Selection"
+
+#: src/dialogs/align.c:156 src/toolbox.c:405
+msgid "Align objects"
+msgstr "Align objects"
+
+#: src/dialogs/align.c:175
+msgid "Right side of aligned objects to left side of anchor"
+msgstr "Right side of aligned objects to left side of anchor"
+
+#: src/dialogs/align.c:178
+msgid "Left side of aligned objects to left side of anchor"
+msgstr "Left side of aligned objects to left side of anchor"
+
+#: src/dialogs/align.c:181
+msgid "Center horizontally"
+msgstr "Centre horizontally"
+
+#: src/dialogs/align.c:184
+msgid "Right side of aligned objects to right side of anchor"
+msgstr "Right side of aligned objects to right side of anchor"
+
+#: src/dialogs/align.c:187
+msgid "Left side of aligned objects to right side of anchor"
+msgstr "Left side of aligned objects to right side of anchor"
+
+#: src/dialogs/align.c:191
+msgid "Bottom of aligned objects to top of anchor"
+msgstr "Bottom of aligned objects to top of anchor"
+
+#: src/dialogs/align.c:194
+msgid "Top of aligned objects to top of anchor"
+msgstr "Top of aligned objects to top of anchor"
+
+#: src/dialogs/align.c:197
+msgid "Center vertically"
+msgstr "Centre vertically"
+
+#: src/dialogs/align.c:200
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr "Bottom of aligned objects to bottom of anchor"
+
+#: src/dialogs/align.c:203
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "Top of aligned objects to bottom of anchor"
+
+#: src/dialogs/align.c:206
+msgid "Align"
+msgstr "Align"
+
+#: src/dialogs/align.c:224
+msgid "Distribute left sides of objects at even distances"
+msgstr "Distribute left sides of objects at even distances"
+
+#: src/dialogs/align.c:227
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr "Distribute centres of objects at even distances horizontally"
+
+#: src/dialogs/align.c:230
+msgid "Distribute right sides of objects at even distances"
+msgstr "Distribute right sides of objects at even distances"
+
+#: src/dialogs/align.c:233
+msgid "Distribute horizontal distance between objects equally"
+msgstr "Distribute horizontal distance between objects equally"
+
+#: src/dialogs/align.c:237
+msgid "Distribute top sides of objects at even distances"
+msgstr "Distribute top sides of objects at even distances"
+
+#: src/dialogs/align.c:240
+msgid "Distribute centres of objects at even distances vertically"
+msgstr "Distribute centres of objects at even distances vertically"
+
+#: src/dialogs/align.c:243
+msgid "Distribute bottom sides of objects at even distances"
+msgstr "Distribute bottom sides of objects at even distances"
+
+#: src/dialogs/align.c:246
+msgid "Distribute vertical distance between objects equally"
+msgstr "Distribute vertical distance between objects equally"
+
+#: src/dialogs/align.c:249
+msgid "Distribute"
+msgstr "Distribute"
+
+#: src/dialogs/align.c:287
+msgid "Last selected"
+msgstr "Last selected"
+
+#: src/dialogs/align.c:288
+msgid "First selected"
+msgstr "First selected"
+
+#: src/dialogs/align.c:289
+msgid "Biggest item"
+msgstr "Biggest item"
+
+#: src/dialogs/align.c:290
+msgid "Smallest item"
+msgstr "Smallest item"
+
+#: src/dialogs/desktop-properties.c:195
+msgid "Desktop settings"
+msgstr "Desktop settings"
+
+#. Grid settings
+#. Notebook tab
+#: src/dialogs/desktop-properties.c:204
+msgid "Grid"
+msgstr "Grid"
+
+#: src/dialogs/desktop-properties.c:217
+msgid "Show grid"
+msgstr "Show grid"
+
+#: src/dialogs/desktop-properties.c:218
+msgid "Snap to grid"
+msgstr "Snap to grid"
+
+#: src/dialogs/desktop-properties.c:221
+msgid "Horizontal lines"
+msgstr "Horizontal lines"
+
+#: src/dialogs/desktop-properties.c:222
+msgid "Vertical lines"
+msgstr "Vertical lines"
+
+#: src/dialogs/desktop-properties.c:224
+msgid "Iso grid"
+msgstr "Iso grid"
+
+#: src/dialogs/desktop-properties.c:225
+msgid "Hex grid"
+msgstr "Hex grid"
+
+#: src/dialogs/desktop-properties.c:231
+msgid "Grid units:"
+msgstr "Grid units:"
+
+#: src/dialogs/desktop-properties.c:233
+msgid "Origin X:"
+msgstr "Origin X:"
+
+#: src/dialogs/desktop-properties.c:235
+msgid "Origin Y:"
+msgstr "Origin Y:"
+
+#: src/dialogs/desktop-properties.c:238
+msgid "Spacing X:"
+msgstr "Spacing X:"
+
+#: src/dialogs/desktop-properties.c:240
+msgid "Spacing Y:"
+msgstr "Spacing Y:"
+
+#: src/dialogs/desktop-properties.c:244 src/dialogs/desktop-properties.c:271
+msgid "Snap units:"
+msgstr "Snap units:"
+
+#: src/dialogs/desktop-properties.c:246 src/dialogs/desktop-properties.c:273
+msgid "Snap distance:"
+msgstr "Snap distance:"
+
+#: src/dialogs/desktop-properties.c:249
+msgid "Grid color:"
+msgstr "Grid colour:"
+
+#: src/dialogs/desktop-properties.c:250
+msgid "Grid color"
+msgstr "Grid colour"
+
+#. Guidelines page
+#: src/dialogs/desktop-properties.c:254
+msgid "Guides"
+msgstr "Guides"
+
+#: src/dialogs/desktop-properties.c:265
+msgid "Show guides"
+msgstr "Show guides"
+
+#: src/dialogs/desktop-properties.c:266
+msgid "Snap to guides"
+msgstr "Snap to guides"
+
+#: src/dialogs/desktop-properties.c:276
+msgid "Guides color:"
+msgstr "Guides colour:"
+
+#: src/dialogs/desktop-properties.c:277
+msgid "Guideline color"
+msgstr "Guideline colour"
+
+#: src/dialogs/desktop-properties.c:279
+msgid "Highlight color:"
+msgstr "Highlight colour:"
+
+#: src/dialogs/desktop-properties.c:280
+msgid "Highlighted guideline color"
+msgstr "Highlighted guideline colour"
+
+#: src/dialogs/desktop-properties.c:295
+msgid "Show border"
+msgstr "Show border"
+
+#: src/dialogs/desktop-properties.c:301
+msgid "Border on top of drawing"
+msgstr "Border on top of drawing"
+
+#: src/dialogs/desktop-properties.c:306
+msgid "Border color:"
+msgstr "Border colour:"
+
+#: src/dialogs/desktop-properties.c:307
+msgid "Page border color"
+msgstr "Page border colour"
+
+#: src/dialogs/desktop-properties.c:308
+msgid "Page color:"
+msgstr "Page colour:"
+
+#: src/dialogs/desktop-properties.c:309
+msgid "Page color"
+msgstr "Page colour"
+
+#: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
+msgid "Close"
+msgstr "Close"
+
+#: src/dialogs/display-settings.c:101
+msgid "Display settings"
+msgstr "Display settings"
+
+#. Rendering settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:108
+msgid "Rendering"
+msgstr "Rendering"
+
+#: src/dialogs/display-settings.c:117
+msgid "Oversample bitmaps:"
+msgstr "Oversample bitmaps:"
+
+#: src/dialogs/display-settings.c:125 src/verbs.c:407
+msgid "None"
+msgstr "None"
+
+#: src/dialogs/display-settings.c:128
+msgid "2x2"
+msgstr "2x2"
+
+#: src/dialogs/display-settings.c:131
+msgid "4x4"
+msgstr "4x4"
+
+#: src/dialogs/display-settings.c:134
+msgid "8x8"
+msgstr "8x8"
+
+#: src/dialogs/display-settings.c:137
+msgid "16x16"
+msgstr "16x16"
+
+#. Input settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:147
+msgid "Input"
+msgstr "Input"
+
+#: src/dialogs/display-settings.c:155
+msgid "Default cursor tolerance:"
+msgstr "Default cursor tolerance:"
+
+#. Windows settings
+#. Notebook tab
+#: src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr "Windows"
+
+#: src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr "Set dialog hint for dialogs"
+
+#: src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr "Skip taskbar entry for dialogs"
+
+#: src/dialogs/document-properties.c:159
+msgid "Document settings"
+msgstr "Document settings"
+
+#: src/dialogs/document-properties.c:180
+msgid "Paper size:"
+msgstr "Paper size:"
+
+#: src/dialogs/document-properties.c:201
+msgid "Custom"
+msgstr "Custom"
+
+#. Custom paper frame
+#: src/dialogs/document-properties.c:208
+msgid "Custom paper"
+msgstr "Custom paper"
+
+#. Unit selector
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:179
+#: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
+#: src/dialogs/transformation.c:494
+msgid "Units:"
+msgstr "Units:"
+
+#. Stroke width
+#. Width
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:189
+#: src/dialogs/export.c:213 src/dialogs/object-attributes.c:71
+#: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
+#: src/dialogs/stroke-style.c:567 src/dialogs/tool-attributes.c:125
+#: src/dyna-draw-context.c:1087
+msgid "Width:"
+msgstr "Width:"
+
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:198
+#: src/dialogs/export.c:221 src/dialogs/object-attributes.c:72
+#: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
+msgid "Height:"
+msgstr "Height:"
+
+#: src/dialogs/export.c:141
+msgid "Export bitmap"
+msgstr "Export bitmap"
+
+#. Export area frame
+#: src/dialogs/export.c:150
+msgid "Export area"
+msgstr "Export area"
+
+#: src/dialogs/export.c:183
+msgid "x0:"
+msgstr "x0:"
+
+#: src/dialogs/export.c:186
+msgid "x1:"
+msgstr "x1:"
+
+#: src/dialogs/export.c:192
+msgid "y0:"
+msgstr "y0:"
+
+#: src/dialogs/export.c:195
+msgid "y1:"
+msgstr "y1:"
+
+#. Bitmap size frame
+#: src/dialogs/export.c:204
+msgid "Bitmap size"
+msgstr "Bitmap size"
+
+#: src/dialogs/export.c:213 src/dialogs/export.c:221
+msgid "pixels"
+msgstr "pixels"
+
+#: src/dialogs/export.c:217 src/dialogs/export.c:225
+msgid "dpi"
+msgstr "dpi"
+
+#: src/dialogs/export.c:233
+msgid "Background color"
+msgstr "Background colour"
+
+#: src/dialogs/export.c:235
+msgid "Bitmap background:"
+msgstr "Bitmap background:"
+
+#: src/dialogs/export.c:240
+msgid "Export png file"
+msgstr "Export png file"
+
+#: src/dialogs/export.c:267 src/verbs.c:417
+msgid "Export"
+msgstr "Export"
+
+#: src/dialogs/export.c:401
+msgid "Export in progress"
+msgstr "Export in progress"
+
+#: src/dialogs/export.c:405
+#, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "Exporting [%d x %d] %s"
+
+#: src/dialogs/fill-style.c:87
+msgid "Fill style"
+msgstr "Fill style"
+
+#: src/dialogs/fill-style.c:124
+msgid "Fill Rule"
+msgstr "Fill Rule"
+
+#: src/dialogs/fill-style.c:138
+msgid "nonzero"
+msgstr "nonzero"
+
+#: src/dialogs/fill-style.c:143
+msgid "evenodd"
+msgstr "evenodd"
+
+#: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:269
+#: src/dialogs/item-properties.c:368 src/dialogs/item-properties.c:375
+msgid "ID"
+msgstr "ID"
+
+#: src/dialogs/item-properties.c:95
+msgid "Set ID"
+msgstr "Set ID"
+
+#. Sensitive
+#: src/dialogs/item-properties.c:104
+msgid "Sensitive"
+msgstr "Sensitive"
+
+#. Visible
+#: src/dialogs/item-properties.c:109
+msgid "Visible"
+msgstr "Visible"
+
+#. Active
+#: src/dialogs/item-properties.c:114
+msgid "Active"
+msgstr "Active"
+
+#. Printable
+#: src/dialogs/item-properties.c:119
+msgid "Printable"
+msgstr "Printable"
+
+#: src/dialogs/item-properties.c:128
+msgid "Opacity:"
+msgstr "Opacity:"
+
+#: src/dialogs/item-properties.c:144
+msgid "Transformation matrix"
+msgstr "Transformation matrix"
+
+#: src/dialogs/item-properties.c:263
+msgid "Ref"
+msgstr "Ref"
+
+#: src/dialogs/item-properties.c:370
+msgid "ID invalid"
+msgstr "ID invalid"
+
+#: src/dialogs/item-properties.c:372
+msgid "ID exists"
+msgstr "ID exists"
+
+#: src/dialogs/item-properties.c:448 src/verbs.c:487
+msgid "Item properties"
+msgstr "Item properties"
+
+#: src/dialogs/object-attributes.c:34
+msgid "Href:"
+msgstr "Href:"
+
+#: src/dialogs/object-attributes.c:35
+msgid "Target:"
+msgstr "Target:"
+
+#: src/dialogs/object-attributes.c:36
+msgid "Type:"
+msgstr "Type:"
+
+#: src/dialogs/object-attributes.c:37
+msgid "Role:"
+msgstr "Role:"
+
+#: src/dialogs/object-attributes.c:38
+msgid "Arcrole:"
+msgstr "Arcrole:"
+
+#: src/dialogs/object-attributes.c:39
+msgid "Title:"
+msgstr "Title:"
+
+#: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
+msgid "Show:"
+msgstr "Show:"
+
+#: src/dialogs/object-attributes.c:41
+msgid "Actuate:"
+msgstr "Actuate:"
+
+#: src/dialogs/object-attributes.c:46
+msgid "Sides:"
+msgstr "Sides:"
+
+#: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
+msgid "Center X:"
+msgstr "Centre X:"
+
+#: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
+msgid "Center Y:"
+msgstr "Centre Y:"
+
+#: src/dialogs/object-attributes.c:49
+msgid "R1:"
+msgstr "R1:"
+
+#: src/dialogs/object-attributes.c:50
+msgid "R2:"
+msgstr "R2:"
+
+#: src/dialogs/object-attributes.c:51
+msgid "ARG1:"
+msgstr "ARG1:"
+
+#: src/dialogs/object-attributes.c:52
+msgid "ARG2:"
+msgstr "ARG2:"
+
+#. Expansion
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:363
+msgid "Expansion:"
+msgstr "Expansion:"
+
+#. Revolution
+#: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
+#: src/spiral-context.c:351
+msgid "Revolution:"
+msgstr "Revolution:"
+
+#: src/dialogs/object-attributes.c:61
+msgid "Radius:"
+msgstr "Radius:"
+
+#: src/dialogs/object-attributes.c:62
+msgid "Argument:"
+msgstr "Argument:"
+
+#: src/dialogs/object-attributes.c:63
+msgid "T0:"
+msgstr "T0:"
+
+#: src/dialogs/object-attributes.c:68
+msgid "URL:"
+msgstr "URL:"
+
+#: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
+#: src/dialogs/object-properties.c:332
+msgid "X:"
+msgstr "X:"
+
+#: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
+#: src/dialogs/object-properties.c:344
+msgid "Y:"
+msgstr "Y:"
+
+#: src/dialogs/object-attributes.c:81
+msgid "RX:"
+msgstr "RX:"
+
+#: src/dialogs/object-attributes.c:82
+msgid "RY:"
+msgstr "RY:"
+
+#: src/dialogs/object-attributes.c:117
+#, c-format
+msgid "%s attributes"
+msgstr "%s attributes"
+
+#: src/dialogs/object-properties.c:113
+msgid "Object style"
+msgstr "Object style"
+
+#: src/dialogs/object-properties.c:128
+msgid "Fill"
+msgstr "Fill"
+
+#: src/dialogs/object-properties.c:142
+msgid "Stroke paint"
+msgstr "Stroke paint"
+
+#: src/dialogs/object-properties.c:156
+msgid "Stroke style"
+msgstr "Stroke style"
+
+#: src/dialogs/object-properties.c:176
+msgid "Apply to:"
+msgstr "Apply to:"
+
+#: src/dialogs/object-properties.c:186
+msgid "Selected objects"
+msgstr "Selected objects"
+
+#: src/dialogs/object-properties.c:189
+msgid "All shape tools"
+msgstr "All shape tools"
+
+#: src/dialogs/object-properties.c:192
+msgid "Rectangle tool"
+msgstr "Rectangle tool"
+
+#: src/dialogs/object-properties.c:195
+msgid "Arc tool"
+msgstr "Arc tool"
+
+#: src/dialogs/object-properties.c:198
+msgid "Star tool"
+msgstr "Star tool"
+
+#: src/dialogs/object-properties.c:201
+msgid "Spiral tool"
+msgstr "Spiral tool"
+
+#: src/dialogs/object-properties.c:204
+msgid "Freehand and pen"
+msgstr "Freehand and pen"
+
+#: src/dialogs/object-properties.c:207
+msgid "Calligraphic line"
+msgstr "Calligraphic line"
+
+#: src/dialogs/object-properties.c:210 src/verbs.c:462
+msgid "Text"
+msgstr "Text"
+
+#: src/dialogs/object-properties.c:289
+msgid "Object Size and Position"
+msgstr "Object Size and Position"
+
+#: src/dialogs/object-properties.c:312 src/verbs.c:481
+msgid "Size and Position"
+msgstr "Size and Position"
+
+#: src/dialogs/stroke-style.c:554 src/toolbox.c:401
+msgid "Stroke settings"
+msgstr "Stroke settings"
+
+#. Join type
+#: src/dialogs/stroke-style.c:590
+msgid "Join:"
+msgstr "Join:"
+
+#. Cap type
+#: src/dialogs/stroke-style.c:633
+msgid "Cap:"
+msgstr "Cap:"
+
+#. Dash
+#: src/dialogs/stroke-style.c:676
+msgid "Pattern:"
+msgstr "Pattern:"
+
+#: src/dialogs/text-edit.c:102
+msgid "Text properties"
+msgstr "Text properties"
+
+#. Layout
+#: src/dialogs/text-edit.c:141
+msgid "Layout"
+msgstr "Layout"
+
+#: src/dialogs/text-edit.c:149
+msgid "Alignment:"
+msgstr "Alignment:"
+
+#: src/dialogs/text-edit.c:174
+msgid "Orientation:"
+msgstr "Orientation:"
+
+#: src/dialogs/text-edit.c:192
+msgid "Line spacing:"
+msgstr "Line spacing:"
+
+#: src/dialogs/text-edit.c:212
+msgid "Spacing:"
+msgstr "Spacing:"
+
+#: src/dialogs/text-edit.c:235
+msgid "Text and font"
+msgstr "Text and font"
+
+#: src/dialogs/text-edit.c:246
+msgid "Set as default"
+msgstr "Set as default"
+
+#: src/dialogs/tool-attributes.c:48 src/verbs.c:479
+msgid "Tool attributes"
+msgstr "Tool attributes"
+
+#: src/dialogs/tool-attributes.c:95
+msgid "Expansion"
+msgstr "Expansion"
+
+#: src/dialogs/tool-attributes.c:95
+msgid "Inner radius"
+msgstr "Inner radius"
+
+#: src/dialogs/tool-attributes.c:99 src/dialogs/tool-attributes.c:109
+#: src/dialogs/tool-attributes.c:119 src/dialogs/tool-attributes.c:129
+msgid "Missing tool preferences"
+msgstr "Missing tool preferences"
+
+#. Magnitude
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:356
+msgid "Corners:"
+msgstr "Corners:"
+
+#: src/dialogs/tool-attributes.c:105
+msgid "Proportion"
+msgstr "Proportion"
+
+#: src/dialogs/tool-attributes.c:115
+msgid "Transform:"
+msgstr "Transform:"
+
+#. Mass
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
+msgid "Mass:"
+msgstr "Mass:"
+
+#. Drag
+#: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1063
+msgid "Drag:"
+msgstr "Drag:"
+
+#: src/dialogs/tool-attributes.c:125
+msgid "Angle"
+msgstr "Angle"
+
+#: src/dialogs/tool-attributes.c:132
+msgid "Tool has no attributes"
+msgstr "Tool has no attributes"
+
+#: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
+msgid "No active tool"
+msgstr "No active tool"
+
+#: src/dialogs/tool-options.c:47 src/verbs.c:478
+msgid "Tool options"
+msgstr "Tool options"
+
+#: src/dialogs/tool-options.c:90
+msgid "Tool has no options"
+msgstr "Tool has no options"
+
+#: src/dialogs/transformation.c:195
+msgid "Transform selection"
+msgstr "Transform selection"
+
+#. Apply to duplicate
+#: src/dialogs/transformation.c:216
+msgid "Apply to duplicate"
+msgstr "Apply to duplicate"
+
+#: src/dialogs/transformation.c:313
+msgid "Move"
+msgstr "Move"
+
+#: src/dialogs/transformation.c:457
+msgid "Scale"
+msgstr "Scale"
+
+#: src/dialogs/transformation.c:584
+msgid "Rotate"
+msgstr "Rotate"
+
+#: src/dialogs/transformation.c:602
+msgid "deg"
+msgstr "deg"
+
+#: src/dialogs/xml-tree.c:157
+msgid "Drag to reorder nodes"
+msgstr "Drag to reorder nodes"
+
+#: src/dialogs/xml-tree.c:170
+msgid "New element node"
+msgstr "New element node"
+
+#: src/dialogs/xml-tree.c:188
+msgid "New text node"
+msgstr "New text node"
+
+#: src/dialogs/xml-tree.c:205
+msgid "Duplicate node"
+msgstr "Duplicate node"
+
+#: src/dialogs/xml-tree.c:221
+msgid "Delete node"
+msgstr "Delete node"
+
+#: src/dialogs/xml-tree.c:234
+msgid "Unindent node"
+msgstr "Unindent node"
+
+#: src/dialogs/xml-tree.c:245
+msgid "Indent node"
+msgstr "Indent node"
+
+#: src/dialogs/xml-tree.c:255
+msgid "Raise node"
+msgstr "Raise node"
+
+#: src/dialogs/xml-tree.c:266
+msgid "Lower node"
+msgstr "Lower node"
+
+#: src/dialogs/xml-tree.c:303
+msgid "Delete attribute"
+msgstr "Delete attribute"
+
+#: src/dialogs/xml-tree.c:333
+msgid "Attribute name"
+msgstr "Attribute name"
+
+#: src/dialogs/xml-tree.c:340
+msgid "Set attribute"
+msgstr "Set attribute"
+
+#: src/dialogs/xml-tree.c:353
+msgid "Attribute value"
+msgstr "Attribute value"
+
+#: src/dialogs/xml-tree.c:833
+#, c-format
+msgid "Sodipodi: %s : XML View"
+msgstr "Sodipodi: %s : XML View"
+
+#: src/dialogs/xml-tree.c:856
+msgid "New element node..."
+msgstr "New element node..."
+
+#: src/dialogs/xml-tree.c:876
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/dialogs/xml-tree.c:880
+msgid "Create"
+msgstr "Create"
+
+#: src/document.c:389
+#, c-format
+msgid "New document %d"
+msgstr "New document %d"
+
+#: src/document.c:425
+#, c-format
+msgid "Memory document %d"
+msgstr "Memory document %d"
+
+#: src/document.c:572
+#, c-format
+msgid "Unnamed document %d"
+msgstr "Unnamed document %d"
+
+#: src/draw-context.c:294
+msgid "Appending to selection. Press 'a' to toggle Append/New."
+msgstr "Appending to selection. Press 'a' to toggle Append/New."
+
+#: src/draw-context.c:299
+msgid "Creating new curve. Press 'a' to toggle Append/New."
+msgstr "Creating new curve. Press 'a' to toggle Append/New."
+
+#. Angle
+#: src/dyna-draw-context.c:1075
+msgid "Angle:"
+msgstr "Angle:"
+
+#. Reset
+#: src/dyna-draw-context.c:1099 src/rect-context.c:425
+#: src/spiral-context.c:387 src/star-context.c:387
+msgid "Defaults"
+msgstr "Defaults"
+
+#: src/file.c:123 src/file.c:137 src/file.c:149
+msgid "Select file to open"
+msgstr "Select file to open"
+
+#: src/file.c:174 src/file.c:278
+msgid "File type:"
+msgstr "File type:"
+
+#: src/file.c:263
+msgid "Save file"
+msgstr "Save file"
+
+#: src/file.c:468 src/file.c:478 src/file.c:484
+msgid "Select file to import"
+msgstr "Select file to import"
+
+#: src/help.c:51
+msgid "About sodipodi"
+msgstr "About sodipodi"
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:42
+msgid "Unit"
+msgstr "Unit"
+
+#: src/helper/units.c:42
+msgid "Units"
+msgstr "Units"
+
+#: src/helper/units.c:43
+msgid "Point"
+msgstr "Point"
+
+#: src/helper/units.c:43
+msgid "pt"
+msgstr "pt"
+
+#: src/helper/units.c:43
+msgid "Points"
+msgstr "Points"
+
+#: src/helper/units.c:43
+msgid "Pt"
+msgstr "Pt"
+
+#: src/helper/units.c:44
+msgid "Pixel"
+msgstr "Pixel"
+
+#: src/helper/units.c:44
+msgid "px"
+msgstr "px"
+
+#: src/helper/units.c:44
+msgid "Pixels"
+msgstr "Pixels"
+
+#: src/helper/units.c:44
+msgid "Px"
+msgstr "Px"
+
+#: src/helper/units.c:45
+msgid "Userspace unit"
+msgstr "Userspace unit"
+
+#: src/helper/units.c:45
+msgid "User"
+msgstr "User"
+
+#: src/helper/units.c:45
+msgid "Userspace units"
+msgstr "Userspace units"
+
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: src/helper/units.c:48
+msgid "Percent"
+msgstr "Percent"
+
+#: src/helper/units.c:48
+msgid "%"
+msgstr "%"
+
+#: src/helper/units.c:48
+msgid "Percents"
+msgstr "Percents"
+
+#: src/helper/units.c:49
+msgid "Millimeter"
+msgstr "Millimetre"
+
+#: src/helper/units.c:49
+msgid "mm"
+msgstr "mm"
+
+#: src/helper/units.c:49
+msgid "Millimeters"
+msgstr "Millimetres"
+
+#: src/helper/units.c:50
+msgid "Centimeter"
+msgstr "Centimetre"
+
+#: src/helper/units.c:50
+msgid "cm"
+msgstr "cm"
+
+#: src/helper/units.c:50
+msgid "Centimeters"
+msgstr "Centimetres"
+
+#: src/helper/units.c:51
+msgid "Meter"
+msgstr "Metre"
+
+#: src/helper/units.c:51
+msgid "m"
+msgstr "m"
+
+#: src/helper/units.c:51
+msgid "meters"
+msgstr "metres"
+
+#: src/helper/units.c:52
+msgid "Inch"
+msgstr "Inch"
+
+#: src/helper/units.c:52
+msgid "in"
+msgstr "in"
+
+#: src/helper/units.c:52
+msgid "Inches"
+msgstr "Inches"
+
+#: src/helper/units.c:53
+msgid "Em square"
+msgstr "Em square"
+
+#: src/helper/units.c:53
+msgid "em"
+msgstr "em"
+
+#: src/helper/units.c:53
+msgid "Em squares"
+msgstr "Em squares"
+
+#: src/helper/units.c:54
+msgid "Ex square"
+msgstr "Ex square"
+
+#: src/helper/units.c:54
+msgid "ex"
+msgstr "ex"
+
+#: src/helper/units.c:54
+msgid "Ex squares"
+msgstr "Ex squares"
+
+#: src/interface.c:305 src/interface.c:504
+msgid "Open Recent"
+msgstr "Open Recent"
+
+#: src/interface.c:325
+msgid "Close View"
+msgstr "Close View"
+
+#: src/interface.c:328 src/interface.c:510
+msgid "About Sodipodi"
+msgstr "About Sodipodi"
+
+#. Have modules about menu
+#: src/interface.c:334 src/interface.c:516
+msgid "About Modules"
+msgstr "About Modules"
+
+#: src/interface.c:354
+msgid "Cleanup"
+msgstr "Cleanup"
+
+#. View:Zoom
+#: src/interface.c:429 src/toolbox.c:587 src/verbs.c:463
+msgid "Zoom"
+msgstr "Zoom"
+
+#. View:New View
+#: src/interface.c:441
+msgid "New View"
+msgstr "New View"
+
+#. View:New Preview
+#: src/interface.c:443
+msgid "New Preview"
+msgstr "New Preview"
+
+#: src/interface.c:445
+msgid "New Toplevel Toolbox"
+msgstr "New Toplevel Toolbox"
+
+#: src/interface.c:446
+msgid "New Docked Toolbox"
+msgstr "New Docked Toolbox"
+
+#: src/interface.c:447
+msgid "Remove Docked Toolbox"
+msgstr "Remove Docked Toolbox"
+
+#. File
+#: src/interface.c:501 src/verbs.c:409
+msgid "New"
+msgstr "New"
+
+#: src/interface.c:502
+msgid "Open"
+msgstr "Open"
+
+#. For some reason action menu does not work on menubar :-(
+#: src/interface.c:522 src/verbs.c:418
+msgid "Exit program"
+msgstr "Exit program"
+
+#. Generic menu
+#. File submenu
+#: src/interface.c:585 src/toolbox.c:311
+msgid "File"
+msgstr "File"
+
+#. Edit submenu
+#: src/interface.c:591 src/toolbox.c:362 src/widgets/gradient-selector.c:138
+msgid "Edit"
+msgstr "Edit"
+
+#. View submenu
+#: src/interface.c:603
+msgid "View"
+msgstr "View"
+
+#. Drawing mode submenu
+#: src/interface.c:609
+msgid "Drawing Mode"
+msgstr "Drawing Mode"
+
+#. Dialog submenu
+#: src/interface.c:615
+msgid "Dialogs"
+msgstr "Dialogs"
+
+#. Have modules menu
+#: src/interface.c:624
+msgid "Modules"
+msgstr "Modules"
+
+#: src/main.c:120 src/main.c:612
+msgid "Do not use X server (only process files from console)"
+msgstr "Do not use X server (only process files from console)"
+
+#: src/main.c:123 src/main.c:613
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr "Try to use X server even if $DISPLAY is not set)"
+
+#: src/main.c:126 src/main.c:614
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr "Open specified document(s) (option string may be excluded)"
+
+#: src/main.c:127 src/main.c:130 src/main.c:133 src/main.c:147
+msgid "FILENAME"
+msgstr "FILENAME"
+
+#: src/main.c:129
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr "Print document(s) to specified output file (use '| program' for pipe)"
+
+#: src/main.c:132 src/main.c:615
+msgid "Export document to png file"
+msgstr "Export document to png file"
+
+#: src/main.c:135 src/main.c:616
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr "The resolution used for converting SVG into bitmap (default 72.0)"
+
+#: src/main.c:136
+msgid "DPI"
+msgstr "DPI"
+
+#: src/main.c:138 src/main.c:617
+msgid ""
+"Exported area in millimeters (default is full document, 0,0 is lower-left "
+"corner)"
+msgstr ""
+"Exported area in millimetres (default is full document, 0,0 is lower-left "
+"corner)"
+
+#: src/main.c:139
+msgid "x0:y0:x1:y1"
+msgstr "x0:y0:x1:y1"
+
+#: src/main.c:141 src/main.c:618
+msgid "The width of generated bitmap in pixels (overwrites dpi)"
+msgstr "The width of generated bitmap in pixels (overwrites dpi)"
+
+#: src/main.c:141
+msgid "WIDTH"
+msgstr "WIDTH"
+
+#: src/main.c:143 src/main.c:619
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr "The height of generated bitmap in pixels (overwrites dpi)"
+
+#: src/main.c:143
+msgid "HEIGHT"
+msgstr "HEIGHT"
+
+#: src/main.c:145 src/main.c:620
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr "Background colour of exported bitmap (any SVG supported colour string)"
+
+#: src/main.c:145
+msgid "COLOR"
+msgstr "COLOUR"
+
+#: src/main.c:147 src/main.c:621
+msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+msgstr "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+
+#: src/main.c:149
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr "Show given files one-by-one, switch to next on any key/mouse event"
+
+#: src/main.c:151
+msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr "Prefer bitmap (xpm) icons to SVG ones"
+
+#: src/main.c:622
+msgid "Print sodipodi version information"
+msgstr "Print sodipodi version information"
+
+#: src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr "Print help about command-line arguments"
+
+#: src/main.c:772
+msgid "Untitled document"
+msgstr "Untitled document"
+
+#. Show nice dialog box
+#: src/main.c:797
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr "Sodipodi encountered an internal error and will close now.\n"
+
+#: src/main.c:798
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+
+#: src/main.c:799
+msgid "Automatic backup of following documents failed:\n"
+msgstr "Automatic backup of following documents failed:\n"
+
+#: src/module.c:898
+msgid "Scalable Vector Graphic (SVG)"
+msgstr "Scalable Vector Graphic (SVG)"
+
+#: src/module.c:898
+msgid "Sodipodi native file format and W3C standard"
+msgstr "Sodipodi native file format and W3C standard"
+
+#: src/module.c:905
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr "SVG with \"xmlns:sodipodi\" namespace"
+
+#: src/module.c:906
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr "Scalable Vector Graphics format with sodipodi extensions"
+
+#: src/module.c:909
+msgid "Plain SVG"
+msgstr "Plain SVG"
+
+#: src/module.c:910
+msgid "Scalable Vector Graphics format"
+msgstr "Scalable Vector Graphics format"
+
+#: src/modules/gnome.c:158
+msgid "Select printer"
+msgstr "Select printer"
+
+#: src/modules/gnome.c:212
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (doc name %s..): Print Preview"
+
+#: src/modules/kde.cpp:162
+msgid "Document variant:"
+msgstr "Document variant:"
+
+#: src/modules/kde.cpp:172
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+msgstr ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+
+#: src/modules/kde.cpp:174
+msgid "Save document as"
+msgstr "Save document as"
+
+#: src/modules/plain-pdf.c:1049 src/modules/plain-ps.c:651
+#: src/modules/ps.c:961
+msgid "write error occured"
+msgstr "write error occured"
+
+#: src/modules/plain.c:178 src/modules/ps.c:264
+msgid "Print using PostScript operators"
+msgstr "Print using PostScript operators"
+
+#: src/modules/plain.c:179 src/modules/ps.c:266
+msgid ""
+"Use PostScript vector operators, resulting image will be (usually) smaller "
+"and can be arbitrarily scaled, but alpha transparency, markers and patterns "
+"will be lost"
+msgstr ""
+"Use PostScript vector operators, resulting image will be (usually) smaller "
+"and can be arbitrarily scaled, but alpha transparency, markers and patterns "
+"will be lost"
+
+#: src/modules/plain.c:184 src/modules/ps.c:271
+msgid "Print as bitmap"
+msgstr "Print as bitmap"
+
+#: src/modules/plain.c:185 src/modules/ps.c:273
+msgid ""
+"Print everything as bitmap, resulting image will be (usualy) larger and it "
+"quality depends on zoom factor, but all graphics will be rendered identical "
+"to display"
+msgstr ""
+"Print everything as bitmap, resulting image will be (usualy) larger and it "
+"quality depends on zoom factor, but all graphics will be rendered identical "
+"to display"
+
+#: src/modules/plain.c:190
+msgid "Print using PDF driver"
+msgstr "Print using PDF driver"
+
+#: src/modules/plain.c:191
+msgid "Use Portable Document Format for printing"
+msgstr "Use Portable Document Format for printing"
+
+#. Print destination frame
+#: src/modules/plain.c:224 src/modules/plain.c:293 src/modules/ps.c:245
+#: src/modules/ps.c:306
+msgid "Print destination"
+msgstr "Print destination"
+
+#. Print properties frame
+#: src/modules/plain.c:235 src/modules/ps.c:256
+msgid "Print properties"
+msgstr "Print properties"
+
+#: src/modules/plain.c:274 src/modules/ps.c:287
+msgid "Preferred resolution (dots per inch) of bitmap"
+msgstr "Preferred resolution (dots per inch) of bitmap"
+
+#: src/modules/plain.c:289 src/modules/ps.c:302
+msgid "Resolution:"
+msgstr "Resolution:"
+
+#: src/modules/plain.c:299 src/modules/ps.c:312
+msgid ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+msgstr ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:108
+msgid "Item"
+msgstr "Item"
+
+#. Item dialog
+#: src/object-ui.c:111 src/verbs.c:487
+msgid "Item Properties"
+msgstr "Item Properties"
+
+#. Select item
+#: src/object-ui.c:119
+msgid "Select this"
+msgstr "Select this"
+
+#. Reset transformations
+#: src/object-ui.c:128
+msgid "Reset transformation"
+msgstr "Reset transformation"
+
+#. Apply transformation
+#: src/object-ui.c:132
+msgid "Apply transformation"
+msgstr "Apply transformation"
+
+#: src/object-ui.c:137
+msgid "Make sensitive"
+msgstr "Make sensitive"
+
+#: src/object-ui.c:137
+msgid "Make insensitive"
+msgstr "Make insensitive"
+
+#. Create link
+#: src/object-ui.c:141
+msgid "Create link"
+msgstr "Create link"
+
+#: src/object-ui.c:273 src/verbs.c:435
+msgid "Group"
+msgstr "Group"
+
+#. Group dialog
+#: src/object-ui.c:277
+msgid "Group Properties"
+msgstr "Group Properties"
+
+#. "Ungroup"
+#: src/object-ui.c:288 src/verbs.c:436
+msgid "Ungroup"
+msgstr "Ungroup"
+
+#. Dive
+#: src/object-ui.c:293
+msgid "Set as layer"
+msgstr "Set as layer"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:338
+msgid "Link"
+msgstr "Link"
+
+#. Link dialog
+#: src/object-ui.c:341
+msgid "Link Properties"
+msgstr "Link Properties"
+
+#. Select item
+#: src/object-ui.c:351
+msgid "Follow link"
+msgstr "Follow link"
+
+#. Reset transformations
+#: src/object-ui.c:356
+msgid "Remove link"
+msgstr "Remove link"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:419
+msgid "Image"
+msgstr "Image"
+
+#. Link dialog
+#: src/object-ui.c:422
+msgid "Image Properties"
+msgstr "Image Properties"
+
+#. Autotrace dialog
+#: src/object-ui.c:430 src/sp-image.c:762
+msgid "Trace"
+msgstr "Trace"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:479
+msgid "Shape"
+msgstr "Shape"
+
+#. Item dialog
+#: src/object-ui.c:482 src/toolbox.c:402
+msgid "Fill settings"
+msgstr "Fill settings"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:509
+msgid "Rect"
+msgstr "Rect"
+
+#. Link dialog
+#: src/object-ui.c:512
+msgid "Rect Properties"
+msgstr "Rect Properties"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:545 src/verbs.c:457
+msgid "Star"
+msgstr "Star"
+
+#. Link dialog
+#: src/object-ui.c:548
+msgid "Star Properties"
+msgstr "Star Properties"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:581 src/verbs.c:458
+msgid "Spiral"
+msgstr "Spiral"
+
+#. Link dialog
+#: src/object-ui.c:584
+msgid "Spiral Properties"
+msgstr "Spiral Properties"
+
+#. rx_ratio
+#: src/rect-context.c:401
+msgid "Roundness ratio for x:"
+msgstr "Roundness ratio for x:"
+
+#. ry_ratio
+#: src/rect-context.c:413
+msgid "Roundness ratio for y:"
+msgstr "Roundness ratio for y:"
+
+#: src/select-context.c:570
+msgid "Visual transformation"
+msgstr "Visual transformation"
+
+#: src/select-context.c:576
+msgid "Show content"
+msgstr "Show content"
+
+#: src/select-context.c:582
+msgid "Show outline"
+msgstr "Show outline"
+
+#: src/select-context.c:588
+msgid "Object transformation"
+msgstr "Object transformation"
+
+#: src/select-context.c:594
+msgid "Optimize"
+msgstr "Optimize"
+
+#: src/select-context.c:600
+msgid "Preserve"
+msgstr "Preserve"
+
+#: src/select-context.c:606
+msgid "[Tab] Cycling"
+msgstr "[Tab] Cycling"
+
+#: src/select-context.c:611
+msgid "Cycle only among visible items"
+msgstr "Cycle only among visible items"
+
+#: src/select-context.c:614
+msgid "Center view to selected item"
+msgstr "Centre view to selected item"
+
+#: src/slideshow.c:90
+msgid "Sodipodi slideshow"
+msgstr "Sodipodi slideshow"
+
+#: src/sodipodi.c:468
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+
+#: src/sodipodi.c:471
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+
+#: src/sodipodi.c:476
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+
+#: src/sodipodi.c:488
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+
+#: src/sodipodi.c:491
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+
+#: src/sodipodi.c:495
+#, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+
+#: src/sodipodi.c:829
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+msgstr ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+
+#: src/sodipodi.c:833
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+
+#: src/sodipodi.c:837
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+
+#: src/sodipodi.c:841
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+
+#: src/sodipodi.c:851
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+
+#: src/sodipodi.c:854
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+
+#: src/sodipodi.c:857
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+
+#: src/sodipodi.c:860
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+
+#: src/sp-anchor.c:196
+#, c-format
+msgid "Link to %s"
+msgstr "Link to %s"
+
+#: src/sp-image.c:373
+#, c-format
+msgid "Image with bad reference: %s"
+msgstr "Image with bad reference: %s"
+
+#: src/sp-image.c:375
+#, c-format
+msgid "Color image %d x %d: %s"
+msgstr "Colour image %d x %d: %s"
+
+#: src/sp-image.c:908
+#, c-format
+msgid "Error to write %s: %s"
+msgstr "Error to write %s: %s"
+
+#: src/sp-image.c:942
+msgid "Untitled"
+msgstr "Untitled"
+
+#: src/sp-image.c:947
+msgid "Document Name:"
+msgstr "Document Name:"
+
+#: src/sp-image.c:960
+msgid "Unknown"
+msgstr "Unknown"
+
+#: src/sp-image.c:966
+msgid "Image URI:"
+msgstr "Image URI:"
+
+#: src/sp-item-group.c:483
+#, c-format
+msgid "Group of %d objects"
+msgstr "Group of %d objects"
+
+#: src/sp-item.c:554
+msgid "Unknown item :-("
+msgstr "Unknown item :-("
+
+#. fixme:
+#: src/sp-text.c:1294
+msgid "Text object"
+msgstr "Text object"
+
+#. T0
+#: src/spiral-context.c:375
+msgid "Inner radius:"
+msgstr "Inner radius:"
+
+#. Proportion
+#: src/star-context.c:368
+msgid "Proportion:"
+msgstr "Proportion:"
+
+#. Making sides flat
+#: src/star-context.c:381
+msgid "Make sides flat"
+msgstr "Make sides flat"
+
+#: src/toolbox.c:399
+msgid "Object"
+msgstr "Object"
+
+#: src/toolbox.c:403 src/verbs.c:481
+msgid "Object size and position"
+msgstr "Object size and position"
+
+#: src/toolbox.c:404
+msgid "Text and font settings"
+msgstr "Text and font settings"
+
+#: src/toolbox.c:406 src/verbs.c:482
+msgid "Object transformations"
+msgstr "Object transformations"
+
+#: src/toolbox.c:485
+msgid "Draw"
+msgstr "Draw"
+
+#: src/toolbox.c:542
+msgid "Extension"
+msgstr "Extension"
+
+#: src/toolbox.c:624
+msgid "Nodes"
+msgstr "Nodes"
+
+#: src/toolbox.c:627
+msgid "Insert new nodes into selected segments"
+msgstr "Insert new nodes into selected segments"
+
+#: src/toolbox.c:629
+msgid "Break line at selected nodes"
+msgstr "Break line at selected nodes"
+
+#: src/toolbox.c:631
+msgid "Make selected nodes corner"
+msgstr "Make selected nodes corner"
+
+#: src/toolbox.c:633
+msgid "Make selected segments lines"
+msgstr "Make selected segments lines"
+
+#: src/toolbox.c:635
+msgid "Delete selected nodes"
+msgstr "Delete selected nodes"
+
+#: src/toolbox.c:637
+msgid "Join lines at selected nodes"
+msgstr "Join lines at selected nodes"
+
+#: src/toolbox.c:640
+msgid "Join lines at selected nodes with new segment"
+msgstr "Join lines at selected nodes with new segment"
+
+#: src/toolbox.c:642
+msgid "Make selected nodes smooth"
+msgstr "Make selected nodes smooth"
+
+#: src/toolbox.c:644
+msgid "Make selected segments curves"
+msgstr "Make selected segments curves"
+
+#: src/verbs.c:407
+msgid "Does nothing"
+msgstr "Does nothing"
+
+#: src/verbs.c:409
+msgid "Create new SVG document"
+msgstr "Create new SVG document"
+
+#: src/verbs.c:410
+msgid "Open..."
+msgstr "Open..."
+
+#: src/verbs.c:410
+msgid "Open existing SVG document"
+msgstr "Open existing SVG document"
+
+#: src/verbs.c:411
+msgid "Save"
+msgstr "Save"
+
+#: src/verbs.c:411
+msgid "Save document"
+msgstr "Save document"
+
+#: src/verbs.c:412
+msgid "Save As..."
+msgstr "Save As..."
+
+#: src/verbs.c:412
+msgid "Save document under new name"
+msgstr "Save document under new name"
+
+#: src/verbs.c:413
+msgid "Print..."
+msgstr "Print..."
+
+#: src/verbs.c:413
+msgid "Print document"
+msgstr "Print document"
+
+#: src/verbs.c:414
+msgid "Print Direct..."
+msgstr "Print Direct..."
+
+#: src/verbs.c:414
+msgid "Print directly to file or pipe"
+msgstr "Print directly to file or pipe"
+
+#: src/verbs.c:415
+msgid "Print Preview"
+msgstr "Print Preview"
+
+#: src/verbs.c:415
+msgid "Preview document printout"
+msgstr "Preview document printout"
+
+#: src/verbs.c:416
+msgid "Import"
+msgstr "Import"
+
+#: src/verbs.c:416
+msgid "Import bitmap or SVG image into document"
+msgstr "Import bitmap or SVG image into document"
+
+#: src/verbs.c:417
+msgid "Export document as PNG bitmap"
+msgstr "Export document as PNG bitmap"
+
+#: src/verbs.c:418
+msgid "Exit"
+msgstr "Exit"
+
+#. Edit
+#: src/verbs.c:420
+msgid "Undo"
+msgstr "Undo"
+
+#: src/verbs.c:420
+msgid "Revert last action"
+msgstr "Revert last action"
+
+#: src/verbs.c:421
+msgid "Redo"
+msgstr "Redo"
+
+#: src/verbs.c:421
+msgid "Do again undone action"
+msgstr "Do again undone action"
+
+#: src/verbs.c:422
+msgid "Cut"
+msgstr "Cut"
+
+#: src/verbs.c:422
+msgid "Cut selected objects to clipboard"
+msgstr "Cut selected objects to clipboard"
+
+#: src/verbs.c:423
+msgid "Copy"
+msgstr "Copy"
+
+#: src/verbs.c:423
+msgid "Copy selected objects to clipboard"
+msgstr "Copy selected objects to clipboard"
+
+#: src/verbs.c:424
+msgid "Paste"
+msgstr "Paste"
+
+#: src/verbs.c:424
+msgid "Paste objects from clipboard"
+msgstr "Paste objects from clipboard"
+
+#: src/verbs.c:425
+msgid "Delete"
+msgstr "Delete"
+
+#: src/verbs.c:425
+msgid "Delete selected objects"
+msgstr "Delete selected objects"
+
+#: src/verbs.c:426
+msgid "Duplicate"
+msgstr "Duplicate"
+
+#: src/verbs.c:426
+msgid "Duplicate selected objects"
+msgstr "Duplicate selected objects"
+
+#: src/verbs.c:427
+msgid "Clear All"
+msgstr "Clear All"
+
+#: src/verbs.c:427
+msgid "Delete all objects from document"
+msgstr "Delete all objects from document"
+
+#: src/verbs.c:428
+msgid "Select All"
+msgstr "Select All"
+
+#: src/verbs.c:428
+msgid "Select all objects in document"
+msgstr "Select all objects in document"
+
+#: src/verbs.c:429
+msgid "Repeat"
+msgstr "Repeat"
+
+#: src/verbs.c:429
+msgid "Repeat last saved action"
+msgstr "Repeat last saved action"
+
+#. Selection
+#: src/verbs.c:431
+msgid "Bring to Front"
+msgstr "Bring to Front"
+
+#: src/verbs.c:431
+msgid "Raise selected objects to top"
+msgstr "Raise selected objects to top"
+
+#: src/verbs.c:432
+msgid "Send to Back"
+msgstr "Send to Back"
+
+#: src/verbs.c:432
+msgid "Lower selected objects to bottom"
+msgstr "Lower selected objects to bottom"
+
+#: src/verbs.c:433
+msgid "Raise"
+msgstr "Raise"
+
+#: src/verbs.c:433
+msgid "Raise selected objects one position"
+msgstr "Raise selected objects one position"
+
+#: src/verbs.c:434
+msgid "Lower"
+msgstr "Lower"
+
+#: src/verbs.c:434
+msgid "Lower selected objects one position"
+msgstr "Lower selected objects one position"
+
+#: src/verbs.c:435
+msgid "Group selected objects"
+msgstr "Group selected objects"
+
+#: src/verbs.c:436
+msgid "Ungroup selected group"
+msgstr "Ungroup selected group"
+
+#: src/verbs.c:437
+msgid "Combine"
+msgstr "Combine"
+
+#: src/verbs.c:437
+msgid "Combine multiple paths"
+msgstr "Combine multiple paths"
+
+#: src/verbs.c:438
+msgid "Break Apart"
+msgstr "Break Apart"
+
+#: src/verbs.c:438
+msgid "Break selected path to subpaths"
+msgstr "Break selected path to subpaths"
+
+#: src/verbs.c:439
+msgid "Uncross"
+msgstr "Uncross"
+
+#: src/verbs.c:439
+msgid "Break selected path at crossings"
+msgstr "Break selected path at crossings"
+
+#: src/verbs.c:440
+msgid "Union"
+msgstr "Union"
+
+#: src/verbs.c:440
+msgid "Calculate union of selected paths"
+msgstr "Calculate union of selected paths"
+
+#: src/verbs.c:441
+msgid "Intersection"
+msgstr "Intersection"
+
+#: src/verbs.c:441
+msgid "Calculate intersection of selected paths"
+msgstr "Calculate intersection of selected paths"
+
+#: src/verbs.c:442
+msgid "Subtraction"
+msgstr "Subtraction"
+
+#: src/verbs.c:442
+msgid "Subtract paths from first"
+msgstr "Subtract paths from first"
+
+#: src/verbs.c:443
+msgid "Transform"
+msgstr "Transform"
+
+#: src/verbs.c:443
+msgid "Applies transformation"
+msgstr "Applies transformation"
+
+#. Object
+#: src/verbs.c:445
+msgid "Rotate 90 degrees"
+msgstr "Rotate 90 degrees"
+
+#: src/verbs.c:445
+msgid "Rotates object 90 degrees clockwise"
+msgstr "Rotates object 90 degrees clockwise"
+
+#: src/verbs.c:446
+msgid "Flatten object"
+msgstr "Flatten object"
+
+#: src/verbs.c:446
+msgid "Remove transformations from object"
+msgstr "Remove transformations from object"
+
+#: src/verbs.c:447
+msgid "Convert to Curves"
+msgstr "Convert to Curves"
+
+#: src/verbs.c:447
+msgid "Convert selected object to path"
+msgstr "Convert selected object to path"
+
+#: src/verbs.c:448
+msgid "Flip Horizontally"
+msgstr "Flip Horizontally"
+
+#: src/verbs.c:449
+msgid "Flip selected objects horizontally"
+msgstr "Flip selected objects horizontally"
+
+#: src/verbs.c:450
+msgid "Flip Vertically"
+msgstr "Flip Vertically"
+
+#: src/verbs.c:451
+msgid "Flip selected objects vertically"
+msgstr "Flip selected objects vertically"
+
+#. Event contexts
+#: src/verbs.c:453
+msgid "Select"
+msgstr "Select"
+
+#: src/verbs.c:453
+msgid "Select and transform objects"
+msgstr "Select and transform objects"
+
+#: src/verbs.c:454
+msgid "Node edit"
+msgstr "Node edit"
+
+#: src/verbs.c:454
+msgid "Modify existing objects by control nodes"
+msgstr "Modify existing objects by control nodes"
+
+#: src/verbs.c:455
+msgid "Rectangle"
+msgstr "Rectangle"
+
+#: src/verbs.c:455
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr "Create rectangles and squares with optional rounded corners"
+
+#: src/verbs.c:456
+msgid "Ellipse"
+msgstr "Ellipse"
+
+#: src/verbs.c:456
+msgid "Create circles, ellipses and arcs"
+msgstr "Create circles, ellipses and arcs"
+
+#: src/verbs.c:457
+msgid "Create stars and polygons"
+msgstr "Create stars and polygons"
+
+#: src/verbs.c:458
+msgid "Create spirals"
+msgstr "Create spirals"
+
+#: src/verbs.c:459
+msgid "Pencil"
+msgstr "Pencil"
+
+#: src/verbs.c:459
+msgid "Draw freehand curves and straight lines"
+msgstr "Draw freehand curves and straight lines"
+
+#: src/verbs.c:460
+msgid "Pen"
+msgstr "Pen"
+
+#: src/verbs.c:460
+msgid "Draw precisely positioned curved and straight lines"
+msgstr "Draw precisely positioned curved and straight lines"
+
+#: src/verbs.c:461
+msgid "Calligraphy"
+msgstr "Calligraphy"
+
+#: src/verbs.c:461
+msgid "Draw calligraphic lines"
+msgstr "Draw calligraphic lines"
+
+#: src/verbs.c:462
+msgid "Create and edit text objects"
+msgstr "Create and edit text objects"
+
+#: src/verbs.c:463
+msgid "Zoom into precisely selected area"
+msgstr "Zoom into precisely selected area"
+
+#: src/verbs.c:464
+msgid "Dropper"
+msgstr "Dropper"
+
+#: src/verbs.c:464
+msgid "Pick averaged colors from image"
+msgstr "Pick averaged colours from image"
+
+#. Zooming
+#: src/verbs.c:466
+msgid "In"
+msgstr "In"
+
+#: src/verbs.c:466
+msgid "Zoom in drawing"
+msgstr "Zoom in drawing"
+
+#: src/verbs.c:467
+msgid "Out"
+msgstr "Out"
+
+#: src/verbs.c:467
+msgid "Zoom out drawing"
+msgstr "Zoom out drawing"
+
+#: src/verbs.c:468
+msgid "1:1"
+msgstr "1:1"
+
+#: src/verbs.c:468
+msgid "Set zoom factor to 1:1"
+msgstr "Set zoom factor to 1:1"
+
+#: src/verbs.c:469
+msgid "1:2"
+msgstr "1:2"
+
+#: src/verbs.c:469
+msgid "Set zoom factor to 1:2"
+msgstr "Set zoom factor to 1:2"
+
+#: src/verbs.c:470
+msgid "2:1"
+msgstr "2:1"
+
+#: src/verbs.c:470
+msgid "Set zoom factor to 2:1"
+msgstr "Set zoom factor to 2:1"
+
+#: src/verbs.c:471
+msgid "Fit the whole page into window"
+msgstr "Fit the whole page into window"
+
+#: src/verbs.c:472
+msgid "Fit the whole drawing into window"
+msgstr "Fit the whole drawing into window"
+
+#: src/verbs.c:473
+msgid "Fit the whole selection into window"
+msgstr "Fit the whole selection into window"
+
+#. Dialogs
+#: src/verbs.c:475
+msgid "Display"
+msgstr "Display"
+
+#: src/verbs.c:475
+msgid "Global display settings"
+msgstr "Global display settings"
+
+#: src/verbs.c:476
+msgid "Document"
+msgstr "Document"
+
+#: src/verbs.c:476
+msgid "Page layout"
+msgstr "Page layout"
+
+#: src/verbs.c:477
+msgid "Editing Window"
+msgstr "Editing Window"
+
+#: src/verbs.c:477
+msgid "Editing window properties"
+msgstr "Editing window properties"
+
+#: src/verbs.c:478
+msgid "Tool Options"
+msgstr "Tool Options"
+
+#: src/verbs.c:479
+msgid "Tool Attributes"
+msgstr "Tool Attributes"
+
+#: src/verbs.c:480
+msgid "Fill and Stroke"
+msgstr "Fill and Stroke"
+
+#: src/verbs.c:480
+msgid "Fill and stroke settings"
+msgstr "Fill and stroke settings"
+
+#: src/verbs.c:482
+msgid "Transformations"
+msgstr "Transformations"
+
+#: src/verbs.c:483
+msgid "Align and Distribute"
+msgstr "Align and Distribute"
+
+#: src/verbs.c:483
+msgid "Align and distribute"
+msgstr "Align and distribute"
+
+#: src/verbs.c:484
+msgid "Text and Font"
+msgstr "Text and Font"
+
+#: src/verbs.c:484
+msgid "Text editing and font settings"
+msgstr "Text editing and font settings"
+
+#: src/verbs.c:485
+msgid "Document Tree"
+msgstr "Document Tree"
+
+#: src/verbs.c:486
+msgid "XML Editor"
+msgstr "XML Editor"
+
+#. Family frame
+#: src/widgets/font-selector.c:153
+msgid "Font family"
+msgstr "Font family"
+
+#. Style frame
+#: src/widgets/font-selector.c:193
+msgid "Style"
+msgstr "Style"
+
+#: src/widgets/font-selector.c:228
+msgid "Font size:"
+msgstr "Font size:"
+
+#: src/widgets/font-selector.c:560
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr "AaBbCcIiPpQq12368.;/()"
+
+#: src/widgets/gradient-selector.c:143
+msgid "Add"
+msgstr "Add"
+
+#: src/widgets/gradient-selector.c:179
+msgid "gradientUnits"
+msgstr "gradientUnits"
+
+#: src/widgets/gradient-selector.c:208
+msgid "gradientSpread"
+msgstr "gradientSpread"
+
+#: src/widgets/gradient-vector.c:250
+msgid "No document selected"
+msgstr "No document selected"
+
+#: src/widgets/gradient-vector.c:256
+msgid "No gradients in document"
+msgstr "No gradients in document"
+
+#: src/widgets/gradient-vector.c:262
+msgid "No gradient selected"
+msgstr "No gradient selected"
+
+#: src/widgets/gradient-vector.c:417
+msgid "Start color"
+msgstr "Start colour"
+
+#: src/widgets/gradient-vector.c:427
+msgid "End color"
+msgstr "End colour"
+
+#: src/widgets/gradient-vector.c:452
+msgid "Gradient vector"
+msgstr "Gradient vector"
+
+#: src/widgets/paint-selector.c:622
+msgid "No objects"
+msgstr "No objects"
+
+#: src/widgets/paint-selector.c:636
+msgid "Multiple styles"
+msgstr "Multiple styles"
+
+#: src/widgets/paint-selector.c:650
+msgid "No paint"
+msgstr "No paint"
+
+#. Label
+#: src/widgets/paint-selector.c:747
+msgid "Mode:"
+msgstr "Mode:"
+
+#: src/widgets/paint-selector.c:757
+msgid "RGB"
+msgstr "RGB"
+
+#: src/widgets/paint-selector.c:757 src/widgets/paint-selector.c:758
+msgid "RGB Colorspace"
+msgstr "RGB Colourspace"
+
+#: src/widgets/paint-selector.c:758
+msgid "HSV"
+msgstr "HSV"
+
+#: src/widgets/paint-selector.c:759
+msgid "CMYK"
+msgstr "CMYK"
+
+#: src/widgets/paint-selector.c:759
+msgid "CMYK Colorspace"
+msgstr "CMYK Colourspace"
+
+#. Use dropper
+#: src/widgets/paint-selector.c:766
+msgid "Get from dropper"
+msgstr "Get from dropper"
+
+#: src/widgets/paint-selector.c:797
+msgid "Color paint"
+msgstr "Colour paint"
+
+#: src/widgets/paint-selector.c:875
+msgid "Linear gradient"
+msgstr "Linear gradient"
+
+#: src/widgets/paint-selector.c:878
+msgid "Radial gradient"
+msgstr "Radial gradient"
+
+#: src/widgets/sp-color-selector.c:623
+msgid "Red:"
+msgstr "Red:"
+
+#: src/widgets/sp-color-selector.c:624
+msgid "Green:"
+msgstr "Green:"
+
+#: src/widgets/sp-color-selector.c:625
+msgid "Blue:"
+msgstr "Blue:"
+
+#: src/widgets/sp-color-selector.c:626 src/widgets/sp-color-selector.c:646
+#: src/widgets/sp-color-selector.c:668
+msgid "Alpha:"
+msgstr "Alpha:"
+
+#: src/widgets/sp-color-selector.c:643
+msgid "Hue:"
+msgstr "Hue:"
+
+#: src/widgets/sp-color-selector.c:644
+msgid "Saturation:"
+msgstr "Saturation:"
+
+#: src/widgets/sp-color-selector.c:645
+msgid "Value:"
+msgstr "Value:"
+
+#: src/widgets/sp-color-selector.c:664
+msgid "Cyan:"
+msgstr "Cyan:"
+
+#: src/widgets/sp-color-selector.c:665
+msgid "Magenta:"
+msgstr "Magenta:"
+
+#: src/widgets/sp-color-selector.c:666
+msgid "Yellow:"
+msgstr "Yellow:"
+
+#: src/widgets/sp-color-selector.c:667
+msgid "Black:"
+msgstr "Black:"
+
+#: src/widgets/sp-toolbox.c:305
+msgid "Toggle separate window and main toolbox placement"
+msgstr "Toggle separate window and main toolbox placement"
+
+#: src/widgets/sp-xmlview-attr-list.c:54
+msgid "Attribute"
+msgstr "Attribute"
+
+#: src/widgets/sp-xmlview-attr-list.c:55
+msgid "Value"
+msgstr "Value"
+
