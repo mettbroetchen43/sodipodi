@@ -3,1346 +3,37 @@
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2000.
 # Takeshi Aihana <aihana@muc.biglobe.ne.jp>, 2000-2001.
 # Mitsuru Oka <oka@debian.or.jp>, 2001.
+# Junichi Uekawa <dancer@debian.org>, 2002.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.22\n"
-"POT-Creation-Date: 2002-04-08 00:07+0900\n"
-"PO-Revision-Date: 2002-04-10 00:59+0900\n"
-"Last-Translator: Mitsuru Oka <oka326@parkcity.ne.jp>\n"
+"POT-Creation-Date: 2002-05-28 11:04+0900\n"
+"PO-Revision-Date: 2002-05-28 13:29+0900\n"
+"Last-Translator: Junichi Uekawa <dancer@debian.org>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=euc-jp\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: GNOME_Sodipodi.oaf.in.h:1
-msgid "Sodipodi SVG Document"
-msgstr "Sodipodi SVG ドキュメント"
-
-#: GNOME_Sodipodi.oaf.in.h:2
-msgid "Sodipodi SVG Document factory"
-msgstr "Sodipodi SVG ドキュメントファクトリ"
-
-#: glade/align.glade.h:1 glade/transformation.glade.h:3
-msgid "Align"
-msgstr "配置"
-
-#: glade/align.glade.h:2
-msgid "Align inside object to bottom border"
-msgstr "内部オブジェクトを下の境界まで移動"
-
-#: glade/align.glade.h:3
-msgid "Align inside object to left border"
-msgstr "内部オブジェクトを左の境界まで移動"
-
-#: glade/align.glade.h:4
-msgid "Align inside object to right border"
-msgstr "内部オブジェクトを右の境界まで移動"
-
-#: glade/align.glade.h:5
-msgid "Align inside object to top border"
-msgstr "内部オブジェクトを上の境界まで移動"
-
-#: glade/align.glade.h:6
-msgid "Align objects to horizontal mid"
-msgstr "オブジェクトを水平中心位置に移動"
-
-#: glade/align.glade.h:7
-msgid "Align objects to vertical mid"
-msgstr "オブジェクトを垂直中心位置に移動"
-
-#: glade/align.glade.h:8
-msgid "Align outside object to bottom border"
-msgstr "外部オブジェクトを下の境界まで移動"
-
-#: glade/align.glade.h:9
-msgid "Align outside object to left border"
-msgstr "外部オブジェクトを左の境界まで移動"
-
-#: glade/align.glade.h:10
-msgid "Align outside object to right border"
-msgstr "外部オブジェクトを右の境界まで移動"
-
-#: glade/align.glade.h:11
-msgid "Align outside object to top border"
-msgstr "外部オブジェクトを上の境界まで移動"
-
-#: glade/align.glade.h:12
-#, fuzzy
-msgid "Alignment base"
-msgstr "中央に配置"
-
-#: glade/align.glade.h:13 src/dialogs/align.c:91
-msgid "Biggest item"
-msgstr "最大の要素"
-
-#: glade/align.glade.h:14
-#, fuzzy
-msgid "Choose align type"
-msgstr "ユニットシステムの選択"
-
-#: glade/align.glade.h:15
-msgid "Close window"
-msgstr "ウィンドウを閉じる"
-
-#: glade/align.glade.h:16 glade/sodipodi.glade.h:19 src/dialogs/align.c:106
-#: src/interface.c:352
-msgid "Drawing"
-msgstr "描画"
-
-#: glade/align.glade.h:17 src/dialogs/align.c:86
-msgid "First selected"
-msgstr "最初の選択部分"
-
-#: glade/align.glade.h:18 src/dialogs/align.c:81
-msgid "Last selected"
-msgstr "最後の選択部分"
-
-#. Page settings
-#. Notebook tab
-#: glade/align.glade.h:19 glade/sodipodi.glade.h:42 src/dialogs/align.c:101
-#: src/dialogs/document-properties.c:144 src/interface.c:353
-msgid "Page"
-msgstr "ページ"
-
-#. Selection submenu
-#: glade/align.glade.h:20 glade/sodipodi.glade.h:47 glade/toolbox.glade.h:56
-#: src/dialogs/align.c:111 src/interface.c:351 src/interface.c:450
-#: src/toolbox.c:107
-msgid "Selection"
-msgstr "選択"
-
-#: glade/align.glade.h:21 src/dialogs/align.c:96
-msgid "Smallest item"
-msgstr "最小の要素"
-
-#: glade/item.glade.h:1
-msgid "Active"
-msgstr "アクティブ"
-
-#: glade/item.glade.h:2
-msgid "ID:"
-msgstr "ID:"
-
-#. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:622
-msgid "Item"
-msgstr "アイテム"
-
-#: glade/item.glade.h:4 src/dialogs/item-properties.c:317
-msgid "Item properties"
-msgstr "アイテムプロパティ"
-
-#: glade/item.glade.h:5
-msgid "Opacity:"
-msgstr "半透明"
-
-#: glade/item.glade.h:6
-msgid "Parent X ="
-msgstr "親 X ="
-
-#: glade/item.glade.h:7
-msgid "Parent Y ="
-msgstr "親 Y ="
-
-#: glade/item.glade.h:8
-msgid "Printable"
-msgstr "印刷可能"
-
-#: glade/item.glade.h:9
-msgid "Sensitive"
-msgstr "センシティブ"
-
-#: glade/item.glade.h:10 src/dialogs/item-properties.c:171
-#: src/dialogs/item-properties.c:241
-msgid "The SVG ID of item"
-msgstr "アイテムの SVG ID"
-
-#: glade/item.glade.h:11
-msgid "Transformation"
-msgstr "変形"
-
-#: glade/item.glade.h:12
-msgid "Visible"
-msgstr "可視"
-
-#: glade/item.glade.h:13
-msgid "X +"
-msgstr "X +"
-
-#: glade/item.glade.h:14
-msgid "Y +"
-msgstr "Y +"
-
-#: glade/object_props.glade.h:1
-msgid " Color fill "
-msgstr " カラー塗りつぶし "
-
-#: glade/object_props.glade.h:2
-msgid " General "
-msgstr " 一般 "
-
-#: glade/object_props.glade.h:3
-msgid " Style "
-msgstr " スタイル "
-
-#: glade/object_props.glade.h:4
-msgid "Add new gradient"
-msgstr "グラデーションを追加"
-
-#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:607
-#: src/widgets/sp-color-selector.c:627 src/widgets/sp-color-selector.c:649
-msgid "Alpha:"
-msgstr "透明度:"
-
-#: glade/object_props.glade.h:6
-msgid "Behind fill"
-msgstr "背景の塗りつぶし"
-
-#: glade/object_props.glade.h:7
-msgid "Bevel join"
-msgstr "傾斜部の結合"
-
-#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:606
-msgid "Blue:"
-msgstr "青:"
-
-#: glade/object_props.glade.h:9
-msgid "Butt endpoints"
-msgstr "終点を●"
-
-#: glade/object_props.glade.h:10
-msgid "Choose fill color"
-msgstr "塗りつぶす色を選択"
-
-#: glade/object_props.glade.h:11
-msgid "Choose stroke color"
-msgstr "ストローク色の選択"
-
-#: glade/object_props.glade.h:12
-msgid "Color fill"
-msgstr "色で塗りつぶし"
-
-#: glade/object_props.glade.h:13
-msgid "Color:"
-msgstr "色:"
-
-#: glade/object_props.glade.h:14
-msgid "Dimension"
-msgstr "次元"
-
-#: glade/object_props.glade.h:15
-msgid "Edit..."
-msgstr "編集..."
-
-#: glade/object_props.glade.h:16
-msgid "Endpoints:"
-msgstr "終点:"
-
-#: glade/object_props.glade.h:17 glade/sodipodi.glade.h:27
-#: src/dialogs/object-properties.c:59
-msgid "Fill"
-msgstr "塗りつぶし"
-
-#: glade/object_props.glade.h:18
-msgid "Fill Color:"
-msgstr "塗りつぶす色:"
-
-#: glade/object_props.glade.h:19
-msgid "Fractal fill"
-msgstr "フラクタルで塗りつぶし"
-
-#: glade/object_props.glade.h:20
-msgid "Gradient fill"
-msgstr "グラデーションで塗りつぶし"
-
-#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:605
-msgid "Green:"
-msgstr "緑:"
-
-#: glade/object_props.glade.h:22 src/dialogs/document-properties.c:220
-#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
-#: src/dialogs/object-properties.c:240
-msgid "Height:"
-msgstr "高さ:"
-
-#: glade/object_props.glade.h:23
-msgid "Is stroked"
-msgstr "ストローク"
-
-#. Join type
-#: glade/object_props.glade.h:24 src/dialogs/stroke-style.c:189
-msgid "Join:"
-msgstr "結合:"
-
-#: glade/object_props.glade.h:25
-msgid "Layout"
-msgstr "レイアウト"
-
-#: glade/object_props.glade.h:26
-msgid "Miter join"
-msgstr "マイター結合"
-
-#: glade/object_props.glade.h:27
-msgid "No fill"
-msgstr "塗りつぶさない"
-
-#: glade/object_props.glade.h:28
-msgid "Pattern fill"
-msgstr "塗りつぶしパターン"
-
-#: glade/object_props.glade.h:29
-msgid "Pick a color"
-msgstr "カラーをピックアップ"
-
-#: glade/object_props.glade.h:30
-msgid "Pick fill color"
-msgstr "塗りつぶす色を選ぶ"
-
-#: glade/object_props.glade.h:31
-msgid "Pick stroke color"
-msgstr "ストローク色を選ぶ"
-
-#: glade/object_props.glade.h:32
-msgid "Position"
-msgstr "位置"
-
-#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:604
-msgid "Red:"
-msgstr "赤:"
-
-#: glade/object_props.glade.h:34
-msgid "Reread"
-msgstr "再読込"
-
-#: glade/object_props.glade.h:35
-msgid "Round endpoints"
-msgstr "終点を○"
-
-#: glade/object_props.glade.h:36
-msgid "Round join"
-msgstr "円の結合"
-
-#: glade/object_props.glade.h:37
-msgid "Scale with object"
-msgstr "オブジェクトで計測"
-
-#: glade/object_props.glade.h:38
-msgid "Square endpoints"
-msgstr "終点を■"
-
-#: glade/object_props.glade.h:39 glade/sodipodi.glade.h:54
-#: src/dialogs/object-properties.c:72
-msgid "Stroke"
-msgstr "ストローク"
-
-#: glade/object_props.glade.h:40
-msgid "Stroke width"
-msgstr "ストローク幅"
-
-#. Stroke width
-#: glade/object_props.glade.h:41 src/dialogs/document-properties.c:205
-#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
-#: src/dialogs/object-properties.c:225 src/dialogs/stroke-style.c:166
-msgid "Width:"
-msgstr "幅:"
-
-#: glade/object_props.glade.h:42 src/dialogs/object-attributes.c:64
-#: src/dialogs/object-attributes.c:72 src/dialogs/object-properties.c:195
-msgid "X:"
-msgstr "X:"
-
-#: glade/object_props.glade.h:43 src/dialogs/object-attributes.c:65
-#: src/dialogs/object-attributes.c:73 src/dialogs/object-properties.c:210
-msgid "Y:"
-msgstr "Y:"
-
-#: glade/object_props.glade.h:44
-msgid "centimeter"
-msgstr "センチメートル"
-
-#: glade/object_props.glade.h:45 glade/transformation.glade.h:48
-#: src/helper/unit-menu.c:355 src/helper/units.c:49
-msgid "cm"
-msgstr "cm"
-
-#: glade/object_props.glade.h:46
-msgid "color"
-msgstr "カラー"
-
-#: glade/object_props.glade.h:47 glade/transformation.glade.h:55
-#: src/helper/units.c:51
-msgid "in"
-msgstr "in"
-
-#: glade/object_props.glade.h:48
-msgid "inches"
-msgstr "インチ"
-
-#: glade/object_props.glade.h:49
-msgid "millimeters"
-msgstr "ミリメートル"
-
-#: glade/object_props.glade.h:50 glade/transformation.glade.h:58
-#: src/helper/unit-menu.c:354 src/helper/units.c:48
-msgid "mm"
-msgstr "mm"
-
-#: glade/object_props.glade.h:51
-msgid "none"
-msgstr "なし"
-
-#: glade/object_props.glade.h:52
-msgid "object properties"
-msgstr "オブジェクトプロパティ"
-
-#: glade/object_props.glade.h:53 glade/sodipodi.glade.h:78
-msgid "pixels"
-msgstr "ピクセル"
-
-#: glade/object_props.glade.h:54
-msgid "points"
-msgstr "ポイント"
-
-#: glade/object_props.glade.h:55 glade/transformation.glade.h:59
-#: src/helper/unit-menu.c:357 src/helper/units.c:42
-msgid "pt"
-msgstr "ポイント"
-
-#: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
-#: src/helper/units.c:43
-msgid "px"
-msgstr "px"
-
-#: glade/sodipodi.glade.h:1
-msgid "1.0MB"
-msgstr "1.0MB"
-
-#: glade/sodipodi.glade.h:2 src/interface.c:360
-msgid "1:1"
-msgstr "1:1"
-
-#: glade/sodipodi.glade.h:3 src/interface.c:359
-msgid "1:2"
-msgstr "1:2"
-
-#: glade/sodipodi.glade.h:4 src/interface.c:361
-msgid "2:1"
-msgstr "2:1"
-
-#: glade/sodipodi.glade.h:5 src/interface.c:374
-msgid "Arc"
-msgstr "弧"
-
-#: glade/sodipodi.glade.h:6
-msgid "Back One"
-msgstr "1つ分だけ後ろに"
-
-#: glade/sodipodi.glade.h:7 glade/toolbox.glade.h:2
-msgid "Break apart selected node"
-msgstr "選択したノードを分割する"
-
-#: glade/sodipodi.glade.h:8
-msgid "Bring to _Front"
-msgstr "前面に持ってくる(_F)"
-
-#: glade/sodipodi.glade.h:9 glade/toolbox.glade.h:4
-msgid "Close dialog"
-msgstr "ダイアログを閉じる"
-
-#: glade/sodipodi.glade.h:10 glade/toolbox.glade.h:7
-msgid "Convert selected segments to curves"
-msgstr "選択したセグメントを曲線に変換"
-
-#: glade/sodipodi.glade.h:11 glade/toolbox.glade.h:8
-msgid "Convert selected segments to lines"
-msgstr "選択したセグメントを線に変換"
-
-#: glade/sodipodi.glade.h:12
-msgid "Convert to Cu_rves"
-msgstr "曲線に変換(_R)"
-
-#: glade/sodipodi.glade.h:13 glade/toolbox.glade.h:10
-msgid "Cusp line at selected nodes"
-msgstr "選択したノードの尖った線"
-
-#. File:Export
-#: glade/sodipodi.glade.h:14 glade/xml-tree.glade.h:11 src/interface.c:277
-#: src/widgets/gradient-selector.c:145
-msgid "Delete"
-msgstr "削除"
-
-#: glade/sodipodi.glade.h:15 glade/toolbox.glade.h:12
-msgid "Delete selected nodes"
-msgstr "選択したノードの削除"
-
-#: glade/sodipodi.glade.h:16
-msgid "Desktop"
-msgstr "デスクトップ"
-
-#: glade/sodipodi.glade.h:17
-msgid "Display"
-msgstr "ディスプレイ"
-
-#: glade/sodipodi.glade.h:18 src/interface.c:391
-msgid "Document"
-msgstr "ドキュメント"
-
-#: glade/sodipodi.glade.h:20
-msgid "Drawing Context"
-msgstr "描画コンテキスト"
-
-#. Edit:Duplicate
-#: glade/sodipodi.glade.h:21 src/interface.c:272
-msgid "Duplicate"
-msgstr "複製"
-
-#: glade/sodipodi.glade.h:22 src/interface.c:378
-msgid "Dynahand"
-msgstr "ダイナハンド"
-
-#. File:Export
-#: glade/sodipodi.glade.h:23 glade/toolbox.glade.h:29 src/interface.c:213
-msgid "Export"
-msgstr "出力"
-
-#: glade/sodipodi.glade.h:24
-msgid "Export picture to png"
-msgstr "絵画を PNG に出力"
-
-#: glade/sodipodi.glade.h:25
-msgid "Exported as"
-msgstr "名前をつけて出力"
-
-#: glade/sodipodi.glade.h:26
-msgid "Filename:"
-msgstr "ファイル名:"
-
-#: glade/sodipodi.glade.h:28
-msgid "Forward One"
-msgstr "1つ分だけ前に"
-
-#: glade/sodipodi.glade.h:29 src/interface.c:377
-msgid "Freehand"
-msgstr "フリーハンド"
-
-#: glade/sodipodi.glade.h:30
-msgid "Height"
-msgstr "高さ"
-
-#: glade/sodipodi.glade.h:31
-msgid "Image size"
-msgstr "画像サイズ"
-
-#. File:Import
-#: glade/sodipodi.glade.h:32 src/interface.c:208
-msgid "Import"
-msgstr "読み込み"
-
-#: glade/sodipodi.glade.h:33 glade/toolbox.glade.h:34
-msgid "Include one node into selected segments"
-msgstr "ノードを選択したセグメントに含める"
-
-#: glade/sodipodi.glade.h:34 glade/toolbox.glade.h:35
-msgid "Join 2 selected endpoints"
-msgstr "2つの端点の結合"
-
-#: glade/sodipodi.glade.h:35
-msgid "Lock aspect ratio"
-msgstr "縦横比を固定"
-
-#. View:New Preview
-#: glade/sodipodi.glade.h:36 src/interface.c:365
-msgid "New Preview"
-msgstr "新しいプレビュー"
-
-#. View:New View
-#: glade/sodipodi.glade.h:37 src/interface.c:363
-msgid "New View"
-msgstr "新規のビュー"
-
-#: glade/sodipodi.glade.h:38 src/interface.c:372
-msgid "Node"
-msgstr "ノード"
-
-#: glade/sodipodi.glade.h:39 glade/toolbox.glade.h:39
-msgid "Node Edit"
-msgstr "ノードの編集"
-
-#: glade/sodipodi.glade.h:40 src/toolbox.c:150
-msgid "Nodes"
-msgstr "ノード"
-
-#. Selection:Order
-#: glade/sodipodi.glade.h:41 src/interface.c:317
-msgid "Order"
-msgstr "整列"
-
-#: glade/sodipodi.glade.h:43
-msgid "Png file name"
-msgstr "PNGファイル名"
-
-#: glade/sodipodi.glade.h:44 src/interface.c:373
-msgid "Rectangle"
-msgstr "長方形"
-
-#: glade/sodipodi.glade.h:45 glade/transformation.glade.h:33
-#: src/interface.c:355
-msgid "Scale"
-msgstr "スケール"
-
-#: glade/sodipodi.glade.h:46 src/interface.c:371
-msgid "Select"
-msgstr "選択"
-
-#: glade/sodipodi.glade.h:48
-msgid "Send to _Back"
-msgstr "背後に持っていく(_B)"
-
-#: glade/sodipodi.glade.h:49
-msgid "Set dimensions"
-msgstr "次元を設定"
-
-#: glade/sodipodi.glade.h:50
-msgid "Show Toolbox"
-msgstr "ツールボックスを表示"
-
-#: glade/sodipodi.glade.h:51 glade/toolbox.glade.h:57
-msgid "Smooth line at selected nodes"
-msgstr "選択したノードの滑らかな線"
-
-#. Create toplevel menuitem
-#: glade/sodipodi.glade.h:52 src/interface.c:376 src/sp-spiral.c:595
-msgid "Spiral"
-msgstr "螺旋"
-
-#. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/interface.c:375 src/sp-star.c:476
-msgid "Star"
-msgstr "星"
-
-#: glade/sodipodi.glade.h:55 glade/toolbox.glade.h:59
-msgid "Symmetric "
-msgstr "左右対称"
-
-#: glade/sodipodi.glade.h:56 glade/text-dialog.glade.h:1 src/interface.c:379
-msgid "Text"
-msgstr "テキスト"
-
-#: glade/sodipodi.glade.h:57
-msgid "Toggle Borders"
-msgstr "ボーダーをトグル"
-
-#: glade/sodipodi.glade.h:58
-msgid "Uncompressed file size:"
-msgstr "未圧縮のファイルサイズ:"
-
-#: glade/sodipodi.glade.h:59
-msgid "Where to export"
-msgstr "出力先"
-
-#: glade/sodipodi.glade.h:60
-msgid "Width"
-msgstr "幅"
-
-#: glade/sodipodi.glade.h:61
-msgid "X0"
-msgstr "X0"
-
-#: glade/sodipodi.glade.h:62
-msgid "X1"
-msgstr "X1"
-
-#: glade/sodipodi.glade.h:63 glade/xml-tree.glade.h:21
-msgid "XML Tree"
-msgstr "XML ツリー"
-
-#: glade/sodipodi.glade.h:64
-msgid "Y0"
-msgstr "Y0"
-
-#: glade/sodipodi.glade.h:65
-msgid "Y1"
-msgstr "Y1"
-
-#. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1131
-#: src/interface.c:347 src/interface.c:380 src/toolbox.c:146
-msgid "Zoom"
-msgstr "ズーム"
-
-#: glade/sodipodi.glade.h:67
-msgid "_Align"
-msgstr "配置(_A)"
-
-#: glade/sodipodi.glade.h:68
-msgid "_Break Apart"
-msgstr "分割(_B)"
-
-#: glade/sodipodi.glade.h:69
-msgid "_Combine"
-msgstr "連結(_C)"
-
-#: glade/sodipodi.glade.h:70
-msgid "_Drawing"
-msgstr "描画(_D)"
-
-#: glade/sodipodi.glade.h:71
-msgid "_Group"
-msgstr "グループ化(_G)"
-
-#: glade/sodipodi.glade.h:72
-msgid "_Interactive"
-msgstr "対話的(_I)"
-
-#: glade/sodipodi.glade.h:73 glade/toolbox.glade.h:78
-msgid "_New"
-msgstr "新規(_N)"
-
-#: glade/sodipodi.glade.h:74
-msgid "_Page"
-msgstr "ページ(_P)"
-
-#: glade/sodipodi.glade.h:75
-msgid "_Selection"
-msgstr "選択(_S)"
-
-#: glade/sodipodi.glade.h:76
-msgid "_Ungroup"
-msgstr "グループ解除(_U)"
-
-#: glade/sodipodi.glade.h:77
-msgid "dpi"
-msgstr "dpi"
-
-#: glade/text-dialog.glade.h:2
-msgid "Text Properties"
-msgstr "テキストのプロパティ"
-
-#: glade/toolbox.glade.h:1
-msgid "Align dialog"
-msgstr "ダイアログの配置変更"
-
-#: glade/toolbox.glade.h:3
-msgid "Break apart selected paths"
-msgstr "選択したパスを分割する"
-
-#: glade/toolbox.glade.h:5
-msgid "Combine selected paths"
-msgstr "選択したパスの結合"
-
-#: glade/toolbox.glade.h:6
-msgid "Convert selected objects to curves"
-msgstr "選択オブジェクトを曲線に変換"
-
-#: glade/toolbox.glade.h:9
-msgid "Copy selection to clipboard"
-msgstr "選択領域をクリップボードにコピー"
-
-#: glade/toolbox.glade.h:11
-msgid "Cut selection"
-msgstr "選択領域の切り取り"
-
-#: glade/toolbox.glade.h:13
-msgid "Delete selection"
-msgstr "選択領域の削除"
-
-#: glade/toolbox.glade.h:14
-msgid "Draw arc"
-msgstr "弧の描画"
-
-#: glade/toolbox.glade.h:15
-msgid "Draw dynahand line"
-msgstr "ダイナハンド線の描画"
-
-#: glade/toolbox.glade.h:16
-msgid "Draw freehand line"
-msgstr "フリーハンド線の描画"
-
-#: glade/toolbox.glade.h:17
-msgid "Draw rectangle"
-msgstr "矩形の描画"
-
-#: glade/toolbox.glade.h:18
-msgid "Draw spiral"
-msgstr "螺旋の描画"
-
-#: glade/toolbox.glade.h:19
-msgid "Draw star"
-msgstr "星の描画"
-
-#: glade/toolbox.glade.h:20
-msgid "Draw text"
-msgstr "テキストの描画"
-
-#: glade/toolbox.glade.h:21
-msgid "Drawing context"
-msgstr "描画コンテキスト"
-
-#: glade/toolbox.glade.h:22
-msgid "Duplicate selection"
-msgstr "選択領域の複製"
-
-#. Edit submenu
-#: glade/toolbox.glade.h:23 src/interface.c:444 src/toolbox.c:90
-#: src/widgets/gradient-selector.c:132
-msgid "Edit"
-msgstr "編集"
-
-#: glade/toolbox.glade.h:24
-msgid "Edit fill style of selected objects"
-msgstr "オブジェクトの塗りつぶしスタイル編集"
-
-#: glade/toolbox.glade.h:25
-msgid "Edit font style of selected objects"
-msgstr "オブジェクトのフォントスタイル編集"
-
-#: glade/toolbox.glade.h:26
-msgid "Edit layout of selected objects"
-msgstr "オブジェクトのレイアウト編集"
-
-#: glade/toolbox.glade.h:27
-msgid "Edit nodes"
-msgstr "ノードの編集"
-
-#: glade/toolbox.glade.h:28
-msgid "Edit stroke style of selected objects"
-msgstr "オブジェクトのストロークスタイル編集"
-
-#. Generic menu
-#. File submenu
-#: glade/toolbox.glade.h:30 src/interface.c:438 src/toolbox.c:86
-msgid "File"
-msgstr "ファイル"
-
-#: glade/toolbox.glade.h:31
-msgid "Flip selected objects"
-msgstr "選択オブジェクトの反転"
-
-#: glade/toolbox.glade.h:32
-msgid "Group selected objects"
-msgstr "選択したオブジェクトのグループ化"
-
-#: glade/toolbox.glade.h:33
-msgid "Import "
-msgstr "挿入 "
-
-#: glade/toolbox.glade.h:36
-msgid "Lower selection one layer"
-msgstr "選択領域を一つ背面に移動"
-
-#: glade/toolbox.glade.h:37
-msgid "New drawing"
-msgstr "新規描画"
-
-#: glade/toolbox.glade.h:38
-msgid "No I'd rather do some more cool vector drawing with sodipodi."
-msgstr "いいえ、また Sodipodi でもっとクールなベクタを描画します。"
-
-#: glade/toolbox.glade.h:40
-msgid "Nope !"
-msgstr "いいえ!"
-
-#: glade/toolbox.glade.h:41 src/event-context.c:433 src/toolbox.c:99
-msgid "Object"
-msgstr "オブジェクト"
-
-#: glade/toolbox.glade.h:42
-msgid "Open new drawing"
-msgstr "新規描画を開く"
-
-#: glade/toolbox.glade.h:43
-msgid "Paste from clipboard"
-msgstr "クリップボードから貼り付け"
-
-#: glade/toolbox.glade.h:44
-msgid "Preview print drawing"
-msgstr "描画印刷のプレビュー"
-
-#: glade/toolbox.glade.h:45
-msgid "Print drawing"
-msgstr "描画の印刷"
-
-#: glade/toolbox.glade.h:46
-msgid "Quit or not quit ?"
-msgstr "終了しても宜しいですか?"
-
-#: glade/toolbox.glade.h:47
-msgid "Raise selection to top"
-msgstr "選択領域を最前面に移動"
-
-#: glade/toolbox.glade.h:48
-msgid "Really wanna quit sodipodi ?"
-msgstr "本当に sodipodi を終了して宜しいですか?"
-
-#. File:Print Preview
-#: glade/toolbox.glade.h:49 src/interface.c:415
-msgid "Redo"
-msgstr "やり直し"
-
-#: glade/toolbox.glade.h:50
-msgid "Remove transformation"
-msgstr "変形を戻す"
-
-#: glade/toolbox.glade.h:51
-msgid "Rise selection one layer"
-msgstr "選択領域を一つ前面に移動"
-
-#: glade/toolbox.glade.h:52
-msgid "Rotate selected objects 90 clockwise"
-msgstr "選択されたオブジェクトを時計回りに90度回転"
-
-#: glade/toolbox.glade.h:53
-msgid "Save drawing "
-msgstr "描画の保存 "
-
-#: glade/toolbox.glade.h:54
-msgid "Save drawing under new filename"
-msgstr "新規ファイル名で描画を保存"
-
-#: glade/toolbox.glade.h:55
-msgid "Select and transform"
-msgstr "選択して変形"
-
-#: glade/toolbox.glade.h:58 sodipodi.desktop.in.h:1
-msgid "Sodipodi"
-msgstr "Sodipodi"
-
-#: glade/toolbox.glade.h:60
-msgid "Transformation dialog"
-msgstr "変形ダイアログ"
-
-#: glade/toolbox.glade.h:61
-msgid "Undo "
-msgstr "元に戻す"
-
-#: glade/toolbox.glade.h:62
-msgid "Ungroup selected objects"
-msgstr "選択したオブジェクトのグループ解除"
-
-#: glade/toolbox.glade.h:63
-msgid "Unsymmetric"
-msgstr "非対称"
-
-#: glade/toolbox.glade.h:64
-msgid "Yep !"
-msgstr "はい!"
-
-#: glade/toolbox.glade.h:65
-msgid "Yes quick! I want to leave sodipodi and come back later."
-msgstr "はい、直ちに sodipodi を終らせて後でまた戻ってきます。"
-
-#: glade/toolbox.glade.h:67
-msgid "Zoom in"
-msgstr "拡大"
-
-#: glade/toolbox.glade.h:68
-msgid "Zoom out"
-msgstr "縮小"
-
-#: glade/toolbox.glade.h:69
-msgid "Zoom to 1:1"
-msgstr "1:1にズーム"
-
-#: glade/toolbox.glade.h:70
-msgid "Zoom to 1:2"
-msgstr "1:2にズーム"
-
-#: glade/toolbox.glade.h:71
-msgid "Zoom to 2:1"
-msgstr "2:1にズーム"
-
-#: glade/toolbox.glade.h:72
-msgid "Zoom to drawing"
-msgstr "描画領域にズーム"
-
-#: glade/toolbox.glade.h:73
-msgid "Zoom to page"
-msgstr "ページにズーム"
-
-#: glade/toolbox.glade.h:74
-msgid "Zoom to selection"
-msgstr "選択領域にズーム"
-
-#: glade/toolbox.glade.h:75
-msgid "_About ..."
-msgstr "情報(_A)..."
-
-#: glade/toolbox.glade.h:76
-msgid "_File"
-msgstr "ファイル(_F)"
-
-#: glade/toolbox.glade.h:77
-msgid "_Help"
-msgstr "ヘルプ(_H)"
-
-#: glade/toolbox.glade.h:79
-msgid "_Open"
-msgstr "開く(_O)"
-
-#: glade/toolbox.glade.h:80
-msgid "_Quit"
-msgstr "終了(_Q)"
-
-#: glade/toolbox.glade.h:81
-msgid "lower selection to bottom"
-msgstr "選択領域を最背面に移動"
-
-#: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
-#: src/helper/units.c:47
-#, no-c-format
-msgid "%"
-msgstr "%"
-
-#: glade/transformation.glade.h:4
-msgid "Align to bottom left"
-msgstr "下端の左端に配置"
-
-#: glade/transformation.glade.h:5
-msgid "Align to bottom middle"
-msgstr "下端の中央に配置"
-
-#: glade/transformation.glade.h:6
-msgid "Align to bottom right"
-msgstr "下端の右端に配置"
-
-#: glade/transformation.glade.h:7
-msgid "Align to center"
-msgstr "中央に配置"
-
-#: glade/transformation.glade.h:8
-msgid "Align to left middle"
-msgstr "左端の中央に配置"
-
-#: glade/transformation.glade.h:9
-msgid "Align to right middle"
-msgstr "上端の右端に配置"
-
-#: glade/transformation.glade.h:10
-msgid "Align to top left"
-msgstr "上端の左端に配置"
-
-#: glade/transformation.glade.h:11
-msgid "Align to top middle"
-msgstr "上端の中央に配置"
-
-#: glade/transformation.glade.h:12
-msgid "Align to top right"
-msgstr "上端の右端に配置"
-
-#: glade/transformation.glade.h:13
-msgid "Apply transformation to copy Ctl+m"
-msgstr "変換をコピーに対して適用 - Ctl+m"
-
-#: glade/transformation.glade.h:14
-msgid "Center"
-msgstr "中心"
-
-#: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
-#: src/helper/units.c:49
-msgid "Centimeter"
-msgstr "センチメートル"
-
-#: glade/transformation.glade.h:16
-msgid "Choose metric for center"
-msgstr "中心に対して距離単位を選択"
-
-#: glade/transformation.glade.h:17
-msgid "Close dialog - Ctl+c"
-msgstr "ダイアログを閉じる - Ctl+c"
-
-#: glade/transformation.glade.h:18
-msgid "Degree"
-msgstr "度"
-
-#: glade/transformation.glade.h:19
-msgid "Expand dialog - Ctl+e"
-msgstr "ダイアログを展開する - Ctl+e"
-
-#: glade/transformation.glade.h:20
-msgid "Height: "
-msgstr "高さ:"
-
-#: glade/transformation.glade.h:21
-msgid "Horizontal center value"
-msgstr "水平方向の中心値"
-
-#: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
-#: src/helper/units.c:51
-msgid "Inch"
-msgstr "インチ"
-
-#: glade/transformation.glade.h:23
-msgid "Keep height of selection during transformation"
-msgstr "変形時に選択領域の高さを維持する"
-
-#: glade/transformation.glade.h:24
-msgid "Keep width of selection during transformation"
-msgstr "変形時に選択領域の幅を維持する"
-
-#: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
-#: src/helper/units.c:48
-msgid "Millimeter"
-msgstr "ミリメートル"
-
-#: glade/transformation.glade.h:26
-msgid "Move"
-msgstr "移動"
-
-#: glade/transformation.glade.h:27
-msgid "Orig. Width: "
-msgstr "前の幅: "
-
-#: glade/transformation.glade.h:28
-msgid "Orig. X: "
-msgstr "前の X: "
-
-#. Volatiles do not have default, so there are none here
-#. You can add new elements from this point forward
-#: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
-#: src/helper/units.c:47
-msgid "Percent"
-msgstr "パーセント"
-
-#: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
-#: src/helper/units.c:42
-msgid "Points"
-msgstr "ポイント"
-
-#: glade/transformation.glade.h:31
-msgid "Reset dialog to default - Ctl+r"
-msgstr "ダイアログをデフォルトに戻す - Ctl+r"
-
-#: glade/transformation.glade.h:32
-msgid "Rotate"
-msgstr "回転"
-
-#: glade/transformation.glade.h:34
-msgid "Set angle to 0 degrees"
-msgstr "角度を 0 度に設定"
-
-#: glade/transformation.glade.h:35
-msgid "Set angle to 180 degrees"
-msgstr "角度を 180 度に設定"
-
-#: glade/transformation.glade.h:36
-msgid "Set angle to 270 degrees"
-msgstr "角度を 270 度に設定"
-
-#: glade/transformation.glade.h:37
-msgid "Set angle to 90 degrees"
-msgstr "角度を 90 度に設定"
-
-#: glade/transformation.glade.h:38
-msgid "Skew"
-msgstr "歪み"
-
-#: glade/transformation.glade.h:39
-msgid "Start transformation - Ctl+a"
-msgstr "変形開始 - Ctrl+a"
-
-#: glade/transformation.glade.h:40
-msgid "Toggle center given in selection/desktop coordiantes"
-msgstr "選択領域/デスクトップ座標の中心位置をトグル"
-
-#: glade/transformation.glade.h:41
-msgid "Transform selection"
-msgstr "変形方式の選択"
-
-#: glade/transformation.glade.h:42
-msgid "Use alignment during transformation"
-msgstr "変形時に整列を用いる"
-
-#: glade/transformation.glade.h:43
-msgid "Use center as transformation fixpoint"
-msgstr "変形時に固定点として中心を用いる"
-
-#: glade/transformation.glade.h:44
-msgid "Vertical center value"
-msgstr "垂直方向の中心値"
-
-#: glade/transformation.glade.h:45
-msgid "Y: "
-msgstr "Y: "
-
-#: glade/transformation.glade.h:46
-msgid "absolute"
-msgstr "全て"
-
-#: glade/transformation.glade.h:47
-msgid "angle"
-msgstr "角度"
-
-#: glade/transformation.glade.h:49
-msgid "deg"
-msgstr "度"
-
-#: glade/transformation.glade.h:50
-msgid "desktop"
-msgstr "デスクトップ"
-
-#: glade/transformation.glade.h:51
-msgid "flip horizontal"
-msgstr "水平方向に反転"
-
-#: glade/transformation.glade.h:52
-msgid "flip vertical"
-msgstr "垂直方向に反転"
-
-#: glade/transformation.glade.h:53
-msgid "horizontal move"
-msgstr "水平方向に移動"
-
-#: glade/transformation.glade.h:54
-msgid "horizontal scale value"
-msgstr "水平方向のスケール値"
-
-#: glade/transformation.glade.h:56
-msgid "keep aspect"
-msgstr "縦横比を維持"
-
-#: glade/transformation.glade.h:57
-msgid "lock/unlock horizontal and vertical scale"
-msgstr "水平/垂直スケールのロック/ロック解除"
-
-#: glade/transformation.glade.h:60
-msgid "select direction"
-msgstr "方向の選択"
-
-#: glade/transformation.glade.h:61
-msgid "select direction (horizontal/vertical skew)"
-msgstr "方向を選択 (水平/垂直の歪み)"
-
-#: glade/transformation.glade.h:62
-msgid "select metric for scale"
-msgstr "スケール単位の選択"
-
-#: glade/transformation.glade.h:63
-msgid "select metric for values"
-msgstr "数値単位の選択"
-
-#: glade/transformation.glade.h:64
-msgid "skew"
-msgstr "歪み"
-
-#: glade/transformation.glade.h:65
-msgid "toggle absolute/relative move"
-msgstr "移動対象を全て/一部の切り替え"
-
-#: glade/transformation.glade.h:66
-msgid "toggle absolute/relative scale"
-msgstr "全て/一部のスケール切り替え"
-
-#: glade/transformation.glade.h:67
-msgid "vertical move"
-msgstr "垂直方向に移動"
-
-#: glade/transformation.glade.h:68
-msgid "vertical scale value"
-msgstr "垂直方向のスケール値"
-
-#: glade/xml-tree.glade.h:1 src/widgets/gradient-selector.c:138
-msgid "Add"
-msgstr "追加"
-
-#: glade/xml-tree.glade.h:2
-msgid "Add attribute"
-msgstr "属性追加"
-
-#: glade/xml-tree.glade.h:3
-msgid "Attribute:"
-msgstr "属性:"
-
-#: glade/xml-tree.glade.h:4
-msgid "Attributes"
-msgstr "属性"
-
-#: glade/xml-tree.glade.h:5
-msgid "Change"
-msgstr "変更"
-
-#: glade/xml-tree.glade.h:6
-msgid "Change Attribute"
-msgstr "属性変更"
-
-#: glade/xml-tree.glade.h:7
-msgid "Content"
-msgstr "内容"
-
-#. Edit:Copy
-#: glade/xml-tree.glade.h:8 src/interface.c:258
-msgid "Copy"
-msgstr "コピー"
-
-#. Edit:Cut
-#: glade/xml-tree.glade.h:9 src/interface.c:253
-msgid "Cut"
-msgstr "カット"
-
-#: glade/xml-tree.glade.h:10
-msgid "Del"
-msgstr "削除"
-
-#: glade/xml-tree.glade.h:12
-msgid "Delete attribute"
-msgstr "属性削除"
-
-#: glade/xml-tree.glade.h:13
-msgid "Do you want to delete attribute?"
-msgstr "属性を削除してよろしいですか?"
-
-#: glade/xml-tree.glade.h:14
-msgid "Dup"
-msgstr "複製"
-
-#: glade/xml-tree.glade.h:15
-msgid "Hierarchy"
-msgstr "階層"
-
-#: glade/xml-tree.glade.h:16
-msgid "Key"
-msgstr "キー"
-
-#. File:New
-#: glade/xml-tree.glade.h:17 src/interface.c:184
-msgid "New"
-msgstr "新規"
-
-#. Edit:Paste
-#: glade/xml-tree.glade.h:18 src/interface.c:263
-msgid "Paste"
-msgstr "貼付け"
-
-#: glade/xml-tree.glade.h:19
-msgid "Value"
-msgstr "値"
-
-#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:626
-msgid "Value:"
-msgstr "値:"
-
-#: glade/xml-tree.glade.h:22
-msgid "name"
-msgstr "名前"
-
-#: sodipodi.desktop.in.h:2
-msgid "Vector illustrator"
-msgstr "ベクトルイラストレータ"
-
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "sodipodi-svg-docファクトリを作成できません"
 
-#. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
-#. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
 #: src/desktop.c:1123
 msgid "Welcome !"
-msgstr "ようこそ!"
+msgstr "ようこそ！"
+
+#. View:Zoom
+#: src/desktop.c:1131 src/interface.c:317 src/interface.c:350
+#: src/toolbox.c:134
+msgid "Zoom"
+msgstr "ズーム"
 
 #: src/desktop.c:1195
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
-msgstr "Sodipodi: %s: %s: %d"
+msgstr ""
 
 #: src/desktop.c:1271
 #, c-format
@@ -1350,13 +41,46 @@ msgid "Document %s has unsaved changes, save them?"
 msgstr "ドキュメント %s は未保存の変更がありますが、保存しますか?"
 
 #. File:Save
-#: src/desktop.c:1272 src/interface.c:194
+#: src/desktop.c:1272 src/interface.c:164
 msgid "Save"
-msgstr "保存"
+msgstr "セーブ"
 
 #: src/desktop.c:1272
 msgid "Don't save"
-msgstr "保存しません"
+msgstr "セーブしない"
+
+#: src/dialogs/align.c:81
+msgid "Last selected"
+msgstr "最後の選択部分"
+
+#: src/dialogs/align.c:86
+msgid "First selected"
+msgstr "最初の選択部分"
+
+#: src/dialogs/align.c:91
+msgid "Biggest item"
+msgstr "最大の要素"
+
+#: src/dialogs/align.c:96
+msgid "Smallest item"
+msgstr "最小の要素"
+
+#. Page settings
+#. Notebook tab
+#: src/dialogs/align.c:101 src/dialogs/document-properties.c:144
+#: src/interface.c:323
+msgid "Page"
+msgstr "ページ"
+
+#: src/dialogs/align.c:106 src/interface.c:322
+msgid "Drawing"
+msgstr "描画"
+
+#. Selection submenu
+#: src/dialogs/align.c:111 src/interface.c:321 src/interface.c:420
+#: src/toolbox.c:95
+msgid "Selection"
+msgstr "選択"
 
 #: src/dialogs/desktop-properties.c:208
 msgid "Desktop settings"
@@ -1444,7 +168,7 @@ msgstr "描画"
 msgid "Oversample bitmaps:"
 msgstr "オーバーサンプルビットマップ:"
 
-#: src/dialogs/display-settings.c:116 src/dialogs/fill-style.c:921
+#: src/dialogs/display-settings.c:116 src/dialogs/fill-style.c:923
 msgid "None"
 msgstr "なし"
 
@@ -1472,7 +196,7 @@ msgstr "入力"
 
 #: src/dialogs/display-settings.c:154
 msgid "Default cursor tolerance:"
-msgstr "カーソルのデフォルト許容値"
+msgstr "デフォルトカーソルトレランス："
 
 #: src/dialogs/document-properties.c:135
 msgid "Document settings"
@@ -1495,95 +219,115 @@ msgstr "カスタムサイズ"
 msgid "Units:"
 msgstr "ユニット:"
 
-#: src/dialogs/fill-style.c:59 src/dialogs/fill-style.c:723
+#. Stroke width
+#: src/dialogs/document-properties.c:205 src/dialogs/object-attributes.c:66
+#: src/dialogs/object-attributes.c:74 src/dialogs/object-properties.c:225
+#: src/dialogs/stroke-style.c:166
+msgid "Width:"
+msgstr "幅:"
+
+#: src/dialogs/document-properties.c:220 src/dialogs/object-attributes.c:67
+#: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:240
+msgid "Height:"
+msgstr "高さ:"
+
+#: src/dialogs/fill-style.c:59 src/dialogs/fill-style.c:725
 msgid "Fill style"
-msgstr "塗り潰しのスタイル"
+msgstr "塗り潰しスタイル"
 
 #. Frame
-#: src/dialogs/fill-style.c:673 src/dialogs/fill-style.c:895
+#: src/dialogs/fill-style.c:675 src/dialogs/fill-style.c:897
 msgid "Empty"
-msgstr "空白"
+msgstr "空"
 
 #. Set frame label
-#: src/dialogs/fill-style.c:1065
+#: src/dialogs/fill-style.c:1067
 msgid "Solid color"
-msgstr "固定色"
+msgstr "ソリッドカラー"
 
 #. Label
-#: src/dialogs/fill-style.c:1076 src/widgets/paint-selector.c:513
+#: src/dialogs/fill-style.c:1078 src/widgets/paint-selector.c:513
 #: src/widgets/paint-selector.c:625
 msgid "Mode:"
-msgstr "モード:"
+msgstr "モード："
 
-#: src/dialogs/fill-style.c:1083 src/widgets/paint-selector.c:523
+#: src/dialogs/fill-style.c:1085 src/widgets/paint-selector.c:523
 msgid "RGB"
 msgstr "RGB"
 
-#: src/dialogs/fill-style.c:1090 src/widgets/paint-selector.c:529
+#: src/dialogs/fill-style.c:1092 src/widgets/paint-selector.c:529
 msgid "HSV"
 msgstr "HSV"
 
-#: src/dialogs/fill-style.c:1097 src/widgets/paint-selector.c:535
+#: src/dialogs/fill-style.c:1099 src/widgets/paint-selector.c:535
 msgid "CMYK"
 msgstr "CMYK"
 
 #. Set frame label
-#: src/dialogs/fill-style.c:1165
+#: src/dialogs/fill-style.c:1167
 msgid "Gradient"
 msgstr "グラデーション"
 
-#: src/dialogs/item-properties.c:165
+#: src/dialogs/item-properties.c:175
 msgid "Item is reference"
 msgstr "要素は参照です"
 
-#: src/dialogs/item-properties.c:243
+#: src/dialogs/item-properties.c:181 src/dialogs/item-properties.c:251
+#: src/dialogs/item-properties.c:492
+msgid "The SVG ID of item"
+msgstr "アイテムの SVG ID"
+
+#: src/dialogs/item-properties.c:253 src/dialogs/item-properties.c:494
 msgid "The ID is not valid"
 msgstr "このIDは無効です"
 
-#: src/dialogs/item-properties.c:245
+#: src/dialogs/item-properties.c:255 src/dialogs/item-properties.c:496
 msgid "The ID is already defined"
 msgstr "このIDは既に定義されています"
 
-#: src/dialogs/item-properties.c:248
+#: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
 msgid "The ID is valid"
 msgstr "このIDは有効です"
 
+#: src/dialogs/item-properties.c:341
+msgid "Item properties"
+msgstr "アイテムプロパティ"
+
 #: src/dialogs/object-attributes.c:29
 msgid "Href:"
-msgstr "Href:"
+msgstr ""
 
 #: src/dialogs/object-attributes.c:30
 msgid "Target:"
-msgstr "Target:"
+msgstr "ターゲット："
 
 #: src/dialogs/object-attributes.c:31
 msgid "Type:"
-msgstr "Type:"
+msgstr "タイプ："
 
 #: src/dialogs/object-attributes.c:32
 msgid "Role:"
-msgstr "Role:"
+msgstr "ロール:"
 
 #: src/dialogs/object-attributes.c:33
 msgid "Arcrole:"
-msgstr "Arcrole:"
+msgstr "アークロール："
 
 #: src/dialogs/object-attributes.c:34
 msgid "Title:"
-msgstr "Title:"
+msgstr "タイトル："
 
 #: src/dialogs/object-attributes.c:35
 msgid "Show:"
-msgstr "Show:"
+msgstr "表示："
 
 #: src/dialogs/object-attributes.c:36
 msgid "Actuate:"
-msgstr "Actuate:"
+msgstr "アクチュエート:"
 
 #: src/dialogs/object-attributes.c:41
-#, fuzzy
 msgid "Sides:"
-msgstr "ガイドライン"
+msgstr "面数："
 
 #: src/dialogs/object-attributes.c:42 src/dialogs/object-attributes.c:52
 msgid "Center X:"
@@ -1595,35 +339,35 @@ msgstr "中心 Y:"
 
 #: src/dialogs/object-attributes.c:44
 msgid "R1:"
-msgstr "半径1:"
+msgstr "R1:"
 
 #: src/dialogs/object-attributes.c:45
 msgid "R2:"
-msgstr "半径2:"
+msgstr "R2:"
 
 #: src/dialogs/object-attributes.c:46
 msgid "ARG1:"
-msgstr "角度1:"
+msgstr "パラメータ１:"
 
 #: src/dialogs/object-attributes.c:47
 msgid "ARG2:"
-msgstr "角度2:"
+msgstr "パラメータ２："
 
 #: src/dialogs/object-attributes.c:54
 msgid "Expansion:"
-msgstr "展開係数:"
+msgstr "展開："
 
 #: src/dialogs/object-attributes.c:55
 msgid "Revolution:"
-msgstr "巻数:"
+msgstr "回転："
 
 #: src/dialogs/object-attributes.c:56
 msgid "Radius:"
-msgstr "半径:"
+msgstr "半径："
 
 #: src/dialogs/object-attributes.c:57
 msgid "Argument:"
-msgstr "角度:"
+msgstr "アーギュメント："
 
 #: src/dialogs/object-attributes.c:58
 msgid "T0:"
@@ -1632,6 +376,16 @@ msgstr "T0:"
 #: src/dialogs/object-attributes.c:63
 msgid "URL:"
 msgstr "URL:"
+
+#: src/dialogs/object-attributes.c:64 src/dialogs/object-attributes.c:72
+#: src/dialogs/object-properties.c:195
+msgid "X:"
+msgstr "X:"
+
+#: src/dialogs/object-attributes.c:65 src/dialogs/object-attributes.c:73
+#: src/dialogs/object-properties.c:210
+msgid "Y:"
+msgstr "Y:"
 
 #: src/dialogs/object-attributes.c:76
 msgid "RX:"
@@ -1644,15 +398,23 @@ msgstr "RY:"
 #: src/dialogs/object-attributes.c:107
 #, c-format
 msgid "%s attributes"
-msgstr "属性 %s"
+msgstr "%sの属性"
 
 #: src/dialogs/object-properties.c:48
 msgid "Object style"
-msgstr "オブジェクトのスタイル"
+msgstr "オブジェクトスタイル"
+
+#: src/dialogs/object-properties.c:59
+msgid "Fill"
+msgstr "塗りつぶし"
+
+#: src/dialogs/object-properties.c:72
+msgid "Stroke"
+msgstr "ストローク"
 
 #: src/dialogs/object-properties.c:148
 msgid "Object position and size"
-msgstr "オブジェクトの位置とサイズ"
+msgstr "オブジェクト位置と大きさ"
 
 #: src/dialogs/object-properties.c:170
 msgid "Position and size"
@@ -1664,23 +426,31 @@ msgstr "ストロークスタイル"
 
 #: src/dialogs/stroke-style.c:153
 msgid "Stroke settings"
-msgstr "ストロークの設定"
+msgstr "ストローク設定"
+
+#. Join type
+#: src/dialogs/stroke-style.c:189
+msgid "Join:"
+msgstr "結合:"
 
 #. Cap type
 #: src/dialogs/stroke-style.c:225
-#, fuzzy
 msgid "Cap:"
-msgstr "シアン:"
+msgstr ""
 
 #: src/document.c:248
 #, c-format
 msgid "Unnamed document %d"
-msgstr "無題ドキュメント %d"
+msgstr "名称未設定 %d"
 
 #: src/document.c:320
 #, c-format
 msgid "Memory document %d"
-msgstr "メモリードキュメント %d"
+msgstr "メモリ文書 %d"
+
+#: src/event-context.c:433 src/toolbox.c:87
+msgid "Object"
+msgstr "オブジェクト"
 
 #: src/file.c:98
 msgid "Select file to open"
@@ -1705,18 +475,38 @@ msgstr "Sodipodi (文書名 %s..): 印刷プレビュー"
 
 #: src/help.c:36
 msgid "About sodipodi"
-msgstr "Sodipodi について"
+msgstr "Sodipodiについて"
 
 #: src/helper/unit-menu.c:354 src/helper/units.c:48
 msgid "Millimeters"
 msgstr "ミリメートル"
 
+#: src/helper/unit-menu.c:354 src/helper/units.c:48
+msgid "Millimeter"
+msgstr "ミリメートル"
+
+#: src/helper/unit-menu.c:354 src/helper/units.c:48
+msgid "mm"
+msgstr "mm"
+
 #: src/helper/unit-menu.c:355 src/helper/units.c:49
 msgid "Centimeters"
 msgstr "センチメートル"
 
+#: src/helper/unit-menu.c:355 src/helper/units.c:49
+msgid "Centimeter"
+msgstr "センチメートル"
+
+#: src/helper/unit-menu.c:355 src/helper/units.c:49
+msgid "cm"
+msgstr "cm"
+
 #: src/helper/unit-menu.c:356 src/helper/units.c:51
 msgid "Inches"
+msgstr "インチ"
+
+#: src/helper/unit-menu.c:356 src/helper/units.c:51
+msgid "Inch"
 msgstr "インチ"
 
 #: src/helper/unit-menu.c:356
@@ -1724,7 +514,15 @@ msgid "\""
 msgstr "\""
 
 #: src/helper/unit-menu.c:357 src/helper/units.c:42
+msgid "Points"
+msgstr "ポイント"
+
+#: src/helper/unit-menu.c:357 src/helper/units.c:42
 msgid "Point"
+msgstr "ポイント"
+
+#: src/helper/unit-menu.c:357 src/helper/units.c:42
+msgid "pt"
 msgstr "ポイント"
 
 #: src/helper/unit-menu.c:358 src/helper/units.c:43
@@ -1735,6 +533,10 @@ msgstr "ピクセル"
 msgid "Pixel"
 msgstr "ピクセル"
 
+#: src/helper/unit-menu.c:358 src/helper/units.c:43
+msgid "px"
+msgstr "px"
+
 #: src/helper/unit-menu.c:359
 msgid "Userspace"
 msgstr "ユーザ空間"
@@ -1742,6 +544,17 @@ msgstr "ユーザ空間"
 #: src/helper/unit-menu.c:359
 msgid "us"
 msgstr "us"
+
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: src/helper/unit-menu.c:360 src/helper/units.c:47
+msgid "Percent"
+msgstr "パーセント"
+
+#: src/helper/unit-menu.c:360 src/helper/units.c:47
+#, c-format
+msgid "%"
+msgstr "%"
 
 #: src/helper/unit-menu.c:361 src/helper/units.c:52
 msgid "Em squares"
@@ -1770,23 +583,23 @@ msgstr "ex"
 #. Do not insert any elements before/between first 4
 #: src/helper/units.c:41
 msgid "Unit"
-msgstr "単位"
+msgstr "ユニット"
 
 #: src/helper/units.c:41
 msgid "Units"
-msgstr "単位"
+msgstr "ユニット"
 
 #: src/helper/units.c:42
 msgid "Pt"
-msgstr ""
+msgstr "Pt"
 
 #: src/helper/units.c:43
 msgid "Px"
-msgstr ""
+msgstr "Px"
 
 #: src/helper/units.c:44
 msgid "Userspace unit"
-msgstr "ユーザ空間単位"
+msgstr "ユーザ空間ユニット"
 
 #: src/helper/units.c:44
 msgid "User"
@@ -1794,7 +607,7 @@ msgstr "ユーザ"
 
 #: src/helper/units.c:44
 msgid "Userspace units"
-msgstr "ユーザ空間単位"
+msgstr "ユーザ空間ユニット"
 
 #: src/helper/units.c:47
 msgid "Percents"
@@ -1802,131 +615,264 @@ msgstr "パーセント"
 
 #: src/helper/units.c:50
 msgid "Meter"
-msgstr "メートル"
+msgstr "メータ"
 
 #: src/helper/units.c:50
 msgid "m"
-msgstr "m"
+msgstr "ミリ"
 
 #: src/helper/units.c:50
 msgid "meters"
 msgstr "メートル"
 
+#: src/helper/units.c:51
+msgid "in"
+msgstr "インチ"
+
+#. File:New
+#: src/interface.c:154
+msgid "New"
+msgstr "新規(_N)"
+
 #. File:Open
-#: src/interface.c:189
+#: src/interface.c:159
 msgid "Open"
-msgstr "開く"
+msgstr "開く(_O)"
 
 #. File:Save As
-#: src/interface.c:199
+#: src/interface.c:169
 msgid "Save As"
-msgstr "名前を付けて保存"
+msgstr "ファイルを保存"
+
+#. File:Import
+#: src/interface.c:178
+msgid "Import"
+msgstr "読み込み"
+
+#. File:Export
+#: src/interface.c:183
+msgid "Export"
+msgstr "出力"
 
 #. File:Print
-#: src/interface.c:222
+#: src/interface.c:192
 msgid "Print"
 msgstr "印刷"
 
 #. File:Print Preview
-#: src/interface.c:227
+#: src/interface.c:197
 msgid "Print preview"
-msgstr "印刷プレビュー"
+msgstr "印刷プリビュー"
 
 #. File:Close
-#: src/interface.c:236
+#: src/interface.c:206
 msgid "Close view"
 msgstr "ビューを閉じる"
 
 #. File:Exit
-#: src/interface.c:241
+#: src/interface.c:211
 msgid "Exit"
 msgstr "終了"
 
+#. Edit:Cut
+#: src/interface.c:223
+msgid "Cut"
+msgstr "カット"
+
+#. Edit:Copy
+#: src/interface.c:228
+msgid "Copy"
+msgstr "コピー"
+
+#. Edit:Paste
+#: src/interface.c:233
+msgid "Paste"
+msgstr "貼付け"
+
+#. Edit:Duplicate
+#: src/interface.c:242
+msgid "Duplicate"
+msgstr "複製"
+
+#. File:Export
+#: src/interface.c:247 src/widgets/gradient-selector.c:145
+msgid "Delete"
+msgstr "削除"
+
 #. Selection:Group
-#: src/interface.c:289 src/sp-item-group.c:478
+#: src/interface.c:259 src/sp-item-group.c:497
 msgid "Group"
 msgstr "グループ化"
 
 #. Selection:Ungroup
-#: src/interface.c:294 src/sp-item-group.c:495
+#: src/interface.c:264 src/sp-item-group.c:514
 msgid "Ungroup"
 msgstr "グループ解除"
 
 #. Selection:Combine
-#: src/interface.c:303
+#: src/interface.c:273
 msgid "Combine"
 msgstr "連結"
 
 #. Selection:Break apart
-#: src/interface.c:308
+#: src/interface.c:278
 msgid "Break apart"
 msgstr "分割"
 
-#: src/interface.c:321
+#. Selection:Order
+#: src/interface.c:287
+msgid "Order"
+msgstr "整列"
+
+#: src/interface.c:291
 msgid "Bring to Front"
-msgstr "最前面に移動"
+msgstr "前面に持ってくる"
+
+#: src/interface.c:295
+msgid "Send to Back"
+msgstr "背後に持っていく"
+
+#: src/interface.c:299
+msgid "Raise"
+msgstr "上げる"
+
+#: src/interface.c:303
+msgid "Lower"
+msgstr "下げる"
 
 #: src/interface.c:325
-msgid "Send to Back"
-msgstr "最背後に移動"
+msgid "Scale"
+msgstr "スケール"
 
 #: src/interface.c:329
-msgid "Raise"
-msgstr "上に移動"
+msgid "1:2"
+msgstr "1:2"
 
+#: src/interface.c:330
+msgid "1:1"
+msgstr "1:1"
+
+#: src/interface.c:331
+msgid "2:1"
+msgstr "2:1"
+
+#. View:New View
 #: src/interface.c:333
-msgid "Lower"
-msgstr "下に移動"
+msgid "New View"
+msgstr "新規のビュー"
 
-#: src/interface.c:386
+#. View:New Preview
+#: src/interface.c:335
+msgid "New Preview"
+msgstr "新規のプリビュー"
+
+#: src/interface.c:341
+msgid "Select"
+msgstr "選択"
+
+#: src/interface.c:342
+msgid "Node"
+msgstr "ノード"
+
+#: src/interface.c:343
+msgid "Rectangle"
+msgstr "長方形"
+
+#: src/interface.c:344
+msgid "Arc"
+msgstr "アーク"
+
+#. Create toplevel menuitem
+#: src/interface.c:345 src/sp-star.c:476
+msgid "Star"
+msgstr "星"
+
+#. Create toplevel menuitem
+#: src/interface.c:346 src/sp-spiral.c:595
+msgid "Spiral"
+msgstr "螺旋"
+
+#: src/interface.c:347
+msgid "Freehand"
+msgstr "フリーハンド"
+
+#: src/interface.c:348
+msgid "Dynahand"
+msgstr "ダイナハンド"
+
+#: src/interface.c:349
+msgid "Text"
+msgstr "テキスト"
+
+#: src/interface.c:356
 msgid "Fill and Stroke"
-msgstr ""
+msgstr "フィルとストローク"
 
-#: src/interface.c:387
+#: src/interface.c:357
 msgid "Size and Position"
-msgstr "サイズと位置"
+msgstr "位置と大きさ"
 
-#: src/interface.c:388
+#: src/interface.c:358
 msgid "Align Objects"
-msgstr "オブジェクトを並べる"
+msgstr "オブジェクトのアライン"
 
-#: src/interface.c:389
+#: src/interface.c:359
 msgid "Text Editing"
 msgstr "テキスト編集"
 
-#: src/interface.c:390
+#: src/interface.c:360
 msgid "Transformations"
 msgstr "変形"
 
-#: src/interface.c:392
+#: src/interface.c:361
+msgid "Document"
+msgstr "ドキュメント"
+
+#: src/interface.c:362
 msgid "Editing Window"
-msgstr "ウィンドウを編集"
+msgstr "編集ウィンドウ"
 
-#: src/interface.c:393
+#: src/interface.c:363
 msgid "XML Editor"
-msgstr "XML エディタ"
+msgstr "XMLエディタ"
 
-#: src/interface.c:394
+#: src/interface.c:364
 msgid "Display Properties"
 msgstr "表示設定"
 
 #. Undo
-#: src/interface.c:413
+#: src/interface.c:383
 msgid "Undo"
 msgstr "元に戻す"
 
+#. File:Print Preview
+#: src/interface.c:385
+msgid "Redo"
+msgstr "やり直し"
+
+#. Generic menu
+#. File submenu
+#: src/interface.c:408 src/toolbox.c:74
+msgid "File"
+msgstr "ファイル"
+
+#. Edit submenu
+#: src/interface.c:414 src/toolbox.c:78 src/widgets/gradient-selector.c:132
+msgid "Edit"
+msgstr "編集"
+
 #. View submenu
-#: src/interface.c:456
+#: src/interface.c:426
 msgid "View"
 msgstr "ビュー"
 
 #. Drawing mode submenu
-#: src/interface.c:462
+#: src/interface.c:432
 msgid "Drawing Mode"
 msgstr "描画モード"
 
 #. Dialog submenu
-#: src/interface.c:468
+#: src/interface.c:438
 msgid "Dialogs"
 msgstr "ダイアログ"
 
@@ -2052,7 +998,7 @@ msgstr ""
 #: src/sp-anchor.c:158
 #, c-format
 msgid "Link to %s"
-msgstr "%s へのリンク"
+msgstr "%s にリンク"
 
 #. Create toplevel menuitem
 #: src/sp-anchor.c:219
@@ -2062,149 +1008,132 @@ msgstr "リンク"
 #. Link dialog
 #: src/sp-anchor.c:222
 msgid "Link Properties"
-msgstr "リンクプロパティ"
+msgstr "リンクのプロパティ"
 
 #. Select item
 #: src/sp-anchor.c:232
 msgid "Follow link"
-msgstr "リンクを辿る"
+msgstr "リンクを追う"
 
 #. Reset transformations
 #: src/sp-anchor.c:237
 msgid "Remove link"
-msgstr "リンクを削除"
+msgstr "リンクを除去"
 
-#: src/sp-image.c:295
+#: src/sp-image.c:291
 msgid "Broken bitmap"
 msgstr "ビットマップが壊れています"
 
-#: src/sp-image.c:296
+#: src/sp-image.c:292
 msgid "Color bitmap"
 msgstr "カラービットマップ"
 
 #. Create toplevel menuitem
-#: src/sp-image.c:512
+#: src/sp-image.c:508
 msgid "Image"
-msgstr "画像"
+msgstr "イメージ"
 
 #. Link dialog
-#: src/sp-image.c:515
+#: src/sp-image.c:511
 msgid "Image Properties"
-msgstr "画像プロパティ"
+msgstr "イメージのプロパティ"
 
-#. Autotrace dialog
-#: src/sp-image.c:523 src/sp-image.c:723
-msgid "Trace"
-msgstr "トレース"
-
-#: src/sp-image.c:870
-#, c-format
-msgid "Error to write %s: %s"
-msgstr "%s の書き込みエラー: %s"
-
-#: src/sp-image.c:874
-msgid "Ok"
-msgstr "了解"
-
-#: src/sp-image.c:902
-msgid "Untitled"
-msgstr "無題"
-
-#: src/sp-image.c:907
-msgid "Document Name:"
-msgstr "ドキュメント名:"
-
-#: src/sp-image.c:920
-msgid "Unknown"
-msgstr "未知"
-
-#: src/sp-image.c:926
-msgid "Image URI:"
-msgstr "画像 URI:"
-
-#: src/sp-item-group.c:416
+#: src/sp-item-group.c:435
 #, c-format
 msgid "Group of %d objects"
 msgstr "%d オブジェクトのグループ"
 
 #. Group dialog
-#: src/sp-item-group.c:482
+#: src/sp-item-group.c:501
 msgid "Group Properties"
-msgstr "グループプロパティ"
+msgstr "グループのプロパティ"
 
-#: src/sp-item.c:362
+#: src/sp-item.c:359
 msgid "Unknown item :-("
 msgstr "未知の要素 :-("
 
+#. Create toplevel menuitem
+#: src/sp-item.c:619
+msgid "Item"
+msgstr "アイテム"
+
 #. Item dialog
-#: src/sp-item.c:625
+#: src/sp-item.c:622
 msgid "Item Properties"
 msgstr "アイテムプロパティ"
 
 #. Select item
-#: src/sp-item.c:635
+#: src/sp-item.c:632
 msgid "Select this"
 msgstr "選択"
 
 #. Reset transformations
-#: src/sp-item.c:645
+#: src/sp-item.c:642
 msgid "Reset transformation"
 msgstr "変形をリセット"
 
-#: src/sp-item.c:651
+#: src/sp-item.c:648
 msgid "Make sensitive"
 msgstr "センシティブに設定"
 
-#: src/sp-item.c:651
+#: src/sp-item.c:648
 msgid "Make insensitive"
 msgstr "インセンシティブに設定"
 
 #. Create link
-#: src/sp-item.c:656
+#: src/sp-item.c:653
 msgid "Create link"
-msgstr "リンクを作成"
+msgstr "リンクの作成"
 
 #. Create toplevel menuitem
-#: src/sp-rect.c:394
+#: src/sp-rect.c:363
 msgid "Rect"
 msgstr "矩形"
 
 #. Link dialog
-#: src/sp-rect.c:397
+#: src/sp-rect.c:366
 msgid "Rect Properties"
 msgstr "矩形のプロパティ"
 
-#: src/sp-shape.c:310
+#: src/sp-shape.c:307
 msgid "A path - whatever it means"
 msgstr "どんなものでも実体はパスです"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:366
+#: src/sp-shape.c:363
 msgid "Shape"
 msgstr "シェイプ"
 
 #. Item dialog
-#: src/sp-shape.c:369
+#: src/sp-shape.c:366
 msgid "Fill settings"
 msgstr "塗り潰し設定"
 
 #. Link dialog
 #: src/sp-spiral.c:598
 msgid "Spiral Properties"
-msgstr "螺旋形のプロパティ"
+msgstr "螺旋のプロパティ"
 
 #. Link dialog
 #: src/sp-star.c:479
 msgid "Star Properties"
-msgstr "星形のプロパティ"
+msgstr "星のプロパティ"
 
-#: src/sp-text.c:198
+#: src/sp-text.c:222
 msgid "Text object"
 msgstr "テキストオブジェクト"
 
-#: src/toolbox.c:111
+#: src/toolbox.c:99
 msgid "Draw"
 msgstr "描画"
+
+#: src/toolbox.c:138
+msgid "Nodes"
+msgstr "ノード"
+
+#: src/widgets/gradient-selector.c:138
+msgid "Add"
+msgstr "追加"
 
 #. Reset button
 #: src/widgets/gradient-selector.c:160
@@ -2213,15 +1142,15 @@ msgstr "リセット"
 
 #: src/widgets/gradient-vector.c:243
 msgid "No document selected"
-msgstr "ドキュメントが未選択"
+msgstr "文書が選択されていません"
 
 #: src/widgets/gradient-vector.c:249
 msgid "No gradients in document"
-msgstr "ドキュメント中にグラデーションがありません"
+msgstr "文書中にグラデーションがありません"
 
 #: src/widgets/gradient-vector.c:255
 msgid "No gradient selected"
-msgstr "選択されたグラデーションがありません"
+msgstr "グラデーションが選択されていません"
 
 #: src/widgets/gradient-vector.c:406
 msgid "Start color"
@@ -2241,15 +1170,15 @@ msgstr "オブジェクト無し"
 
 #: src/widgets/paint-selector.c:410
 msgid "Multiple styles"
-msgstr "多重スタイル"
+msgstr "複数スタイル"
 
 #: src/widgets/paint-selector.c:424
 msgid "No paint"
-msgstr "塗り潰さない"
+msgstr "ペイント無し"
 
 #: src/widgets/paint-selector.c:566
 msgid "Color paint"
-msgstr "色で塗り潰す"
+msgstr "カラーペイント"
 
 #: src/widgets/paint-selector.c:636
 msgid "Linear"
@@ -2257,11 +1186,28 @@ msgstr "線形"
 
 #: src/widgets/paint-selector.c:639
 msgid "Radial"
-msgstr "放射状"
+msgstr "円形"
 
 #: src/widgets/paint-selector.c:670
 msgid "Gradient paint"
-msgstr "グラデーションで塗り潰し"
+msgstr "グラデーションで塗りつぶし"
+
+#: src/widgets/sp-color-selector.c:604
+msgid "Red:"
+msgstr "赤:"
+
+#: src/widgets/sp-color-selector.c:605
+msgid "Green:"
+msgstr "緑:"
+
+#: src/widgets/sp-color-selector.c:606
+msgid "Blue:"
+msgstr "青:"
+
+#: src/widgets/sp-color-selector.c:607 src/widgets/sp-color-selector.c:627
+#: src/widgets/sp-color-selector.c:649
+msgid "Alpha:"
+msgstr "透明度:"
 
 #: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
@@ -2270,6 +1216,10 @@ msgstr "色相:"
 #: src/widgets/sp-color-selector.c:625
 msgid "Saturation:"
 msgstr "彩度:"
+
+#: src/widgets/sp-color-selector.c:626
+msgid "Value:"
+msgstr "値:"
 
 #: src/widgets/sp-color-selector.c:645
 msgid "Cyan:"
@@ -2286,6 +1236,39 @@ msgstr "黄:"
 #: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "黒:"
+
+#~ msgid "Align"
+#~ msgstr "配置"
+
+#~ msgid "Align inside object to top border"
+#~ msgstr "内部オブジェクトを上の境界まで移動"
+
+#~ msgid "Align outside object to top border"
+#~ msgstr "外部オブジェクトを上の境界まで移動"
+
+#~ msgid "Align inside object to left border"
+#~ msgstr "内部オブジェクトを左の境界まで移動"
+
+#~ msgid "Align inside object to right border"
+#~ msgstr "内部オブジェクトを右の境界まで移動"
+
+#~ msgid "Align objects to horizontal mid"
+#~ msgstr "オブジェクトを水平中心位置に移動"
+
+#~ msgid "Align objects to vertical mid"
+#~ msgstr "オブジェクトを垂直中心位置に移動"
+
+#~ msgid "Align outside object to left border"
+#~ msgstr "外部オブジェクトを左の境界まで移動"
+
+#~ msgid "Align outside object to right border"
+#~ msgstr "外部オブジェクトを右の境界まで移動"
+
+#~ msgid "Align inside object to bottom border"
+#~ msgstr "内部オブジェクトを下の境界まで移動"
+
+#~ msgid "Align outside object to bottom border"
+#~ msgstr "外部オブジェクトを下の境界まで移動"
 
 #~ msgid "Choose base unit system for grid"
 #~ msgstr "グリッドのベースユニットシステムの選択"
@@ -2344,11 +1327,158 @@ msgstr "黒:"
 #~ msgid "Set page height"
 #~ msgstr "ページ高さの設定"
 
+#~ msgid "Choose unit system"
+#~ msgstr "ユニットシステムの選択"
+
+#~ msgid "Sensitive"
+#~ msgstr "センシティブ"
+
+#~ msgid "Active"
+#~ msgstr "アクティブ"
+
+#~ msgid "Visible"
+#~ msgstr "可視"
+
+#~ msgid "Printable"
+#~ msgstr "印刷可能"
+
+#~ msgid "ID:"
+#~ msgstr "ID:"
+
+#~ msgid "Opacity:"
+#~ msgstr "半透明"
+
+#~ msgid "Parent X ="
+#~ msgstr "親 X ="
+
+#~ msgid "Parent Y ="
+#~ msgstr "親 Y ="
+
+#~ msgid "X +"
+#~ msgstr "X +"
+
+#~ msgid "Y +"
+#~ msgstr "Y +"
+
+#~ msgid "object properties"
+#~ msgstr "オブジェクトプロパティ"
+
+#~ msgid "Behind fill"
+#~ msgstr "背景の塗りつぶし"
+
+#~ msgid "Is stroked"
+#~ msgstr "ストローク"
+
+#~ msgid "Scale with object"
+#~ msgstr "オブジェクトで計測"
+
+#~ msgid "Color:"
+#~ msgstr "色:"
+
+#~ msgid "Stroke width"
+#~ msgstr "ストローク幅"
+
+#~ msgid "Bevel join"
+#~ msgstr "傾斜部の結合"
+
+#~ msgid "Round join"
+#~ msgstr "円の結合"
+
+#~ msgid "Mitter join"
+#~ msgstr "ミッターの結合"
+
+#~ msgid "Butt endpoints"
+#~ msgstr "終点を●"
+
+#~ msgid "Round endpoints"
+#~ msgstr "終点を○"
+
+#~ msgid "Square endpoints"
+#~ msgstr "終点を■"
+
+#~ msgid "Endpoints:"
+#~ msgstr "終点:"
+
+#~ msgid "Choose stroke color"
+#~ msgstr "ストローク色の選択"
+
+#~ msgid "Pick stroke color"
+#~ msgstr "ストローク色を選ぶ"
+
+#~ msgid "No fill"
+#~ msgstr "塗りつぶさない"
+
+#~ msgid "Color fill"
+#~ msgstr "色で塗りつぶし"
+
+#~ msgid "Pattern fill"
+#~ msgstr "塗りつぶしパターン"
+
+#~ msgid "Fractal fill"
+#~ msgstr "フラクタルで塗りつぶし"
+
+#~ msgid " Color fill "
+#~ msgstr " カラー塗りつぶし "
+
+#~ msgid "Choose fill color"
+#~ msgstr "塗りつぶす色を選択"
+
+#~ msgid "Pick fill color"
+#~ msgstr "塗りつぶす色を選ぶ"
+
+#~ msgid "Fill Color:"
+#~ msgstr "塗りつぶす色:"
+
+#~ msgid "Dimension"
+#~ msgstr "次元"
+
+#~ msgid "Layout"
+#~ msgstr "レイアウト"
+
+#~ msgid "Reread"
+#~ msgstr "再読込"
+
+#~ msgid "Pick a color"
+#~ msgstr "カラーをピックアップ"
+
+#~ msgid "pixels"
+#~ msgstr "ピクセル"
+
+#~ msgid "millimeters"
+#~ msgstr "ミリメートル"
+
+#~ msgid "centimeter"
+#~ msgstr "センチメートル"
+
+#~ msgid "points"
+#~ msgstr "ポイント"
+
+#~ msgid "inches"
+#~ msgstr "インチ"
+
+#~ msgid "none"
+#~ msgstr "なし"
+
+#~ msgid "color"
+#~ msgstr "カラー"
+
 #~ msgid "window1"
 #~ msgstr "window1"
 
+#~ msgid " General "
+#~ msgstr " 一般 "
+
+#~ msgid " Style "
+#~ msgstr " スタイル "
+
 #~ msgid "window2"
 #~ msgstr "window2"
+
+#~ msgid "Add new gradient"
+#~ msgstr "グラデーションを追加"
+
+#~ msgid "Edit..."
+#~ msgstr "編集..."
 
 #~ msgid "Copyright Lauris Kaplinski 1999-2000."
 #~ msgstr "Copyright Lauris Kaplinski 1999-2000."
@@ -2360,8 +1490,506 @@ msgstr "黒:"
 #~ "ベクタ描画プログラム\n"
 #~ "GPL にてリリース"
 
+#~ msgid "Node Edit"
+#~ msgstr "ノードの編集"
+
+#~ msgid "Include one node into selected segments"
+#~ msgstr "ノードを選択したセグメントに含める"
+
+#~ msgid "Break apart selected node"
+#~ msgstr "選択したノードを分割する"
+
+#~ msgid "Convert selected segments to curves"
+#~ msgstr "選択したセグメントを曲線に変換"
+
+#~ msgid "Join 2 selected endpoints"
+#~ msgstr "2つの端点の結合"
+
+#~ msgid "Cusp line at selected nodes"
+#~ msgstr "選択したノードの尖った線"
+
+#~ msgid "Smooth line at selected nodes"
+#~ msgstr "選択したノードの滑らかな線"
+
+#~ msgid "Symmetric "
+#~ msgstr "左右対称"
+
+#~ msgid "Convert selected segments to lines"
+#~ msgstr "選択したセグメントを線に変換"
+
+#~ msgid "Delete selected nodes"
+#~ msgstr "選択したノードの削除"
+
+#~ msgid "Export picture to png"
+#~ msgstr "絵画を PNG に出力"
+
+#~ msgid "Set dimensions"
+#~ msgstr "次元を設定"
+
+#~ msgid "Where to export"
+#~ msgstr "出力先"
+
+#~ msgid "Filename:"
+#~ msgstr "ファイル名:"
+
+#~ msgid "Png file name"
+#~ msgstr "PNGファイル名"
+
+#~ msgid "Image size"
+#~ msgstr "画像サイズ"
+
+#~ msgid "X0"
+#~ msgstr "X0"
+
+#~ msgid "Y0"
+#~ msgstr "Y0"
+
+#~ msgid "X1"
+#~ msgstr "X1"
+
+#~ msgid "Y1"
+#~ msgstr "Y1"
+
+#~ msgid "Width"
+#~ msgstr "幅"
+
+#~ msgid "Height"
+#~ msgstr "高さ"
+
+#~ msgid "Exported as"
+#~ msgstr "名前をつけて出力"
+
+#~ msgid "dpi"
+#~ msgstr "dpi"
+
+#~ msgid "Lock aspect ratio"
+#~ msgstr "縦横比を固定"
+
+#~ msgid "1.0MB"
+#~ msgstr "1.0MB"
+
+#~ msgid "Uncompressed file size:"
+#~ msgstr "未圧縮のファイルサイズ:"
+
+#~ msgid "_New"
+#~ msgstr "新規(_N)"
+
+#~ msgid "_Align"
+#~ msgstr "配置(_A)"
+
+#~ msgid "Forward One"
+#~ msgstr "1つ分だけ前に"
+
+#~ msgid "Back One"
+#~ msgstr "1つ分だけ後ろに"
+
+#~ msgid "_Group"
+#~ msgstr "グループ化(_G)"
+
+#~ msgid "_Ungroup"
+#~ msgstr "グループ解除(_U)"
+
+#~ msgid "Convert to Cu_rves"
+#~ msgstr "曲線に変換(_R)"
+
+#~ msgid "_Interactive"
+#~ msgstr "対話的(_I)"
+
+#~ msgid "_Selection"
+#~ msgstr "選択(_S)"
+
+#~ msgid "_Drawing"
+#~ msgstr "描画(_D)"
+
+#~ msgid "_Page"
+#~ msgstr "ページ(_P)"
+
+#~ msgid "Toggle Borders"
+#~ msgstr "ボーダーをトグル"
+
+#~ msgid "Show Toolbox"
+#~ msgstr "ツールボックスを表示"
+
 #~ msgid "Ellipse"
 #~ msgstr "楕円"
 
+#~ msgid "Desktop"
+#~ msgstr "デスクトップ"
+
+#~ msgid "Display"
+#~ msgstr "ディスプレイ"
+
+#~ msgid "XML Tree"
+#~ msgstr "XML ツリー"
+
+#~ msgid "_File"
+#~ msgstr "ファイル(_F)"
+
+#~ msgid "_Quit"
+#~ msgstr "終了(_Q)"
+
+#~ msgid "_Help"
+#~ msgstr "ヘルプ(_H)"
+
+#~ msgid "_About ..."
+#~ msgstr "情報(_A)..."
+
+#~ msgid "Drawing context"
+#~ msgstr "描画コンテキスト"
+
+#~ msgid "Edit nodes"
+#~ msgstr "ノードの編集"
+
+#~ msgid "Zoom in"
+#~ msgstr "拡大"
+
+#~ msgid "Draw rectangle"
+#~ msgstr "矩形の描画"
+
 #~ msgid "Draw ellipse"
 #~ msgstr "楕円の描画"
+
+#~ msgid "Select and transform"
+#~ msgstr "選択して変形"
+
+#~ msgid "Draw freehand line"
+#~ msgstr "フリーハンド線の描画"
+
+#~ msgid "Draw dynahand line"
+#~ msgstr "ダイナハンド線の描画"
+
+#~ msgid "Draw text"
+#~ msgstr "テキストの描画"
+
+#~ msgid "Draw star"
+#~ msgstr "星の描画"
+
+#~ msgid "Draw spiral"
+#~ msgstr "螺旋の描画"
+
+#~ msgid "Zoom to 2:1"
+#~ msgstr "2:1にズーム"
+
+#~ msgid "Zoom to page"
+#~ msgstr "ページにズーム"
+
+#~ msgid "Zoom out"
+#~ msgstr "縮小"
+
+#~ msgid "Zoom to drawing"
+#~ msgstr "描画領域にズーム"
+
+#~ msgid "Zoom to selection"
+#~ msgstr "選択領域にズーム"
+
+#~ msgid "Zoom to 1:1"
+#~ msgstr "1:1にズーム"
+
+#~ msgid "Zoom to 1:2"
+#~ msgstr "1:2にズーム"
+
+#~ msgid "lower selection to bottom"
+#~ msgstr "選択領域を最背面に移動"
+
+#~ msgid "Raise selection to top"
+#~ msgstr "選択領域を最前面に移動"
+
+#~ msgid "Lower selection one layer"
+#~ msgstr "選択領域を一つ背面に移動"
+
+#~ msgid "Rise selection one layer"
+#~ msgstr "選択領域を一つ前面に移動"
+
+#~ msgid "Break apart selected paths"
+#~ msgstr "選択したパスを分割する"
+
+#~ msgid "Combine selected paths"
+#~ msgstr "選択したパスの結合"
+
+#~ msgid "Group selected objects"
+#~ msgstr "選択したオブジェクトのグループ化"
+
+#~ msgid "Ungroup selected objects"
+#~ msgstr "選択したオブジェクトのグループ解除"
+
+#~ msgid "Unsymmetric"
+#~ msgstr "非対称"
+
+#~ msgid "New drawing"
+#~ msgstr "新規描画"
+
+#~ msgid "Open new drawing"
+#~ msgstr "新規描画を開く"
+
+#~ msgid "Import "
+#~ msgstr "挿入 "
+
+#~ msgid "Preview print drawing"
+#~ msgstr "描画印刷のプレビュー"
+
+#~ msgid "Save drawing "
+#~ msgstr "描画の保存 "
+
+#~ msgid "Save drawing under new filename"
+#~ msgstr "新規ファイル名で描画を保存"
+
+#~ msgid "Quit or not quit ?"
+#~ msgstr "終了しても宜しいですか?"
+
+#~ msgid "Yes quick! I want to leave sodipodi and come back later."
+#~ msgstr "はい、直ちに sodipodi を終らせて後でまた戻ってきます。"
+
+#~ msgid "Yep !"
+#~ msgstr "はい!"
+
+#~ msgid "No I'd rather do some more cool vector drawing with sodipodi."
+#~ msgstr "いいえ、また Sodipodi でもっとクールなベクタを描画します。"
+
+#~ msgid "Nope !"
+#~ msgstr "いいえ!"
+
+#~ msgid "Really wanna quit sodipodi ?"
+#~ msgstr "本当に sodipodi を終了して宜しいですか?"
+
+#~ msgid "Align dialog"
+#~ msgstr "ダイアログの配置変更"
+
+#~ msgid "Transformation dialog"
+#~ msgstr "変形ダイアログ"
+
+#~ msgid "Edit font style of selected objects"
+#~ msgstr "オブジェクトのフォントスタイル編集"
+
+#~ msgid "Edit layout of selected objects"
+#~ msgstr "オブジェクトのレイアウト編集"
+
+#~ msgid "Edit fill style of selected objects"
+#~ msgstr "オブジェクトの塗りつぶしスタイル編集"
+
+#~ msgid "Edit stroke style of selected objects"
+#~ msgstr "オブジェクトのストロークスタイル編集"
+
+#~ msgid "Flip selected objects"
+#~ msgstr "選択オブジェクトの反転"
+
+#~ msgid "Rotate selected objects 90 clockwise"
+#~ msgstr "選択されたオブジェクトを90度ずつ回転"
+
+#~ msgid "Remove transformation"
+#~ msgstr "変形を戻す"
+
+#~ msgid "Convert selected objects to curves"
+#~ msgstr "選択オブジェクトを曲線に変換"
+
+#~ msgid "Delete selection"
+#~ msgstr "選択領域の削除"
+
+#~ msgid "Paste from clipboard"
+#~ msgstr "クリップボードから貼り付け"
+
+#~ msgid "Copy selection to clipboard"
+#~ msgstr "選択領域をクリップボードにコピー"
+
+#~ msgid "Cut selection"
+#~ msgstr "選択領域の切り取り"
+
+#~ msgid "Duplicate selection"
+#~ msgstr "選択領域の複製"
+
+#~ msgid "Transform selection"
+#~ msgstr "変形方式の選択"
+
+#~ msgid "Move"
+#~ msgstr "移動"
+
+#~ msgid "Y: "
+#~ msgstr "Y: "
+
+#~ msgid "Orig. X: "
+#~ msgstr "前の X: "
+
+#~ msgid "horizontal move"
+#~ msgstr "水平方向に移動"
+
+#~ msgid "vertical move"
+#~ msgstr "垂直方向に移動"
+
+#~ msgid "toggle absolute/relative move"
+#~ msgstr "移動対象を全て/一部の切り替え"
+
+#~ msgid "absolute"
+#~ msgstr "全て"
+
+#~ msgid "select metric for values"
+#~ msgstr "数値単位の選択"
+
+#~ msgid "Orig. Width: "
+#~ msgstr "前の幅: "
+
+#~ msgid "Height: "
+#~ msgstr "高さ:"
+
+#~ msgid "horizontal scale value"
+#~ msgstr "水平方向のスケール値"
+
+#~ msgid "vertical scale value"
+#~ msgstr "垂直方向のスケール値"
+
+#~ msgid "lock/unlock horizontal and vertical scale"
+#~ msgstr "水平/垂直スケールのロック/ロック解除"
+
+#~ msgid "toggle absolute/relative scale"
+#~ msgstr "全て/一部のスケール切り替え"
+
+#~ msgid "select metric for scale"
+#~ msgstr "スケール単位の選択"
+
+#~ msgid "flip horizontal"
+#~ msgstr "水平方向に反転"
+
+#~ msgid "flip vertical"
+#~ msgstr "垂直方向に反転"
+
+#~ msgid "Rotate"
+#~ msgstr "回転"
+
+#~ msgid "select direction"
+#~ msgstr "方向の選択"
+
+#~ msgid "angle"
+#~ msgstr "角度"
+
+#~ msgid "deg"
+#~ msgstr "度"
+
+#~ msgid "Set angle to 0 degrees"
+#~ msgstr "角度を 0 度に設定"
+
+#~ msgid "Set angle to 90 degrees"
+#~ msgstr "角度を 90 度に設定"
+
+#~ msgid "Set angle to 180 degrees"
+#~ msgstr "角度を 180 度に設定"
+
+#~ msgid "Set angle to 270 degrees"
+#~ msgstr "角度を 270 度に設定"
+
+#~ msgid "Skew"
+#~ msgstr "歪み"
+
+#~ msgid "select direction (horizontal/vertical skew)"
+#~ msgstr "方向を選択 (水平/垂直の歪み)"
+
+#~ msgid "skew"
+#~ msgstr "歪み"
+
+#~ msgid "keep aspect"
+#~ msgstr "縦横比を維持"
+
+#~ msgid "Start transformation - Ctl+a"
+#~ msgstr "変形開始 - Ctrl+a"
+
+#~ msgid "Close dialog - Ctl+c"
+#~ msgstr "ダイアログを閉じる - Ctl+c"
+
+#~ msgid "Expand dialog - Ctl+e"
+#~ msgstr "ダイアログを展開する - Ctl+e"
+
+#~ msgid "Use alignment during transformation"
+#~ msgstr "変形時に整列を用いる"
+
+#~ msgid "Use center as transformation fixpoint"
+#~ msgstr "変形時に固定点として中心を用いる"
+
+#~ msgid "Horizontal center value"
+#~ msgstr "水平方向の中心値"
+
+#~ msgid "Vertical center value"
+#~ msgstr "垂直方向の中心値"
+
+#~ msgid "Toggle center given in selection/desktop coordiantes"
+#~ msgstr "選択領域/デスクトップ座標の中心位置をトグル"
+
+#~ msgid "desktop"
+#~ msgstr "デスクトップ"
+
+#~ msgid "Choose metric for center"
+#~ msgstr "中心に対して距離単位を選択"
+
+#~ msgid "Keep width of selection during transformation"
+#~ msgstr "変形時に選択領域の幅を維持する"
+
+#~ msgid "Keep height of selection during transformation"
+#~ msgstr "変形時に選択領域の高さを維持する"
+
+#~ msgid "Apply transformation to copy Ctl+m"
+#~ msgstr "変換をコピーに対して適用 - Ctl+m"
+
+#~ msgid "Reset dialog to default - Ctl+r"
+#~ msgstr "ダイアログをデフォルトに戻す - Ctl+r"
+
+#~ msgid "Align to top middle"
+#~ msgstr "上端の中央に配置"
+
+#~ msgid "Align to bottom right"
+#~ msgstr "下端の右端に配置"
+
+#~ msgid "Align to right middle"
+#~ msgstr "上端の右端に配置"
+
+#~ msgid "Align to top right"
+#~ msgstr "上端の右端に配置"
+
+#~ msgid "Align to left middle"
+#~ msgstr "左端の中央に配置"
+
+#~ msgid "Align to center"
+#~ msgstr "中央に配置"
+
+#~ msgid "Align to bottom middle"
+#~ msgstr "下端の中央に配置"
+
+#~ msgid "Align to bottom left"
+#~ msgstr "下端の左端に配置"
+
+#~ msgid "Align to top left"
+#~ msgstr "上端の左端に配置"
+
+#~ msgid "Degree"
+#~ msgstr "度"
+
+#~ msgid "Hierarchy"
+#~ msgstr "階層"
+
+#~ msgid "Dup"
+#~ msgstr "複製"
+
+#~ msgid "Del"
+#~ msgstr "削除"
+
+#~ msgid "Key"
+#~ msgstr "キー"
+
+#~ msgid "Value"
+#~ msgstr "値"
+
+#~ msgid "Change"
+#~ msgstr "変更"
+
+#~ msgid "Content"
+#~ msgstr "内容"
+
+#~ msgid "Change Attribute"
+#~ msgstr "属性変更"
+
+#~ msgid "name"
+#~ msgstr "名前"
+
+#~ msgid "Add attribute"
+#~ msgstr "属性追加"
+
+#~ msgid "Delete attribute"
+#~ msgstr "属性削除"
+
+#~ msgid "Do you want to delete attribute?"
+#~ msgstr "属性を削除してよろしいですか?"
