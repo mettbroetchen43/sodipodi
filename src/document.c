@@ -486,6 +486,38 @@ sp_document_idle_handler (gpointer data)
 	return FALSE;
 }
 
+SPObject *
+sp_document_add_repr (SPDocument *document, SPRepr *repr)
+{
+	GtkType type;
+
+	g_return_val_if_fail (document != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
+	g_return_val_if_fail (repr != NULL, NULL);
+
+	type = sp_object_type_lookup (sp_repr_name (repr));
+
+	if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
+		sp_repr_append_child (document->private->rroot, repr);
+	} else if (gtk_type_is_a (type, SP_TYPE_OBJECT)) {
+		sp_repr_append_child (SP_OBJECT_REPR (document->private->root->defs), repr);
+	}
+
+	return sp_document_lookup_id (document, sp_repr_attr (repr, "id"));
+}
+
+#if 0
+void
+sp_document_del_repr (SPDocument * document, SPRepr * repr)
+{
+	g_assert (document != NULL);
+	g_assert (SP_IS_DOCUMENT (document));
+	g_assert (repr != NULL);
+
+	sp_repr_unparent (repr);
+}
+#endif
+
 /*
  * Return list of items, contained in box
  *

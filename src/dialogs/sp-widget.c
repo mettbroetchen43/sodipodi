@@ -130,6 +130,9 @@ sp_widget_destroy (GtkObject *object)
 
 	spw = (SPWidget *) object;
 
+	/* Disconnect signals */
+	gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+
 	if (((GtkObjectClass *) parent_class)->destroy)
 		(* ((GtkObjectClass *) parent_class)->destroy) (object);
 }
@@ -160,8 +163,8 @@ sp_widget_hide (GtkWidget *widget)
 	/* Disconnect signals */
 	gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
 
-	if (((GtkWidgetClass *) parent_class)->show)
-		(* ((GtkWidgetClass *) parent_class)->show) (widget);
+	if (((GtkWidgetClass *) parent_class)->hide)
+		(* ((GtkWidgetClass *) parent_class)->hide) (widget);
 }
 
 static void

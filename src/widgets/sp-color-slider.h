@@ -10,7 +10,7 @@
  *
  */
 
-#include <gtk/gtkscale.h>
+#include <gtk/gtkwidget.h>
 
 typedef struct _SPColorSlider SPColorSlider;
 typedef struct _SPColorSliderClass SPColorSliderClass;

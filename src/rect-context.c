@@ -196,7 +196,7 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 			sp_repr_css_set (repr, css, "style");
 			sp_repr_css_attr_unref (css);
 		}
-		rc->item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
+		rc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 		sp_repr_unref (repr);
 	}
 

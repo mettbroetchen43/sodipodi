@@ -192,7 +192,7 @@ sp_ellipse_drag (SPEllipseContext * ec, double x, double y, guint state)
 			sp_repr_css_set (repr, css, "style");
 			sp_repr_css_attr_unref (css);
 		}
-		ec->item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
+		ec->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 		sp_repr_unref (repr);
 	}
 

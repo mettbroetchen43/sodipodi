@@ -113,14 +113,36 @@ void sp_document_maybe_done (SPDocument *document, const guchar *key);
 void sp_document_undo (SPDocument * document);
 void sp_document_redo (SPDocument * document);
 
-/*
- * Actions
- */
+/* Adds repr to document, returning created object (if any) */
+/* Items will be added to root (fixme: should be namedview root) */
+/* Non-item objects will go to root-level defs group */
+SPObject *sp_document_add_repr (SPDocument *document, SPRepr *repr);
 
-/* Adds repr to document, returning created item, if any */
-SPItem * sp_document_add_repr (SPDocument *document, SPRepr *repr);
+#if 0
 /* Deletes repr from document */
+/* fixme: This is not needed anymore - remove it (Lauris) */
+/* Instead simply unparent repr */
 void sp_document_del_repr (SPDocument *document, SPRepr *repr);
+#endif
+
+/* Resource management */
+gboolean sp_document_add_resource (SPDocument *document, const guchar *key, SPObject *object);
+gboolean sp_document_remove_resource (SPDocument *document, const guchar *key, SPObject *object);
+const GSList *sp_document_get_resource_list (SPDocument *document, const guchar *key);
+
+/*
+ * Ideas: How to overcome style invalidation nightmare
+ *
+ * 1. There is reference request dictionary, that contains
+ * objects (styles) needing certain id. Object::build checks
+ * final id against it, and invokes necesary methods
+ *
+ * 2. Removing referenced object is simply prohibited -
+ * needs analyse, how we can deal with situations, where
+ * we simply want to ungroup etc. - probably we need
+ * Repr::reparent method :( [Or was it ;)]
+ *
+ */
 
 /*
  * Misc

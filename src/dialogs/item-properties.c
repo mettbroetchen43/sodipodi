@@ -281,7 +281,8 @@ sp_item_widget_opacity_changed (GtkWidget *widget, SPWidget *spw)
 
 	/* Opacity */
 	str = sp_repr_attr (((SPObject *) item)->repr, "style");
-	style = sp_style_new ();
+	/* fixme: This is hack - styles should be OBJECT-ONLY */
+	style = sp_style_new (SP_OBJECT (item));
 	sp_style_read_from_string (style, str, spw->document);
 	style->opacity = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (widget));
 	style->opacity_set = TRUE;
@@ -423,7 +424,8 @@ sp_item_dialog_apply (GtkWidget * widget)
 
 	/* Opacity */
 	str = sp_repr_attr (repr, "style");
-	style = sp_style_new ();
+	/* fixme: This is hack - styles should be OBJECT-ONLY (lauris) */
+	style = sp_style_new (object);
 	sp_style_read_from_string (style, str, object->document);
 	w = glade_xml_get_widget (xml, "opacity");
 	style->opacity = gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (w));

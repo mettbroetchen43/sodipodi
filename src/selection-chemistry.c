@@ -47,7 +47,7 @@ sp_selection_delete (GtkWidget * widget)
 	sp_selection_empty (selection);
 
 	while (selected) {
-		sp_document_del_repr (SP_DT_DOCUMENT (desktop), (SPRepr *) selected->data);
+		sp_repr_unparent ((SPRepr *) selected->data);
 		selected = g_slist_remove (selected, selected->data);
 	}
 
@@ -85,7 +85,7 @@ void sp_selection_duplicate (GtkWidget * widget)
 
 	while (selected) {
 		copy = sp_repr_duplicate ((SPRepr *) selected->data);
-		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
+		item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
 		sp_repr_unref (copy);
 		g_assert (item != NULL);
 		newsel = g_slist_prepend (newsel, copy);
@@ -136,13 +136,13 @@ sp_selection_group (GtkWidget * widget)
 		SPRepr *new;
 		current = (SPRepr *) p->data;
 		new = sp_repr_duplicate (current);
-		sp_document_del_repr (SP_DT_DOCUMENT (desktop), current);
+		sp_repr_unparent (current);
 		sp_repr_append_child (group, new);
 		sp_repr_unref (new);
 		p = g_slist_remove (p, current);
 	}
 
-	new = sp_document_add_repr (SP_DT_DOCUMENT (desktop), group);
+	new = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), group);
 	sp_repr_unref (group);
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 
@@ -193,12 +193,12 @@ void sp_selection_ungroup (GtkWidget * widget)
 		sp_repr_css_set (child, css, "style");
 		sp_repr_css_attr_unref (css);
 
-		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), child);
+		item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), child);
 		sp_repr_unref (child);
-		sp_selection_add_item (selection, item);
+		if (SP_IS_ITEM (item)) sp_selection_add_item (selection, item);
 	}
 
-	sp_document_del_repr (SP_DT_DOCUMENT (desktop), current);
+	sp_repr_unparent (current);
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 

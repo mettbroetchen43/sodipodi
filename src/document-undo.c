@@ -280,36 +280,6 @@ sp_document_order_changed (SPDocument *doc, SPObject *object, SPRepr *child, SPR
 	}
 }
 
-SPItem *
-sp_document_add_repr (SPDocument * document, SPRepr * repr)
-{
-	const gchar *id;
-	SPObject *object;
-
-	sp_repr_append_child (document->private->rroot, repr);
-
-	id = sp_repr_attr (repr, "id");
-	g_assert (id != NULL);
-
-	object = sp_document_lookup_id (document, id);
-	g_assert (object != NULL);
-#if 0
-	g_assert (SP_IS_ITEM (object));
-#endif
-
-	return SP_ITEM (object);
-}
-
-void
-sp_document_del_repr (SPDocument * document, SPRepr * repr)
-{
-	g_assert (document != NULL);
-	g_assert (SP_IS_DOCUMENT (document));
-	g_assert (repr != NULL);
-
-	sp_repr_unparent (repr);
-}
-
 void
 sp_document_clear_undo (SPDocument *doc)
 {

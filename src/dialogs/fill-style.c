@@ -30,8 +30,10 @@
 #include "../desktop-handles.h"
 #include "../selection.h"
 #include "../sp-item.h"
+#include "../sp-gradient.h"
 #include "../style.h"
 #include "sp-widget.h"
+#include "gradient-selector.h"
 #include "fill-style.h"
 
 typedef enum {
@@ -53,6 +55,7 @@ static void sp_fill_style_widget_set_type (SPWidget *spw, FSWFillType type);
 static void sp_fill_style_set_empty (SPWidget *spw);
 static void sp_fill_style_set_none (SPWidget *spw);
 static void sp_fill_style_set_solid (SPWidget *spw);
+static void sp_fill_style_set_gradient (SPWidget *spw);
 static void sp_fill_style_widget_reread (SPWidget *spw, SPSelection *selection);
 static void sp_fill_style_widget_rgba_changed (SPColorSelector *csel, SPWidget *spw);
 static void sp_fill_style_widget_rgba_dragged (SPColorSelector *csel, SPWidget *spw);
@@ -322,6 +325,9 @@ sp_fill_style_widget_set_type (SPWidget *spw, FSWFillType type)
 		break;
 	case FSW_SOLID:
 		sp_fill_style_set_solid (spw);
+		break;
+	case FSW_GRADIENT:
+		sp_fill_style_set_gradient (spw);
 		break;
 	default:
 		g_assert_not_reached ();
@@ -608,6 +614,34 @@ sp_fill_style_set_solid (SPWidget *spw)
 }
 
 static void
+sp_fill_style_set_gradient (SPWidget *spw)
+{
+	FSWFillType oldtype;
+
+	oldtype = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (spw), "fill-type"));
+	if (oldtype != FSW_GRADIENT) {
+		GtkWidget *frame, *w;
+		GList *children;
+		/* Create solid fill widget */
+		frame = gtk_object_get_data (GTK_OBJECT (spw), "type-frame");
+		/* Clear frame contents */
+		children = gtk_container_children (GTK_CONTAINER (frame));
+		while (children) {
+			gtk_container_remove (GTK_CONTAINER (frame), children->data);
+			children = g_list_remove (children, children->data);
+		}
+		/* Set frame label */
+		gtk_frame_set_label (GTK_FRAME (frame), _("Gradient"));
+		/* Create gradient widget */
+		w = sp_gradient_widget_new ();
+		gtk_widget_show (w);
+		gtk_container_add (GTK_CONTAINER (frame), w);
+	}
+
+	/* fixme: Everything */
+}
+
+static void
 sp_fill_style_widget_reread (SPWidget *spw, SPSelection *selection)
 {
 	FSWFillType type;
@@ -630,6 +664,11 @@ sp_fill_style_widget_reread (SPWidget *spw, SPSelection *selection)
 			break;
 		case SP_PAINT_TYPE_COLOR:
 			if (type < FSW_SOLID) type = FSW_SOLID;
+			break;
+		case SP_PAINT_TYPE_PAINTSERVER:
+			if (SP_IS_GRADIENT (object->style->fill.server)) {
+				if (type < FSW_GRADIENT) type = FSW_GRADIENT;
+			}
 			break;
 		default:
 			break;

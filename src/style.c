@@ -26,34 +26,50 @@ static void sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *s
 static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
 static const guchar *sp_style_str_value (const guchar *str, const guchar *key);
 
+static void
+sp_style_object_destroyed (GtkObject *object, SPStyle *style)
+{
+	style->object = NULL;
+}
+
 SPStyle *
-sp_style_new (void)
+sp_style_new (SPObject *object)
 {
 	SPStyle *style;
+
+	g_return_val_if_fail (!object || SP_IS_OBJECT (object), NULL);
 
 	style = g_new0 (SPStyle, 1);
 
 	style->refcount = 1;
+	style->object = object;
+	if (object) {
+		gtk_signal_connect (GTK_OBJECT (object), "destroy",
+				    GTK_SIGNAL_FUNC (sp_style_object_destroyed), style);
+	}
 
 	sp_style_init (style);
 
 	return style;
 }
 
-void
+SPStyle *
 sp_style_ref (SPStyle *style)
 {
-	g_return_if_fail (style != NULL);
+	g_return_val_if_fail (style != NULL, NULL);
 
 	style->refcount += 1;
+
+	return style;
 }
 
-void
+SPStyle *
 sp_style_unref (SPStyle *style)
 {
-	g_return_if_fail (style != NULL);
+	g_return_val_if_fail (style != NULL, NULL);
 
 	if (--style->refcount < 1) {
+		if (style->object) gtk_signal_disconnect_by_data (GTK_OBJECT (style->object), style);
 		if (style->fill.server) {
 			gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
 		}
@@ -65,6 +81,8 @@ sp_style_unref (SPStyle *style)
 		}
 		g_free (style);
 	}
+
+	return NULL;
 }
 
 void
@@ -319,11 +337,13 @@ sp_style_paint_server_modified (SPPaintServer *server, guint flags, SPStyle *sty
 	if (server == style->fill.server) {
 		g_assert (style->fill_set);
 		g_assert (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
-		/* fixme: Implement style ::modified (Lauris) */
+		/* fixme: I do not know, whether it is optimal - we are forcing reread of everything (Lauris) */
+		if (style->object) sp_object_style_changed (style->object, SP_OBJECT_PARENT_MODIFIED_FLAG);
 	} else if (server == style->stroke.server) {
 		g_assert (style->stroke_set);
 		g_assert (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER);
 		/* fixme: */
+		if (style->object) sp_object_style_changed (style->object, SP_OBJECT_PARENT_MODIFIED_FLAG);
 	} else {
 		g_assert_not_reached ();
 	}

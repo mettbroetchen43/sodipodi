@@ -54,7 +54,7 @@ sp_selected_path_combine (void)
 		art_free (abp);
 		d = g_strconcat (d, str, NULL);
 		g_free (str);
-		sp_document_del_repr (SP_DT_DOCUMENT (desktop), SP_OBJECT (path)->repr);
+		sp_repr_unparent (SP_OBJECT_REPR (path));
 	}
 
 	g_slist_free (il);
@@ -64,7 +64,7 @@ sp_selected_path_combine (void)
 	g_free (style);
 	sp_repr_set_attr (repr, "d", d);
 	g_free (d);
-	item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
+	item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 	sp_repr_unref (repr);
 
@@ -107,7 +107,7 @@ sp_selected_path_break_apart (void)
 	abp = art_bpath_affine_transform (curve->bpath, i2doc);
 
 	sp_curve_unref (curve);
-	sp_document_del_repr (SP_DT_DOCUMENT (desktop), SP_OBJECT (item)->repr);
+	sp_repr_unparent (SP_OBJECT_REPR (item));
 
 	curve = sp_curve_new_from_bpath (abp);
 
@@ -123,7 +123,7 @@ sp_selected_path_break_apart (void)
 		str = sp_svg_write_path (curve->bpath);
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
-		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
+		item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
 		sp_repr_unref (repr);
 		sp_selection_add_item (selection, item);
 	}
@@ -169,8 +169,8 @@ sp_selected_path_to_curves (void)
 
 	g_free (str);
 
-	sp_document_del_repr (SP_DT_DOCUMENT (desktop), SP_OBJECT (item)->repr);
-	item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), new);
+	sp_repr_unparent (SP_OBJECT_REPR (item));
+	item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), new);
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 	sp_repr_unref (new);
 

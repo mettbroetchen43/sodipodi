@@ -1,5 +1,13 @@
 2001-09-05  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/document.c (sp_document_del_repr): Moved here, commented out
+	(sp_document_add_repr): Moved here, made non-item compatible
+
+	* src/style.c (sp_style_object_destroyed): Catcher method
+	(sp_style_new): Signature change
+	(sp_style_ref): Ditto
+	(sp_style_unref): Ditto
+
 	* src/sp-paint-server.c (sp_paint_server_destroy): Removed insane
 	paint server referencing by painters and replaced it witw (a bit)
 	less insane stale painter maintenance

@@ -102,23 +102,4 @@ struct _SPDocumentPrivate {
 
 void sp_action_free_list (SPAction *action);
 
-/* Resource management */
-gboolean sp_document_add_resource (SPDocument *document, const guchar *key, SPObject *object);
-gboolean sp_document_remove_resource (SPDocument *document, const guchar *key, SPObject *object);
-const GSList *sp_document_get_resource_list (SPDocument *document, const guchar *key);
-
-/*
- * Ideas: How to overcome style invalidation nightmare
- *
- * 1. There is reference request dictionary, that contains
- * objects (styles) needing certain id. Object::build checks
- * final id against it, and invokes necesary methods
- *
- * 2. Removing referenced object is simply prohibited -
- * needs analyse, how we can deal with situations, where
- * we simply want to ungroup etc. - probably we need
- * Repr::reparent method :( [Or was it ;)]
- *
- */
-
 #endif

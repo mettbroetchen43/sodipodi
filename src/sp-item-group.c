@@ -599,15 +599,16 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 			sp_repr_css_set (nrepr, css, "style");
 			sp_repr_css_attr_unref (css);
 
-			nitem = sp_document_add_repr (document, nrepr);
+			/* fixme: Sort up that item/object stuff (lauris) */
+			nitem = (SPItem *) sp_document_add_repr (document, nrepr);
 			sp_repr_unref (nrepr);
-			if (children) *children = g_slist_prepend (*children, nitem);
+			if (children && SP_IS_ITEM (nitem)) *children = g_slist_prepend (*children, nitem);
 		}
 
 		sp_repr_remove_child (grepr, crepr);
 	}
 
-	sp_document_del_repr (document, grepr);
+	sp_repr_unparent (grepr);
 	sp_document_done (document);
 }
 

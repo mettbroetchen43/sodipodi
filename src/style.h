@@ -55,6 +55,10 @@ struct _SPDistance {
 
 struct _SPStyle {
 	gint refcount;
+	/* Object we are attached to */
+	/* fixme: I am not sure, whether style should be SPObject itself */
+	/* fixme: Or alternatively, whole style to be moved inside SPObject[Styled] */
+	SPObject *object;
 	/* Global opacity */
 	gdouble opacity;
 	guint opacity_set : 1;
@@ -106,10 +110,10 @@ struct _SPStyle {
 
 #define SP_RGBA_FROM_COLOR(c,o) (((guint32)((c)->r*255)<<24)|((guint32)((c)->g*255)<<16)|((guint32)((c)->b*255)<<8)|((guint32)((o)*255)))
 
-SPStyle *sp_style_new (void);
+SPStyle *sp_style_new (SPObject *object);
 
-void sp_style_ref (SPStyle *style);
-void sp_style_unref (SPStyle *style);
+SPStyle *sp_style_ref (SPStyle *style);
+SPStyle *sp_style_unref (SPStyle *style);
 
 void sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *document);
 void sp_style_read_from_object (SPStyle *style, SPObject *object);

@@ -84,7 +84,7 @@ sp_item_class_init (SPItemClass * klass)
 }
 
 static void
-sp_item_init (SPItem * item)
+sp_item_init (SPItem *item)
 {
 	SPObject *object;
 
@@ -93,7 +93,7 @@ sp_item_init (SPItem * item)
 	art_affine_identity (item->affine);
 	item->display = NULL;
 
-	if (!object->style) object->style = sp_style_new ();
+	if (!object->style) object->style = sp_style_new (SP_OBJECT (item));
 }
 
 static void

@@ -157,7 +157,7 @@ sp_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 	dc->currentcurve = sp_curve_new_sized (4);
 
 	/* fixme: */
-	style = sp_style_new ();
+	style = sp_style_new (NULL);
 	style->fill.type = SP_PAINT_TYPE_NONE;
 	style->stroke.type = SP_PAINT_TYPE_COLOR;
 	style->stroke_width.unit = SP_UNIT_ABSOLUTE;
@@ -595,7 +595,7 @@ fit_and_split (SPDrawContext * dc)
 		concat_current (dc);
 		curve = sp_curve_copy (dc->currentcurve);
 		/* fixme: */
-		style = sp_style_new ();
+		style = sp_style_new (NULL);
 		style->fill.type = SP_PAINT_TYPE_NONE;
 		style->stroke.type = SP_PAINT_TYPE_COLOR;
 		style->stroke_width.unit = SP_UNIT_ABSOLUTE;
