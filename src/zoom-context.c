@@ -1,6 +1,19 @@
-#define SP_ZOOM_CONTEXT_C
+#define __SP_ZOOM_CONTEXT_C__
+
+/*
+ * Base class for event processors
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
+ *
+ * Copyright (C) 1999-2002 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
+#include <gtk/gtkeditable.h>
 #include "rubberband.h"
 #include "sodipodi.h"
 #include "document.h"
@@ -339,8 +352,8 @@ sp_zoom_string (gchar * zoom_str) {
 
 void
 sp_zoom_any (void) {
-  gchar * zoom_str;
-  zoom_str = gtk_editable_get_chars ((GtkEditable *) zoom_any, 0, 4);
-  sp_zoom_string (zoom_str);
+	gchar * zoom_str;
+	zoom_str = gtk_editable_get_chars ((GtkEditable *) zoom_any, 0, 4);
+	sp_zoom_string (zoom_str);
 }
 

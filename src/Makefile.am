@@ -10,22 +10,15 @@ SUBDIRS = libnr libnrtype xml svg widgets helper dialogs display $(bonobo_subdir
 gladedir = $(datadir)/sodipodi
 pixmapdir = $(datadir)/sodipodi
 
-CPPFLAGS = \
-	$(cppflags) \
-	-DSODIPODI_VERSION=\""$(VERSION)"\"
-
-CFLAGS = \
-	$(cflags) \
-	$(SODIPODI_CFLAGS) \
-	$(SODIPODI_BONOBO_CFLAGS)
-
 INCLUDES = \
+	-DSODIPODI_VERSION=\""$(VERSION)"\" \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
 	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" \
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" \
 	-I$(srcdir) \
-	-I$(srcdir/xml) \
-	-I$(srcdir/svg)
+	$(cflags) \
+	$(SODIPODI_CFLAGS) \
+	$(SODIPODI_BONOBO_CFLAGS)
 
 bin_PROGRAMS = sodipodi
 
@@ -113,6 +106,7 @@ sodipodi_SOURCES = \
 	\
 	zoom-context.c zoom-context.h \
 	file.c file.h \
+	print.c print.h \
 	interface.c interface.h \
 	\
 	preferences-skeleton.h

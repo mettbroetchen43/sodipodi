@@ -3,15 +3,10 @@ noinst_LIBRARIES = libnr.a
 
 noinst_PROGRAMS = testnr
 
-CPPFLAGS = \
-	$(cppflags)
-
-CFLAGS = \
-	$(cflags) \
-	$(SODIPODI_CFLAGS)
-
 INCLUDES = \
 	-I..
+	$(cflags) \
+	$(SODIPODI_CFLAGS)
 
 if USE_MMX
 mmx_sources = \

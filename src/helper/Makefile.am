@@ -6,15 +6,10 @@
 
 noinst_LIBRARIES = libspchelp.a
 
-CPPFLAGS = \
-	$(cppflags)
-
-CFLAGS = \
-	$(cflags) \
-	$(SODIPODI_CFLAGS)
-
 INCLUDES = \
 	-I..
+	$(cflags) \
+	$(SODIPODI_CFLAGS)
 
 libspchelp_a_SOURCES = \
 	helper-forward.h \

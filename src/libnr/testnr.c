@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/time.h>
+#include <time.h>
 
 #include "nr-pixblock.h"
 #include "nr-blit.h"
@@ -51,13 +52,21 @@ main (int argc, const char **argv)
 
 	/* Masks */
 	for (i = 0; i < 16; i++) {
-		int r, c;
+		int r, b, c;
 		nr_pixblock_setup_fast (&m[i], NR_PIXBLOCK_MODE_A8, 0, 0, 64, 64, 0);
 		for (r = 0; r < 64; r++) {
+			unsigned int q;
 			unsigned char *p;
 			p = NR_PIXBLOCK_PX (&m[i]) + r * m[i].rs;
-			for (c = 0; c < 64; c++) {
-				*p++ = rand_byte ();
+			for (b = 0; b < 8; b++) {
+				q = rand_byte ();
+				if (q < 120) {
+					for (c = 0; c < 8; c++) *p++ = 0;
+				} else if (q < 240) {
+					for (c = 0; c < 8; c++) *p++ = 255;
+				} else {
+					for (c = 0; c < 8; c++) *p++ = rand_byte ();
+				}
 			}
 		}
 		m[i].empty = 0;

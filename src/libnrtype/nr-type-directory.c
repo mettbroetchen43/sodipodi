@@ -34,30 +34,6 @@ struct _NRFaceEntry {
 	NRTypeFace *typeface;
 };
 
-#if 0
-static NRTypeFaceVMV nr_typeface_vmv_gnome_default = {
-	nr_typeface_gnome_unref,
-	nr_typeface_gnome_attribute_get,
-	nr_typeface_gnome_outline_get,
-	nr_typeface_gnome_outline_unref,
-	nr_typeface_gnome_lookup,
-	nr_typeface_default_font_new,
-	nr_font_default_free,
-	nr_font_default_glyph_outline_get,
-	nr_font_default_glyph_outline_unref,
-	nr_font_default_advance_get,
-	nr_font_default_rasterfont_new,
-	nr_rasterfont_default_free,
-	nr_rasterfont_default_advance_get,
-	nr_rasterfont_default_area_get,
-	nr_rasterfont_default_render_glyph_mask
-};
-#endif
-
-#ifdef TFDEBUG
-static int numfaces = 0;
-#endif
-
 void
 nr_name_list_release (NRNameList *list)
 {

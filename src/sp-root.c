@@ -38,7 +38,7 @@ static SPRepr *sp_root_write (SPObject *object, SPRepr *repr, guint flags);
 
 static NRArenaItem *sp_root_show (SPItem *item, NRArena *arena);
 static void sp_root_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
-static void sp_root_print (SPItem *item, GnomePrintContext *ctx);
+static void sp_root_print (SPItem *item, SPPrintContext *ctx);
 
 static SPGroupClass *parent_class;
 
@@ -382,7 +382,7 @@ sp_root_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 }
 
 static void
-sp_root_print (SPItem *item, GnomePrintContext *ctx)
+sp_root_print (SPItem *item, SPPrintContext *ctx)
 {
 	SPRoot *root;
 

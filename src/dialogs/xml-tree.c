@@ -1,8 +1,25 @@
-#define SP_XML_TREE_C
+#define __SP_XML_TREE_C__
+
+/*
+ * PNG export dialog
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <config.h>
 #include <string.h>
 #include <glib.h>
+#include <gtk/gtktree.h>
+#include <gtk/gtktreeitem.h>
+#include <gtk/gtkclist.h>
+#include <gtk/gtktext.h>
+#include <gtk/gtkentry.h>
+#include <gtk/gtkviewport.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-stock.h>

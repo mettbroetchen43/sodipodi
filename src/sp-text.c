@@ -799,7 +799,7 @@ static void sp_text_hide (SPItem *item, NRArena *arena);
 static char * sp_text_description (SPItem *item);
 static GSList * sp_text_snappoints (SPItem *item, GSList *points);
 static void sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
-static void sp_text_print (SPItem *item, GnomePrintContext *gpc);
+static void sp_text_print (SPItem *item, SPPrintContext *gpc);
 
 static void sp_text_request_relayout (SPText *text, guint flags);
 static void sp_text_update_immediate_state (SPText *text);
@@ -1339,6 +1339,7 @@ sp_text_font_style_to_lookup (SPStyle *style)
 	return c;
 }
 
+#if 0
 gint
 sp_text_font_weight_to_gp (gint weight)
 {
@@ -1379,6 +1380,7 @@ sp_text_font_weight_to_gp (gint weight)
 
 	return GNOME_FONT_BOOK;
 }
+#endif
 
 static void
 sp_text_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
@@ -1660,7 +1662,7 @@ sp_text_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 }
 
 static void
-sp_text_print (SPItem *item, GnomePrintContext *gpc)
+sp_text_print (SPItem *item, SPPrintContext *ctx)
 {
 	SPText *text;
 	SPObject *ch;
@@ -1668,8 +1670,6 @@ sp_text_print (SPItem *item, GnomePrintContext *gpc)
 	ArtDRect pbox, dbox, bbox;
 
 	text = SP_TEXT (item);
-
-	gnome_print_gsave (gpc);
 
 	/* fixme: Think (Lauris) */
 	sp_item_invoke_bbox (item, &pbox, NR_MATRIX_D_IDENTITY.c);
@@ -1682,13 +1682,11 @@ sp_text_print (SPItem *item, GnomePrintContext *gpc)
 
 	for (ch = text->children; ch != NULL; ch = ch->next) {
 		if (SP_IS_TSPAN (ch)) {
-			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), gpc, ctm, &pbox, &dbox, &bbox);
+			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), ctx, ctm, &pbox, &dbox, &bbox);
 		} else if (SP_IS_STRING (ch)) {
-			sp_chars_do_print (SP_CHARS (ch), gpc, ctm, &pbox, &dbox, &bbox);
+			sp_chars_do_print (SP_CHARS (ch), ctx, ctm, &pbox, &dbox, &bbox);
 		}
 	}
-
-	gnome_print_grestore (gpc);
 }
 
 int

@@ -1,8 +1,24 @@
+2002-10-16  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/print.h: New file, frontend to printing
+
+	* src/print.c: New file, rontend to printing
+
 2002-10-15  Davide Puricelli  <evo@debian.org>
 
 	* debian/*: Updated
 
 2002-10-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-item.c (sp_item_invoke_print): Rename, signature change
+
+	* src/sp-item.h: SPItem::print signature change
+
+	* src/forward.h: Added SPPrintContext
+
+	* src/libnr/testnr.c (main): Fill mask with blocks of transparent, opaque
+	and random data. This should be closer to reality and (surprise!) gives better
+	performance numbers too!
 
 	* src/libnrtype/nr-typeface.c: Moved everyting to virtual method vector
 

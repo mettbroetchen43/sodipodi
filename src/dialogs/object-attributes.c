@@ -1,18 +1,20 @@
 #define __SP_OBJECT_ATTRIBUTES_C__
 
 /*
- * Link - <a> element - properties editor
+ * Generic properties editor
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 Authors
  *
- * Licensed under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
 #include <string.h>
+#include <stdlib.h>
+#include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>

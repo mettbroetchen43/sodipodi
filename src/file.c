@@ -17,11 +17,20 @@
 
 #include <string.h>
 #include <time.h>
+#include <libnr/nr-pixops.h>
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkbutton.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkmenuitem.h>
+#include <gtk/gtkfilesel.h>
 
+#if 0
 #include <libgnomeprint/gnome-printer.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeui/gnome-dialog.h>
@@ -29,7 +38,9 @@
 #include <libgnome/gnome-paper.h>
 #include <libgnomeprint/gnome-print-master.h>
 #include <libgnomeprint/gnome-print-master-preview.h>
+#endif
 
+#include "macros.h"
 #include "xml/repr-private.h"
 #include "document.h"
 #include "view.h"
@@ -41,15 +52,15 @@
 #include "interface.h"
 #include "file.h"
 
-#include <libgnomeprint/gnome-print-pixbuf.h>
-
 gchar * open_path = NULL;
 gchar * save_path = NULL;
 gchar * import_path = NULL;
 gchar * export_path = NULL;
 
+#if 0
 static void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer);
 static void sp_do_file_print_preview (SPDocument * doc);
+#endif
 
 void sp_file_new (void)
 {
@@ -388,6 +399,7 @@ void sp_file_import (GtkWidget * widget)
 	gtk_widget_show (w);
 }
 
+#if 0
 static void
 file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 {
@@ -463,7 +475,9 @@ void sp_file_export (GtkWidget * widget)
 
 	gtk_widget_show (w);
 }
+#endif
 
+#if 0
 static void
 sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
 {
@@ -482,17 +496,21 @@ sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
         gnome_print_context_close (gpc);
 
 }
+#endif
 
 void sp_do_file_print (SPDocument * doc)
 {
+#if 0
         GnomePrinter * printer;
 
         printer = gnome_printer_dialog_new_modal ();
         if (printer == NULL) return;
 
         sp_do_file_print_to_printer (doc, printer);
+#endif
 }
 
+#if 0
 static void
 sp_print_preview_destroy_cb (GtkObject *obj, gpointer data)
 {
@@ -535,19 +553,24 @@ sp_do_file_print_preview (SPDocument * doc)
 	g_free (title);
 
 }
+#endif
 
-void sp_do_file_print_to_file (SPDocument * doc, gchar *filename)
+void
+sp_do_file_print_to_file (SPDocument * doc, gchar *filename)
 {
+#if 0
         GnomePrinter * printer;
 
         printer = gnome_printer_new_generic_ps (filename);
         if (printer == NULL) return;
 
         sp_do_file_print_to_printer (doc, printer);
+#endif
 }
 
 void sp_file_print (GtkWidget * widget)
 {
+#if 0
 	SPDocument * doc;
 
 	doc = SP_ACTIVE_DOCUMENT;
@@ -556,10 +579,13 @@ void sp_file_print (GtkWidget * widget)
 	//	g_return_if_fail (doc != NULL);
 
 	sp_do_file_print (doc);
+#endif
 }
 
-void sp_file_print_preview (GtkWidget * widget)
+void
+sp_file_print_preview (GtkWidget * widget)
 {
+#if 0
 	SPDocument * doc;
 
 	doc = SP_ACTIVE_DOCUMENT;
@@ -567,10 +593,139 @@ void sp_file_print_preview (GtkWidget * widget)
 	//	g_return_if_fail (doc != NULL);
 
 	sp_do_file_print_preview (doc);
+#endif
 }
 
 void sp_file_exit (void)
 {
 	sodipodi_exit (SODIPODI);
+}
+
+#include <display/nr-arena-item.h>
+#include <display/nr-arena.h>
+
+struct SPEBP {
+	int width, height;
+	unsigned char r, g, b, a;
+	NRArenaItem *root;
+	NRBuffer *buf;
+};
+
+static int
+sp_export_get_rows (const unsigned char **rows, int row, int num_rows, void *data)
+{
+	struct SPEBP *ebp;
+	NRRectL bbox;
+	NRGC gc;
+	int r, c;
+
+	ebp = (struct SPEBP *) data;
+
+	num_rows = MIN (num_rows, 64);
+	num_rows = MIN (num_rows, ebp->height - row);
+
+	g_print ("Rendering %d + %d rows\n", row, num_rows);
+
+	/* Set area of interest */
+	bbox.x0 = 0;
+	bbox.y0 = row;
+	bbox.x1 = ebp->width;
+	bbox.y1 = row + num_rows;
+	/* Update to renderable state */
+	art_affine_identity (gc.affine);
+	nr_arena_item_invoke_update (ebp->root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_NONE);
+
+	for (r = 0; r < num_rows; r++) {
+		unsigned char *p;
+		p = ebp->buf->px + r * ebp->buf->rs;
+		for (c = 0; c < ebp->width; c++) {
+			*p++ = ebp->r;
+			*p++ = ebp->g;
+			*p++ = ebp->b;
+			*p++ = ebp->a;
+		}
+	}
+	/* Render */
+	nr_arena_item_invoke_render (ebp->root, &bbox, ebp->buf);
+
+	for (r = 0; r < num_rows; r++) {
+		rows[r] = ebp->buf->px + r * ebp->buf->rs;
+	}
+
+	return num_rows;
+}
+
+void
+sp_export_png_file (SPDocument *doc, unsigned char *filename,
+		    double x0, double y0, double x1, double y1,
+		    unsigned int width, unsigned int height,
+		    unsigned long bgcolor)
+{
+	gdouble affine[6], t;
+	NRArena *arena;
+	struct SPEBP ebp;
+
+	g_return_if_fail (doc != NULL);
+	g_return_if_fail (SP_IS_DOCUMENT (doc));
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (width >= 16);
+	g_return_if_fail (height >= 16);
+
+	sp_document_ensure_up_to_date (doc);
+
+	/* Go to document coordinates */
+	t = y0;
+	y0 = sp_document_height (doc) - y1;
+	y1 = sp_document_height (doc) - t;
+
+	/*
+	 * 1) a[0] * x0 + a[2] * y1 + a[4] = 0.0
+	 * 2) a[1] * x0 + a[3] * y1 + a[5] = 0.0
+	 * 3) a[0] * x1 + a[2] * y1 + a[4] = width
+	 * 4) a[1] * x0 + a[3] * y0 + a[5] = height
+	 * 5) a[1] = 0.0;
+	 * 6) a[2] = 0.0;
+	 *
+	 * (1,3) a[0] * x1 - a[0] * x0 = width
+	 * a[0] = width / (x1 - x0)
+	 * (2,4) a[3] * y0 - a[3] * y1 = height
+	 * a[3] = height / (y0 - y1)
+	 * (1) a[4] = -a[0] * x0
+	 * (2) a[5] = -a[3] * y1
+	 */
+
+	affine[0] = width / ((x1 - x0) * 1.25);
+	affine[1] = 0.0;
+	affine[2] = 0.0;
+	affine[3] = height / ((y1 - y0) * 1.25);
+	affine[4] = -affine[0] * x0 * 1.25;
+	affine[5] = -affine[3] * y0 * 1.25;
+
+	SP_PRINT_TRANSFORM ("SVG2PNG", affine);
+
+	ebp.width = width;
+	ebp.height = height;
+	ebp.r = NR_RGBA32_R (bgcolor);
+	ebp.g = NR_RGBA32_G (bgcolor);
+	ebp.b = NR_RGBA32_B (bgcolor);
+	ebp.a = NR_RGBA32_A (bgcolor);
+	/* Get RGBA buffer */
+	ebp.buf = nr_buffer_get (NR_IMAGE_R8G8B8A8, width, 64, TRUE, FALSE);
+
+	/* Create new arena */
+	arena = gtk_type_new (NR_TYPE_ARENA);
+	/* Create ArenaItem and set transform */
+	ebp.root = sp_item_show (SP_ITEM (sp_document_root (doc)), arena);
+	nr_arena_item_set_transform (ebp.root, affine);
+
+
+	sp_png_write_rgba_striped (filename, width, height, sp_export_get_rows, &ebp);
+
+	/* Free Arena and ArenaItem */
+	sp_item_hide (SP_ITEM (sp_document_root (doc)), arena);
+	gtk_object_unref (GTK_OBJECT (arena));
+
+	/* Release RGBA buffer */
+	nr_buffer_free (ebp.buf);
 }
 

@@ -16,13 +16,17 @@
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
+#include <libnr/nr-matrix.h>
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmenuitem.h>
 #include <gdk-pixbuf/gdk-pixbuf-loader.h>
 #include "display/nr-arena-image.h"
 #include "svg/svg.h"
+#include "print.h"
 #include "style.h"
 #include "brokenimage.xpm"
 #include "document.h"
@@ -42,7 +46,7 @@ static void sp_image_read_attr (SPObject * object, const gchar * key);
 static SPRepr *sp_image_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
-static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
+static void sp_image_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_image_description (SPItem * item);
 static GSList * sp_image_snappoints (SPItem * item, GSList * points);
 static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena);
@@ -306,8 +310,34 @@ sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 }
 
 static void
-sp_image_print (SPItem *item, GnomePrintContext *gpc)
+sp_image_print (SPItem *item, SPPrintContext *ctx)
 {
+#if 1
+	SPImage *image;
+	NRMatrixF tp, ti, s, t;
+	unsigned char *px;
+	int w, h, rs;
+
+	image = SP_IMAGE (item);
+
+	if (!image->pixbuf) return;
+	if ((image->width.computed <= 0.0) || (image->height.computed <= 0.0)) return;
+
+	px = gdk_pixbuf_get_pixels (image->pixbuf);
+	w = gdk_pixbuf_get_width (image->pixbuf);
+	h = gdk_pixbuf_get_height (image->pixbuf);
+	rs = gdk_pixbuf_get_rowstride (image->pixbuf);
+
+	/* fixme: (Lauris) */
+	nr_matrix_f_set_translate (&tp, image->x.computed, image->y.computed);
+	nr_matrix_f_set_scale (&s, image->width.computed, -image->height.computed);
+	nr_matrix_f_set_translate (&ti, 0.0, -1.0);
+
+	nr_matrix_multiply_fff (&t, &s, &tp);
+	nr_matrix_multiply_fff (&t, &ti, &t);
+
+	sp_print_image_R8G8B8A8_P (ctx, px, w, h, rs, &t);
+#else
 	SPObject *object;
 	SPImage *image;
 	guchar *pixels;
@@ -353,6 +383,7 @@ sp_image_print (SPItem *item, GnomePrintContext *gpc)
 	}
 
 	gnome_print_grestore (gpc);
+#endif
 }
 
 static gchar *

@@ -50,6 +50,7 @@
 #include "macros.h"
 #include "file.h"
 #include "document.h"
+#include "sp-object.h"
 #include "toolbox.h"
 #include "interface.h"
 
@@ -58,11 +59,11 @@
 #include "slide-context.h"
 #endif
 
-#if 1
+#include "svg/svg.h"
+#if 0
 /* fixme: Ths is needed for export, remove if we implement generic helper */
 #include <math.h>
 #include "helper/png-write.h"
-#include "svg/svg.h"
 #include "sp-item.h"
 #endif
 
@@ -416,11 +417,11 @@ sp_do_export_png (SPDocument *doc)
 	}
 
 	if (!sp_export_width) {
-		width = (gint) floor ((area.x1 - area.x0) * dpi / 72.0 + 0.5);
+		width = (gint) ((area.x1 - area.x0) * dpi / 72.0 + 0.5);
 	}
 
 	if (!sp_export_height) {
-		height = (gint) floor ((area.y1 - area.y0) * dpi / 72.0 + 0.5);
+		height = (gint) ((area.y1 - area.y0) * dpi / 72.0 + 0.5);
 	}
 
 	bgcolor = 0x00000000;
@@ -433,6 +434,9 @@ sp_do_export_png (SPDocument *doc)
 	g_print ("Exporting %g %g %g %g to %d x %d rectangle\n", area.x0, area.y0, area.x1, area.y1, width, height);
 
 	if ((width >= 16) || (height >= 16) || (width < 65536) || (height < 65536)) {
+#if 1
+		sp_export_png_file (doc, sp_export_png, area.x0, area.y0, area.x1, area.y1, width, height, bgcolor);
+#else
 		ArtPixBuf *pixbuf;
 		art_u8 *pixels;
 		gdouble affine[6], t;
@@ -484,6 +488,7 @@ sp_do_export_png (SPDocument *doc)
 		sp_png_write_rgba (sp_export_png, pixbuf->pixels, pixbuf->width, pixbuf->height, pixbuf->rowstride);
 
 		art_pixbuf_free (pixbuf);
+#endif
 	} else {
 		g_warning ("Calculated bitmap dimensions %d %d out of range (16 - 65535)", width, height);
 	}

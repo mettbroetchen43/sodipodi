@@ -30,7 +30,7 @@ static void sp_use_read_attr (SPObject * object, const gchar * attr);
 static SPRepr *sp_use_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
-static void sp_use_print (SPItem * item, GnomePrintContext * gpc);
+static void sp_use_print (SPItem *item, SPPrintContext *ctx);
 static gchar * sp_use_description (SPItem * item);
 static NRArenaItem *sp_use_show (SPItem *item, NRArena *arena);
 static void sp_use_hide (SPItem *item, NRArena *arena);
@@ -241,13 +241,14 @@ sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 }
 
 static void
-sp_use_print (SPItem * item, GnomePrintContext * gpc)
+sp_use_print (SPItem *item, SPPrintContext *ctx)
 {
 	SPUse * use;
 
 	use = SP_USE (item);
 
-	if (use->child) sp_item_print (SP_ITEM (use->child), gpc);
+	/* fixme: transformations? (lauris) */
+	if (use->child) sp_item_invoke_print (SP_ITEM (use->child), ctx);
 }
 
 static gchar *

@@ -14,10 +14,14 @@
 
 #include <config.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkframe.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenu.h>
 #include <gtk/gtkmenuitem.h>
+#include <gtk/gtkwindow.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "../widgets/gradient-image.h"

@@ -137,9 +137,11 @@ void sp_text_set_repr_text_multiline (SPText *text, const guchar *str);
 
 SPCurve *sp_text_normalized_bpath (SPText *text);
 
+#if 0
 /* fixme: Better place for these */
 gint sp_text_font_weight_to_gp (gint weight);
 #define sp_text_font_italic_to_gp(s) ((s) != SP_CSS_FONT_STYLE_NORMAL)
+#endif
 
 /* fixme: Think about these (Lauris) */
 

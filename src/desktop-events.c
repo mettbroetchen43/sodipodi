@@ -11,6 +11,10 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <gtk/gtksignal.h>
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtklabel.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-dialog.h>
 

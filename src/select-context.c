@@ -17,6 +17,11 @@
 #include <glib.h>
 #include <libart_lgpl/art_affine.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtkradiobutton.h>
+#include <gtk/gtkvbox.h>
+#include <gtk/gtktogglebutton.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "helper/sp-canvas-util.h"

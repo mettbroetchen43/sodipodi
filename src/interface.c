@@ -19,6 +19,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <libgnome/gnome-mime.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-messagebox.h>

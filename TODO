@@ -1,5 +1,13 @@
 25/09/2002
 
+TODO for 0.28
+=============
+
+- Make page border togglable
+- Autoconf test for popt.h
+- Faster move
+- Direct FreeType fonts
+
 TODO for 0.27
 =============
 

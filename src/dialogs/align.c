@@ -1,8 +1,22 @@
-#define SP_QUICK_ALIGN_C
+#define __SP_QUICK_ALIGN_C__
+
+/*
+ * PNG export dialog
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <config.h>
 #include <math.h>
 #include <glib.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include <glade/glade.h>

@@ -14,9 +14,11 @@
  */
 
 #include <gtk/gtkmenu.h>
-#include <libgnomeprint/gnome-print.h>
+#if 0
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_pixbuf.h>
+#endif
+#include <libart_lgpl/art_rect.h>
 #include "helper/units.h"
 #include "display/nr-arena-forward.h"
 #include "forward.h"
@@ -81,17 +83,15 @@ struct _SPItemClass {
 	SPKnotHolder *(* knot_holder) (SPItem *item, SPDesktop *desktop);
 
 	/* Printing method. Assumes ctm is set to item affine matrix */
-	void (* print) (SPItem * item, GnomePrintContext * gpc);
+	/* fixme: Think about it, and maybe implement generic export method instead (Lauris) */
+	void (* print) (SPItem *item, SPPrintContext *ctx);
 
 	/* Give short description of item (for status display) */
 	gchar * (* description) (SPItem * item);
 
-	/* Silly, silly. We should assign handlers a more intelligent way */
 	NRArenaItem * (* show) (SPItem *item, NRArena *arena);
 	void (* hide) (SPItem * item, NRArena *arena);
 
-	/* Append to context menu */
-	void (* menu) (SPItem * item, SPDesktop *desktop, GtkMenu * menu);
 	/* give list of points for item to be considered for snapping */ 
 	GSList * (* snappoints) (SPItem * item, GSList * points);
 
@@ -100,6 +100,10 @@ struct _SPItemClass {
 
 	/* Emit event, if applicable */
 	gint (* event) (SPItem *item, SPEvent *event);
+
+	/* Append to context menu */
+	/* fixme: i do not want this, so move to some other place (Lauris) */
+	void (* menu) (SPItem * item, SPDesktop *desktop, GtkMenu * menu);
 };
 
 /* Flag testing macros */
@@ -115,13 +119,15 @@ GtkType sp_item_get_type (void);
 void sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 SPKnotHolder *sp_item_knot_holder (SPItem *item, SPDesktop *desktop);
 gchar * sp_item_description (SPItem * item);
-void sp_item_print (SPItem * item, GnomePrintContext * gpc);
+void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
 
 /* Shows/Hides item on given arena display list */
 NRArenaItem *sp_item_show (SPItem *item, NRArena *arena);
 void sp_item_hide (SPItem *item, NRArena *arena);
 
+#if 0
 gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
+#endif
 
 GSList * sp_item_snappoints (SPItem * item);
 

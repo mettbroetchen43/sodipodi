@@ -22,12 +22,15 @@
 #include <libnr/nr-pixblock.h>
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmenuitem.h>
 
 #include "macros.h"
 #include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "dialogs/fill-style.h"
 #include "display/nr-arena-shape.h"
+#include "print.h"
 #include "document.h"
 #include "desktop.h"
 #include "selection.h"
@@ -47,7 +50,7 @@ static void sp_shape_modified (SPObject *object, guint flags);
 static void sp_shape_style_modified (SPObject *object, guint flags);
 static SPRepr *sp_shape_write (SPObject *object, SPRepr *repr, guint flags);
 
-void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
+void sp_shape_print (SPItem * item, SPPrintContext * ctx);
 static gchar * sp_shape_description (SPItem * item);
 static NRArenaItem *sp_shape_show (SPItem *item, NRArena *arena);
 static void sp_shape_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
@@ -267,9 +270,44 @@ sp_shape_style_modified (SPObject *object, guint flags)
 }
 
 void
-sp_shape_print (SPItem *item, GnomePrintContext *gpc)
+sp_shape_print (SPItem *item, SPPrintContext *ctx)
 {
+#if 1
+	SPPath *path;
+	SPPathComp *comp;
 
+	path = SP_PATH (item);
+
+	if (!path->comp) return;
+	comp = path->comp->data;
+	if (!comp->curve) return;
+
+	if (SP_OBJECT_STYLE (item)->fill.type != SP_PAINT_TYPE_NONE) {
+		NRMatrixF t;
+		NRBPath bp;
+		t.c[0] = comp->affine[0];
+		t.c[1] = comp->affine[1];
+		t.c[2] = comp->affine[2];
+		t.c[3] = comp->affine[3];
+		t.c[4] = comp->affine[4];
+		t.c[5] = comp->affine[5];
+		bp.path = comp->curve->bpath;
+		sp_print_fill (ctx, &bp, &t, SP_OBJECT_STYLE (item));
+	}
+
+	if (SP_OBJECT_STYLE (item)->stroke.type != SP_PAINT_TYPE_NONE) {
+		NRMatrixF t;
+		NRBPath bp;
+		t.c[0] = comp->affine[0];
+		t.c[1] = comp->affine[1];
+		t.c[2] = comp->affine[2];
+		t.c[3] = comp->affine[3];
+		t.c[4] = comp->affine[4];
+		t.c[5] = comp->affine[5];
+		bp.path = comp->curve->bpath;
+		sp_print_stroke (ctx, &bp, &t, SP_OBJECT_STYLE (item));
+	}
+#else
 	gfloat rgb[3], opacity;
 	SPObject *object;
 	SPPath *path;
@@ -391,6 +429,7 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 		gnome_print_grestore (gpc);
 	}
 	gnome_print_grestore (gpc);
+#endif
 }
 
 static gchar *

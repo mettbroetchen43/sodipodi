@@ -13,6 +13,7 @@
  */
 
 #include <string.h>
+#include <libart_lgpl/art_misc.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "sp-path.h"

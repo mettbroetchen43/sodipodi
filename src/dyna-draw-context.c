@@ -36,6 +36,12 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtkmain.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtktable.h>
+#include <gtk/gtkbutton.h>
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtklabel.h>
 #include "svg/svg.h"
 #include "helper/curve.h"
 #include "helper/canvas-bpath.h"

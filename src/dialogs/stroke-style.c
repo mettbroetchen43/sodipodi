@@ -24,6 +24,11 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkadjustment.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtktable.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkspinbutton.h>
 #include <gtk/gtkradiobutton.h>
 #include <libgnomeui/gnome-stock.h>
 

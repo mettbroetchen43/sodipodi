@@ -20,9 +20,11 @@
 #include <unistd.h>
 #include <signal.h>
 #include <ctype.h>
+#include <glib.h>
 #include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-util.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <xml/repr-private.h>

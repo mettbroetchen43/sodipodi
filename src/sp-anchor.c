@@ -17,6 +17,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtkmenuitem.h>
 #include <libgnome/gnome-url.h>
 #include "helper/sp-canvas.h"
 #include "dialogs/object-attributes.h"

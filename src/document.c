@@ -17,6 +17,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <gtk/gtksignal.h>
 #include <xml/repr.h>
 #include "marshal.h"
 #include "sodipodi-private.h"

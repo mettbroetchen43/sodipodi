@@ -1,13 +1,15 @@
 #define __SP_ITEM_PROPERTIES_C__
 
 /*
- * Display settings dialog
+ * Item configuration dialog
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 1999-2002 Authors
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -16,11 +18,12 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#include <glade/glade.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkwindow.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtklabel.h>
-#include <gtk/gtksignal.h>
+#include <glade/glade.h>
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
 #include "../sodipodi.h"

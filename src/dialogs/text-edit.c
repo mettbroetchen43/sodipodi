@@ -21,8 +21,14 @@
 #include <libgnome/gnome-i18n.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtknotebook.h>
 #include <gtk/gtkvbox.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtktable.h>
 #include <gtk/gtktext.h>
+#include <gtk/gtkradiobutton.h>
+#include <gtk/gtkhseparator.h>
 #include <libgnomeui/gnome-stock.h>
 #include <gal/widgets/e-unicode.h>
 

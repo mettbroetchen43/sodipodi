@@ -277,9 +277,11 @@ sp_chars_normalized_bpath (SPChars *chars)
 /* This is completely unrelated to SPItem::print */
 
 static void
-sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPStyle *style, const gdouble *ctm,
+sp_chars_print_bpath (SPPrintContext *ctx, const ArtBpath *bpath, const SPStyle *style, const gdouble *ctm,
 		      const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox)
 {
+#if 0
+	/* fixme: Implement (Lauris) */
 	if (style->fill.type == SP_PAINT_TYPE_COLOR) {
 		gfloat rgb[3], opacity;
 
@@ -372,6 +374,7 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 	}
 
 	/* fixme: Print gradient stroke (Lauris) */
+#endif
 }
 
 /*
@@ -381,7 +384,7 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
  */
 
 void
-sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox)
+sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const gdouble *ctm, const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox)
 {
 	SPCharElement *el;
 
@@ -395,7 +398,7 @@ sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, c
 		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
 			abp = art_bpath_affine_transform (bpath.path, chela);
 
-			sp_chars_print_bpath (gpc, abp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);
+			sp_chars_print_bpath (ctx, abp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);
 
 			art_free (abp);
 		}

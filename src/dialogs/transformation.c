@@ -1,7 +1,27 @@
-#define SP_TRANSFORMATION_C
+#define __SP_TRANSFORMATION_C__
+
+/*
+ * PNG export dialog
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "align.h"
 #include <math.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtknotebook.h>
+#include <gtk/gtkhbox.h>
+#include <gtk/gtkframe.h>
+#include <gtk/gtklabel.h>
+#include <gtk/gtktogglebutton.h>
+#include <gtk/gtkspinbutton.h>
+#include <gtk/gtkoptionmenu.h>
+#include <gtk/gtkarrow.h>
 #include <glade/glade.h>
 #include "../sodipodi.h"
 #include "../document.h"

@@ -18,9 +18,12 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkmenuitem.h>
 #include "helper/art-utils.h"
 #include "helper/nr-plain-stuff.h"
 #include "svg/svg.h"
+#include "print.h"
 #include "display/nr-arena.h"
 #include "display/nr-arena-item.h"
 #include "document.h"
@@ -385,7 +388,8 @@ sp_item_private_snappoints (SPItem * item, GSList * points)
 	return points;
 }
 
-GSList * sp_item_snappoints (SPItem * item)
+GSList *
+sp_item_snappoints (SPItem * item)
 {
         GSList * points = NULL;
 
@@ -398,14 +402,27 @@ GSList * sp_item_snappoints (SPItem * item)
 }
 
 void
-sp_item_print (SPItem * item, GnomePrintContext * gpc)
+sp_item_invoke_print (SPItem *item, SPPrintContext *ctx)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
-	g_assert (gpc != NULL);
+	g_assert (ctx != NULL);
 
-	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print)
-		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print) (item, gpc);
+	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print) {
+		if (!nr_matrix_d_test_identity ((NRMatrixD *) item->affine, NR_EPSILON_F) ||
+		    SP_OBJECT_STYLE (item)->opacity.value != SP_SCALE24_MAX) {
+			NRMatrixF t;
+			t.c[0] = item->affine[0];
+			t.c[1] = item->affine[1];
+			t.c[2] = item->affine[2];
+			t.c[3] = item->affine[3];
+			t.c[4] = item->affine[4];
+			t.c[5] = item->affine[5];
+			sp_print_bind (ctx, &t, SP_SCALE24_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
+			SP_ITEM_CLASS (((GtkObject *)(item))->klass)->print (item, ctx);
+			sp_print_release (ctx);
+		}
+	}
 }
 
 static gchar *
@@ -493,6 +510,7 @@ sp_item_hide (SPItem *item, NRArena *arena)
 		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide) (item, arena);
 }
 
+#if 0
 gboolean
 sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 {
@@ -536,6 +554,7 @@ sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
 
 	return FALSE;
 }
+#endif
 
 void
 sp_item_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)

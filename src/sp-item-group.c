@@ -45,7 +45,7 @@ static gint sp_group_sequence (SPObject *object, gint seq);
 static SPRepr *sp_group_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
-static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
+static void sp_group_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_group_description (SPItem * item);
 static NRArenaItem *sp_group_show (SPItem *item, NRArena *arena);
 static void sp_group_hide (SPItem * item, NRArena *arena);
@@ -400,7 +400,7 @@ sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 }
 
 static void
-sp_group_print (SPItem * item, GnomePrintContext * gpc)
+sp_group_print (SPItem * item, SPPrintContext *ctx)
 {
 	SPGroup * group;
 	SPItem * child;
@@ -411,10 +411,7 @@ sp_group_print (SPItem * item, GnomePrintContext * gpc)
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			gnome_print_gsave (gpc);
-			gnome_print_concat (gpc, child->affine);
-			sp_item_print (child, gpc);
-			gnome_print_grestore (gpc);
+			sp_item_invoke_print (SP_ITEM (o), ctx);
 		}
 	}
 }

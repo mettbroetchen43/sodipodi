@@ -143,4 +143,6 @@ typedef struct _SPStyle SPStyle;
 
 typedef struct _SPEvent SPEvent;
 
+typedef struct _SPPrintContext SPPrintContext;
+
 #endif

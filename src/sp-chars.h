@@ -28,11 +28,7 @@ typedef struct _SPCharElement SPCharElement;
 struct _SPCharElement {
 	SPCharElement *next;
 	guint glyph;
-#if 0
-	NRTypeFace *face;
-#else
 	NRFont *font;
-#endif
 	NRMatrixF transform;
 };
 
@@ -50,16 +46,12 @@ GtkType sp_chars_get_type (void);
 
 void sp_chars_clear (SPChars *chars);
 
-#if 0
-void sp_chars_add_element (SPChars *chars, guint glyph, NRTypeFace *face, const NRMatrixF *transform);
-#else
 void sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF *transform);
-#endif
 
 SPCurve *sp_chars_normalized_bpath (SPChars *chars);
 
 /* This is completely unrelated to SPItem::print */
-void sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm,
+void sp_chars_do_print (SPChars *chars, SPPrintContext *ctx, const gdouble *ctm,
 			const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox);
 void sp_chars_set_paintbox (SPChars *chars, ArtDRect *paintbox);
 

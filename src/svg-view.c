@@ -13,6 +13,8 @@
  */
 
 #include <libart_lgpl/art_affine.h>
+#include <gtk/gtksignal.h>
+#include <gtk/gtkscrolledwindow.h>
 #include "display/canvas-arena.h"
 #include "document.h"
 #include "sp-item.h"
