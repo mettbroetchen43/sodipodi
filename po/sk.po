@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2002-11-16 21:45+0200\n"
+"POT-Creation-Date: 2002-11-25 12:16+0200\n"
 "PO-Revision-Date: 2002-05-18 09:48+0100\n"
 "Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -344,7 +344,7 @@ msgstr "©írka »ahu"
 #: src/dialogs/export.c:167 src/dialogs/export.c:202
 #: src/dialogs/object-attributes.c:68 src/dialogs/object-attributes.c:76
 #: src/dialogs/object-properties.c:346 src/dialogs/stroke-style.c:557
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1069
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1073
 msgid "Width:"
 msgstr "©írka:"
 
@@ -664,7 +664,7 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1025
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1057
 #: src/interface.c:311 src/interface.c:344 src/toolbox.c:575
 msgid "Zoom"
 msgstr "Lupa"
@@ -1252,7 +1252,7 @@ msgstr "Kontext kresby"
 msgid "Content"
 msgstr "Obsah"
 
-#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:232
+#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:234
 msgid "Delete attribute"
 msgstr "Zmaza» atribút"
 
@@ -1302,25 +1302,25 @@ msgstr "Nie je mo¾né vytvori» sodipodi-svg-doc továreò"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1017
+#: src/desktop.c:1049
 msgid "Welcome !"
 msgstr "Vitajte !"
 
-#: src/desktop.c:1089
+#: src/desktop.c:1121
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1165
+#: src/desktop.c:1197
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neulo¾ené zmeny, ulo¾i» ich?"
 
-#: src/desktop.c:1166 src/interface.c:217
+#: src/desktop.c:1198 src/interface.c:217
 msgid "Save"
 msgstr "Ulo¾i»"
 
-#: src/desktop.c:1166
+#: src/desktop.c:1198
 msgid "Don't save"
 msgstr "Neuklada»"
 
@@ -1789,12 +1789,12 @@ msgid "Transform:"
 msgstr "Transformácia"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1033
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1037
 msgid "Mass:"
 msgstr ""
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1045
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1049
 #, fuzzy
 msgid "Drag:"
 msgstr "Kreslenie"
@@ -1823,79 +1823,79 @@ msgstr "Mo¾nosti oaf"
 msgid "Tool has no options"
 msgstr "Mo¾nosti oaf"
 
-#: src/dialogs/xml-tree.c:155
+#: src/dialogs/xml-tree.c:157
 msgid "Drag to reorder nodes"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:163
+#: src/dialogs/xml-tree.c:165
 #, fuzzy
 msgid "New element node"
 msgstr "Pamä»ový dokument %d"
 
-#: src/dialogs/xml-tree.c:168
+#: src/dialogs/xml-tree.c:170
 msgid "New text node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:173
+#: src/dialogs/xml-tree.c:175
 #, fuzzy
 msgid "Duplicate node"
 msgstr "Duplikova»"
 
-#: src/dialogs/xml-tree.c:180
+#: src/dialogs/xml-tree.c:182
 #, fuzzy
 msgid "Delete node"
 msgstr "Zmaza»"
 
-#: src/dialogs/xml-tree.c:187
+#: src/dialogs/xml-tree.c:189
 #, fuzzy
 msgid "Unindent node"
 msgstr "Upravi» uzly"
 
-#: src/dialogs/xml-tree.c:192
+#: src/dialogs/xml-tree.c:194
 #, fuzzy
 msgid "Indent node"
 msgstr "Upravi» uzly"
 
-#: src/dialogs/xml-tree.c:197
+#: src/dialogs/xml-tree.c:199
 #, fuzzy
 msgid "Raise node"
 msgstr "Zvý¹i»"
 
-#: src/dialogs/xml-tree.c:202
+#: src/dialogs/xml-tree.c:204
 #, fuzzy
 msgid "Lower node"
 msgstr "Dolný"
 
-#: src/dialogs/xml-tree.c:254
+#: src/dialogs/xml-tree.c:259
 #, fuzzy
 msgid "Attribute name"
 msgstr "Atribút:"
 
-#: src/dialogs/xml-tree.c:265
-#, fuzzy
-msgid "Attribute value"
-msgstr "Atribúty"
-
-#: src/dialogs/xml-tree.c:273
+#: src/dialogs/xml-tree.c:266
 #, fuzzy
 msgid "Set attribute"
 msgstr "Zmaza» atribút"
 
-#: src/dialogs/xml-tree.c:729
+#: src/dialogs/xml-tree.c:279
+#, fuzzy
+msgid "Attribute value"
+msgstr "Atribúty"
+
+#: src/dialogs/xml-tree.c:734
 #, fuzzy, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/dialogs/xml-tree.c:752
+#: src/dialogs/xml-tree.c:757
 msgid "New element node..."
 msgstr ""
 
-#: src/dialogs/xml-tree.c:772
+#: src/dialogs/xml-tree.c:777
 #, fuzzy
 msgid "Cancel"
 msgstr "Zmeni»"
 
-#: src/dialogs/xml-tree.c:776
+#: src/dialogs/xml-tree.c:781
 #, fuzzy
 msgid "Create"
 msgstr "Vytvori» odkaz"
@@ -1916,13 +1916,13 @@ msgid "Unnamed document %d"
 msgstr "Nepomenovaný dokument %d"
 
 #. Angle
-#: src/dyna-draw-context.c:1057
+#: src/dyna-draw-context.c:1061
 #, fuzzy
 msgid "Angle:"
 msgstr "uhol"
 
 #. Reset
-#: src/dyna-draw-context.c:1081 src/rect-context.c:442
+#: src/dyna-draw-context.c:1085 src/rect-context.c:442
 #: src/spiral-context.c:393 src/star-context.c:393
 msgid "Defaults"
 msgstr ""
@@ -1942,31 +1942,31 @@ msgstr ""
 msgid "Roundness ratio for y:"
 msgstr ""
 
-#: src/select-context.c:641
+#: src/select-context.c:638
 #, fuzzy
 msgid "Visual transformation"
 msgstr "Zru¹i» transformáciu"
 
-#: src/select-context.c:649
+#: src/select-context.c:646
 #, fuzzy
 msgid "Show content"
 msgstr "Obsah"
 
-#: src/select-context.c:656
+#: src/select-context.c:653
 #, fuzzy
 msgid "Show outline"
 msgstr "Zobrazi» vodítka"
 
-#: src/select-context.c:663
+#: src/select-context.c:660
 #, fuzzy
 msgid "Object transformation"
 msgstr "Zru¹i» transformáciu"
 
-#: src/select-context.c:671
+#: src/select-context.c:668
 msgid "Optimize"
 msgstr ""
 
-#: src/select-context.c:678
+#: src/select-context.c:675
 msgid "Preserve"
 msgstr ""
 

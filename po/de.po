@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24.x\n"
-"POT-Creation-Date: 2002-11-19 22:19+0100\n"
+"POT-Creation-Date: 2002-11-25 12:16+0200\n"
 "PO-Revision-Date: 2002-11-19 22:17+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -346,7 +346,7 @@ msgstr "Linienbreite"
 #: src/dialogs/export.c:167 src/dialogs/export.c:202
 #: src/dialogs/object-attributes.c:68 src/dialogs/object-attributes.c:76
 #: src/dialogs/object-properties.c:346 src/dialogs/stroke-style.c:557
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1069
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1073
 msgid "Width:"
 msgstr "Breite:"
 
@@ -666,7 +666,7 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1025
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1057
 #: src/interface.c:311 src/interface.c:344 src/toolbox.c:575
 msgid "Zoom"
 msgstr "Zoom"
@@ -1307,25 +1307,25 @@ msgstr "Die sodipodi-svg-doc-Fabrik konnte nicht erstellt werden"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1017
+#: src/desktop.c:1049
 msgid "Welcome !"
 msgstr "Willkommen!"
 
-#: src/desktop.c:1089
+#: src/desktop.c:1121
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1165
+#: src/desktop.c:1197
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s hat ungespeicherte Änderungen, diese speichern?"
 
-#: src/desktop.c:1166 src/interface.c:217
+#: src/desktop.c:1198 src/interface.c:217
 msgid "Save"
 msgstr "Speichern"
 
-#: src/desktop.c:1166
+#: src/desktop.c:1198
 msgid "Don't save"
 msgstr "Nicht speichern"
 
@@ -1767,12 +1767,12 @@ msgid "Transform:"
 msgstr "Abbildung:"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1033
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1037
 msgid "Mass:"
 msgstr "Masse:"
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1045
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1049
 msgid "Drag:"
 msgstr "Ziehen:"
 
@@ -1844,20 +1844,20 @@ msgstr "Attribut einstellen"
 msgid "Attribute value"
 msgstr "Attributwert"
 
-#: src/dialogs/xml-tree.c:737
+#: src/dialogs/xml-tree.c:734
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi: %s: XML-Ansicht"
 
-#: src/dialogs/xml-tree.c:760
+#: src/dialogs/xml-tree.c:757
 msgid "New element node..."
 msgstr "Neuer Elementknoten..."
 
-#: src/dialogs/xml-tree.c:780
+#: src/dialogs/xml-tree.c:777
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: src/dialogs/xml-tree.c:784
+#: src/dialogs/xml-tree.c:781
 msgid "Create"
 msgstr "Erstellen"
 
@@ -1877,12 +1877,12 @@ msgid "Unnamed document %d"
 msgstr "Namenloses Dokument %d"
 
 #. Angle
-#: src/dyna-draw-context.c:1057
+#: src/dyna-draw-context.c:1061
 msgid "Angle:"
 msgstr "Winkel:"
 
 #. Reset
-#: src/dyna-draw-context.c:1081 src/rect-context.c:442
+#: src/dyna-draw-context.c:1085 src/rect-context.c:442
 #: src/spiral-context.c:393 src/star-context.c:393
 msgid "Defaults"
 msgstr "Vorgaben"

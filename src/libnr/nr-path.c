@@ -20,7 +20,7 @@ nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform)
 
 	if (!s->path) {
 		d->path = NULL;
-		return;
+		return d;
 	}
 
 	i = 0;

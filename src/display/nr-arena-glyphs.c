@@ -618,7 +618,7 @@ nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *sg, NRFont *font, int g
 
 	group = NR_ARENA_GROUP (sg);
 
-	if (nr_font_glyph_outline_get (font, glyph, &bpath, FALSE)) {
+	if (nr_font_glyph_outline_get (font, glyph, &bpath, FALSE) && bpath.path) {
 		SPCurve *curve;
 
 		nr_arena_item_request_render (NR_ARENA_ITEM (group));

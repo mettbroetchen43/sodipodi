@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.26pre2\n"
-"POT-Creation-Date: 2002-11-17 17:16+0100\n"
+"POT-Creation-Date: 2002-11-25 12:16+0200\n"
 "PO-Revision-Date: 2002-11-17 16:58+0100\n"
 "Last-Translator: raymond ostertag <r.ostertag@caramail.com>\n"
 "Language-Team: français <gnomefr@traduc.org>\n"
@@ -344,7 +344,7 @@ msgstr "Définir la largeur de trait"
 #: src/dialogs/export.c:167 src/dialogs/export.c:202
 #: src/dialogs/object-attributes.c:68 src/dialogs/object-attributes.c:76
 #: src/dialogs/object-properties.c:346 src/dialogs/stroke-style.c:557
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1069
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1073
 msgid "Width:"
 msgstr "Largeur :"
 
@@ -664,7 +664,7 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1025
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1057
 #: src/interface.c:311 src/interface.c:344 src/toolbox.c:575
 msgid "Zoom"
 msgstr "Zoom"
@@ -1302,25 +1302,25 @@ msgstr "Ne peut créer l'usine sodipodi-svg-doc"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1017
+#: src/desktop.c:1049
 msgid "Welcome !"
 msgstr "Bienvenue !"
 
-#: src/desktop.c:1089
+#: src/desktop.c:1121
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1165
+#: src/desktop.c:1197
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Le document %s a des changements non enregistrés, les enregistrer ?"
 
-#: src/desktop.c:1166 src/interface.c:217
+#: src/desktop.c:1198 src/interface.c:217
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/desktop.c:1166
+#: src/desktop.c:1198
 msgid "Don't save"
 msgstr "Ne pas enregistrer"
 
@@ -1762,12 +1762,12 @@ msgid "Transform:"
 msgstr "Transformation"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1033
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1037
 msgid "Mass:"
 msgstr "Masse :"
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1045
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1049
 msgid "Drag:"
 msgstr "Glisser :"
 
@@ -1839,20 +1839,20 @@ msgstr "Définir l'attribut"
 msgid "Attribute value"
 msgstr "Valeur d' attribut"
 
-#: src/dialogs/xml-tree.c:737
+#: src/dialogs/xml-tree.c:734
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi : %s : Vue XML"
 
-#: src/dialogs/xml-tree.c:760
+#: src/dialogs/xml-tree.c:757
 msgid "New element node..."
 msgstr "Nouvel élément noeud"
 
-#: src/dialogs/xml-tree.c:780
+#: src/dialogs/xml-tree.c:777
 msgid "Cancel"
 msgstr "Annuler"
 
-#: src/dialogs/xml-tree.c:784
+#: src/dialogs/xml-tree.c:781
 msgid "Create"
 msgstr "Créer"
 
@@ -1872,12 +1872,12 @@ msgid "Unnamed document %d"
 msgstr "Document sans nom %d"
 
 #. Angle
-#: src/dyna-draw-context.c:1057
+#: src/dyna-draw-context.c:1061
 msgid "Angle:"
 msgstr "Angle :"
 
 #. Reset
-#: src/dyna-draw-context.c:1081 src/rect-context.c:442
+#: src/dyna-draw-context.c:1085 src/rect-context.c:442
 #: src/spiral-context.c:393 src/star-context.c:393
 msgid "Defaults"
 msgstr "Défauts"
@@ -1897,27 +1897,27 @@ msgstr "Ratio d'arrondi pour x :"
 msgid "Roundness ratio for y:"
 msgstr "Ratio d'arrondi pour y :"
 
-#: src/select-context.c:642
+#: src/select-context.c:638
 msgid "Visual transformation"
 msgstr "Transformation visuelle"
 
-#: src/select-context.c:650
+#: src/select-context.c:646
 msgid "Show content"
 msgstr "Montrer le contenu"
 
-#: src/select-context.c:657
+#: src/select-context.c:653
 msgid "Show outline"
 msgstr "Montrer le contour"
 
-#: src/select-context.c:664
+#: src/select-context.c:660
 msgid "Object transformation"
 msgstr "Transformation d'objet"
 
-#: src/select-context.c:672
+#: src/select-context.c:668
 msgid "Optimize"
 msgstr "Optimiser"
 
-#: src/select-context.c:679
+#: src/select-context.c:675
 msgid "Preserve"
 msgstr "Préserver"
 

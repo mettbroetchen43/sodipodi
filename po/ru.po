@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.28\n"
-"POT-Creation-Date: 2002-11-16 21:45+0200\n"
+"POT-Creation-Date: 2002-11-25 12:16+0200\n"
 "PO-Revision-Date: 2002-11-17 00:49MSK\n"
 "Last-Translator: Vitaly Lipatov <lav@altlinux.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -345,7 +345,7 @@ msgstr "Ширина рамки"
 #: src/dialogs/export.c:167 src/dialogs/export.c:202
 #: src/dialogs/object-attributes.c:68 src/dialogs/object-attributes.c:76
 #: src/dialogs/object-properties.c:346 src/dialogs/stroke-style.c:557
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1069
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1073
 msgid "Width:"
 msgstr "Ширина:"
 
@@ -665,7 +665,7 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1025
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1057
 #: src/interface.c:311 src/interface.c:344 src/toolbox.c:575
 msgid "Zoom"
 msgstr "Масштаб"
@@ -832,7 +832,8 @@ msgstr "Создать новый рисунок"
 
 #: glade/toolbox.glade.h:38
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
-msgstr "Нет, я лучше сделаю ещё несколько крутых векторных рисунков в sodipodi."
+msgstr ""
+"Нет, я лучше сделаю ещё несколько крутых векторных рисунков в sodipodi."
 
 #: glade/toolbox.glade.h:40
 msgid "Nope !"
@@ -1253,7 +1254,7 @@ msgstr "Изменить содержимое"
 msgid "Content"
 msgstr "Содержание"
 
-#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:232
+#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:234
 msgid "Delete attribute"
 msgstr "Удалить атрибут"
 
@@ -1303,25 +1304,25 @@ msgstr "Не удалось создать фабрику sodipodi-svg-doc"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1017
+#: src/desktop.c:1049
 msgid "Welcome !"
 msgstr "Добро пожаловать!"
 
-#: src/desktop.c:1089
+#: src/desktop.c:1121
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1165
+#: src/desktop.c:1197
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "В документе '%s' есть несохранённые изменения, сохранить их?"
 
-#: src/desktop.c:1166 src/interface.c:217
+#: src/desktop.c:1198 src/interface.c:217
 msgid "Save"
 msgstr "Сохранить"
 
-#: src/desktop.c:1166
+#: src/desktop.c:1198
 msgid "Don't save"
 msgstr "Не сохранять"
 
@@ -1763,12 +1764,12 @@ msgid "Transform:"
 msgstr "Преобразование:"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1033
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1037
 msgid "Mass:"
 msgstr "Масса:"
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1045
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1049
 msgid "Drag:"
 msgstr "Заторможенность:"
 
@@ -1792,68 +1793,68 @@ msgstr "Параметры инструментов"
 msgid "Tool has no options"
 msgstr "Инструмент не имеет параметров"
 
-#: src/dialogs/xml-tree.c:155
+#: src/dialogs/xml-tree.c:157
 msgid "Drag to reorder nodes"
 msgstr "Переместите для изменения порядка узлов"
 
-#: src/dialogs/xml-tree.c:163
+#: src/dialogs/xml-tree.c:165
 msgid "New element node"
 msgstr "Создать узел элемента"
 
-#: src/dialogs/xml-tree.c:168
+#: src/dialogs/xml-tree.c:170
 msgid "New text node"
 msgstr "Создать текстовый узел"
 
-#: src/dialogs/xml-tree.c:173
+#: src/dialogs/xml-tree.c:175
 msgid "Duplicate node"
 msgstr "Дублировать узел"
 
-#: src/dialogs/xml-tree.c:180
+#: src/dialogs/xml-tree.c:182
 msgid "Delete node"
 msgstr "Удалить узел"
 
-#: src/dialogs/xml-tree.c:187
+#: src/dialogs/xml-tree.c:189
 msgid "Unindent node"
 msgstr "Убрать отступ узла"
 
-#: src/dialogs/xml-tree.c:192
+#: src/dialogs/xml-tree.c:194
 msgid "Indent node"
 msgstr "Добавить отступ узла"
 
-#: src/dialogs/xml-tree.c:197
+#: src/dialogs/xml-tree.c:199
 msgid "Raise node"
 msgstr "Поднять узел"
 
-#: src/dialogs/xml-tree.c:202
+#: src/dialogs/xml-tree.c:204
 msgid "Lower node"
 msgstr "Опустить узел"
 
-#: src/dialogs/xml-tree.c:254
+#: src/dialogs/xml-tree.c:259
 msgid "Attribute name"
 msgstr "Название атрибута"
 
-#: src/dialogs/xml-tree.c:265
-msgid "Attribute value"
-msgstr "Значение атрибута"
-
-#: src/dialogs/xml-tree.c:273
+#: src/dialogs/xml-tree.c:266
 msgid "Set attribute"
 msgstr "Установить атрибут"
 
-#: src/dialogs/xml-tree.c:729
+#: src/dialogs/xml-tree.c:279
+msgid "Attribute value"
+msgstr "Значение атрибута"
+
+#: src/dialogs/xml-tree.c:734
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi: %s : Просмотр XML"
 
-#: src/dialogs/xml-tree.c:752
+#: src/dialogs/xml-tree.c:757
 msgid "New element node..."
 msgstr "Создать узел элемента..."
 
-#: src/dialogs/xml-tree.c:772
+#: src/dialogs/xml-tree.c:777
 msgid "Cancel"
 msgstr "Отменить"
 
-#: src/dialogs/xml-tree.c:776
+#: src/dialogs/xml-tree.c:781
 msgid "Create"
 msgstr "Создать"
 
@@ -1873,12 +1874,12 @@ msgid "Unnamed document %d"
 msgstr "Без названия %d"
 
 #. Angle
-#: src/dyna-draw-context.c:1057
+#: src/dyna-draw-context.c:1061
 msgid "Angle:"
 msgstr "Угол:"
 
 #. Reset
-#: src/dyna-draw-context.c:1081 src/rect-context.c:442
+#: src/dyna-draw-context.c:1085 src/rect-context.c:442
 #: src/spiral-context.c:393 src/star-context.c:393
 msgid "Defaults"
 msgstr "Умолчания"
@@ -1898,27 +1899,27 @@ msgstr "Округляющий коэффициент для X:"
 msgid "Roundness ratio for y:"
 msgstr "Округляющий коэффициент для y:"
 
-#: src/select-context.c:641
+#: src/select-context.c:638
 msgid "Visual transformation"
 msgstr "Видимое преобразование"
 
-#: src/select-context.c:649
+#: src/select-context.c:646
 msgid "Show content"
 msgstr "Показать содержание"
 
-#: src/select-context.c:656
+#: src/select-context.c:653
 msgid "Show outline"
 msgstr "Показать контуры"
 
-#: src/select-context.c:663
+#: src/select-context.c:660
 msgid "Object transformation"
 msgstr "Преобразование объекта"
 
-#: src/select-context.c:671
+#: src/select-context.c:668
 msgid "Optimize"
 msgstr "Оптимизировать"
 
-#: src/select-context.c:678
+#: src/select-context.c:675
 msgid "Preserve"
 msgstr "Сохранить"
 
@@ -2208,7 +2209,8 @@ msgstr "Диалоги"
 
 #: src/main.c:102
 msgid "Do not use X server (only process files from console)"
-msgstr "Не использовать X-сервер (выполнять только обработку файлов из консоли)"
+msgstr ""
+"Не использовать X-сервер (выполнять только обработку файлов из консоли)"
 
 #: src/main.c:105
 msgid "Try to use X server even if $DISPLAY is not set)"
@@ -2256,7 +2258,8 @@ msgstr "x0:y0:x1:y1"
 
 #: src/main.c:123
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr "Ширина генерируемого растрового изображения в точках (отменяет настройку dpi)"
+msgstr ""
+"Ширина генерируемого растрового изображения в точках (отменяет настройку dpi)"
 
 #: src/main.c:123
 msgid "WIDTH"
@@ -2264,7 +2267,8 @@ msgstr "ШИРИНА"
 
 #: src/main.c:125
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr "Высота генерируемого растрового изображения в точках (отменяет настройку dpi)"
+msgstr ""
+"Высота генерируемого растрового изображения в точках (отменяет настройку dpi)"
 
 #: src/main.c:125
 msgid "HEIGHT"
@@ -2299,17 +2303,20 @@ msgstr "Без названия"
 #. Show nice dialog box
 #: src/sodipodi.c:364
 msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr "В Sodipodi произошла внутренняя ошибка и программа сейчас будет закрыта.\n"
+msgstr ""
+"В Sodipodi произошла внутренняя ошибка и программа сейчас будет закрыта.\n"
 
 #: src/sodipodi.c:365
-msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Автоматическое резервное копирование несохранённых документы было выполнено "
 "в следующие места:\n"
 
 #: src/sodipodi.c:366
 msgid "Automatic backup of following documents failed:\n"
-msgstr "Автоматическое резервное копирование следующих документов не удалось:\n"
+msgstr ""
+"Автоматическое резервное копирование следующих документов не удалось:\n"
 
 #. Not a regular file
 #: src/sodipodi.c:455
@@ -2689,7 +2696,8 @@ msgid "Node tool - modify different aspects of existing objects"
 msgstr "Инструмент работы с узлами - изменяет пропорции существующих объектов"
 
 #: src/toolbox.c:478
-msgid "Rectangle tool - create rectangles and squares with optional rounded corners"
+msgid ""
+"Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr ""
 "Прямоугольник - создаёт прямоугольники и квадраты, с возможностью "
 "закругления углов"
@@ -2716,7 +2724,8 @@ msgstr "Перо - рисование точно расположенных кривых линий"
 
 #: src/toolbox.c:527
 msgid "Calligraphic tool - draw calligraphic lines"
-msgstr "Динамичная линия - рисует линии, толщина которых зависит от скорости курсора"
+msgstr ""
+"Динамичная линия - рисует линии, толщина которых зависит от скорости курсора"
 
 #: src/toolbox.c:544
 msgid "Text tool - create editable text objects"
@@ -2912,4 +2921,3 @@ msgid "Creating new curve. Press '+' to toggle Append/New."
 msgstr ""
 "Создать новую кривую. Нажимайте '+' для переключения Добавлять/Создавать "
 "новый"
-

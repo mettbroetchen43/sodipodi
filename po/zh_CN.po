@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24\n"
-"POT-Creation-Date: 2002-11-16 21:45+0200\n"
+"POT-Creation-Date: 2002-11-25 12:16+0200\n"
 "PO-Revision-Date: 2002-03-17 15:51+0800\n"
 "Last-Translator: wang li <charlesw1234@163.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -342,7 +342,7 @@ msgstr "勾描宽度"
 #: src/dialogs/export.c:167 src/dialogs/export.c:202
 #: src/dialogs/object-attributes.c:68 src/dialogs/object-attributes.c:76
 #: src/dialogs/object-properties.c:346 src/dialogs/stroke-style.c:557
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1069
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1073
 msgid "Width:"
 msgstr "宽度："
 
@@ -662,7 +662,7 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1025
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1057
 #: src/interface.c:311 src/interface.c:344 src/toolbox.c:575
 msgid "Zoom"
 msgstr "缩放"
@@ -1250,7 +1250,7 @@ msgstr "绘图上下文"
 msgid "Content"
 msgstr "内容"
 
-#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:232
+#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:234
 msgid "Delete attribute"
 msgstr "删除属性"
 
@@ -1300,25 +1300,25 @@ msgstr "无法创建 sodipodi-svg-doc 车间"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1017
+#: src/desktop.c:1049
 msgid "Welcome !"
 msgstr "欢迎 ！"
 
-#: src/desktop.c:1089
+#: src/desktop.c:1121
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi：%s：%s：%d"
 
-#: src/desktop.c:1165
+#: src/desktop.c:1197
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "文档 %s 含有未保存的修改，保存吗？"
 
-#: src/desktop.c:1166 src/interface.c:217
+#: src/desktop.c:1198 src/interface.c:217
 msgid "Save"
 msgstr "保存"
 
-#: src/desktop.c:1166
+#: src/desktop.c:1198
 msgid "Don't save"
 msgstr "不保存"
 
@@ -1789,12 +1789,12 @@ msgid "Transform:"
 msgstr "转化"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1033
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1037
 msgid "Mass:"
 msgstr ""
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1045
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1049
 #, fuzzy
 msgid "Drag:"
 msgstr "绘制"
@@ -1823,79 +1823,79 @@ msgstr "Oaf 选项"
 msgid "Tool has no options"
 msgstr "Oaf 选项"
 
-#: src/dialogs/xml-tree.c:155
+#: src/dialogs/xml-tree.c:157
 msgid "Drag to reorder nodes"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:163
+#: src/dialogs/xml-tree.c:165
 #, fuzzy
 msgid "New element node"
 msgstr "内存文档 %d"
 
-#: src/dialogs/xml-tree.c:168
+#: src/dialogs/xml-tree.c:170
 msgid "New text node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:173
+#: src/dialogs/xml-tree.c:175
 #, fuzzy
 msgid "Duplicate node"
 msgstr "复制"
 
-#: src/dialogs/xml-tree.c:180
+#: src/dialogs/xml-tree.c:182
 #, fuzzy
 msgid "Delete node"
 msgstr "删除"
 
-#: src/dialogs/xml-tree.c:187
+#: src/dialogs/xml-tree.c:189
 #, fuzzy
 msgid "Unindent node"
 msgstr "编辑节点"
 
-#: src/dialogs/xml-tree.c:192
+#: src/dialogs/xml-tree.c:194
 #, fuzzy
 msgid "Indent node"
 msgstr "编辑节点"
 
-#: src/dialogs/xml-tree.c:197
+#: src/dialogs/xml-tree.c:199
 #, fuzzy
 msgid "Raise node"
 msgstr "提升"
 
-#: src/dialogs/xml-tree.c:202
+#: src/dialogs/xml-tree.c:204
 #, fuzzy
 msgid "Lower node"
 msgstr "降低"
 
-#: src/dialogs/xml-tree.c:254
+#: src/dialogs/xml-tree.c:259
 #, fuzzy
 msgid "Attribute name"
 msgstr "属性："
 
-#: src/dialogs/xml-tree.c:265
-#, fuzzy
-msgid "Attribute value"
-msgstr "属性"
-
-#: src/dialogs/xml-tree.c:273
+#: src/dialogs/xml-tree.c:266
 #, fuzzy
 msgid "Set attribute"
 msgstr "删除属性"
 
-#: src/dialogs/xml-tree.c:729
+#: src/dialogs/xml-tree.c:279
+#, fuzzy
+msgid "Attribute value"
+msgstr "属性"
+
+#: src/dialogs/xml-tree.c:734
 #, fuzzy, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi：%s：%s：%d"
 
-#: src/dialogs/xml-tree.c:752
+#: src/dialogs/xml-tree.c:757
 msgid "New element node..."
 msgstr ""
 
-#: src/dialogs/xml-tree.c:772
+#: src/dialogs/xml-tree.c:777
 #, fuzzy
 msgid "Cancel"
 msgstr "改变"
 
-#: src/dialogs/xml-tree.c:776
+#: src/dialogs/xml-tree.c:781
 #, fuzzy
 msgid "Create"
 msgstr "创建连接"
@@ -1916,13 +1916,13 @@ msgid "Unnamed document %d"
 msgstr "未命名文档 %d"
 
 #. Angle
-#: src/dyna-draw-context.c:1057
+#: src/dyna-draw-context.c:1061
 #, fuzzy
 msgid "Angle:"
 msgstr "角度"
 
 #. Reset
-#: src/dyna-draw-context.c:1081 src/rect-context.c:442
+#: src/dyna-draw-context.c:1085 src/rect-context.c:442
 #: src/spiral-context.c:393 src/star-context.c:393
 msgid "Defaults"
 msgstr ""
@@ -1942,31 +1942,31 @@ msgstr ""
 msgid "Roundness ratio for y:"
 msgstr ""
 
-#: src/select-context.c:641
+#: src/select-context.c:638
 #, fuzzy
 msgid "Visual transformation"
 msgstr "重置变换"
 
-#: src/select-context.c:649
+#: src/select-context.c:646
 #, fuzzy
 msgid "Show content"
 msgstr "内容"
 
-#: src/select-context.c:656
+#: src/select-context.c:653
 #, fuzzy
 msgid "Show outline"
 msgstr "显示指示线"
 
-#: src/select-context.c:663
+#: src/select-context.c:660
 #, fuzzy
 msgid "Object transformation"
 msgstr "重置变换"
 
-#: src/select-context.c:671
+#: src/select-context.c:668
 msgid "Optimize"
 msgstr ""
 
-#: src/select-context.c:678
+#: src/select-context.c:675
 msgid "Preserve"
 msgstr ""
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"POT-Creation-Date: 2002-11-16 21:45+0200\n"
+"POT-Creation-Date: 2002-11-25 12:16+0200\n"
 "PO-Revision-Date: 2001-08-11 22:32+0200\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -346,7 +346,7 @@ msgstr "Kihúzás szélessége"
 #: src/dialogs/export.c:167 src/dialogs/export.c:202
 #: src/dialogs/object-attributes.c:68 src/dialogs/object-attributes.c:76
 #: src/dialogs/object-properties.c:346 src/dialogs/stroke-style.c:557
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1069
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1073
 msgid "Width:"
 msgstr "Szélesség:"
 
@@ -668,7 +668,7 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1025
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1057
 #: src/interface.c:311 src/interface.c:344 src/toolbox.c:575
 msgid "Zoom"
 msgstr "Nagyítás"
@@ -1269,7 +1269,7 @@ msgstr "Rajzkörnyezet"
 msgid "Content"
 msgstr "Tartalom"
 
-#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:232
+#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:234
 msgid "Delete attribute"
 msgstr "Attribútum törlése"
 
@@ -1321,26 +1321,26 @@ msgstr "Nem sikerült létrehozni a sodipodi-svg-doc factory-t"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1017
+#: src/desktop.c:1049
 msgid "Welcome !"
 msgstr ""
 
-#: src/desktop.c:1089
+#: src/desktop.c:1121
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr ""
 
-#: src/desktop.c:1165
+#: src/desktop.c:1197
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "%s dokumentum megváltozott. Mented a változásokat?"
 
-#: src/desktop.c:1166 src/interface.c:217
+#: src/desktop.c:1198 src/interface.c:217
 #, fuzzy
 msgid "Save"
 msgstr "Mentés\t"
 
-#: src/desktop.c:1166
+#: src/desktop.c:1198
 msgid "Don't save"
 msgstr ""
 
@@ -1821,12 +1821,12 @@ msgid "Transform:"
 msgstr "Átalakítás"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1033
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1037
 msgid "Mass:"
 msgstr ""
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1045
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1049
 #, fuzzy
 msgid "Drag:"
 msgstr "Rajzolás"
@@ -1857,80 +1857,80 @@ msgstr "Oaf beállítások"
 msgid "Tool has no options"
 msgstr "Oaf beállítások"
 
-#: src/dialogs/xml-tree.c:155
+#: src/dialogs/xml-tree.c:157
 #, fuzzy
 msgid "Drag to reorder nodes"
 msgstr "Kötetlen alakú vonal rajzolása"
 
-#: src/dialogs/xml-tree.c:163
+#: src/dialogs/xml-tree.c:165
 #, fuzzy
 msgid "New element node"
 msgstr "Új fájl"
 
-#: src/dialogs/xml-tree.c:168
+#: src/dialogs/xml-tree.c:170
 msgid "New text node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:173
+#: src/dialogs/xml-tree.c:175
 #, fuzzy
 msgid "Duplicate node"
 msgstr "Kettõzés"
 
-#: src/dialogs/xml-tree.c:180
+#: src/dialogs/xml-tree.c:182
 #, fuzzy
 msgid "Delete node"
 msgstr "Törlés"
 
-#: src/dialogs/xml-tree.c:187
+#: src/dialogs/xml-tree.c:189
 #, fuzzy
 msgid "Unindent node"
 msgstr "Csomópontok szerkesztése"
 
-#: src/dialogs/xml-tree.c:192
+#: src/dialogs/xml-tree.c:194
 #, fuzzy
 msgid "Indent node"
 msgstr "Csomópontok szerkesztése"
 
-#: src/dialogs/xml-tree.c:197
+#: src/dialogs/xml-tree.c:199
 #, fuzzy
 msgid "Raise node"
 msgstr "Tégla"
 
-#: src/dialogs/xml-tree.c:202
+#: src/dialogs/xml-tree.c:204
 msgid "Lower node"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:254
+#: src/dialogs/xml-tree.c:259
 #, fuzzy
 msgid "Attribute name"
 msgstr "Attribútum:"
 
-#: src/dialogs/xml-tree.c:265
-#, fuzzy
-msgid "Attribute value"
-msgstr "Attribútum"
-
-#: src/dialogs/xml-tree.c:273
+#: src/dialogs/xml-tree.c:266
 #, fuzzy
 msgid "Set attribute"
 msgstr "Attribútum törlése"
 
-#: src/dialogs/xml-tree.c:729
+#: src/dialogs/xml-tree.c:279
+#, fuzzy
+msgid "Attribute value"
+msgstr "Attribútum"
+
+#: src/dialogs/xml-tree.c:734
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr ""
 
-#: src/dialogs/xml-tree.c:752
+#: src/dialogs/xml-tree.c:757
 #, fuzzy
 msgid "New element node..."
 msgstr "Új fájl"
 
-#: src/dialogs/xml-tree.c:772
+#: src/dialogs/xml-tree.c:777
 #, fuzzy
 msgid "Cancel"
 msgstr "Változtatás"
 
-#: src/dialogs/xml-tree.c:776
+#: src/dialogs/xml-tree.c:781
 msgid "Create"
 msgstr ""
 
@@ -1950,13 +1950,13 @@ msgid "Unnamed document %d"
 msgstr ""
 
 #. Angle
-#: src/dyna-draw-context.c:1057
+#: src/dyna-draw-context.c:1061
 #, fuzzy
 msgid "Angle:"
 msgstr "szög"
 
 #. Reset
-#: src/dyna-draw-context.c:1081 src/rect-context.c:442
+#: src/dyna-draw-context.c:1085 src/rect-context.c:442
 #: src/spiral-context.c:393 src/star-context.c:393
 msgid "Defaults"
 msgstr ""
@@ -1976,31 +1976,31 @@ msgstr ""
 msgid "Roundness ratio for y:"
 msgstr ""
 
-#: src/select-context.c:641
+#: src/select-context.c:638
 #, fuzzy
 msgid "Visual transformation"
 msgstr "Átalakítás"
 
-#: src/select-context.c:649
+#: src/select-context.c:646
 #, fuzzy
 msgid "Show content"
 msgstr "Tartalom"
 
-#: src/select-context.c:656
+#: src/select-context.c:653
 #, fuzzy
 msgid "Show outline"
 msgstr "Segédvonalak mutatása"
 
-#: src/select-context.c:663
+#: src/select-context.c:660
 #, fuzzy
 msgid "Object transformation"
 msgstr "Átalakítás törlése"
 
-#: src/select-context.c:671
+#: src/select-context.c:668
 msgid "Optimize"
 msgstr ""
 
-#: src/select-context.c:678
+#: src/select-context.c:675
 msgid "Preserve"
 msgstr ""
 

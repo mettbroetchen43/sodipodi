@@ -1,5 +1,8 @@
 2002-11-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/display/nr-arena-glyphs.c (nr_arena_glyphs_group_add_component): Skip
+	if zero-sized valid path
+
 	* src/libnr/nr-path.c (nr_path_matrix_f_bbox_f_union): Allow NULL path member
 	(nr_path_matrix_f_point_f_bbox_wind_distance): Ditto
 	(nr_path_duplicate_transform): Ditto

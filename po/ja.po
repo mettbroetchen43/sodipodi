@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.27\n"
-"POT-Creation-Date: 2002-11-16 21:45+0200\n"
+"POT-Creation-Date: 2002-11-25 12:16+0200\n"
 "PO-Revision-Date: 2002-11-18 00:51+0900\n"
 "Last-Translator: Junichi Uekawa <dancer@debian.org>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
@@ -346,7 +346,7 @@ msgstr "ストローク幅"
 #: src/dialogs/export.c:167 src/dialogs/export.c:202
 #: src/dialogs/object-attributes.c:68 src/dialogs/object-attributes.c:76
 #: src/dialogs/object-properties.c:346 src/dialogs/stroke-style.c:557
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1069
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1073
 msgid "Width:"
 msgstr "幅:"
 
@@ -666,7 +666,7 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1025
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1057
 #: src/interface.c:311 src/interface.c:344 src/toolbox.c:575
 msgid "Zoom"
 msgstr "ズーム"
@@ -1252,7 +1252,7 @@ msgstr "内容を変更します"
 msgid "Content"
 msgstr "内容"
 
-#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:232
+#: glade/xml-tree.glade.h:10 src/dialogs/xml-tree.c:234
 msgid "Delete attribute"
 msgstr "属性削除"
 
@@ -1302,25 +1302,25 @@ msgstr "sodipodi-svg-docファクトリを作成できません"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1017
+#: src/desktop.c:1049
 msgid "Welcome !"
 msgstr "ようこそ！"
 
-#: src/desktop.c:1089
+#: src/desktop.c:1121
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1165
+#: src/desktop.c:1197
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "ドキュメント %s は未保存の変更がありますが、保存しますか?"
 
-#: src/desktop.c:1166 src/interface.c:217
+#: src/desktop.c:1198 src/interface.c:217
 msgid "Save"
 msgstr "セーブ"
 
-#: src/desktop.c:1166
+#: src/desktop.c:1198
 msgid "Don't save"
 msgstr "セーブしない"
 
@@ -1762,12 +1762,12 @@ msgid "Transform:"
 msgstr "変形:"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1033
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1037
 msgid "Mass:"
 msgstr "質量:"
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1045
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1049
 msgid "Drag:"
 msgstr "重み:"
 
@@ -1791,68 +1791,68 @@ msgstr "ツールオプション"
 msgid "Tool has no options"
 msgstr "ツールのオプションがありません"
 
-#: src/dialogs/xml-tree.c:155
+#: src/dialogs/xml-tree.c:157
 msgid "Drag to reorder nodes"
 msgstr "再編成ノードへドラッグ"
 
-#: src/dialogs/xml-tree.c:163
+#: src/dialogs/xml-tree.c:165
 msgid "New element node"
 msgstr "要素ノードの新規作成"
 
-#: src/dialogs/xml-tree.c:168
+#: src/dialogs/xml-tree.c:170
 msgid "New text node"
 msgstr "テキストノードの新規作成"
 
-#: src/dialogs/xml-tree.c:173
+#: src/dialogs/xml-tree.c:175
 msgid "Duplicate node"
 msgstr "ノード複製"
 
-#: src/dialogs/xml-tree.c:180
+#: src/dialogs/xml-tree.c:182
 msgid "Delete node"
 msgstr "ノードの削除"
 
-#: src/dialogs/xml-tree.c:187
+#: src/dialogs/xml-tree.c:189
 msgid "Unindent node"
 msgstr "ノードのインデント除去"
 
-#: src/dialogs/xml-tree.c:192
+#: src/dialogs/xml-tree.c:194
 msgid "Indent node"
 msgstr "ノードのインデント"
 
-#: src/dialogs/xml-tree.c:197
+#: src/dialogs/xml-tree.c:199
 msgid "Raise node"
 msgstr "ノードを上げる"
 
-#: src/dialogs/xml-tree.c:202
+#: src/dialogs/xml-tree.c:204
 msgid "Lower node"
 msgstr "ノードを下げる"
 
-#: src/dialogs/xml-tree.c:254
+#: src/dialogs/xml-tree.c:259
 msgid "Attribute name"
 msgstr "属性名"
 
-#: src/dialogs/xml-tree.c:265
-msgid "Attribute value"
-msgstr "属性値"
-
-#: src/dialogs/xml-tree.c:273
+#: src/dialogs/xml-tree.c:266
 msgid "Set attribute"
 msgstr "属性設定"
 
-#: src/dialogs/xml-tree.c:729
+#: src/dialogs/xml-tree.c:279
+msgid "Attribute value"
+msgstr "属性値"
+
+#: src/dialogs/xml-tree.c:734
 #, c-format
 msgid "Sodipodi: %s : XML View"
 msgstr "Sodipodi: %s: XMLビュー"
 
-#: src/dialogs/xml-tree.c:752
+#: src/dialogs/xml-tree.c:757
 msgid "New element node..."
 msgstr "要素ノードの新規作成..."
 
-#: src/dialogs/xml-tree.c:772
+#: src/dialogs/xml-tree.c:777
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: src/dialogs/xml-tree.c:776
+#: src/dialogs/xml-tree.c:781
 msgid "Create"
 msgstr "作成"
 
@@ -1872,12 +1872,12 @@ msgid "Unnamed document %d"
 msgstr "Unnamed document %d"
 
 #. Angle
-#: src/dyna-draw-context.c:1057
+#: src/dyna-draw-context.c:1061
 msgid "Angle:"
 msgstr "角度:"
 
 #. Reset
-#: src/dyna-draw-context.c:1081 src/rect-context.c:442
+#: src/dyna-draw-context.c:1085 src/rect-context.c:442
 #: src/spiral-context.c:393 src/star-context.c:393
 msgid "Defaults"
 msgstr "既定値"
@@ -1897,27 +1897,27 @@ msgstr "x の真円率:"
 msgid "Roundness ratio for y:"
 msgstr "y の真円率:"
 
-#: src/select-context.c:641
+#: src/select-context.c:638
 msgid "Visual transformation"
 msgstr "ビジュアル変形"
 
-#: src/select-context.c:649
+#: src/select-context.c:646
 msgid "Show content"
 msgstr "内容を表示"
 
-#: src/select-context.c:656
+#: src/select-context.c:653
 msgid "Show outline"
 msgstr "アウトラインの表示"
 
-#: src/select-context.c:663
+#: src/select-context.c:660
 msgid "Object transformation"
 msgstr "オブジェクトの変形"
 
-#: src/select-context.c:671
+#: src/select-context.c:668
 msgid "Optimize"
 msgstr "最適化"
 
-#: src/select-context.c:678
+#: src/select-context.c:675
 msgid "Preserve"
 msgstr "保護"
 
@@ -2241,7 +2241,8 @@ msgstr "DPI"
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
-msgstr "出力エリアをミリメートルで指定 (既定値はドキュメント全体, 0,0 は左下端)"
+msgstr ""
+"出力エリアをミリメートルで指定 (既定値はドキュメント全体, 0,0 は左下端)"
 
 #: src/main.c:121
 msgid "x0:y0:x1:y1"
@@ -2265,7 +2266,8 @@ msgstr "高さ"
 
 #: src/main.c:127
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr "出力ビットマップの背景の色を指定 (SVG でサポートされる任意のカラー指定文字列)"
+msgstr ""
+"出力ビットマップの背景の色を指定 (SVG でサポートされる任意のカラー指定文字列)"
 
 #: src/main.c:127
 msgid "COLOR"
@@ -2273,7 +2275,8 @@ msgstr "色"
 
 #: src/main.c:129
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr "文書を標準 SVG ファイルへ出力 (\"xmlns:sodipodi\" ネームスペースを使用しない)"
+msgstr ""
+"文書を標準 SVG ファイルへ出力 (\"xmlns:sodipodi\" ネームスペースを使用しない)"
 
 #: src/main.c:131
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
