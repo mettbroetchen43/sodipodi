@@ -173,26 +173,20 @@ spsvgview_SOURCES = \
 
 spsvgview_LDADD = \
 	$(spproglibs) \
-	dialogs/libspdialogs.a \
 	xml/libspxml.a \
 	svg/libspsvg.a \
-	widgets/libspwidgets.a \
 	display/libspdisplay.a \
 	helper/libspchelp.a \
 	libnrtype/libnrtype.a \
 	libnr/libnr.a \
-	libnrtype/libnrtype.a \
 	$(SODIPODI_LIBS) \
 	$(GNOME_PRINT_LIBS) \
 	$(XFT_LIBS) \
 	$(FREETYPE_LIBS) \
 	$(kdeldadd)
 
-#	sodipodi.c sodipodi.h
-#	desktop.c desktop.h
-#	desktop-handles.c desktop-handles.h
-#	selection.c selection.h
-#	event-context.c event-context.h
+# widgets/libspwidgets.a
+# dialogs/libspdialogs.a
 
 EXTRA_DIST = \
 	brokenimage.xpm

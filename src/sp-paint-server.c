@@ -89,6 +89,7 @@ SPPainter *
 sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, const NRRectD *bbox)
 {
 	SPPainter *painter;
+	SPPaintServerClass *psc;
 
 	g_return_val_if_fail (ps != NULL, NULL);
 	g_return_val_if_fail (SP_IS_PAINT_SERVER (ps), NULL);
@@ -96,6 +97,7 @@ sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, const NRR
 	g_return_val_if_fail (bbox != NULL, NULL);
 
 	painter = NULL;
+	psc = (SPPaintServerClass *) G_OBJECT_GET_CLASS (ps);
 	if (((SPPaintServerClass *) G_OBJECT_GET_CLASS(ps))->painter_new)
 		painter = (* ((SPPaintServerClass *) G_OBJECT_GET_CLASS(ps))->painter_new) (ps, affine, bbox);
 

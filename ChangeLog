@@ -1,5 +1,9 @@
 2003-06-22  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-pattern.c (sp_pattern_update): Implemented, patterns show up again
+	(sp_pattern_painter_new): Painter is not GObject anymore, fixes crash
+	(sp_pattern_painter_free): Ditto
+
 	* src/sp-root.c: Removed namedview tracking
 
 	* src/sp-object-repr.c (sp_object_type_lookup): Do not register GUI types

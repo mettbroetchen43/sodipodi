@@ -53,7 +53,8 @@ static void sp_pattern_release (SPObject *object);
 static void sp_pattern_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_pattern_remove_child (SPObject *object, SPRepr *child);
-static void sp_pattern_modified (SPObject *object, guint flags);
+static void sp_pattern_update (SPObject *object, SPCtx *ctx, unsigned int flags);
+static void sp_pattern_modified (SPObject *object, unsigned int flags);
 
 static void sp_pattern_href_destroy (SPObject *href, SPPattern *pattern);
 static void sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern);
@@ -100,6 +101,7 @@ sp_pattern_class_init (SPPatternClass *klass)
 	sp_object_class->set = sp_pattern_set;
 	sp_object_class->child_added = sp_pattern_child_added;
 	sp_object_class->remove_child = sp_pattern_remove_child;
+	sp_object_class->update = sp_pattern_update;
 	sp_object_class->modified = sp_pattern_modified;
 
 	ps_class->painter_new = sp_pattern_painter_new;
@@ -388,6 +390,36 @@ sp_pattern_remove_child (SPObject *object, SPRepr *child)
 
 /* fixme: We need ::order_changed handler too (Lauris) */
 
+/* fixme: Transformation and stuff (Lauris) */
+
+static void
+sp_pattern_update (SPObject *object, SPCtx *ctx, unsigned int flags)
+{
+	SPPattern *pat;
+	SPObject *child;
+	GSList *l;
+
+	pat = SP_PATTERN (object);
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	l = NULL;
+	for (child = pat->children; child != NULL; child = child->next) {
+		sp_object_ref (child, NULL);
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = SP_OBJECT (l->data);
+		l = g_slist_remove (l, child);
+		if (flags || (child->mflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			sp_object_invoke_update (child, ctx, flags);
+		}
+		sp_object_unref (child, NULL);
+	}
+}
+
 static void
 sp_pattern_modified (SPObject *object, guint flags)
 {
@@ -402,7 +434,7 @@ sp_pattern_modified (SPObject *object, guint flags)
 
 	l = NULL;
 	for (child = pat->children; child != NULL; child = child->next) {
-		g_object_ref (G_OBJECT (child));
+		sp_object_ref (child, NULL);
 		l = g_slist_prepend (l, child);
 	}
 	l = g_slist_reverse (l);
@@ -412,7 +444,7 @@ sp_pattern_modified (SPObject *object, guint flags)
 		if (flags || (child->mflags & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_invoke_modified (child, flags);
 		}
-		g_object_unref (G_OBJECT (child));
+		sp_object_unref (child, NULL);
 	}
 }
 
@@ -539,7 +571,7 @@ sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectD *bb
 	/* fixme: Create arena */
 	/* fixme: Actually we need some kind of constructor function */
 	/* fixme: But to do that, we need actual arena implementaion */
-	pp->arena = g_object_new (NR_TYPE_ARENA, NULL);
+	pp->arena = (NRArena *) nr_object_new (NR_TYPE_ARENA);
 
 	pp->dkey = sp_item_display_key_new (1);
 
@@ -586,7 +618,7 @@ sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter)
 	}
 
 	if (pp->arena) {
-		g_object_unref (G_OBJECT (pp->arena));
+		nr_object_unref ((NRObject *) pp->arena);
 	}
 
 	g_free (pp);
