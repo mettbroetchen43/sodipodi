@@ -3,7 +3,7 @@ Remarks about fonts
 1. System-wide font sources
 
 Sodipodi tries to extract font information
-fron different sources. Depending on your library
+from different sources. Depending on your library
 versions, this may, or may not succeed:
 
 xft - It usually works, but for some fontconfig setups
