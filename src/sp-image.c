@@ -34,9 +34,9 @@
 
 static void sp_image_class_init (SPImageClass * class);
 static void sp_image_init (SPImage * image);
-static void sp_image_destroy (GtkObject * object);
 
 static void sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_image_release (SPObject * object);
 static void sp_image_read_attr (SPObject * object, const gchar * key);
 static SPRepr *sp_image_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -93,9 +93,8 @@ sp_image_class_init (SPImageClass * klass)
 
 	parent_class = gtk_type_class (sp_item_get_type ());
 
-	gtk_object_class->destroy = sp_image_destroy;
-
 	sp_object_class->build = sp_image_build;
+	sp_object_class->release = sp_image_release;
 	sp_object_class->read_attr = sp_image_read_attr;
 	sp_object_class->write = sp_image_write;
 
@@ -122,7 +121,23 @@ sp_image_init (SPImage *image)
 }
 
 static void
-sp_image_destroy (GtkObject *object)
+sp_image_build (SPObject *object, SPDocument *document, SPRepr *repr)
+{
+	if (((SPObjectClass *) parent_class)->build)
+		((SPObjectClass *) parent_class)->build (object, document, repr);
+
+	sp_image_read_attr (object, "xlink:href");
+	sp_image_read_attr (object, "x");
+	sp_image_read_attr (object, "y");
+	sp_image_read_attr (object, "width");
+	sp_image_read_attr (object, "height");
+
+	/* Register */
+	sp_document_add_resource (document, "image", object);
+}
+
+static void
+sp_image_release (SPObject *object)
 {
 	SPImage *image;
 
@@ -143,24 +158,8 @@ sp_image_destroy (GtkObject *object)
 		image->pixbuf = NULL;
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-}
-
-static void
-sp_image_build (SPObject *object, SPDocument *document, SPRepr *repr)
-{
-	if (((SPObjectClass *) parent_class)->build)
-		((SPObjectClass *) parent_class)->build (object, document, repr);
-
-	sp_image_read_attr (object, "xlink:href");
-	sp_image_read_attr (object, "x");
-	sp_image_read_attr (object, "y");
-	sp_image_read_attr (object, "width");
-	sp_image_read_attr (object, "height");
-
-	/* Register */
-	sp_document_add_resource (document, "image", object);
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void

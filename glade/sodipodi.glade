@@ -1643,7 +1643,7 @@
 
       <widget>
 	<class>GtkPixmapMenuItem</class>
-	<name>lõika1</name>
+	<name>loika1</name>
 	<signal>
 	  <name>activate</name>
 	  <handler>sp_selection_cut</handler>

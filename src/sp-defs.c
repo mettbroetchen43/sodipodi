@@ -22,9 +22,9 @@
 
 static void sp_defs_class_init (SPDefsClass * klass);
 static void sp_defs_init (SPDefs * defs);
-static void sp_defs_destroy (GtkObject * object);
 
-static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_defs_build (SPObject *object, SPDocument * document, SPRepr * repr);
+static void sp_defs_release (SPObject *object);
 static void sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_defs_remove_child (SPObject * object, SPRepr * child);
 static void sp_defs_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
@@ -64,9 +64,8 @@ sp_defs_class_init (SPDefsClass * klass)
 
 	parent_class = gtk_type_class (sp_object_get_type ());
 
-	gtk_object_class->destroy = sp_defs_destroy;
-
 	sp_object_class->build = sp_defs_build;
+	sp_object_class->release = sp_defs_release;
 	sp_object_class->child_added = sp_defs_child_added;
 	sp_object_class->remove_child = sp_defs_remove_child;
 	sp_object_class->order_changed = sp_defs_order_changed;
@@ -78,21 +77,6 @@ static void
 sp_defs_init (SPDefs *defs)
 {
 	defs->children = NULL;
-}
-
-static void
-sp_defs_destroy (GtkObject * object)
-{
-	SPDefs * defs;
-
-	defs = (SPDefs *) object;
-
-	while (defs->children) {
-		defs->children = sp_object_detach_unref (SP_OBJECT (defs), defs->children);
-	}
-
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 
 static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * repr)
@@ -116,6 +100,21 @@ static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * re
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}
+}
+
+static void
+sp_defs_release (SPObject * object)
+{
+	SPDefs *defs;
+
+	defs = (SPDefs *) object;
+
+	while (defs->children) {
+		defs->children = sp_object_detach_unref (SP_OBJECT (defs), defs->children);
+	}
+
+	if (((SPObjectClass *) (parent_class))->release)
+		((SPObjectClass *) (parent_class))->release (object);
 }
 
 static void

@@ -23,8 +23,8 @@
 
 static void sp_chars_class_init (SPCharsClass *class);
 static void sp_chars_init (SPChars *chars);
-static void sp_chars_destroy (GtkObject *object);
 
+static void sp_chars_release (SPObject *object);
 static void sp_chars_style_modified (SPObject *object, guint flags);
 
 static void sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
@@ -63,8 +63,7 @@ sp_chars_class_init (SPCharsClass *klass)
 
 	parent_class = gtk_type_class (SP_TYPE_ITEM);
 
-	object_class->destroy = sp_chars_destroy;
-
+	sp_object_class->release = sp_chars_release;
 	sp_object_class->style_modified = sp_chars_style_modified;
 
 	item_class->bbox = sp_chars_bbox;
@@ -81,7 +80,7 @@ sp_chars_init (SPChars *chars)
 }
 
 static void
-sp_chars_destroy (GtkObject *object)
+sp_chars_release (SPObject *object)
 {
 	SPChars *chars;
 
@@ -95,8 +94,8 @@ sp_chars_destroy (GtkObject *object)
 		g_free (el);
 	}
 
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void

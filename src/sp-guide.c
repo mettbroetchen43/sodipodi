@@ -1,4 +1,15 @@
-#define SP_GUIDE_C
+#define __SP_GUIDE_C__
+
+/*
+ * Sodipodi guideline implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000-2002 authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <string.h>
 #include <gtk/gtksignal.h>
@@ -9,10 +20,10 @@ enum {ARG_0, ARG_COLOR, ARG_HICOLOR};
 
 static void sp_guide_class_init (SPGuideClass * klass);
 static void sp_guide_init (SPGuide * guide);
-static void sp_guide_destroy (GtkObject * object);
 static void sp_guide_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
 
 static void sp_guide_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_guide_release (SPObject *object);
 static void sp_guide_read_attr (SPObject * object, const gchar * key);
 
 static SPObjectClass * parent_class;
@@ -51,10 +62,10 @@ sp_guide_class_init (SPGuideClass * klass)
 	gtk_object_add_arg_type ("SPGuide::color", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_COLOR);
 	gtk_object_add_arg_type ("SPGuide::hicolor", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_HICOLOR);
 
-	gtk_object_class->destroy = sp_guide_destroy;
 	gtk_object_class->set_arg = sp_guide_set_arg;
 
 	sp_object_class->build = sp_guide_build;
+	sp_object_class->release = sp_guide_release;
 	sp_object_class->read_attr = sp_guide_read_attr;
 }
 
@@ -65,22 +76,6 @@ sp_guide_init (SPGuide * guide)
 	guide->position = 0.0;
 	guide->color = 0x0000ff7f;
 	guide->hicolor = 0xff00007f;
-}
-
-static void
-sp_guide_destroy (GtkObject * object)
-{
-	SPGuide * guide;
-
-	guide = (SPGuide *) object;
-
-	while (guide->views) {
-		gtk_object_destroy (GTK_OBJECT (guide->views->data));
-		guide->views = g_slist_remove (guide->views, guide->views->data);
-	}
-
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 
 static void
@@ -113,6 +108,22 @@ sp_guide_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_guide_read_attr (object, "orientation");
 	sp_guide_read_attr (object, "position");
 
+}
+
+static void
+sp_guide_release (SPObject *object)
+{
+	SPGuide *guide;
+
+	guide = (SPGuide *) object;
+
+	while (guide->views) {
+		gtk_object_destroy (GTK_OBJECT (guide->views->data));
+		guide->views = g_slist_remove (guide->views, guide->views->data);
+	}
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void

@@ -26,9 +26,9 @@
 
 static void sp_anchor_class_init (SPAnchorClass *klass);
 static void sp_anchor_init (SPAnchor *anchor);
-static void sp_anchor_destroy (GtkObject *object);
 
 static void sp_anchor_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_anchor_release (SPObject *object);
 static void sp_anchor_read_attr (SPObject * object, const gchar * attr);
 static SPRepr *sp_anchor_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -73,9 +73,8 @@ sp_anchor_class_init (SPAnchorClass *klass)
 
 	parent_class = gtk_type_class (SP_TYPE_GROUP);
 
-	gtk_object_class->destroy = sp_anchor_destroy;
-
 	sp_object_class->build = sp_anchor_build;
+	sp_object_class->release = sp_anchor_release;
 	sp_object_class->read_attr = sp_anchor_read_attr;
 	sp_object_class->write = sp_anchor_write;
 
@@ -88,22 +87,6 @@ static void
 sp_anchor_init (SPAnchor *anchor)
 {
 	anchor->href = NULL;
-}
-
-static void
-sp_anchor_destroy (GtkObject *object)
-{
-	SPAnchor *anchor;
-
-	anchor = SP_ANCHOR (object);
-
-	if (anchor->href) {
-		g_free (anchor->href);
-		anchor->href = NULL;
-	}
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
 static void sp_anchor_build (SPObject *object, SPDocument * document, SPRepr * repr)
@@ -123,6 +106,22 @@ static void sp_anchor_build (SPObject *object, SPDocument * document, SPRepr * r
 	sp_anchor_read_attr (object, "xlink:actuate");
 	sp_anchor_read_attr (object, "xlink:href");
 	sp_anchor_read_attr (object, "target");
+}
+
+static void
+sp_anchor_release (SPObject *object)
+{
+	SPAnchor *anchor;
+
+	anchor = SP_ANCHOR (object);
+
+	if (anchor->href) {
+		g_free (anchor->href);
+		anchor->href = NULL;
+	}
+
+	if (((SPObjectClass *) parent_class)->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void

@@ -1,7 +1,7 @@
 #define __SP_CLIPPATH_C__
 
 /*
- * SVG <g> implementation
+ * SVG <clipPath> implementation
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
@@ -19,9 +19,7 @@
 
 static void sp_clippath_class_init (SPClipPathClass *klass);
 static void sp_clippath_init (SPClipPath *clippath);
-static void sp_clippath_destroy (GtkObject *object);
 
-static void sp_clippath_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static SPRepr *sp_clippath_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObjectGroupClass *parent_class;
@@ -55,36 +53,13 @@ sp_clippath_class_init (SPClipPathClass *klass)
 
 	parent_class = gtk_type_class (SP_TYPE_OBJECTGROUP);
 
-	gtk_object_class->destroy = sp_clippath_destroy;
-
-	sp_object_class->build = sp_clippath_build;
 	sp_object_class->write = sp_clippath_write;
 }
 
 static void
 sp_clippath_init (SPClipPath *clippath)
 {
-}
-
-static void
-sp_clippath_destroy (GtkObject *object)
-{
-	SPClipPath *cp;
-
-	cp = SP_CLIPPATH (object);
-
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
-}
-
-static void sp_clippath_build (SPObject *object, SPDocument *document, SPRepr *repr)
-{
-	SPClipPath *cp;
-
-	cp = SP_CLIPPATH (object);
-
-	if (((SPObjectClass *) (parent_class))->build)
-		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
+	/* Nothing special */
 }
 
 static SPRepr *
