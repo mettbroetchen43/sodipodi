@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
-"POT-Creation-Date: 2000-10-16 00:40+0200\n"
-"PO-Revision-Date: 2000-10-16 01:05+02:00\n"
+"POT-Creation-Date: 2000-12-11 20:24+0100\n"
+"PO-Revision-Date: 2000-12-11 20:28+01:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -157,27 +157,27 @@ msgstr "Rutenett"
 
 #: glade/desktop.c:33
 msgid "Choose unit system for guideline snapping"
-msgstr ""
+msgstr "Velg enhetssystem for feste til rutenett"
 
 #: glade/desktop.c:37
 msgid "Set maximum distance for guideline snapping"
-msgstr ""
+msgstr "Sett maksimal avstand for feste til rutenett"
 
 #: glade/desktop.c:38
 msgid "Guides color:"
-msgstr ""
+msgstr "Rutenettfarge:"
 
 #: glade/desktop.c:39
 msgid "Choose color for guidelines"
-msgstr ""
+msgstr "Velg farge for rutenett"
 
 #: glade/desktop.c:40
 msgid "Guideline color"
-msgstr ""
+msgstr "Rutenettfarge"
 
 #: glade/desktop.c:41
 msgid "Show guides"
-msgstr ""
+msgstr "Vis rutenett"
 
 #: glade/desktop.c:42 glade/transformation.c:52
 msgid "Snap to guides"
@@ -185,7 +185,7 @@ msgstr "Fest til guider"
 
 #: glade/desktop.c:43
 msgid "Highlight color:"
-msgstr ""
+msgstr "Merk farge:"
 
 #: glade/desktop.c:44
 msgid "Choose color for highlighted guidelines"
@@ -550,11 +550,11 @@ msgstr "_Arrangér"
 
 #: glade/sodipodi-glade.c:32 glade/sodipodi-glade.c:138
 msgid "_Align"
-msgstr ""
+msgstr "_Justér"
 
 #: glade/sodipodi-glade.c:33
 msgid "_Transform"
-msgstr ""
+msgstr "_Transformér"
 
 #: glade/sodipodi-glade.c:34
 msgid "_Order"
@@ -1024,7 +1024,7 @@ msgstr ""
 "500%\n"
 
 #: glade/toolbox.c:33
-msgid "Select zom factor"
+msgid "Select zoom factor"
 msgstr "Velg zoom-faktor"
 
 #: glade/toolbox.c:34
@@ -1161,54 +1161,44 @@ msgid "Edit font style of selected objects"
 msgstr "Redigér skrifttypestil for valgte objekter"
 
 #: glade/toolbox.c:81
-#, fuzzy
 msgid "Edit layout of selected objects"
-msgstr "Slett valgte objekt(er)"
+msgstr "Redigér plassering for valgte objekter"
 
 #: glade/toolbox.c:82
-#, fuzzy
 msgid "Edit fill style of selected objects"
-msgstr "Slett valgte objekt(er)"
+msgstr "Redigér fylltype for valgte objekter"
 
 #: glade/toolbox.c:83
-#, fuzzy
 msgid "Edit stroke style of selected objects"
-msgstr "Slett valgte objekt(er)"
+msgstr "Redigér pennestil for valgte objekter"
 
 #: glade/toolbox.c:84
-#, fuzzy
 msgid "Flip selected objects"
-msgstr "Slett valgte objekt(er)"
+msgstr "Vend valgte objekter"
 
 #: glade/toolbox.c:85
-#, fuzzy
 msgid "Rotate selected objects 90° clockwise"
-msgstr "Hev valgte objekt(er) til topp"
+msgstr "Rotér valgte objekter 90 med klokken"
 
 #: glade/toolbox.c:86
-#, fuzzy
 msgid "Remove transformation"
-msgstr "Start transformering"
+msgstr "Fjern transformering"
 
 #: glade/toolbox.c:87
-#, fuzzy
 msgid "Convert selected objects to curves"
-msgstr "Konverér valgte segmenter til ku_rver"
+msgstr "Konverér valgte objekter til kurver"
 
 #: glade/toolbox.c:88
-#, fuzzy
 msgid "Edit"
-msgstr "Noderedigering"
+msgstr "Redigér"
 
 #: glade/toolbox.c:89
-#, fuzzy
 msgid "Undo "
 msgstr "Angre"
 
 #: glade/toolbox.c:91
-#, fuzzy
 msgid "Delete selection"
-msgstr "Slett valgte noder"
+msgstr "Slett utvalg"
 
 #: glade/toolbox.c:92
 msgid "Paste from clipboard"
@@ -1346,7 +1336,7 @@ msgid "move horizontal"
 msgstr "flytt horisontalt"
 
 #: glade/transformation.c:45
-msgid "move vertival"
+msgid "move vertical"
 msgstr "flytt vertikalt"
 
 #: glade/transformation.c:53
