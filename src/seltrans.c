@@ -332,7 +332,7 @@ sp_sel_trans_transform (SPSelTrans * seltrans, NRMatrixD *affine, NRPointF *norm
 #else
 		for (i = 0; i < seltrans->nitems; i++) {
 			NRMatrixF i2dnew;
-			nr_matrix_multiply_ffd (&i2dnew, &seltrans->transforms[i], &seltrans->current);
+			nr_matrix_multiply_ffd (&i2dnew, &seltrans->transforms[i], affine);
 			sp_item_set_i2d_affine (seltrans->items[i], &i2dnew);
 		}
 #endif

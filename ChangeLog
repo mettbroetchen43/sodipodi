@@ -1,3 +1,8 @@
+2003-01-19  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-type-xft.c (nr_type_xft_init): Removed CORE, so Xft fontlist
+	should now be read properly with Debian PPC and or fontconfig systems
+
 2003-01-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/seltrans.c (sp_sel_trans_grab): Build array of selected item transformations
