@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.19\n"
-"POT-Creation-Date: 2000-09-21 21:33+0200\n"
-"PO-Revision-Date: 2000-09-21 15:22+0200\n"
+"POT-Creation-Date: 2000-09-28 20:36+0200\n"
+"PO-Revision-Date: 2000-09-28 18:52+0200\n"
 "Last-Translator: Quico Llach <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <linux@softcatala.org>\n"
 "MIME-Version: 1.0\n"
@@ -121,11 +121,11 @@ msgstr "_Disposa"
 
 #: glade/sodipodi-glade.c:32 glade/sodipodi-glade.c:162
 msgid "_Align"
-msgstr ""
+msgstr "_Alinea"
 
 #: glade/sodipodi-glade.c:33
 msgid "_Transform"
-msgstr ""
+msgstr "_Transforma"
 
 #: glade/sodipodi-glade.c:34
 msgid "_Order"
@@ -431,14 +431,12 @@ msgid "Node Edit"
 msgstr "Edició del node"
 
 #: glade/sodipodi-glade.c:118
-#, fuzzy
 msgid "Include one node into selected segments"
-msgstr "Converteix els segments seleccionats en línies"
+msgstr "Inclou un node en els segments seleccionats"
 
 #: glade/sodipodi-glade.c:119
-#, fuzzy
 msgid "Break apart selected node"
-msgstr "Suprimeix els nodes seleccionats"
+msgstr "Separa el node seleccionat"
 
 #: glade/sodipodi-glade.c:120
 msgid "Convert selected segments to curves"
@@ -449,23 +447,20 @@ msgid "Join 2 selected endpoints"
 msgstr "Uneix els 2 punts finals seleccionats"
 
 #: glade/sodipodi-glade.c:122
-#, fuzzy
 msgid "Cusp line at selected nodes"
-msgstr "Suprimeix els nodes seleccionats"
+msgstr "Fes un 'cusp'a la línia als nodes seleccionats"
 
 #: glade/sodipodi-glade.c:123
-#, fuzzy
 msgid "Smooth line at selected nodes"
-msgstr "Suprimeix els nodes seleccionats"
+msgstr "Allisa la línia als nodes seleccionats"
 
 #: glade/sodipodi-glade.c:124
-#, fuzzy
 msgid "Symmetric "
-msgstr "Simètric"
+msgstr "Simètric "
 
 #: glade/sodipodi-glade.c:125
 msgid "Close dialog"
-msgstr ""
+msgstr "Tanca el diàleg"
 
 #: glade/sodipodi-glade.c:126
 msgid "Convert selected segments to lines"
@@ -690,47 +685,47 @@ msgstr "Voleu suprimir l'atribut?"
 #.
 #: glade/align.c:7
 msgid "Align"
-msgstr ""
+msgstr "Alinea"
 
 #: glade/align.c:8
 msgid "Align inside object to top border"
-msgstr ""
+msgstr "Alinea l'objecte interior amb el límit superior"
 
 #: glade/align.c:9
 msgid "Align outside object to top border"
-msgstr ""
+msgstr "Alinea l'objecte exterior amb el límit superior"
 
 #: glade/align.c:10
 msgid "Align inside object to left border"
-msgstr ""
+msgstr "Alinea l'objecte interior amb el límit esquerra"
 
 #: glade/align.c:11
 msgid "Align inside object to right border"
-msgstr ""
+msgstr "Alinea l'objecte interior amb el límit dret"
 
 #: glade/align.c:12
 msgid "Align objects to horizontal mid"
-msgstr ""
+msgstr "Alinea els objectes amb la meitat horitzontal"
 
 #: glade/align.c:13
 msgid "Align objects to vertical mid"
-msgstr ""
+msgstr "Alinea els objectes amb la meitat vertical"
 
 #: glade/align.c:14
 msgid "Align outside object to left border"
-msgstr ""
+msgstr "Alinea l'objecte exterior amb el límit esquerra"
 
 #: glade/align.c:15
 msgid "Align outside object to right border"
-msgstr ""
+msgstr "Alinea l'objecte exterior amb el límit dret"
 
 #: glade/align.c:16
 msgid "Align inside object to bottom border"
-msgstr ""
+msgstr "Alinea l'objecte interior amb el límit inferior"
 
 #: glade/align.c:17
 msgid "Align outside object to bottom border"
-msgstr ""
+msgstr "Alinea l'objecte exterior amb el límit inferior"
 
 #: glade/stroke.c:8
 msgid "Stroke width"
@@ -777,7 +772,6 @@ msgid "butt"
 msgstr "part posterior"
 
 #: glade/stroke.c:22
-#, fuzzy
 msgid "sqare"
 msgstr "quadrat"
 
@@ -804,31 +798,30 @@ msgstr "Emplenat per darrera"
 #.
 #: glade/desktop.c:7 glade/transformation.c:7
 msgid "Transform selection"
-msgstr ""
+msgstr "Transforma la selecció"
 
 #: glade/desktop.c:8 glade/transformation.c:8
 msgid " Move "
-msgstr ""
+msgstr " Mou "
 
 #: glade/desktop.c:9 glade/desktop.c:29 glade/desktop.c:37
 #: glade/transformation.c:9 glade/transformation.c:29
 #: glade/transformation.c:37
 msgid "horizontal"
-msgstr ""
+msgstr "horitzontal"
 
 #: glade/desktop.c:10 glade/desktop.c:30 glade/desktop.c:38
 #: glade/transformation.c:10 glade/transformation.c:30
 #: glade/transformation.c:38
 msgid "vertical"
-msgstr ""
+msgstr "vertical"
 
 #: glade/desktop.c:11 glade/transformation.c:11
 msgid "move relative in"
-msgstr ""
+msgstr "mou relatiu en"
 
 #: glade/desktop.c:12 glade/desktop.c:46 glade/transformation.c:12
 #: glade/transformation.c:46
-#, fuzzy
 msgid ""
 "pixel\n"
 "points\n"
@@ -837,114 +830,111 @@ msgid ""
 "inch\n"
 msgstr ""
 "pixels\n"
-"mil·límetres\n"
 "punts\n"
+"mil·límetres\n"
+"centímetres\n"
 "polzades\n"
 
 #: glade/desktop.c:18 glade/transformation.c:18
 msgid "Move"
-msgstr ""
+msgstr "Mou"
 
 #: glade/desktop.c:19 glade/transformation.c:19
 msgid " Rotate "
-msgstr ""
+msgstr " Gira "
 
 #: glade/desktop.c:20 glade/transformation.c:20
 msgid "90°"
-msgstr ""
+msgstr "90°"
 
 #: glade/desktop.c:21 glade/transformation.c:21
 msgid "180°"
-msgstr ""
+msgstr "180°"
 
 #: glade/desktop.c:22 glade/transformation.c:22
 msgid "270°"
-msgstr ""
+msgstr "270°"
 
 #: glade/desktop.c:23 glade/transformation.c:23
 msgid "any"
-msgstr ""
+msgstr "qulasevol"
 
 #: glade/desktop.c:24 glade/transformation.c:24
 msgid "degree"
-msgstr ""
+msgstr "graus"
 
 #: glade/desktop.c:25 glade/transformation.c:25
-#, fuzzy
 msgid "right"
-msgstr "Alçada"
+msgstr "dreta"
 
 #: glade/desktop.c:26 glade/transformation.c:26
-#, fuzzy
 msgid "left"
-msgstr "Suprimeix"
+msgstr "esquerra"
 
 #: glade/desktop.c:27 glade/transformation.c:27
 msgid "Rotate"
-msgstr ""
+msgstr "Gira"
 
 #: glade/desktop.c:28 glade/transformation.c:28
-#, fuzzy
 msgid " Scale "
-msgstr "Escala"
+msgstr " Escala "
 
 #: glade/desktop.c:31 glade/desktop.c:32 glade/transformation.c:31
 #: glade/transformation.c:32
 #, c-format
 msgid "% "
-msgstr ""
+msgstr "% "
 
 #: glade/desktop.c:33 glade/desktop.c:34 glade/transformation.c:33
 #: glade/transformation.c:34
 msgid " flip "
-msgstr ""
+msgstr " inverteix "
 
 #: glade/desktop.c:36 glade/transformation.c:36
 msgid " Skew "
-msgstr ""
+msgstr " Inclina "
 
 #: glade/desktop.c:39 glade/desktop.c:40 glade/transformation.c:39
 #: glade/transformation.c:40
 #, c-format
 msgid "%  "
-msgstr ""
+msgstr "%  "
 
 #: glade/desktop.c:41 glade/transformation.c:41
-#, fuzzy
 msgid "Skew"
-msgstr "Contorn"
+msgstr "Inclina"
 
 #: glade/desktop.c:42 glade/transformation.c:42
 msgid "make copy"
-msgstr ""
+msgstr "fes una còpia"
 
 #: glade/desktop.c:43 glade/transformation.c:43
 msgid "Guidelines setup"
-msgstr ""
+msgstr "Configuració de les línies guia"
 
 #: glade/desktop.c:45 glade/transformation.c:44
 msgid "move horizontal"
-msgstr ""
+msgstr "mou horitzontalment"
 
 #: glade/transformation.c:45
 msgid "move vertival"
-msgstr ""
+msgstr "mou verticalment"
 
 #: glade/desktop.c:52 glade/transformation.c:52
 msgid "Snap to guides"
-msgstr ""
+msgstr "Alinea amb les guies"
 
 #: glade/desktop.c:53 glade/transformation.c:53
 msgid "Start transformation"
-msgstr ""
+msgstr "Inicia la transformació"
 
 #: glade/desktop.c:54 glade/transformation.c:54
 msgid "close dialog"
-msgstr ""
+msgstr "tanca el diàleg"
 
 #: glade/desktop.c:44
 msgid "Tolerance:"
-msgstr ""
+msgstr "Tolerància:"
 
 #: src/main.c:46
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
@@ -1020,24 +1010,23 @@ msgstr "Un camí - signifiqui el que signifiqui"
 
 #: src/sp-text.c:193
 msgid "Text object"
-msgstr ""
+msgstr "Objecte de text"
 
 #: src/dialogs/align.c:78
 msgid "Last selected"
-msgstr ""
+msgstr "Darrer seleccionat"
 
 #: src/dialogs/align.c:83
-#, fuzzy
 msgid "First selected"
-msgstr "Agrupa els elements seleccionats"
+msgstr "El primer seleccionat"
 
 #: src/dialogs/align.c:88
 msgid "Biggest item"
-msgstr ""
+msgstr "L'element més gran"
 
 #: src/dialogs/align.c:93
 msgid "Smallest item"
-msgstr ""
+msgstr "L'element més petit"
 
 #~ msgid "Break"
 #~ msgstr "Trenca"
