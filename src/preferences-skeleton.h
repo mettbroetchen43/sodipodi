@@ -62,6 +62,7 @@ static const char preferences_skeleton[] =
 
 "  <group id=\"printing\">"
 "    <settings id=\"ps\"/>"
+"    <settings id=\"plain\"/>"
 "  </group>"
 "</sodipodi>";
 

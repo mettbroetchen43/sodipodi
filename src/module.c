@@ -16,6 +16,8 @@
 #include <config.h>
 #endif
 
+#include "testing.h"
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -600,7 +602,11 @@ sp_module_print_finalize (GObject *object)
 #include "dialogs/xml-tree.h"
 
 /* static SPModule *module_xml_editor = NULL; */
+#ifdef USE_PRINT_DRIVERS
+static SPModule *module_printing_plain = NULL;
+#else
 static SPModule *module_printing_ps = NULL;
+#endif
 #ifdef WIN32
 static SPModule *module_printing_win32 = NULL;
 #endif
@@ -624,6 +630,15 @@ sp_modules_init (int *argc, const char **argv, unsigned int gui)
 	sp_win32_init (0, NULL, "Sodipodi");
 #endif
 
+#ifdef USE_PRINT_DRIVERS
+	module_printing_plain = (SPModule *) g_object_new (SP_TYPE_MODULE_PRINT_PLAIN, NULL);
+	repr = sodipodi_get_repr (SODIPODI, "extensions.printing.plain");
+	if (!repr) {
+		parent = sodipodi_get_repr (SODIPODI, "extensions");
+		repr = sp_module_write (module_printing_plain, parent);
+	}
+	sp_module_setup (module_printing_plain, repr, "printing.plain");
+#else
 	/* Register plain printing module */
 	module_printing_ps = (SPModule *) g_object_new (SP_TYPE_MODULE_PRINT_PLAIN, NULL);
 	repr = sodipodi_get_repr (SODIPODI, "extensions.printing.ps");
@@ -632,6 +647,7 @@ sp_modules_init (int *argc, const char **argv, unsigned int gui)
 		repr = sp_module_write (module_printing_ps, parent);
 	}
 	sp_module_setup (module_printing_ps, repr, "printing.ps");
+#endif
 
 #ifdef WIN32
 	/* Windows printing */
@@ -693,8 +709,12 @@ sp_modules_finish (void)
 	sp_win32_finish ();
 #endif
 
+#ifdef USE_PRINT_DRIVERS
+	module_printing_plain = sp_module_unref (module_printing_plain);
+#else
 	/* fixme: Release these */
 	module_printing_ps = sp_module_unref (module_printing_ps);
+#endif
 
 	return TRUE;
 }

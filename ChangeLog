@@ -1,3 +1,32 @@
+2004-02-15  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/modules/plain.c: New file
+	
+	* src/modules/plain.h: New file
+	
+	* src/modules/plain-ps.c: New file
+	
+	* src/modules/plain-ps.h: New file
+	
+	* src/modules/plain-pdf.c: New file
+	
+	* src/modules/plain-pdf.h: New file
+	
+	* src/testing.h (USE_PRINT_DRIVERS): New macro
+
+	* src/modules/Makefile.am (libspmodules_a_SOURCES): Plain printing support
+
+	* src/print.c (sp_print_document): Ditto
+
+	* src/print.c (sp_print_preview_document): Ditto
+
+	* src/preferences-skeleton.h (PREFERENCES_SKELETON_SIZE): Ditto
+
+	* src/module.h: Ditto
+
+	* src/module.c (sp_modules_init): Ditto
+	(sp_modules_finish): Ditto
+
 2004-02-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/path-chemistry.c (sp_selected_path_uncross): Allow uncrossing

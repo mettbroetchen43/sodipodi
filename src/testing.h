@@ -14,4 +14,6 @@
 
 #define noNR_TESTING_PATH
 
+#define noUSE_PRINT_DRIVERS
+
 #endif

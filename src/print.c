@@ -13,6 +13,8 @@
 #include <config.h>
 #endif
 
+#include "testing.h"
+
 #include <string.h>
 #include <ctype.h>
 
@@ -115,8 +117,13 @@ sp_print_preview_document (SPDocument *doc)
 #ifdef WITH_GNOME_PRINT
 	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_GNOME);
 #endif
+
+#ifdef USE_PRINT_DRIVERS
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN2);
+#else
 	/* Still nothing, fall back to plain */
 	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN);
+#endif
 
 	ret = FALSE;
 	if (((SPModulePrintClass *) G_OBJECT_GET_CLASS (mod))->set_preview)
@@ -156,7 +163,12 @@ sp_print_document (SPDocument *doc, unsigned int direct, const unsigned char *fi
 	sp_document_ensure_up_to_date (doc);
 
 	mod = NULL;
+#ifdef USE_PRINT_DRIVERS
+	if (direct) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN2);
+#else
 	if (direct) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN);
+#endif
+
 #ifdef WIN32
 	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_WIN32);
 #endif
@@ -166,7 +178,11 @@ sp_print_document (SPDocument *doc, unsigned int direct, const unsigned char *fi
 #ifdef WITH_GNOME_PRINT
 	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_GNOME);
 #endif
+#ifdef USE_PRINT_DRIVERS
+	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN2);
+#else
 	if (!mod) mod = (SPModulePrint *) sp_module_find (SP_MODULE_KEY_PRINT_PLAIN);
+#endif
 
 	ret = FALSE;
         if (filename != NULL) {
