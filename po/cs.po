@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-12-08 04:34+0100\n"
-"PO-Revision-Date: 2003-12-08 13:00+0100\n"
+"POT-Creation-Date: 2003-12-12 15:52+0100\n"
+"PO-Revision-Date: 2003-12-12 18:09+0100\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -50,17 +50,17 @@ msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 #. Page page
 #: src/desktop.c:1535 src/dialogs/align.c:288
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:137 src/verbs.c:463
+#: src/dialogs/export.c:138 src/verbs.c:463
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:142
+#: src/desktop.c:1539 src/dialogs/align.c:289 src/dialogs/export.c:143
 #: src/verbs.c:464
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:147
+#: src/desktop.c:1543 src/dialogs/align.c:290 src/dialogs/export.c:148
 #: src/interface.c:591 src/toolbox.c:488 src/verbs.c:465
 msgid "Selection"
 msgstr "Výběr"
@@ -354,70 +354,78 @@ msgid "Custom paper"
 msgstr "Vlastní papír"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:219 src/dialogs/export.c:155
+#: src/dialogs/document-properties.c:219 src/dialogs/export.c:156
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
 msgstr "Jednotky:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:228 src/dialogs/export.c:165
-#: src/dialogs/export.c:189 src/dialogs/object-attributes.c:71
+#: src/dialogs/document-properties.c:228 src/dialogs/export.c:166
+#: src/dialogs/export.c:190 src/dialogs/object-attributes.c:71
 #: src/dialogs/object-attributes.c:79 src/dialogs/object-properties.c:356
 #: src/dialogs/stroke-style.c:565 src/dialogs/tool-attributes.c:123
 #: src/dyna-draw-context.c:1082
 msgid "Width:"
 msgstr "Šířka:"
 
-#: src/dialogs/document-properties.c:243 src/dialogs/export.c:174
-#: src/dialogs/export.c:197 src/dialogs/object-attributes.c:72
+#: src/dialogs/document-properties.c:243 src/dialogs/export.c:175
+#: src/dialogs/export.c:198 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
 msgstr "Výška:"
 
-#: src/dialogs/export.c:117
+#: src/dialogs/export.c:118
 msgid "Export bitmap"
 msgstr "Exportovat bitmapu"
 
 #. Export area frame
-#: src/dialogs/export.c:126
+#: src/dialogs/export.c:127
 msgid "Export area"
 msgstr "Exportovat oblast"
 
-#: src/dialogs/export.c:159
+#: src/dialogs/export.c:160
 msgid "x0:"
 msgstr "x0:"
 
-#: src/dialogs/export.c:162
+#: src/dialogs/export.c:163
 msgid "x1:"
 msgstr "x1:"
 
-#: src/dialogs/export.c:168
+#: src/dialogs/export.c:169
 msgid "y0:"
 msgstr "y0:"
 
-#: src/dialogs/export.c:171
+#: src/dialogs/export.c:172
 msgid "y1:"
 msgstr "y1:"
 
 #. Bitmap size frame
-#: src/dialogs/export.c:180
+#: src/dialogs/export.c:181
 msgid "Bitmap size"
 msgstr "Velikost bitmapy"
 
-#: src/dialogs/export.c:189 src/dialogs/export.c:197
+#: src/dialogs/export.c:190 src/dialogs/export.c:198
 msgid "pixels"
 msgstr "pixelů"
 
-#: src/dialogs/export.c:193 src/dialogs/export.c:201
+#: src/dialogs/export.c:194 src/dialogs/export.c:202
 msgid "dpi"
 msgstr "dpi"
 
-#: src/dialogs/export.c:208
+#: src/dialogs/export.c:210
+msgid "Background color"
+msgstr "Barva pozadí"
+
+#: src/dialogs/export.c:212
+msgid "Bitmap background:"
+msgstr "Bitmapa na pozadí:"
+
+#: src/dialogs/export.c:217
 msgid "Export png file"
 msgstr "Exportovat soubor PNG"
 
-#: src/dialogs/export.c:237 src/verbs.c:413
+#: src/dialogs/export.c:244 src/verbs.c:413
 msgid "Export"
 msgstr "Export"
 
@@ -1262,27 +1270,27 @@ msgstr ""
 msgid "Automatic backup of following documents failed:\n"
 msgstr "Automatické zálohy následujících dokumentů selhaly:\n"
 
-#: src/module.c:811
+#: src/module.c:852
 msgid "Scalable Vector Graphic (SVG)"
 msgstr "Škálovatelná Vektorová Grafika (SVG)"
 
-#: src/module.c:811
+#: src/module.c:852
 msgid "Sodipodi native file format and W3C standard"
 msgstr "Nativní formát souborů Sodipodi a standard W3C"
 
-#: src/module.c:818
+#: src/module.c:859
 msgid "SVG with \"xmlns:sodipodi\" namespace"
 msgstr "SVG se jmenným prostorem \"xmlns:sodipodi\""
 
-#: src/module.c:819
+#: src/module.c:860
 msgid "Scalable Vector Graphics format with sodipodi extensions"
 msgstr "Formát Škálovatelné vektorové grafiky s rozšířeními Sodipodi"
 
-#: src/module.c:822
+#: src/module.c:863
 msgid "Plain SVG"
 msgstr "Prostá SVG"
 
-#: src/module.c:823
+#: src/module.c:864
 msgid "Scalable Vector Graphics format"
 msgstr "Formát Škálovatelná vektorová grafika"
 
@@ -1751,12 +1759,12 @@ msgstr "URI obrázku:"
 msgid "Group of %d objects"
 msgstr "Skupina %d objektů"
 
-#: src/sp-item.c:503
+#: src/sp-item.c:509
 msgid "Unknown item :-("
 msgstr "Neznámá položka :-("
 
 #. fixme:
-#: src/sp-text.c:1441
+#: src/sp-text.c:1440
 msgid "Text object"
 msgstr "Textový objekt"
 
