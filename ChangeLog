@@ -8,7 +8,7 @@
 
 	* src/text-context.h: Added cursor
 
-2002-07-30  Lauris Kaplinski  <lauris@ximian.com>
+2002-07-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/Makefile.am (sodipodi_SOURCES): Added macros.h
 
