@@ -20,7 +20,6 @@
  * Licensed under GNU GPL
  */
 
-/* Plain Print */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -30,6 +29,7 @@
 #include <ctype.h>
 #include <signal.h>
 #include <errno.h>
+#include <assert.h>
 
 #include <libarikkei/arikkei-strlib.h>
 
@@ -47,15 +47,18 @@
 #include "plain-pdf.h"
 
 #define PDF_EOL "\r\n"
+#define PDF_BUFFER_INITIAL_SIZE 1024
 
 typedef struct _SPPrintPlainPDFDriver SPPrintPlainPDFDriver;
 typedef struct _SPPDFObject SPPDFObject;
+typedef struct _SPPDFBuffer SPPDFBuffer;
 
 struct _SPPrintPlainPDFDriver {
 	SPPrintPlainDriver driver;
 	SPModulePrintPlain *module;
 	unsigned int type;
 	/* PDF internal state */
+	SPPDFBuffer *stream;
 	SPPDFObject *objects;
 	int n_objects;
 	int offset;
@@ -64,48 +67,102 @@ struct _SPPrintPlainPDFDriver {
 	unsigned int color_set_stroke : 1;
 	unsigned int color_set_fill : 1;
 	/* Objects Ids */
+/* 	int catalog_id; */
+/* 	int pages_id; */
 	int page_id;				/* single page support */
 	int contents_id;
 	int resources_id;
-	
+};
+
+enum {
+	PDFO_DICT_NONE = 0,
+	PDFO_DICT_START,
+	PDFO_DICT_END
+};
+
+enum {
+	PDFO_STREAM_NONE = 0,
+	PDFO_STREAM_START,
+	PDFO_STREAM_END
 };
 
 struct _SPPDFObject {
 	int id;
 	int offset;
+	unsigned int state_dict : 2;
+	unsigned int state_stream : 2;
 	SPPDFObject *next;
 };
 
+struct _SPPDFBuffer {
+	unsigned char *buffer;
+	int length;
+	int alloc_size;
+};
+
+
 static void sp_plain_pdf_print_bpath (SPPrintPlainPDFDriver *pdf, const ArtBpath *bp);
-static int sp_plain_pdf_fprintf (SPPrintPlainPDFDriver *pdf, const char *format, ...);
-static int sp_plain_pdf_fprint_double (SPPrintPlainPDFDriver *pdf, double value);
 static unsigned int sp_pdf_print_image (FILE *ofp, unsigned char *px, unsigned int width, unsigned int height, unsigned int rs, const NRMatrixF *transform);
 
-static int sp_plain_pdf_flush_contents (SPPrintPlainPDFDriver *pdf);
-static int sp_plain_pdf_flush_resources (SPPrintPlainPDFDriver *pdf);
+static int sp_plain_pdf_fprintf (SPPrintPlainPDFDriver *pdf, const char *format, ...);
+static int sp_plain_pdf_fwrite (SPPrintPlainPDFDriver *pdf, const char *buffer, int len);
+static int sp_plain_pdf_fprint_double (SPPrintPlainPDFDriver *pdf, double value);
+
+static int sp_plain_pdf_stream_fprintf (SPPrintPlainPDFDriver *pdf, const char *format, ...);
+static int sp_plain_pdf_stream_fprint_double (SPPrintPlainPDFDriver *pdf, double value);
+
+static int sp_plain_pdf_write_contents (SPPrintPlainPDFDriver *pdf);
+static int sp_plain_pdf_write_resources (SPPrintPlainPDFDriver *pdf);
+static int sp_plain_pdf_write_page (SPPrintPlainPDFDriver *pdf);
+static int sp_plain_pdf_write_pages (SPPrintPlainPDFDriver *pdf, int catalog_id);
 
 static int sp_plain_pdf_object_new (SPPrintPlainPDFDriver *pdf);
-static int sp_plain_pdf_object_start (SPPrintPlainPDFDriver *pdf);
-static int sp_plain_pdf_object_end (SPPrintPlainPDFDriver *pdf);
+static void sp_plain_pdf_object_start (SPPrintPlainPDFDriver *pdf, int object_id);
+static void sp_plain_pdf_object_start_stream (SPPrintPlainPDFDriver *pdf, int object_id);
+static void sp_plain_pdf_object_end (SPPrintPlainPDFDriver *pdf, int object_id);
+SPPDFObject *sp_plain_pdf_objects_reverse (SPPDFObject *objects);
 
+static SPPDFBuffer *sp_pdf_buffer_new (void);
+static SPPDFBuffer *sp_pdf_buffer_delete (SPPDFBuffer *buffer);
+static int sp_pdf_buffer_write (SPPDFBuffer *buffer, unsigned char *text, int length);
 
 static void
 sp_plain_pdf_initialize (SPPrintPlainDriver *driver)
 {
 	SPPrintPlainPDFDriver *pdf;
 
-	printf ("initialize\n");
+	printf ("pdf_initialize\n");
 	pdf = (SPPrintPlainPDFDriver *)driver;
+
+	pdf->stream = sp_pdf_buffer_new ();
+	pdf->objects = NULL;
+	pdf->n_objects = 0;
 
 	pdf->offset = 0;
 	pdf->color_set_stroke = FALSE;
 	pdf->color_set_fill = FALSE;
+/* 	pdf->catalog_id = 0; */
+/* 	pdf->pages_id = 0; */
+	pdf->contents_id = 0;
+	pdf->resources_id = 0;
 }
 
 static void
 sp_plain_pdf_finalize (SPPrintPlainDriver *driver)
 {
-	printf ("finalize\n");
+	SPPrintPlainPDFDriver *pdf;
+	SPPDFObject *object;
+
+	pdf = (SPPrintPlainPDFDriver *)driver;
+
+	sp_pdf_buffer_delete (pdf->stream);
+
+	for (object = pdf->objects; object; ) {
+		SPPDFObject *next;
+		next = object->next;
+		free (object);
+		object = next;
+	}
 }
 
 static unsigned int
@@ -116,7 +173,6 @@ sp_plain_pdf_begin (SPPrintPlainDriver *driver, SPDocument *doc)
 /* 	unsigned char c[32]; */
 	int res;
 
-	printf ("begin\n");
 	pdf = (SPPrintPlainPDFDriver *)driver;
 	pmod = pdf->module;
 
@@ -143,28 +199,70 @@ sp_plain_pdf_begin (SPPrintPlainDriver *driver, SPDocument *doc)
 	if (res >= 0) res = fprintf (pmod->stream, "%g %g translate\n", 0.0, sp_document_height (doc));
 	if (res >= 0) res = fprintf (pmod->stream, "0.8 -0.8 scale\n");
 */
+
+	/* Page */
+	pdf->page_id = sp_plain_pdf_object_new (pdf);
+	pdf->contents_id = sp_plain_pdf_object_new (pdf);
+	pdf->resources_id = sp_plain_pdf_object_new (pdf);
+
 	return res;
 }
 
 static unsigned int
 sp_plain_pdf_finish (SPPrintPlainDriver *driver)
 {
-	int res;
 	SPModulePrint *mod;
 	SPModulePrintPlain *pmod;
 	SPPrintPlainPDFDriver *pdf;
+	SPPDFObject *object;
+	int res;
+	int xref_offset, n_objects;
+	int catalog_id;
 
-	printf ("finish\n");
 	pdf = (SPPrintPlainPDFDriver *)driver;
 	pmod = pdf->module;
 	mod = (SPModulePrint*)pmod;
 
 	if (!pmod->stream) return 0;
 
-/* 	res = sp_plain_pdf_fprintf (pdf, "showpage" PDF_EOL); */
-/* 	sp_plain_pdf_flush_contents (driver); */
-/* 	sp_plain_pdf_flush_resources (driver); */
+	/* Write single page contents */
+	sp_plain_pdf_write_page (pdf);
 
+	/* Write pages */
+	catalog_id = sp_plain_pdf_object_new (pdf);
+	sp_plain_pdf_write_pages (pdf, catalog_id);
+
+	/* Write info block */
+
+	/* Write xref */
+	xref_offset = pdf->offset;
+	n_objects = pdf->n_objects + 1;
+	sp_plain_pdf_fprintf (pdf, "xref" PDF_EOL
+						  "0 %d" PDF_EOL
+						  "%010d %05d f" PDF_EOL,
+						  n_objects,
+						  0, 65535);
+
+	pdf->objects = sp_plain_pdf_objects_reverse (pdf->objects);
+
+	for (object = pdf->objects; object; object = object->next) {
+		if (object->offset < 1) g_warning ("Object with zero offset!");
+		
+		sp_plain_pdf_fprintf (pdf, "%010d %05d n" PDF_EOL, object->offset, 0);
+	}
+
+	/* Write trailer */
+	sp_plain_pdf_fprintf (pdf, "trailer" PDF_EOL
+						  "<<" PDF_EOL
+						  "/Size %d" PDF_EOL
+						  "/Root %d 0 R" PDF_EOL
+						  ">>" PDF_EOL
+						  "startxref" PDF_EOL
+						  "%d" PDF_EOL
+						  "%%%%EOF" PDF_EOL,
+						  n_objects, catalog_id,
+						  xref_offset);
+						  
 	/* Flush stream to be sure */
 	(void) fflush (pmod->stream);
 
@@ -180,17 +278,22 @@ sp_plain_pdf_bind (SPPrintPlainDriver *driver, const NRMatrixF *transform, float
 {
 	SPModulePrintPlain *pmod;
 	SPPrintPlainPDFDriver *pdf;
+	int res;
 
 	pdf = (SPPrintPlainPDFDriver *)driver;
 	pmod = pdf->module;
 
-	printf ("bind\n");
 	if (!pmod->stream) return -1;
 
-	return fprintf (pmod->stream, "q [%g %g %g %g %g %g] concat\n",
+	res = sp_plain_pdf_stream_fprintf (pdf, "q" PDF_EOL);
+
+#if 0
+	res = fprintf (pmod->stream, "q [%g %g %g %g %g %g] concat\n",
 			transform->c[0], transform->c[1],
 			transform->c[2], transform->c[3],
 			transform->c[4], transform->c[5]);
+#endif
+	return res;
 }
 
 static unsigned int
@@ -198,14 +301,21 @@ sp_plain_pdf_release (SPPrintPlainDriver *driver)
 {
 	SPModulePrintPlain *pmod;
 	SPPrintPlainPDFDriver *pdf;
+	int res;
 
 	pdf = (SPPrintPlainPDFDriver *)driver;
 	pmod = pdf->module;
 
-	printf ("release\n");
+	printf ("pdf_release\n");
+
 	if (!pmod->stream) return -1;
 
-	return fprintf (pmod->stream, "Q" PDF_EOL);
+	pdf->color_set_fill = FALSE;
+	pdf->color_set_stroke = FALSE;
+
+	res = sp_plain_pdf_stream_fprintf (pdf, "Q" PDF_EOL);
+
+	return res;
 }
 
 static unsigned int
@@ -230,17 +340,17 @@ sp_plain_pdf_fill (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRMat
 				(pdf->fill_rgb[0] != rgb[0]) ||
 				(pdf->fill_rgb[1] != rgb[1]) ||
 				(pdf->fill_rgb[2] != rgb[2]))) {
-			sp_plain_pdf_fprintf (pdf, "%g %g %g rg" PDF_EOL, rgb[0], rgb[1], rgb[2]);
+			sp_plain_pdf_stream_fprintf (pdf, "%g %g %g rg" PDF_EOL, rgb[0], rgb[1], rgb[2]);
 		}
 		sp_plain_pdf_print_bpath (pdf, bpath->path);
 
 		switch (style->fill_rule.value) {
 		case SP_WIND_RULE_NONZERO:
-			sp_plain_pdf_fprintf (pdf, "f" PDF_EOL);
+			sp_plain_pdf_stream_fprintf (pdf, "f" PDF_EOL);
 			break;
 		case SP_WIND_RULE_EVENODD:
 		default:
-			sp_plain_pdf_fprintf (pdf, "f*" PDF_EOL);
+			sp_plain_pdf_stream_fprintf (pdf, "f*" PDF_EOL);
 			break;
 		}
 	}
@@ -270,7 +380,7 @@ sp_plain_pdf_stroke (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRM
 				(pdf->stroke_rgb[0] != rgb[0]) ||
 				(pdf->stroke_rgb[1] != rgb[1]) ||
 				(pdf->stroke_rgb[2] != rgb[2]))) {
-			sp_plain_pdf_fprintf (pdf, "%.3g %.3g %.3g RG" PDF_EOL, rgb[0], rgb[1], rgb[2]);
+			sp_plain_pdf_stream_fprintf (pdf, "%.3g %.3g %.3g RG" PDF_EOL, rgb[0], rgb[1], rgb[2]);
 			pdf->stroke_rgb[0] = rgb[0];
 			pdf->stroke_rgb[1] = rgb[1];
 			pdf->stroke_rgb[2] = rgb[2];
@@ -280,28 +390,29 @@ sp_plain_pdf_stroke (SPPrintPlainDriver *driver, const NRBPath *bpath, const NRM
 		/* Set dash */
 		if (style->stroke_dash.n_dash > 0) {
 			int i;
-			sp_plain_pdf_fprintf (pdf, "[");
+			sp_plain_pdf_stream_fprintf (pdf, "[");
 			for (i = 0; i < style->stroke_dash.n_dash; i++) {
-				sp_plain_pdf_fprintf (pdf, (i) ? " %g" : "%g", style->stroke_dash.dash[i]);
+				sp_plain_pdf_stream_fprintf (pdf, (i) ? " " : "");
+				sp_plain_pdf_stream_fprint_double (pdf, style->stroke_dash.dash[i]);
 			}
-			sp_plain_pdf_fprintf (pdf, "] %g setdash" PDF_EOL, style->stroke_dash.offset);
+			sp_plain_pdf_stream_fprintf (pdf, "] %g d" PDF_EOL, style->stroke_dash.offset);
 		} else {
-			sp_plain_pdf_fprintf (pdf, "[] 0 setdash" PDF_EOL);
+			sp_plain_pdf_stream_fprintf (pdf, "[] 0 d" PDF_EOL);
 		}
 
 		/* Set line */
-		sp_plain_pdf_fprint_double (pdf, style->stroke_width.computed);
-		sp_plain_pdf_fprintf (pdf, " w %d J %d j ",
+		sp_plain_pdf_stream_fprint_double (pdf, style->stroke_width.computed);
+		sp_plain_pdf_stream_fprintf (pdf, " w %d J %d j ",
 							  style->stroke_linecap.computed,
 							  style->stroke_linejoin.computed);
-		sp_plain_pdf_fprint_double (pdf, style->stroke_miterlimit.value);
-		sp_plain_pdf_fprintf (pdf, " M" PDF_EOL);
+		sp_plain_pdf_stream_fprint_double (pdf, style->stroke_miterlimit.value);
+		sp_plain_pdf_stream_fprintf (pdf, " M" PDF_EOL);
 
 		/* Path */
 		sp_plain_pdf_print_bpath (pdf, bpath->path);
 
 		/* Stroke */
-		sp_plain_pdf_fprintf (pdf, "S" PDF_EOL);
+		sp_plain_pdf_stream_fprintf (pdf, "S" PDF_EOL);
 	}
 
 	return 0;
@@ -335,25 +446,25 @@ sp_plain_pdf_print_bpath (SPPrintPlainPDFDriver *pdf, const ArtBpath *bp)
 		switch (bp->code) {
 		case ART_MOVETO:
 			if (started && closed) {
-				sp_plain_pdf_fprintf (pdf, "h" PDF_EOL);
+				sp_plain_pdf_stream_fprintf (pdf, "h" PDF_EOL);
 			}
 			started = TRUE;
 			closed = TRUE;
-			sp_plain_pdf_fprintf (pdf, "%g %g m" PDF_EOL, bp->x3, bp->y3);
+			sp_plain_pdf_stream_fprintf (pdf, "%g %g m" PDF_EOL, bp->x3, bp->y3);
 			break;
 		case ART_MOVETO_OPEN:
 			if (started && closed) {
-				sp_plain_pdf_fprintf (pdf, "h" PDF_EOL);
+				sp_plain_pdf_stream_fprintf (pdf, "h" PDF_EOL);
 			}
 			started = FALSE;
 			closed = FALSE;
-			sp_plain_pdf_fprintf (pdf, "%g %g m" PDF_EOL, bp->x3, bp->y3);
+			sp_plain_pdf_stream_fprintf (pdf, "%g %g m" PDF_EOL, bp->x3, bp->y3);
 			break;
 		case ART_LINETO:
-			sp_plain_pdf_fprintf (pdf, "%g %g l" PDF_EOL, bp->x3, bp->y3);
+			sp_plain_pdf_stream_fprintf (pdf, "%g %g l" PDF_EOL, bp->x3, bp->y3);
 			break;
 		case ART_CURVETO:
-			sp_plain_pdf_fprintf (pdf, "%g %g %g %g %g %g c" PDF_EOL, bp->x1, bp->y1, bp->x2, bp->y2, bp->x3, bp->y3);
+			sp_plain_pdf_stream_fprintf (pdf, "%g %g %g %g %g %g c" PDF_EOL, bp->x1, bp->y1, bp->x2, bp->y2, bp->x3, bp->y3);
 			break;
 		default:
 			break;
@@ -361,7 +472,7 @@ sp_plain_pdf_print_bpath (SPPrintPlainPDFDriver *pdf, const ArtBpath *bp)
 		bp += 1;
 	}
 	if (started && closed) {
-		sp_plain_pdf_fprintf (pdf, "h" PDF_EOL);
+		sp_plain_pdf_stream_fprintf (pdf, "h" PDF_EOL);
 	}
 }
 
@@ -377,10 +488,19 @@ sp_plain_pdf_fprintf (SPPrintPlainPDFDriver *pdf, const char *format, ...)
 	va_end (args);
 
 	len = strlen (text);
-	fprintf (pdf->module->stream, text);
+	fputs (text, pdf->module->stream);
 	pdf->offset += len;
 
 	g_free (text);
+
+	return len;
+}
+
+static int
+sp_plain_pdf_fwrite (SPPrintPlainPDFDriver *pdf, const char *buffer, int len)
+{
+	fputs (buffer, pdf->module->stream);
+	pdf->offset += len;
 
 	return len;
 }
@@ -392,28 +512,135 @@ sp_plain_pdf_fprint_double (SPPrintPlainPDFDriver *pdf, double value)
 	int len;
 	
 	len = arikkei_dtoa_simple (c, 32, value, 6, 0, FALSE);
-
-	fprintf (pdf->module->stream, c);
-
+	fputs (c, pdf->module->stream);
 	pdf->offset += len;
 
 	return len;
 }
 
 static int
-sp_plain_pdf_flush_contents (SPPrintPlainPDFDriver *pdf)
+sp_plain_pdf_stream_fprintf (SPPrintPlainPDFDriver *pdf, const char *format, ...)
 {
-	int len = 0;
+	va_list args;
+	char *text;
+	int len;
 
-	sp_plain_pdf_fprintf (pdf, "%d 0 obj" PDF_EOL, num_obj);
-	sp_plain_pdf_fprintf (pdf, "<<" PDF_EOL);
-	sp_plain_pdf_fprintf (pdf, "/Length %d" PDF_EOL, );
-	sp_plain_pdf_fprintf (pdf, ">> %d" PDF_EOL, );
+	va_start (args, format);
+	text = g_strdup_vprintf (format, args);
+	va_end (args);
+
+	len = sp_pdf_buffer_write (pdf->stream, text, -1);
+
+	g_free (text);
+
+	return len;
 }
 
 static int
-sp_plain_pdf_flush_resources (SPPrintPlainPDFDriver *pdf)
+sp_plain_pdf_stream_fprint_double (SPPrintPlainPDFDriver *pdf, double value)
 {
+	unsigned char c[32];
+	int len;
+	
+	len = arikkei_dtoa_simple (c, 32, value, 6, 0, FALSE);
+
+	sp_pdf_buffer_write (pdf->stream, c, len);
+
+	return len;
+}
+
+static int
+sp_plain_pdf_write_contents (SPPrintPlainPDFDriver *pdf)
+{
+	int res = 0;
+
+	printf ("pdf_write_contents\n");
+
+	sp_plain_pdf_object_start (pdf, pdf->contents_id);
+	sp_plain_pdf_fprintf (pdf, "/Length %d" PDF_EOL, pdf->stream->length);
+	sp_plain_pdf_object_start_stream (pdf, pdf->contents_id);
+	sp_plain_pdf_fwrite (pdf, pdf->stream->buffer, pdf->stream->length);
+	sp_plain_pdf_object_end (pdf, pdf->contents_id);
+
+	return res;
+}
+
+static int
+sp_plain_pdf_write_resources (SPPrintPlainPDFDriver *pdf)
+{
+	int res = 0;
+
+	printf ("pdf_write_resources\n");
+
+	sp_plain_pdf_object_start (pdf, pdf->resources_id);
+	sp_plain_pdf_fprintf (pdf, "/ProcSet [/PDF");
+#if 0
+	if (pdf->use_images) {
+		sp_plain_pdf_fprintf (pdf, " /ImageC");
+	}
+#endif
+	sp_plain_pdf_fprintf (pdf, "]" PDF_EOL);
+	sp_plain_pdf_object_end (pdf, pdf->resources_id);
+	
+	return res;
+}
+
+static int
+sp_plain_pdf_write_page (SPPrintPlainPDFDriver *pdf)
+{
+	int res = 0;
+	
+	res += sp_plain_pdf_write_contents (pdf);
+
+	res += sp_plain_pdf_write_resources (pdf);
+
+	return res;
+}
+
+static int
+sp_plain_pdf_write_pages (SPPrintPlainPDFDriver *pdf, int catalog_id)
+{
+	SPModulePrintPlain *pmod;
+	int res = 0;
+	int pages_id;
+
+	pmod = pdf->module;
+
+	pages_id = sp_plain_pdf_object_new (pdf);
+
+	/* We have only single page */
+	sp_plain_pdf_object_start (pdf, pdf->page_id);
+	sp_plain_pdf_fprintf (pdf,
+						  "/Type /Page" PDF_EOL
+						  "/Parent %d 0 R" PDF_EOL
+						  "/Resources %d 0 R" PDF_EOL
+						  "/Contents %d 0 R" PDF_EOL,
+						  pages_id,
+						  pdf->resources_id,
+						  pdf->contents_id);
+	sp_plain_pdf_object_end (pdf, pdf->page_id);
+
+	/* Pages object */
+	sp_plain_pdf_object_start (pdf, pages_id);
+	sp_plain_pdf_fprintf (pdf,
+						  "/Type /Pages" PDF_EOL
+						  "/Kids [%d 0 R]" PDF_EOL /* Single page */
+						  "/Count %d" PDF_EOL
+						  "/MediaBox [0 0 %d %d]" PDF_EOL,
+						  pdf->page_id,
+						  1,
+						  (int)pmod->width, (int)pmod->height);
+	sp_plain_pdf_object_end (pdf, pages_id);
+	
+	/* Catalog */
+	sp_plain_pdf_object_start (pdf, catalog_id);
+	sp_plain_pdf_fprintf (pdf,
+						  "/Type /Catalog" PDF_EOL
+						  "/Pages %d 0 R" PDF_EOL,
+						  pages_id);
+	sp_plain_pdf_object_end (pdf, catalog_id);
+	
+	return res;
 }
 
 static int
@@ -423,15 +650,17 @@ sp_plain_pdf_object_new (SPPrintPlainPDFDriver *pdf)
 
 	object = (SPPDFObject*)malloc (sizeof (SPPDFObject));
 
-	object->id = pdf->n_objects++;
+	object->id = ++pdf->n_objects;
 	object->offset = 0;
+	object->state_dict = PDFO_DICT_NONE;
+	object->state_stream = PDFO_STREAM_NONE;
 
 	if (pdf->objects) {
 		object->next = pdf->objects;
-		pdf->objects = object;
 	} else {
-		pdf->objects = object;
+		object->next = NULL;
 	}
+	pdf->objects = object;
 
 	return object->id;
 }
@@ -441,23 +670,128 @@ sp_plain_pdf_object_start (SPPrintPlainPDFDriver *pdf, int object_id)
 {
 	SPPDFObject *object;
 
-	object = pdf->object;
+	object = pdf->objects;
 	while (object && object->id != object_id) object = object->next;
 	assert (object);
+
+	object->offset = pdf->offset;
 
 	sp_plain_pdf_fprintf (pdf,
 						  "%d 0 obj" PDF_EOL
 						  "<<" PDF_EOL,
 						  object_id);
+
+	if (object->state_dict != PDFO_DICT_NONE) g_warning ("Dictionary state is invalid: object = %d, state = %d", object_id, object->state_dict);
+	object->state_dict = PDFO_DICT_START;
+}
+
+static void
+sp_plain_pdf_object_start_stream (SPPrintPlainPDFDriver *pdf, int object_id)
+{
+	SPPDFObject *object;
+
+	object = pdf->objects;
+	while (object && object->id != object_id) object = object->next;
+	assert (object);
+
+	if (object->state_dict == PDFO_DICT_START) {
+		sp_plain_pdf_fprintf (pdf, ">>" PDF_EOL);
+		object->state_dict = PDFO_DICT_END;
+	}
+
+	sp_plain_pdf_fprintf (pdf, "stream" PDF_EOL);
+	object->state_stream = PDFO_STREAM_START;
 }
 
 static void
 sp_plain_pdf_object_end (SPPrintPlainPDFDriver *pdf, int object_id)
 {
-	sp_plain_pdf_fprintf (pdf,
-						  ">>" PDF_EOL
-						  "endobj" PDF_EOL,
-						  object_id);
+	SPPDFObject *object;
+
+	object = pdf->objects;
+	while (object && object->id != object_id) object = object->next;
+	assert (object);
+
+	if (object->state_dict == PDFO_DICT_START) {
+		sp_plain_pdf_fprintf (pdf, ">>" PDF_EOL);
+		object->state_dict = PDFO_DICT_END;
+	} else if (object->state_stream == PDFO_STREAM_START) {
+		sp_plain_pdf_fprintf (pdf, "endstream" PDF_EOL);
+		object->state_stream = PDFO_STREAM_END;
+	}
+
+	sp_plain_pdf_fprintf (pdf, "endobj" PDF_EOL);
+}
+
+SPPDFObject *
+sp_plain_pdf_objects_reverse (SPPDFObject *objects)
+{
+	SPPDFObject *prev;
+
+	prev = NULL;
+
+	while (objects) {
+		SPPDFObject *next;
+
+		next = objects->next;
+		objects->next = prev;
+
+		prev = objects;
+		objects = next;
+	}
+
+	return prev;
+}
+
+static SPPDFBuffer *
+sp_pdf_buffer_new (void)
+{
+	SPPDFBuffer *buffer;
+
+	buffer = (SPPDFBuffer *)malloc (sizeof(SPPDFBuffer));
+	buffer->buffer = NULL;
+	buffer->length = 0;
+	buffer->alloc_size = 0;
+
+	return buffer;
+}
+
+static SPPDFBuffer *
+sp_pdf_buffer_delete (SPPDFBuffer *buffer)
+{
+	if (buffer->buffer) {
+		free (buffer->buffer);
+	}
+	free (buffer);
+
+	return NULL;
+}
+
+static int
+sp_pdf_buffer_write (SPPDFBuffer *buffer, unsigned char *text, int length)
+{
+	if (!text || length == 0) return 0;
+
+	if (length < 0) {
+		unsigned char *p;
+		p = text;
+		for (length = 0; p && *p; p++) length += 1;
+	}
+
+	if (length + buffer->length + 1 > buffer->alloc_size) {
+		int grow_size = PDF_BUFFER_INITIAL_SIZE;
+		while (length + buffer->length + 1 > buffer->alloc_size) {
+			buffer->alloc_size += grow_size;
+			grow_size <<= 1;
+		}
+		buffer->buffer = (unsigned char *)realloc (buffer->buffer, buffer->alloc_size);
+	}
+
+	memcpy (buffer->buffer + buffer->length, text, length);
+	buffer->length += length;
+	buffer->buffer[buffer->length] = '\0';
+
+	return length;
 }
 
 
@@ -728,7 +1062,7 @@ sp_pdf_print_image (FILE *ofp, unsigned char *px, unsigned int width, unsigned i
 
 
 SPPrintPlainDriver *
-sp_plain_pdf_driver_new (SPPlainPSType type, SPModulePrintPlain *module)
+sp_plain_pdf_driver_new (SPPlainPDFType type, SPModulePrintPlain *module)
 {
 	SPPrintPlainDriver *driver;
 	SPPrintPlainPDFDriver *pdf;
@@ -738,14 +1072,7 @@ sp_plain_pdf_driver_new (SPPlainPSType type, SPModulePrintPlain *module)
 
 	pdf->module = module;
 	pdf->type = type;
-/*	switch (type) {
-	case SP_PLAIN_PDF_DEFAULT:
-		break;
-	default:
-		assert (0);
-		break;
-	}
-*/
+
 	driver->initialize = sp_plain_pdf_initialize;
 	driver->finalize = sp_plain_pdf_finalize;
 	driver->begin = sp_plain_pdf_begin;

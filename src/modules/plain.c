@@ -160,7 +160,7 @@ sp_module_print_plain_write (SPModule *module, SPRepr *root)
 	sp_repr_set_attr (repr, "id", "plain");
 	sp_repr_set_attr (repr, "name", "Plain Printing");
 	sp_repr_set_attr (repr, "action", "no");
-	sp_repr_set_attr (repr, "driver", "ps");
+/* 	sp_repr_set_attr (repr, "driver", "ps"); */
 	sp_repr_append_child (grp, repr);
 	return repr;
 }
@@ -185,12 +185,12 @@ static const struct _SPPlainDriver drivers[] = {
 	  N_("Print everything as bitmap, resulting image will be (usualy) larger "
 		 "and it quality depends on zoom factor, but all graphics "
 		 "will be rendered identical to display")},
-/*	{ SP_PRINT_PLAIN_DRIVER_PDF_DEFAULT,
+	{ SP_PRINT_PLAIN_DRIVER_PDF_DEFAULT,
 	  "pdf",
 	  N_("Print using PDF driver"),
 	  N_("Use Portable Document Format for printing"),
 	},
-	{ SP_PRINT_PLAIN_DRIVER_PDF_BITMAP,
+/*	{ SP_PRINT_PLAIN_DRIVER_PDF_BITMAP,
 	  "pdf_bitmap",
 	  N_("Print using rasterized PDF driver"),
 	  N_("Use Portable Document Format for printing, but everything as bitmap"),
@@ -576,7 +576,6 @@ sp_print_plain_driver_new (SPPrintPlainDriverType type, SPModulePrintPlain *modu
 		printf ("driver_new: PS_BITMAP\n");
 		driver = sp_plain_ps_driver_new (SP_PLAIN_PS_BITMAP, module);
 		break;
-#if 0
 	case SP_PRINT_PLAIN_DRIVER_PDF_DEFAULT:
 		printf ("driver_new: PDF_DEFAULT\n");
 		driver = sp_plain_pdf_driver_new (SP_PLAIN_PDF_DEFAULT, module);
@@ -585,7 +584,6 @@ sp_print_plain_driver_new (SPPrintPlainDriverType type, SPModulePrintPlain *modu
 		printf ("driver_new: PDF_BITMAP\n");
 		driver = sp_plain_ps_driver_new (SP_PLAIN_PDF_BITMAP, module);
 		break;
-#endif
 	default:
 		assert (0);
 	}
