@@ -1,3 +1,7 @@
+2000-10-18  Christophe Merlet  <christophe@merlet.net>
+
+	* sodipodi.desktop: Added French string.
+
 2000-10-17  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/nodepath.c (sp_nodepath_node_destroy): fixed YANC (Yet
