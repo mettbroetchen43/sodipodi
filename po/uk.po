@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.17\n"
-"POT-Creation-Date: 2000-09-06 13:13+0300\n"
+"POT-Creation-Date: 2000-10-03 15:16+0300\n"
 "PO-Revision-Date: 2000-01-17 14:31+0200\n"
 "Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
@@ -83,7 +83,7 @@ msgstr "Дерево XML"
 msgid "Zoom"
 msgstr "Масштаб"
 
-#: glade/sodipodi-glade.c:21 glade/sodipodi-glade.c:175
+#: glade/desktop.c:35 glade/sodipodi-glade.c:21 glade/sodipodi-glade.c:175
 #: glade/transformation.c:35
 msgid "Scale"
 msgstr "Шкала"
@@ -114,7 +114,7 @@ msgstr ""
 
 #: glade/sodipodi-glade.c:31
 msgid "_Arrange"
-msgstr "Аркуш"
+msgstr ""
 
 #: glade/sodipodi-glade.c:32 glade/sodipodi-glade.c:162
 msgid "_Align"
@@ -122,12 +122,11 @@ msgstr ""
 
 #: glade/sodipodi-glade.c:33
 msgid "_Transform"
-msgstr ""
+msgstr "Перетворити"
 
 #: glade/sodipodi-glade.c:34
-#, fuzzy
 msgid "_Order"
-msgstr "Порядок"
+msgstr "Впорядкувати"
 
 #: glade/sodipodi-glade.c:35 glade/sodipodi-glade.c:164
 msgid "Bring to _Front"
@@ -483,17 +482,17 @@ msgid "Set dimensions"
 msgstr ""
 
 #: glade/sodipodi-glade.c:130 glade/sodipodi-glade.c:156
-#: src/dialogs/align.c:105
+#: src/dialogs/align.c:103
 msgid "Drawing"
 msgstr ""
 
 #: glade/sodipodi-glade.c:131 glade/sodipodi-glade.c:158
-#: src/dialogs/align.c:100
+#: src/dialogs/align.c:98
 msgid "Page"
 msgstr "Аркуш"
 
 #: glade/sodipodi-glade.c:132 glade/sodipodi-glade.c:157
-#: glade/sodipodi-glade.c:161 src/dialogs/align.c:110
+#: glade/sodipodi-glade.c:161 src/dialogs/align.c:108
 msgid "Selection"
 msgstr ""
 
@@ -800,30 +799,32 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/transformation.c:7 glade/transformation.c:43
+#: glade/desktop.c:7 glade/transformation.c:7
 msgid "Transform selection"
 msgstr ""
 
-#: glade/transformation.c:8
+#: glade/desktop.c:8 glade/transformation.c:8
 msgid " Move "
 msgstr " Перенести "
 
+#: glade/desktop.c:9 glade/desktop.c:29 glade/desktop.c:37
 #: glade/transformation.c:9 glade/transformation.c:29
 #: glade/transformation.c:37
 msgid "horizontal"
 msgstr ""
 
+#: glade/desktop.c:10 glade/desktop.c:30 glade/desktop.c:38
 #: glade/transformation.c:10 glade/transformation.c:30
 #: glade/transformation.c:38
 msgid "vertical"
 msgstr ""
 
-#: glade/transformation.c:11
+#: glade/desktop.c:11 glade/transformation.c:11
 msgid "move relative in"
 msgstr ""
 
-#: glade/transformation.c:12 glade/transformation.c:46
-#, fuzzy
+#: glade/desktop.c:12 glade/desktop.c:46 glade/transformation.c:12
+#: glade/transformation.c:46
 msgid ""
 "pixel\n"
 "points\n"
@@ -832,83 +833,90 @@ msgid ""
 "inch\n"
 msgstr ""
 "п╕ксел╕\n"
-"м╕л╕метри\n"
 "пункти\n"
+"м╕л╕метри\n"
+"сантиметри\n"
 "дюйми\n"
 
-#: glade/transformation.c:18
+#: glade/desktop.c:18 glade/transformation.c:18
 msgid "Move"
 msgstr "Перенести"
 
-#: glade/transformation.c:19
+#: glade/desktop.c:19 glade/transformation.c:19
 msgid " Rotate "
 msgstr " Обернути "
 
-#: glade/transformation.c:20
+#: glade/desktop.c:20 glade/transformation.c:20
 msgid "90╟"
 msgstr "90 ╜радус╕в"
 
-#: glade/transformation.c:21
+#: glade/desktop.c:21 glade/transformation.c:21
 msgid "180╟"
 msgstr "180 ╜радус╕в"
 
-#: glade/transformation.c:22
+#: glade/desktop.c:22 glade/transformation.c:22
 msgid "270╟"
 msgstr "270 ╜радус╕в"
 
-#: glade/transformation.c:23
+#: glade/desktop.c:23 glade/transformation.c:23
 msgid "any"
 msgstr ""
 
-#: glade/transformation.c:24
+#: glade/desktop.c:24 glade/transformation.c:24
 msgid "degree"
 msgstr ""
 
-#: glade/transformation.c:25
+#: glade/desktop.c:25 glade/transformation.c:25
 #, fuzzy
 msgid "right"
 msgstr "Висота"
 
-#: glade/transformation.c:26
-#, fuzzy
+#: glade/desktop.c:26 glade/transformation.c:26
 msgid "left"
-msgstr "Видалити"
+msgstr ""
 
-#: glade/transformation.c:27
+#: glade/desktop.c:27 glade/transformation.c:27
 msgid "Rotate"
 msgstr "Обернути"
 
-#: glade/transformation.c:28
+#: glade/desktop.c:28 glade/transformation.c:28
 msgid " Scale "
 msgstr " Масштабувати "
 
-#: glade/transformation.c:31 glade/transformation.c:32
+#: glade/desktop.c:31 glade/desktop.c:32 glade/transformation.c:31
+#: glade/transformation.c:32
 #, c-format
 msgid "% "
 msgstr "% "
 
-#: glade/transformation.c:33 glade/transformation.c:34
+#: glade/desktop.c:33 glade/desktop.c:34 glade/transformation.c:33
+#: glade/transformation.c:34
 msgid " flip "
 msgstr " в╕ддзеркалити "
 
-#: glade/transformation.c:36
+#: glade/desktop.c:36 glade/transformation.c:36
 msgid " Skew "
 msgstr " Нахилити "
 
-#: glade/transformation.c:39 glade/transformation.c:40
+#: glade/desktop.c:39 glade/desktop.c:40 glade/transformation.c:39
+#: glade/transformation.c:40
 #, c-format
 msgid "%  "
 msgstr "%  "
 
-#: glade/transformation.c:41
+#: glade/desktop.c:41 glade/transformation.c:41
 msgid "Skew"
 msgstr "Нахилити"
 
-#: glade/transformation.c:42 glade/transformation.c:61
+#: glade/desktop.c:42 glade/transformation.c:42
 msgid "make copy"
 msgstr "зробити коп╕ю"
 
-#: glade/transformation.c:44
+#: glade/desktop.c:43 glade/transformation.c:43
+msgid "Guidelines setup"
+msgstr ""
+
+#: glade/desktop.c:45 glade/transformation.c:44
 msgid "move horizontal"
 msgstr ""
 
@@ -916,66 +924,43 @@ msgstr ""
 msgid "move vertival"
 msgstr ""
 
-#: glade/transformation.c:52
-#, fuzzy
-msgid "angle"
-msgstr "Зм╕нити"
-
-#: glade/transformation.c:53
-#, c-format
-msgid "scale horizontal in %"
+#: glade/desktop.c:52 glade/transformation.c:52
+msgid "Snap to guides"
 msgstr ""
 
-#: glade/transformation.c:54 glade/transformation.c:56
-#: glade/transformation.c:58 glade/transformation.c:60
-#, c-format
-msgid "%"
-msgstr ""
-
-#: glade/transformation.c:55
-#, c-format
-msgid "scale vertical in %"
-msgstr ""
-
-#: glade/transformation.c:57
-#, c-format
-msgid "skew horizontal in %"
-msgstr ""
-
-#: glade/transformation.c:59
-#, c-format
-msgid "skew vertical in %"
-msgstr ""
-
-#: glade/transformation.c:62
+#: glade/desktop.c:53 glade/transformation.c:53
 msgid "Start transformation"
 msgstr ""
 
-#: glade/transformation.c:63
+#: glade/desktop.c:54 glade/transformation.c:54
 msgid "close dialog"
 msgstr ""
 
-#: src/main.c:51
+#: glade/desktop.c:44
+msgid "Tolerance:"
+msgstr ""
+
+#: src/main.c:46
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
 
-#: src/main.c:60
+#: src/main.c:55
 msgid "Open specified file (option string may be excluded)"
 msgstr ""
 
-#: src/main.c:61 src/main.c:70
+#: src/main.c:56 src/main.c:65
 msgid "FILENAME"
 msgstr "НАЗВА_ФАЙЛУ"
 
-#: src/main.c:69
+#: src/main.c:64
 msgid "Print files to specified file (use '| program' for pipe)"
 msgstr ""
 
-#: src/main.c:160
+#: src/main.c:158
 msgid "Oaf options"
 msgstr "Параметри oaf"
 
-#: src/main.c:175
+#: src/main.c:166
 msgid "Could not initialize Bonobo"
 msgstr "Не вдалося ╕н╕ц╕ал╕зувати Bonobo"
 
@@ -987,19 +972,19 @@ msgstr ""
 msgid "Select file to open"
 msgstr "Вибер╕ть файл для в╕дкривання"
 
-#: src/file.c:152
+#: src/file.c:153
 msgid "Save file"
 msgstr "Зберегти файл"
 
-#: src/file.c:232
+#: src/file.c:253
 msgid "Select file to import"
 msgstr "Вибер╕ть файл для ╕мпорту"
 
-#: src/file.c:304
+#: src/file.c:325
 msgid "Export file"
 msgstr "Експортувати файл"
 
-#: src/file.c:373
+#: src/file.c:394
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr ""
@@ -1012,11 +997,11 @@ msgstr ""
 msgid "Color bitmap"
 msgstr ""
 
-#: src/sp-item.c:170
+#: src/sp-item.c:168
 msgid "Unknown item :-("
 msgstr "Нев╕домий елемент"
 
-#: src/sp-item-group.c:325
+#: src/sp-item-group.c:348
 #, c-format
 msgid "Group of %d items"
 msgstr "Зрупа з %d елемент╕в"
@@ -1029,18 +1014,18 @@ msgstr ""
 msgid "Text object"
 msgstr "Текстовий об'╓кт"
 
-#: src/dialogs/align.c:80
+#: src/dialogs/align.c:78
 msgid "Last selected"
 msgstr "Останн╕й вибраний"
 
-#: src/dialogs/align.c:85
+#: src/dialogs/align.c:83
 msgid "First selected"
 msgstr "Перший вибраний"
 
-#: src/dialogs/align.c:90
+#: src/dialogs/align.c:88
 msgid "Biggest item"
 msgstr "Найб╕льший елемент"
 
-#: src/dialogs/align.c:95
+#: src/dialogs/align.c:93
 msgid "Smallest item"
 msgstr "Найменший елемент"
