@@ -1,0 +1,58 @@
+#ifndef __SP_SVG_VIEW_H__
+#define __SP_SVG_VIEW_H__
+
+/*
+ * Generic SVG view and widget
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ *
+ */
+
+typedef struct _SPSVGView SPSVGView;
+typedef struct _SPSVGViewClass SPSVGViewClass;
+
+#define SP_TYPE_SVG_VIEW (sp_svg_view_get_type ())
+#define SP_SVG_VIEW(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_SVG_VIEW, SPSVGView))
+#define SP_SVG_VIEW_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SVG_VIEW, SPSVGViewClass))
+#define SP_IS_SVG_VIEW(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SVG_VIEW))
+#define SP_IS_SVG_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SVG_VIEW))
+
+#include "view.h"
+
+struct _SPSVGView {
+	SPView view;
+};
+
+struct _SPSVGViewClass {
+	SPViewClass parent_class;
+};
+
+GtkType sp_svg_view_get_type (void);
+
+/* SPSVGViewWidget */
+
+typedef struct _SPSVGViewWidget SPSVGViewWidget;
+typedef struct _SPSVGViewWidgetClass SPSVGViewWidgetClass;
+
+#define SP_TYPE_SVG_VIEW_WIDGET (sp_svg_view_widget_get_type ())
+#define SP_SVG_VIEW_WIDGET(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_SVG_VIEW_WIDGET, SPSVGViewWidget))
+#define SP_SVG_VIEW_WIDGET_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SVG_VIEW_WIDGET, SPSVGViewWidgetClass))
+#define SP_IS_SVG_VIEW_WIDGET(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SVG_VIEW_WIDGET))
+#define SP_IS_SVG_VIEW_WIDGET_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SVG_VIEW_WIDGET))
+
+struct _SPSVGViewWidget {
+	SPViewWidget widget;
+};
+
+struct _SPSVGViewWidgetClass {
+	SPViewWidgetClass parent_class;
+};
+
+GtkType sp_svg_view_widget_get_type (void);
+
+#endif
