@@ -29,7 +29,7 @@
 #include <gtk/gtklabel.h>
 #include <gtk/gtkframe.h>
 #include <gtk/gtktable.h>
-#include <gtk/gtktext.h>
+#include <gtk/gtktextview.h>
 #include <gtk/gtkradiobutton.h>
 #include <gtk/gtkhseparator.h>
 #include <gtk/gtkimage.h>
@@ -56,7 +56,7 @@ static void sp_text_edit_dialog_close (GtkButton *button, GtkWidget *dlg);
 
 static void sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean style, gboolean content);
 
-static void sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg);
+static void sp_text_edit_dialog_text_changed (GtkTextBuffer *tb, GtkWidget *dlg);
 static void sp_text_edit_dialog_font_changed (SPFontSelector *fontsel, NRFont *font, GtkWidget *dlg);
 static void sp_text_edit_dialog_any_toggled (GtkToggleButton *tb, GtkWidget *dlg);
 
@@ -84,6 +84,7 @@ sp_text_edit_dialog (void)
 {
 	if (!dlg) {
 		GtkWidget *mainvb, *nb, *vb, *hb, *txt, *fontsel, *preview, *f, *tbl, *l, *px, *b, *hs;
+		GtkTextBuffer *tb;
 
 		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dlg), _("Text properties"));
@@ -105,12 +106,19 @@ sp_text_edit_dialog (void)
 		vb = gtk_vbox_new (FALSE, 0);
 		gtk_widget_show (vb);
 
-		txt = gtk_text_new (NULL, NULL);
+		/* Textview */
+		f = gtk_frame_new (NULL);
+		gtk_widget_show (f);
+		gtk_frame_set_shadow_type (GTK_FRAME (f), GTK_SHADOW_IN);
+		tb = gtk_text_buffer_new (NULL);
+		txt = gtk_text_view_new_with_buffer (tb);
 		gtk_widget_show (txt);
-		gtk_text_set_editable (GTK_TEXT (txt), TRUE);
-		g_signal_connect (G_OBJECT (txt), "changed", G_CALLBACK (sp_text_edit_dialog_text_changed), dlg);
-		gtk_box_pack_start (GTK_BOX (vb), txt, TRUE, TRUE, 0);
-		g_object_set_data (G_OBJECT (dlg), "text", txt);
+		gtk_text_view_set_editable (GTK_TEXT_VIEW (txt), TRUE);
+		gtk_container_add (GTK_CONTAINER (f), txt);
+		gtk_box_pack_start (GTK_BOX (vb), f, TRUE, TRUE, 0);
+		g_signal_connect (G_OBJECT (tb), "changed", G_CALLBACK (sp_text_edit_dialog_text_changed), dlg);
+		g_object_set_data (G_OBJECT (dlg), "text", tb);
+		g_object_set_data (G_OBJECT (dlg), "textw", txt);
 
 		/* HBox containing font selection and layout */
 		hb = gtk_hbox_new (FALSE, 0);
@@ -171,7 +179,6 @@ sp_text_edit_dialog (void)
 		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 		gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 1, 2, 0, 0, 4, 0);
 		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/writing_mode_lr.xpm");
-/*  		px = gnome_stock_pixmap_widget (dlg, SODIPODI_GLADEDIR "/writing_mode_lr.xpm"); */
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (NULL);
 		gtk_widget_show (b);
@@ -181,7 +188,6 @@ sp_text_edit_dialog (void)
 		gtk_table_attach (GTK_TABLE (tbl), b, 1, 2, 1, 2, 0, 0, 0, 0);
 		g_object_set_data (G_OBJECT (dlg), "writing_mode_lr", b);
 		px = gtk_image_new_from_file (SODIPODI_GLADEDIR "/writing_mode_tb.xpm");
-/*  		px = gnome_stock_pixmap_widget (dlg, SODIPODI_GLADEDIR "/writing_mode_tb.xpm"); */
 		gtk_widget_show (px);
 		b = gtk_radio_button_new (gtk_radio_button_group (GTK_RADIO_BUTTON (b)));
 		gtk_widget_show (b);
@@ -217,13 +223,11 @@ sp_text_edit_dialog (void)
 		g_object_set_data (G_OBJECT (dlg), "default", b);
 
 		b = gtk_button_new_from_stock (GTK_STOCK_CLOSE);
-/*  		b = gnome_stock_button (GTK_STOCK_CLOSE); */
 		gtk_widget_show (b);
 		g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_text_edit_dialog_close), dlg);
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
 
 		b = gtk_button_new_from_stock (GTK_STOCK_APPLY);
-/*  		b = gnome_stock_button (GTK_STOCK_APPLY); */
 		gtk_widget_show (b);
 		g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_text_edit_dialog_apply), dlg);
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
@@ -261,13 +265,15 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 	g_object_set_data (G_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
 
 	if (text) {
-		GtkWidget *textw;
+		GtkTextBuffer *tb;
+		GtkTextIter start, end;
 		guchar *str;
 
-		textw = g_object_get_data (G_OBJECT (dlg), "text");
+		tb = g_object_get_data (G_OBJECT (dlg), "text");
 
 		/* Content */
-		str = gtk_editable_get_chars (GTK_EDITABLE (textw), 0, -1);
+		gtk_text_buffer_get_bounds (tb, &start, &end);
+		str = gtk_text_buffer_get_text (tb, &start, &end, TRUE);
 		sp_text_set_repr_text_multiline (text, str);
 		g_free (str);
 	}
@@ -453,6 +459,7 @@ static void
 sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean docontent)
 {
 	GtkWidget *notebook, *textw, *fontsel, *preview, *apply, *def;
+	GtkTextBuffer *tb;
 	SPText *text;
 	SPStyle *style;
 
@@ -460,7 +467,8 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 	g_object_set_data (G_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
 
 	notebook = g_object_get_data (G_OBJECT (dlg), "notebook");
-	textw = g_object_get_data (G_OBJECT (dlg), "text");
+	textw = g_object_get_data (G_OBJECT (dlg), "textw");
+	tb = g_object_get_data (G_OBJECT (dlg), "text");
 	fontsel = g_object_get_data (G_OBJECT (dlg), "fontsel");
 	preview = g_object_get_data (G_OBJECT (dlg), "preview");
 	apply = g_object_get_data (G_OBJECT (dlg), "apply");
@@ -476,17 +484,14 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 		if (docontent) {
 			guchar *str;
 			str = sp_text_get_string_multiline (text);
-			if (str && *str) {
+			if (str) {
 				int pos;
 				pos = 0;
-				gtk_text_freeze (GTK_TEXT (textw));
-				gtk_editable_delete_text (GTK_EDITABLE (textw), 0, -1);
-				gtk_editable_insert_text (GTK_EDITABLE (textw), str, strlen (str), &pos);
-				gtk_text_thaw (GTK_TEXT (textw));
+				gtk_text_buffer_set_text (tb, str, strlen (str));
 				sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), str);
 				g_free (str);
 			} else {
-				gtk_editable_delete_text (GTK_EDITABLE (textw), 0, -1);
+				gtk_text_buffer_set_text (tb, "", 0);
 				sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), NULL);
 			}
 		}
@@ -543,22 +548,24 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 }
 
 static void
-sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg)
+sp_text_edit_dialog_text_changed (GtkTextBuffer *tb, GtkWidget *dlg)
 {
 	GtkWidget *textw, *preview, *apply, *def;
 	SPText *text;
+	GtkTextIter start, end;
 	gchar *str;
 
 	if (g_object_get_data (G_OBJECT (dlg), "blocked")) return;
 
 	text = sp_ted_get_selected_text_item ();
 
-	textw = g_object_get_data (G_OBJECT (dlg), "text");
+	textw = g_object_get_data (G_OBJECT (dlg), "textw");
 	preview = g_object_get_data (G_OBJECT (dlg), "preview");
 	apply = g_object_get_data (G_OBJECT (dlg), "apply");
 	def = g_object_get_data (G_OBJECT (dlg), "default");
 
-	str = gtk_editable_get_chars (GTK_EDITABLE (textw), 0, -1);
+	gtk_text_buffer_get_bounds (tb, &start, &end);
+	str = gtk_text_buffer_get_text (tb, &start, &end, TRUE);
 	if (str && *str) {
 		sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), str);
 	} else {

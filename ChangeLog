@@ -1,5 +1,7 @@
 2003-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/dialogs/text-edit.c: Use GtkTextView/Buffer
+
 	* src/xml/repr-util.c (sp_repr_transfer_ids): Helper by MenTaLguY
 	(sp_repr_move): Ditto
 
