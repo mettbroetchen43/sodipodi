@@ -21,6 +21,7 @@
 #include "dyna-draw-context.h"
 #include "text-context.h"
 #include "zoom-context.h"
+#include "dropper-context.h"
 #include "sodipodi-private.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -139,3 +140,12 @@ sp_event_context_set_zoom (gpointer data)
   }
 }
 
+void
+sp_event_context_set_dropper (gpointer data)
+{
+	if (SP_ACTIVE_DESKTOP) {
+		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DROPPER_CONTEXT, "tools.dropper");
+		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
+		sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
+	}
+}

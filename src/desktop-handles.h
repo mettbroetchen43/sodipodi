@@ -38,7 +38,7 @@ SPCanvasItem * sp_desktop_acetate (SPDesktop * desktop);
 SPCanvasGroup * sp_desktop_main (SPDesktop * desktop);
 SPCanvasGroup * sp_desktop_grid (SPDesktop * desktop);
 SPCanvasGroup * sp_desktop_guides (SPDesktop * desktop);
-SPCanvasGroup * sp_desktop_drawing (SPDesktop * desktop);
+SPCanvasItem *sp_desktop_drawing (SPDesktop *desktop);
 SPCanvasGroup * sp_desktop_sketch (SPDesktop * desktop);
 SPCanvasGroup * sp_desktop_controls (SPDesktop * desktop);
 

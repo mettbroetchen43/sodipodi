@@ -249,12 +249,16 @@ sp_main_gui (int argc, const char **argv)
 
 		while (fl) {
 			SPDocument *doc;
-			SPViewWidget *dtw;
 			doc = sp_document_new ((const gchar *) fl->data, TRUE, TRUE);
 			if (doc) {
-				dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
+				if (sp_export_png) {
+					sp_do_export_png (doc);
+				} else {
+					SPViewWidget *dtw;
+					dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
+					if (dtw) sp_create_window (dtw, TRUE);
+				}
 				sp_document_unref (doc);
-				if (dtw) sp_create_window (dtw, TRUE);
 			}
 			fl = g_slist_remove (fl, fl->data);
 		}

@@ -150,7 +150,6 @@ sp_desktop_init (SPDesktop *desktop)
 {
 	desktop->namedview = NULL;
 	desktop->selection = NULL;
-	desktop->event_context = NULL;
 	desktop->acetate = NULL;
 	desktop->main = NULL;
 	desktop->grid = NULL;
@@ -178,10 +177,11 @@ sp_desktop_dispose (GObject *object)
 		dt->sodipodi = NULL;
 	}
 
-	if (dt->event_context) {
-		sp_event_context_finish (dt->event_context);
-		g_object_unref (G_OBJECT (dt->event_context));
-		dt->event_context = NULL;
+	while (dt->event_context) {
+		SPEventContext *ec = dt->event_context;
+		dt->event_context = ec->next;
+		sp_event_context_finish (ec);
+		g_object_unref (G_OBJECT (ec));
 	}
 
 	if (dt->selection) {
@@ -289,7 +289,7 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	/* fixme: */
 	page = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 
-	desktop->drawing = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
+	desktop->drawing = sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
 	g_signal_connect (G_OBJECT (desktop->drawing), "arena_event", G_CALLBACK (arena_handler), desktop);
 
 	desktop->grid = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
@@ -299,12 +299,8 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	desktop->selection = sp_selection_new (desktop);
 
-#if 0
-	desktop->event_context = sp_event_context_new (SP_TYPE_SELECT_CONTEXT, desktop, NULL);
-#else
-	/* fixme: I think it is safe, but is it nice? (Lauris) */
-	sp_desktop_set_event_context (desktop, SP_TYPE_SELECT_CONTEXT, "tools.select");
-#endif
+	/* Push select tool to the bottom of stack */
+	sp_desktop_push_event_context (desktop, SP_TYPE_SELECT_CONTEXT, "tools.select", SP_EVENT_CONTEXT_STATIC);
 
 	/* fixme: Setup display rectangle */
 	dw = sp_document_width (document);
@@ -353,10 +349,11 @@ sp_desktop_prepare_shutdown (SPDesktop *dt)
 		dt->sodipodi = NULL;
 	}
 
-	if (dt->event_context) {
-		sp_event_context_finish (dt->event_context);
-		g_object_unref (G_OBJECT (dt->event_context));
-		dt->event_context = NULL;
+	while (dt->event_context) {
+		SPEventContext *ec = dt->event_context;
+		dt->event_context = ec->next;
+		sp_event_context_finish (ec);
+		g_object_unref (G_OBJECT (ec));
 	}
 
 	if (dt->selection) {
@@ -466,18 +463,73 @@ sp_desktop_selection_modified (SPSelection *selection, guint flags, SPDesktop *d
 /* Context switching */
 
 void
-sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *config)
+sp_desktop_set_event_context (SPDesktop *dt, GtkType type, const unsigned char *config)
 {
+	SPEventContext *ec;
 	SPRepr *repr;
 
-	if (desktop->event_context) {
-		sp_event_context_finish (desktop->event_context);
-		g_object_unref (G_OBJECT (desktop->event_context));
+	while (dt->event_context) {
+		ec = dt->event_context;
+		sp_event_context_desactivate (ec);
+		dt->event_context = ec->next;
+		sp_event_context_finish (ec);
+		g_object_unref (G_OBJECT (ec));
 	}
 
 	repr = (config) ? sodipodi_get_repr (SODIPODI, config) : NULL;
+	ec = sp_event_context_new (type, dt, repr, SP_EVENT_CONTEXT_STATIC);
+	ec->next = dt->event_context;
+	dt->event_context = ec;
+	sp_event_context_activate (ec);
+}
 
-	desktop->event_context = sp_event_context_new (type, desktop, repr);
+void
+sp_desktop_push_event_context (SPDesktop *dt, GtkType type, const unsigned char *config, unsigned int key)
+{
+	SPEventContext *ref, *ec;
+	SPRepr *repr;
+
+	if (dt->event_context && dt->event_context->key == key) return;
+	ref = dt->event_context;
+	while (ref && ref->next && ref->next->key != key) ref = ref->next;
+	if (ref && ref->next) {
+		ec = ref->next;
+		ref->next = ec->next;
+		sp_event_context_finish (ec);
+		g_object_unref (G_OBJECT (ec));
+	}
+
+	if (dt->event_context) sp_event_context_desactivate (dt->event_context);
+	repr = (config) ? sodipodi_get_repr (SODIPODI, config) : NULL;
+	ec = sp_event_context_new (type, dt, repr, key);
+	ec->next = dt->event_context;
+	dt->event_context = ec;
+	sp_event_context_activate (ec);
+}
+
+void
+sp_desktop_pop_event_context (SPDesktop *dt, unsigned int key)
+{
+	SPEventContext *ref, *ec;
+
+	if (dt->event_context && dt->event_context->key == key) {
+		g_return_if_fail (dt->event_context);
+		g_return_if_fail (dt->event_context->next);
+		ec = dt->event_context;
+		sp_event_context_desactivate (ec);
+		dt->event_context = ec->next;
+		sp_event_context_activate (dt->event_context);
+	}
+
+	ref = dt->event_context;
+	while (ref && ref->next && ref->next->key != key) ref = ref->next;
+	if (ref && ref->next) {
+		ec = ref->next;
+		ref->next = ec->next;
+	}
+
+	sp_event_context_finish (ec);
+	g_object_unref (G_OBJECT (ec));
 }
 
 /* Private helpers */

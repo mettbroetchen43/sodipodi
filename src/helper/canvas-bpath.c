@@ -191,6 +191,12 @@ sp_canvas_bpath_render (SPCanvasItem *item, SPCanvasBuf *buf)
 
 	cbp = SP_CANVAS_BPATH (item);
 
+	if (buf->is_bg) {
+		sp_canvas_clear_buffer (buf);
+		buf->is_bg = FALSE;
+		buf->is_buf = TRUE;
+	}
+
 	if (cbp->fill_svp) {
 		art_rgb_svp_alpha (cbp->fill_svp, buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1, cbp->fill_rgba,
 				   buf->buf, buf->buf_rowstride,

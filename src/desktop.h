@@ -49,7 +49,7 @@ struct _SPDesktop {
 	SPCanvasGroup *main;
 	SPCanvasGroup *grid;
   	SPCanvasGroup *guides;
-	SPCanvasGroup *drawing;
+	SPCanvasItem *drawing;
 	SPCanvasGroup *sketch;
 	SPCanvasGroup *controls;
 	SPCanvasItem *page;
@@ -96,7 +96,9 @@ void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
 void sp_desktop_toggle_borders (GtkWidget * widget);
 
 /* Context */
-void sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *config);
+void sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const unsigned char *config);
+void sp_desktop_push_event_context (SPDesktop *desktop, GtkType type, const unsigned char *config, unsigned int key);
+void sp_desktop_pop_event_context (SPDesktop *desktop, unsigned int key);
 
 #define SP_COORDINATES_UNDERLINE_X (1 << 0)
 #define SP_COORDINATES_UNDERLINE_Y (1 << 1)

@@ -53,4 +53,6 @@ GtkType sp_canvas_arena_get_type (void);
 void sp_canvas_arena_set_pick_delta (SPCanvasArena *ca, gdouble delta);
 void sp_canvas_arena_set_sticky (SPCanvasArena *ca, gboolean sticky);
 
+void sp_canvas_arena_render_pixblock (SPCanvasArena *ca, NRPixBlock *pb);
+
 #endif

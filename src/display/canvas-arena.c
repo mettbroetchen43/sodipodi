@@ -154,15 +154,11 @@ sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 
 	memcpy (NR_MATRIX_D_TO_DOUBLE (&arena->gc.transform), affine, 6 * sizeof (double));
 
-#if 1
 	if (flags & SP_CANVAS_UPDATE_AFFINE) {
 		reset = NR_ARENA_ITEM_STATE_ALL;
 	} else {
 		reset = NR_ARENA_ITEM_STATE_NONE;
 	}
-#else
-	reset = NR_ARENA_ITEM_STATE_ALL;
-#endif
 
 	nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_ALL, reset);
 
@@ -181,12 +177,8 @@ sp_canvas_arena_update (SPCanvasItem *item, double *affine, unsigned int flags)
 			ec.send_event = TRUE;
 			ec.subwindow = ec.window;
 			ec.time = GDK_CURRENT_TIME;
-#if 0
-			gnome_canvas_c2w (item->canvas, arena->cx, arena->cy, &ec.x, &ec.y);
-#else
 			ec.x = arena->cx;
 			ec.y = arena->cy;
-#endif
 			/* fixme: */
 			if (arena->active) {
 				ec.type = GDK_LEAVE_NOTIFY;
@@ -437,3 +429,23 @@ sp_canvas_arena_set_sticky (SPCanvasArena *ca, gboolean sticky)
 	/* fixme: repick? */
 	ca->sticky = sticky;
 }
+
+void
+sp_canvas_arena_render_pixblock (SPCanvasArena *ca, NRPixBlock *pb)
+{
+	NRRectL area;
+
+	g_return_if_fail (ca != NULL);
+	g_return_if_fail (SP_IS_CANVAS_ARENA (ca));
+
+	/* fixme: */
+	pb->empty = FALSE;
+
+	area.x0 = pb->area.x0;
+	area.y0 = pb->area.y0;
+	area.x1 = pb->area.x1;
+	area.y1 = pb->area.y1;
+
+	nr_arena_item_invoke_render (ca->root, &area, pb, 0);
+}
+

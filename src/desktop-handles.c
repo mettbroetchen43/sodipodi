@@ -88,8 +88,8 @@ sp_desktop_guides (SPDesktop * desktop)
 	return desktop->guides;
 }
 
-SPCanvasGroup *
-sp_desktop_drawing (SPDesktop * desktop)
+SPCanvasItem *
+sp_desktop_drawing (SPDesktop *desktop)
 {
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);

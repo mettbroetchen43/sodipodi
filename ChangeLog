@@ -1,3 +1,9 @@
+2003-02-13  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dropper-context.h: New file
+
+	* src/dropper-context.c: New file
+
 2003-02-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/desktop.c (sp_desktop_widget_init): Create tooltips, enable sticky zoom

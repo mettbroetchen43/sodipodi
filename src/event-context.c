@@ -242,6 +242,13 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			sp_event_context_set_text(NULL);	    
 			ret = TRUE;
 			break;
+
+		case GDK_F8:
+			sp_event_context_set_dropper(NULL);
+			ret = TRUE;
+			break;
+
+
 		case GDK_equal:
 		case GDK_plus:
 			/* '+' & '=' Zoom in */
@@ -450,7 +457,7 @@ SPReprEventVector sp_ec_event_vector = {
 };
 
 SPEventContext *
-sp_event_context_new (GType type, SPDesktop *desktop, SPRepr *repr)
+sp_event_context_new (GType type, SPDesktop *desktop, SPRepr *repr, unsigned int key)
 {
 	SPEventContext *ec;
 
@@ -461,7 +468,7 @@ sp_event_context_new (GType type, SPDesktop *desktop, SPRepr *repr)
 	ec = g_object_new (type, NULL);
 
 	ec->desktop = desktop;
-
+	ec->key = key;
 	ec->repr = repr;
 	if (ec->repr) {
 		sp_repr_ref (ec->repr);
@@ -480,6 +487,10 @@ sp_event_context_finish (SPEventContext *ec)
 	g_return_if_fail (ec != NULL);
 	g_return_if_fail (SP_IS_EVENT_CONTEXT (ec));
 
+	if (ec->next) {
+		g_warning ("Finishing event context with active link\n");
+	}
+
 	if (((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->finish)
 		((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->finish (ec);
 }
@@ -497,6 +508,26 @@ sp_event_context_read (SPEventContext *ec, const guchar *key)
 		if (((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->set)
 			((SPEventContextClass *) G_OBJECT_GET_CLASS(ec))->set (ec, key, val);
 	}
+}
+
+void
+sp_event_context_activate (SPEventContext *ec)
+{
+	g_return_if_fail (ec != NULL);
+	g_return_if_fail (SP_IS_EVENT_CONTEXT (ec));
+
+	if (((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->activate)
+		((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->activate (ec);
+}
+
+void
+sp_event_context_desactivate (SPEventContext *ec)
+{
+	g_return_if_fail (ec != NULL);
+	g_return_if_fail (SP_IS_EVENT_CONTEXT (ec));
+
+	if (((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->activate)
+		((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->activate (ec);
 }
 
 gint
