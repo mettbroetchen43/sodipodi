@@ -842,8 +842,8 @@ sp_bpath_clean (ArtBpath *bpath)
 			*np++ = *bp++;
 			while ((bp->code == ART_LINETO) || (bp->code == ART_CURVETO)) *np++ = *bp++;
 		} else {
-			*bp++;
-			while ((bp->code == ART_LINETO) || (bp->code == ART_CURVETO)) *bp++;
+			bp++;
+			while ((bp->code == ART_LINETO) || (bp->code == ART_CURVETO)) bp++;
 		}
 	}
 

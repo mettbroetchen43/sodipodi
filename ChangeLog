@@ -1,3 +1,7 @@
+2002-10-27  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/curve.c (sp_bpath_clean): Fixed warning (thanks to MenTaLguY)
+
 2002-10-26  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/text-edit.c (sp_text_edit_dialog_update_object): Make
