@@ -25,6 +25,10 @@
 #include <config.h>
 
 #include <string.h>
+
+#include <libnr/nr-matrix.h>
+#include <libnrtype/nr-type-directory.h>
+#include <libnrtype/nr-font.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -42,6 +46,8 @@
 #include "sp-root.h"
 
 #include "sp-text.h"
+
+static guchar *sp_text_font_style_to_lookup (SPStyle *style);
 
 /* SPString */
 
@@ -168,17 +174,16 @@ sp_string_modified (SPObject *object, guint flags)
 /* Vertical metric simulator */
 
 static ArtDRect *
-sp_font_get_glyph_bbox (const GnomeFont *font, gint glyph, gint mode, ArtDRect *bbox)
+sp_font_get_glyph_bbox (NRFont *font, gint glyph, gint mode, ArtDRect *bbox)
 {
-	const ArtBpath *bpath;
+	NRBPath bpath;
 	ArtDRect hbox;
 
 	/* Find correct bbox (gnome-print does it wrong) */
-	bpath = gnome_font_get_glyph_stdoutline (font, glyph);
-	if (!bpath) return NULL;
+	if (!nr_font_get_glyph_outline (font, glyph, NR_TYPEFACE_METRIC_HORIZONTAL, &bpath, FALSE)) return NULL;
 	hbox.x0 = hbox.y0 = 1e18;
 	hbox.x1 = hbox.y1 = -1e18;
-	sp_bpath_matrix_d_bbox_d_union (bpath, NULL, &hbox, 0.25);
+	sp_bpath_matrix_d_bbox_d_union (bpath.path, NULL, &hbox, 0.25);
 	if (art_drect_empty (&hbox)) return NULL;
 
 	if (mode == SP_CSS_WRITING_MODE_LR) {
@@ -190,27 +195,27 @@ sp_font_get_glyph_bbox (const GnomeFont *font, gint glyph, gint mode, ArtDRect *
 		bbox->x0 = 0.0 - (hbox.x1 - hbox.x0) / 2;
 		bbox->x1 = 0.0 + (hbox.x1 - hbox.x0) / 2;
 		/* Just move down by EM */
-		dy = gnome_font_get_size (font);
+		dy = nr_font_get_size (font);
 		bbox->y0 = hbox.y0 - dy;
 		bbox->y1 = hbox.y1 - dy;
 		return bbox;
 	}
 }
 
-static ArtPoint *
-sp_font_get_glyph_advance (const GnomeFont *font, gint glyph, gint mode, ArtPoint *adv)
+static NRPointF *
+sp_font_get_glyph_advance (NRFont *font, gint glyph, gint mode, NRPointF *adv)
 {
 	if (mode == SP_CSS_WRITING_MODE_LR) {
-		return gnome_font_get_glyph_stdadvance (font, glyph, adv);
+		return nr_font_get_glyph_advance (font, glyph, NR_TYPEFACE_METRIC_HORIZONTAL, adv);
 	} else {
 		adv->x = 0.0;
-		adv->y = -gnome_font_get_size (font);
+		adv->y = -nr_font_get_size (font);
 		return adv;
 	}
 }
 
 static void
-sp_font_get_glyph_bbox_lr2tb (const GnomeFont *font, gint glyph, ArtPoint *d)
+sp_font_get_glyph_bbox_lr2tb (NRFont *font, gint glyph, ArtPoint *d)
 {
 	ArtDRect hbox;
 
@@ -221,7 +226,7 @@ sp_font_get_glyph_bbox_lr2tb (const GnomeFont *font, gint glyph, ArtPoint *d)
 		/* Center horizontally */
 		d->x = 0.0 - (hbox.x1 + hbox.x0) / 2;
 		/* Just move down by EM */
-		d->y = 0.0 - gnome_font_get_size (font);
+		d->y = 0.0 - nr_font_get_size (font);
 	}
 }
 
@@ -229,7 +234,8 @@ static void
 sp_string_calculate_dimensions (SPString *string)
 {
 	SPStyle *style;
-	const GnomeFont *font;
+	NRTypeFace *face;
+	NRFont *font;
 	gdouble size, spwidth;
 	gint spglyph;
 
@@ -241,12 +247,17 @@ sp_string_calculate_dimensions (SPString *string)
 	style = SP_OBJECT_STYLE (string);
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
-	font = gnome_font_new_closest (style->text->font_family.value,
-				       sp_text_font_weight_to_gp (style->font_weight.computed),
-				       sp_text_font_italic_to_gp (style->font_style.computed),
-				       size);
-	spglyph = gnome_font_lookup_default (font, ' ');
-	spwidth = (spglyph > 0) ? gnome_font_get_glyph_width (font, spglyph) : size;
+	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
+	font = nr_font_new_default (face, size);
+
+	spwidth = size;
+	spglyph = nr_typeface_lookup_default (face, ' ');
+	if (spglyph > 0) {
+		NRPointF adv;
+		if (nr_font_get_glyph_advance (font, spglyph, NR_TYPEFACE_METRIC_HORIZONTAL, &adv)) {
+			spwidth = adv.x;
+		}
+	}
 
 	if (string->text) {
 		const guchar *p;
@@ -264,10 +275,10 @@ sp_string_calculate_dimensions (SPString *string)
 				if (intext) inspace = TRUE;
 			} else {
 				ArtDRect bbox;
-				ArtPoint adv;
+				NRPointF adv;
 				gint glyph;
 
-				glyph = gnome_font_lookup_default (font, unival);
+				glyph = nr_typeface_lookup_default (face, unival);
 
 				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 					if (inspace) {
@@ -305,7 +316,8 @@ sp_string_calculate_dimensions (SPString *string)
 		}
 	}
 
-	gnome_font_unref (font);
+	nr_font_unref (font);
+	nr_typeface_unref (face);
 
 	if (art_drect_empty (&string->bbox)) {
 		string->bbox.x0 = string->bbox.y0 = 0.0;
@@ -321,11 +333,12 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 {
 	SPChars *chars;
 	SPStyle *style;
-	const GnomeFont *font;
+	NRTypeFace *face;
+	NRFont *font;
 	gdouble size, spwidth;
 	gint spglyph;
 	gdouble x, y;
-	gdouble a[6];
+	NRMatrixF a;
 	const guchar *p;
 	gboolean intext;
 	gint len, pos;
@@ -343,12 +356,17 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
-	font = gnome_font_new_closest (style->text->font_family.value,
-				       sp_text_font_weight_to_gp (style->font_weight.computed),
-				       sp_text_font_italic_to_gp (style->font_style.computed),
-				       size);
-	spglyph = gnome_font_lookup_default (font, ' ');
-	spwidth = (spglyph > 0) ? gnome_font_get_glyph_width (font, spglyph) : size;
+	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
+	font = nr_font_new_default (face, size);
+
+	spwidth = size;
+	spglyph = nr_typeface_lookup_default (face, ' ');
+	if (spglyph > 0) {
+		NRPointF adv;
+		if (nr_font_get_glyph_advance (font, spglyph, NR_TYPEFACE_METRIC_HORIZONTAL, &adv)) {
+			spwidth = adv.x;
+		}
+	}
 
 	/* fixme: Find a way how to manipulate these */
 	x = cp->x;
@@ -356,7 +374,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 
 	g_print ("Drawing string (%s) at %g %g\n", string->text, x, y);
 
-	art_affine_scale (a, size * 0.001, size * -0.001);
+	nr_matrix_f_set_scale (&a, size * 0.001, size * -0.001);
 
 	intext = FALSE;
 	pos = 0;
@@ -378,10 +396,10 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 		if (unival == ' ') {
 			if (intext) inspace = TRUE;
 		} else {
-			ArtPoint adv;
+			NRPointF adv;
 			gint glyph;
 
-			glyph = gnome_font_lookup_default (font, unival);
+			glyph = nr_typeface_lookup_default (face, unival);
 
 			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 				ArtPoint d;
@@ -391,9 +409,9 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 				}
 				sp_font_get_glyph_bbox_lr2tb (font, glyph, &d);
 				g_print ("Unival %d:%c delta %g %g\n", unival, (gchar) unival, d.x, d.y);
-				a[4] = x + d.x;
-				a[5] = y - d.y;
-				sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
+				a.c[4] = x + d.x;
+				a.c[5] = y - d.y;
+				sp_chars_add_element (chars, glyph, nr_font_get_typeface (font), &a);
 				if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_TB, &adv)) {
 					x += adv.x;
 					y -= adv.y;
@@ -403,9 +421,9 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 					x += spwidth;
 					inspace = FALSE;
 				}
-				a[4] = x;
-				a[5] = y;
-				sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
+				a.c[4] = x;
+				a.c[5] = y;
+				sp_chars_add_element (chars, glyph, nr_font_get_typeface (font), &a);
 				if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_LR, &adv)) {
 					x += adv.x;
 					y -= adv.y;
@@ -415,6 +433,9 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 		}
 		pos += 1;
 	}
+
+	nr_font_unref (font);
+	nr_typeface_unref (face);
 
 	if (inspace) {
 		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
@@ -1246,6 +1267,78 @@ sp_text_description (SPItem * item)
 }
 
 /* 'lighter' and 'darker' have to be resolved earlier */
+
+static guchar *
+sp_text_font_style_to_lookup (SPStyle *style)
+{
+	static guchar c[256];
+	guchar *wstr, *sstr, *p;
+
+	switch (style->font_weight.computed) {
+	case SP_CSS_FONT_WEIGHT_100:
+		wstr = "extra light";
+		break;
+	case SP_CSS_FONT_WEIGHT_200:
+		wstr = "thin";
+		break;
+	case SP_CSS_FONT_WEIGHT_300:
+		wstr = "light";
+		break;
+	case SP_CSS_FONT_WEIGHT_400:
+	case SP_CSS_FONT_WEIGHT_NORMAL:
+		wstr = NULL;
+		break;
+	case SP_CSS_FONT_WEIGHT_500:
+		wstr = "medium";
+		break;
+	case SP_CSS_FONT_WEIGHT_600:
+		wstr = "semi";
+		break;
+	case SP_CSS_FONT_WEIGHT_700:
+	case SP_CSS_FONT_WEIGHT_BOLD:
+		wstr = "bold";
+		break;
+	case SP_CSS_FONT_WEIGHT_800:
+		wstr = "heavy";
+		break;
+	case SP_CSS_FONT_WEIGHT_900:
+		wstr = "black";
+		break;
+	default:
+		wstr = NULL;
+		break;
+	}
+
+	switch (style->font_style.computed) {
+	case SP_CSS_FONT_STYLE_NORMAL:
+		sstr = NULL;
+		break;
+	case SP_CSS_FONT_STYLE_ITALIC:
+		sstr = "italic";
+		break;
+	case SP_CSS_FONT_STYLE_OBLIQUE:
+		sstr = "oblique";
+		break;
+	default:
+		sstr = NULL;
+		break;
+	}
+
+	p = c;
+	if (wstr) {
+		if (p != c) *p++ = ' ';
+		memcpy (p, wstr, strlen (wstr));
+		p += strlen (wstr);
+	}
+	if (sstr) {
+		if (p != c) *p++ = ' ';
+		memcpy (p, sstr, strlen (sstr));
+		p += strlen (sstr);
+	}
+	*p = '\0';
+
+	return c;
+}
 
 gint
 sp_text_font_weight_to_gp (gint weight)

@@ -283,8 +283,8 @@ nr_matrix_d_set_scale (NRMatrixD *m, double sx, double sy)
 	return m;
 }
 
-NRMatrixD *
-nr_matrix_f_set_scale (NRMatrixD *m, float sx, float sy)
+NRMatrixF *
+nr_matrix_f_set_scale (NRMatrixF *m, float sx, float sy)
 {
 	m->c[0] = sx;
 	m->c[1] = 0.0;

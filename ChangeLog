@@ -1,3 +1,41 @@
+2002-10-01  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-matrix.c (nr_matrix_f_set_scale): Correct signature
+
+	* src/sp-text.c (sp_font_get_glyph_bbox): Use libnrtype
+	(sp_font_get_glyph_advance): Ditto
+	(sp_font_get_glyph_bbox_lr2tb): Ditto
+	(sp_string_calculate_dimensions): Ditto
+	(sp_string_set_shape): Ditto
+
+	* src/sp-chars.c (sp_chars_destroy): Use libnrtype
+	(sp_chars_bbox): Ditto
+	(sp_chars_show): Ditto
+	(sp_chars_clear): Ditto
+	(sp_chars_add_element): Ditto
+	(sp_chars_normalized_bpath): Ditto
+	(sp_chars_do_print): Ditto
+
+	* src/sp-chars.h (sp_chars_set_paintbox): Use libnrtype
+
+	* src/libnrtype/nr-type-gnome.h: Placeholder
+
+	* src/libnrtype/nr-type-directory.c: New file
+
+	* src/libnrtype/nr-type-directory.h: New file
+
+	* src/libnrtype/nr-font.c: New file
+
+	* src/libnrtype/nr-font.h: New file
+
+	* src/libnrtype/nr-typeface.c: New file
+
+	* src/libnrtype/nr-typeface.h: New file
+
+	* src/Makefile.am (SUBDIRS): Added libnrtype
+
+	* src/libnr/nr-path.h: Placeholder
+
 2002-09-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/gradient-position.c (spgp_clip_line): New method

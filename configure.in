@@ -221,6 +221,7 @@ Makefile
 macros/Makefile
 src/Makefile
 src/libnr/Makefile
+src/libnrtype/Makefile
 src/xml/Makefile
 src/svg/Makefile
 src/widgets/Makefile

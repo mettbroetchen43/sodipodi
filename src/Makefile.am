@@ -5,7 +5,7 @@ bonobo_subdirs = bonobo
 bonobo_libs = bonobo/libspbonobo.a
 endif
 
-SUBDIRS = libnr xml svg widgets helper dialogs display $(bonobo_subdirs)
+SUBDIRS = libnr libnrtype xml svg widgets helper dialogs display $(bonobo_subdirs)
 
 gladedir = $(datadir)/sodipodi
 pixmapdir = $(datadir)/sodipodi
@@ -124,6 +124,7 @@ sodipodi_private_libs = \
 	widgets/libspwidgets.a \
 	display/libspdisplay.a \
 	helper/libspchelp.a \
+	libnrtype/libnrtype.a \
 	libnr/libnr.a
 
 

@@ -13,7 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <libgnomeprint/gnome-font.h>
+#include <libnrtype/nr-typeface.h>
 #include "helper/curve.h"
 #include "sp-item.h"
 
@@ -28,8 +28,8 @@ typedef struct _SPCharElement SPCharElement;
 struct _SPCharElement {
 	SPCharElement *next;
 	guint glyph;
-	GnomeFontFace *face;
-	gfloat affine[6];
+	NRTypeFace *face;
+	NRMatrixF transform;
 };
 
 struct _SPChars {
@@ -46,7 +46,7 @@ GtkType sp_chars_get_type (void);
 
 void sp_chars_clear (SPChars *chars);
 
-void sp_chars_add_element (SPChars *chars, guint glyph, GnomeFontFace *face, const gdouble *affine);
+void sp_chars_add_element (SPChars *chars, guint glyph, NRTypeFace *face, const NRMatrixF *transform);
 
 SPCurve *sp_chars_normalized_bpath (SPChars *chars);
 
