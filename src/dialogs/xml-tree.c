@@ -252,7 +252,7 @@ sp_xml_tree_dialog (void)
 		toolbar = gtk_vbox_new (FALSE, 4);
 		gtk_container_set_border_width (GTK_CONTAINER (toolbar), 4);
 
-		box2 = gtk_hbox_new (FALSE, 0);
+		box2 = gtk_hbox_new (FALSE, 4);
 		gtk_box_pack_start (GTK_BOX (toolbar), GTK_WIDGET (box2), FALSE, TRUE, 0);
 
 		attr_name = GTK_EDITABLE (gtk_entry_new ());
