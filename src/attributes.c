@@ -126,6 +126,13 @@ static const SPStyleProp props[] = {
 	/* SPMask */
 	{SP_ATTR_MASKUNITS, "maskUnits"},
 	{SP_ATTR_MASKCONTENTUNITS, "maskContentUnits"},
+	/* SPMarker */
+	{SP_ATTR_MARKERUNITS, "markerUnits"},
+	{SP_ATTR_REFX, "refX"},
+	{SP_ATTR_REFY, "refY"},
+	{SP_ATTR_MARKERWIDTH, "markerWidth"},
+	{SP_ATTR_MARKERHEIGHT, "markerHeight"},
+	{SP_ATTR_ORIENT, "orient"},
 	/* Animations */
 	{SP_ATTR_ATTRIBUTENAME, "attributeName"},
 	{SP_ATTR_ATTRIBUTETYPE, "attributeType"},

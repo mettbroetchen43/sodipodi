@@ -73,41 +73,6 @@ if test "x$popt_ok" = "xyes"; then
 fi
 
 dnl ******************************
-dnl Fontconfig
-dnl ******************************
-
-dnl We do not use real fontconfig bu only xft compatibility wrapper
-dnl Unfortunately we still need check, because it uses nonstandard include directories
-
-AC_ARG_WITH(fontconfig,
-            AC_HELP_STRING([--with-fontconfig], [use fontconfig version of xft (default is auto)]),
-            [with_fc=$withval], [with_fc=auto])
-
-if test "x$with_fc" != "xno"; then
-	dnl Have to test fontconfig presence
-	PKG_CHECK_MODULES(FONTCONFIG, fontconfig, fc=yes, fc=no)
-	if test "x$fc" != "xyes"; then
-		dnl No fontconfig found
-		if test "x$with_fc" = "xyes"; then
-			dnl Fontconfig was explicitly asked, so stop
-			AC_MSG_ERROR([--with-fontconfig was specified, but appropriate development packages could not found])
-		fi
-	fi
-else
-	dnl Asked to ignore fontconfig
-	fc=no
-fi
-
-AC_SUBST(FONTCONFIG_CFLAGS)
-AC_SUBST(FONTCONFIG_LIBS)
-
-AM_CONDITIONAL(USE_FONTCONFIG, test "x$fc" = "xyes")
-if test "x$fc" = "xyes"; then
-	xft_ok=yes
-	AC_DEFINE(WITH_FONTCONFIG, 1, [Use fontconfig version of xft])
-fi
-
-dnl ******************************
 dnl Xft checking
 dnl ******************************
 
@@ -115,20 +80,31 @@ AC_ARG_WITH(xft,
             AC_HELP_STRING([--with-xft], [use xft scalable font database (default is auto)]),
             [with_xft=$withval], [with_xft=auto])
 
-if test "x$with_xft" != "xno" & test "x$fc" != "xyes" ; then
-	dnl Have to test xft presence
-	AC_CHECK_HEADER(X11/Xft/Xft.h, xft_ok=yes, xft_ok=no)
+if test "x$with_xft" != "xno" ; then
+	dnl Test fontconfig package
+	PKG_CHECK_MODULES(XFT, fontconfig, xft_ok=yes, xft_ok=no)
 	if test "x$xft_ok" != "xyes"; then
-		dnl No xft found
-		if test "x$with_xft" = "xyes"; then
-			dnl Xft was explicitly asked, so stop
-			AC_MSG_ERROR([--with-xft was specified, but appropriate development packages could not be found])
+		dnl test xft package
+		PKG_CHECK_MODULES(XFT, xft, xft_ok=yes, xft_ok=no)
+		if test "x$xft_ok" != "xyes"; then
+			dnl Have to test xft presence
+			AC_CHECK_HEADER(X11/Xft/Xft.h, xft_ok=yes, xft_ok=no)
+			if test "x$xft_ok" != "xyes"; then
+				dnl No xft found
+				if test "x$with_xft" = "xyes"; then
+					dnl Xft was explicitly asked, so stop
+					AC_MSG_ERROR([--with-xft was specified, but appropriate development packages could not be found])
+				fi
+			fi
 		fi
 	fi
 else
 	dnl Asked to ignore xft
 	xft_ok=no
 fi
+
+AC_SUBST(XFT_CFLAGS)
+AC_SUBST(XFT_LIBS)
 
 AM_CONDITIONAL(USE_XFT, test "x$xft_ok" = "xyes")
 if test "x$xft_ok" = "xyes"; then

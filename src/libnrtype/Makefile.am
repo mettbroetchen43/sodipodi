@@ -12,7 +12,7 @@ INCLUDES = \
 	-I.. \
 	$(SODIPODI_CFLAGS) \
 	$(GNOME_PRINT_CFLAGS) \
-	$(FONTCONFIG_CFLAGS)
+	$(XFT_CFLAGS)
 
 libnrtype_a_SOURCES = \
 	nr-type-primitives.c nr-type-primitives.h \
