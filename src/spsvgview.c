@@ -216,7 +216,7 @@ sp_svgview_show_next (struct _SPSlideShow *ss)
 		doc = sp_document_new (ss->slides[++current]);
 	}
 	if (doc) {
-		sp_view_set_document (SP_VIEW_WIDGET_VIEW (ss->view), doc);
+		sp_view_set_root (SP_VIEW_WIDGET_VIEW (ss->view), (SPItem *) doc->root, NULL);
 		sp_document_ensure_up_to_date (doc);
 		ss->doc = doc;
 		ss->current = current;
@@ -234,7 +234,7 @@ sp_svgview_show_prev (struct _SPSlideShow *ss)
 		doc = sp_document_new (ss->slides[--current]);
 	}
 	if (doc) {
-		sp_view_set_document (SP_VIEW_WIDGET_VIEW (ss->view), doc);
+		sp_view_set_root (SP_VIEW_WIDGET_VIEW (ss->view), (SPItem *) doc->root, NULL);
 		sp_document_ensure_up_to_date (doc);
 		ss->doc = doc;
 		ss->current = current;

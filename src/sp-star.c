@@ -47,7 +47,7 @@ static void sp_star_set (SPObject *object, unsigned int key, const unsigned char
 static void sp_star_update (SPObject *object, SPCtx *ctx, guint flags);
 
 static gchar * sp_star_description (SPItem * item);
-static int sp_star_snappoints (SPItem *item, NRPointF *p, int size);
+static int sp_star_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 
 static void sp_star_set_shape (SPShape *shape);
 
@@ -320,7 +320,7 @@ sp_star_position_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble 
 /* fixme: We should use all corners of star (Lauris) */
 
 static int
-sp_star_snappoints (SPItem *item, NRPointF *p, int size)
+sp_star_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
 #if 0
 	SPStar *star;
@@ -345,7 +345,7 @@ sp_star_snappoints (SPItem *item, NRPointF *p, int size)
 	points = g_slist_append (points, p);
 #else
 	if (((SPItemClass *) parent_class)->snappoints)
-		return ((SPItemClass *) parent_class)->snappoints (item, p, size);
+		return ((SPItemClass *) parent_class)->snappoints (item, p, size, transform);
 #endif
 	
 	return 0;

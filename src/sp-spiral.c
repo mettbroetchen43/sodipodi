@@ -53,7 +53,7 @@ static void sp_spiral_set (SPObject *object, unsigned int key, const unsigned ch
 static void sp_spiral_update (SPObject *object, SPCtx *ctx, guint flags);
 
 static gchar * sp_spiral_description (SPItem * item);
-static int sp_spiral_snappoints (SPItem *item, NRPointF *p, int size);
+static int sp_spiral_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 static void sp_spiral_set_shape (SPShape *shape);
 
 static SPShapeClass *parent_class;
@@ -415,7 +415,7 @@ sp_spiral_position_set       (SPSpiral          *spiral,
 }
 
 static int
-sp_spiral_snappoints (SPItem *item, NRPointF *p, int size)
+sp_spiral_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
 #if 0
 	/* fixme: (Lauris) */
@@ -444,7 +444,7 @@ sp_spiral_snappoints (SPItem *item, NRPointF *p, int size)
 	points = g_slist_append (points, p);
 #else
 	if (((SPItemClass *) parent_class)->snappoints)
-		return ((SPItemClass *) parent_class)->snappoints (item, p, size);
+		return ((SPItemClass *) parent_class)->snappoints (item, p, size, transform);
 #endif
 	
 	return 0;

@@ -272,7 +272,7 @@ sp_svg_write_percentage (char *buf, int buflen, double val)
 /* Read list of coords (unitless numbers) */
 
 static unsigned int
-sp_svg_coords_read (const unsigned char *str, float *coords, unsigned int *ncoords)
+sp_svg_coords_read (const unsigned char *str, float *coords, unsigned int *ncoords, unsigned int maxcoords)
 {
 	const unsigned char *p;
 	unsigned int count, valid;
@@ -302,6 +302,7 @@ sp_svg_coords_read (const unsigned char *str, float *coords, unsigned int *ncoor
 		if (len < 1) break;
 		p += len;
 		/* If we got here everything was valid */
+		if (count >= maxcoords) return 0;
 		valid = 1;
 		if (coords) coords[count] = val;
 		count += 1;
@@ -316,9 +317,25 @@ unsigned int
 sp_svg_points_read (const unsigned char *str, float *coords, unsigned int *ncoords)
 {
 	unsigned int count;
-	if (!sp_svg_coords_read (str, coords, &count)) return 0;
+	if (!str) return 0;
+	if (!sp_svg_coords_read (str, coords, &count, 0x80000000)) return 0;
 	if (count & 0x1) return 0;
 	if (ncoords) *ncoords = count;
+	return 1;
+}
+
+unsigned int
+sp_svg_viewbox_read (const unsigned char *str, SPSVGViewBox *viewbox)
+{
+	unsigned int count;
+	float coords[4];
+	if (!str) return 0;
+	if (!sp_svg_coords_read (str, coords, &count, 4)) return 0;
+	if (count != 4) return 0;
+	viewbox->x0 = coords[0];
+	viewbox->y0 = coords[1];
+	viewbox->x1 = viewbox->x0 + coords[2];
+	viewbox->y1 = viewbox->y0 + coords[3];
 	return 1;
 }
 

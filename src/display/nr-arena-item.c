@@ -133,6 +133,8 @@ nr_arena_item_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *ref
 
 	if (NR_ARENA_ITEM_VIRTUAL (item, add_child))
 		NR_ARENA_ITEM_VIRTUAL (item, add_child) (item, child, ref);
+
+	nr_arena_item_added (item->arena, item, child);
 }
 
 void
@@ -146,6 +148,8 @@ nr_arena_item_remove_child (NRArenaItem *item, NRArenaItem *child)
 
 	if (NR_ARENA_ITEM_VIRTUAL (item, remove_child))
 		NR_ARENA_ITEM_VIRTUAL (item, remove_child) (item, child);
+
+	nr_arena_item_removed (item->arena, item, child);
 }
 
 void

@@ -41,7 +41,7 @@ static void sp_rect_update (SPObject *object, SPCtx *ctx, guint flags);
 static SPRepr *sp_rect_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_rect_description (SPItem * item);
-static int sp_rect_snappoints (SPItem *item, NRPointF *p, int size);
+static int sp_rect_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 static void sp_rect_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 
 static void sp_rect_set_shape (SPShape *shape);
@@ -373,12 +373,10 @@ sp_rect_set_ry (SPRect * rect, gboolean set, gdouble value)
 }
 
 static int
-sp_rect_snappoints (SPItem *item, NRPointF *p, int size)
+sp_rect_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
 	SPRect *rect;
 	float x0, y0, x1, y1;
-	NRMatrixF i2d;
-	int i;
 
 	rect = SP_RECT (item);
 
@@ -388,31 +386,7 @@ sp_rect_snappoints (SPItem *item, NRPointF *p, int size)
 	x1 = x0 + rect->width.computed;
 	y1 = y0 + rect->height.computed;
 
-	sp_item_i2d_affine (item, &i2d);
-
-	i = 0;
-	if (i < size) {
-		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y0);
-		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y0);
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y0);
-		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y0);
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y1);
-		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y1);
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y1);
-		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y1);
-		i += 1;
-	}
-
-	return i;
+	return sp_corner_snappoints (p, size, transform, x0, y0, x1, y1);
 }
 
 /*

@@ -65,8 +65,7 @@ static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_dispose (GObject *object);
 
 static void sp_desktop_request_redraw (SPView *view);
-static void sp_desktop_set_document (SPView *view, SPDocument *doc);
-static void sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height);
+static void sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout);
 
 /* Constructor */
 
@@ -96,7 +95,7 @@ static void sp_dtw_zoom_selection (GtkMenuItem *item, gpointer data);
 static void sp_desktop_widget_update_rulers (SPDesktopWidget *dtw);
 static void sp_desktop_update_scrollbars (SPDesktop *desktop);
 
-SPViewClass * parent_class;
+SPViewClass *parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
 
 GType
@@ -155,8 +154,12 @@ sp_desktop_class_init (SPDesktopClass *klass)
 	object_class->dispose = sp_desktop_dispose;
 
 	view_class->request_redraw = sp_desktop_request_redraw;
-	view_class->set_document = sp_desktop_set_document;
+	view_class->set_root = sp_desktop_set_root;
+#if 0
+	/* fixme: Maybe this method is useless (Lauris) */
+	/* fixme: Maybe root_vieport_modified instead (Lauris) */
 	view_class->document_resized = sp_desktop_document_resized;
+#endif
 }
 
 static void
@@ -223,20 +226,6 @@ sp_desktop_request_redraw (SPView *view)
 	}
 }
 
-static void
-sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height)
-{
-	SPDesktop *desktop;
-
-	desktop = SP_DESKTOP (view);
-
-	desktop->doc2dt[5] = height;
-
-	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt));
-
-	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, width, height);
-}
-
 void
 sp_desktop_set_active (SPDesktop *desktop, gboolean active)
 {
@@ -264,13 +253,33 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *ai, GdkEvent *event, SPDesktop
 	}
 }
 
+static void
+sp_desktop_root_modified (SPObject *root, unsigned int flags, SPDesktop *desktop)
+{
+	unsigned int mask;
+	/* Fixme: Is this correct? (Lauris) */
+	/* I think that style and vieport cannot happen, unless parent is modified (Lauris) */
+	/* mask = SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG; */
+	mask = SP_OBJECT_VIEWPORT_MODIFIED_FLAG;
+	if (flags & mask) {
+		SPView *view;
+		/* fixme: Implement (Lauris) */
+		view = (SPView *) desktop;
+		desktop->doc2dt[5] = sp_document_height (view->doc);
+		sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt));
+		sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0,
+				      sp_document_width (view->doc), sp_document_height (view->doc));
+	}
+}
+
 /* Constructor */
 
 static SPView *
 sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 {
 	SPDesktop *desktop;
-	SPCanvasGroup *root;
+	SPView *view;
+	SPCanvasGroup *canvasroot;
 	/* *page; */
 	NRArenaItem *ai;
 	gdouble dw, dh;
@@ -281,38 +290,39 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	sp_document_ensure_up_to_date (document);
 
 	/* Setup widget */
-
 	desktop = (SPDesktop *) g_object_new (SP_TYPE_DESKTOP, NULL);
+	view = (SPView *) desktop;
+	/* Generate unique display key */
+	desktop->dkey = sp_item_display_key_new (1);
 
-	/* Connect document */
-	sp_view_set_document (SP_VIEW (desktop), document);
-
-	desktop->namedview = namedview;
-	g_signal_connect (G_OBJECT (namedview), "modified", G_CALLBACK (sp_dt_namedview_modified), desktop);
-	desktop->number = sp_namedview_viewcount (namedview);
-
-	/* Setup Canvas */
+	/* Setup canvas */
+	/* This key is needed for routing guide events (Lauris) */
+	/* fixme: Remove this (Lauris) */
 	g_object_set_data (G_OBJECT (canvas), "SPDesktop", desktop);
-
-	root = sp_canvas_root (canvas);
-
-	desktop->acetate = sp_canvas_item_new (root, GNOME_TYPE_CANVAS_ACETATE, NULL);
+	canvasroot = sp_canvas_root (canvas);
+	desktop->acetate = sp_canvas_item_new (canvasroot, GNOME_TYPE_CANVAS_ACETATE, NULL);
 	g_signal_connect (G_OBJECT (desktop->acetate), "event", G_CALLBACK (sp_desktop_root_handler), desktop);
 	/* Setup adminstrative layers */
-	desktop->main = (SPCanvasGroup *) sp_canvas_item_new (root, SP_TYPE_CANVAS_GROUP, NULL);
+	desktop->main = (SPCanvasGroup *) sp_canvas_item_new (canvasroot, SP_TYPE_CANVAS_GROUP, NULL);
 	g_signal_connect (G_OBJECT (desktop->main), "event", G_CALLBACK (sp_desktop_root_handler), desktop);
 	/* fixme: */
 	/* page = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL); */
 	desktop->page = sp_canvas_item_new (desktop->main, SP_TYPE_CTRLRECT, NULL);
-
+	sp_ctrlrect_set_shadow (SP_CTRLRECT (desktop->page), 5, 0x3f3f3fff);
 	desktop->drawing = sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
 	g_signal_connect (G_OBJECT (desktop->drawing), "arena_event", G_CALLBACK (arena_handler), desktop);
-
 	desktop->grid = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 	desktop->guides = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 	desktop->sketch = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 	desktop->controls = (SPCanvasGroup *) sp_canvas_item_new (desktop->main, SP_TYPE_CANVAS_GROUP, NULL);
 
+	/* Connect document */
+	sp_view_set_root (view, (SPItem *) document->root, (SPObject *) namedview);
+	/* Listen to root ::modified signal */
+	/* Fixme: maybe implement as view virtual instead (Lauris) */
+	g_signal_connect ((GObject *) view->root, "modified", (GCallback) sp_desktop_root_modified, desktop);
+
+	/* Set up selection */
 	desktop->selection = sp_selection_new (desktop);
 
 	/* Push select tool to the bottom of stack */
@@ -324,7 +334,6 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	/* desktop->page = sp_canvas_item_new (page, SP_TYPE_CTRLRECT, NULL); */
 	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, sp_document_width (document), sp_document_height (document));
-	sp_ctrlrect_set_shadow (SP_CTRLRECT (desktop->page), 5, 0x3f3f3fff);
 
 	/* Connect event for page resize */
 	desktop->doc2dt[5] = sp_document_height (document);
@@ -332,13 +341,13 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	/* Fixme: Setup initial zooming */
 	nr_matrix_d_set_scale (NR_MATRIX_D_FROM_DOUBLE (desktop->d2w), 1.0, -1.0);
-	desktop->d2w[5] = dh;
+	/* desktop->d2w[5] = dh; */
 	nr_matrix_d_invert (NR_MATRIX_D_FROM_DOUBLE (desktop->w2d), NR_MATRIX_D_FROM_DOUBLE (desktop->d2w));
 	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, NR_MATRIX_D_FROM_DOUBLE (desktop->d2w));
 
 	g_signal_connect (G_OBJECT (desktop->selection), "modified", G_CALLBACK (sp_desktop_selection_modified), desktop);
 
-	desktop->dkey = sp_item_display_key_new (1);
+	/* Set up drawing */
 	ai = sp_item_invoke_show (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))),
 				  SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey, SP_ITEM_SHOW_DISPLAY);
 	if (ai) {
@@ -346,14 +355,15 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 		nr_arena_item_unref (ai);
 	}
 
-	sp_namedview_show (desktop->namedview, desktop);
+#if 0
+	/* Happens in ::set_root */
 	/* Ugly hack */
 	sp_desktop_activate_guides (desktop, TRUE);
 	/* Ugly hack */
 	sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
+#endif
 
-	// ?
-	// sp_active_desktop_set (desktop);
+	/* sp_active_desktop_set (desktop); */
 	sodipodi_add_desktop (desktop);
 	desktop->sodipodi = SODIPODI;
 
@@ -454,33 +464,51 @@ sp_desktop_activate_guides (SPDesktop * desktop, gboolean activate)
 }
 
 static void
-sp_desktop_set_document (SPView *view, SPDocument *doc)
+sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 {
 	SPDesktop *desktop;
+	SPDocument *newdoc;
+	SPNamedView *newnv;
+	NRArenaItem *aitem;
 
-	desktop = SP_DESKTOP (view);
+	desktop = (SPDesktop *) view;
 
-	if (view->doc) {
+	newdoc = SP_OBJECT_DOCUMENT (root);
+	newnv = (SPNamedView *) layout;
+
+	/* Detach existing namedview if needed */
+	if (desktop->namedview && (desktop->namedview != newnv)) {
+		sp_signal_disconnect_by_data ((GObject *) desktop->namedview, desktop);
 		sp_namedview_hide (desktop->namedview, desktop);
-		sp_item_invoke_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (desktop))), desktop->dkey);
+		desktop->namedview = NULL;
 	}
 
-	/* fixme: */
-	if (desktop->drawing) {
-		NRArenaItem *ai;
-
-		desktop->namedview = sp_document_namedview (doc, NULL);
-
-		ai = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (desktop->drawing)->arena,
-					  desktop->dkey, SP_ITEM_SHOW_DISPLAY);
-		if (ai) {
-			nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
-			nr_arena_item_unref (ai);
-		}
-		sp_namedview_show (desktop->namedview, desktop);
-		/* Ugly hack */
-		sp_desktop_activate_guides (desktop, TRUE);
+	/* Hide existing root if needed */
+	if (view->root && (view->root != root)) {
+		sp_item_invoke_hide (view->root, desktop->dkey);
+		/* Root and document are detached in base caller */
 	}
+
+	if (newnv && !desktop->namedview) {
+		/* fixme: */
+		desktop->namedview = newnv;
+		g_signal_connect (G_OBJECT (desktop->namedview), "modified", (GCallback) sp_dt_namedview_modified, desktop);
+		desktop->number = sp_namedview_viewcount (desktop->namedview);
+	}
+
+	/* Set up drawing */
+	aitem = sp_item_invoke_show (root, SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey, SP_ITEM_SHOW_DISPLAY);
+	if (aitem) {
+		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, aitem, NULL);
+		nr_arena_item_unref (aitem);
+	}
+
+	/* Update namedview an such */
+	sp_namedview_show (desktop->namedview, desktop);
+	/* Ugly hack */
+	sp_desktop_activate_guides (desktop, TRUE);
+	/* Ugly hack */
+	sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
 }
 
 void
@@ -491,7 +519,7 @@ sp_desktop_change_document (SPDesktop *desktop, SPDocument *document)
 	g_return_if_fail (document != NULL);
 	g_return_if_fail (SP_IS_DOCUMENT (document));
 
-	sp_view_set_document (SP_VIEW (desktop), document);
+	sp_view_set_root (SP_VIEW (desktop), (SPItem *) document->root, (SPObject *) sp_document_namedview (document, NULL));
 }
 
 /* Private methods */
@@ -627,6 +655,77 @@ sp_desktop_menu_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
 	sp_event_root_menu_popup (SP_DESKTOP_WIDGET (data)->desktop, NULL, (GdkEvent *)event);
 
 	return FALSE;
+}
+
+NRMatrixF *
+sp_desktop_get_i2d_transform_f (SPDesktop *dt, SPItem *item, NRMatrixF *transform)
+{
+	NRMatrixD doc2dt;
+
+	g_return_val_if_fail (item != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
+	g_return_val_if_fail (transform != NULL, NULL);
+
+	sp_item_i2doc_affine (item, transform);
+	nr_matrix_d_set_scale (&doc2dt, 0.8, -0.8);
+	doc2dt.c[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
+	nr_matrix_multiply_ffd (transform, transform, &doc2dt);
+
+	return transform;
+}
+
+void
+sp_desktop_get_item_bbox_full (SPDesktop *dt, SPItem *item, NRRectF *bbox, unsigned int flags)
+{
+	NRMatrixF i2dt;
+	NRMatrixD doc2dt, i2dtd;
+
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+	g_assert (bbox != NULL);
+
+	sp_item_i2doc_affine (item, &i2dt);
+	nr_matrix_d_set_scale (&doc2dt, 0.8, -0.8);
+	doc2dt.c[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
+	nr_matrix_multiply_ffd (&i2dt, &i2dt, &doc2dt);
+
+	nr_matrix_d_from_f (&i2dtd, &i2dt);
+
+	sp_item_invoke_bbox_full (item, bbox, &i2dtd, flags, TRUE);
+}
+
+GSList *
+sp_desktop_get_items_in_bbox (SPDesktop *dt, NRRectD *box, unsigned int completely)
+{
+	SPObject *root, *cho;
+	GSList * s;
+
+	s = NULL;
+
+	root = (SPObject *) ((SPView *) dt)->root;
+	for (cho = root->children; cho != NULL; cho = cho->next) {
+		if (SP_IS_ITEM (cho)) {
+			NRRectF b;
+			sp_desktop_get_item_bbox (dt, (SPItem *) cho, &b);
+			if (completely) {
+				if ((b.x0 > box->x0) && (b.x1 < box->x1) &&
+				    (b.y0 > box->y0) && (b.y1 < box->y1)) {
+					s = g_slist_prepend (s, cho);
+				}
+			} else {
+				if ((((b.x0 > box->x0) && (b.x0 < box->x1)) ||
+				     ((b.x1 > box->x0) && (b.x1 < box->x1))) &&
+				    (((b.y0 > box->y0) && (b.y0 < box->y1)) ||
+				     ((b.y1 > box->y0) && (b.y1 < box->y1)))) {
+					s = g_slist_prepend (s, cho);
+				}
+			}
+		}
+	}
+
+	s = g_slist_reverse (s);
+
+	return s;
 }
 
 const SPUnit *
@@ -978,8 +1077,8 @@ sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw)
 #endif
 }
 
-static gboolean
-sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
+static unsigned int
+sp_dtw_desktop_request_shutdown (SPView *view, SPDesktopWidget *dtw)
 {
 	SPDocument *doc;
 
@@ -1006,7 +1105,7 @@ sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 			case GTK_RESPONSE_NO:
 				break;
 			case GTK_RESPONSE_CANCEL:
-				return TRUE;
+				return FALSE;
 				break;
 			}
 		}
@@ -1014,7 +1113,7 @@ sp_dtw_desktop_shutdown (SPView *view, SPDesktopWidget *dtw)
 
 	sp_desktop_prepare_shutdown (SP_DESKTOP (view));
 
-	return FALSE;
+	return TRUE;
 }
 
 /* Constructor */
@@ -1054,7 +1153,7 @@ sp_desktop_widget_new (SPNamedView *namedview)
 	g_signal_connect (G_OBJECT (dtw->desktop), "activate", G_CALLBACK (sp_dtw_desktop_activate), dtw);
 	g_signal_connect (G_OBJECT (dtw->desktop), "desactivate", G_CALLBACK (sp_dtw_desktop_desactivate), dtw);
 
-	g_signal_connect (G_OBJECT (dtw->desktop), "shutdown", G_CALLBACK (sp_dtw_desktop_shutdown), dtw);
+	g_signal_connect (G_OBJECT (dtw->desktop), "request_shutdown", G_CALLBACK (sp_dtw_desktop_request_shutdown), dtw);
 
 	/* Listen on namedview modification */
 	g_signal_connect (G_OBJECT (namedview), "modified", G_CALLBACK (sp_desktop_widget_namedview_modified), dtw);
@@ -1338,7 +1437,7 @@ sp_desktop_zoom_drawing (SPDesktop *dt)
 	docitem = SP_ITEM (sp_document_root (doc));
 	g_return_if_fail (docitem != NULL);
 	
-	sp_item_bbox_desktop (docitem, &d);
+	sp_desktop_get_item_bbox (dt, docitem, &d);
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 	sp_desktop_set_display_area (dt, d.x0, d.y0, d.x1, d.y1, 10);
 }
@@ -1434,7 +1533,7 @@ sp_desktop_update_scrollbars (SPDesktop *dt)
 	scale = SP_DESKTOP_ZOOM (dt);
 
 	/* The desktop region we always show unconditionally */
-	sp_item_bbox_desktop (SP_ITEM (SP_DOCUMENT_ROOT (doc)), &darea);
+	sp_desktop_get_item_bbox (dt, SP_ITEM (SP_DOCUMENT_ROOT (doc)), &darea);
 	darea.x0 = MIN (darea.x0, -sp_document_width (doc));
 	darea.y0 = MIN (darea.y0, -sp_document_height (doc));
 	darea.x1 = MAX (darea.x1, 2 * sp_document_width (doc));

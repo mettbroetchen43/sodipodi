@@ -40,6 +40,7 @@
 #include "dir-util.h"
 #include "sodipodi.h"
 #include "document.h"
+#include "desktop.h"
 #include "desktop-handles.h"
 #include "sp-item.h"
 #include "selection.h"
@@ -286,13 +287,11 @@ selection_modified (GObject* sodipodiOrSelection, void* data)
 static void
 sp_export_area_toggled (GtkToggleButton *tb, GtkObject *base)
 {
-  if (activeSelection.selection && (activeSelection.changedId>0))
-    {
-      if (activeSelection.selection)
-        g_signal_handler_disconnect( G_OBJECT(activeSelection.selection),
-                                     activeSelection.changedId);
-      activeSelection.changedId=0;
-    }
+	if (activeSelection.selection && (activeSelection.changedId > 0)) {
+		if (activeSelection.selection)
+			g_signal_handler_disconnect( G_OBJECT(activeSelection.selection), activeSelection.changedId);
+		activeSelection.changedId=0;
+	}
 
 	if (gtk_toggle_button_get_active (tb)) {
 		const unsigned char *key;
@@ -318,7 +317,8 @@ sp_export_area_toggled (GtkToggleButton *tb, GtkObject *base)
 				bbox.x1 = sp_document_width (doc);
 				bbox.y1 = sp_document_height (doc);
 			} else if (!strcmp (key, "drawing")) {
-				sp_item_bbox_desktop_full (SP_ITEM (SP_DOCUMENT_ROOT (doc)), &bbox, SP_ITEM_BBOX_VISUAL);
+				sp_desktop_get_item_bbox_full (SP_ACTIVE_DESKTOP,
+							       (SPItem *) SP_DOCUMENT_ROOT (doc), &bbox, SP_ITEM_BBOX_VISUAL);
 			} else {
                                 SPSelection* selection=SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
                                 activeSelection.tb=tb;

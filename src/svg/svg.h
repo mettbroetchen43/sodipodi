@@ -56,6 +56,8 @@ void sp_svg_length_set (SPSVGLength *length, unsigned long unit, float value, fl
 void sp_svg_length_unset (SPSVGLength *length, unsigned long unit, float value, float computed);
 void sp_svg_length_update (SPSVGLength *length, double em, double ex, double scale);
 
+unsigned int sp_svg_viewbox_read (const unsigned char *str, SPSVGViewBox *viewbox);
+
 /* Read list of points for <polyline> or <polygon> */
 unsigned int sp_svg_points_read (const unsigned char *str, float *coords, unsigned int *ncoords);
 

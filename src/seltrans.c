@@ -27,6 +27,7 @@
 #include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "desktop-snap.h"
+#include "sp-item-transform.h"
 #include "selection.h"
 #include "select-context.h"
 #include "sp-item.h"
@@ -266,7 +267,7 @@ sp_sel_trans_grab (SPSelTrans * seltrans, NRPointF *p, gdouble x, gdouble y, gbo
 	n = 0;
 	while (l) {
 		seltrans->items[n] = (SPItem *) sp_object_ref (SP_OBJECT (l->data), NULL);
-		sp_item_i2d_affine (seltrans->items[n], &seltrans->transforms[n]);
+		sp_desktop_get_i2d_transform_f (seltrans->desktop, seltrans->items[n], &seltrans->transforms[n]);
 		l = l->next;
 		n += 1;
 	}
@@ -317,7 +318,7 @@ sp_sel_trans_transform (SPSelTrans * seltrans, NRMatrixD *affine, NRPointF *norm
 		for (i = 0; i < seltrans->nitems; i++) {
 			NRMatrixF i2dnew;
 			nr_matrix_multiply_ffd (&i2dnew, &seltrans->transforms[i], affine);
-			sp_item_set_i2d_affine (seltrans->items[i], &i2dnew);
+			sp_desktop_set_i2d_transform_f (seltrans->desktop, seltrans->items[i], &i2dnew);
 		}
 	} else {
 		NRPointF p[4];
@@ -362,9 +363,9 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 			/* fixme: We do not have to set it here (Lauris) */
 			if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
 				NRMatrixF i2d, i2dnew;
-				sp_item_i2d_affine (item, &i2d);
+				sp_desktop_get_i2d_transform_f (seltrans->desktop, item, &i2d);
 				nr_matrix_multiply_ffd (&i2dnew, &i2d, &seltrans->current);
-				sp_item_set_i2d_affine (item, &i2dnew);
+				sp_desktop_set_i2d_transform_f (seltrans->desktop, item, &i2dnew);
 			}
 			if (seltrans->transform == SP_SELTRANS_TRANSFORM_OPTIMIZE) {
 				sp_item_write_transform (item, SP_OBJECT_REPR (item), &item->transform);
@@ -469,9 +470,9 @@ sp_sel_trans_stamp (SPSelTrans * seltrans)
 								     copy_repr);
 			
 			if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
-				sp_item_i2d_affine (original_item, &i2d);
+				sp_desktop_get_i2d_transform_f (seltrans->desktop, original_item, &i2d);
 				nr_matrix_multiply_ffd (&i2dnew, &i2d, &seltrans->current);
-				sp_item_set_i2d_affine (copy_item, &i2dnew);
+				sp_desktop_set_i2d_transform_f (seltrans->desktop, copy_item, &i2dnew);
 				new_affine = &copy_item->transform;
 			} else {
 				new_affine = &original_item->transform;

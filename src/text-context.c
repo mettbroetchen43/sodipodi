@@ -245,7 +245,7 @@ sp_text_context_item_handler (SPEventContext *ec, SPItem *item, GdkEvent *event)
 	case GDK_MOTION_NOTIFY:
 		if (SP_IS_TEXT (item)) {
 			NRRectF bbox;
-			sp_item_bbox_desktop(item, &bbox);
+			sp_desktop_get_item_bbox (ec->desktop, item, &bbox);
 			sp_canvas_item_show (tc->indicator);
 			sp_ctrlrect_set_area (SP_CTRLRECT (tc->indicator), 
 					      bbox.x0, bbox.y0, 
@@ -504,7 +504,7 @@ sp_text_context_update_cursor (SPTextContext *tc)
 		ArtPoint p0, p1, d0, d1;
 		NRMatrixF i2d;
 		sp_text_get_cursor_coords (SP_TEXT (tc->text), tc->ipos, &p0, &p1);
-		sp_item_i2d_affine (SP_ITEM (tc->text), &i2d);
+		sp_desktop_get_i2d_transform_f (((SPEventContext *) tc)->desktop, SP_ITEM (tc->text), &i2d);
 		d0.x = NR_MATRIX_DF_TRANSFORM_X (&i2d, p0.x, p0.y);
 		d0.y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, p0.x, p0.y);
 		d1.x = NR_MATRIX_DF_TRANSFORM_X (&i2d, p1.x, p1.y);

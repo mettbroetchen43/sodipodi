@@ -15,10 +15,11 @@
 #include "macros.h"
 #include "helper/sp-marshal.h"
 #include "document.h"
+#include "sp-object.h"
 #include "view.h"
 
 enum {
-	SHUTDOWN,
+	REQUEST_SHUTDOWN,
 	URI_SET,
 	RESIZED,
 	POSITION_SET,
@@ -64,10 +65,10 @@ sp_view_class_init (SPViewClass *klass)
 
 	parent_class = g_type_class_peek_parent (klass);
 
-	signals[SHUTDOWN] =     g_signal_new ("shutdown",
+	signals[REQUEST_SHUTDOWN] = g_signal_new ("request_shutdown",
 					      G_TYPE_FROM_CLASS(klass),
 					      G_SIGNAL_RUN_LAST,
-					      G_STRUCT_OFFSET (SPViewClass, shutdown),
+					      G_STRUCT_OFFSET (SPViewClass, request_shutdown),
 					      NULL, NULL,
 					      sp_marshal_BOOLEAN__NONE,
 					      G_TYPE_BOOLEAN, 0);
@@ -110,7 +111,7 @@ sp_view_class_init (SPViewClass *klass)
 static void
 sp_view_init (SPView *view)
 {
-	view->doc = NULL;
+	/* Nothing here */
 }
 
 static void
@@ -120,7 +121,9 @@ sp_view_dispose (GObject *object)
 
 	view = SP_VIEW (object);
 
-	if (view->doc) {
+	if (view->root) {
+		sp_signal_disconnect_by_data (view->root, view);
+		view->root = NULL;
 		sp_signal_disconnect_by_data (view->doc, view);
 		view->doc = sp_document_unref (view->doc);
 	}
@@ -128,17 +131,17 @@ sp_view_dispose (GObject *object)
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
-gboolean
-sp_view_shutdown (SPView *view)
+unsigned int
+sp_view_try_shutdown (SPView *view)
 {
 	gboolean result;
 
 	g_return_val_if_fail (view != NULL, TRUE);
 	g_return_val_if_fail (SP_IS_VIEW (view), TRUE);
 
-	result = FALSE;
+	result = TRUE;
 
-	g_signal_emit (G_OBJECT (view), signals[SHUTDOWN], 0, &result);
+	g_signal_emit (G_OBJECT (view), signals[REQUEST_SHUTDOWN], 0, &result);
 
 	return result;
 }
@@ -153,28 +156,55 @@ sp_view_request_redraw (SPView *view)
 		((SPViewClass *) G_OBJECT_GET_CLASS(view))->request_redraw (view);
 }
 
-void
-sp_view_set_document (SPView *view, SPDocument *doc)
+static void
+sp_view_root_release (SPObject *object, SPView *view)
 {
+	/* Drop links */
+	view->root = NULL;
+	sp_signal_disconnect_by_data (view->doc, view);
+	view->doc = sp_document_unref (view->doc);
+	/* Request redraw */
+	sp_view_request_redraw (view);
+}
+
+void
+sp_view_set_root (SPView *view, SPItem *root, SPObject *layout)
+{
+	SPDocument *doc;
+
 	g_return_if_fail (view != NULL);
 	g_return_if_fail (SP_IS_VIEW (view));
-	g_return_if_fail (!doc || SP_IS_DOCUMENT (doc));
+	g_return_if_fail (!root || SP_IS_OBJECT (root));
 
-	if (((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_document)
-		((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_document (view, doc);
+	doc = (root) ? SP_OBJECT_DOCUMENT (root) : NULL;
 
-	if (view->doc) {
-		sp_signal_disconnect_by_data (view->doc, view);
-		view->doc = sp_document_unref (view->doc);
+	/* Reference root document so it will not be lost */
+	if (doc) sp_document_ref (doc);
+
+	if (((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_root)
+		((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_root (view, root, layout);
+
+	if (view->root && (view->root != root)) {
+		sp_signal_disconnect_by_data (view->root, view);
+		view->root = NULL;
+		if (view->doc && (view->doc != doc)) {
+			sp_signal_disconnect_by_data (view->doc, view);
+			view->doc = sp_document_unref (view->doc);
+		}
 	}
 
-	if (doc) {
-		view->doc = sp_document_ref (doc);
-		g_signal_connect (G_OBJECT (doc), "uri_set", G_CALLBACK (sp_view_document_uri_set), view);
-		g_signal_connect (G_OBJECT (doc), "resized", G_CALLBACK (sp_view_document_resized), view);
+	if (root && !view->root) {
+		view->root = root;
+		g_signal_connect ((GObject *) view->root, "release", (GCallback) sp_view_root_release, view);
+		if (!view->doc) {
+			view->doc = doc;
+			g_signal_connect (G_OBJECT (view->doc), "uri_set", G_CALLBACK (sp_view_document_uri_set), view);
+			g_signal_connect (G_OBJECT (view->doc), "resized", G_CALLBACK (sp_view_document_resized), view);
+		}
 	}
 
-	g_signal_emit (G_OBJECT (view), signals[URI_SET], 0, (doc) ? SP_DOCUMENT_URI (doc) : NULL);
+	/* fixme: (Lauris) */
+	g_signal_emit (G_OBJECT (view), signals[URI_SET], 0, (view->doc) ? SP_DOCUMENT_URI (view->doc) : NULL);
 }
 
 void
@@ -298,8 +328,8 @@ sp_view_widget_set_view (SPViewWidget *vw, SPView *view)
 		((SPViewWidgetClass *) G_OBJECT_GET_CLASS(vw))->set_view (vw, view);
 }
 
-gboolean
-sp_view_widget_shutdown (SPViewWidget *vw)
+unsigned int
+sp_view_widget_try_shutdown (SPViewWidget *vw)
 {
 	g_return_val_if_fail (vw != NULL, TRUE);
 	g_return_val_if_fail (SP_IS_VIEW_WIDGET (vw), TRUE);
@@ -307,7 +337,7 @@ sp_view_widget_shutdown (SPViewWidget *vw)
 	if (((SPViewWidgetClass *) G_OBJECT_GET_CLASS(vw))->shutdown)
 		return ((SPViewWidgetClass *) G_OBJECT_GET_CLASS(vw))->shutdown (vw);
 
-	return FALSE;
+	return TRUE;
 }
 
 static void

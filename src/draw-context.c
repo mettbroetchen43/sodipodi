@@ -347,7 +347,7 @@ spdc_attach_selection (SPDrawContext *dc, SPSelection *sel)
 		/* Curve list */
 		/* We keep it in desktop coordinates to eliminate calculation errors */
 		norm = sp_shape_get_curve (SP_SHAPE (item));
-		sp_item_i2d_affine (dc->white_item, &i2dt);
+		sp_desktop_get_i2d_transform_f (SP_EVENT_CONTEXT_DESKTOP (dc), dc->white_item, &i2dt);
 		nr_matrix_d_from_f (&i2dtd, &i2dt);
 		norm = sp_curve_transform (norm, NR_MATRIX_D_TO_DOUBLE (&i2dtd));
 		g_return_if_fail (norm != NULL);
@@ -554,9 +554,10 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 
 	/* Now we have to go back to item coordinates at last */
 	if (dc->white_item) {
-		NRMatrixF d2itemf;
+		NRMatrixF i2dtf, d2itemf;
 		NRMatrixD d2itemd;
-		sp_item_dt2i_affine (dc->white_item, SP_EVENT_CONTEXT_DESKTOP (dc), &d2itemf);
+		sp_desktop_get_i2d_transform_f (((SPEventContext *) dc)->desktop, dc->white_item, &i2dtf);
+		nr_matrix_f_invert (&d2itemf, &i2dtf);
 		nr_matrix_d_from_f (&d2itemd, &d2itemf);
 		c = sp_curve_transform (c, NR_MATRIX_D_TO_DOUBLE (&d2itemd));
 	} else {

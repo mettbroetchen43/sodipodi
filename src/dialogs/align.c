@@ -32,6 +32,7 @@
 #include "widgets/button.h"
 #include "sodipodi.h"
 #include "document.h"
+#include "desktop.h"
 #include "desktop-handles.h"
 #include "sp-item.h"
 #include "sp-item-transform.h"
@@ -120,7 +121,7 @@ void sp_quick_align_dialog_close (void);
 
 static GtkWidget *sp_align_dialog_create_base_menu (void);
 static void set_base (GtkMenuItem * menuitem, gpointer data);
-static SPItem * sp_quick_align_find_master (const GSList * slist, gboolean horizontal);
+static SPItem *sp_quick_align_find_master (SPDesktop *dt, const GSList * slist, gboolean horizontal);
 
 static GtkWidget *dlg = NULL;
 
@@ -340,9 +341,9 @@ sp_align_arrange_clicked (GtkWidget *widget, const unsigned char *aligns)
 	case SP_ALIGN_SMALLEST:
 		if (!slist->next) return;
 		slist = g_slist_copy (slist);
-		master = sp_quick_align_find_master (slist, (mx0 != 0.0) || (mx1 != 0.0));
+		master = sp_quick_align_find_master (desktop, slist, (mx0 != 0.0) || (mx1 != 0.0));
 		slist = g_slist_remove (slist, master);
-		sp_item_bbox_desktop (master, &b);
+		sp_desktop_get_item_bbox (desktop, master, &b);
 		mp.x = mx0 * b.x0 + mx1 * b.x1;
 		mp.y = my0 * b.y0 + my1 * b.y1;
 		break;
@@ -353,7 +354,7 @@ sp_align_arrange_clicked (GtkWidget *widget, const unsigned char *aligns)
 		break;
 	case SP_ALIGN_DRAWING:
 		slist = g_slist_copy (slist);
-		sp_item_bbox_desktop ((SPItem *) sp_document_root (SP_DT_DOCUMENT (desktop)), &b);
+		sp_desktop_get_item_bbox (desktop, (SPItem *) sp_document_root (SP_DT_DOCUMENT (desktop)), &b);
 		mp.x = mx0 * b.x0 + mx1 * b.x1;
 		mp.y = my0 * b.y0 + my1 * b.y1;
 		break;
@@ -372,12 +373,12 @@ sp_align_arrange_clicked (GtkWidget *widget, const unsigned char *aligns)
 
 	for (l = slist; l != NULL; l = l->next) {
 		item = (SPItem *) l->data;
-		sp_item_bbox_desktop (item, &b);
+		sp_desktop_get_item_bbox (desktop, item, &b);
 		sp.x = sx0 * b.x0 + sx1 * b.x1;
 		sp.y = sy0 * b.y0 + sy1 * b.y1;
 
 		if ((fabs (mp.x - sp.x) > 1e-9) || (fabs (mp.y - sp.y) > 1e-9)) {
-			sp_item_move_rel (item, mp.x - sp.x, mp.y - sp.y);
+			sp_item_move_rel (desktop, item, mp.x - sp.x, mp.y - sp.y);
 			changed = TRUE;
 		}
 	}
@@ -391,7 +392,7 @@ sp_align_arrange_clicked (GtkWidget *widget, const unsigned char *aligns)
 }
 
 static SPItem *
-sp_quick_align_find_master (const GSList *slist, gboolean horizontal)
+sp_quick_align_find_master (SPDesktop *dt, const GSList *slist, gboolean horizontal)
 {
 	NRRectF b;
 	const GSList * l;
@@ -411,7 +412,7 @@ sp_quick_align_find_master (const GSList *slist, gboolean horizontal)
 		max = -1e18;
 		for (l = slist; l != NULL; l = l->next) {
 			item = (SPItem *) l->data;
-			sp_item_bbox_desktop (item, &b);
+			sp_desktop_get_item_bbox (dt, item, &b);
 			if (horizontal) {
 				dim = b.x1 - b.x0; 
 			} else {
@@ -428,7 +429,7 @@ sp_quick_align_find_master (const GSList *slist, gboolean horizontal)
 		max = 1e18;
 		for (l = slist; l != NULL; l = l->next) {
 			item = (SPItem *) l->data;
-			sp_item_bbox_desktop (item, &b);
+			sp_desktop_get_item_bbox (dt, item, &b);
 			if (horizontal) {
 				dim = b.x1 - b.x0;
 			} else {
@@ -489,7 +490,7 @@ sp_align_distribute_h_clicked (GtkWidget *widget, const unsigned char *layout)
 	pos = 0;
 	for (l = slist; l != NULL; l = l->next) {
 		bbs[pos].item = SP_ITEM (l->data);
-		sp_item_bbox_desktop (bbs[pos].item, &bbs[pos].bbox);
+		sp_desktop_get_item_bbox (desktop, bbs[pos].item, &bbs[pos].bbox);
 		bbs[pos].anchor = 0.5 * layout[0] * bbs[pos].bbox.x0 + 0.5 * layout[1] * bbs[pos].bbox.x1;
 		pos += 1;
 	}
@@ -507,7 +508,7 @@ sp_align_distribute_h_clicked (GtkWidget *widget, const unsigned char *layout)
 			float pos;
 			pos = bbs[0].anchor + i * step;
 			if (!NR_DF_TEST_CLOSE (pos, bbs[i].anchor, 1e-6)) {
-				sp_item_move_rel (bbs[i].item, pos - bbs[i].anchor, 0.0);
+				sp_item_move_rel (desktop, bbs[i].item, pos - bbs[i].anchor, 0.0);
 				changed = TRUE;
 			}
 		}
@@ -522,7 +523,7 @@ sp_align_distribute_h_clicked (GtkWidget *widget, const unsigned char *layout)
 		pos = bbs[0].bbox.x0;
 		for (i = 0; i < len; i++) {
 			if (!NR_DF_TEST_CLOSE (pos, bbs[i].bbox.x0, 1e-6)) {
-				sp_item_move_rel (bbs[i].item, pos - bbs[i].bbox.x0, 0.0);
+				sp_item_move_rel (desktop, bbs[i].item, pos - bbs[i].bbox.x0, 0.0);
 				changed = TRUE;
 			}
 			pos += (bbs[i].bbox.x1 - bbs[i].bbox.x0);
@@ -561,7 +562,7 @@ sp_align_distribute_v_clicked (GtkWidget *widget, const unsigned char *layout)
 	pos = 0;
 	for (l = slist; l != NULL; l = l->next) {
 		bbs[pos].item = SP_ITEM (l->data);
-		sp_item_bbox_desktop (bbs[pos].item, &bbs[pos].bbox);
+		sp_desktop_get_item_bbox (desktop, bbs[pos].item, &bbs[pos].bbox);
 		bbs[pos].anchor = 0.5 * layout[0] * bbs[pos].bbox.y0 + 0.5 * layout[1] * bbs[pos].bbox.y1;
 		pos += 1;
 	}
@@ -579,7 +580,7 @@ sp_align_distribute_v_clicked (GtkWidget *widget, const unsigned char *layout)
 			float pos;
 			pos = bbs[0].anchor + i * step;
 			if (!NR_DF_TEST_CLOSE (pos, bbs[i].anchor, 1e-6)) {
-				sp_item_move_rel (bbs[i].item, 0.0, pos - bbs[i].anchor);
+				sp_item_move_rel (desktop, bbs[i].item, 0.0, pos - bbs[i].anchor);
 				changed = TRUE;
 			}
 		}
@@ -594,7 +595,7 @@ sp_align_distribute_v_clicked (GtkWidget *widget, const unsigned char *layout)
 		pos = bbs[0].bbox.y0;
 		for (i = 0; i < len; i++) {
 			if (!NR_DF_TEST_CLOSE (pos, bbs[i].bbox.y0, 1e-6)) {
-				sp_item_move_rel (bbs[i].item, 0.0, pos - bbs[i].bbox.y0);
+				sp_item_move_rel (desktop, bbs[i].item, 0.0, pos - bbs[i].bbox.y0);
 				changed = TRUE;
 			}
 			pos += (bbs[i].bbox.y1 - bbs[i].bbox.y0);

@@ -68,7 +68,7 @@ sp_slideshow_event (SPViewWidget *vw, GdkEvent *event, GtkWidget *window)
 		g_print ("Trying to load\n");
 		doc = sodipodi_document_new (nname, FALSE, TRUE);
 		if (doc) {
-			sp_view_set_document (SP_VIEW_WIDGET_VIEW (vw), doc);
+			sp_view_set_root (SP_VIEW_WIDGET_VIEW (vw), (SPItem *) doc->root, NULL);
 			sp_document_unref (doc);
 		}
 		g_object_set_data (G_OBJECT (window), "current", (gpointer) nname);

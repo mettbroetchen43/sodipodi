@@ -490,8 +490,8 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 	dbox.y0 = 0.0;
 	dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
 	dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
-	sp_item_bbox_desktop (item, &bbox);
-	sp_item_i2d_affine (item, &i2d);
+	sp_item_get_bbox_document (item, &bbox, 0, TRUE);
+	sp_item_i2doc_affine (item, &i2d);
 
 	if (SP_OBJECT_STYLE (item)->fill.type != SP_PAINT_TYPE_NONE) {
 		NRBPath bp;

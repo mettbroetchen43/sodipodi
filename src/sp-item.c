@@ -32,7 +32,6 @@
 #include "document.h"
 #include "uri-references.h"
 
-#include "selection.h"
 #include "style.h"
 #include "print.h"
 #include "sp-root.h"
@@ -53,7 +52,7 @@ static void sp_item_update (SPObject *object, SPCtx *ctx, guint flags);
 static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_item_private_description (SPItem * item);
-static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size);
+static int sp_item_private_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 
 static SPItemView *sp_item_view_new_prepend (SPItemView *list, SPItem *item, unsigned int flags, unsigned int key, NRArenaItem *arenaitem);
 static SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view);
@@ -448,37 +447,13 @@ sp_item_invoke_bbox_full (SPItem *item, NRRectF *bbox, const NRMatrixD *transfor
 		((SPItemClass *) G_OBJECT_GET_CLASS (item))->bbox (item, bbox, transform, flags);
 }
 
-void
-sp_item_bbox_desktop (SPItem *item, NRRectF *bbox)
-{
-        sp_item_bbox_desktop_full (item, bbox, 0);
-}
-
-void
-sp_item_bbox_desktop_full (SPItem *item, NRRectF *bbox, unsigned int flags)
-{
-	NRMatrixF i2d;
-	NRMatrixD i2dd;
-
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
-	g_assert (bbox != NULL);
-
-	sp_item_i2d_affine (item, &i2d);
-	nr_matrix_d_from_f (&i2dd, &i2d);
-
-	sp_item_invoke_bbox_full (item, bbox, &i2dd, flags, TRUE);
-}
-
 static int
-sp_item_private_snappoints (SPItem *item, NRPointF *p, int size)
+sp_item_private_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
         NRRectF bbox;
-	NRMatrixF i2d;
 	NRMatrixD i2dd;
 	if (size < 4) return 0;
-	sp_item_i2d_affine (item, &i2d);
-	nr_matrix_d_from_f (&i2dd, &i2d);
+	nr_matrix_d_from_f (&i2dd, transform);
 	sp_item_invoke_bbox (item, &bbox, &i2dd, TRUE);
 	p[0].x = bbox.x0;
 	p[0].y = bbox.y0;
@@ -492,13 +467,13 @@ sp_item_private_snappoints (SPItem *item, NRPointF *p, int size)
 }
 
 int
-sp_item_snappoints (SPItem *item, NRPointF *p, int size)
+sp_item_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
 	g_return_val_if_fail (item != NULL, 0);
 	g_return_val_if_fail (SP_IS_ITEM (item), 0);
 
 	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->snappoints)
-	        return ((SPItemClass *) G_OBJECT_GET_CLASS(item))->snappoints (item, p, size);
+	        return ((SPItemClass *) G_OBJECT_GET_CLASS(item))->snappoints (item, p, size, transform);
 
 	return 0;
 }
@@ -733,6 +708,18 @@ sp_item_i2root_affine (SPItem *item, NRMatrixF *affine)
 	return affine;
 }
 
+void
+sp_item_get_bbox_document (SPItem *item, NRRectF *bb, unsigned int flags, unsigned int clear)
+{
+	NRMatrixF i2docf;
+	NRMatrixD i2docd;
+
+	sp_item_i2doc_affine (item, &i2docf);
+	nr_matrix_d_from_f (&i2docd, &i2docf);
+
+	sp_item_invoke_bbox_full (item, bb, &i2docd, flags, clear);
+}
+
 /* Transformation to normalized (0,0-1,1) viewport */
 
 NRMatrixF *
@@ -770,47 +757,8 @@ sp_item_i2vp_affine (SPItem *item, NRMatrixF *affine)
 	return affine;
 }
 
+#if 0
 /* fixme: This is EVIL!!! */
-
-NRMatrixF *
-sp_item_i2d_affine (SPItem *item, NRMatrixF *affine)
-{
-	NRMatrixD doc2dt;
-
-	g_return_val_if_fail (item != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ITEM (item), NULL);
-	g_return_val_if_fail (affine != NULL, NULL);
-
-	sp_item_i2doc_affine (item, affine);
-	nr_matrix_d_set_scale (&doc2dt, 0.8, -0.8);
-	doc2dt.c[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
-	nr_matrix_multiply_ffd (affine, affine, &doc2dt);
-
-	return affine;
-}
-
-void
-sp_item_set_i2d_affine (SPItem *item, const NRMatrixF *affine)
-{
-	NRMatrixF p2d, d2p, i2p;
-
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_ITEM (item));
-	g_return_if_fail (affine != NULL);
-
-	if (SP_OBJECT_PARENT (item)) {
-		sp_item_i2d_affine ((SPItem *) SP_OBJECT_PARENT (item), &p2d);
-	} else {
-		nr_matrix_f_set_scale (&p2d, 0.8, -0.8);
-		p2d.c[5] = sp_document_height (SP_OBJECT_DOCUMENT (item));
-	}
-
-	nr_matrix_f_invert (&d2p, &p2d);
-
-	nr_matrix_multiply_fff (&i2p, affine, &d2p);
-
-	sp_item_set_item_transform (item, &i2p);
-}
 
 NRMatrixF *
 sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *affine)
@@ -823,6 +771,7 @@ sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *affine)
 
 	return affine;
 }
+#endif
 
 /* Item views */
 
@@ -971,5 +920,34 @@ sp_item_distance_to_svg_bbox (SPItem *item, gdouble distance, const SPUnit *unit
 		sp_convert_distance_full (&distance, unit, absolute, u2a, 0.8);
 		return distance;
 	}
+}
+
+/* Utility */
+int
+sp_corner_snappoints (NRPointF *p, int size, const NRMatrixF *transform, float x0, float y0, float x1, float y1)
+{
+	unsigned int i;
+	i = 0;
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (transform, x0, y0);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (transform, x0, y0);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (transform, x1, y0);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (transform, x1, y0);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (transform, x1, y1);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (transform, x1, y1);
+		i += 1;
+	}
+	if (i < size) {
+		p[i].x = NR_MATRIX_DF_TRANSFORM_X (transform, x0, y1);
+		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (transform, x0, y1);
+		i += 1;
+	}
+	return i;
 }
 

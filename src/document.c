@@ -634,6 +634,7 @@ sp_document_object_sequence_get (SPDocument *doc, SPObject *object)
 	return seq;
 }
 
+#if 0
 /*
  * Return list of items, contained in box
  *
@@ -714,6 +715,7 @@ sp_document_partial_items_in_box (SPDocument *document, NRRectD *box)
 
 	return s;
 }
+#endif
 
 /* Resource management */
 

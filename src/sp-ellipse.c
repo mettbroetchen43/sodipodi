@@ -70,7 +70,7 @@ static void sp_genericellipse_init (SPGenericEllipse *ellipse);
 
 static void sp_genericellipse_update (SPObject *object, SPCtx *ctx, guint flags);
 
-static int sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size);
+static int sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 
 static void sp_genericellipse_set_shape (SPShape *shape);
 
@@ -260,10 +260,9 @@ g_print ("step %d s %f e %f coords %f %f %f %f %f %f\n",
 }
 
 static int
-sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size)
+sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
 	SPGenericEllipse *ge;
-	NRMatrixF i2d;
 	int pos;
 
 	ge = SP_GENERICELLIPSE (item);
@@ -271,12 +270,11 @@ sp_genericellipse_snappoints (SPItem *item, NRPointF *p, int size)
 	/* we use corners of item and center of ellipse */
 	pos = 0;
 	if (((SPItemClass *) ge_parent_class)->snappoints)
-		pos = ((SPItemClass *) ge_parent_class)->snappoints (item, p, size);
+		pos = ((SPItemClass *) ge_parent_class)->snappoints (item, p, size, transform);
 
 	if (pos < size) {
-		sp_item_i2d_affine (item, &i2d);
-		p[pos].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, ge->cx.computed, ge->cy.computed);
-		p[pos].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, ge->cx.computed, ge->cy.computed);
+		p[pos].x = NR_MATRIX_DF_TRANSFORM_X (transform, ge->cx.computed, ge->cy.computed);
+		p[pos].y = NR_MATRIX_DF_TRANSFORM_Y (transform, ge->cx.computed, ge->cy.computed);
 	}
 
 	return pos;

@@ -40,6 +40,7 @@ rm -rf %{buildroot}
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
 %{_bindir}/sodipodi
 %{_libdir}/sodipodi/extensions/*
+%{_libdir}/sodipodi/modules/*
 %{_datadir}/applications/sodipodi.desktop
 %{_datadir}/locale/*/LC_MESSAGES/sodipodi.mo
 %{_datadir}/pixmaps/*

@@ -38,9 +38,7 @@ struct _SPRoot {
 	SPSVGLength width;
 	SPSVGLength height;
 
-	/* viewBox; */
-	unsigned int viewBox_set : 1;
-	NRRectD viewBox;
+	SPSVGViewBox viewBox;
 
 	/* preserveAspectRatio */
 	unsigned int aspect_set : 1;

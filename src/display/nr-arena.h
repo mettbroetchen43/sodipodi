@@ -25,6 +25,8 @@ typedef struct _NRArenaEventVector NRArenaEventVector;
 
 struct _NRArenaEventVector {
 	NRObjectEventVector object_vector;
+	void (* item_added) (NRArena *arena, NRArenaItem *parent, NRArenaItem *child, void *data);
+	void (* item_removed) (NRArena *arena, NRArenaItem *parent, NRArenaItem *child, void *data);
 	void (* request_update) (NRArena *arena, NRArenaItem *item, void *data);
 	void (* request_render) (NRArena *arena, NRRectL *area, void *data);
 };
@@ -35,22 +37,13 @@ struct _NRArena {
 
 struct _NRArenaClass {
 	NRActiveObjectClass parent_class;
-
-#if 0
-	/* These may be used for bookkeeping, like snooping highlited item */
-	/* void (* item_added) (NRArena *arena, NRArenaItem *item); */
-	/* void (* remove_item) (NRArena *arena, NRArenaItem *item); */
-
-	void (* request_update) (NRArena *arena, NRArenaItem *item);
-	void (* request_render) (NRArena *arena, NRRectL *area);
-#endif
 };
 
 unsigned int nr_arena_get_type (void);
 
 /* Following are meant stricktly for subclass/item implementations */
-/* void nr_arena_item_added (NRArena *arena, NRArenaItem *item); */
-/* void nr_arena_remove_item (NRArena *arena, NRArenaItem *item); */
+void nr_arena_item_added (NRArena *arena, NRArenaItem *parent, NRArenaItem *child);
+void nr_arena_item_removed (NRArena *arena, NRArenaItem *parent, NRArenaItem *child);
 
 void nr_arena_request_update (NRArena *arena, NRArenaItem *item);
 void nr_arena_request_render_rect (NRArena *arena, NRRectL *area);

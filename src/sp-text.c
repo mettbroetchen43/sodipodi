@@ -735,7 +735,7 @@ static void sp_text_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transfor
 static NRArenaItem *sp_text_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_text_hide (SPItem *item, unsigned int key);
 static char * sp_text_description (SPItem *item);
-static int sp_text_snappoints (SPItem *item, NRPointF *p, int size);
+static int sp_text_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 static void sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 static void sp_text_print (SPItem *item, SPPrintContext *gpc);
 
@@ -1523,23 +1523,19 @@ sp_text_set_shape (SPText *text)
 }
 
 static int
-sp_text_snappoints (SPItem *item, NRPointF *p, int size)
+sp_text_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
 	SPLayoutData *ly;
-	NRMatrixF i2d;
 	int pos;
 
-	/* we use corners of item and x,y coordinates of ellipse */
 	pos = 0;
 	if (((SPItemClass *) text_parent_class)->snappoints)
-		pos = ((SPItemClass *) text_parent_class)->snappoints (item, p, size);
+		pos = ((SPItemClass *) text_parent_class)->snappoints (item, p, size, transform);
 
 	if (pos < size) {
 		ly = &SP_TEXT (item)->ly;
-		sp_item_i2d_affine (item, &i2d);
-
-		p[pos].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, ly->x.computed, ly->y.computed);
-		p[pos].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, ly->x.computed, ly->y.computed);
+		p[pos].x = NR_MATRIX_DF_TRANSFORM_X (transform, ly->x.computed, ly->y.computed);
+		p[pos].y = NR_MATRIX_DF_TRANSFORM_Y (transform, ly->x.computed, ly->y.computed);
 	}
 
 	return pos;
@@ -1603,12 +1599,12 @@ sp_text_print (SPItem *item, SPPrintContext *ctx)
 
 	/* fixme: Think (Lauris) */
 	sp_item_invoke_bbox (item, &pbox, NULL, TRUE);
-	sp_item_bbox_desktop (item, &bbox);
+	sp_item_get_bbox_document (item, &bbox, 0, TRUE);
 	dbox.x0 = 0.0;
 	dbox.y0 = 0.0;
 	dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
 	dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
-	sp_item_i2d_affine (item, &ctm);
+	sp_item_i2doc_affine (item, &ctm);
 
 	for (ch = ((SPObject *) text)->children; ch != NULL; ch = ch->next) {
 		if (SP_IS_TSPAN (ch)) {

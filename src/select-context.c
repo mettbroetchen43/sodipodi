@@ -399,9 +399,9 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 					sp_rubberband_stop ();
 					sp_sel_trans_reset_state (seltrans);
 					if (sc->button_press_shift) {
-						l = sp_document_partial_items_in_box (SP_DT_DOCUMENT (desktop), &b);
+						l = sp_desktop_get_items_in_bbox (desktop, &b, FALSE);
 					} else {
-						l = sp_document_items_in_box (SP_DT_DOCUMENT (desktop), &b);
+						l = sp_desktop_get_items_in_bbox (desktop, &b, TRUE);
 					}
 					if (event->button.state & GDK_SHIFT_MASK) {
 						while (l) {

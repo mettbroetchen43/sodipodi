@@ -52,7 +52,8 @@
 #include "style.h"
 #include "../gradient-chemistry.h"
 #include "../document.h"
-#include "../desktop-handles.h"
+#include "desktop.h"
+#include "desktop-handles.h"
 #include "../selection.h"
 #include "../sp-item.h"
 #include "../sp-gradient.h"
@@ -767,7 +768,7 @@ sp_stroke_style_line_update (SPWidget *spw, SPSelection *sel)
 	for (l = objects; l != NULL; l = l->next) {
 		NRMatrixF i2d;
 		gdouble dist;
-		sp_item_i2d_affine (SP_ITEM (l->data), &i2d);
+		sp_desktop_get_i2d_transform_f (SP_WIDGET_DESKTOP (spw), SP_ITEM (l->data), &i2d);
 		object = SP_OBJECT (l->data);
 		dist = object->style->stroke_width.computed * NR_MATRIX_DF_EXPANSION (&i2d);
 #ifdef SP_SS_VERBOSE
@@ -1004,7 +1005,7 @@ sp_stroke_style_scale_line (SPWidget *spw)
 			sp_dash_selector_get_dash (dsel, &ndash, &dash, &offset);
 			/* Set stroke width */
 			sp_convert_distance (&length, sp_unit_selector_get_unit (us), SP_PS_UNIT);
-			sp_item_i2d_affine (SP_ITEM (i->data), &i2d);
+			sp_desktop_get_i2d_transform_f (SP_WIDGET_DESKTOP (spw), SP_ITEM (i->data), &i2d);
 			nr_matrix_f_invert (&d2i, &i2d);
 			dist = length * NR_MATRIX_DF_EXPANSION (&d2i);
 			arikkei_dtoa_simple (c, 32, dist, 4, 0, FALSE);

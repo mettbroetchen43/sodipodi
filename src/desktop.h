@@ -114,6 +114,13 @@ void sp_desktop_zoom_selection (SPDesktop *dt);
 void sp_desktop_scroll_absolute_center_desktop (SPDesktop *dt, float x, float y);
 void sp_desktop_scroll_relative_canvas (SPDesktop *dt, float dx, float dy);
 
+NRMatrixF *sp_desktop_get_i2d_transform_f (SPDesktop *dt, SPItem *item, NRMatrixF *transform);
+
+void sp_desktop_get_item_bbox_full (SPDesktop *desktop, SPItem *item, NRRectF *bbox, unsigned int flags);
+#define sp_desktop_get_item_bbox(d,i,b) sp_desktop_get_item_bbox_full (d,i,b,0)
+
+GSList *sp_desktop_get_items_in_bbox (SPDesktop *dt, NRRectD *box, unsigned int completely);
+
 const SPUnit *sp_desktop_get_default_unit (SPDesktop *dt);
 
 /* Pure utility */

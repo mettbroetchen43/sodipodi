@@ -14,6 +14,7 @@
  */
 
 typedef struct _SPSVGLength SPSVGLength;
+typedef struct _SPSVGViewBox SPSVGViewBox;
 
 #define SP_SVG_PX_FROM_PT(v) ((v) / 1.25)
 #define SP_SVG_PX_FROM_MM(v) ((v) / 3.543307)
@@ -38,6 +39,11 @@ struct _SPSVGLength {
 	unsigned int unit : 4;
 	float value;
 	float computed;
+};
+
+struct _SPSVGViewBox {
+	unsigned int set : 1;
+	float x0, y0, x1, y1;
 };
 
 #endif

@@ -25,19 +25,24 @@ typedef struct _SPViewClass SPViewClass;
 
 struct _SPView {
 	GObject object;
-
+	/* Link to document */
 	SPDocument *doc;
+	/* Rootmost item */
+	SPItem *root;
 };
 
 struct _SPViewClass {
 	GObjectClass parent_class;
 
-	/* Request shutdown */
-	gboolean (* shutdown) (SPView *view);
+	/* SIGNAL: Request shutdown (TRUE - allowed) */
+	unsigned int (* request_shutdown) (SPView *view);
 	/* Request redraw of visible area */
 	void (* request_redraw) (SPView *view);
-	/* Virtual method to set/change/remove document link */
-	void (* set_document) (SPView *view, SPDocument *doc);
+
+	/* Virtual method to set/change/remove root */
+	void (* set_root) (SPView *view, SPItem *root, SPObject *layout);
+
+	/* fixme: Lauris */
 	/* Virtual method about document size change */
 	void (* document_resized) (SPView *view, SPDocument *doc, gdouble width, gdouble height);
 
@@ -53,15 +58,17 @@ struct _SPViewClass {
 
 GType sp_view_get_type (void);
 
-#define SP_VIEW_DOCUMENT(v) (SP_VIEW (v)->doc)
+#define SP_VIEW_DOCUMENT(v) (((SPView *) (v))->doc)
+#define SP_VIEW_ROOT(v) (((SPView *) (v))->root)
 
-void sp_view_set_document (SPView *view, SPDocument *doc);
+void sp_view_set_root (SPView *view, SPItem *root, SPObject *layout);
 
 void sp_view_emit_resized (SPView *view, gdouble width, gdouble height);
 void sp_view_set_position (SPView *view, gdouble x, gdouble y);
 void sp_view_set_status (SPView *view, const guchar *status, gboolean isdefault);
 
-gboolean sp_view_shutdown (SPView *view);
+/* Tries to shut down view, return FALSE if not successful */
+unsigned int sp_view_try_shutdown (SPView *view);
 void sp_view_request_redraw (SPView *view);
 
 /* SPViewWidget */

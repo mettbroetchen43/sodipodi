@@ -64,29 +64,43 @@ nr_arena_finalize (NRObject *object)
 	((NRObjectClass *) (parent_class))->finalize (object);
 }
 
-#if 0
 void
-nr_arena_item_added (NRArena *arena, NRArenaItem *item)
+nr_arena_item_added (NRArena *arena, NRArenaItem *parent, NRArenaItem *child)
 {
-	g_return_if_fail (arena != NULL);
-	g_return_if_fail (NR_IS_ARENA (arena));
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
-
-	g_signal_emit (G_OBJECT (arena), signals [ITEM_ADDED], 0, item);
+	NRActiveObject *aobject;
+	aobject = (NRActiveObject *) arena;
+	if (aobject->callbacks) {
+		unsigned int i;
+		for (i = 0; i < aobject->callbacks->length; i++) {
+			NRObjectListener *listener;
+			NRArenaEventVector *avector;
+			listener = aobject->callbacks->listeners + i;
+			avector = (NRArenaEventVector *) listener->vector;
+			if ((listener->size >= sizeof (NRArenaEventVector)) && avector->item_added) {
+				avector->item_added (arena, parent, child, listener->data);
+			}
+		}
+	}
 }
 
 void
-nr_arena_remove_item (NRArena *arena, NRArenaItem *item)
+nr_arena_item_removed (NRArena *arena, NRArenaItem *parent, NRArenaItem *child)
 {
-	g_return_if_fail (arena != NULL);
-	g_return_if_fail (NR_IS_ARENA (arena));
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (NR_IS_ARENA_ITEM (item));
-
-	g_signal_emit (G_OBJECT (arena), signals [REMOVE_ITEM], 0, item);
+	NRActiveObject *aobject;
+	aobject = (NRActiveObject *) arena;
+	if (aobject->callbacks) {
+		unsigned int i;
+		for (i = 0; i < aobject->callbacks->length; i++) {
+			NRObjectListener *listener;
+			NRArenaEventVector *avector;
+			listener = aobject->callbacks->listeners + i;
+			avector = (NRArenaEventVector *) listener->vector;
+			if ((listener->size >= sizeof (NRArenaEventVector)) && avector->item_removed) {
+				avector->item_removed (arena, parent, child, listener->data);
+			}
+		}
+	}
 }
-#endif
 
 void
 nr_arena_request_update (NRArena *arena, NRArenaItem *item)

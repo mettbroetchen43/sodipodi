@@ -107,7 +107,7 @@ sp_root_init (SPRoot *root)
 	sp_svg_length_unset (&root->height, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 
 	/* nr_matrix_d_set_identity (&root->viewbox); */
-	root->viewBox_set = FALSE;
+	root->viewBox.set = FALSE;
 
 	nr_matrix_d_set_identity (&root->c2p);
 
@@ -260,6 +260,12 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_VIEWBOX:
+		if (sp_svg_viewbox_read (value, &root->viewBox)) {
+			root->viewBox.set = 1;
+		} else {
+			root->viewBox.set = 0;
+		}
+#if 0
 		if (value) {
 			double x, y, width, height;
 			char *eptr;
@@ -280,13 +286,14 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 				root->viewBox.y0 = y;
 				root->viewBox.x1 = x + width;
 				root->viewBox.y1 = y + height;
-				root->viewBox_set = TRUE;
+				root->viewBox.set = TRUE;
 			} else {
-				root->viewBox_set = FALSE;
+				root->viewBox.set = FALSE;
 			}
 		} else {
-			root->viewBox_set = FALSE;
+			root->viewBox.set = FALSE;
 		}
+#endif
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		break;
 	case SP_ATTR_PRESERVEASPECTRATIO:
@@ -335,7 +342,7 @@ sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 			}
 			clip = SP_ASPECT_MEET;
 			while (*e && *e == 32) e += 1;
-			if (e) {
+			if (*e) {
 				if (!strcmp (e, "meet")) {
 					clip = SP_ASPECT_MEET;
 				} else if (!strcmp (e, "slice")) {
@@ -480,7 +487,7 @@ sp_root_update (SPObject *object, SPCtx *ctx, guint flags)
 		nr_matrix_d_set_translate (&root->c2p, root->x.computed, root->y.computed);
 	}
 
-	if (root->viewBox_set) {
+	if (root->viewBox.set) {
 		double x, y, width, height;
 		NRMatrixD q;
 		/* Determine actual viewbox in viewport coordinates */
@@ -555,7 +562,7 @@ sp_root_update (SPObject *object, SPCtx *ctx, guint flags)
 	nr_matrix_multiply_ddd (&rctx.i2doc, &root->c2p, &rctx.i2doc);
 
 	/* Initialize child viewport */
-	if (root->viewBox_set) {
+	if (root->viewBox.set) {
 		rctx.vp.x0 = root->viewBox.x0;
 		rctx.vp.y0 = root->viewBox.y0;
 		rctx.vp.x1 = root->viewBox.x1;

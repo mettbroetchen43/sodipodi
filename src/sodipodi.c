@@ -900,7 +900,7 @@ sodipodi_shutdown_all_views (void)
 	GSList *views;
 	views = g_slist_copy (sodipodi->desktops);
 	while (views) {
-		if (sp_view_shutdown ((SPView *) views->data)) {
+		if (!sp_view_try_shutdown ((SPView *) views->data)) {
 			g_slist_free (views);
 			return FALSE;
 		}

@@ -164,12 +164,14 @@ const GSList *sp_document_get_resource_list (SPDocument *document, const guchar 
  *
  */
 
+#if 0
 /*
  * Misc
  */
 
 GSList *sp_document_items_in_box (SPDocument *document, NRRectD *box);
 GSList *sp_document_partial_items_in_box (SPDocument *document, NRRectD *box);
+#endif
 
 void sp_document_set_uri (SPDocument *document, const guchar *uri);
 void sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height);

@@ -24,7 +24,7 @@ static void sp_svg_view_class_init (SPSVGViewClass *klass);
 static void sp_svg_view_init (SPSVGView *view);
 static void sp_svg_view_dispose (GObject *object);
 
-static void sp_svg_view_set_document (SPView *view, SPDocument *doc);
+static void sp_svg_view_set_root (SPView *view, SPItem *root, SPObject *layout);
 static void sp_svg_view_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height);
 
 static void sp_svg_view_rescale (SPSVGView *svgview, gboolean event);
@@ -63,7 +63,7 @@ sp_svg_view_class_init (SPSVGViewClass *klass)
 
 	object_class->dispose = sp_svg_view_dispose;
 
-	view_class->set_document = sp_svg_view_set_document;
+	view_class->set_root = sp_svg_view_set_root;
 	view_class->document_resized = sp_svg_view_document_resized;
 }
 
@@ -145,7 +145,7 @@ arena_handler (SPCanvasArena *arena, NRArenaItem *ai, GdkEvent *event, SPSVGView
 }
 
 static void
-sp_svg_view_set_document (SPView *view, SPDocument *doc)
+sp_svg_view_set_root (SPView *view, SPItem *root, SPObject *layout)
 {
 	SPSVGView *svgview;
 
@@ -160,9 +160,9 @@ sp_svg_view_set_document (SPView *view, SPDocument *doc)
 		g_signal_connect (G_OBJECT (svgview->drawing), "arena_event", G_CALLBACK (arena_handler), svgview);
 	}
 
-	if (doc) {
+	if (root) {
 		NRArenaItem *ai;
-		ai = sp_item_invoke_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (svgview->drawing)->arena,
+		ai = sp_item_invoke_show (SP_ITEM (root), SP_CANVAS_ARENA (svgview->drawing)->arena,
 					  svgview->dkey, SP_ITEM_SHOW_PRINT);
 		if (ai) {
 			nr_arena_item_add_child (SP_CANVAS_ARENA (svgview->drawing)->root, ai, NULL);
@@ -462,7 +462,7 @@ sp_svg_view_widget_new (SPDocument *doc)
 
 	widget = gtk_type_new (SP_TYPE_SVG_VIEW_WIDGET);
 
-	sp_view_set_document (SP_VIEW_WIDGET_VIEW (widget), doc);
+	sp_view_set_root (SP_VIEW_WIDGET_VIEW (widget), (SPItem *) doc->root, NULL);
 
 	return widget;
 }

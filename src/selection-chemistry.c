@@ -132,10 +132,10 @@ sp_selection_perform_transform (SPDesktop *dt, SPRepr *config)
 		NRMatrixF curaff, newaff;
 		SPItem *item;
 		item = (SPItem *) l->data;
-		sp_item_i2d_affine (item, &curaff);
+		sp_desktop_get_i2d_transform_f (dt, item, &curaff);
 		nr_matrix_multiply_fff (&newaff, &curaff, &transform);
 		/* fixme: This is far from elegant (Lauris) */
-		sp_item_set_i2d_affine (item, &newaff);
+		sp_desktop_set_i2d_transform_f (dt, item, &newaff);
 		/* update repr -  needed for undo */
 		sp_item_write_transform (item, SP_OBJECT_REPR (item), &item->transform);
 	}
@@ -909,7 +909,7 @@ sp_selection_item_next (void)
 		d.y0 = dbox.y0;
 		d.x1 = dbox.x1;
 		d.y1 = dbox.y1;
-		children = sp_document_partial_items_in_box (document, &d);
+		children = sp_desktop_get_items_in_bbox (desktop, &d, FALSE);
 	}
 
 	/* compute next item */
@@ -937,7 +937,7 @@ sp_selection_item_next (void)
 	if (!sp_cycle_keep_focus ()) {
 		NRRectF bbox;
 		/* adjust visible area to see whole new selection */
-		sp_item_bbox_desktop (item, &bbox);
+		sp_desktop_get_item_bbox (desktop, item, &bbox);
 		if (!nr_rect_f_test_empty (&bbox)) {
 			sp_desktop_scroll_absolute_center_desktop (desktop, 0.5 * (bbox.x0 + bbox.x1), 0.5 * (bbox.y0 + bbox.y1));
 		}
@@ -972,7 +972,7 @@ sp_selection_item_prev (void)
 		d.y0 = dbox.y0;
 		d.x1 = dbox.x1;
 		d.y1 = dbox.y1;
-		children = sp_document_partial_items_in_box (document, &d);
+		children = sp_desktop_get_items_in_bbox (desktop, &d, FALSE);
 	}
   
 	/* compute prev item */
@@ -998,7 +998,7 @@ sp_selection_item_prev (void)
 	if (!sp_cycle_keep_focus ()) {
 		NRRectF bbox;
 		/* adjust visible area to see whole new selection */
-		sp_item_bbox_desktop (item, &bbox);
+		sp_desktop_get_item_bbox (desktop, item, &bbox);
 		if (!nr_rect_f_test_empty (&bbox)) {
 			sp_desktop_scroll_absolute_center_desktop (desktop, 0.5 * (bbox.x0 + bbox.x1), 0.5 * (bbox.y0 + bbox.y1));
 		}

@@ -530,7 +530,7 @@ sp_selection_bbox_full (SPSelection *selection, NRRectF *bbox, unsigned int flag
 
 	for (l = selection->items; l != NULL; l = l-> next) {
 		item = SP_ITEM (l->data);
-		sp_item_bbox_desktop_full (item, &b, flags);
+		sp_desktop_get_item_bbox_full (selection->desktop, item, &b, flags);
 		if (b.x0 < bbox->x0) bbox->x0 = b.x0;
 		if (b.y0 < bbox->y0) bbox->y0 = b.y0;
 		if (b.x1 > bbox->x1) bbox->x1 = b.x1;
@@ -569,10 +569,13 @@ sp_selection_bbox_document (SPSelection *selection, NRRectF *bbox)
 	return bbox;
 }
 
+/*
+ * compute the list of points in the selection 
+ * which are to be considered for snapping
+ */
+
 int
 sp_selection_snappoints (SPSelection *selection, NRPointF *points, int size)
-/* compute the list of points in the selection 
- * which are to be considered for snapping */
 {
         GSList *l;
 	NRRectF bbox;
@@ -585,8 +588,10 @@ sp_selection_snappoints (SPSelection *selection, NRPointF *points, int size)
 	if (l == NULL) {
 		return 0;
 	} else if (l->next == NULL) {
+		NRMatrixF i2d;
 		/* selection has only one item -> take snappoints of item */
-		return sp_item_snappoints (SP_ITEM (l->data), points, size);
+		sp_desktop_get_i2d_transform_f (selection->desktop, (SPItem *) l->data, &i2d);
+		return sp_item_snappoints (SP_ITEM (l->data), points, size, &i2d);
 	} else {
 		int pos;
 		/* selection has more than one item -> take corners of selection */

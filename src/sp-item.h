@@ -112,7 +112,7 @@ struct _SPItemClass {
 	void (* print) (SPItem *item, SPPrintContext *ctx);
 
 	/* Returns a number of points used */ 
-	int (* snappoints) (SPItem *item, NRPointF *points, int size);
+	int (* snappoints) (SPItem *item, NRPointF *points, int size, const NRMatrixF *transform);
 
 	/* Write item transform to repr optimally */
 	void (* write_transform) (SPItem *item, SPRepr *repr, NRMatrixF *transform);
@@ -127,8 +127,8 @@ struct _SPItemClass {
 
 /* Methods */
 
-void sp_item_invoke_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int clear);
-void sp_item_invoke_bbox_full (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags, unsigned int clear);
+void sp_item_invoke_bbox (SPItem *item, NRRectF *bb, const NRMatrixD *t, unsigned int clear);
+void sp_item_invoke_bbox_full (SPItem *item, NRRectF *bb, const NRMatrixD *t, unsigned int flags, unsigned int clear);
 
 void sp_item_invoke_print (SPItem *item, SPPrintContext *ctx);
 unsigned char * sp_item_description (SPItem * item);
@@ -138,7 +138,7 @@ unsigned int sp_item_display_key_new (unsigned int numkeys);
 NRArenaItem *sp_item_invoke_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 void sp_item_invoke_hide (SPItem *item, unsigned int key);
 
-int sp_item_snappoints (SPItem *item, NRPointF *points, int size);
+int sp_item_snappoints (SPItem *item, NRPointF *points, int size, const NRMatrixF *transform);
 
 void sp_item_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 
@@ -148,23 +148,26 @@ void sp_item_set_item_transform (SPItem *item, const NRMatrixF *transform);
 
 /* Utility */
 
-void sp_item_bbox_desktop (SPItem *item, NRRectF *bbox);
-void sp_item_bbox_desktop_full (SPItem *item, NRRectF *bbox, unsigned int flags);
 NRMatrixF *sp_item_i2doc_affine (SPItem *item, NRMatrixF *transform);
 NRMatrixF *sp_item_i2root_affine (SPItem *item, NRMatrixF *transform);
+
+void sp_item_get_bbox_document (SPItem *item, NRRectF *bb, unsigned int flags, unsigned int clear);
+
 /* Transformation to normalized (0,0-1,1) viewport */
 NRMatrixF *sp_item_i2vp_affine (SPItem *item, NRMatrixF *transform);
 
+#if 0
 /* fixme: - these are evil, but OK */
-
-NRMatrixF *sp_item_i2d_affine (SPItem *item, NRMatrixF *transform);
 void sp_item_set_i2d_affine (SPItem *item, const NRMatrixF *transform);
-
 NRMatrixF *sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, NRMatrixF *transform);
+#endif
 
 /* Convert distances into SVG units */
 
 gdouble sp_item_distance_to_svg_viewport (SPItem *item, gdouble distance, const SPUnit *unit);
 gdouble sp_item_distance_to_svg_bbox (SPItem *item, gdouble distance, const SPUnit *unit);
+
+/* Utility */
+int sp_corner_snappoints (NRPointF *points, int size, const NRMatrixF *transform, float x0, float y0, float x1, float y1);
 
 #endif

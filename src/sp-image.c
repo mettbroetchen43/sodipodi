@@ -49,7 +49,7 @@ static SPRepr *sp_image_write (SPObject *object, SPRepr *repr, guint flags);
 static void sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_image_print (SPItem * item, SPPrintContext *ctx);
 static gchar * sp_image_description (SPItem * item);
-static int sp_image_snappoints (SPItem *item, NRPointF *p, int size);
+static int sp_image_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform);
 static NRArenaItem *sp_image_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flags);
 static void sp_image_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 
@@ -521,16 +521,12 @@ sp_image_update_canvas_image (SPImage *image)
 }
 
 static int
-sp_image_snappoints (SPItem *item, NRPointF *p, int size)
+sp_image_snappoints (SPItem *item, NRPointF *p, int size, const NRMatrixF *transform)
 {
 	SPImage *image;
-	NRMatrixF i2d;
 	float x0, y0, x1, y1;
-	int i;
 
 	image = SP_IMAGE (item);
-
-	sp_item_i2d_affine (item, &i2d);
 
 	/* we use corners of image only */
 	x0 = image->x.computed;
@@ -538,29 +534,7 @@ sp_image_snappoints (SPItem *item, NRPointF *p, int size)
 	x1 = x0 + image->width.computed;
 	y1 = y0 + image->height.computed;
 
-	i = 0;
-	if (i < size) {
-		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y0);
-		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y0);
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y0);
-		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y0);
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x1, y1);
-		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x1, y1);
-		i += 1;
-	}
-	if (i < size) {
-		p[i].x = NR_MATRIX_DF_TRANSFORM_X (&i2d, x0, y1);
-		p[i].y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, x0, y1);
-		i += 1;
-	}
-
-	return i;
+	return sp_corner_snappoints (p, size, transform, x0, y0, x1, y1);
 }
 
 /*

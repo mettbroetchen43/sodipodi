@@ -221,15 +221,21 @@ sp_ctrlrect_update (SPCanvasItem *item, const NRMatrixD *ctm, unsigned int flags
 void
 sp_ctrlrect_set_area (SPCtrlRect *cr, double x0, double y0, double x1, double y1)
 {
+	NRRectD rect;
+
 	g_return_if_fail (cr != NULL);
 	g_return_if_fail (SP_IS_CTRLRECT (cr));
 
-	cr->rect.x0 = MIN (x0, x1);
-	cr->rect.y0 = MIN (y0, y1);
-	cr->rect.x1 = MAX (x0, x1);
-	cr->rect.y1 = MAX (y0, y1);
+	rect.x0 = MIN (x0, x1);
+	rect.y0 = MIN (y0, y1);
+	rect.x1 = MAX (x0, x1);
+	rect.y1 = MAX (y0, y1);
 
-	sp_canvas_item_request_update (SP_CANVAS_ITEM (cr));
+	if ((rect.x0 != cr->rect.x0) || (rect.y0 != cr->rect.y0) ||
+	    (rect.x1 != cr->rect.x1) || (rect.y1 != cr->rect.y1)) {
+		cr->rect = rect;
+		sp_canvas_item_request_update (SP_CANVAS_ITEM (cr));
+	}
 }
 
 void

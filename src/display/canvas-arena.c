@@ -43,11 +43,14 @@ static gint sp_canvas_arena_event (SPCanvasItem *item, GdkEvent *event);
 
 static gint sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event);
 
+static void sp_canvas_arena_item_removed (NRArena *arena, NRArenaItem *item, NRArenaItem *child, void *data);
 static void sp_canvas_arena_request_update (NRArena *arena, NRArenaItem *item, void *data);
 static void sp_canvas_arena_request_render (NRArena *arena, NRRectL *area, void *data);
 
 NRArenaEventVector carenaev = {
 	{NULL},
+	NULL,
+	sp_canvas_arena_item_removed,
 	sp_canvas_arena_request_update,
 	sp_canvas_arena_request_render
 };
@@ -408,6 +411,16 @@ sp_canvas_arena_send_event (SPCanvasArena *arena, GdkEvent *event)
 	gtk_signal_emit (GTK_OBJECT (arena), signals[ARENA_EVENT], arena->active, event, &ret);
 
 	return ret;
+}
+
+static void
+sp_canvas_arena_item_removed (NRArena *arena, NRArenaItem *item, NRArenaItem *child, void *data)
+{
+	SPCanvasArena *ca;
+	ca = (SPCanvasArena *) data;
+	if (child == ca->active) {
+		ca->active = NULL;
+	}
 }
 
 static void

@@ -129,7 +129,7 @@ sp_nodepath_new (SPDesktop * desktop, SPItem * item)
 	np->path = path;
 	np->subpaths = NULL;
 	np->selected = NULL;
-	sp_item_i2d_affine (SP_ITEM (path), &i2d);
+	sp_desktop_get_i2d_transform_f (desktop, SP_ITEM (path), &i2d);
 	nr_matrix_d_from_f (&np->i2d, &i2d);
 	nr_matrix_d_invert (&np->d2i, &np->i2d);
 

@@ -124,7 +124,7 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 
 	/* move to current point */
 	e->knot_get (item, &sp);
-	sp_item_i2d_affine(item, &i2d);
+	sp_desktop_get_i2d_transform_f (knot_holder->desktop, item, &i2d);
 	dp.x = NR_MATRIX_DF_TRANSFORM_X (&i2d, sp.x, sp.y);
 	dp.y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, sp.x, sp.y);
 	sp_knot_set_position (e->knot, &dp, SP_KNOT_STATE_NORMAL);
@@ -158,7 +158,7 @@ knot_moved_handler (SPKnot *knot, NRPointF *p, guint state, gpointer data)
 			NRMatrixF d2i;
 			NRPointF q;
 
-			sp_item_i2d_affine(item, &i2d);
+			sp_desktop_get_i2d_transform_f (knot_holder->desktop, item, &i2d);
 			nr_matrix_f_invert (&d2i, &i2d);
 			q.x = NR_MATRIX_DF_TRANSFORM_X (&d2i, p->x, p->y);
 			q.y = NR_MATRIX_DF_TRANSFORM_Y (&d2i, p->x, p->y);
@@ -171,7 +171,7 @@ knot_moved_handler (SPKnot *knot, NRPointF *p, guint state, gpointer data)
 	
 	sp_shape_set_shape (SP_SHAPE (item));
 
-	sp_item_i2d_affine(item, &i2d);
+	sp_desktop_get_i2d_transform_f (knot_holder->desktop, item, &i2d);
 
 	for (el = knot_holder->entity; el; el = el->next) {
 		SPKnotHolderEntity *e = (SPKnotHolderEntity *)el->data;

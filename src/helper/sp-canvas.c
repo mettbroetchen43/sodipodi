@@ -295,9 +295,11 @@ void
 sp_canvas_item_affine_absolute (SPCanvasItem *item, const NRMatrixD *i2p)
 {
 	if (i2p) {
+		if (item->xform && NR_MATRIX_DF_TEST_CLOSE (i2p, item->xform, NR_EPSILON_F)) return;
 		if (!item->xform) item->xform = g_new (NRMatrixD, 1);
 		*item->xform = *i2p;
-	} else if (item->xform) {
+	} else {
+		if (!item->xform) return;
 		g_free (item->xform);
 		item->xform = NULL;
 	}

@@ -165,24 +165,14 @@ sp_ui_close_view (GtkWidget * widget)
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;
 	w = g_object_get_data (G_OBJECT (SP_ACTIVE_DESKTOP), "window");
-	if (sp_view_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return;
+	if (!sp_view_try_shutdown (SP_VIEW (SP_ACTIVE_DESKTOP))) return;
 	gtk_widget_destroy (w);
 }
-
-#if 0
-static void
-sp_ui_close_all (void)
-{
-	if (!sodipodi_shutdown_all_views ()) return;
-	/* All views successfully closed */
-	sodipodi_exit ();
-}
-#endif
 
 static gint
 sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPView *view)
 {
-	return sp_view_shutdown (view);
+	return !sp_view_try_shutdown (view);
 }
 
 static GtkWidget *
