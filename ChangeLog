@@ -1,5 +1,7 @@
 2002-08-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/svg/svg-color.c (sp_svg_read_color): Read rgb(r,g,b) variants
+
 	* src/style.c: Created new IEnum type with immediate and computed members,
 	ported font-style, font-variant, font-weight, font-stretch to it
 

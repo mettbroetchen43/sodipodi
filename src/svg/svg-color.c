@@ -1,6 +1,8 @@
 #define SP_SVG_COLOR_C
 
+#include <math.h>
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include "svg.h"
 #include "svg-color.h"
@@ -44,6 +46,60 @@ sp_svg_read_color (const guchar *str, guint32 def)
 				(val & 0x00f);
 			val |= val << 4;
 		}
+	} else if (!strncmp (str, "rgb(", 4)) {
+		gboolean hasp, hasd;
+		gchar *s, *e;
+		gdouble r, g, b;
+
+		s = (gchar *) str + 4;
+		hasp = FALSE;
+		hasd = FALSE;
+
+		r = strtod (s, &e);
+		if (s == e) return def;
+		s = e;
+		if (*s == '%') {
+			hasp = TRUE;
+			s += 1;
+		} else {
+			hasd = TRUE;
+		}
+		while (*s && isspace (*s)) s += 1;
+		if (*s != ',') return def;
+		s += 1;
+		while (*s && isspace (*s)) s += 1;
+		g = strtod (s, &e);
+		if (s == e) return def;
+		s = e;
+		if (*s == '%') {
+			hasp = TRUE;
+			s += 1;
+		} else {
+			hasd = TRUE;
+		}
+		while (*s && isspace (*s)) s += 1;
+		if (*s != ',') return def;
+		s += 1;
+		while (*s && isspace (*s)) s += 1;
+		b = strtod (s, &e);
+		if (s == e) return def;
+		s = e;
+		if (*s == '%') {
+			hasp = TRUE;
+		} else {
+			hasd = TRUE;
+		}
+		if (hasp && hasd) return def;
+		if (hasp) {
+			val = (guint) floor (CLAMP (r, 0.0, 100.0) * 2.559999) << 24;
+			val |= ((guint) floor (CLAMP (g, 0.0, 100.0) * 2.559999) << 16);
+			val |= ((guint) floor (CLAMP (b, 0.0, 100.0) * 2.559999) << 8);
+		} else {
+			val = (guint) CLAMP (r, 0, 255) << 24;
+			val |= ((guint) CLAMP (g, 0, 255) << 16);
+			val |= ((guint) CLAMP (b, 0, 255) << 8);
+		}
+		return val;
 	} else {
 		gint i;
 		if (!colors) {
