@@ -53,7 +53,7 @@ static SPSelection * sel_current;
 void sp_object_stroke_dialog (void)
 {
 	if (xml == NULL) {
-		xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "stroke");
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/stroke.glade", "stroke");
 		glade_xml_signal_autoconnect (xml);
 		dialog = glade_xml_get_widget (xml, "stroke");
 		tb_stroked = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_stroked");
