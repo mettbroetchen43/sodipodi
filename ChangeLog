@@ -1,3 +1,8 @@
+2000-05-06  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/knot.h: Added signals "grab", "ungrab" and "move"
+	* src/knot.c: Implemented signals, event etc.
+
 2000-05-05  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/desktop-handles.h: Added SP_DT_IS_EDITABLE

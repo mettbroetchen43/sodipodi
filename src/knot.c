@@ -11,6 +11,7 @@
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-events.h"
+#include "desktop-affine.h"
 #include "knot.h"
 
 enum {
@@ -26,6 +27,14 @@ enum {
 	ARG_CURSOR, ARG_CURSOR_MOUSEOVER, ARG_CURSOR_DRAGGING
 };
 
+enum {
+	EVENT,
+	GRAB,
+	UNGRAB,
+	MOVE,
+	LAST_SIGNAL
+};
+
 static void sp_knot_class_init (SPKnotClass * klass);
 static void sp_knot_init (SPKnot * knot);
 static void sp_knot_destroy (GtkObject * object);
@@ -35,6 +44,7 @@ static void sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer 
 static void sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set);
 
 static GtkObjectClass * parent_class;
+static guint knot_signals[LAST_SIGNAL] = {0};
 
 GtkType
 sp_knot_get_type (void)
@@ -85,6 +95,35 @@ sp_knot_class_init (SPKnotClass * klass)
 	gtk_object_add_arg_type ("SPKnot::cursor_mouseover", GTK_TYPE_GDK_CURSOR_TYPE, GTK_ARG_WRITABLE, ARG_CURSOR_MOUSEOVER);
 	gtk_object_add_arg_type ("SPKnot::cursor_dragging", GTK_TYPE_GDK_CURSOR_TYPE, GTK_ARG_WRITABLE, ARG_CURSOR_DRAGGING);
 
+	knot_signals[EVENT] = gtk_signal_new ("event",
+		GTK_RUN_LAST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPKnotClass, event),
+		gtk_marshal_BOOL__POINTER,
+		GTK_TYPE_BOOL, 1,
+		GTK_TYPE_GDK_EVENT);
+	knot_signals[GRAB] = gtk_signal_new ("grab",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPKnotClass, grab),
+		gtk_marshal_NONE__NONE,
+		GTK_TYPE_NONE, 0);
+	knot_signals[GRAB] = gtk_signal_new ("ungrab",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPKnotClass, ungrab),
+		gtk_marshal_NONE__NONE,
+		GTK_TYPE_NONE, 0);
+	knot_signals[GRAB] = gtk_signal_new ("move",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPKnotClass, move),
+		gtk_marshal_NONE__POINTER,
+		GTK_TYPE_NONE, 1,
+		GTK_TYPE_POINTER);
+
+	gtk_object_class_add_signals (object_class, knot_signals, LAST_SIGNAL);
+
 	object_class->destroy = sp_knot_destroy;
 	object_class->set_arg = sp_knot_set_arg;
 }
@@ -117,6 +156,8 @@ sp_knot_init (SPKnot * knot)
 	knot->cursor [SP_KNOT_STATE_NORMAL] = NULL;
 	knot->cursor [SP_KNOT_STATE_MOUSEOVER] = NULL;
 	knot->cursor [SP_KNOT_STATE_DRAGGING] = NULL;
+
+	knot->saved_cursor = NULL;
 }
 
 static void
@@ -232,6 +273,7 @@ static void
 sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 {
 	SPKnot * knot;
+	ArtPoint p;
 	gboolean consumed;
 
 	g_assert (data != NULL);
@@ -241,7 +283,38 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 
 	consumed = FALSE;
 
+	gtk_signal_emit (GTK_OBJECT (knot),
+		knot_signals[EVENT],
+		event,
+		&consumed);
+
+	if (consumed) return;
+
 	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			gnome_canvas_item_grab (knot->item,
+				GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
+				knot->cursor[SP_KNOT_STATE_DRAGGING],
+				event->button.time);
+			sp_knot_set_flag (knot, SP_KNOT_DRAGGING, TRUE);
+			gtk_signal_emit (GTK_OBJECT (knot), knot_signals[GRAB]);
+		}
+		break;
+	case GDK_BUTTON_RELEASE:
+		if (event->button.button == 1) {
+			gnome_canvas_item_ungrab (knot->item, event->button.time);
+			sp_knot_set_flag (knot, SP_KNOT_DRAGGING, FALSE);
+			gtk_signal_emit (GTK_OBJECT (knot), knot_signals[UNGRAB]);
+		}
+		break;
+	case GDK_MOTION_NOTIFY:
+		if (knot->flags & SP_KNOT_DRAGGING) {
+			sp_desktop_w2d_xy_point (knot->desktop, &p, event->motion.x, event->motion.y);
+			gtk_object_set (GTK_OBJECT (knot), "x", p.x, "y", p.y, NULL);
+			gtk_signal_emit (GTK_OBJECT (knot), knot_signals[MOVE], &p);
+		}
+		break;
 	case GDK_ENTER_NOTIFY:
 		sp_knot_set_flag (knot, SP_KNOT_MOUSEOVER, TRUE);
 		consumed = TRUE;
@@ -289,6 +362,24 @@ sp_knot_new (SPDesktop * desktop)
 	return knot;
 }
 
+void
+sp_knot_show (SPKnot * knot)
+{
+	g_return_if_fail (knot != NULL);
+	g_return_if_fail (SP_IS_KNOT (knot));
+
+	sp_knot_set_flag (knot, SP_KNOT_VISIBLE, TRUE);
+}
+
+void
+sp_knot_hide (SPKnot * knot)
+{
+	g_return_if_fail (knot != NULL);
+	g_return_if_fail (SP_IS_KNOT (knot));
+
+	sp_knot_set_flag (knot, SP_KNOT_VISIBLE, FALSE);
+}
+
 static void
 sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 {
@@ -297,6 +388,11 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 
 	switch (flag) {
 	case SP_KNOT_VISIBLE:
+		if (set) {
+			gnome_canvas_item_show (knot->item);
+		} else {
+			gnome_canvas_item_hide (knot->item);
+		}
 		break;
 	case SP_KNOT_MOUSEOVER:
 		if (!(knot->flags & SP_KNOT_DRAGGING)) {
@@ -307,9 +403,32 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 		}
 		break;
 	case SP_KNOT_DRAGGING:
+		if (set) {
+			gtk_object_set (GTK_OBJECT (knot->item),
+				"fill_color",
+				knot->fill [SP_KNOT_STATE_DRAGGING],
+				NULL);
+		} else if (knot->flags & SP_KNOT_MOUSEOVER) {
+			gtk_object_set (GTK_OBJECT (knot->item),
+				"fill_color",
+				knot->fill [SP_KNOT_STATE_MOUSEOVER],
+				NULL);
+		} else {
+			gtk_object_set (GTK_OBJECT (knot->item),
+				"fill_color",
+				knot->fill [SP_KNOT_STATE_NORMAL],
+				NULL);
+		}
 		break;
 	default:
 		g_assert_not_reached ();
 		break;
 	}
+
+	if (set) {
+		knot->flags |= flag;
+	} else {
+		knot->flags &= ~flag;
+	}
 }
+

@@ -73,17 +73,27 @@ struct _SPKnot {
 	guchar * image [SP_KNOT_VISIBLE_STATES];
 
 	GdkCursor * cursor [SP_KNOT_VISIBLE_STATES];
+
+	GdkCursor * saved_cursor;
 };
 
 struct _SPKnotClass {
 	GtkObjectClass parent_class;
 
+	gint (* event) (SPKnot * knot, GdkEvent * event);
+
+	void (* grab) (SPKnot * knot);
+	void (* ungrab) (SPKnot * knot);
+	void (* move) (SPKnot * knot, ArtPoint * position);
+
 	gdouble (* try_move) (SPKnot * knot, gdouble x, gdouble y);
-	gdouble (* move) (SPKnot * knot, gdouble x, gdouble y);
 };
 
 GtkType sp_knot_get_type (void);
 
 SPKnot * sp_knot_new (SPDesktop * desktop);
+
+void sp_knot_show (SPKnot * knot);
+void sp_knot_hide (SPKnot * knot);
 
 #endif
