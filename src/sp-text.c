@@ -2306,7 +2306,7 @@ sp_text_start_of_line (SPText *text, gint pos)
 	SPString *string;
 
 	child = sp_text_get_child_by_position (text, pos);
-	if (!child || !child->next) return pos;
+	if (!child) return 0;
 	string = SP_TEXT_CHILD_STRING (child);
 
 	return string->start;
@@ -2319,7 +2319,7 @@ sp_text_end_of_line (SPText *text, gint pos)
 	SPString *string;
 
 	child = sp_text_get_child_by_position (text, pos);
-	if (!child || !child->next) return sp_text_get_length (text);
+	if (!child) return sp_text_get_length (text);
 	string = SP_TEXT_CHILD_STRING (child);
 
 	return string->start + string->length;
