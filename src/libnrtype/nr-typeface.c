@@ -453,6 +453,9 @@ const unsigned char *nrTypefaceSlantToStr (NRTypeFaceSlant slant)
     }
 }
 
+/* fixme: Lauris */
+#include <stdio.h>
+
 const unsigned char *nrTypefaceMkName(const NRTypeFaceDef *def)
 {
   const unsigned char* slantStr;
@@ -467,9 +470,8 @@ const unsigned char *nrTypefaceMkName(const NRTypeFaceDef *def)
   weightStr=nrTypefaceWeightToStr(def->weight);
 
   len=strlen(slantStr)+strlen(weightStr)+1;
-  res=(unsigned char*)(malloc(len+1));
-  if (!res)
-    return NULL;
+  res = (unsigned char *) malloc (len + 1);
+  if (!res) return NULL;
 
   sprintf(res,"%s %s",weightStr,slantStr);
   return res;

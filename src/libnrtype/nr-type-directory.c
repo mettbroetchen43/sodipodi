@@ -115,11 +115,11 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
 	float best, dist;
 	NRTypeFaceDef *tdef, *besttdef;
 	NRTypePosDef apos;
+	NRTypeFaceSlant slant;
+	NRTypeFaceWeight nrWeight;
+
 
 	if (!typedict) nr_type_directory_build ();
-
-        NRTypeFaceSlant slant;
-        NRTypeFaceWeight nrWeight;
 
         switch (style) {
 	case SP_CSS_FONT_STYLE_NORMAL:
@@ -424,10 +424,10 @@ nr_type_directory_build (void)
 	for (fdef = families; fdef; fdef = fdef->next) {
 		NRTypeFaceDef *tdef;
 		for (tdef = fdef->faces; tdef; tdef = tdef->next) {
-			tdef->typeface=nr_typeface_new(tdef);
 			const unsigned char *s;
+			tdef->typeface=nr_typeface_new(tdef);
 			tdef->pdef = pdefs + pos;
-			s=tdef->name;
+			s = tdef->name;
 			if (strstr (s, tdef->family) == (const char *) s) s += strlen (tdef->family);
 			nr_type_calculate_position (tdef->pdef, s,
                                                     tdef->weight,
@@ -607,31 +607,28 @@ nr_type_read_private_list (void)
 				if (ntokens >= 3) {
 					ArikkeiToken fnt[2];
 					ArikkeiToken filet, namet, familyt;
-                                        NRTypeFaceSlant slant
-                                          =NR_TYPEFACE_SLANT_UNKNOWN;
-                                        NRTypeFaceWeight weight
-                                          =NR_TYPEFACE_WEIGHT_UNKNOWN;
-
-                                        if (ntokens >= 5) {
-                                          ArikkeiToken slantt, weightt;
-                                          arikkei_token_strip (&tokens[3], &slantt);
-                                          arikkei_token_strip (&tokens[4], &weightt);
-                                          if (!arikkei_token_is_empty (&slantt))
-                                            {
-                                              unsigned char s[1024];
-                                              arikkei_token_strncpy (&slantt, s, 1024);
-                                              slant=nrTypefaceStrToSlant(s);
-                                            }
-
-                                          if (!arikkei_token_is_empty (&weightt))
-                                            {
-                                              unsigned char s[1024];
-                                              arikkei_token_strncpy (&weightt, s, 1024);
-                                              weight=nrTypefaceStrToWeight(s);
-                                            }
-                                        }
-
+					NRTypeFaceSlant slant;
+					NRTypeFaceWeight weight;
 					int nfnt, face;
+					slant = NR_TYPEFACE_SLANT_UNKNOWN;
+					weight = NR_TYPEFACE_WEIGHT_UNKNOWN;
+
+					if (ntokens >= 5) {
+						ArikkeiToken slantt, weightt;
+						arikkei_token_strip (&tokens[3], &slantt);
+						arikkei_token_strip (&tokens[4], &weightt);
+						if (!arikkei_token_is_empty (&slantt)) {
+							unsigned char s[1024];
+							arikkei_token_strncpy (&slantt, s, 1024);
+							slant = nrTypefaceStrToSlant(s);
+						}
+						if (!arikkei_token_is_empty (&weightt)) {
+							unsigned char s[1024];
+							arikkei_token_strncpy (&weightt, s, 1024);
+							weight=nrTypefaceStrToWeight(s);
+						}
+					}
+
 					nfnt = arikkei_token_tokenize_ws (&tokens[0], fnt, 2, ":", FALSE);
 					arikkei_token_strip (&fnt[0], &filet);
 					arikkei_token_strip (&tokens[1], &namet);

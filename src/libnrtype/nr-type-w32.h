@@ -62,6 +62,10 @@ struct _NRTypeFaceW32 {
 	unsigned int slots_length;
 	unsigned int slots_size;
 
+	/* fixme: Lauris */
+	NRTypeFaceWeight weight;
+	NRTypeFaceSlant slant;
+
 	LOGFONT *logfont;
 	HFONT hfont;
 	LPOUTLINETEXTMETRIC otm;

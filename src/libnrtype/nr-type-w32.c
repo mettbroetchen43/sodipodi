@@ -245,8 +245,8 @@ nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 
 	tfw32->fonts = NULL;
 	tfw32->logfont = arikkei_dict_lookup (&namedict, def->name);
-        tfw32->weight=w32_to_nr_weight(tfw32->logfont->lfWeight);
-        tfw32->slant=w32_to_nr_slant(tfw32->logfont->lfItalic);
+	tfw32->weight=w32_to_nr_weight(tfw32->logfont->lfWeight);
+	tfw32->slant=w32_to_nr_slant(tfw32->logfont->lfItalic);
 	tfw32->logfont->lfHeight = -1000;
 	tfw32->logfont->lfWidth = 0;
 	tfw32->hfont = CreateFontIndirect (tfw32->logfont);
@@ -666,7 +666,7 @@ nr_type_w32_inner_enum_proc (ENUMLOGFONTEX *elfex, NEWTEXTMETRICEX *tmex, DWORD 
 		}
 		names[names_len++] = name;
 		arikkei_dict_insert (&namedict, name, plf);
-        /* g_print ("%s | ", name); */
+        g_print ("%s | ", name);
 		/* g_print ("Registered '%s' %d\n", name, elfex->elfLogFont.lfCharSet); */
     } else {
         nr_free (name);
