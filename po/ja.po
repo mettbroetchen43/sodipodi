@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.27\n"
 "POT-Creation-Date: 2002-11-16 21:45+0200\n"
-"PO-Revision-Date: 2002-10-13 23:07+0900\n"
+"PO-Revision-Date: 2002-11-18 00:51+0900\n"
 "Last-Translator: Junichi Uekawa <dancer@debian.org>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -1325,7 +1325,6 @@ msgid "Don't save"
 msgstr "セーブしない"
 
 #: src/dialogs/align.c:107 src/toolbox.c:392
-#, fuzzy
 msgid "Align objects"
 msgstr "オブジェクトの配置"
 
@@ -1402,9 +1401,8 @@ msgid "Highlight color:"
 msgstr "ハイライトカラー:"
 
 #: src/dialogs/desktop-properties.c:416
-#, fuzzy
 msgid "Show border"
-msgstr "グリッドの表示"
+msgstr "境界の表示"
 
 #: src/dialogs/display-settings.c:85
 msgid "Display settings"
@@ -1473,47 +1471,39 @@ msgid "Units:"
 msgstr "ユニット:"
 
 #: src/dialogs/export.c:108
-#, fuzzy
 msgid "Export bitmap"
-msgstr "カラービットマップ"
+msgstr "ビットマップの出力"
 
 #. Export area frame
 #: src/dialogs/export.c:117
-#, fuzzy
 msgid "Export area"
-msgstr "名前をつけて出力"
+msgstr "指定範囲を出力"
 
 #: src/dialogs/export.c:154
-#, fuzzy
 msgid "x0:"
-msgstr "T0:"
+msgstr "x0:"
 
 #: src/dialogs/export.c:161
-#, fuzzy
 msgid "x1:"
-msgstr "半径1:"
+msgstr "x1:"
 
 #: src/dialogs/export.c:174
-#, fuzzy
 msgid "y0:"
-msgstr "T0:"
+msgstr "y0:"
 
 #: src/dialogs/export.c:181
-#, fuzzy
 msgid "y1:"
-msgstr "半径1:"
+msgstr "y1:"
 
 #. Bitmap size frame
 #: src/dialogs/export.c:193
-#, fuzzy
 msgid "Bitmap size"
-msgstr "画像サイズ"
+msgstr "ビットマップサイズ"
 
 #. File entry
 #: src/dialogs/export.c:222
-#, fuzzy
 msgid "Export png file"
-msgstr "ファイルを出力"
+msgstr "PNGファイルを出力"
 
 #: src/dialogs/fill-style.c:82
 msgid "Fill style"
@@ -1532,9 +1522,8 @@ msgid "evenodd"
 msgstr "evenodd"
 
 #: src/dialogs/item-properties.c:111
-#, fuzzy
 msgid "Transformation matrix"
-msgstr "変形"
+msgstr "変形行列"
 
 #: src/dialogs/item-properties.c:229
 msgid "Item is reference"
@@ -1719,9 +1708,8 @@ msgstr "先端:"
 
 #. Dash
 #: src/dialogs/stroke-style.c:666
-#, fuzzy
 msgid "Pattern:"
-msgstr "パターンフィル"
+msgstr "パターン:"
 
 #: src/dialogs/text-edit.c:86
 msgid "Text properties"
@@ -1805,81 +1793,68 @@ msgstr "ツールのオプションがありません"
 
 #: src/dialogs/xml-tree.c:155
 msgid "Drag to reorder nodes"
-msgstr ""
+msgstr "再編成ノードへドラッグ"
 
 #: src/dialogs/xml-tree.c:163
-#, fuzzy
 msgid "New element node"
-msgstr "新しい要素:"
+msgstr "要素ノードの新規作成"
 
 #: src/dialogs/xml-tree.c:168
 msgid "New text node"
-msgstr ""
+msgstr "テキストノードの新規作成"
 
 #: src/dialogs/xml-tree.c:173
-#, fuzzy
 msgid "Duplicate node"
-msgstr "複製"
+msgstr "ノード複製"
 
 #: src/dialogs/xml-tree.c:180
-#, fuzzy
 msgid "Delete node"
-msgstr "削除"
+msgstr "ノードの削除"
 
 #: src/dialogs/xml-tree.c:187
-#, fuzzy
 msgid "Unindent node"
-msgstr "ノードの編集"
+msgstr "ノードのインデント除去"
 
 #: src/dialogs/xml-tree.c:192
-#, fuzzy
 msgid "Indent node"
-msgstr "ノードの編集"
+msgstr "ノードのインデント"
 
 #: src/dialogs/xml-tree.c:197
-#, fuzzy
 msgid "Raise node"
-msgstr "上げる"
+msgstr "ノードを上げる"
 
 #: src/dialogs/xml-tree.c:202
-#, fuzzy
 msgid "Lower node"
-msgstr "下げる"
+msgstr "ノードを下げる"
 
 #: src/dialogs/xml-tree.c:254
-#, fuzzy
 msgid "Attribute name"
-msgstr "属性:"
+msgstr "属性名"
 
 #: src/dialogs/xml-tree.c:265
-#, fuzzy
 msgid "Attribute value"
-msgstr "属性"
+msgstr "属性値"
 
 #: src/dialogs/xml-tree.c:273
-#, fuzzy
 msgid "Set attribute"
-msgstr "属性削除"
+msgstr "属性設定"
 
 #: src/dialogs/xml-tree.c:729
-#, fuzzy, c-format
+#, c-format
 msgid "Sodipodi: %s : XML View"
-msgstr "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi: %s: XMLビュー"
 
 #: src/dialogs/xml-tree.c:752
-#, fuzzy
 msgid "New element node..."
-msgstr "新しい要素:"
+msgstr "要素ノードの新規作成..."
 
 #: src/dialogs/xml-tree.c:772
-#, fuzzy
 msgid "Cancel"
-msgstr "変更"
+msgstr "キャンセル"
 
 #: src/dialogs/xml-tree.c:776
-#, fuzzy
 msgid "Create"
-msgstr "リンクの作成"
+msgstr "作成"
 
 #: src/document.c:252
 #, c-format
@@ -1915,13 +1890,12 @@ msgstr "Sodipodi (文書名 %s..): 印刷プレビュー"
 #. rx_ratio
 #: src/rect-context.c:418
 msgid "Roundness ratio for x:"
-msgstr "x の真円率"
+msgstr "x の真円率:"
 
 #. ry_ratio
 #: src/rect-context.c:430
-#, fuzzy
 msgid "Roundness ratio for y:"
-msgstr "x の真円率"
+msgstr "y の真円率:"
 
 #: src/select-context.c:641
 msgid "Visual transformation"
@@ -2257,18 +2231,17 @@ msgstr "文書を PNG ファイルに出力"
 
 #: src/main.c:117
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr ""
+msgstr "SVGをビットマップに変換するために使用する解像度 (既定値 72.0)"
 
 #: src/main.c:118
 msgid "DPI"
 msgstr "DPI"
 
 #: src/main.c:120
-#, fuzzy
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
-msgstr "出力エリアをミリメートルで指定 (既定値はドキュメント全体)"
+msgstr "出力エリアをミリメートルで指定 (既定値はドキュメント全体, 0,0 は左下端)"
 
 #: src/main.c:121
 msgid "x0:y0:x1:y1"
@@ -2276,32 +2249,31 @@ msgstr "x0:y0:x1:y1"
 
 #: src/main.c:123
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "生成されるビットマップ幅をピクセル値で指定 (dpi を上書き)"
 
 #: src/main.c:123
 msgid "WIDTH"
-msgstr ""
+msgstr "幅"
 
 #: src/main.c:125
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr ""
+msgstr "生成されるビットマップの高さをピクセル値で指定 (dpi を上書き)"
 
 #: src/main.c:125
 msgid "HEIGHT"
-msgstr ""
+msgstr "高さ"
 
 #: src/main.c:127
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr ""
+msgstr "出力ビットマップの背景の色を指定 (SVG でサポートされる任意のカラー指定文字列)"
 
 #: src/main.c:127
 msgid "COLOR"
-msgstr ""
+msgstr "色"
 
 #: src/main.c:129
-#, fuzzy
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr "文書を標準 SVG ファイルへ出力"
+msgstr "文書を標準 SVG ファイルへ出力 (\"xmlns:sodipodi\" ネームスペースを使用しない)"
 
 #: src/main.c:131
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
@@ -2574,261 +2546,224 @@ msgstr "テキストオブジェクト"
 
 #: src/toolbox.c:318
 msgid "Create new SVG document"
-msgstr ""
+msgstr "新規 SVG 文書を作成"
 
 #: src/toolbox.c:319
 msgid "Open existing SVG document"
-msgstr ""
+msgstr "既存の SVG 文書を開く"
 
 #: src/toolbox.c:320
-#, fuzzy
 msgid "Save document"
-msgstr "New document %d"
+msgstr "文書の保存"
 
 #: src/toolbox.c:321
-#, fuzzy
 msgid "Save document under new name"
-msgstr "新規ファイル名を使って図面を保存"
+msgstr "新規ファイル名で文書を保存"
 
 #: src/toolbox.c:322
-#, fuzzy
 msgid "Print document"
-msgstr "無題文書"
+msgstr "文書を印刷"
 
 #: src/toolbox.c:323
-#, fuzzy
 msgid "Preview document printout"
-msgstr "図面印刷のプレビュー"
+msgstr "印刷文書のプレビュー"
 
 #: src/toolbox.c:324
 msgid "Import bitmap or SVG image into document"
-msgstr ""
+msgstr "ビットマップまたはSVGイメージを文書に取り込む"
 
 #: src/toolbox.c:325
-#, fuzzy
 msgid "Export document as PNG bitmap"
-msgstr "文書を PNG ファイルに出力"
+msgstr "文書を PNG ビットマップとして出力"
 
 #: src/toolbox.c:352
-#, fuzzy
 msgid "Revert last action"
-msgstr "変形をリセット"
+msgstr "最後の操作を戻す"
 
 #: src/toolbox.c:355
 msgid "Do again undone action"
-msgstr ""
+msgstr "戻した操作を再実行"
 
 #: src/toolbox.c:357
-#, fuzzy
 msgid "Delete selected objects"
-msgstr "選択したノードの削除"
+msgstr "選択したオブジェクトの削除"
 
 #: src/toolbox.c:358
-#, fuzzy
 msgid "Cut selected objects to clipboard"
-msgstr "選択オブジェクトを曲線に変換"
+msgstr "選択オブジェクトをクリップボードへ切り取り"
 
 #: src/toolbox.c:359
-#, fuzzy
 msgid "Copy selected objects to clipboard"
-msgstr "選択領域をクリップボードにコピー"
+msgstr "選択オブジェクトをクリップボードへ複製"
 
 #: src/toolbox.c:360
-#, fuzzy
 msgid "Paste objects from clipboard"
-msgstr "クリップボードから貼り付け"
+msgstr "オブジェクトをクリップボードから貼り付け"
 
 #: src/toolbox.c:361
-#, fuzzy
 msgid "Duplicate selected objects"
-msgstr "選択オブジェクトの反転"
+msgstr "選択オブジェクトの複製"
 
 #: src/toolbox.c:390
-#, fuzzy
 msgid "Object size and position"
-msgstr "位置と大きさ"
+msgstr "オブジェクトの位置と大きさ"
 
 #: src/toolbox.c:391
-#, fuzzy
 msgid "Text and font settings"
-msgstr "テキストとフォント"
+msgstr "テキストとフォント設定"
 
 #: src/toolbox.c:393
-#, fuzzy
 msgid "Object transformations"
 msgstr "オブジェクトの変形"
 
 #: src/toolbox.c:394
-#, fuzzy
 msgid "Rotate object 90 deg clockwise"
-msgstr "選択オブジェクトを時計向きに90度回転"
+msgstr "オブジェクトを時計向きに90度回転"
 
 #: src/toolbox.c:395
-#, fuzzy
 msgid "Remove transformations"
 msgstr "変形を戻す"
 
 #: src/toolbox.c:396
-#, fuzzy
 msgid "Convert object to curve"
-msgstr "選択オブジェクトを曲線に変換"
+msgstr "オブジェクトを曲線に変換"
 
 #: src/toolbox.c:423
-#, fuzzy
 msgid "Raise selected objects to top"
-msgstr "選択領域を最前面に移動"
+msgstr "選択オブジェクトを最前面に移動"
 
 #: src/toolbox.c:424
-#, fuzzy
 msgid "Raise selected objects one level"
-msgstr "選択オブジェクトを時計向きに90度回転"
+msgstr "選択オブジェクトを1レベル前面に移動"
 
 #: src/toolbox.c:425
-#, fuzzy
 msgid "Combine multiple paths"
-msgstr "選択したパスの結合"
+msgstr "複数パスの結合"
 
 #: src/toolbox.c:427
-#, fuzzy
 msgid "Lower selected objects to bottom"
-msgstr "選択領域を最背面に移動"
+msgstr "選択オブジェクトを最背面に移動"
 
 #: src/toolbox.c:428
-#, fuzzy
 msgid "Lower selected objects one level"
-msgstr "選択オブジェクトを曲線に変換"
+msgstr "選択オブジェクトを1レベル背面に移動"
 
 #: src/toolbox.c:429
-#, fuzzy
 msgid "Break selected path to subpaths"
-msgstr "選択したパスを分割する"
+msgstr "選択したパスをサブパスに分割する"
 
 #: src/toolbox.c:430
-#, fuzzy
 msgid "Ungroup selected group"
-msgstr "選択したオブジェクトのグループ解除"
+msgstr "選択したグループのグループ解除"
 
 #: src/toolbox.c:454
 msgid "Draw"
 msgstr "描画"
 
 #: src/toolbox.c:463
-#, fuzzy
 msgid "Select tool - select and transform objects"
-msgstr "選択して変形"
+msgstr "選択ツール - オブジェクトを選択して変形"
 
 #: src/toolbox.c:470
 msgid "Node tool - modify different aspects of existing objects"
-msgstr ""
+msgstr "ノードツール - 実在するオブジェクトの様々な外観を修正"
 
 #: src/toolbox.c:478
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
-msgstr ""
+msgstr "矩形ツール - 矩形や正方形を作成、オプションで角を丸められる"
 
 #: src/toolbox.c:484
 msgid "Arc tool - create circles, ellipses and arcs"
-msgstr ""
+msgstr "アークツール - 円、楕円、弧を作成"
 
 #: src/toolbox.c:490
 msgid "Star tool - create stars and polygons"
-msgstr ""
+msgstr "スターツール - 星型やポリゴンを作成"
 
 #: src/toolbox.c:496
 msgid "Spiral tool - create spirals"
-msgstr ""
+msgstr "スパイラルツール - 螺旋形を作成"
 
 #: src/toolbox.c:515
 msgid "Pencil tool - draw freehand lines and straight segments"
-msgstr ""
+msgstr "ペンシルツール - フリーハンド線やまっすぐの線分を描画"
 
 #: src/toolbox.c:521
 msgid "Pen tool - draw exactly positioned curved lines"
-msgstr ""
+msgstr "ペンツール - 明示的に位置を指定して曲線を描画"
 
 #: src/toolbox.c:527
 msgid "Calligraphic tool - draw calligraphic lines"
-msgstr ""
+msgstr "カリグラフィックツール - カリグラフ線を描画"
 
 #: src/toolbox.c:544
 msgid "Text tool - create editable text objects"
-msgstr ""
+msgstr "テキストツール - 編集可能なテキストオブジェクトを作成"
 
 #: src/toolbox.c:551
 msgid "Zoom tool - zoom into choosen area"
-msgstr ""
+msgstr "ズームツール - 選択領域にズーム"
 
 #: src/toolbox.c:578
-#, fuzzy
 msgid "Zoom in drawing"
 msgstr "描画領域にズーム"
 
 #: src/toolbox.c:579
-#, fuzzy
 msgid "Set zoom factor to 2:1"
-msgstr "2:1にズーム"
+msgstr "拡大比を 2:1 に設定"
 
 #: src/toolbox.c:580
-#, fuzzy
 msgid "Set zoom factor to 1:1"
-msgstr "1:1にズーム"
+msgstr "拡大比を 1:1 に設定"
 
 #: src/toolbox.c:581
-#, fuzzy
 msgid "Set zoom factor to 1:2"
-msgstr "1:2にズーム"
+msgstr "拡大比を 1:2 に設定"
 
 #: src/toolbox.c:582
-#, fuzzy
 msgid "Zoom out drawing"
-msgstr "描画領域にズーム"
+msgstr "描画領域にズームアウト"
 
 #: src/toolbox.c:583
 msgid "Fit the whole page into window"
-msgstr ""
+msgstr "ページ全体をウィンドウにフィット"
 
 #: src/toolbox.c:584
 msgid "Fit the whole drawing into window"
-msgstr ""
+msgstr "描画全体をウィンドウにフィット"
 
 #: src/toolbox.c:585
 msgid "Fit the whole selection into window"
-msgstr ""
+msgstr "選択全体をウィンドウにフィット"
 
 #: src/toolbox.c:612
-#, fuzzy
 msgid "Insert new nodes into selected segments"
-msgstr "ノードを選択したセグメントに含める"
+msgstr "ノードを選択セグメントに挿入する"
 
 #: src/toolbox.c:613
-#, fuzzy
 msgid "Break line at selected nodes"
-msgstr "選択したノードの尖った線"
+msgstr "選択ノードので線を分割"
 
 #: src/toolbox.c:614
-#, fuzzy
 msgid "Make selected nodes corner"
-msgstr "選択したノードの削除"
+msgstr "選択ノードを尖らせる"
 
 #: src/toolbox.c:615
-#, fuzzy
 msgid "Make selected segments lines"
-msgstr "選択したセグメントを線に変換"
+msgstr "選択セグメントを折線にする"
 
 #: src/toolbox.c:617
-#, fuzzy
 msgid "Join lines at selected nodes"
-msgstr "選択したノードの滑らかな線"
+msgstr "選択ノードで線を結合"
 
 #: src/toolbox.c:618
-#, fuzzy
 msgid "Make selected nodes smooth"
-msgstr "選択したノードの削除"
+msgstr "選択ノードを滑かにする"
 
 #: src/toolbox.c:619
-#, fuzzy
 msgid "Make selected segments curves"
-msgstr "選択したセグメントを曲線に変換"
+msgstr "選択セグメントを曲線にする"
 
 #. Family frame
 #: src/widgets/font-selector.c:147
@@ -2849,14 +2784,12 @@ msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "AaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-selector.c:177
-#, fuzzy
 msgid "gradientUnits"
-msgstr "グラデーションで塗りつぶし"
+msgstr "gradientUnits"
 
 #: src/widgets/gradient-selector.c:206
-#, fuzzy
 msgid "gradientSpread"
-msgstr "グラデーションで塗りつぶし"
+msgstr "gradientSpread"
 
 #: src/widgets/gradient-vector.c:245
 msgid "No document selected"
