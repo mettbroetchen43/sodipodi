@@ -1,3 +1,15 @@
+2002-07-26  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-text.c (sp_string_set_shape): Changed signature, pass layout and currentpoint
+	(sp_tspan_set_shape): New method
+	(sp_text_build): Use normal order, as shape will be set asynchronously
+	(sp_text_read_attr): Request update everywhere
+	(sp_text_child_added): Fix bug, now keep old children in list
+	(sp_text_set_shape): New method, nothing interesting yet
+
+	* src/text-context.c (sp_text_context_selection_changed): Set active object
+	to NULL, if nothing selected
+
 2002-07-24  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-object.c (sp_object_modified): Merge style with parent if needed,

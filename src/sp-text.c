@@ -52,7 +52,7 @@ static void sp_string_build (SPObject *object, SPDocument *document, SPRepr *rep
 static void sp_string_read_content (SPObject *object);
 static void sp_string_modified (SPObject *object, guint flags);
 
-static void sp_string_set_shape (SPString *string);
+static void sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp);
 
 static SPCharsClass *string_parent_class;
 
@@ -109,15 +109,13 @@ sp_string_destroy (GtkObject *object)
 
 	if (string->text) g_free (string->text);
 
-	if (GTK_OBJECT_CLASS (string_parent_class)->destroy)
-		GTK_OBJECT_CLASS (string_parent_class)->destroy (object);
+	GTK_OBJECT_CLASS (string_parent_class)->destroy (object);
 }
 
 static void
 sp_string_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 {
-	if (SP_OBJECT_CLASS (string_parent_class)->build)
-		SP_OBJECT_CLASS (string_parent_class)->build (object, doc, repr);
+	SP_OBJECT_CLASS (string_parent_class)->build (object, doc, repr);
 
 	sp_string_read_content (object);
 }
@@ -136,16 +134,9 @@ sp_string_read_content (SPObject *object)
 	t = sp_repr_content (object->repr);
 	string->text = (t) ? g_strdup (t) : NULL;
 
-#if 1
-	sp_string_set_shape (string);
-#else
-	/* fixme: Meditate about this - I tend to think it the right way */
+	/* Is this correct? I think so (Lauris) */
+	/* Virtual method will be invoked BEFORE signal, so we can update there */
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-#endif
-
-#if 1
-	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-#endif
 }
 
 /*
@@ -157,7 +148,8 @@ sp_string_read_content (SPObject *object)
 static void
 sp_string_modified (SPObject *object, guint flags)
 {
-#if 1
+	/* We do not need it here, as set_shape is cascaded for text classes */
+#if 0
 	if ((flags & SP_OBJECT_MODIFIED_FLAG) || (flags & SP_OBJECT_STYLE_MODIFIED_FLAG)) {
 		sp_string_set_shape (SP_STRING (object));
 	}
@@ -167,7 +159,7 @@ sp_string_modified (SPObject *object, guint flags)
 /* fixme: Should values be parsed by parent? */
 
 static void
-sp_string_set_shape (SPString *string)
+sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp)
 {
 #if 1
 	SPChars *chars;
@@ -185,16 +177,15 @@ sp_string_set_shape (SPString *string)
 
 	sp_chars_clear (chars);
 
-	g_print ("Writing mode is %d\n", style->text->writing_mode.value);
-
 	face = gnome_font_unsized_closest (style->text->font_family.value,
 					   sp_text_font_weight_to_gp (style->text->font_weight),
 					   sp_text_font_italic_to_gp (style->text->font_style));
 	size = style->text->font_size;
 
 	/* fixme: Find a way how to manipulate these */
-	x = string->ly->x;
-	y = string->ly->y;
+	x = cp->x;
+	y = cp->y;
+	g_print ("Drawing string (%s) at %g %g\n", string->text, x, y);
 
 	art_affine_scale (a, size * 0.001, size * -0.001);
 	if (string->text) {
@@ -218,6 +209,10 @@ sp_string_set_shape (SPString *string)
 			}
 		}
 	}
+
+	cp->x = x;
+	cp->y = y;
+	g_print ("Finished string (%s) at %g %g\n", string->text, x, y);
 #else
 	g_warning ("sp_string_set_shape: Not implemented");
 #endif
@@ -239,6 +234,8 @@ static void sp_tspan_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transfor
 static NRArenaItem *sp_tspan_show (SPItem *item, NRArena *arena);
 static void sp_tspan_hide (SPItem *item, NRArena *arena);
 static void sp_tspan_print (SPItem *item, GnomePrintContext *gpc);
+
+static void sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp);
 
 static SPItemClass *tspan_parent_class;
 
@@ -509,6 +506,15 @@ sp_tspan_print (SPItem *item, GnomePrintContext *gpc)
 	}
 }
 
+static void
+sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp)
+{
+	if (tspan->ly.x_set) cp->x = tspan->ly.x;
+	if (tspan->ly.y_set) cp->y = tspan->ly.y;
+
+	sp_string_set_shape (SP_STRING (tspan->string), &tspan->ly, cp);
+}
+
 /* SPText */
 
 static void sp_text_class_init (SPTextClass *class);
@@ -520,7 +526,6 @@ static void sp_text_read_attr (SPObject * object, const gchar * attr);
 static void sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_text_remove_child (SPObject *object, SPRepr *rch);
 static void sp_text_modified (SPObject *object, guint flags);
-static void sp_text_style_modified (SPObject *object, guint flags);
 
 static void sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static NRArenaItem *sp_text_show (SPItem *item, NRArena *arena);
@@ -571,7 +576,6 @@ sp_text_class_init (SPTextClass *class)
 	sp_object_class->child_added = sp_text_child_added;
 	sp_object_class->remove_child = sp_text_remove_child;
 	sp_object_class->modified = sp_text_modified;
-	sp_object_class->style_modified = sp_text_style_modified;
 
 	item_class->bbox = sp_text_bbox;
 	item_class->show = sp_text_show;
@@ -618,13 +622,6 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 
 	ref = NULL;
 
-	/* fixme: Having these here is just plain wrong */
-	sp_text_read_attr (object, "x");
-	sp_text_read_attr (object, "y");
-	sp_text_read_attr (object, "dx");
-	sp_text_read_attr (object, "dy");
-	sp_text_read_attr (object, "rotate");
-
 	for (rch = repr->children; rch != NULL; rch = rch->next) {
 		if (rch->type == SP_XML_TEXT_NODE) {
 			SPString *string;
@@ -644,18 +641,16 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 		}
 	}
 
-#if 0
+	/* We can safely set these after building tree, as modified is scheduled anyways (Lauris) */
 	sp_text_read_attr (object, "x");
 	sp_text_read_attr (object, "y");
 	sp_text_read_attr (object, "dx");
 	sp_text_read_attr (object, "dy");
 	sp_text_read_attr (object, "rotate");
-	/* fixme: Notify about attribute changes? */
-#endif
 }
 
 static void
-sp_text_read_attr (SPObject * object, const gchar * attr)
+sp_text_read_attr (SPObject *object, const gchar *attr)
 {
 	SPText *text;
 	const guchar *astr;
@@ -668,31 +663,31 @@ sp_text_read_attr (SPObject * object, const gchar * attr)
 	if (strcmp (attr, "x") == 0) {
 		text->ly.x = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.x_set = (astr != NULL);
-		/* fixme: Relayout */
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (attr, "y") == 0) {
 		text->ly.y = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.y_set = (astr != NULL);
-		/* fixme: Relayout */
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (attr, "dx") == 0) {
 		text->ly.dx = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.dx_set = (astr != NULL);
-		/* fixme: Relayout */
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (attr, "dy") == 0) {
 		text->ly.dy = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.dy_set = (astr != NULL);
-		/* fixme: Relayout */
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (attr, "rotate") == 0) {
 		text->ly.rotate = sp_svg_read_length (&unit, astr, 0.0);
 		text->ly.rotate_set = (astr != NULL);
-		/* fixme: Relayout */
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		return;
 	}
 
@@ -724,14 +719,22 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	if (rch->type == SP_XML_TEXT_NODE) {
 		SPString *string;
 		string = gtk_type_new (SP_TYPE_STRING);
-		(prev) ? prev->next : text->children = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
+		if (prev) {
+			prev->next = sp_object_attach_reref (object, SP_OBJECT (string), prev->next);
+		} else {
+			text->children = sp_object_attach_reref (object, SP_OBJECT (string), text->children);
+		}
 		string->ly = &text->ly;
 		sp_object_invoke_build (SP_OBJECT (string), SP_OBJECT_DOCUMENT (object), rch, SP_OBJECT_IS_CLONED (object));
 		och = SP_OBJECT (string);
 	} else if ((rch->type == SP_XML_ELEMENT_NODE) && !strcmp (sp_repr_name (rch), "tspan")) {
 		SPObject *child;
 		child = gtk_type_new (SP_TYPE_TSPAN);
-		prev ? prev->next : text->children = sp_object_attach_reref (object, child, NULL);
+		if (prev) {
+			prev->next = sp_object_attach_reref (object, child, prev->next);
+		} else {
+			text->children = sp_object_attach_reref (object, child, text->children);
+		}
 		sp_object_invoke_build (child, SP_OBJECT_DOCUMENT (object), rch, SP_OBJECT_IS_CLONED (object));
 		och = child;
 	} else {
@@ -751,6 +754,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		}
 	}
 
+	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -776,6 +780,8 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 	} else {
 		text->children = sp_object_detach_unref (object, och);
 	}
+
+	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -788,40 +794,25 @@ sp_text_modified (SPObject *object, guint flags)
 	text = SP_TEXT (object);
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
-	/* fixme: I added style modfication here - not sure (Lauris) */
-	flags &= (SP_OBJECT_MODIFIED_CASCADE);
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
+	/* Create temporary list of children */
 	l = NULL;
 	for (child = text->children; child != NULL; child = child->next) {
-		gtk_object_ref (GTK_OBJECT (child));
+		sp_object_ref (SP_OBJECT (child), object);
 		l = g_slist_prepend (l, child);
 	}
 	l = g_slist_reverse (l);
 	while (l) {
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
-		if (flags || (GTK_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
 			sp_object_modified (child, flags);
 		}
-		gtk_object_unref (GTK_OBJECT (child));
+		sp_object_unref (SP_OBJECT (child), object);
 	}
 
-
 	sp_text_set_shape (text);
-}
-
-static void
-sp_text_style_modified (SPObject *object, guint flags)
-{
-	SPText *text;
-
-	text = SP_TEXT (object);
-
-	/* Item class reads style */
-	/* I think we can remove this method at all (Lauris) */
-	/* It is always associated with modified + flag anyways */
-	if (((SPObjectClass *) (text_parent_class))->style_modified)
-		(* ((SPObjectClass *) (text_parent_class))->style_modified) (object, flags);
 }
 
 static void
@@ -839,7 +830,7 @@ sp_text_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 	for (o = text->children; o != NULL; o = o->next) {
 		gdouble a[6];
 		child = SP_ITEM (o);
-		art_affine_multiply (a, item->affine, transform);
+		art_affine_multiply (a, child->affine, transform);
 		sp_item_invoke_bbox (child, &child_bbox, a);
 		art_drect_union (bbox, bbox, &child_bbox);
 	}
@@ -961,7 +952,24 @@ sp_text_font_italic_to_gp (SPCSSFontStyle style)
 static void
 sp_text_set_shape (SPText *text)
 {
-	/* fixme: */
+	ArtPoint cp;
+	SPObject *child;
+
+	/* The logic should be: */
+	/* 1. Calculate attributes */
+	/* 2. Iterate through children asking them to set shape */
+
+	cp.x = cp.y = 0.0;
+	if (text->ly.x_set) cp.x = text->ly.x;
+	if (text->ly.y_set) cp.y = text->ly.y;
+
+	for (child = text->children; child != NULL; child = child->next) {
+		if (SP_IS_STRING (child)) {
+			sp_string_set_shape (SP_STRING (child), &text->ly, &cp);
+		} else {
+			sp_tspan_set_shape (SP_TSPAN (child), &text->ly, &cp);
+		}
+	}
 }
 
 static GSList * 

@@ -290,7 +290,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			sp_repr_add_child (rtspan, rstring, NULL);
 			sp_repr_unref (rstring);
 			/* Append to text */
-			sp_repr_add_child (SP_OBJECT_REPR (tc->text), rtspan, NULL);
+			sp_repr_append_child (SP_OBJECT_REPR (tc->text), rtspan);
 			sp_repr_unref (rtspan);
 			tc->string = sp_text_get_last_string (SP_TEXT (tc->text));
 		} else if (event->key.string) {
@@ -338,6 +338,9 @@ sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
 	if (SP_IS_TEXT (item)) {
 		tc->text = item;
 		tc->string = sp_text_get_last_string (SP_TEXT (tc->text));
+	} else {
+		tc->text = NULL;
+		tc->string = NULL;
 	}
 }
 

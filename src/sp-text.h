@@ -51,11 +51,17 @@ struct _SPLayoutData {
 	gfloat rotate;
 };
 
+/*
+ * The ultimate source of current mess is, that we have to derive string <- chars
+ * This will be changed as soon as we have NRArenaGlyphList class
+ */
+
 /* SPString */
 
 struct _SPString {
 	SPChars chars;
 
+	/* fixme: We probably do not need it, as string cannot have attributes */
 	SPLayoutData *ly;
 
 	guchar *text;
