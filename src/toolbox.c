@@ -344,8 +344,8 @@ sp_toolbox_file_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("File"), "file", "toolbox_file");
 	tt = gtk_tooltips_new ();
+	tb = sp_toolbox_new (t, _("File"), "file", "toolbox_file", tt);
 
 	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_NEW, tt);
 	sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_OPEN, tt);
@@ -404,8 +404,8 @@ sp_toolbox_edit_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Edit"), "edit", "toolbox_edit");
 	tt = gtk_tooltips_new ();
+	tb = sp_toolbox_new (t, _("Edit"), "edit", "toolbox_edit", tt);
 
 	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_UNDO, tt);
 	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_REDO, tt);
@@ -438,8 +438,8 @@ sp_toolbox_object_create (void)
 	t = gtk_table_new (3, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Object"), "object", "toolbox_object");
 	tt = gtk_tooltips_new ();
+	tb = sp_toolbox_new (t, _("Object"), "object", "toolbox_object", tt);
 
 	sp_toolbox_button_new (t, 0, "object_stroke", GTK_SIGNAL_FUNC (sp_object_properties_stroke), tt, _("Stroke settings"));
 	sp_toolbox_button_new (t, 1, "object_fill", GTK_SIGNAL_FUNC (sp_object_properties_fill), tt, _("Fill settings"));
@@ -484,8 +484,8 @@ sp_toolbox_selection_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Selection"), "selection", "toolbox_select");
 	tt = gtk_tooltips_new ();
+	tb = sp_toolbox_new (t, _("Selection"), "selection", "toolbox_select", tt);
 
 	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_TO_FRONT, tt);
 	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_RAISE, tt);
@@ -517,9 +517,9 @@ sp_toolbox_draw_create (void)
 	
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
-	tb = sp_toolbox_new (t, _("Draw"), "draw", "toolbox_draw");
 	
 	tt = gtk_tooltips_new ();
+	tb = sp_toolbox_new (t, _("Draw"), "draw", "toolbox_draw", tt);
 	
 	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_SELECT, tt);
 	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_NODE, tt);
@@ -573,8 +573,8 @@ sp_toolbox_extension_create (void)
 
 	/* Create the extension toolbox */
 	/* Todo: Make it able to create required boxes dynamically */
-	tb = sp_toolbox_new (t, _("Extension"), "extension", SODIPODI_PIXMAPDIR "/toolbox_zoom.xpm");
 	tt = gtk_tooltips_new ();
+	tb = sp_toolbox_new (t, _("Extension"), "extension", SODIPODI_PIXMAPDIR "/toolbox_zoom.xpm", tt);
 
 	/* Loop over the list of extensions in spx structure */
 	extensions_repr = sodipodi_get_repr (SODIPODI, "extensions");
@@ -616,8 +616,8 @@ sp_toolbox_zoom_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Zoom"), "zoom", "toolbox_zoom");
 	tt = gtk_tooltips_new ();
+	tb = sp_toolbox_new (t, _("Zoom"), "zoom", "toolbox_zoom", tt);
 
 	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_IN, tt);
 	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_2_1, tt);
@@ -650,8 +650,8 @@ sp_toolbox_node_create (void)
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
 
-	tb = sp_toolbox_new (t, _("Nodes"), "node", "toolbox_node");
 	tt = gtk_tooltips_new ();
+	tb = sp_toolbox_new (t, _("Nodes"), "node", "toolbox_node", tt);
 
 	sp_toolbox_button_new (t, 0, "node_insert", GTK_SIGNAL_FUNC (sp_node_path_edit_add), tt, _("Insert new nodes into selected segments"));
 	sp_toolbox_button_new (t, 1, "node_break", GTK_SIGNAL_FUNC (sp_node_path_edit_break), tt, _("Break line at selected nodes"));

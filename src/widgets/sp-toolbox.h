@@ -51,7 +51,10 @@ struct _SPToolBoxClass {
 
 GtkType sp_toolbox_get_type (void);
 
-GtkWidget *sp_toolbox_new (GtkWidget *contents, const gchar *name, const gchar *internalname, const gchar *pixmapname);
+/* If tt is NULL,  GtkTooltips object is created inside sp_toolbox_new */
+GtkWidget *sp_toolbox_new (GtkWidget *contents, const gchar *name, const gchar *internalname, const gchar *pixmapname,
+			   GtkTooltips *tt);
+
 void sp_toolbox_set_state (SPToolBox *toolbox, guint state);
 
 #endif

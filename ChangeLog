@@ -1,3 +1,20 @@
+2003-06-18  Masatake YAMATO  <jet@gyve.org>
+
+	* src/toolbox.c (sp_toolbox_*_create): passed tt to 
+	sp_toolbox_new.
+
+	* src/dialogs/align.c (sp_align_add_button): passed a 
+	GtkTooltips object to sp_button_new_from_data.
+	(sp_quick_align_dialog): created a new GtkTooltips object
+	and passed it to sp_align_add_button.
+
+	* src/widgets/sp-toolbox.c (sp_toolbox_new): passed a
+	GtkTooltips object to sp_button_new_from_data.
+	Fix a spelling miss.
+
+	* src/widgets/sp-toolbox.h (sp_toolbox_new): passed a 
+	GtkTooltips object.
+
 2003-06-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-image.c (sp_image_set): Fix potential crash

@@ -132,10 +132,12 @@ sp_quick_align_dialog_delete (void)
 }
 
 static void
-sp_align_add_button (GtkWidget *t, int col, int row, GCallback handler, gconstpointer data, const unsigned char *px, const unsigned char *tip)
+sp_align_add_button (GtkWidget *t, int col, int row, GCallback handler, gconstpointer data, 
+		     const unsigned char *px, const unsigned char *tip,
+		     GtkTooltips * tt)
 {
 	GtkWidget *b;
-	b = sp_button_new_from_data (24, SP_BUTTON_TYPE_NORMAL, px, tip, NULL);
+	b = sp_button_new_from_data (24, SP_BUTTON_TYPE_NORMAL, px, tip, tt);
 	gtk_widget_show (b);
 	if (handler) g_signal_connect (G_OBJECT (b), "clicked", handler, (gpointer) data);
 	gtk_table_attach (GTK_TABLE (t), b, col, col + 1, row, row + 1, 0, 0, 0, 0);
@@ -146,6 +148,7 @@ sp_quick_align_dialog (void)
 {
 	if (!dlg) {
 		GtkWidget *nb, *vb, *om, *t, *l;
+		GtkTooltips * tt = gtk_tooltips_new ();
 
 		dlg = sp_window_new (_("Align objects"), FALSE);
 		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_quick_align_dialog_delete), NULL);
@@ -166,26 +169,36 @@ sp_quick_align_dialog (void)
 		gtk_box_pack_start (GTK_BOX (vb), t, FALSE, FALSE, 0);
 
 		sp_align_add_button (t, 0, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_OUT], "al_left_out",
-				     _("Right side of aligned objects to left side of anchor"));
+				     _("Right side of aligned objects to left side of anchor"),
+				     tt);
 		sp_align_add_button (t, 1, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_IN], "al_left_in",
-				     _("Left side of aligned objects to left side of anchor"));
+				     _("Left side of aligned objects to left side of anchor"),
+				     tt);
 		sp_align_add_button (t, 2, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_CENTER_HOR], "al_center_hor",
-				     _("Center horizontally"));
+				     _("Center horizontally"),
+				     tt);
 		sp_align_add_button (t, 3, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_RIGHT_IN], "al_right_in",
-				     _("Right side of aligned objects to right side of anchor"));
+				     _("Right side of aligned objects to right side of anchor"),
+				     tt);
 		sp_align_add_button (t, 4, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_RIGHT_OUT], "al_right_out",
-				     _("Left side of aligned objects to right side of anchor"));
+				     _("Left side of aligned objects to right side of anchor"),
+				     tt);
 
 		sp_align_add_button (t, 0, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_TOP_OUT], "al_top_out",
-				     _("Bottom of aligned objects to top of anchor"));
+				     _("Bottom of aligned objects to top of anchor"),
+				     tt);
 		sp_align_add_button (t, 1, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_TOP_IN], "al_top_in",
-				     _("Top of aligned objects to top of anchor"));
+				     _("Top of aligned objects to top of anchor"),
+				     tt);
 		sp_align_add_button (t, 2, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_CENTER_VER], "al_center_ver",
-				     _("Center vertically"));
+				     _("Center vertically"),
+				     tt);
 		sp_align_add_button (t, 3, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_IN], "al_bottom_in",
-				     _("Bottom of aligned objects to bottom of anchor"));
+				     _("Bottom of aligned objects to bottom of anchor"),
+				     tt);
 		sp_align_add_button (t, 4, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_OUT], "al_bottom_out",
-				     _("Top of aligned objects to top of anchor"));
+				     _("Top of aligned objects to top of anchor"),
+				     tt);
 
 		l = gtk_label_new (_("Align"));
 		gtk_widget_show (l);
@@ -205,22 +218,30 @@ sp_quick_align_dialog (void)
 		gtk_box_pack_start (GTK_BOX (vb), t, FALSE, FALSE, 0);
 
 		sp_align_add_button (t, 0, 0, G_CALLBACK (sp_align_distribute_h_clicked), hdist[SP_DISTRIBUTE_LEFT], "distribute_left",
-				     _("Distribute left sides of objects at even distances"));
+				     _("Distribute left sides of objects at even distances"),
+				     tt);
 		sp_align_add_button (t, 1, 0, G_CALLBACK (sp_align_distribute_h_clicked), hdist[SP_DISTRIBUTE_HCENTRE], "distribute_hcentre",
-				     _("Distribute centres of objects at even distances horizontally"));
+				     _("Distribute centres of objects at even distances horizontally"),
+				     tt);
 		sp_align_add_button (t, 2, 0, G_CALLBACK (sp_align_distribute_h_clicked), hdist[SP_DISTRIBUTE_RIGHT], "distribute_right",
-				     _("Distribute right sides of objects at even distances"));
+				     _("Distribute right sides of objects at even distances"),
+				     tt);
 		sp_align_add_button (t, 3, 0, G_CALLBACK (sp_align_distribute_h_clicked), hdist[SP_DISTRIBUTE_HDIST], "distribute_hdist",
-				     _("Distribute horizontal distance between objects equally"));
+				     _("Distribute horizontal distance between objects equally"),
+				     tt);
 
 		sp_align_add_button (t, 0, 1, G_CALLBACK (sp_align_distribute_v_clicked), vdist[SP_DISTRIBUTE_TOP], "distribute_top",
-				     _("Distribute top sides of objects at even distances"));
+				     _("Distribute top sides of objects at even distances"),
+				     tt);
 		sp_align_add_button (t, 1, 1, G_CALLBACK (sp_align_distribute_v_clicked), vdist[SP_DISTRIBUTE_VCENTRE], "distribute_vcentre",
-				     _("Distribute centres of objects at even distances vertically"));
+				     _("Distribute centres of objects at even distances vertically"),
+				     tt);
 		sp_align_add_button (t, 2, 1, G_CALLBACK (sp_align_distribute_v_clicked), vdist[SP_DISTRIBUTE_BOTTOM], "distribute_bottom",
-				     _("Distribute bottom sides of objects at even distances"));
+				     _("Distribute bottom sides of objects at even distances"),
+				     tt);
 		sp_align_add_button (t, 3, 1, G_CALLBACK (sp_align_distribute_v_clicked), vdist[SP_DISTRIBUTE_VDIST], "distribute_vdist",
-				     _("Distribute vertical distance between objects equally"));
+				     _("Distribute vertical distance between objects equally"),
+				     tt);
 
 		l = gtk_label_new (_("Distribute"));
 		gtk_widget_show (l);

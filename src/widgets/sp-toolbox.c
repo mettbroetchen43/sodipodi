@@ -250,7 +250,8 @@ sp_toolbox_real_set_state (SPToolBox * toolbox, guint state)
 }
 
 GtkWidget *
-sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internalname, const gchar * pixmapname)
+sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internalname, const gchar * pixmapname,
+		GtkTooltips *tt)
 {
 	SPToolBox * t;
 	GtkWidget * hbox, * hbb, * b, * w;
@@ -261,7 +262,10 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (internalname != NULL, NULL);
 	g_return_val_if_fail (pixmapname != NULL, NULL);
-
+	
+	if (!tt)
+	  tt = gtk_tooltips_new ();
+	
 	t = gtk_type_new (SP_TYPE_TOOLBOX);
 
 	t->contents = contents;
@@ -297,9 +301,9 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	/* Separate button */
 	b = sp_button_new_from_data (SP_ICON_SIZE_TITLEBAR,
 				     SP_BUTTON_TYPE_TOGGLE,
-				     "seperate_tool",
+				     "separate_tool",
 				     _("Toggle separate window and main toolbox placement"),
-				     NULL);
+				     tt);
 #if 0
         b = gtk_toggle_button_new ();
 #endif
@@ -307,7 +311,7 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_widget_show (b);
         t->standalonetoggle = b;
 #if 0
-	w = sp_icon_new (SP_ICON_SIZE_TITLEBAR, "seperate_tool");
+	w = sp_icon_new (SP_ICON_SIZE_TITLEBAR, "separate_tool");
 	gtk_container_add (GTK_CONTAINER (b), w);
 	gtk_widget_show (w);
 #endif
