@@ -1,3 +1,10 @@
+Mon Mar  4 01:23:05 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-ellipse.c (sp_genericellipse_normalize): Fixed start and
+	end arg conditions.
+	(sp_arc_start_set): Added per pi/4 radian constraint with control key.
+	(sp_arc_end_set): Ditto
+
 Sun Mar  3 03:40:07 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* Merged from ge-arc-branch

@@ -24,6 +24,23 @@
 
 #define SP_2PI (2 * M_PI)
 
+/* we does not use C99 round(3) function yet */
+static double sp_round (double x, double y)
+{
+	double remain;
+
+	g_assert (y > 0.0);
+
+	/* return round(x/y) * y; */
+
+	remain = fmod(x, y);
+
+	if (remain >= 0.5*y)
+		return x - remain + y;
+	else
+		return x - remain;
+}
+
 static void sp_genericellipse_class_init (SPGenericEllipseClass *klass);
 static void sp_genericellipse_init (SPGenericEllipse *ellipse);
 static void sp_genericellipse_destroy (GtkObject *object);
@@ -294,8 +311,18 @@ sp_genericellipse_snappoints (SPItem *item, GSList *points)
 static void
 sp_genericellipse_normalize (SPGenericEllipse *ellipse)
 {
+	double diff;
+
 	ellipse->start = fmod(ellipse->start, SP_2PI);
-	ellipse->end = fmod(ellipse->end, SP_2PI) + SP_2PI;
+	ellipse->end = fmod(ellipse->end, SP_2PI);
+
+	if (ellipse->start < 0.0)
+		ellipse->start += SP_2PI;
+	diff = ellipse->start - ellipse->end;
+	if (diff >= 0.0)
+		ellipse->end += diff - fmod(diff, SP_2PI) + SP_2PI;
+
+	/* Now we keep: 0 <= start < end <= 2*PI */
 }
 
 /* SVG <ellipse> element */
@@ -811,7 +838,11 @@ sp_arc_start_set (SPItem *item, const ArtPoint *p, guint state)
 
 	dx = p->x - ge->x;
 	dy = p->y - ge->y;
+
 	ge->start = atan2(dy/ge->ry, dx/ge->rx);
+	if (state & GDK_CONTROL_MASK) {
+		ge->start = sp_round(ge->start, M_PI_4);
+	}
 	sp_genericellipse_normalize (ge);
 }
 
@@ -838,6 +869,9 @@ sp_arc_end_set (SPItem *item, const ArtPoint *p, guint state)
 	dx = p->x - ge->x;
 	dy = p->y - ge->y;
 	ge->end = atan2(dy/ge->ry, dx/ge->rx);
+	if (state & GDK_CONTROL_MASK) {
+		ge->end = sp_round(ge->end, M_PI_4);
+	}
 	sp_genericellipse_normalize (ge);
 }
 
