@@ -1,3 +1,7 @@
+2000-04-14  Lauris Kaplinski <lauris@ariman.ee>
+
+	* Makefile.am: fixed .desktop inclusion to distribution
+
 2000-04-12  Pablo Saratxaga Pablo <pablo@mandrakesoft.com>
 
 	* configure.in (ALL_LINGUAS): Add Danish

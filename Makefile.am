@@ -3,7 +3,7 @@
 SUBDIRS = intl po macros src
 
 EXTRA_DIST = \
-	sodipodi.desktop.in \
+	sodipodi.desktop \
 	sodipodi.spec.in \
 	sodipodi.gnorba \
 	README HACKING \

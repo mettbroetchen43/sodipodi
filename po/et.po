@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2000-04-02 16:44+0200\n"
+"POT-Creation-Date: 2000-04-08 16:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,20 +14,24 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 
-#: src/main.c:40
+#: src/main.c:46
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
 
-#: src/main.c:49
+#: src/main.c:55
 msgid "Open specified file (option string may be excluded)"
 msgstr ""
 
-#: src/main.c:50 src/main.c:59
+#: src/main.c:56 src/main.c:65
 msgid "FILENAME"
 msgstr ""
 
-#: src/main.c:58
+#: src/main.c:64
 msgid "Print files to specified file (use '| program' for pipe)"
+msgstr ""
+
+#: src/main.c:165
+msgid "Could not initialize Bonobo"
 msgstr ""
 
 #.
