@@ -54,7 +54,7 @@ sp_display_dialog (void)
 				    GTK_SIGNAL_FUNC (sp_display_dialog_destroy), NULL);
 	}
 
-	gtk_widget_show (dialog);
+	gtk_window_present ((GtkWindow *) dialog);
 }
 
 static void

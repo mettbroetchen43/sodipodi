@@ -120,7 +120,7 @@ sp_transformation_dialog_present (unsigned int page)
 #endif
 
 	gtk_widget_show (dlg);
-	gtk_window_present (GTK_WINDOW (dlg));
+	gtk_window_present ((GtkWindow *) dlg);
 }
 
 static void

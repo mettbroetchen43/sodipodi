@@ -19,8 +19,8 @@
 #include <gtk/gtkadjustment.h>
 
 #include "macros.h"
-#include "xml/repr.h"
-#include "xml/repr-private.h"
+/* #include "xml/repr-private.h" */
+
 #include "sp-xmlview-content.h"
 
 static void sp_xmlview_content_class_init (SPXMLViewContentClass * klass);
@@ -80,9 +80,15 @@ sp_xmlview_content_set_repr (SPXMLViewContent * text, SPRepr * repr)
 	}
 	text->repr = repr;
 	if (repr) {
+		SPReprAttr *attr;
 		sp_repr_ref (repr);
 		sp_repr_add_listener (repr, &repr_events, text);
-		sp_repr_synthesize_events (repr, &repr_events, text);
+		/* Emulate content_changed event */
+		attr = sp_repr_attr_get_first (repr);
+		while (attr) {
+			event_content_changed (repr, NULL, sp_repr_get_content (repr), text);
+			attr = sp_repr_attr_get_next (repr, attr);
+		}
 	} else {
 		gtk_text_buffer_set_text (gtk_text_view_get_buffer (GTK_TEXT_VIEW (text)), "", 0);
 		gtk_text_view_set_editable (GTK_TEXT_VIEW (text), FALSE);

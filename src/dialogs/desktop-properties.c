@@ -72,7 +72,7 @@ sp_desktop_dialog (void)
 		gtk_widget_show (dlg);
 	}
 
-	gtk_window_present (GTK_WINDOW (dlg));
+	gtk_window_present ((GtkWindow *) dlg);
 }
 
 static void

@@ -125,12 +125,11 @@ static GtkWidget *dlg = NULL;
 
 static unsigned int base = SP_ALIGN_LAST;
 
-static int
-sp_quick_align_dialog_delete (void)
+static void
+sp_quick_align_dialog_destroy (GtkObject *object, gpointer data)
 {
-	if (GTK_WIDGET_VISIBLE (dlg)) gtk_widget_hide (dlg);
-
-	return TRUE;
+	/* sp_signal_disconnect_by_data (SODIPODI, dlg); */
+	dlg = NULL;
 }
 
 static void
@@ -153,7 +152,7 @@ sp_quick_align_dialog (void)
 		GtkTooltips * tt = gtk_tooltips_new ();
 
 		dlg = sp_window_new (_("Align objects"), FALSE);
-		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_quick_align_dialog_delete), NULL);
+		g_signal_connect ((GObject *) dlg, "destroy", (GCallback) sp_quick_align_dialog_destroy, NULL);
 
 		nb = gtk_notebook_new ();
 		gtk_container_add (GTK_CONTAINER (dlg), nb);
@@ -250,10 +249,11 @@ sp_quick_align_dialog (void)
 		gtk_notebook_append_page (GTK_NOTEBOOK (nb), vb, l);
 
 		gtk_widget_show_all (nb);
-                gtk_object_sink(GTK_OBJECT(tt));
+
+		gtk_object_sink (GTK_OBJECT(tt));
 	}
 
-	if (!GTK_WIDGET_VISIBLE (dlg)) gtk_widget_show (dlg);
+	gtk_window_present (GTK_WINDOW (dlg));
 }
 
 void

@@ -19,8 +19,7 @@
 #include <gtk/gtklist.h>
 #include <gtk/gtkadjustment.h>
 #include "helper/sp-intl.h"
-#include "../xml/repr.h"
-#include "../xml/repr-private.h"
+
 #include "sp-xmlview-attr-list.h"
 
 static void sp_xmlview_attr_list_class_init (SPXMLViewAttrListClass * klass);
@@ -79,9 +78,15 @@ sp_xmlview_attr_list_set_repr (SPXMLViewAttrList * list, SPRepr * repr)
 	}
 	list->repr = repr;
 	if (repr) {
+		SPReprAttr *attr;
 		sp_repr_ref (repr);
 		sp_repr_add_listener (repr, &repr_events, list);
-		sp_repr_synthesize_events (repr, &repr_events, list);
+		/* Emulate attr_changed event */
+		attr = sp_repr_attr_get_first (repr);
+		while (attr) {
+			event_attr_changed (repr, sp_repr_attr_get_key (repr, attr), NULL, sp_repr_attr_get_value (repr, attr), list);
+			attr = sp_repr_attr_get_next (repr, attr);
+		}
 	}
 	gtk_clist_thaw (GTK_CLIST (list));
 }

@@ -54,6 +54,8 @@ sp_tool_attributes_dialog (void)
 
 		gtk_widget_show (dlg);
 	}
+
+	gtk_window_present ((GtkWindow *) dlg);
 }
 
 static void

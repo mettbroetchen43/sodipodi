@@ -643,6 +643,7 @@ sp_repr_set_position_absolute (SPRepr * repr, int pos)
 	sp_repr_change_order (parent, repr, ref);
 }
 
+#if 0
 void
 sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, void * data)
 {
@@ -665,6 +666,7 @@ sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, void *
 		vector->content_changed (repr, NULL, repr->content, data);
 	}
 }
+#endif
 
 void
 sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, void * data)

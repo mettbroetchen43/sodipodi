@@ -53,6 +53,8 @@ sp_tool_options_dialog (void)
 
 		gtk_widget_show (dlg);
 	}
+
+	gtk_window_present ((GtkWindow *) dlg);
 }
 
 static void

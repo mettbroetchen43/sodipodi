@@ -69,7 +69,7 @@ sp_document_dialog (void)
 		g_signal_connect (G_OBJECT (dialog), "destroy", G_CALLBACK (sp_doc_dialog_destroy), NULL);
 	}
 
-	gtk_widget_show (dialog);
+	gtk_window_present ((GtkWindow *) dialog);
 }
 
 #if 0

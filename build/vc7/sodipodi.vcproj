@@ -390,6 +390,9 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc">
 			<File
+				RelativePath="..\..\src\api.h">
+			</File>
+			<File
 				RelativePath="..\..\src\arc-context.h">
 			</File>
 			<File

@@ -440,7 +440,7 @@ sp_item_dialog (void)
 		gtk_container_add (GTK_CONTAINER (dlg), itemw);
 	}
 
-	if (!GTK_WIDGET_VISIBLE (dlg)) gtk_widget_show (dlg);
+	gtk_window_present ((GtkWindow *) dlg);
 }
 
 static void

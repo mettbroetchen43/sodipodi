@@ -39,15 +39,6 @@
 
 #include "api.h"
 
-#if 0
-#include "system.h"
-#include "sodipodi.h"
-#include "document.h"
-#include "desktop-handles.h"
-#include "selection.h"
-#include "../xml/repr-private.h"
-#endif
-
 #include "widgets/icon.h"
 #include "widgets/sp-xmlview-tree.h"
 #include "widgets/sp-xmlview-content.h"
@@ -395,7 +386,7 @@ sp_xml_tree_dialog (void)
 						(GCallback) on_tree_unselect_row_hide, text_container, GTK_OBJECT (text_container));
 		gtk_widget_hide (text_container);
 	} else {
-		gdk_window_raise (GTK_WIDGET (dialog)->window);
+		gtk_window_present ((GtkWindow *) dialog);
 	}
 
 	g_assert (desktop != NULL);

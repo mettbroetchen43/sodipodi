@@ -19,7 +19,8 @@
 #include <stdio.h>
 
 #include <gtk/gtktextview.h>
-#include "../xml/repr.h"
+
+#include "xml/repr.h"
 
 #define SP_TYPE_XMLVIEW_CONTENT (sp_xmlview_content_get_type ())
 #define SP_XMLVIEW_CONTENT(o) (GTK_CHECK_CAST ((o), SP_TYPE_XMLVIEW_CONTENT, SPXMLViewContent))

@@ -14,7 +14,8 @@
 
 #include <stdio.h>
 #include <gtk/gtkclist.h>
-#include "../xml/repr.h"
+
+#include "xml/repr.h"
 
 #define SP_TYPE_XMLVIEW_ATTR_LIST (sp_xmlview_attr_list_get_type ())
 #define SP_XMLVIEW_ATTR_LIST(o) (GTK_CHECK_CAST ((o), SP_TYPE_XMLVIEW_ATTR_LIST, SPXMLViewAttrList))

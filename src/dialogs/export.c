@@ -269,9 +269,11 @@ sp_export_dialog (void)
 
 		hs = gtk_hseparator_new ();
 		gtk_box_pack_end (GTK_BOX (vb), hs, FALSE, FALSE, 0);
+
+		gtk_widget_show_all (dlg);
 	}
 
-	gtk_widget_show_all (dlg);
+	gtk_window_present ((GtkWindow *) dlg);
 }
 
 static void

@@ -20,8 +20,8 @@
 #include <gtk/gtkclist.h>
 #include <gtk/gtkctree.h>
 #include <gtk/gtkcontainer.h>
-#include "../xml/repr.h"
-#include "../xml/repr-private.h"
+/*#include "xml/repr-private.h" */
+
 #include "sp-xmlview-tree.h"
 
 typedef struct _NodeData {
@@ -189,7 +189,8 @@ add_node (SPXMLViewTree * tree, GtkCTreeNode * parent, GtkCTreeNode * before, SP
 	g_assert (tree != NULL);
 	g_assert (repr != NULL);
 
-	node = gtk_ctree_insert_node (GTK_CTREE (tree), parent, before, (gchar **)default_text, 2, NULL, NULL, NULL, NULL, ( SP_REPR_TYPE (repr) != SP_XML_ELEMENT_NODE ), FALSE);
+	node = gtk_ctree_insert_node (GTK_CTREE (tree), parent, before, (gchar **)default_text, 2,
+						NULL, NULL, NULL, NULL, !sp_repr_is_element (repr), FALSE);
 	g_assert (node != NULL);
 
 	data = node_data_new (tree, node, repr);
@@ -197,22 +198,39 @@ add_node (SPXMLViewTree * tree, GtkCTreeNode * parent, GtkCTreeNode * before, SP
 
 	gtk_ctree_node_set_row_data_full (GTK_CTREE (tree), data->node, data, node_data_free);
 
-	if ( SP_REPR_TYPE (repr) == SP_XML_TEXT_NODE ) {
-		vec = &text_repr_events;
-	} else if ( SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE ) {
-		vec = &element_repr_events;
+	if (sp_repr_is_text (repr)) {
+		SPReprAttr *attr;
+		gtk_clist_freeze (GTK_CLIST (tree));
+		sp_repr_add_listener (repr, &text_repr_events, data);
+		/* Emulate content_changed event */
+		attr = sp_repr_attr_get_first (repr);
+		while (attr) {
+			text_content_changed (repr, NULL, sp_repr_get_content (repr), data);
+			attr = sp_repr_attr_get_next (repr, attr);
+		}
+		gtk_clist_thaw (GTK_CLIST (tree));
+	} else if (sp_repr_is_element (repr)) {
+		SPRepr *child, *ref;
+		SPReprAttr *attr;
+		gtk_clist_freeze (GTK_CLIST (tree));
+		element_attr_changed (repr, "id", NULL, NULL, data);
+		sp_repr_add_listener (repr, &element_repr_events, data);
+		/* Emulate events */
+		attr = sp_repr_attr_get_first (repr);
+		while (attr) {
+			element_attr_changed (repr, sp_repr_attr_get_key (repr, attr), NULL, sp_repr_attr_get_value (repr, attr), data);
+			attr = sp_repr_attr_get_next (repr, attr);
+		}
+		ref = NULL;
+		child = sp_repr_get_children (repr);
+		while (child) {
+			element_child_added (repr, child, ref, data);
+			ref = child;
+			child = sp_repr_get_next (child);
+		}
+		gtk_clist_thaw (GTK_CLIST (tree));
 	} else {
 		vec = NULL;
-	}
-
-	if (vec) {
-		gtk_clist_freeze (GTK_CLIST (tree));
-		if (SP_REPR_TYPE (repr) == SP_XML_ELEMENT_NODE) {
-			element_attr_changed (repr, "id", NULL, NULL, data);
-		}
-		sp_repr_add_listener (repr, vec, data);
-		sp_repr_synthesize_events (repr, vec, data);
-		gtk_clist_thaw (GTK_CLIST (tree));
 	}
 
 	return node;
@@ -268,9 +286,9 @@ element_attr_changed (SPRepr * repr, const guchar * key, const guchar * old_valu
 	if (strcmp (key, "id")) return;
 	
 	if (new_value) {
-		label = g_strdup_printf ("<%s id=\"%s\">", SP_REPR_NAME (repr), new_value);
+		label = g_strdup_printf ("<%s id=\"%s\">", sp_repr_get_name (repr), new_value);
 	} else {
-		label = g_strdup_printf ("<%s>", SP_REPR_NAME (repr));
+		label = g_strdup_printf ("<%s>", sp_repr_get_name (repr));
 	}
 	gtk_ctree_node_set_text (GTK_CTREE (data->tree), data->node, 0, label);
 	g_free (label);
@@ -396,7 +414,7 @@ check_drag (GtkCTree * tree, GtkCTreeNode * node, GtkCTreeNode * new_parent, Gtk
 	old_parent = GTK_CTREE_ROW (node)->parent;
 
 	if (!old_parent || !new_parent) return FALSE;
-	if (SP_REPR_TYPE (NODE_DATA (new_parent)->repr) != SP_XML_ELEMENT_NODE) return FALSE;
+	if (!sp_repr_is_element (NODE_DATA (new_parent)->repr)) return FALSE;
 
 	/* fixme: we need add_child/remove_child/etc repr events without side-effects, so we can check here and give better visual feedback */
 

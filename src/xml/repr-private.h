@@ -90,8 +90,6 @@ extern SPReprClass _sp_repr_xml_text_class;
 
 SPRepr *sp_repr_nth_child (const SPRepr *repr, int n);
 
-void sp_repr_synthesize_events (SPRepr *repr, const SPReprEventVector *vector, void * data);
-
 void sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr);
 
 /* Stuff from repr.h */
