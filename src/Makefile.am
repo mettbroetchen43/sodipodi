@@ -57,6 +57,7 @@ sodipodi_SOURCES = \
 	desktop-affine.c desktop-affine.h \
 	desktop-snap.c desktop-snap.h \
 	sp-metrics.c sp-metrics.h \
+	sp-ruler.c sp-ruler.h \
 	toolbox.c toolbox.h \
 	\
 	event-context.c event-context.h \

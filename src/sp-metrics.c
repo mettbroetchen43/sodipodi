@@ -11,16 +11,16 @@ sp_absolute_metric_to_metric (gdouble length_src, const SPMetric metric_src, con
 
   switch (metric_src) {
   case SP_MM:
-    src = 25.4;
+    src = MM_PER_IN;
     break;
   case SP_CM:
-    src = 2.54;
+    src = CM_PER_IN;
     break;
   case SP_IN:
-    src = 1;
+    src = IN_PER_IN;
     break;
   case SP_PT:
-    src = 72;
+    src = PT_PER_IN;
     break;
   case NONE:
     src = 1;
@@ -29,16 +29,16 @@ sp_absolute_metric_to_metric (gdouble length_src, const SPMetric metric_src, con
 
   switch (metric_dst) {
   case SP_MM:
-    dst = 25.4;
+    dst = MM_PER_IN;
     break;
   case SP_CM:
-    dst = 2.54;
+    dst = CM_PER_IN;
     break;
   case SP_IN:
-    dst = 1;
+    dst = IN_PER_IN;
     break;
   case SP_PT:
-    dst = 72;
+    dst = PT_PER_IN;
     break;
   case NONE:
     dst = 1;
@@ -74,5 +74,8 @@ sp_metric_to_metric_string (gdouble length,  const SPMetric metric_src, const SP
   }
 
   return str;
-
 }
+
+
+
+

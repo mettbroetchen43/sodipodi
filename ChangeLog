@@ -1,3 +1,20 @@
+2000-10-08  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/dialogs/object-properties.c: Do not keep CSS objects, so
+	fill & stroke do not overwrite each other settings
+
+2000-10-08  Frank Felfe  <innerspace@iname.com>
+
+	* glade/align.glade: Improvements
+
+	* glade/object_props.glade: New layout
+
+	* src/sp-ruler.*: New files, implementing wrapper for Gtk rulers
+
+	* src/sp-metrics.*: Default metrics, ruler metrics
+
+	* src/desktop.c (sp_desktop_init): use ruler wrappers
+	
 2000-10-07  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/desktop.c (sp_desktop_realize): Zoom to page on first display

@@ -23,6 +23,7 @@
 #include "desktop.h"
 #include "select-context.h"
 #include "event-context.h"
+#include "sp-ruler.h"
 
 #define SP_DESKTOP_SCROLL_LIMIT 4000.0
 
@@ -145,7 +146,8 @@ sp_desktop_init (SPDesktop * desktop)
 	/* Horizonatl ruler */
 	eventbox = gtk_event_box_new ();
 	gtk_widget_show (eventbox);
-	desktop->hruler = GTK_RULER (gtk_hruler_new ());
+	desktop->hruler = GTK_RULER (sp_hruler_new ());
+	sp_ruler_set_metric (desktop->hruler, SP_DEFAULT_METRIC);
 	gtk_widget_show (GTK_WIDGET (desktop->hruler));
 	gtk_container_add (GTK_CONTAINER (eventbox), GTK_WIDGET (desktop->hruler));
 	gtk_table_attach (desktop->table,
@@ -163,7 +165,8 @@ sp_desktop_init (SPDesktop * desktop)
 	/* Vertical ruler */
 	eventbox = gtk_event_box_new ();
 	gtk_widget_show (eventbox);
-	desktop->vruler = GTK_RULER (gtk_vruler_new ());
+	desktop->vruler = GTK_RULER (sp_vruler_new ());
+	sp_ruler_set_metric (desktop->vruler, SP_DEFAULT_METRIC);
 	gtk_widget_show (GTK_WIDGET (desktop->vruler));
 	gtk_container_add (GTK_CONTAINER (eventbox), GTK_WIDGET (desktop->vruler));
 	gtk_table_attach (desktop->table,

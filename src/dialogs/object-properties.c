@@ -15,12 +15,12 @@ void sp_object_properties_page_changed (GtkNotebook * notebook,
 					gpointer user_data);
   
 
-void apply_stroke (void);
+void apply_stroke (SPCSSAttr * stroke_css);
 void sp_object_properties_reread_stroke (void);
 void sp_object_properties_apply_stroke (void);
 void sp_object_stroke_changed (void);
 
-void apply_fill (void);
+void apply_fill (SPCSSAttr * fill_css);
 void sp_object_properties_reread_fill (void);
 void sp_object_properties_apply_fill (void);
 void sp_object_fill_changed (void);
@@ -52,13 +52,11 @@ GtkToggleButton * cap_square;
 GtkToggleButton * line_full;
 GtkToggleButton * line_dashed;
 GtkToggleButton * line_double;
-SPCSSAttr * stroke_css = NULL;
 
 // fill
 GnomeColorPicker * cs;
 GtkToggleButton * fill_none;
 GtkToggleButton * fill_color;
-SPCSSAttr * fill_css = NULL;
 
 // layout
 GtkSpinButton * position_hor;
@@ -164,6 +162,9 @@ void sp_object_properties_dialog (void)
 		dimension_width = (GtkSpinButton *) glade_xml_get_widget (xml, "dimension_width"); 
 		dimension_height = (GtkSpinButton *) glade_xml_get_widget (xml, "dimension_height"); 
 	}
+    sp_object_properties_reread_stroke ();
+    sp_object_properties_reread_fill ();
+    sp_object_properties_reread_layout ();
 }
 
 /*
@@ -305,6 +306,7 @@ void
 sp_object_properties_reread_stroke (void)
 {
 	SPSelection * selection;
+	SPCSSAttr * stroke_css;
 	const GSList * l;
 	SPRepr * repr;
 	const gchar * str;
@@ -318,10 +320,6 @@ sp_object_properties_reread_stroke (void)
 
 	g_return_if_fail (dialog != NULL);
 
-	if (stroke_css != NULL) {
-		sp_repr_css_attr_unref (stroke_css);
-		stroke_css = NULL;
-	}
 	if (SP_ACTIVE_DESKTOP == NULL) return;
 	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
 
@@ -394,6 +392,8 @@ sp_object_properties_reread_stroke (void)
 		default:
 			g_assert_not_reached ();
 		}
+
+		sp_repr_css_attr_unref (stroke_css);
 	}
 
 	gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
@@ -405,11 +405,11 @@ sp_object_properties_reread_stroke (void)
 void
 sp_object_properties_apply_stroke (void)
 {
+	SPCSSAttr * stroke_css;
 	gdouble stroke_width;
 	gchar cstr[80];  
 
-	/* fixme: */
-	if (stroke_css == NULL) return;
+	stroke_css = sp_repr_css_attr_new ();
 
 	cstr[79] = '\0';
 
@@ -452,12 +452,13 @@ sp_object_properties_apply_stroke (void)
 		sp_repr_css_set_property (stroke_css, "stroke-linecap", "butt");
 	}
 
-	apply_stroke ();
+	apply_stroke (stroke_css);
+	sp_repr_css_attr_unref (stroke_css);
 }
 
 
 void
-apply_stroke (void)
+apply_stroke (SPCSSAttr * stroke_css)
 {
 	SPDesktop * desktop;
 	SPSelection * selection;
@@ -499,6 +500,7 @@ void
 sp_object_properties_reread_fill (void)
 {
 	SPSelection * selection;
+	SPCSSAttr * fill_css;
 	const GSList * l;
 	SPRepr * repr;
 	const gchar * str;
@@ -507,11 +509,6 @@ sp_object_properties_reread_fill (void)
 	gdouble opacity;
 
 	g_return_if_fail (dialog != NULL);
-
-	if (fill_css != NULL) {
-		sp_repr_css_attr_unref (fill_css);
-		fill_css = NULL;
-	}
 
 	if (SP_ACTIVE_DESKTOP == NULL) return;
       	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
@@ -552,6 +549,8 @@ sp_object_properties_reread_fill (void)
 #endif
 			break;
 		}
+
+		sp_repr_css_attr_unref (fill_css);
 	}
 	gtk_widget_set_sensitive (GTK_WIDGET (prop_apply), FALSE);
 	gtk_widget_set_sensitive (GTK_WIDGET (prop_reread), FALSE);
@@ -562,13 +561,13 @@ sp_object_properties_reread_fill (void)
 void
 sp_object_properties_apply_fill (void)
 {
+	SPCSSAttr * fill_css;
 	gdouble color[4];
 	guint32 f_color;
 	SPFillType fill_type;
 	gchar cstr[80];
 
-	/* fixme: */
-	if (fill_css == NULL) return;
+	fill_css = sp_repr_css_attr_new ();
 
 	cstr[79] = '\0';
 
@@ -586,12 +585,12 @@ sp_object_properties_apply_fill (void)
 	sp_svg_write_percentage (cstr, 79, cs->a);
 	sp_repr_css_set_property (fill_css, "fill-opacity", cstr);
 
-	apply_fill ();
-
+	apply_fill (fill_css);
+	sp_repr_css_attr_unref (fill_css);
 }
 
 void
-apply_fill (void)
+apply_fill (SPCSSAttr * fill_css)
 {
 	SPDesktop * desktop;
 	SPSelection * selection;

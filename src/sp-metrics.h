@@ -13,6 +13,19 @@ typedef enum {
 	SP_PT
 } SPMetric;
 
+#define PT_PER_IN 72.0
+#define CM_PER_IN 2.54
+#define MM_PER_IN 25.4
+#define IN_PER_PT (1 / PT_PER_IN)
+#define IN_PER_CM (1 / CM_PER_IN)
+#define IN_PER_MM (1 / MM_PER_IN)
+#define PT_PER_CM (PT_PER_IN * IN_PER_CM)
+#define CM_PER_PT (1 / PT_PER_CM)
+#define PT_PER_MM (PT_PER_IN * IN_PER_MM)
+#define MM_PER_PT (1 / PT_PER_MM)
+#define PT_PER_PT 1.0
+#define IN_PER_IN 1.0
+
 // this should be configurable in central place
 #define SP_DEFAULT_METRIC SP_MM
 
@@ -26,5 +39,14 @@ GString * sp_metric_to_metric_string (gdouble length,  const SPMetric metric_src
 #define SP_PT_TO_METRIC_STRING(l,m) sp_metric_to_metric_string(l,SP_PT,m)
 
 
+// ruler metrics
+static const GtkRulerMetric sp_ruler_metrics[] =
+{
+  {"Pixels",      "Pi", PT_PER_PT, { 1, 2, 5, 10, 25, 50, 100, 250, 500, 1000 }, { 1, 5, 10, 50, 100 }},
+  {"Millimeter",  "Mm", PT_PER_MM, { 1, 2, 5, 10, 25, 50, 100, 250, 500, 1000 }, { 1, 5, 10, 50, 100 }},
+  {"Centimeters", "Cm", PT_PER_CM, { 1, 2, 5, 10, 25, 50, 100, 250, 500, 1000 }, { 1, 5, 10, 50, 100 }},
+  {"Inches",      "In", PT_PER_IN, { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512 }, { 1, 2, 4, 8, 16 }},
+  {"Points",      "Pt", PT_PER_PT, { 1, 2, 5, 10, 25, 50, 100, 250, 500, 1000 }, { 1, 5, 10, 50, 100 }},
+};
 
 #endif
