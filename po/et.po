@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2000-04-08 16:21+0200\n"
 "Last-Translator: Lauris Kaplinski <lauris@ariman.ee>\n"
 "Language-Team: Estonian\n"
@@ -1340,26 +1340,31 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 #, fuzzy
 msgid "Select file to open"
 msgstr "_Selektsioon"
 
-#: src/file.c:152
+#: src/file.c:158
 #, fuzzy
 msgid "Save file"
 msgstr "Salvestab faili"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr ""
 
-#: src/file.c:324
+#: src/file.c:330
 #, fuzzy
 msgid "Export file"
 msgstr "_Import"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr ""

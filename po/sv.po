@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2001-01-04 02:19+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -1322,23 +1322,28 @@ msgstr "Kunde inte initiera Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunde inte skapa sodipodi-svg-doc-fabrik"
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "Välj fil att öppna"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "Spara fil"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "Välj fil att importera"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr "Exportera fil"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokumentnamn %s...): Förhandsgranska"

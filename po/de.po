@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2001-01-07 19:48+01:00\n"
 "Last-Translator: Benedikt Roth <Benedikt.Roth@gmx.net>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -1329,23 +1329,28 @@ msgstr "Bonobo konnte nicht initialisiert werden"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Die sodipodi-svg-doc Einheit konnte nicht erstellt werden"
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "Datei zum Öffnen wählen"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "Datei speichern"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "Datei für den Import wählen"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr "Datei Exportieren"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (Dateiname %s): Durckvorschau"

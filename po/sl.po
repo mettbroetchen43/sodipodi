@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-02-28 18:21+0100\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -1299,23 +1299,28 @@ msgstr "Nisem mogel inicializirati Bonoba"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nisem uspel ustvariti sodipodi-svg-doc "
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "Izberi datoteko za odprtje"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "Shrani datoteko"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "Izberi datoteko za uvoz"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr "Izvozi datoteko"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (ime dokumenta %s..): Predogled Tiskanja"

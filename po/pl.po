@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2000-10-18 16:04+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -1343,23 +1343,28 @@ msgstr "Nie mo¿na zainicjowaæ Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "Wybór pliku do odczytu"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "Zapis pliku"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "Wybór pliku do importu"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr ""
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokument %s..): Podgl±d wydruku"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2000-11-30 12:40+0100\n"
 "Last-Translator: Emese Kovacs <emese@gnome.hu>\n"
 "Language-Team: Hungarian <hu@gnome.hu>\n"
@@ -1340,23 +1340,28 @@ msgstr "A Bonobo inicializálása nem sikerült"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr ""
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr ""
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr ""
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr ""
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr ""

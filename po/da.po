@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2001-01-06 13:30+0100\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -1319,23 +1319,28 @@ msgstr "Kunne ikke initialisere Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunne ikke oprette sodipodi-svg-doc fabrik"
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "Vælg fil der skal åbnes"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "Gem fil"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "Vælg fil der skal importeres"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr "Eksportér fil"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokumentnavn %s..): Udskriv forhåndsvisning"

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi CVS\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2000-10-10 00:00+0900\n"
 "Last-Translator: Yukihiro Nakai <nakai@gnome.gr.jp>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
@@ -1353,23 +1353,28 @@ msgstr "BONOBOを初期化できません"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "sodipodi-svg-docファクトリを生成できません"
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "開くファイルの選択"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "ファイルの保存"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "インポートするファイルの選択"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr "ファイルにエクスポート"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (ドキュメント名 %s..): 印刷プレビュー"

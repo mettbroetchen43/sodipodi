@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.19\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2000-09-28 18:52+0200\n"
 "Last-Translator: Quico Llach <tradgnome@softcatala.org>\n"
 "Language-Team: Catalan <linux@softcatala.org>\n"
@@ -1399,23 +1399,28 @@ msgstr "No s'ha pogut inicialitzar el Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "No s'ha pogut crear un document de la factoria sodipodi-svg-doc"
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "Seleccioneu el fitxer que s'ha d'obrir"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "Desa el fitxer"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "Seleccioneu el fitxer que s'ha de importar"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr "Exporta el fitxer"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (nom del document %s..): Presentació preliminar"

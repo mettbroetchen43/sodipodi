@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2000-08-21 11:55+00:00\n"
 "Last-Translator: Ricardo Soares Guimarães <ricardo@conectiva.com>\n"
 "Language-Team: Brazillian Portuguese <ldp-br@bazar.conectiva.com.br>\n"
@@ -1290,23 +1290,28 @@ msgstr "Não foi possível inicializar Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "Selecionar arquivo para abrir"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "Salvar arquivo"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "Selecione arquivo a importar"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr "Exportar arquivo"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (doc nome %s...): Visualizar impressão"

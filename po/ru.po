@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-02-25 01:39+0200\n"
+"POT-Creation-Date: 2001-03-08 01:22+0200\n"
 "PO-Revision-Date: 2001-02-12 14:12+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -1299,23 +1299,28 @@ msgstr "Не удалось инициализировать Bonobo"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr ""
 
+#: src/interface.c:108
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
 #: src/file.c:81
 msgid "Select file to open"
 msgstr "Выбрать файл для открытия"
 
-#: src/file.c:152
+#: src/file.c:158
 msgid "Save file"
 msgstr "Сохранить файл"
 
-#: src/file.c:252
+#: src/file.c:258
 msgid "Select file to import"
 msgstr "Выбрать файл для импортирования"
 
-#: src/file.c:324
+#: src/file.c:330
 msgid "Export file"
 msgstr "Экспортировать файл"
 
-#: src/file.c:384
+#: src/file.c:390
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (документ %s..): Просмотр печати"
