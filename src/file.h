@@ -21,6 +21,7 @@ void sp_file_print_preview (GtkWidget * widget);
 void sp_do_file_print (SPDocument * doc);
 
 void sp_do_file_print_to_file (SPDocument * doc, gchar *filename);
+void sp_file_print_preview (GtkWidget * widget);
 
 void sp_file_exit (void);
 

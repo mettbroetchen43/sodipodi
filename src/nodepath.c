@@ -1232,6 +1232,7 @@ sp_node_adjust_knots (SPPathNode * node)
 static gboolean
 node_event (SPKnot * knot, GdkEvent * event, SPPathNode * n)
 {
+	SPNodePath *np;
 	gint ret;
 
 	if ((event->type == GDK_KEY_PRESS) && !(event->key.state & (GDK_SHIFT_MASK | GDK_CONTROL_MASK))) {
@@ -1239,7 +1240,9 @@ node_event (SPKnot * knot, GdkEvent * event, SPPathNode * n)
 		switch (event->key.keyval) {
 		case GDK_Delete:
 		case GDK_KP_Delete:
+			np = n->subpath->nodepath;
 			sp_nodepath_node_destroy (n);
+			update_repr (np);
 			ret = TRUE;
 			break;
 		case GDK_c:

@@ -1,3 +1,18 @@
+2001-03-09  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/nodepath.c (node_event): Update repr after deletion
+
+	* src/file.c (file_open_ok): Destroy widget instead of hiding
+	(file_open_cancel): New function
+	(sp_file_open): Connect new cancel handler
+	(file_save_ok): Exit from private main loop
+	(file_save_cancel): New function
+	(sp_file_save_as): Connect new cancel handler, enter private loop
+	(file_import_cancel): New function
+	(sp_file_import): Connect new cancel handler
+	(file_export_cancel): New function
+	(sp_file_export): Connect new cancel handler
+
 2001-03-08  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/interface.c (sp_ui_delete): New function presenting close
