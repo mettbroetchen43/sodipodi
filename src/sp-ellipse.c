@@ -325,6 +325,27 @@ sp_genericellipse_normalize (SPGenericEllipse *ellipse)
 	/* Now we keep: 0 <= start < end <= 2*PI */
 }
 
+/*
+ * return values:
+ *   1  : inside
+ *   0  : on the curves
+ *   -1 : outside
+ */
+static gint
+sp_genericellipse_side (SPGenericEllipse *ellipse, const ArtPoint *p)
+{
+	gdouble dx, dy;
+	gdouble s;
+
+	dx = p->x - ellipse->x;
+	dy = p->y - ellipse->y;
+
+	s = dx*dx/(ellipse->rx * ellipse->rx) + dy*dy/(ellipse->ry * ellipse->ry);
+	if (s < 1.0) return 1;
+	if (s > 1.0) return -1;
+	return 0;
+}
+
 /* SVG <ellipse> element */
 
 static void sp_ellipse_class_init (SPEllipseClass *class);
@@ -665,6 +686,7 @@ sp_arc_class_init (SPArcClass *class)
 static void
 sp_arc_init (SPArc *arc)
 {
+	arc->is_closed = TRUE;
 }
 
 static void
@@ -720,8 +742,13 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 #ifdef ARC_VERBOSE
 	g_print ("start:%g end:%g fa=%d fs=%d\n", ge->start, ge->end, fa, fs);
 #endif
-	g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f L %f,%f z",
-		    p1.x, p1.y, ge->rx, ge->ry, fa, fs, p2.x, p2.y, ge->x, ge->y);
+	if (arc->is_closed)
+		g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f L %f,%f z",
+			    p1.x, p1.y, ge->rx, ge->ry, fa, fs, p2.x, p2.y, ge->x, ge->y);
+	else
+		g_snprintf (c, ARC_BUFSIZE, "M %f,%f A %f,%f 0 %d %d %f,%f",
+			    p1.x, p1.y, ge->rx, ge->ry, fa, fs, p2.x, p2.y);
+
 
 	return sp_repr_set_attr (repr, "d", c);
 }
@@ -832,9 +859,13 @@ static void
 sp_arc_start_set (SPItem *item, const ArtPoint *p, guint state)
 {
 	SPGenericEllipse *ge;
+	SPArc *arc;
 	gdouble dx, dy;
 
 	ge = SP_GENERICELLIPSE (item);
+	arc = SP_ARC(item);
+
+	arc->is_closed = (sp_genericellipse_side (ge, p) == -1) ? TRUE : FALSE;
 
 	dx = p->x - ge->x;
 	dy = p->y - ge->y;
@@ -862,9 +893,13 @@ static void
 sp_arc_end_set (SPItem *item, const ArtPoint *p, guint state)
 {
 	SPGenericEllipse *ge;
+	SPArc *arc;
 	gdouble dx, dy;
 
 	ge = SP_GENERICELLIPSE (item);
+	arc = SP_ARC(item);
+
+	arc->is_closed = (sp_genericellipse_side (ge, p) == -1) ? TRUE : FALSE;
 
 	dx = p->x - ge->x;
 	dy = p->y - ge->y;

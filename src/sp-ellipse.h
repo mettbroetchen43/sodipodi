@@ -89,6 +89,7 @@ GtkType sp_circle_get_type (void);
 
 struct _SPArc {
 	SPGenericEllipse genericellipse;
+	gboolean is_closed;
 };
 
 struct _SPArcClass {

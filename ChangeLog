@@ -1,3 +1,19 @@
+Wed Mar  6 01:52:09 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* Support open/closed arc feature. We can edit it on node edit.
+	
+	* src/sp-ellipse.c (sp_genericellipse_side): New method to
+	determine point is inside or outside.
+	(sp_arc_start_set): Add is_closed feature
+	(sp_arc_end_set): Ditto
+
+	* src/sp-ellipse.h: Add SPArc::is_closed attribute
+
+	* src/preferences-skeleton.h: Modified arc style
+
+	* src/arc-context.c: Ditto
+
+
 2002-03-05  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/display/nr-arena-shape.c (nr_arena_shape_pick): Use delta (tolerance)
