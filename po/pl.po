@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "POT-Creation-Date: 2002-01-03 16:05+0100\n"
-"PO-Revision-Date: 2002-01-03 17:36+0100\n"
+"PO-Revision-Date: 2002-01-04 01:31+0100\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -109,15 +109,15 @@ msgstr "Wybór systemu jednostek siatki"
 
 #: glade/desktop.glade.h:1 glade/display.glade.h:1
 msgid "Choose color for grid"
-msgstr "Wybór koloru siatki"
+msgstr "Wybiera kolor siatki"
 
 #: glade/desktop.glade.h:1 glade/display.glade.h:1
 msgid "Choose color for guidelines"
-msgstr "Wybór koloru prowadnic"
+msgstr "Wybiera kolor prowadnic"
 
 #: glade/desktop.glade.h:1 glade/display.glade.h:1
 msgid "Choose color for highlighted guidelines"
-msgstr "Wybór koloru pod¶wietlonych prowadnic"
+msgstr "Wybiera kolor pod¶wietlonych prowadnic"
 
 #: glade/desktop.glade.h:1 glade/display.glade.h:1
 msgid "Choose unit system for grid snapping"
@@ -259,7 +259,7 @@ msgstr "A4"
 
 #: glade/document.glade.h:1
 msgid "Choose paper size"
-msgstr "Wybór rozmiaru papieru"
+msgstr "Wybiera rozmiar papieru"
 
 #: glade/document.glade.h:1
 msgid "Choose unit system"
@@ -371,7 +371,7 @@ msgstr " Styl "
 
 #: glade/object_props.glade.h:1
 msgid "Add new gradient"
-msgstr ""
+msgstr "Dodanie nowego gradientu"
 
 #: glade/object_props.glade.h:1 src/widgets/sp-color-selector.c:1
 #: src/widgets/sp-color-selector.c:1 src/widgets/sp-color-selector.c:1
@@ -384,7 +384,7 @@ msgstr ""
 
 #: glade/object_props.glade.h:1
 msgid "Bevel join"
-msgstr ""
+msgstr "Z³±czenie na kancie"
 
 #: glade/object_props.glade.h:1 src/widgets/sp-color-selector.c:1
 msgid "Blue:"
@@ -392,7 +392,7 @@ msgstr "Niebieski:"
 
 #: glade/object_props.glade.h:1
 msgid "Butt endpoints"
-msgstr ""
+msgstr "Punkt koñcowy na brzegu"
 
 #: glade/object_props.glade.h:1
 msgid "Choose fill color"
@@ -448,7 +448,7 @@ msgstr "Z kresk±"
 
 #: glade/object_props.glade.h:1
 msgid "Join:"
-msgstr ""
+msgstr "Z³±czenie:"
 
 #: glade/object_props.glade.h:1
 msgid "Layout"
@@ -456,7 +456,7 @@ msgstr "Uk³ad"
 
 #: glade/object_props.glade.h:1
 msgid "Mitter join"
-msgstr ""
+msgstr "Z³±czenie z k±tem"
 
 #: glade/object_props.glade.h:1
 msgid "No fill"
@@ -488,15 +488,15 @@ msgstr "Czerwony:"
 
 #: glade/object_props.glade.h:1
 msgid "Reread"
-msgstr ""
+msgstr "Od¶wie¿"
 
 #: glade/object_props.glade.h:1
 msgid "Round endpoints"
-msgstr "Okr±g³e zakoñczenia"
+msgstr "Punkt koñcowy z zaokr±gleniem"
 
 #: glade/object_props.glade.h:1
 msgid "Round join"
-msgstr ""
+msgstr "Z³±czenie z zaokr±gleniem"
 
 #: glade/object_props.glade.h:1
 msgid "Scale with object"
@@ -504,7 +504,7 @@ msgstr "Skalowanie z obiektem"
 
 #: glade/object_props.glade.h:1
 msgid "Square endpoints"
-msgstr "Prostok±tne zakoñczenia"
+msgstr "Punkt koñcowy w prostok±tem"
 
 #: glade/object_props.glade.h:1 glade/sodipodi.glade.h:1
 msgid "Stroke"
@@ -539,7 +539,7 @@ msgstr "kolor"
 
 #: glade/object_props.glade.h:1 glade/transformation.glade.h:1
 msgid "in"
-msgstr ""
+msgstr "cal"
 
 #: glade/object_props.glade.h:1
 msgid "inches"
@@ -573,11 +573,11 @@ msgstr "punkty"
 #: glade/object_props.glade.h:1 glade/transformation.glade.h:1
 #: src/helper/unit-menu.c:1
 msgid "pt"
-msgstr ""
+msgstr "pkt"
 
 #: glade/object_props.glade.h:1 src/helper/unit-menu.c:1
 msgid "px"
-msgstr ""
+msgstr "pks"
 
 #: glade/sodipodi.glade.h:1
 msgid "1.0MB"
@@ -621,7 +621,7 @@ msgstr "Konwertuje zaznaczone segmenty na linie"
 
 #: glade/sodipodi.glade.h:1
 msgid "Convert to Cu_rves"
-msgstr ""
+msgstr "Prze_konwertuj na krzywe"
 
 #: glade/sodipodi.glade.h:1 glade/toolbox.glade.h:1
 msgid "Cusp line at selected nodes"
@@ -658,7 +658,7 @@ msgstr "Zduplikuj"
 
 #: glade/sodipodi.glade.h:1
 msgid "Dynahand"
-msgstr ""
+msgstr "Dynamiczna linia odrêczna"
 
 #: glade/sodipodi.glade.h:1
 msgid "Ellipse"
@@ -686,7 +686,7 @@ msgstr "O jeden w gó_rê"
 
 #: glade/sodipodi.glade.h:1
 msgid "Freehand"
-msgstr "Odrêczne"
+msgstr "Linia odrêczna"
 
 #: glade/sodipodi.glade.h:1
 msgid "Height"
@@ -908,7 +908,7 @@ msgstr "Usuwa zaznaczenie"
 
 #: glade/toolbox.glade.h:1
 msgid "Draw dynahand line"
-msgstr ""
+msgstr "Rysuje dynamiczn± liniê odrêczn±"
 
 #: glade/toolbox.glade.h:1
 msgid "Draw ellipse"
@@ -993,7 +993,7 @@ msgstr "Tworzy nowy rysunek"
 
 #: glade/toolbox.glade.h:1
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
-msgstr ""
+msgstr "Nie. Wolê zrobiæ w Sodipodi jaki¶ fajny rysuneczek."
 
 #: glade/toolbox.glade.h:1
 msgid "Nope !"
@@ -1085,7 +1085,7 @@ msgstr "Tak!"
 
 #: glade/toolbox.glade.h:1
 msgid "Yes quick! I want to leave sodipodi and come back later."
-msgstr ""
+msgstr "Tak, szybko! Chcê teraz zakoñczyæ i wróciæ do Sodipodi pó¼niej."
 
 #: glade/toolbox.glade.h:1
 msgid "Zoom in"
@@ -1322,7 +1322,7 @@ msgstr "k±t"
 
 #: glade/transformation.glade.h:1
 msgid "deg"
-msgstr ""
+msgstr "stopnie"
 
 #: glade/transformation.glade.h:1
 msgid "desktop"
@@ -1426,7 +1426,7 @@ msgstr "Wytnij"
 
 #: glade/xml-tree.glade.h:1
 msgid "Del"
-msgstr ""
+msgstr "Usuñ"
 
 #: glade/xml-tree.glade.h:1
 msgid "Delete attribute"
@@ -1438,7 +1438,7 @@ msgstr "Czy na pewno chcesz usun±æ atrybut?"
 
 #: glade/xml-tree.glade.h:1
 msgid "Dup"
-msgstr ""
+msgstr "Powiel"
 
 #: glade/xml-tree.glade.h:1
 msgid "Hierarchy"
@@ -1514,12 +1514,12 @@ msgstr "16x16"
 
 #: src/dialogs/document-properties.c:1
 msgid "Custom"
-msgstr ""
+msgstr "Dowolny"
 
 #. Frame
 #: src/dialogs/fill-style.c:1 src/dialogs/fill-style.c:1
 msgid "Empty"
-msgstr ""
+msgstr "Puste"
 
 #: src/dialogs/fill-style.c:1
 msgid "Fill style"
@@ -1554,7 +1554,7 @@ msgstr "Gradient"
 
 #: src/dialogs/item-properties.c:1
 msgid "Item is reference"
-msgstr ""
+msgstr "Element jest odniesieniem"
 
 #: src/dialogs/item-properties.c:1 src/dialogs/item-properties.c:1
 msgid "The ID is not valid"
@@ -1571,7 +1571,7 @@ msgstr "ID jest poprawny"
 #. Reset button
 #: src/dialogs/gradient-selector.c:1
 msgid "Reset"
-msgstr ""
+msgstr "Przywróæ"
 
 #: src/dialogs/gradient-vector.c:1
 msgid "Start color"
@@ -1599,7 +1599,7 @@ msgstr "Typ:"
 
 #: src/dialogs/object-attributes.c:1
 msgid "Role:"
-msgstr ""
+msgstr "Rola:"
 
 #: src/dialogs/object-attributes.c:1
 msgid "Arcrole:"
@@ -1663,7 +1663,7 @@ msgstr "Argument:"
 
 #: src/dialogs/object-attributes.c:1
 msgid "T0:"
-msgstr ""
+msgstr "T0:"
 
 #: src/dialogs/object-attributes.c:1
 msgid "URL:"
@@ -1711,7 +1711,7 @@ msgstr "Wybór pliku do importu"
 
 #: src/file.c:1
 msgid "Export file"
-msgstr ""
+msgstr "Eksport pliku"
 
 #: src/file.c:1
 #, c-format
@@ -1744,11 +1744,11 @@ msgstr "Piksel"
 
 #: src/helper/unit-menu.c:1
 msgid "Userspace"
-msgstr ""
+msgstr "Przestrzeñ u¿ytkownika"
 
 #: src/helper/unit-menu.c:1
 msgid "us"
-msgstr ""
+msgstr "pu"
 
 #: src/helper/unit-menu.c:1
 msgid "Em squares"
@@ -1912,7 +1912,7 @@ msgstr "Uszkodzona bitmapa"
 
 #: src/sp-image.c:1
 msgid "Color bitmap"
-msgstr ""
+msgstr "Kolorowa bitmapa"
 
 #. Create toplevel menuitem
 #: src/sp-image.c:1
