@@ -1,3 +1,14 @@
+2002-11-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas.c (paint): use full visible are for clipping, fixed
+	type on specifying area dimensionf in event
+	(sp_canvas_get_viewbox): New method
+
+	* src/desktop.c (sp_desktop_set_display_area): New method, replaces show_region
+	(sp_desktop_get_display_area): Replacement for ...
+	(sp_desktop_zoom_absolute): Use generic sp_desktop_set_visible_area
+	(sp_desktop_zoom_relative): Ditto
+
 2002-11-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* configure.in: ... and everyting else - merged SODIPODI_GTK2_BRANCH

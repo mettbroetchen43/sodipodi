@@ -321,7 +321,7 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	/* Fixme: Setup initial zooming */
 	art_affine_scale (desktop->d2w, 1.0, -1.0);
-	desktop->d2w[5] = dw;
+	desktop->d2w[5] = dh;
 	art_affine_invert (desktop->w2d, desktop->d2w);
 	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
 
@@ -486,7 +486,7 @@ void sp_desktop_update_scrollbars (Sodipodi *sodipodi, SPSelection *selection)
 	hadj = gtk_range_get_adjustment (GTK_RANGE (desktop->owner->hscrollbar));
 	vadj = gtk_range_get_adjustment (GTK_RANGE (desktop->owner->vscrollbar));
 	
-	zf = sp_desktop_zoom_factor (desktop);
+	zf = SP_DESKTOP_ZOOM (desktop);
 	cw = GTK_WIDGET (desktop->owner->canvas)->allocation.width;
 	ch = GTK_WIDGET (desktop->owner->canvas)->allocation.height;
 	// drawing / document coordinates
@@ -562,7 +562,7 @@ void sp_desktop_zoom_update (SPDesktop * desktop)
 	gchar * format = "%d%c";
 	gdouble zf;
 	
-	zf = sp_desktop_zoom_factor (desktop);
+	zf = SP_DESKTOP_ZOOM (desktop);
 	//g_print ("new zoom: %f\n",zf);
 	iany = (gint)(zf*100+0.5);
 	str = g_string_new("");
@@ -598,7 +598,7 @@ sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw) {
 	if (any < SP_DESKTOP_ZOOM_MIN/2) return;
 	
 	sp_desktop_get_visible_area (SP_ACTIVE_DESKTOP, &d);
-	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, any, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, any);
 	// give focus back to canvas
 #if 1
 	gtk_widget_grab_focus (GTK_WIDGET (dtw->canvas));
@@ -611,147 +611,16 @@ sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw) {
 void
 sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy)
 {
-	gint x, y;
+	NRRectF viewbox;
 
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
-#if 0
-	sp_canvas_get_scroll_offsets (desktop->owner->canvas, &x, &y);
-#else
-	x = desktop->owner->canvas->x0;
-	x = desktop->owner->canvas->y0;
-#endif
-	sp_canvas_scroll_to (desktop->owner->canvas, x - dx, y - dy);
+	sp_canvas_get_viewbox (desktop->owner->canvas, &viewbox);
+
+	sp_canvas_scroll_to (desktop->owner->canvas, viewbox.x0 - dx, viewbox.y0 - dy);
 
 	//	sp_desktop_update_rulers (NULL, desktop);
-}
-
-/* Zooming & display */
-
-ArtDRect *
-sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area)
-{
-	gdouble cw, ch;
-	ArtPoint p0, p1;
-
-	g_return_val_if_fail (desktop != NULL, NULL);
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
-	g_return_val_if_fail (area != NULL, NULL);
-
-	cw = GTK_WIDGET (desktop->owner->canvas)->allocation.width+1;
-	ch = GTK_WIDGET (desktop->owner->canvas)->allocation.height+1;
-
-	sp_canvas_window_to_world (desktop->owner->canvas, 0.0, 0.0, &p0.x, &p0.y);
-	sp_canvas_window_to_world (desktop->owner->canvas, cw, ch, &p1.x, &p1.y);
-
-	art_affine_point (&p0, &p0, desktop->w2d);
-	art_affine_point (&p1, &p1, desktop->w2d);
-
-	area->x0 = MIN (p0.x, p1.x);
-	area->y0 = MIN (p0.y, p1.y);
-	area->x1 = MAX (p0.x, p1.x);
-	area->y1 = MAX (p0.y, p1.y);
-
-	return area;
-}
-
-
-gdouble sp_desktop_zoom_factor (SPDesktop * desktop)
-{
-	g_return_val_if_fail (SP_IS_DESKTOP (desktop), 0.0);
-
-	return sqrt (fabs (desktop->d2w[0] * desktop->d2w[3]));
-}
-
-void
-sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint border)
-{
-	ArtPoint c, p;
-	double w, h, cw, ch, sw, sh, scale;
-
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	c.x = (x0 + x1) / 2;
-	c.y = (y0 + y1) / 2;
-
-	w = fabs (x1 - x0);
-	h = fabs (y1 - y0);
-
-	cw = GTK_WIDGET (desktop->owner->canvas)->allocation.width;
-	ch = GTK_WIDGET (desktop->owner->canvas)->allocation.height;
-
-	sw = (cw-2*border) / w;
-	sh = (ch-2*border) / h;
-
-	scale = MIN (sw, sh);
-        if (scale < SP_DESKTOP_ZOOM_MIN) scale = SP_DESKTOP_ZOOM_MIN;
-        if (scale > SP_DESKTOP_ZOOM_MAX) scale = SP_DESKTOP_ZOOM_MAX;
-	w = cw / scale;
-	h = ch / scale;
-
-	p.x = c.x - w / 2;
-	p.y = c.y - h / 2;
-
-	art_affine_scale (desktop->d2w, scale, -scale);
-	desktop->d2w[4] = - p.x * scale - cw / 2;
-	desktop->d2w[5] = p.y * scale + ch / 2;
-	art_affine_invert (desktop->w2d, desktop->d2w);
-
-	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
-     	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
-       	sp_desktop_zoom_update (desktop);
-	sp_dt_update_snap_distances (desktop);
-}
-
-void
-sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy)
-{
-        gdouble scale;
-
-	scale = sp_desktop_zoom_factor (desktop) * zoom;
-
-        if (scale < SP_DESKTOP_ZOOM_MIN) scale = SP_DESKTOP_ZOOM_MIN;
-        if (scale > SP_DESKTOP_ZOOM_MAX) scale = SP_DESKTOP_ZOOM_MAX;
-
-	art_affine_scale (desktop->d2w, scale, -scale);
-
-        /*
-        desktop->d2w[0] *= zoom;
-        desktop->d2w[1] *= zoom;
-        desktop->d2w[2] *= zoom;
-        desktop->d2w[3] *= zoom;
-        */
-        desktop->d2w[4] = -cx * desktop->d2w[0];
-        desktop->d2w[5] = -cy * desktop->d2w[3];
-        art_affine_invert (desktop->w2d, desktop->d2w);
-
-	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
-	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
-	sp_desktop_zoom_update (desktop);
-	sp_dt_update_snap_distances (desktop);
-}
-
-void
-sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy)
-{
-        if (zoom < SP_DESKTOP_ZOOM_MIN) zoom = SP_DESKTOP_ZOOM_MIN;
-        if (zoom > SP_DESKTOP_ZOOM_MAX) zoom = SP_DESKTOP_ZOOM_MAX;
-
-	desktop->d2w[0] = zoom;
-	desktop->d2w[1] = 0.0;
-	desktop->d2w[2] = 0.0;
-	desktop->d2w[3] = -zoom;
-
-	desktop->d2w[4] = -cx * desktop->d2w[0];
-	desktop->d2w[5] = -cy * desktop->d2w[3];
-	art_affine_invert (desktop->w2d, desktop->d2w);
-	
-	sp_canvas_item_affine_absolute ((SPCanvasItem *) desktop->main, desktop->d2w);
-      	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
-	sp_desktop_zoom_update (desktop);
-	sp_dt_update_snap_distances (desktop);
 }
 
 /* Context switching */
@@ -1163,7 +1032,7 @@ sp_desktop_widget_realize (GtkWidget *widget)
 
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 
-	sp_desktop_show_region (dtw->desktop, d.x0, d.y0, d.x1, d.y1, 10);
+	sp_desktop_set_display_area (dtw->desktop, d.x0, d.y0, d.x1, d.y1, 10);
 
 	sp_desktop_widget_set_title (dtw);
 }
@@ -1257,6 +1126,7 @@ sp_desktop_widget_new (SPNamedView *namedview)
 
 	dtw->desktop = (SPDesktop *) sp_desktop_new (namedview, dtw->canvas);
 	dtw->desktop->owner = dtw;
+	g_object_set_data (G_OBJECT (dtw->desktop), "widget", dtw);
 
 	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "uri_set", GTK_SIGNAL_FUNC (sp_desktop_uri_set), dtw);
 	sp_view_widget_set_view (SP_VIEW_WIDGET (dtw), SP_VIEW (dtw->desktop));
@@ -1444,4 +1314,116 @@ sp_desktop_toggle_borders (GtkWidget * widget)
 	sp_desktop_widget_show_decorations (SP_DESKTOP_WIDGET (desktop->owner), !desktop->owner->decorations);
 }
 
+void
+sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, float y1, float border)
+{
+	SPDesktopWidget *dtw;
+	NRRectF viewbox;
+	float cx, cy, scale;
+
+	dtw = g_object_get_data (G_OBJECT (dt), "widget");
+	if (!dtw) return;
+
+	cx = 0.5 * (x0 + x1);
+	cy = 0.5 * (y0 + y1);
+
+	sp_canvas_get_viewbox (dtw->canvas, &viewbox);
+
+	viewbox.x0 += border;
+	viewbox.y0 += border;
+	viewbox.x1 -= border;
+	viewbox.y1 -= border;
+
+	if (((x1 - x0) * (viewbox.y1 - viewbox.y0)) > ((y1 - y0) * (viewbox.x1 - viewbox.x0))) {
+		scale = (viewbox.x1 - viewbox.x0) / (x1 - x0);
+	} else {
+		scale = (viewbox.y1 - viewbox.y0) / (y1 - y0);
+	}
+
+	scale = CLAMP (scale, SP_DESKTOP_ZOOM_MIN, SP_DESKTOP_ZOOM_MAX);
+
+	/* Set zoom factors */
+	art_affine_scale (dt->d2w, scale, -scale);
+	art_affine_invert (dt->w2d, dt->d2w);
+	sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (dt->main), dt->d2w);
+
+	/* Calculate top left corner */
+	x0 = cx - 0.5 * (viewbox.x1 - viewbox.x0) / scale;
+	y1 = cy + 0.5 * (viewbox.y1 - viewbox.y0) / scale;
+
+	/* Scroll */
+	sp_canvas_scroll_to (dtw->canvas, x0 * scale - border, y1 * -scale - border);
+
+#if 0
+     	sp_desktop_set_viewport (desktop, SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT);
+       	sp_desktop_zoom_update (desktop);
+	sp_dt_update_snap_distances (desktop);
+#endif
+}
+
+static void
+sp_desktop_get_display_area (SPDesktop *dt, NRRectF *area)
+{
+	SPDesktopWidget *dtw;
+	NRRectF viewbox;
+	float scale;
+
+	dtw = g_object_get_data (G_OBJECT (dt), "widget");
+	if (!dtw) return;
+
+	sp_canvas_get_viewbox (dtw->canvas, &viewbox);
+
+	scale = dt->d2w[0];
+
+	area->x0 = viewbox.x0 / scale;
+	area->y0 = viewbox.y1 / -scale;
+	area->x1 = viewbox.x1 / scale;
+	area->y1 = viewbox.y0 / -scale;
+}
+
+ArtDRect *
+sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area)
+{
+	NRRectF da;
+
+	sp_desktop_get_display_area (desktop, &da);
+
+	area->x0 = da.x0;
+	area->y0 = da.y0;
+	area->x1 = da.x1;
+	area->y1 = da.y1;
+
+	return area;
+}
+
+
+void
+sp_desktop_zoom_absolute (SPDesktop *dt, float cx, float cy, float zoom)
+{
+	SPDesktopWidget *dtw;
+	NRRectF viewbox;
+	float width2, height2;
+
+	dtw = g_object_get_data (G_OBJECT (dt), "widget");
+	if (!dtw) return;
+
+	zoom = CLAMP (zoom, SP_DESKTOP_ZOOM_MIN, SP_DESKTOP_ZOOM_MAX);
+
+	sp_canvas_get_viewbox (dtw->canvas, &viewbox);
+
+	width2 = 0.5 * (viewbox.x1 - viewbox.x0) / zoom;
+	height2 = 0.5 * (viewbox.y1 - viewbox.y0) / zoom;
+
+	sp_desktop_set_display_area (dt, cx - width2, cy - width2, cx + width2, cy + width2, 0.0);
+}
+
+void
+sp_desktop_zoom_relative (SPDesktop *dt, float cx, float cy, float zoom)
+{
+        gdouble scale;
+
+	scale = SP_DESKTOP_ZOOM (dt) * zoom;
+
+	sp_desktop_zoom_absolute (dt, cx, cy, scale);
+}
 

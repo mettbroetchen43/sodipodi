@@ -19,6 +19,7 @@
 
 G_BEGIN_DECLS
 
+#include <libnr/nr-rect.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_uta.h>
@@ -101,7 +102,7 @@ struct _SPCanvas {
 
 	SPCanvasItem *root;
 
-	double x0, y0;
+	float x0, y0;
 
 	/* Area that needs redrawing, stored as a microtile array */
 	ArtUta *redraw_area;
@@ -154,6 +155,8 @@ void sp_canvas_request_redraw (SPCanvas *canvas, int x1, int y1, int x2, int y2)
 
 void sp_canvas_window_to_world (SPCanvas *canvas, double winx, double winy, double *worldx, double *worldy);
 void sp_canvas_world_to_window (SPCanvas *canvas, double worldx, double worldy, double *winx, double *winy);
+
+NRRectF *sp_canvas_get_viewbox (SPCanvas *canvas, NRRectF *viewbox);
 
 G_END_DECLS
 

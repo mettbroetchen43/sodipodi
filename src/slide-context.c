@@ -181,6 +181,6 @@ sp_slide_context_zoom (SPDesktop *desktop)
 
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 
-	sp_desktop_show_region (desktop, d.x0, d.y0, d.x1 - 1.0, d.y1 - 1.0, 0);
+	sp_desktop_set_display_area (desktop, d.x0, d.y0, d.x1 - 1.0, d.y1 - 1.0, 0);
 }
 

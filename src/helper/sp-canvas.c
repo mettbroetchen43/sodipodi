@@ -1124,7 +1124,8 @@ sp_canvas_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 static void
 scroll_to (SPCanvas *canvas, double x, double y)
 {
-	if (!NR_DF_TEST_CLOSE (x, canvas->x0, SP_CANVAS_PX_EPSILON) || !NR_DF_TEST_CLOSE (y, canvas->y0, SP_CANVAS_PX_EPSILON)) {
+	if (!NR_DF_TEST_CLOSE (x, canvas->x0, SP_CANVAS_PX_EPSILON) ||
+	    !NR_DF_TEST_CLOSE (y, canvas->y0, SP_CANVAS_PX_EPSILON)) {
 		canvas->x0 = x;
 		canvas->y0 = y;
 
@@ -1508,7 +1509,7 @@ sp_canvas_paint_rect (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 						    canvas->pixmap_gc,
 						    TRUE,
 						    x0 - canvas->x0, y0 - canvas->y0,
-						    x1 - x0 - canvas->x0, y1 - y0 - canvas->y0);
+						    x1 - x0, y1 - y0);
 			} else {
 				gdk_draw_rgb_image_dithalign (SP_CANVAS_WINDOW (canvas),
 							      canvas->pixmap_gc,
@@ -1702,8 +1703,8 @@ paint (SPCanvas *canvas)
 
 		x0 = MAX (rects[i].x0, canvas->x0);
 		y0 = MAX (rects[i].y0, canvas->y0);
-		x1 = MIN (rects[i].x1, x0 + GTK_WIDGET (canvas)->allocation.width);
-		y1 = MIN (rects[i].y1, x0 + GTK_WIDGET (canvas)->allocation.height);
+		x1 = MIN (rects[i].x1, canvas->x0 + GTK_WIDGET (canvas)->allocation.width);
+		y1 = MIN (rects[i].y1, canvas->y0 + GTK_WIDGET (canvas)->allocation.height);
 
 		if ((x0 < x1) && (y0 < y1)) {
 			GdkEventExpose ex;
@@ -1713,8 +1714,8 @@ paint (SPCanvas *canvas)
 			ex.send_event = TRUE;
 			ex.area.x = x0 - canvas->x0;
 			ex.area.y = y0 - canvas->y0;
-			ex.area.width = x1 - x0 - canvas->x0;
-			ex.area.height = y1 - y0 - canvas->y0;
+			ex.area.width = x1 - x0;
+			ex.area.height = y1 - y0;
 			ex.region = gdk_region_rectangle (&ex.area);
 			ex.count = 0;
 			gtk_widget_send_expose (widget, (GdkEvent *) &ex);
@@ -1961,8 +1962,7 @@ uta_union_clip (ArtUta *uta1, ArtUta *uta2, ArtIRect *clip)
  * to be repainted.  To be used only by item implementations.
  **/
 void
-sp_canvas_request_redraw_uta (SPCanvas *canvas,
-                                 ArtUta *uta)
+sp_canvas_request_redraw_uta (SPCanvas *canvas, ArtUta *uta)
 {
 	ArtIRect visible;
 
@@ -2051,5 +2051,20 @@ sp_canvas_world_to_window (SPCanvas *canvas, double worldx, double worldy, doubl
 
 	if (winx) *winx = worldx - canvas->x0;
 	if (winy) *winy = worldy - canvas->x0;
+}
+
+NRRectF *
+sp_canvas_get_viewbox (SPCanvas *canvas, NRRectF *viewbox)
+{
+	g_return_val_if_fail (canvas != NULL, NULL);
+	g_return_val_if_fail (SP_IS_CANVAS (canvas), NULL);
+	g_return_val_if_fail (viewbox != NULL, NULL);
+
+	viewbox->x0 = canvas->x0;
+	viewbox->y0 = canvas->y0;
+	viewbox->x1 = viewbox->x0 + GTK_WIDGET (canvas)->allocation.width;
+	viewbox->y1 = viewbox->y0 + GTK_WIDGET (canvas)->allocation.height;
+
+	return viewbox;
 }
 

@@ -743,7 +743,7 @@ sp_selection_move_screen (gdouble sx, gdouble sy)
   if (!SP_IS_SELECTION (selection)) return;
   if sp_selection_is_empty(selection) return;
 
-  zf = sp_desktop_zoom_factor(desktop);
+  zf = SP_DESKTOP_ZOOM (desktop);
   dx = sx / zf;
   dy = sy / zf;
   sp_selection_move_relative (selection,dx,dy);

@@ -24,6 +24,7 @@ typedef struct _SPDesktopWidgetClass SPDesktopWidgetClass;
 #define SP_IS_DESKTOP_WIDGET(o) (GTK_CHECK_TYPE ((o), SP_TYPE_DESKTOP_WIDGET))
 #define SP_IS_DESKTOP_WIDGET_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_DESKTOP_WIDGET))
 
+#include <libnr/nr-matrix.h>
 #include <libart_lgpl/art_rect.h>
 #include "helper/helper-forward.h"
 #include "forward.h"
@@ -68,6 +69,12 @@ struct _SPDesktopClass {
 	void (* modified) (SPDesktop *desktop, guint flags);
 };
 
+#define SP_DESKTOP_SCROLL_LIMIT 4000.0
+#define SP_DESKTOP_ZOOM_INC 1.414213562
+#define SP_DESKTOP_ZOOM_MAX 16.0
+#define SP_DESKTOP_ZOOM_MIN 0.0625
+#define SP_DESKTOP_ZOOM(d) NR_MATRIX_DF_EXPANSION((NRMatrixD *) &(d)->d2w)
+
 void sp_desktop_set_active (SPDesktop *desktop, gboolean active);
 
 #ifndef __SP_DESKTOP_C__
@@ -82,19 +89,8 @@ void sp_desktop_activate_guides (SPDesktop *desktop, gboolean activate);
 
 void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
 
-/* Zooming, viewport, position & similar */
-#define SP_DESKTOP_SCROLL_LIMIT 10000.0
-#define SP_DESKTOP_ZOOM_INC 1.414213562
-#define SP_DESKTOP_ZOOM_MAX 16.0
-#define SP_DESKTOP_ZOOM_MIN 0.0625
-
-gdouble sp_desktop_zoom_factor (SPDesktop * desktop);
-
 void sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy);
 ArtDRect *sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area);
-void sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint border);
-void sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
-void sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
 
 /* fixme: */
 void sp_desktop_toggle_borders (GtkWidget * widget);
@@ -106,6 +102,12 @@ void sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const gucha
 #define SP_COORDINATES_UNDERLINE_Y (1 << 1)
 
 void sp_desktop_set_coordinate_status (SPDesktop *desktop, gdouble x, gdouble y, guint underline);
+
+void sp_desktop_set_display_area (SPDesktop *dt, float x0, float y0, float x1, float y1, float border);
+void sp_desktop_zoom_absolute (SPDesktop *dt, float cx, float cy, float zoom);
+void sp_desktop_zoom_relative (SPDesktop *dt, float cx, float cy, float zoom);
+
+/* SPDesktopWidget */
 
 struct _SPDesktopWidget {
 	SPViewWidget viewwidget;
