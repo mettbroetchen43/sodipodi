@@ -8,8 +8,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2003-08-05 01:10+0200\n"
-"PO-Revision-Date: 2003-08-05 01:15+0200\n"
+"POT-Creation-Date: 2003-08-06 01:23+0200\n"
+"PO-Revision-Date: 2003-08-06 01:24+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "Kunde inte skapa sodipodi-svg-doc-fabrik"
 
 #: src/desktop.c:750
 msgid "Zoom drawing if window size changes"
-msgstr ""
+msgstr "Zooma in teckning om fönsterstorleken ändras"
 
 #: src/desktop.c:830
 #, c-format
@@ -66,44 +66,40 @@ msgid "Align objects"
 msgstr "Justera objekt"
 
 #: src/dialogs/align.c:172
-#, fuzzy
 msgid "Right side of aligned objects to left side of anchor"
-msgstr "Justera inuti objektet mot vänsterkanten"
+msgstr "Högersida på justerade objekt mot vänsterkanten på ankare"
 
 #: src/dialogs/align.c:175
 msgid "Left side of aligned objects to left side of anchor"
-msgstr ""
+msgstr "Vänstersida på justerade objekt mot vänsterkanten på ankare"
 
 #: src/dialogs/align.c:178
 msgid "Center horizontally"
 msgstr "Centrera horisontellt"
 
 #: src/dialogs/align.c:181
-#, fuzzy
 msgid "Right side of aligned objects to right side of anchor"
-msgstr "Justera inuti objektet mot högerkanten"
+msgstr "Högersida på justerade objekt mot högerkanten på ankare"
 
 #: src/dialogs/align.c:184
 msgid "Left side of aligned objects to right side of anchor"
-msgstr ""
+msgstr "Vänstersida på justerade objekt mot högerkanten på ankare"
 
 #: src/dialogs/align.c:188
 msgid "Bottom of aligned objects to top of anchor"
-msgstr ""
+msgstr "Nederkanten på justerade objekt mot överkanten på ankare"
 
 #: src/dialogs/align.c:191 src/dialogs/align.c:200
-#, fuzzy
 msgid "Top of aligned objects to top of anchor"
-msgstr "Justera inuti objektet mot överkanten"
+msgstr "Överkanten på justerade objekt mot överkanten på ankare"
 
 #: src/dialogs/align.c:194
 msgid "Center vertically"
 msgstr "Centrera vertikalt"
 
 #: src/dialogs/align.c:197
-#, fuzzy
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr "Justera inuti objektet mot nederkanten"
+msgstr "Nederkanten på justerade objekt mot nederkanten på ankare"
 
 #: src/dialogs/align.c:203
 msgid "Align"
@@ -578,7 +574,7 @@ msgstr "Genomstrykningsstil"
 
 #: src/dialogs/object-properties.c:173
 msgid "Apply to:"
-msgstr ""
+msgstr "Tillämpa på:"
 
 #: src/dialogs/object-properties.c:183
 msgid "Selected objects"
@@ -1043,11 +1039,11 @@ msgstr "Om Sodipodi"
 #. Modules need abouts too
 #: src/interface.c:319 src/interface.c:475
 msgid "About Modules"
-msgstr ""
+msgstr "Om moduler"
 
 #: src/interface.c:337
 msgid "Cleanup"
-msgstr ""
+msgstr "Städa"
 
 #. View:Zoom
 #: src/interface.c:408 src/toolbox.c:616 src/verbs.c:476
@@ -1191,9 +1187,9 @@ msgid "COLOR"
 msgstr "FÄRG"
 
 #: src/main.c:153
-#, fuzzy
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr "Exportera dokument till png-fil"
+msgstr ""
+"Exportera dokument till vanlig SVG-fil (inget \"xmlns:sodipodi\"-namnutrymme)"
 
 #: src/main.c:155
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
@@ -1203,15 +1199,15 @@ msgstr ""
 
 #: src/main.c:157
 msgid "Prefer bitmap (xpm) icons to SVG ones"
-msgstr ""
+msgstr "Föredra bitmappsikoner (xpm) över SVG-ikoner"
 
 #: src/module.c:556
 msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr ""
+msgstr "SVG med \"xmlns:sodipodi\"-namnutrymme"
 
 #: src/module.c:557
 msgid "Scalable Vector Graphics format with sodipodi extensions"
-msgstr ""
+msgstr "Format för skalbar vektorgrafik med sodipodi-tillägg"
 
 #: src/module.c:560
 msgid "Plain SVG"
@@ -1231,9 +1227,8 @@ msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (dokumentnamn %s...): Förhandsgranska"
 
 #: src/modules/kde.cpp:159
-#, fuzzy
 msgid "Document variant:"
-msgstr "Dokumentnamn:"
+msgstr "Dokumentvariant:"
 
 #: src/modules/kde.cpp:169
 msgid ""
@@ -1241,6 +1236,9 @@ msgid ""
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
+"*.svg *.svgz|SVG-filer\n"
+"*.xml|XML-filer\n"
+"*|Alla filer"
 
 #: src/modules/kde.cpp:171
 msgid "Save document as"
@@ -1248,7 +1246,6 @@ msgstr "Spara dokument som"
 
 #. Print destination frame
 #: src/modules/ps.c:157 src/modules/ps.c:218
-#, fuzzy
 msgid "Print destination"
 msgstr "Utskriftsdestination"
 
@@ -1259,7 +1256,7 @@ msgstr "Utskriftsegenskaper"
 
 #: src/modules/ps.c:176
 msgid "Print using PostScript operators"
-msgstr ""
+msgstr "Skriv ut genom användning av PostScript-operatorer"
 
 #: src/modules/ps.c:178
 msgid ""
@@ -1267,6 +1264,9 @@ msgid ""
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
 msgstr ""
+"Använd PostScript-vektoroperatorer. Resulterande bilden kommer (vanligtvis) "
+"att bli mindre och kan skalas godtyckligt, men alfatransparens, markörer och "
+"mönster kommer att gå förlorade"
 
 #: src/modules/ps.c:183
 msgid "Print as bitmap"
@@ -1278,10 +1278,13 @@ msgid ""
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
 msgstr ""
+"Skriv ut allt som bitmappsbilder. Resulterande bilden kommer (vanligtvis) "
+"att bli större och dess kvalitet beror på zoomfaktorn, men all grafik kommer "
+"att renderas identiskt till displayen"
 
 #: src/modules/ps.c:199
 msgid "Preferred resolution (dots per inch) of bitmap"
-msgstr ""
+msgstr "Föredragen upplösning (punkter per tum) av bitmappsbild"
 
 #: src/modules/ps.c:214
 msgid "Resolution:"
@@ -1293,6 +1296,9 @@ msgid ""
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
+"Ange lpr-destinationskö.\n"
+"Använd \"> filnamn\" för att skriva till fil.\n"
+"Använd \"| prog arg...\" för att skicka via rör till program"
 
 #: src/modules/ps.c:837
 msgid "write error occured"
@@ -1320,7 +1326,7 @@ msgstr "Återställ transformering"
 
 #: src/object-ui.c:134
 msgid "Make sensitive"
-msgstr "GÖr känslig"
+msgstr "Gör känslig"
 
 #: src/object-ui.c:134
 msgid "Make insensitive"
@@ -1423,12 +1429,12 @@ msgstr "Spiralegenskaper"
 #. rx_ratio
 #: src/rect-context.c:397
 msgid "Roundness ratio for x:"
-msgstr ""
+msgstr "Rundhetsgrad för x:"
 
 #. ry_ratio
 #: src/rect-context.c:409
 msgid "Roundness ratio for y:"
-msgstr ""
+msgstr "Rundhetsgrad för y:"
 
 #: src/select-context.c:564
 msgid "Visual transformation"
@@ -1513,12 +1519,11 @@ msgid ""
 "preferences."
 msgstr ""
 "%s är inte en giltig sodipodi-inställningsfil.\n"
-"Även om sodipodi kommer att köra kommer du\n"
-"varken att kunna läsa in eller spara\n"
-"inställningar."
+"Även om sodipodi kommer att köra kan du\n"
+"varken läsa in eller spara inställningar."
 
 #: src/sodipodi.c:584
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s is not regular file.\n"
 "Although sodipodi will run, you are\n"
@@ -1526,10 +1531,10 @@ msgid ""
 msgstr ""
 "%s är ingen vanlig fil.\n"
 "Även om sodipodi kommer att köra kan du\n"
-"varken läsa in eller spara inställningar\n"
+"inte använda tillägg (insticksmoduler)\n"
 
 #: src/sodipodi.c:587
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s either is not valid xml file or\n"
 "you do not have read premissions on it.\n"
@@ -1538,24 +1543,22 @@ msgid ""
 msgstr ""
 "%s är varken en giltig xml-fil eller\n"
 "så har du inte läsrättigheter till den.\n"
-"Även om sodipodi kommer att köra kommer\n"
-"du varken att kunna läsa in eller spara\n"
-"inställningar."
+"Även om sodipodi kommer att köra kan\n"
+"du inte använda tillägg (insticksmoduler)\n"
 
 #: src/sodipodi.c:591
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s is not valid sodipodi extensions file.\n"
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"%s är inte en giltig sodipodi-inställningsfil.\n"
-"Även om sodipodi kommer att köra kommer du\n"
-"varken att kunna läsa in eller spara\n"
-"inställningar."
+"%s är inte en giltig sodipodi-tilläggsfil.\n"
+"Även om sodipodi kommer att köra kan du\n"
+"inte använda tillägg (insticksmoduler)\n"
 
 #: src/sodipodi.c:930
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot create directory %s.\n"
 "Although sodipodi will run, you\n"
@@ -1565,7 +1568,7 @@ msgstr ""
 "Kan inte skapa katalogen %s.\n"
 "Även om sodipodi kommer att köra\n"
 "kan du varken läsa in eller spara\n"
-"inställningar."
+"%s."
 
 #: src/sodipodi.c:934
 #, c-format
@@ -1607,7 +1610,7 @@ msgstr ""
 "inställningar."
 
 #: src/sodipodi.c:952
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot create directory %s.\n"
 "Although sodipodi will run, you are\n"
@@ -1615,11 +1618,11 @@ msgid ""
 msgstr ""
 "Kan inte skapa katalogen %s.\n"
 "Även om sodipodi kommer att köra\n"
-"kan du varken läsa in eller spara\n"
-"inställningar."
+"kan du inte använda tillägg\n"
+"(insticksmoduler)\n"
 
 #: src/sodipodi.c:955
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%s is not a valid directory.\n"
 "Although sodipodi will run, you are\n"
@@ -1627,11 +1630,11 @@ msgid ""
 msgstr ""
 "%s är inte en giltig katalog.\n"
 "Även om sodipodi kommer att köra\n"
-"kan du varken läsa in eller spara\n"
-"inställningar."
+"kan du inte använda tillägg\n"
+"(insticksmoduler)\n"
 
 #: src/sodipodi.c:958
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot create file %s.\n"
 "Although sodipodi will run, you are\n"
@@ -1639,11 +1642,11 @@ msgid ""
 msgstr ""
 "Kan inte skapa filen %s.\n"
 "Även om sodipodi kommer att köra\n"
-"kan du varken läsa in eller spara\n"
-"inställningar."
+"kan du inte använda tillägg\n"
+"(insticksmoduler)\n"
 
 #: src/sodipodi.c:961
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Cannot write file %s.\n"
 "Although sodipodi will run, you are\n"
@@ -1651,8 +1654,8 @@ msgid ""
 msgstr ""
 "Kan inte skriva filen %s.\n"
 "Även om sodipodi kommer att köra\n"
-"kan du varken läsa in eller spara\n"
-"inställningar."
+"kan du inte använda tillägg\n"
+"(insticksmoduler)\n"
 
 #: src/sp-anchor.c:195
 #, c-format
@@ -1716,143 +1719,124 @@ msgstr "Proportion:"
 
 #. Making sides flat
 #: src/star-context.c:380
-#, fuzzy
 msgid "Make sides flat"
-msgstr "GÖr känslig"
+msgstr "Gör sidor platta"
 
 #: src/toolbox.c:438
 msgid "Object"
 msgstr "Objekt"
 
 #: src/toolbox.c:442 src/verbs.c:494
-#, fuzzy
 msgid "Object size and position"
-msgstr "Storlek och position"
+msgstr "Objektstorlek och -position"
 
 #: src/toolbox.c:443
-#, fuzzy
 msgid "Text and font settings"
-msgstr "Text och typsnitt"
+msgstr "Text- och typsnittsinställningar"
 
 #: src/toolbox.c:445 src/verbs.c:495
-#, fuzzy
 msgid "Object transformations"
-msgstr "Objekttransformering"
+msgstr "Objekttransformeringar"
 
 #: src/toolbox.c:518
 msgid "Draw"
 msgstr "Rita"
 
 #: src/toolbox.c:573
-#, fuzzy
 msgid "Extension"
-msgstr "Expansion"
+msgstr "Tillägg"
 
 #: src/toolbox.c:650
 msgid "Nodes"
 msgstr "Noder"
 
 #: src/toolbox.c:652
-#, fuzzy
 msgid "Insert new nodes into selected segments"
-msgstr "Inkludera en nod i markerade segment"
+msgstr "Infoga nya noder i markerade segment"
 
 #: src/toolbox.c:653
-#, fuzzy
 msgid "Break line at selected nodes"
-msgstr "Spetsa linjen vid markerade noder"
+msgstr "Dela linjen vid markerade noder"
 
 #: src/toolbox.c:654
-#, fuzzy
 msgid "Make selected nodes corner"
-msgstr "Ta bort markerade noder"
+msgstr "Gör markerade noder till hörn"
 
 #: src/toolbox.c:655
-#, fuzzy
 msgid "Make selected segments lines"
-msgstr "Konvertera markerade segment till linjer"
+msgstr "Gör markerade segment till linjer"
 
 #: src/toolbox.c:656
 msgid "Delete selected nodes"
 msgstr "Ta bort markerade noder"
 
 #: src/toolbox.c:657
-#, fuzzy
 msgid "Join lines at selected nodes"
-msgstr "Gör linjen mjukare vid markerade noder"
+msgstr "Anslut linjer vid markerade noder"
 
 #: src/toolbox.c:658
-#, fuzzy
 msgid "Make selected nodes smooth"
-msgstr "Ta bort markerade noder"
+msgstr "Gör markerade noder mjuka"
 
 #: src/toolbox.c:659
-#, fuzzy
 msgid "Make selected segments curves"
-msgstr "Konvertera markerade segment till kurvor"
+msgstr "Gör markerade segment till kurvor"
 
 #: src/verbs.c:427
 msgid "Does nothing"
-msgstr ""
+msgstr "Gör inget"
 
 #: src/verbs.c:429
 msgid "Create new SVG document"
-msgstr ""
+msgstr "Skapa nytt SVG-dokument"
 
 #: src/verbs.c:430
-#, fuzzy
 msgid "Open..."
-msgstr "Öppna"
+msgstr "Öppna..."
 
 #: src/verbs.c:430
 msgid "Open existing SVG document"
-msgstr ""
+msgstr "Öppna befintligt SVG-dokument"
 
 #: src/verbs.c:431
 msgid "Save"
 msgstr "Spara"
 
 #: src/verbs.c:431
-#, fuzzy
 msgid "Save document"
-msgstr "Minnesdokument %d"
+msgstr "Spara dokument"
 
 #: src/verbs.c:432
-#, fuzzy
 msgid "Save As..."
-msgstr "Spara som"
+msgstr "Spara som..."
 
 #: src/verbs.c:432
-#, fuzzy
 msgid "Save document under new name"
-msgstr "Spara teckning med nytt namn"
+msgstr "Spara dokument med nytt namn"
 
 #: src/verbs.c:433
-#, fuzzy
 msgid "Print..."
-msgstr "Skriv ut"
+msgstr "Skriv ut..."
 
 #: src/verbs.c:433
-#, fuzzy
 msgid "Print document"
-msgstr "Namnlöst dokument"
+msgstr "Skriv ut dokument"
 
 #: src/verbs.c:434
 msgid "Print Direct..."
-msgstr ""
+msgstr "Skriv ut direkt..."
 
 #: src/verbs.c:434
 msgid "Print directly to file or pipe"
-msgstr ""
+msgstr "Skriv ut direkt till fil eller rör"
 
 #: src/verbs.c:435
 msgid "Print Preview"
 msgstr "Förhandsgranska"
 
 #: src/verbs.c:435
-#, fuzzy
 msgid "Preview document printout"
-msgstr "Förhandsgranska teckning"
+msgstr "Förhandsgranska dokumentutskrift"
 
 #: src/verbs.c:436
 msgid "Import"
@@ -1860,12 +1844,11 @@ msgstr "Importera"
 
 #: src/verbs.c:436
 msgid "Import bitmap or SVG image into document"
-msgstr ""
+msgstr "Importera bitmappsbild eller SVG-bild till dokument"
 
 #: src/verbs.c:437
-#, fuzzy
 msgid "Export document as PNG bitmap"
-msgstr "Exportera dokument till png-fil"
+msgstr "Exportera dokument som PNG-bitmappsbild"
 
 #. Edit
 #: src/verbs.c:439
@@ -1873,9 +1856,8 @@ msgid "Undo"
 msgstr "Ångra"
 
 #: src/verbs.c:439
-#, fuzzy
 msgid "Revert last action"
-msgstr "Återställ transformering"
+msgstr "Återställ senaste åtgärd"
 
 #: src/verbs.c:440
 msgid "Redo"
@@ -1883,41 +1865,37 @@ msgstr "Gör om"
 
 #: src/verbs.c:440
 msgid "Do again undone action"
-msgstr ""
+msgstr "Gör senaste åtgärden igen"
 
 #: src/verbs.c:441
 msgid "Cut"
 msgstr "Klipp ut"
 
 #: src/verbs.c:441
-#, fuzzy
 msgid "Cut selected objects to clipboard"
-msgstr "Konvertera markerade objekt till kurvor"
+msgstr "Klipp ut markerade objekt till urklipp"
 
 #: src/verbs.c:442
 msgid "Copy"
 msgstr "Kopiera"
 
 #: src/verbs.c:442
-#, fuzzy
 msgid "Copy selected objects to clipboard"
-msgstr "Kopiera markering till urklipp"
+msgstr "Kopiera markerade objekt till urklipp"
 
 #: src/verbs.c:443
 msgid "Paste"
 msgstr "Klistra in"
 
 #: src/verbs.c:443
-#, fuzzy
 msgid "Paste objects from clipboard"
-msgstr "Klistra in från urklipp"
+msgstr "Klistra in objekt från urklipp"
 
 #: src/verbs.c:444
 msgid "Delete"
 msgstr "Ta bort"
 
 #: src/verbs.c:444
-#, fuzzy
 msgid "Delete selected objects"
 msgstr "Ta bort markerade objekt"
 
@@ -1926,28 +1904,24 @@ msgid "Duplicate"
 msgstr "Mångfaldiga"
 
 #: src/verbs.c:445
-#, fuzzy
 msgid "Duplicate selected objects"
 msgstr "Mångfaldiga markerade objekt"
 
 #: src/verbs.c:446
-#, fuzzy
 msgid "Clear All"
 msgstr "Töm allt"
 
 #: src/verbs.c:446
 msgid "Delete all objects from document"
-msgstr ""
+msgstr "Ta bort alla objekt från dokumentet"
 
 #: src/verbs.c:447
-#, fuzzy
 msgid "Select All"
-msgstr "Markera"
+msgstr "Markera allt"
 
 #: src/verbs.c:447
-#, fuzzy
 msgid "Select all objects in document"
-msgstr "Inga toningar i dokument"
+msgstr "Markera alla objekt i dokumentet"
 
 #. Selection
 #: src/verbs.c:449
@@ -1955,115 +1929,97 @@ msgid "Bring to Front"
 msgstr "Flytta främst"
 
 #: src/verbs.c:449
-#, fuzzy
 msgid "Raise selected objects to top"
-msgstr "Placera markerade objekt överst"
+msgstr "Höj markerade objekt överst"
 
 #: src/verbs.c:450
 msgid "Send to Back"
 msgstr "Skicka bakåt"
 
 #: src/verbs.c:450
-#, fuzzy
 msgid "Lower selected objects to bottom"
-msgstr "Placera markerade objekt underst"
+msgstr "Sänk markerade objekt underst"
 
 #: src/verbs.c:451
 msgid "Raise"
 msgstr "Höj"
 
 #: src/verbs.c:451
-#, fuzzy
 msgid "Raise selected objects one position"
-msgstr "Placera markerade objekt överst"
+msgstr "Höj markerade objekt en position"
 
 #: src/verbs.c:452
 msgid "Lower"
 msgstr "Sänk"
 
 #: src/verbs.c:452
-#, fuzzy
 msgid "Lower selected objects one position"
-msgstr "Placera markerade objekt underst"
+msgstr "Sänk markerade objekt en position"
 
 #: src/verbs.c:453
 msgid "Group selected objects"
 msgstr "Gruppera markerade objekt"
 
 #: src/verbs.c:454
-#, fuzzy
 msgid "Ungroup selected group"
 msgstr "Avgruppera markerad grupp"
 
 #: src/verbs.c:455
 msgid "Combine"
-msgstr "Kombinera"
+msgstr "Slå samman"
 
 #: src/verbs.c:455
-#, fuzzy
 msgid "Combine multiple paths"
-msgstr "Slå samman markerade vägar"
+msgstr "Slå samman flera slingor"
 
 #: src/verbs.c:456
-#, fuzzy
 msgid "Break Apart"
-msgstr "_Dela upp"
+msgstr "Dela upp"
 
 #: src/verbs.c:456
-#, fuzzy
 msgid "Break selected path to subpaths"
-msgstr "Dela upp markerade vägar"
+msgstr "Dela upp markerad slinga till underslingor"
 
 #. Object
 #: src/verbs.c:458
-#, fuzzy
 msgid "Rotate 90 degrees"
-msgstr "Ställ in vinkeln till 90°"
+msgstr "Rotera 90°"
 
 #: src/verbs.c:458
-#, fuzzy
 msgid "Rotates object 90 degrees clockwise"
-msgstr "Rotera markerade objekt 90 grader medurs"
+msgstr "Roterar objekt 90 grader medurs"
 
 #: src/verbs.c:459
-#, fuzzy
 msgid "Flatten object"
-msgstr "Markerade objekt"
+msgstr "Platta till objekt"
 
 #: src/verbs.c:459
-#, fuzzy
 msgid "Remove transformations from object"
-msgstr "Ta bort transformering"
+msgstr "Ta bort transformeringar från objekt"
 
 #: src/verbs.c:460
-#, fuzzy
 msgid "Convert to Curves"
-msgstr "Omvandla till ku_rvor"
+msgstr "Omvandla till kurvor"
 
 #: src/verbs.c:460
-#, fuzzy
 msgid "Convert selected object to path"
-msgstr "Konvertera markerade objekt till kurvor"
+msgstr "Konvertera markerat objekt till slinga"
 
 #: src/verbs.c:461
-#, fuzzy
 msgid "Flip Horizontally"
-msgstr "vänd horisontellt"
+msgstr "Vänd horisontellt"
 
 #: src/verbs.c:462
-#, fuzzy
 msgid "Flip selected objects horizontally"
-msgstr "Vänd markerade objekt"
+msgstr "Vänd markerade objekt horisontellt"
 
 #: src/verbs.c:463
-#, fuzzy
 msgid "Flip Vertically"
-msgstr "vänd vertikalt"
+msgstr "Vänd vertikalt"
 
 #: src/verbs.c:464
-#, fuzzy
 msgid "Flip selected objects vertically"
-msgstr "Vänd markerade objekt"
+msgstr "Vänd markerade objekt vertikalt"
 
 #. Event contexts
 #: src/verbs.c:466
@@ -2071,19 +2027,16 @@ msgid "Select"
 msgstr "Markera"
 
 #: src/verbs.c:466
-#, fuzzy
 msgid "Select and transform objects"
-msgstr "Markera och transformera"
+msgstr "Markera och transformera objekt"
 
 #: src/verbs.c:467
-#, fuzzy
 msgid "Node edit"
 msgstr "Nodredigering"
 
 #: src/verbs.c:467
-#, fuzzy
 msgid "Modify existing objects by control nodes"
-msgstr "Redigera objekt genom att använda kontrollnoder"
+msgstr "Ändra befintliga objekt genom att använda kontrollnoder"
 
 #: src/verbs.c:468
 msgid "Rectangle"
@@ -2091,7 +2044,7 @@ msgstr "Rektangel"
 
 #: src/verbs.c:468
 msgid "Create rectangles and squares with optional rounded corners"
-msgstr ""
+msgstr "Skapa rektanglar och fyrkanter med valfria rundade hörn"
 
 #: src/verbs.c:469
 msgid "Ellipse"
@@ -2099,120 +2052,108 @@ msgstr "Ellips"
 
 #: src/verbs.c:469
 msgid "Create circles, ellipses and arcs"
-msgstr ""
+msgstr "Skapa cirklar, ellipser och bågar"
 
 #: src/verbs.c:470
 msgid "Create stars and polygons"
-msgstr ""
+msgstr "Skapa stjärnor och polygoner"
 
 #: src/verbs.c:471
-#, fuzzy
 msgid "Create spirals"
-msgstr "Rita spiral"
+msgstr "Skapa spiraler"
 
 #: src/verbs.c:472
 msgid "Pencil"
-msgstr ""
+msgstr "Blyertspenna"
 
 #: src/verbs.c:472
-#, fuzzy
 msgid "Draw freehand curves and straight lines"
-msgstr "Rita linje på fri hand"
+msgstr "Rita kurvor på fri hand och raka linjer"
 
 #: src/verbs.c:473
-#, fuzzy
 msgid "Pen"
-msgstr "Procent"
+msgstr "Bläckpenna"
 
 #: src/verbs.c:473
 msgid "Draw precisely positioned curved and straight lines"
-msgstr ""
+msgstr "Rita exakt positionerade kurvor och raka linjer"
 
 #: src/verbs.c:474
-#, fuzzy
 msgid "Calligraphy"
-msgstr "Kalligrafisk linje"
+msgstr "Kalligrafi"
 
 #: src/verbs.c:474
-#, fuzzy
 msgid "Draw calligraphic lines"
-msgstr "Kalligrafisk linje"
+msgstr "Rita kalligrafiska linjer"
 
 #: src/verbs.c:475
 msgid "Create and edit text objects"
-msgstr ""
+msgstr "Skapa och redigera textobjekt"
 
 #: src/verbs.c:476
 msgid "Zoom into precisely selected area"
-msgstr ""
+msgstr "Zooma in i exakt markerade områden"
 
 #: src/verbs.c:477
 msgid "Dropper"
-msgstr ""
+msgstr "Pipett"
 
 #: src/verbs.c:477
 msgid "Pick averaged colors from image"
-msgstr ""
+msgstr "Hämta medelfärger från bild"
 
 #. Zooming
 #: src/verbs.c:479
-#, fuzzy
 msgid "In"
-msgstr "Tum"
+msgstr "In"
 
 #: src/verbs.c:479
-#, fuzzy
 msgid "Zoom in drawing"
-msgstr "Zooma till teckning"
+msgstr "Zooma in teckning"
 
 #: src/verbs.c:480
-#, fuzzy
 msgid "Out"
-msgstr "Klipp ut"
+msgstr "Ut"
 
 #: src/verbs.c:480
-#, fuzzy
 msgid "Zoom out drawing"
-msgstr "Zooma till teckning"
+msgstr "Zooma ut teckning"
 
 #: src/verbs.c:481
 msgid "1:1"
 msgstr "1:1"
 
 #: src/verbs.c:481
-#, fuzzy
 msgid "Set zoom factor to 1:1"
-msgstr "Välj zoomfaktor"
+msgstr "Ställ in zoomfaktorn till 1:1"
 
 #: src/verbs.c:482
 msgid "1:2"
 msgstr "1:2"
 
 #: src/verbs.c:482
-#, fuzzy
 msgid "Set zoom factor to 1:2"
-msgstr "Välj zoomfaktor"
+msgstr "Ställ in zoomfaktorn till 1:2"
 
 #: src/verbs.c:483
 msgid "2:1"
 msgstr "2:1"
 
 #: src/verbs.c:483
-#, fuzzy
 msgid "Set zoom factor to 2:1"
-msgstr "Välj zoomfaktor"
+msgstr "Ställ in zoomfaktorn till 2:1"
 
 #: src/verbs.c:484
 msgid "Fit the whole page into window"
-msgstr ""
+msgstr "Passa in sidan i fönstret"
 
 #: src/verbs.c:485
 msgid "Fit the whole drawing into window"
-msgstr ""
+msgstr "Passa in hela teckningen i fönstret"
 
 #: src/verbs.c:486
 msgid "Fit the whole selection into window"
-msgstr ""
+msgstr "Passa in hela markeringen i fönstret"
 
 #. Dialogs
 #: src/verbs.c:488
@@ -2220,9 +2161,8 @@ msgid "Display"
 msgstr "Visning"
 
 #: src/verbs.c:488
-#, fuzzy
 msgid "Global display settings"
-msgstr "Visningsinställningar"
+msgstr "Globala visningsinställningar"
 
 #: src/verbs.c:489
 msgid "Document"
@@ -2230,16 +2170,15 @@ msgstr "Dokument"
 
 #: src/verbs.c:489
 msgid "Page layout"
-msgstr ""
+msgstr "Sidlayout"
 
 #: src/verbs.c:490
 msgid "Editing Window"
 msgstr "Redigeringsfönster"
 
 #: src/verbs.c:490
-#, fuzzy
 msgid "Editing window properties"
-msgstr "Redigeringsfönster"
+msgstr "Egenskaper för redigeringsfönster"
 
 #: src/verbs.c:491
 msgid "Tool Options"
@@ -2254,9 +2193,8 @@ msgid "Fill and Stroke"
 msgstr "Fyllning och genomstrykning"
 
 #: src/verbs.c:493
-#, fuzzy
 msgid "Fill and stroke settings"
-msgstr "Genomstrykningsinställningar"
+msgstr "Inställningar för fyllning och genomstrykning"
 
 #: src/verbs.c:494
 msgid "Size and Position"
@@ -2267,24 +2205,20 @@ msgid "Transformations"
 msgstr "Transformeringar"
 
 #: src/verbs.c:496
-#, fuzzy
 msgid "Align and Distribute"
-msgstr "Attribut"
+msgstr "Justera och distribuera"
 
 #: src/verbs.c:496
-#, fuzzy
 msgid "Align and distribute"
-msgstr "Lägg till attribut"
+msgstr "Justera och distribuera"
 
 #: src/verbs.c:497
-#, fuzzy
 msgid "Text and Font"
 msgstr "Text och typsnitt"
 
 #: src/verbs.c:497
-#, fuzzy
 msgid "Text editing and font settings"
-msgstr "Text och typsnitt"
+msgstr "Inställningar för textredigering och typsnitt"
 
 #: src/verbs.c:498
 msgid "XML Editor"
@@ -2293,36 +2227,32 @@ msgstr "XML-redigerare"
 #. Family frame
 #: src/widgets/font-selector.c:144
 msgid "Font family"
-msgstr ""
+msgstr "Typsnittsfamilj"
 
 #. Style frame
 #: src/widgets/font-selector.c:172
-#, fuzzy
 msgid "Style"
-msgstr " Stil "
+msgstr "Stil"
 
 #: src/widgets/font-selector.c:207
-#, fuzzy
 msgid "Font size:"
-msgstr "Spara inte"
+msgstr "Typsnittsstorlek:"
 
 #: src/widgets/font-selector.c:517
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr ""
+msgstr "AaBbCcIiPpQqÅåÄäÖö12368.;/()"
 
 #: src/widgets/gradient-selector.c:140
 msgid "Add"
 msgstr "Lägg till"
 
 #: src/widgets/gradient-selector.c:176
-#, fuzzy
 msgid "gradientUnits"
-msgstr "Toning"
+msgstr "toningsenheter"
 
 #: src/widgets/gradient-selector.c:205
-#, fuzzy
 msgid "gradientSpread"
-msgstr "Toningsmålning"
+msgstr "toningsspridning"
 
 #: src/widgets/gradient-vector.c:245
 msgid "No document selected"
@@ -2371,7 +2301,7 @@ msgstr "RGB"
 
 #: src/widgets/paint-selector.c:748 src/widgets/paint-selector.c:749
 msgid "RGB Colorspace"
-msgstr ""
+msgstr "RGB-färgutrymme"
 
 #: src/widgets/paint-selector.c:749
 msgid "HSV"
@@ -2383,26 +2313,24 @@ msgstr "CMYK"
 
 #: src/widgets/paint-selector.c:750
 msgid "CMYK Colorspace"
-msgstr ""
+msgstr "CMYK-färgutrymme"
 
 #. Use dropper
 #: src/widgets/paint-selector.c:757
 msgid "Get from dropper"
-msgstr ""
+msgstr "Hämta från pipett"
 
 #: src/widgets/paint-selector.c:788
 msgid "Color paint"
 msgstr "Färgmålning"
 
 #: src/widgets/paint-selector.c:858
-#, fuzzy
 msgid "Linear gradient"
-msgstr "Lägg till ny toning"
+msgstr "Linjär toning"
 
 #: src/widgets/paint-selector.c:861
-#, fuzzy
 msgid "Radial gradient"
-msgstr "Lägg till ny toning"
+msgstr "Radiell toning"
 
 #: src/widgets/sp-color-selector.c:620
 msgid "Red:"
@@ -2451,16 +2379,42 @@ msgstr "Svart:"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
-msgstr ""
+msgstr "Växla placering för separata fönster och huvudverktygslåda"
 
 #: src/widgets/sp-xmlview-attr-list.c:55
-#, fuzzy
 msgid "Attribute"
 msgstr "Attribut"
 
 #: src/widgets/sp-xmlview-attr-list.c:56
 msgid "Value"
 msgstr "Värde"
+
+#~ msgid "About"
+#~ msgstr "Om"
+
+#~ msgid "Save as..."
+#~ msgstr "Spara som..."
+
+#~ msgid "Print"
+#~ msgstr "Skriv ut"
+
+#~ msgid "Rotate object 90 degrees clockwise"
+#~ msgstr "Rotera objekt 90 grader medurs"
+
+#~ msgid "Draw precisely positioned curves and straight lines"
+#~ msgstr "Rita exakt positionerade kurvor och raka linjer"
+
+#~ msgid "Font size"
+#~ msgstr "Typsnittsstorlek"
+
+#~ msgid "Gradient Units"
+#~ msgstr "Toningsenheter"
+
+#~ msgid "Gradient Spread"
+#~ msgstr "Toningsspridning"
+
+#~ msgid "Attributes"
+#~ msgstr "Attribut"
 
 #~ msgid "Vector Illustrator"
 #~ msgstr "Vektorillustrationsprogram"
@@ -2477,9 +2431,8 @@ msgstr "Värde"
 #~ msgid "Filter"
 #~ msgstr "Filter"
 
-#, fuzzy
 #~ msgid "Open SVG file"
-#~ msgstr "Öppna fil"
+#~ msgstr "Öppna SVG-fil"
 
 #~ msgid "Break apart"
 #~ msgstr "Dela upp"
@@ -2508,28 +2461,23 @@ msgstr "Värde"
 #~ msgid "Display Properties"
 #~ msgstr "Visningsegenskaper"
 
-#, fuzzy
 #~ msgid "Convert object to curve"
-#~ msgstr "Konvertera markerade objekt till kurvor"
+#~ msgstr "Konvertera objekt till kurva"
 
-#, fuzzy
 #~ msgid "Raise selected objects one level"
-#~ msgstr "Placera markerade objekt överst"
+#~ msgstr "Höj markerade objekt en nivå"
 
-#, fuzzy
 #~ msgid "Lower selected objects one level"
-#~ msgstr "Placera markerade objekt underst"
+#~ msgstr "Sänk markerade objekt en nivå"
 
-#, fuzzy
 #~ msgid "Select tool - select and transform objects"
-#~ msgstr "Markera och transformera"
+#~ msgstr "Markeringsverktyg - markera och transformera objekt"
 
-#, fuzzy
 #~ msgid "Save as:"
-#~ msgstr "Spara som"
+#~ msgstr "Spara som:"
 
 #~ msgid "A path - whatever it means"
-#~ msgstr "En väg - vad det nu än betyder"
+#~ msgstr "En slinga - vad det nu än betyder"
 
 #~ msgid "Welcome !"
 #~ msgstr "Välkommen!"
@@ -2805,7 +2753,7 @@ msgstr "Värde"
 #~ msgstr "_Justera"
 
 #~ msgid "_Combine"
-#~ msgstr "_Kombinera"
+#~ msgstr "_Slå samman"
 
 #~ msgid "_Drawing"
 #~ msgstr "_Teckning"
@@ -2832,10 +2780,10 @@ msgstr "Värde"
 #~ msgstr "Justera dialogfönster"
 
 #~ msgid "Break apart selected paths"
-#~ msgstr "Dela upp markerade vägar"
+#~ msgstr "Dela upp markerade slingor"
 
 #~ msgid "Combine selected paths"
-#~ msgstr "Slå samman markerade vägar"
+#~ msgstr "Slå samman markerade slingor"
 
 #~ msgid "Copy selection to clipboard"
 #~ msgstr "Kopiera markering till urklipp"
