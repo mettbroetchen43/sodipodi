@@ -1,3 +1,11 @@
+2000-12-27  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/display/nr-svp-uncross.c: Lot of clenaup
+
+	* src/display/nr-svp-render: Comment out printouts
+
+	* src/display/nr-primitives.h: #define NR_COORD_TOLERANCE
+
 2000-12-26  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/display/nr-svp-uncross.c (nr_svp_uncross_full): more cases -

@@ -207,11 +207,13 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 					globalval += cr->final;
 					localval += (cr->x1 - cr->x) * (cr->value + cr->final) / 2.0;
 					localval += (xnext - cr->x1) * cr->final;
+#ifdef NR_VERBOSE
 					if ((localval < -NR_EPSILON) || (localval > 1.0 + NR_EPSILON)) {
 						g_print ("A: localval += (%f - %f) * (%f + %f) / 2\n", cr->x1, cr->x, cr->value, cr->final);
 						g_print ("A: localval += (%f - %f) * %f\n", xnext, cr->x1, cr->final);
 						g_print ("A Y: %d X: %d Globalval: %f Localval: %f\n", y, x, globalval, localval);
 					}
+#endif
 					if (sr) {
 						sr->next = cr->next;
 						nr_run_free_one (cr);
@@ -224,12 +226,14 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 				} else {
 					/* Run continues through xnext */
 					localval += (xnext - cr->x) * (cr->value + (xnext - cr->x) * cr->step / 2.0);
+#ifdef NR_VERBOSE
 					if ((localval < -NR_EPSILON) || (localval > 1.0 + NR_EPSILON)) {
 						g_print ("B: Run is %f %f %f %f step %f final %f x %f value %f\n",
 							 cr->x0, cr->y0, cr->x1, cr->y1, cr->step, cr->final, cr->x, cr->value);
 						g_print ("B: localval += (%f - %f) * (%f + %f / 2)\n", xnext, cr->x, cr->value, cr->step);
 						g_print ("B Y: %d X: %d Globalval: %f Localval: %f\n", y, x, globalval, localval);
 					}
+#endif
 					cr->x = xnext;
 					cr->value = (xnext - cr->x0) * cr->step;
 					sr = cr;

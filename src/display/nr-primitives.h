@@ -25,6 +25,7 @@ typedef struct {
 #define NR_COORD_FROM_ART(v) (rint ((v) * 16.0) / 16.0)
 #define NR_COORD_SNAP(v) (rint ((v) * 16.0) / 16.0)
 #define NR_COORD_TO_ART(v) (v)
+#define NR_COORD_TOLERANCE 0.0625
 
 void nr_irect_set_empty (NRIRect * rect);
 int nr_irect_is_empty (NRIRect * rect);
