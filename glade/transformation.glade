@@ -309,7 +309,7 @@
 	      <widget>
 		<class>GtkSpinButton</class>
 		<name>move_ver</name>
-		<tooltip>vertival move</tooltip>
+		<tooltip>vertical move</tooltip>
 		<can_focus>True</can_focus>
 		<climb_rate>1</climb_rate>
 		<digits>2</digits>

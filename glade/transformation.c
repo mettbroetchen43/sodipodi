@@ -42,7 +42,7 @@ gchar *s = N_("Skew");
 gchar *s = N_("make copy");
 gchar *s = N_("Guidelines setup");
 gchar *s = N_("move horizontal");
-gchar *s = N_("move vertival");
+gchar *s = N_("move vertical");
 gchar *s = N_("pixel\n"
               "points\n"
               "millimeter\n"
