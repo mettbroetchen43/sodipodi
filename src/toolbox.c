@@ -514,7 +514,7 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (ev);
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_SPIRAL));
 	/* END COMPONENTS */
-	gtk_signal_connect (GTK_OBJECT (b), "activate", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
+	gtk_signal_connect (GTK_OBJECT (b), "activate-item", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPRectContext", b);
@@ -545,7 +545,7 @@ sp_toolbox_draw_create (void)
 	gtk_widget_show (ev);
 	sp_menu_button_append_child (SP_MENU_BUTTON (b), ev, GUINT_TO_POINTER (SP_TOOLBOX_DRAW_DYNAHAND));
 	/* END COMPONENTS */
-	gtk_signal_connect (GTK_OBJECT (b), "activate", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
+	gtk_signal_connect (GTK_OBJECT (b), "activate-item", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPencilContext", b);
