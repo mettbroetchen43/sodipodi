@@ -305,11 +305,19 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				shape->fill_svp = nr_art_svp_from_svp (shape->nrsvp);
 #else
 				ArtSVP *svpa, *svpb;
+				NRMatrixF ctmf;
+				nr_matrix_f_from_d (&ctmf, &gc->transform);
 				vp = sp_vpath_from_bpath_transform_closepath (shape->curve->bpath, &ctmf, TRUE, TRUE, 0.25);
 				svpa = art_svp_from_vpath (vp);
 				svpb = art_svp_uncross (svpa);
 				art_svp_free (svpa);
 				shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
+
+				shape->nrsvp = nr_svp_from_art_svp (shape->fill_svp);
+				svpa = nr_art_svp_from_svp (shape->nrsvp);
+				art_svp_free (shape->fill_svp);
+				shape->fill_svp = svpa;
+
 				art_svp_free (svpb);
 #endif
 				art_free (vp);

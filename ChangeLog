@@ -1,3 +1,8 @@
+2003-04-22  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-svp-uncross.c (nr_svp_uncross_full): Works properly now for
+	all stress-tests except zap.
+
 2003-04-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/display/nr-arena-shape.c (nr_arena_shape_update): Switch fill

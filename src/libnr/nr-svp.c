@@ -9,9 +9,14 @@
  * This code is in public domain
  */
 
-#define NR_COORD_X_FROM_ART(v) (v)
-#define NR_COORD_Y_FROM_ART(v) (floor (64.0 * v + 0.5) / 64.0)
+
+#define NR_QUANT_X 16.0
+#define NR_QUANT_Y 16.0
+#define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5) / NR_QUANT_X)
+#define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
 #define NR_COORD_TO_ART(v) (v)
+
+#include <stdio.h>
 
 #include <libart_lgpl/art_misc.h>
 
@@ -133,9 +138,18 @@ nr_svp_from_art_vpath (ArtVpath *vpath)
 	}
 
 	if (svp) {
+		NRSVP *s;
 		svp = nr_svp_uncross_full (svp, flats);
+		for (s = svp; s != NULL; s = s->next) {
+			if ((s->wind != 1) && (s->wind != -1)) {
+				printf ("Weird wind %d\n", s->wind);
+			}
 		}
-	nr_flat_free_list (flats);
+	} else {
+		nr_flat_free_list (flats);
+	}
+	/* This happnes in uncross */
+	/* nr_flat_free_list (flats); */
 
 	return svp;
 }
@@ -224,18 +238,20 @@ nr_art_svp_from_svp (NRSVP * svp)
 
 /* NRVertex */
 
-#define NR_VERTEX_ALLOC_SIZE 256
+#define NR_VERTEX_ALLOC_SIZE 4096
 static NRVertex *ffvertex = NULL;
 
 NRVertex *
 nr_vertex_new (void)
 {
 	NRVertex * v;
+#ifndef NR_VERTEX_ALLOC
 
 	v = ffvertex;
 
 	if (v == NULL) {
 		int i;
+		printf ("Mallocing\n");
 		v = nr_new (NRVertex, NR_VERTEX_ALLOC_SIZE);
 		for (i = 1; i < (NR_VERTEX_ALLOC_SIZE - 1); i++) v[i].next = &v[i + 1];
 		v[NR_VERTEX_ALLOC_SIZE - 1].next = NULL;
@@ -243,6 +259,9 @@ nr_vertex_new (void)
 	} else {
 		ffvertex = v->next;
 	}
+#else
+	v = nr_new (NRVertex, 1);
+#endif
 
 	v->next = NULL;
 
@@ -265,18 +284,32 @@ nr_vertex_new_xy (NRCoord x, NRCoord y)
 void
 nr_vertex_free_one (NRVertex * v)
 {
+#ifndef NR_VERTEX_ALLOC
 	v->next = ffvertex;
 	ffvertex = v;
+#else
+	nr_free (v);
+#endif
 }
 
 void
 nr_vertex_free_list (NRVertex * v)
 {
+#ifndef NR_VERTEX_ALLOC
 	NRVertex * l;
 
 	for (l = v; l->next != NULL; l = l->next);
 	l->next = ffvertex;
 	ffvertex = v;
+#else
+	NRVertex *l, *n;
+	l = v;
+	while (l) {
+		n = l->next;
+		nr_free (l);
+		l = n;
+	}
+#endif
 }
 
 NRVertex *
@@ -299,7 +332,7 @@ nr_vertex_reverse_list (NRVertex * v)
 
 /* NRSVP */
 
-#define NR_SVP_ALLOC_SIZE 32
+#define NR_SVP_ALLOC_SIZE 256
 static NRSVP *ffsvp = NULL;
 
 NRSVP *
@@ -355,6 +388,7 @@ nr_svp_new_vertex_wind (NRVertex *vertex, int wind)
 void
 nr_svp_free_one (NRSVP *svp)
 {
+	nr_vertex_free_list (svp->vertex);
 	svp->next = ffsvp;
 	ffsvp = svp;
 }
@@ -365,7 +399,10 @@ nr_svp_free_list (NRSVP *svp)
 	NRSVP *l;
 
 	if (svp) {
-		for (l = svp; l->next != NULL; l = l->next);
+		for (l = svp; l->next != NULL; l = l->next) {
+			nr_vertex_free_list (l->vertex);
+		}
+		nr_vertex_free_list (l->vertex);
 		l->next = ffsvp;
 		ffsvp = svp;
 	}
@@ -486,7 +523,7 @@ nr_svp_calculate_bbox (NRSVP *svp)
 
 /* NRFlat */
 
-#define NR_FLAT_ALLOC_SIZE 32
+#define NR_FLAT_ALLOC_SIZE 128
 static NRFlat *ffflat = NULL;
 
 NRFlat *
