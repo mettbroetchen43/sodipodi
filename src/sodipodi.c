@@ -42,7 +42,10 @@
 #include "event-context.h"
 #include "sodipodi.h"
 #include "sodipodi-private.h"
+
+/* Backbones of configuration xml data */
 #include "preferences-skeleton.h"
+#include "extensions-skeleton.h"
 
 enum {
 	MODIFY_SELECTION,
@@ -67,11 +70,20 @@ static void sodipodi_dispose (GObject *object);
 static void sodipodi_activate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop);
 static void sodipodi_desactivate_desktop_private (Sodipodi *sodipodi, SPDesktop *desktop);
 
+static void sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, const gchar *skeleton, int skel_size,
+				  const unsigned char *e_mkdir,
+				  const unsigned char *e_notdir,
+				  const unsigned char *e_ccf,
+				  const unsigned char *e_cwf);
+static void sodipodi_init_preferences (Sodipodi *sodipodi);
+static void sodipodi_init_extensions (Sodipodi *sodipodi);
+
 static void sodipodi_init_preferences (Sodipodi * sodipodi);
 
 struct _Sodipodi {
 	GObject object;
 	SPReprDoc *preferences;
+	SPReprDoc *extensions;
 	GSList *documents;
 	GSList *desktops;
 };
@@ -226,6 +238,8 @@ sodipodi_init (SPObject * object)
 
 	sodipodi->preferences = sp_repr_read_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE, NULL);
 
+	sodipodi->extensions = sp_repr_read_mem (extensions_skeleton, EXTENSIONS_SKELETON_SIZE, NULL);
+
 	sodipodi->documents = NULL;
 	sodipodi->desktops = NULL;
 }
@@ -242,6 +256,11 @@ sodipodi_dispose (GObject *object)
 	}
 
 	g_assert (!sodipodi->desktops);
+
+	if (sodipodi->extensions) {
+		sp_repr_document_unref (sodipodi->extensions);
+		sodipodi->extensions = NULL;
+	}
 
 	if (sodipodi->preferences) {
 		/* fixme: This is not the best place */
@@ -445,34 +464,36 @@ sodipodi_application_new (void)
 /* Preference management */
 /* We use '.' as separator */
 
-void
-sodipodi_load_preferences (Sodipodi * sodipodi)
+static void
+sodipodi_load_config (const unsigned char *filename, SPReprDoc *config, const unsigned char *skeleton, unsigned int skel_size,
+		      const unsigned char *e_notreg, const unsigned char *e_notxml, const unsigned char *e_notsp)
 {
-	gchar * fn, * m;
+	gchar *fn;
 	struct stat s;
 	GtkWidget * w;
 	SPReprDoc * doc;
 	SPRepr * root;
 
 #ifdef WIN32
-	fn = g_strdup ("sodipodi/preferences");
+	fn = g_strdup_printf ("sodipodi/%s", filename);
 #else
-	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
+	fn = g_build_filename (g_get_home_dir (), ".sodipodi", filename, NULL);
 #endif
 	if (stat (fn, &s)) {
 		/* No such file */
-		sodipodi_init_preferences (sodipodi);
+		/* fixme: Think out something (Lauris) */
+		if (!strcmp (filename, "extensions")) {
+			sodipodi_init_extensions (SODIPODI);
+		} else {
+			sodipodi_init_preferences (SODIPODI);
+		}
 		g_free (fn);
 		return;
 	}
 
 	if (!S_ISREG (s.st_mode)) {
 		/* Not a regular file */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
-					    _("%s is not regular file.\n"
-					      "Although sodipodi will run, you can\n"
-					      "neither load nor save preferences\n"), fn);
-		g_free (m);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notreg, fn);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
 		g_free (fn);
@@ -482,13 +503,7 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 	doc = sp_repr_read_file (fn, NULL);
 	if (doc == NULL) {
 		/* Not an valid xml file */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
-					    _("%s either is not valid xml file or\n"
-					      "you do not have read premissions on it.\n"
-					      "Although sodipodi will run, you\n"
-					      "are neither able to load nor save\n"
-					      "preferences."), fn);
-		g_free (m);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notxml, fn);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
 		g_free (fn);
@@ -497,12 +512,7 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 
 	root = sp_repr_document_root (doc);
 	if (strcmp (sp_repr_name (root), "sodipodi")) {
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
-					    _("%s is not valid sodipodi preferences file.\n"
-					      "Although sodipodi will run, you\n"
-					      "are neither able to load nor save\n"
-					      "preferences."), fn);
-		g_free (m);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notsp, fn);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
 		sp_repr_document_unref (doc);
@@ -510,9 +520,47 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 		return;
 	}
 
-	sp_repr_document_merge (sodipodi->preferences, doc, "id");
+	sp_repr_document_merge (config, doc, "id");
 	sp_repr_document_unref (doc);
 	g_free (fn);
+}
+
+/* Preferences management */
+
+void
+sodipodi_load_preferences (Sodipodi *sodipodi)
+{
+	sodipodi_load_config ("preferences", sodipodi->preferences, preferences_skeleton, PREFERENCES_SKELETON_SIZE,
+			      _("%s is not regular file.\n"
+				"Although sodipodi will run, you can\n"
+				"neither load nor save preferences\n"),
+			      _("%s either is not valid xml file or\n"
+				"you do not have read premissions on it.\n"
+				"Although sodipodi will run, you\n"
+				"are neither able to load nor save\n"
+				"preferences."),
+			      _("%s is not valid sodipodi preferences file.\n"
+				"Although sodipodi will run, you\n"
+				"are neither able to load nor save\n"
+				"preferences."));
+}
+
+/* Extensions management */
+
+void
+sodipodi_load_extensions (Sodipodi *sodipodi)
+{
+	sodipodi_load_config ("extensions", sodipodi->extensions, extensions_skeleton, EXTENSIONS_SKELETON_SIZE,
+			      _("%s is not regular file.\n"
+				"Although sodipodi will run, you are\n"
+				"not able to use extensions (plugins)\n"),
+			      _("%s either is not valid xml file or\n"
+				"you do not have read premissions on it.\n"
+				"Although sodipodi will run, you are\n"
+				"not able to use extensions (plugins)\n"),
+			      _("%s is not valid sodipodi extensions file.\n"
+				"Although sodipodi will run, you are\n"
+				"not able to use extensions (plugins)\n"));
 }
 
 void
@@ -533,7 +581,7 @@ sodipodi_save_preferences (Sodipodi * sodipodi)
 
 /* We use '.' as separator */
 SPRepr *
-sodipodi_get_repr (Sodipodi * sodipodi, const gchar * key)
+sodipodi_get_repr (Sodipodi *sodipodi, const gchar *key)
 {
 	SPRepr * repr;
 	const gchar * id, * s, * e;
@@ -541,7 +589,11 @@ sodipodi_get_repr (Sodipodi * sodipodi, const gchar * key)
 
 	if (key == NULL) return NULL;
 
-	repr = sp_repr_document_root (sodipodi->preferences);
+	if (!strncmp (key, "extensions", 10) && (!key[10] || (key[10] == '.'))) {
+		repr = sp_repr_document_root (sodipodi->extensions);
+	} else {
+		repr = sp_repr_document_root (sodipodi->preferences);
+	}
 	g_assert (!(strcmp (sp_repr_name (repr), "sodipodi")));
 
 	s = key;
@@ -771,12 +823,12 @@ sodipodi_active_event_context (void)
 /* Helpers */
 
 static void
-sodipodi_init_preferences (Sodipodi * sodipodi)
+sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, const gchar *skeleton, int skel_size,
+		      const unsigned char *e_mkdir, const unsigned char *e_notdir, const unsigned char *e_ccf, const unsigned char *e_cwf)
 {
 	gchar * dn, *fn;
 	struct stat s;
 	int fh;
-	gchar * m;
 	GtkWidget * w;
 
 #ifdef WIN32
@@ -786,17 +838,13 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 #endif
 	if (stat (dn, &s)) {
 #ifdef WIN32
-		if (!CreateDirectory (dn, NULL)) {
+		if (!CreateDirectory (dn, NULL))
 #else
-		if (mkdir (dn, S_IRWXU | S_IRGRP | S_IXGRP)) {
+		if (mkdir (dn, S_IRWXU | S_IRGRP | S_IXGRP))
 #endif
+		{
 			/* Cannot create directory */
-			w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
-						    _("Cannot create directory %s.\n"
-						      "Although sodipodi will run, you\n"
-						      "are neither able to load nor save\n"
-						      "preferences."), dn);
-			g_free (m);
+			w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_mkdir, dn);
 			gtk_dialog_run (GTK_DIALOG (w));
 			gtk_widget_destroy (w);
 			g_free (dn);
@@ -804,12 +852,7 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 		}
 	} else if (!S_ISDIR (s.st_mode)) {
 		/* Not a directory */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
-					    _("%s is not a valid directory.\n"
-					      "Although sodipodi will run, you\n"
-					      "are neither able to load nor save\n"
-					      "preferences."), dn);
-		g_free (m);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_notdir, dn);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
 		g_free (dn);
@@ -826,32 +869,66 @@ sodipodi_init_preferences (Sodipodi * sodipodi)
 #endif
 	if (fh < 0) {
 		/* Cannot create file */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
-					    _("Cannot create file %s.\n"
-					      "Although sodipodi will run, you\n"
-					      "are neither able to load nor save\n"
-					      "preferences."), fn);
-		g_free (m);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_ccf, fn);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
 		g_free (fn);
 		return;
 	}
-	if (write (fh, preferences_skeleton, PREFERENCES_SKELETON_SIZE) != PREFERENCES_SKELETON_SIZE) {
+	if (write (fh, skeleton, skel_size) != skel_size) {
 		/* Cannot create file */
-		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,
-					    _("Cannot write file %s.\n"
-					      "Although sodipodi will run, you\n"
-					      "are neither able to load nor save\n"
-					      "preferences."), fn);
-		g_free (m);
+		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK, e_cwf, fn);
 		gtk_dialog_run (GTK_DIALOG (w));
 		gtk_widget_destroy (w);
 		g_free (fn);
 		close (fh);
 		return;
 	}
+
+	g_free (fn);
 	close (fh);
+}
+
+/* This routine should be obsoleted in favor of the generic version */
+
+static void
+sodipodi_init_preferences (Sodipodi *sodipodi)
+{
+	sodipodi_init_config (sodipodi->preferences, "preferences", preferences_skeleton, PREFERENCES_SKELETON_SIZE,
+			      _("Cannot create directory %s.\n"
+				"Although sodipodi will run, you\n"
+				"are neither able to load nor save\n"
+				"%s."),
+			      _("%s is not a valid directory.\n"
+				"Although sodipodi will run, you\n"
+				"are neither able to load nor save\n"
+				"preferences."),
+			      _("Cannot create file %s.\n"
+				"Although sodipodi will run, you\n"
+				"are neither able to load nor save\n"
+				"preferences."),
+			      _("Cannot write file %s.\n"
+				"Although sodipodi will run, you\n"
+				"are neither able to load nor save\n"
+				"preferences."));
+}
+
+static void
+sodipodi_init_extensions (Sodipodi *sodipodi)
+{
+	sodipodi_init_config (sodipodi->extensions, "extensions", extensions_skeleton, EXTENSIONS_SKELETON_SIZE,
+			      _("Cannot create directory %s.\n"
+				"Although sodipodi will run, you are\n"
+				"not able to use extensions (plugins)\n"),
+			      _("%s is not a valid directory.\n"
+				"Although sodipodi will run, you are\n"
+				"not able to use extensions (plugins)\n"),
+			      _("Cannot create file %s.\n"
+				"Although sodipodi will run, you are\n"
+				"not able to use extensions (plugins)\n"),
+			      _("Cannot write file %s.\n"
+				"Although sodipodi will run, you are\n"
+				"not able to use extensions (plugins)\n"));
 }
 
 void

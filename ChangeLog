@@ -1,5 +1,21 @@
 2003-02-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sodipodi.c (sodipodi_load_config): Generic method by Bryce
+	(sodipodi_load_preferences): Frontend, same
+	(sodipodi_load_extensions): Ditto
+	(sodipodi_get_repr): Test for "extensions"
+	(sodipodi_init_config): Generic method by Bryce
+	(sodipodi_init_preferences): Frontend by Bryce
+	(sodipodi_init_extensions): Ditto
+
+	* src/toolbox.c (sp_toolbox_extension_create): Implemented by Bryce
+
+	* src/extension.c: New file by Bryce Harrington
+
+	* src/extension.h: New file by Bryce Harrington
+
+	* src/extensions-skeleton.h: Ditto
+
 	* src/sp-mask.c: support maskContentUnits
 
 	* src/nodepath.c (create_curve): Do not add 50 to y (why was it here?)

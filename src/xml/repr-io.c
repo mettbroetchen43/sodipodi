@@ -30,7 +30,7 @@ static const guchar *sp_comment_str =
 
 static SPReprDoc *sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns);
 static SPRepr * sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default_ns, GHashTable *prefix_map);
-static void repr_write (SPRepr * repr, FILE * file, gint level);
+static void sp_repr_write_stream (SPRepr * repr, FILE * file, gint level);
 static void sp_repr_set_xmlns_attr (const guchar *prefix, const guchar *uri, SPRepr *repr);
 static gint sp_repr_qualified_name (guchar *p, gint len, xmlNsPtr ns, const xmlChar *name, const gchar *default_ns, GHashTable *prefix_map);
 
@@ -238,7 +238,7 @@ sp_repr_save_stream (SPReprDoc *doc, FILE *fp)
 
 	repr = sp_repr_document_root (doc);
 
-	repr_write (repr, fp, 0);
+	sp_repr_write_stream (repr, fp, 0);
 }
 
 void
@@ -259,7 +259,7 @@ sp_repr_save_file (SPReprDoc *doc, const gchar *filename)
 void
 sp_repr_print (SPRepr * repr)
 {
-	repr_write (repr, stdout, 0);
+	sp_repr_write_stream (repr, stdout, 0);
 
 	return;
 }
@@ -280,7 +280,7 @@ repr_quote_write (FILE * file, const gchar * val)
 }
 
 static void
-repr_write (SPRepr * repr, FILE * file, gint level)
+sp_repr_write_stream (SPRepr * repr, FILE * file, gint level)
 {
 	SPReprAttr *attr;
 	SPRepr *child;
@@ -319,7 +319,7 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 				repr_quote_write (file, sp_repr_content (child));
 				loose = FALSE;
 			} else {
-				repr_write (child, file, (loose) ? (level + 1) : 0);
+				sp_repr_write_stream (child, file, (loose) ? (level + 1) : 0);
 				loose = TRUE;
 			}
 		}

@@ -111,6 +111,7 @@ SPRepr *sp_repr_next (SPRepr *repr);
 
 gboolean sp_repr_add_child (SPRepr * repr, SPRepr * child, SPRepr * ref);
 gboolean sp_repr_remove_child (SPRepr * repr, SPRepr * child);
+void sp_repr_write_stream (SPRepr * repr, FILE * file, gint level);
 
 #if 0
 const GList *sp_repr_get_children_list (SPRepr * repr);

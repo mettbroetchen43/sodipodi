@@ -243,6 +243,7 @@ sp_main_gui (int argc, const char **argv)
 	if (!sp_global_slideshow) {
 		sodipodi = sodipodi_application_new ();
 		sodipodi_load_preferences (sodipodi);
+		sodipodi_load_extensions (sodipodi);
 		sp_maintoolbox_create_toplevel ();
 		sodipodi_unref ();
 
@@ -262,6 +263,7 @@ sp_main_gui (int argc, const char **argv)
 			GtkWidget *ss;
 			sodipodi = sodipodi_application_new ();
 			sodipodi_load_preferences (sodipodi);
+			sodipodi_load_extensions (sodipodi);
 			ss = sp_slideshow_new (fl);
 			if (ss) gtk_widget_show (ss);
 			sodipodi_unref ();
@@ -318,9 +320,11 @@ sp_main_console (int argc, const char **argv)
 		}
 	}
 
-	/* Start up gtk, without requiring X */
+	/* Start up g type system, without requiring X */
 	g_type_init();
 	sodipodi = sodipodi_application_new ();
+	sodipodi_load_preferences (sodipodi);
+	sodipodi_load_extensions (sodipodi);
 
 	while (fl) {
 		SPDocument *doc;

@@ -43,20 +43,10 @@ Sodipodi * sodipodi_application_new (void);
 /* Preference management */
 void sodipodi_load_preferences (Sodipodi * sodipodi);
 void sodipodi_save_preferences (Sodipodi * sodipodi);
-/* We use '.' as object separator */
-SPRepr * sodipodi_get_repr (Sodipodi * sodipodi, const gchar * key);
+SPRepr *sodipodi_get_repr (Sodipodi *sodipodi, const gchar *key);
 
-#if 0
-void sodipodi_set_key (Sodipodi * sodipodi, const gchar * object, const gchar * key, const gchar * value);
-void sodipodi_set_key_as_number (Sodipodi * sodipodi, const gchar * object, const gchar * key, gdouble value);
-#define sodipodi_set_key_as_int(s,k,v) sodipodi_set_key_as_number (s, k, (gdouble) v)
-#define sodipodi_set_key_as_boolean(s,k,v) sodipodi_set_key_as_number (s, k, (gdouble) v)
-const gchar * sodipodi_get_key (Sodipodi * sodipodi, const gchar * key, const gchar * defval);
-gdouble sodipodi_get_key_as_number (Sodipodi * sodipodi, const gchar * key, gdouble defval);
-gint sodipodi_get_key_as_int (Sodipodi * sodipodi, 
-#define sodipodi_get_key_as_int(s,k,d) ((gint) sodipodi_get_key_as_number (s, k))
-#define sodipodi_get_key_as_boolean(s,k) ((gboolean) sodipodi_get_key_as_number (s, k))
-#endif
+/* Extension management */
+void sodipodi_load_extensions (Sodipodi *sodipodi);
 
 #define SP_ACTIVE_EVENTCONTEXT sodipodi_active_event_context ()
 SPEventContext * sodipodi_active_event_context (void);

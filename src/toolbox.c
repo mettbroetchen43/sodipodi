@@ -45,10 +45,12 @@
 #include "dialogs/node-edit.h"
 #include "zoom-context.h"
 #include "selection.h"
+#include "extension.h"
 #include "sp-item-transform.h"
 #include "desktop-handles.h"
 #include "interface.h"
 #include "toolbox.h"
+#include "xml/repr-private.h"
 #include "helper/gnome-utils.h"
 #include "helper/sp-intl.h"
 
@@ -57,6 +59,7 @@ static GtkWidget *sp_toolbox_edit_create (void);
 static GtkWidget *sp_toolbox_draw_create (void);
 static GtkWidget *sp_toolbox_object_create (void);
 static GtkWidget *sp_toolbox_selection_create (void);
+static GtkWidget *sp_toolbox_extension_create (void);
 static GtkWidget *sp_toolbox_zoom_create (void);
 static GtkWidget *sp_toolbox_node_create (void);
 
@@ -196,6 +199,10 @@ sp_maintoolbox_new (void)
 		}
 	}
 	g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), toolbox);
+		/* Extension */
+		t = sp_toolbox_extension_create ();
+		gtk_widget_show (t);
+		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
 
 	/* Zoom */
 	t = sp_toolbox_zoom_create ();
@@ -548,6 +555,55 @@ sp_toolbox_draw_create (void)
 	}
 
 	gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+
+	return tb;
+}
+
+static GtkWidget *
+sp_toolbox_extension_create (void)
+{
+	GtkWidget *t, *tb, *button;
+	GtkTooltips *tt;
+	SPRepr *repr;
+	SPRepr *extensions_repr;
+	SPRepr *ext;
+	int pos = 0;
+
+	t = gtk_table_new (2, 4, TRUE);
+	gtk_widget_show (t);
+
+	/* Todo:  Generalize all the toolbox routines to have general purpose
+	   routine for creating them */
+
+	/* Create the extension toolbox */
+	/* Todo: Make it able to create required boxes dynamically */
+	tb = sp_toolbox_new (t, _("Extension"), "extension", SODIPODI_PIXMAPDIR "/toolbox_zoom.xpm");
+	tt = gtk_tooltips_new ();
+
+	/* Loop over the list of extensions in spx structure */
+	extensions_repr = sodipodi_get_repr (SODIPODI, "extensions");
+	for (ext = extensions_repr->children; ext != NULL; ext = ext->next) {
+	  if (strcmp(sp_repr_attr(ext, "state"),"active")==0) {
+	    printf("Loading extension:  %s\n", sp_repr_attr(ext, "id"));
+	    button = sp_toolbox_button_new (t, pos, 
+					    sp_repr_attr(ext, "toolbutton_filename"), 
+					    GTK_SIGNAL_FUNC (sp_extension), 
+					    tt, 
+					    _(sp_repr_attr(ext, "description")));
+	    gtk_widget_set_name(button, sp_repr_attr(ext, "id"));
+	    pos++;
+	  }
+	}
+
+	repr = sodipodi_get_repr (SODIPODI, "toolboxes.extension");
+
+	if (repr) {
+		gint state;
+		state = sp_repr_get_int_attribute (repr, "state", 0);
+		sp_toolbox_set_state (SP_TOOLBOX (tb), state);
+
+		gtk_signal_connect (GTK_OBJECT (tb), "set_state", GTK_SIGNAL_FUNC (sp_toolbox_set_state_handler), repr);
+	}
 
 	return tb;
 }

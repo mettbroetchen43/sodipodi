@@ -114,8 +114,10 @@ sodipodi_SOURCES = \
 	print.c print.h \
 	interface.c interface.h \
 	slideshow.c slideshow.h \
+	extension.c extension.h \
 	\
-	preferences-skeleton.h
+	preferences-skeleton.h \
+	extensions-skeleton.h
 
 sodipodi_private_libs = \
 	dialogs/libspdialogs.a \
