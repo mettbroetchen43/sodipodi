@@ -16,7 +16,11 @@
 #define DRAW_VERBOSE
 
 #include <math.h>
+#include <string.h>
+#include <glib.h>
 #include <gdk/gdkkeysyms.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "helper/curve.h"
@@ -54,14 +58,23 @@ static void sp_draw_context_finalize (GtkObject *object);
 
 static void sp_draw_context_setup (SPEventContext *ec);
 
+static gint sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event);
+
+static void spdc_set_attach (SPDrawContext *dc, gboolean attach);
+
 static void spdc_selection_changed (SPSelection *sel, SPDrawContext *dc);
 static void spdc_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc);
-static void spdc_read_selection (SPDrawContext *dc, SPSelection *sel);
 
-static void spdc_concat_colors_and_flush (SPDrawContext *dc);
+static void spdc_attach_selection (SPDrawContext *dc, SPSelection *sel);
+static void spdc_detach_selection (SPDrawContext *dc, SPSelection *sel);
+
+static void spdc_concat_colors_and_flush (SPDrawContext *dc, gboolean forceclosed);
 static void spdc_flush_white (SPDrawContext *dc, SPCurve *gc);
 
+#if 0
 static void spdc_reset_colors (SPDrawContext *dc);
+#endif
+static void spdc_reset_white (SPDrawContext *dc);
 static void spdc_free_colors (SPDrawContext *dc);
 
 static SPDrawAnchor *test_inside (SPDrawContext * dc, gdouble wx, gdouble wy);
@@ -98,21 +111,24 @@ static void
 sp_draw_context_class_init (SPDrawContextClass *klass)
 {
 	GtkObjectClass *object_class;
-	SPEventContextClass *event_context_class;
+	SPEventContextClass *ec_class;
 
 	object_class = (GtkObjectClass *) klass;
-	event_context_class = (SPEventContextClass *) klass;
+	ec_class = (SPEventContextClass *) klass;
 
 	draw_parent_class = gtk_type_class (SP_TYPE_EVENT_CONTEXT);
 
 	object_class->finalize = sp_draw_context_finalize;
 
-	event_context_class->setup = sp_draw_context_setup;
+	ec_class->setup = sp_draw_context_setup;
+	ec_class->root_handler = sp_draw_context_root_handler;
 }
 
 static void
 sp_draw_context_init (SPDrawContext *dc)
 {
+	dc->attach = FALSE;
+
 	dc->npoints = 0;
 }
 
@@ -165,7 +181,62 @@ sp_draw_context_setup (SPEventContext *ec)
 	/* No green anchor by default */
 	dc->green_anchor = NULL;
 
-	spdc_read_selection (dc, dc->selection);
+	spdc_set_attach (dc, FALSE);
+}
+
+gint
+sp_draw_context_root_handler (SPEventContext *ec, GdkEvent *event)
+{
+	SPDrawContext *dc;
+	gint ret;
+
+	dc = SP_DRAW_CONTEXT (ec);
+
+	ret = FALSE;
+
+	switch (event->type) {
+	case GDK_KEY_PRESS:
+		/* fixme: */
+		switch (event->key.keyval) {
+		case GDK_plus:
+		case GDK_KP_Add:
+			if (dc->attach) {
+				spdc_set_attach (dc, FALSE);
+			} else {
+				spdc_set_attach (dc, TRUE);
+			}
+			ret = TRUE;
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+
+	if (!ret) {
+		if (SP_EVENT_CONTEXT_CLASS (draw_parent_class)->root_handler)
+			ret = SP_EVENT_CONTEXT_CLASS (draw_parent_class)->root_handler (ec, event);
+	}
+
+	return ret;
+}
+
+static void
+spdc_set_attach (SPDrawContext *dc, gboolean attach)
+{
+	if (attach) {
+		dc->attach = TRUE;
+		spdc_attach_selection (dc, dc->selection);
+		sp_view_set_status (SP_VIEW (SP_EVENT_CONTEXT_DESKTOP (dc)),
+				    _("Appending to selection. Press '+' to toggle Append/New."), FALSE);
+	} else {
+		dc->attach = FALSE;
+		spdc_detach_selection (dc, dc->selection);
+		sp_view_set_status (SP_VIEW (SP_EVENT_CONTEXT_DESKTOP (dc)),
+				    _("Creating new curve. Press '+' to toggle Append/New."), FALSE);
+	}
 }
 
 /*
@@ -176,7 +247,9 @@ static void
 spdc_selection_changed (SPSelection *sel, SPDrawContext *dc)
 {
 	g_print ("Selection changed in draw context\n");
-	spdc_read_selection (dc, sel);
+	if (dc->attach) {
+		spdc_attach_selection (dc, sel);
+	}
 }
 
 /* fixme: We have to ensure this is not delayed (Lauris) */
@@ -185,17 +258,18 @@ static void
 spdc_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc)
 {
 	g_print ("Selection modified in draw context\n");
-	spdc_read_selection (dc, sel);
+	if (dc->attach) {
+		spdc_attach_selection (dc, sel);
+	}
 }
 
 static void
-spdc_read_selection (SPDrawContext *dc, SPSelection *sel)
+spdc_attach_selection (SPDrawContext *dc, SPSelection *sel)
 {
 	SPItem *item;
 
-	spdc_reset_colors (dc);
-
-	/* fixme: Think (Lauris) */
+	/* We reset white and forget white/start/end anchors */
+	spdc_reset_white (dc);
 	dc->sa = NULL;
 	dc->ea = NULL;
 
@@ -232,9 +306,17 @@ spdc_read_selection (SPDrawContext *dc, SPSelection *sel)
 				dc->white_anchors = g_slist_prepend (dc->white_anchors, a);
 			}
 		}
-		/* fixme: recalculate active anchor, reset red (DONE), green (DONE) and blue (DONE) , release drags */
-		/* The latter is not needed, if we can ensure that 'modified' is not delayed */
+		/* fixme: recalculate active anchor? */
 	}
+}
+
+static void
+spdc_detach_selection (SPDrawContext *dc, SPSelection *sel)
+{
+	/* We reset white and forget white/start/end anchors */
+	spdc_reset_white (dc);
+	dc->sa = NULL;
+	dc->ea = NULL;
 }
 
 static void
@@ -265,7 +347,7 @@ spdc_endpoint_snap (SPDrawContext *dc, ArtPoint *p, guint state)
  */
 
 static void
-spdc_concat_colors_and_flush (SPDrawContext *dc)
+spdc_concat_colors_and_flush (SPDrawContext *dc, gboolean forceclosed)
 {
 	SPCurve *c;
 
@@ -288,7 +370,7 @@ spdc_concat_colors_and_flush (SPDrawContext *dc)
 	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
 
 	/* Step A - test, whether we ended on green anchor */
-	if (dc->green_anchor && dc->green_anchor->active) {
+	if (forceclosed || (dc->green_anchor && dc->green_anchor->active)) {
 		g_print ("We hit green anchor, closing Green-Blue-Red\n");
 		sp_curve_closepath_current (c);
 		/* Closed path, just flush */
@@ -503,6 +585,7 @@ fit_and_split (SPDrawContext * dc)
 	}
 }
 
+#if 0
 static void
 spdc_reset_colors (SPDrawContext *dc)
 {
@@ -522,6 +605,13 @@ spdc_reset_colors (SPDrawContext *dc)
 		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
 	}
 	/* White */
+	spdc_reset_white (dc);
+}
+#endif
+
+static void
+spdc_reset_white (SPDrawContext *dc)
+{
 	if (dc->white_item) {
 		/* We do not hold refcount */
 		dc->white_item = NULL;
@@ -648,9 +738,6 @@ static void sp_pencil_context_class_init (SPPencilContextClass *klass);
 static void sp_pencil_context_init (SPPencilContext *dc);
 static void sp_pencil_context_finalize (GtkObject *object);
 
-#if 0
-static void sp_pencil_context_setup (SPEventContext * event_context, SPDesktop * desktop);
-#endif
 static gint sp_pencil_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
 static void spdc_set_startpoint (SPPencilContext *dc, ArtPoint *p, guint state);
@@ -693,9 +780,6 @@ sp_pencil_context_class_init (SPPencilContextClass *klass)
 
 	object_class->finalize = sp_pencil_context_finalize;
 
-#if 0
-	event_context_class->setup = sp_pencil_context_setup;
-#endif
 	event_context_class->root_handler = sp_pencil_context_root_handler;
 }
 
@@ -714,19 +798,6 @@ sp_pencil_context_finalize (GtkObject *object)
 
 	GTK_OBJECT_CLASS (pencil_parent_class)->finalize (object);
 }
-
-#if 0
-static void
-sp_pencil_context_setup (SPEventContext *ec, SPDesktop *dt)
-{
-	SPPencilContext *pc;
-
-	pc = SP_PENCIL_CONTEXT (ec);
-
-	if (SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (pencil_parent_class)->setup (ec, dt);
-}
-#endif
 
 gint
 sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
@@ -841,7 +912,10 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				dc->ea = anchor;
 				/* Write curves to object */
 				g_print ("Finishing freehand\n");
-				spdc_concat_colors_and_flush (dc);
+				spdc_concat_colors_and_flush (dc, FALSE);
+				if (dc->green_anchor) {
+					dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
+				}
 				pc->state = SP_PENCIL_CONTEXT_IDLE;
 				ret = TRUE;
 				break;
@@ -853,34 +927,6 @@ sp_pencil_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			ret = TRUE;
 		}
 		break;
-#if 0
-	case GDK_KEY_PRESS:
-		/* fixme: */
-		switch (event->key.keyval) {
-		case GDK_p:
-			if (dc->state == SP_PENCIL_CONTEXT_IDLE) {
-				dc->state = SP_PENCIL_CONTEXT_PEN_POINT;
-				dc->npoints = 0;
-				gnome_canvas_item_show (dc->c1);
-				gnome_canvas_item_show (dc->cl1);
-				ret = TRUE;
-			}
-			break;
-		case GDK_f:
-			g_print ("Finishing pen\n");
-			spdc_concat_colors_and_flush (dc);
-			dc->state = SP_PENCIL_CONTEXT_IDLE;
-			gnome_canvas_item_hide (dc->c0);
-			gnome_canvas_item_hide (dc->c1);
-			gnome_canvas_item_hide (dc->cl0);
-			gnome_canvas_item_hide (dc->cl1);
-			ret = TRUE;
-			break;
-		default:
-			break;
-		}
-		break;
-#endif
 	default:
 		break;
 	}
@@ -978,7 +1024,7 @@ spdc_finish_endpoint (SPPencilContext *pc, ArtPoint *p, gboolean snap, guint sta
 		} else {
 			/* Write curves to object */
 			g_print ("Finishing real red curve\n");
-			spdc_concat_colors_and_flush (dc);
+			spdc_concat_colors_and_flush (dc, FALSE);
 		}
 	}
 }
@@ -1005,11 +1051,14 @@ static void sp_pen_context_init (SPPenContext *pc);
 static void sp_pen_context_finalize (GtkObject *object);
 
 static void sp_pen_context_setup (SPEventContext *ec);
+static void sp_pen_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
 static gint sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event);
 
 static void spdc_pen_set_point (SPPenContext *pc, ArtPoint *p, guint state);
 static void spdc_pen_set_ctrl (SPPenContext *pc, ArtPoint *p, guint state);
 static void spdc_pen_finish_segment (SPPenContext *pc, ArtPoint *p, guint state);
+
+static void spdc_pen_finish (SPPenContext *pc, gboolean closed);
 
 static SPDrawContextClass *pen_parent_class;
 
@@ -1047,12 +1096,15 @@ sp_pen_context_class_init (SPPenContextClass *klass)
 	object_class->finalize = sp_pen_context_finalize;
 
 	event_context_class->setup = sp_pen_context_setup;
+	event_context_class->set = sp_pen_context_set;
 	event_context_class->root_handler = sp_pen_context_root_handler;
 }
 
 static void
 sp_pen_context_init (SPPenContext *pc)
 {
+	pc->mode = SP_PEN_CONTEXT_MODE_CLICK;
+
 	pc->state = SP_PEN_CONTEXT_POINT;
 
 	pc->c0 = NULL;
@@ -1087,22 +1139,10 @@ sp_pen_context_setup (SPEventContext *ec)
 		SP_EVENT_CONTEXT_CLASS (pen_parent_class)->setup (ec);
 
 	/* Pen indicators */
-	pc->c0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL,
-					"shape", SP_CTRL_SHAPE_CIRCLE,
-					"size", 4.0,
-					"filled", 0,
-					"fill_color", 0xff00007f,
-					"stroked", 1,
-					"stroke_color", 0x0000ff7f,
-					NULL);
-	pc->c1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL,
-					"shape", SP_CTRL_SHAPE_CIRCLE,
-					"size", 4.0,
-					"filled", 0,
-					"fill_color", 0xff00007f,
-					"stroked", 1,
-					"stroke_color", 0x0000ff7f,
-					NULL);
+	pc->c0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL, "shape", SP_CTRL_SHAPE_CIRCLE,
+					"size", 4.0, "filled", 0, "fill_color", 0xff00007f, "stroked", 1, "stroke_color", 0x0000ff7f, NULL);
+	pc->c1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRL, "shape", SP_CTRL_SHAPE_CIRCLE,
+					"size", 4.0, "filled", 0, "fill_color", 0xff00007f, "stroked", 1, "stroke_color", 0x0000ff7f, NULL);
 	pc->cl0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRLLINE, NULL);
 	sp_ctrlline_set_rgba32 (SP_CTRLLINE (pc->cl0), 0x0000007f);
 	pc->cl1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (ec)), SP_TYPE_CTRLLINE, NULL);
@@ -1112,6 +1152,24 @@ sp_pen_context_setup (SPEventContext *ec)
 	gnome_canvas_item_hide (pc->c1);
 	gnome_canvas_item_hide (pc->cl0);
 	gnome_canvas_item_hide (pc->cl1);
+
+	sp_event_context_read (ec, "mode");
+}
+
+static void
+sp_pen_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
+{
+	SPPenContext *pc;
+
+	pc = SP_PEN_CONTEXT (ec);
+
+	if (!strcmp (key, "mode")) {
+		if (val && !strcmp (val, "drag")) {
+			pc->mode = SP_PEN_CONTEXT_MODE_DRAG;
+		} else {
+			pc->mode = SP_PEN_CONTEXT_MODE_CLICK;
+		}
+	}
 }
 
 gint
@@ -1142,9 +1200,44 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			/* Test, whether we hit any anchor */
 			anchor = test_inside (dc, event->button.x, event->button.y);
 
-			switch (pc->state) {
-			case SP_PEN_CONTEXT_POINT:
-			case SP_PEN_CONTEXT_CONTROL:
+			switch (pc->mode) {
+			case SP_PEN_CONTEXT_MODE_CLICK:
+				/* In click mode we add point on release */
+				switch (pc->state) {
+				case SP_PEN_CONTEXT_POINT:
+				case SP_PEN_CONTEXT_CONTROL:
+					break;
+				default:
+					break;
+				}
+				break;
+			case SP_PEN_CONTEXT_MODE_DRAG:
+				if (pc->state == SP_PEN_CONTEXT_POINT) {
+					/* Normal case, i.e. no Alt clicked */
+					if (dc->npoints == 0) {
+						/* Set start anchor */
+						dc->sa = anchor;
+						if (anchor) {
+							/* Adjust point to anchor if needed */
+							p = anchor->dp;
+						} else {
+							/* Create green anchor */
+							dc->green_anchor = sp_draw_anchor_new (dc, dc->green_curve, TRUE, p.x, p.y);
+						}
+						spdc_pen_set_point (pc, &p, event->motion.state);
+					} else {
+						/* Set end anchor */
+						dc->ea = anchor;
+						spdc_pen_set_point (pc, &p, event->motion.state);
+						if (dc->green_anchor->active) {
+							pc->state = SP_PEN_CONTEXT_CLOSE;
+							ret = TRUE;
+							break;
+						}
+					}
+				}
+				pc->state = SP_PEN_CONTEXT_CONTROL;
+				ret = TRUE;
 				break;
 			default:
 				break;
@@ -1157,19 +1250,45 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		/* Test, whether we hit any anchor */
 		anchor = test_inside (dc, event->button.x, event->button.y);
 
-		switch (pc->state) {
-		case SP_PEN_CONTEXT_POINT:
-			if (dc->npoints != 0) {
-				/* Only set point, if we are already appending */
+		switch (pc->mode) {
+		case SP_PEN_CONTEXT_MODE_CLICK:
+			switch (pc->state) {
+			case SP_PEN_CONTEXT_POINT:
+				if (dc->npoints != 0) {
+					/* Only set point, if we are already appending */
+					/* fixme: Snapping */
+					spdc_pen_set_point (pc, &p, event->motion.state);
+					ret = TRUE;
+				}
+				break;
+			case SP_PEN_CONTEXT_CONTROL:
 				/* fixme: Snapping */
-				spdc_pen_set_point (pc, &p, event->motion.state);
+				spdc_pen_set_ctrl (pc, &p, event->motion.state);
 				ret = TRUE;
+				break;
+			default:
+				break;
 			}
 			break;
-		case SP_PEN_CONTEXT_CONTROL:
-			/* fixme: Snapping */
-			spdc_pen_set_ctrl (pc, &p, event->motion.state);
-			ret = TRUE;
+		case SP_PEN_CONTEXT_MODE_DRAG:
+			switch (pc->state) {
+			case SP_PEN_CONTEXT_CONTROL:
+			case SP_PEN_CONTEXT_CLOSE:
+				/* fixme: Snapping */
+				spdc_pen_set_ctrl (pc, &p, event->motion.state);
+				ret = TRUE;
+				break;
+			case SP_PEN_CONTEXT_POINT:
+				if (dc->npoints != 0) {
+					/* Only set point, if we are already appending */
+					/* fixme: Snapping */
+					spdc_pen_set_point (pc, &p, event->motion.state);
+					ret = TRUE;
+				}
+				break;
+			default:
+				break;
+			}
 			break;
 		default:
 			break;
@@ -1182,27 +1301,42 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			/* Test, whether we hit any anchor */
 			anchor = test_inside (dc, event->button.x, event->button.y);
 
-			switch (pc->state) {
-			case SP_PEN_CONTEXT_POINT:
-				if (dc->npoints == 0) {
-					/* Start new thread only with button release */
-					if (anchor) {
-						p = anchor->dp;
+			switch (pc->mode) {
+			case SP_PEN_CONTEXT_MODE_CLICK:
+				switch (pc->state) {
+				case SP_PEN_CONTEXT_POINT:
+					if (dc->npoints == 0) {
+						/* Start new thread only with button release */
+						if (anchor) {
+							p = anchor->dp;
+						}
+						dc->sa = anchor;
+						spdc_pen_set_point (pc, &p, event->motion.state);
+					} else {
+						/* Set end anchor here */
+						dc->ea = anchor;
 					}
-					dc->sa = anchor;
-					spdc_pen_set_point (pc, &p, event->motion.state);
-				} else {
-					/* Set end anchor here */
-					dc->ea = anchor;
-				}
-				pc->state = SP_PEN_CONTEXT_CONTROL;
-				ret = TRUE;
-				break;
-			case SP_PEN_CONTEXT_CONTROL:
+					pc->state = SP_PEN_CONTEXT_CONTROL;
+					ret = TRUE;
+					break;
+				case SP_PEN_CONTEXT_CONTROL:
 				/* End current segment */
+					spdc_pen_finish_segment (pc, &p, event->button.state);
+					pc->state = SP_PEN_CONTEXT_POINT;
+					ret = TRUE;
+					break;
+				default:
+					break;
+				}
+				break;
+			case SP_PEN_CONTEXT_MODE_DRAG:
 				spdc_pen_finish_segment (pc, &p, event->button.state);
+				if (pc->state == SP_PEN_CONTEXT_CLOSE) {
+					spdc_pen_finish (pc, TRUE);
+				}
 				pc->state = SP_PEN_CONTEXT_POINT;
 				ret = TRUE;
+				break;
 				break;
 			default:
 				break;
@@ -1216,14 +1350,7 @@ sp_pen_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		/* fixme: */
 		switch (event->key.keyval) {
 		case GDK_Return:
-			g_print ("Finishing pen\n");
-			spdc_concat_colors_and_flush (dc);
-			dc->npoints = 0;
-			pc->state = SP_PEN_CONTEXT_POINT;
-			gnome_canvas_item_hide (pc->c0);
-			gnome_canvas_item_hide (pc->c1);
-			gnome_canvas_item_hide (pc->cl0);
-			gnome_canvas_item_hide (pc->cl1);
+			spdc_pen_finish (pc, FALSE);
 			ret = TRUE;
 			break;
 		default:
@@ -1287,7 +1414,8 @@ spdc_pen_set_ctrl (SPPenContext *pc, ArtPoint *p, guint state)
 		dc->p[4] = *p;
 		gnome_canvas_item_show (pc->c0);
 		gnome_canvas_item_show (pc->cl0);
-		if (state & GDK_CONTROL_MASK) {
+		if (((pc->mode == SP_PEN_CONTEXT_MODE_CLICK) && (state & GDK_CONTROL_MASK)) ||
+		    ((pc->mode == SP_PEN_CONTEXT_MODE_DRAG) && !(state & GDK_MOD1_MASK))) {
 			gdouble dx, dy;
 			dx = p->x - dc->p[3].x;
 			dy = p->y - dc->p[3].y;
@@ -1330,6 +1458,32 @@ spdc_pen_finish_segment (SPPenContext *pc, ArtPoint *p, guint state)
 		dc->p[0] = dc->p[3];
 		dc->p[1] = dc->p[4];
 		dc->npoints = 2;
+
+		sp_curve_reset (dc->red_curve);
 	}
 }
 
+static void
+spdc_pen_finish (SPPenContext *pc, gboolean closed)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (pc);
+
+	g_print ("Finishing pen\n");
+
+	sp_curve_reset (dc->red_curve);
+	spdc_concat_colors_and_flush (dc, closed);
+
+	dc->npoints = 0;
+	pc->state = SP_PEN_CONTEXT_POINT;
+
+	gnome_canvas_item_hide (pc->c0);
+	gnome_canvas_item_hide (pc->c1);
+	gnome_canvas_item_hide (pc->cl0);
+	gnome_canvas_item_hide (pc->cl1);
+
+	if (dc->green_anchor) {
+		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
+	}
+}

@@ -31,6 +31,7 @@ static const char preferences_skeleton[] =
 "      <eventcontext id=\"star\" magnitude=\"6\"/>\n"
 "    </group>\n"
 "    <group id=\"freehand\">\n"
+"      <eventcontext id=\"pen\" mode=\"drag\"/>\n"
 "      <eventcontext id=\"dynamic\" mass=\"0.1\" drag=\"0.4\" angle=\"60\" width=\"0.4\"/>\n"
 "    </group>\n"
 "  </group>\n"

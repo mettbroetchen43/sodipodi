@@ -1,5 +1,5 @@
-#ifndef __SP_ATTRIBUTE_ATTRIBUTE_WIDGET_H__
-#define __SP_ATTRIBUTE_ATTRIBUTE_WIDGET_H__
+#ifndef __SP_ATTRIBUTE_WIDGET_H__
+#define __SP_ATTRIBUTE_WIDGET_H__
 
 /*
  * SPAttributeWidget
@@ -7,11 +7,12 @@
  * Widget, that listens and modifies repr attributes
  *
  * Authors:
- *  Lauris Kaplinski <lauris@ximian.com>
+ *  Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2002 authors
  * Copyright (C) 2001 Ximian, Inc.
  *
- * Licensed under GNU GPL
+ * Licensed under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libgnome/gnome-defs.h>

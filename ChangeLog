@@ -1,3 +1,22 @@
+2002-08-24  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/curve.c (sp_curve_append): Handle open/closed end and start
+
+	* src/preferences-skeleton.h: Added pen tool, made AI style default
+
+	* src/draw-context.c (sp_draw_context_setup): Set attach
+	(sp_draw_context_root_handler): React to '+' key
+	(spdc_set_attach): Set/clear append mode
+	(spdc_attach_selection): Renamed
+	(spdc_detach_selection): New method
+	(spdc_reset_white): Only need white, not all colors
+	(sp_pencil_context_root_handler): Destroy green anchor on release
+	(sp_pen_context_setup): Handle "mode" attribute
+	(sp_pen_context_set): Ditto
+	(sp_pen_context_root_handler): Has now AI style (default) and click-click modes
+	(spdc_pen_set_ctrl): Handle modes
+	(spdc_pen_finish): New method
+
 2002-08-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dialogs/sp-attribute-widget.h: It can now be attached to mere SPRepr too

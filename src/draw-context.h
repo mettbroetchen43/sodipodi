@@ -36,6 +36,8 @@ struct _SPDrawContext {
 
 	SPSelection *selection;
 
+	guint attach : 1;
+
 	/* Red */
 	GnomeCanvasItem *red_bpath;
 	SPCurve *red_curve;
@@ -113,10 +115,18 @@ enum {
 	SP_PEN_CONTEXT_IDLE,
 	SP_PEN_CONTEXT_POINT,
 	SP_PEN_CONTEXT_CONTROL,
+	SP_PEN_CONTEXT_CLOSE
+};
+
+enum {
+	SP_PEN_CONTEXT_MODE_CLICK,
+	SP_PEN_CONTEXT_MODE_DRAG
 };
 
 struct _SPPenContext {
 	SPDrawContext draw_context;
+
+	guint mode : 1;
 
 	guint state : 2;
 

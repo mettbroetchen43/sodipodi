@@ -655,6 +655,7 @@ sp_curve_append (SPCurve *curve,
 
 	bs = curve2->bpath;
 
+#if 0
 	if (use_lineto && (curve->end > 0)) {
 		sp_curve_lineto (curve, bs->x3, bs->y3);
 		closed = FALSE;
@@ -662,17 +663,30 @@ sp_curve_append (SPCurve *curve,
 		sp_curve_moveto (curve, bs->x3, bs->y3);
 		closed = FALSE;
 	}
+#endif
 
-	for (bp = bs + 1; bp->code != ART_END; bp++) {
+	closed = curve->closed;
+
+	for (bp = bs; bp->code != ART_END; bp++) {
 		switch (bp->code) {
 		case ART_MOVETO_OPEN:
-			if (closed) sp_curve_closepath (curve);
-			sp_curve_moveto (curve, bp->x3, bp->y3);
+			if (use_lineto && curve->hascpt) {
+				sp_curve_lineto (curve, bp->x3, bp->y3);
+				use_lineto = FALSE;
+			} else {
+				if (closed) sp_curve_closepath (curve);
+				sp_curve_moveto (curve, bp->x3, bp->y3);
+			}
 			closed = FALSE;
 			break;
 		case ART_MOVETO:
-			if (closed) sp_curve_closepath (curve);
-			sp_curve_moveto (curve, bp->x3, bp->y3);
+			if (use_lineto && curve->hascpt) {
+				sp_curve_lineto (curve, bp->x3, bp->y3);
+				use_lineto = FALSE;
+			} else {
+				if (closed) sp_curve_closepath (curve);
+				sp_curve_moveto (curve, bp->x3, bp->y3);
+			}
 			closed = TRUE;
 			break;
 		case ART_LINETO:
