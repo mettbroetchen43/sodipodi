@@ -36,6 +36,26 @@ enum {
 	NR_TYPEFACE_LOOKUP_RULE_DEFAULT
 };
 
+typedef enum {
+  NR_TYPEFACE_SLANT_UNKNOWN=0,
+  NR_TYPEFACE_SLANT_ROMAN,
+  NR_TYPEFACE_SLANT_ITALIC,
+  NR_TYPEFACE_SLANT_OBLIQUE
+} NRTypeFaceSlant;
+
+typedef enum {
+  NR_TYPEFACE_WEIGHT_UNKNOWN=0,
+  NR_TYPEFACE_WEIGHT_THIN, /* w32 only? */
+  NR_TYPEFACE_WEIGHT_ULTRALIGHT, /* w32 only? */
+  NR_TYPEFACE_WEIGHT_LIGHT,
+  NR_TYPEFACE_WEIGHT_NORMAL,
+  NR_TYPEFACE_WEIGHT_MEDIUM,
+  NR_TYPEFACE_WEIGHT_DEMIBOLD,
+  NR_TYPEFACE_WEIGHT_BOLD,
+  NR_TYPEFACE_WEIGHT_ULTRABOLD, /* w32 only? */
+  NR_TYPEFACE_WEIGHT_BLACK
+} NRTypeFaceWeight;
+
 struct _NRTypeFaceDef {
 	NRTypeFaceDef *next;
 	unsigned int type;
@@ -43,6 +63,8 @@ struct _NRTypeFaceDef {
 	unsigned int idx;
 	unsigned char *name;
 	unsigned char *family;
+	NRTypeFaceWeight weight;
+	NRTypeFaceSlant slant;
 	NRTypeFace *typeface;
 };
 
@@ -84,6 +106,14 @@ struct _NRTypeFace {
 	unsigned int nglyphs;
 };
 
+typedef struct _NRFamilyDef NRFamilyDef;
+
+struct _NRFamilyDef {
+	NRFamilyDef *next;
+	unsigned char *name;
+	NRTypeFaceDef *faces;
+};
+
 unsigned int nr_typeface_get_type (void);
 
 NRTypeFace *nr_typeface_new (NRTypeFaceDef *def);
@@ -96,6 +126,8 @@ NRTypeFace *nr_typeface_new (NRTypeFaceDef *def);
 unsigned int nr_typeface_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size);
 unsigned int nr_typeface_family_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size);
 unsigned int nr_typeface_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
+NRTypeFaceWeight nr_type_get_weight (NRTypeFace *tf);
+NRTypeFaceSlant nr_type_get_slant (NRTypeFace *tf);
 
 NRBPath *nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
 void nr_typeface_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
@@ -106,5 +138,13 @@ unsigned int nr_typeface_lookup_default (NRTypeFace *tf, unsigned int unival);
 NRFont *nr_font_new_default (NRTypeFace *tf, unsigned int metrics, float size);
 
 void nr_type_empty_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family);
+
+NRTypeFaceWeight nrTypefaceStrToWeight (const unsigned char *weightStr);
+const unsigned char *nrTypefaceWeightToStr (NRTypeFaceWeight weight);
+
+NRTypeFaceSlant nrTypefaceStrToSlant (const unsigned char *slantStr);
+const unsigned char *nrTypefaceSlantToStr (NRTypeFaceSlant slant);
+
+const unsigned char *nrTypefaceMkName(const NRTypeFaceDef *def);
 
 #endif

@@ -33,6 +33,7 @@
 
 #include <libnr/nr-macros.h>
 #include <libnr/nr-values.h>
+#include "../style.h"
 #include "nr-type-primitives.h"
 #include "nr-type-ft2.h"
 #ifdef WITH_GNOME_PRINT
@@ -52,14 +53,6 @@
 
 #include "nr-type-directory.h"
 
-typedef struct _NRFamilyDef NRFamilyDef;
-
-struct _NRFamilyDef {
-	NRFamilyDef *next;
-	unsigned char *name;
-	NRTypeFaceDef *faces;
-};
-
 struct _NRTypePosDef {
 	unsigned int italic : 1;
 	unsigned int oblique : 1;
@@ -68,7 +61,10 @@ struct _NRTypePosDef {
 };
 
 static void nr_type_directory_build (void);
-static void nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name);
+static void
+nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name,
+                            NRTypeFaceWeight weight,
+                            NRTypeFaceSlant slant);
 static float nr_type_distance_family_better (const unsigned char *ask, const unsigned char *bid, float best);
 static float nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float best);
 
@@ -81,6 +77,13 @@ static NRTypeDict *typedict = NULL;
 static NRTypeDict *familydict = NULL;
 
 static NRFamilyDef *families = NULL;
+
+NRFamilyDef *
+nr_type_directory_get_families (void)
+{
+	if (!typedict) nr_type_directory_build ();
+        return families;
+}
 
 NRTypeFace *
 nr_type_directory_lookup (const unsigned char *name)
@@ -104,7 +107,9 @@ nr_type_directory_lookup (const unsigned char *name)
 }
 
 NRTypeFace *
-nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char *description)
+nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char *description,
+                                int weight,
+                                int style)
 {
 	NRFamilyDef *fdef, *bestfdef;
 	float best, dist;
@@ -112,6 +117,64 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
 	NRTypePosDef apos;
 
 	if (!typedict) nr_type_directory_build ();
+
+        NRTypeFaceSlant slant;
+        NRTypeFaceWeight nrWeight;
+
+        switch (style) {
+	case SP_CSS_FONT_STYLE_NORMAL:
+                slant=NR_TYPEFACE_SLANT_ROMAN;
+                break;
+	case SP_CSS_FONT_STYLE_ITALIC:
+                slant=NR_TYPEFACE_SLANT_ITALIC;
+		break;
+	case SP_CSS_FONT_STYLE_OBLIQUE:
+                slant=NR_TYPEFACE_SLANT_OBLIQUE;
+		break;
+	default:
+                slant=NR_TYPEFACE_SLANT_UNKNOWN;
+		break;
+	}
+
+        switch (weight) {
+	case SP_CSS_FONT_WEIGHT_100:
+                nrWeight=NR_TYPEFACE_WEIGHT_THIN;
+                break;
+	case SP_CSS_FONT_WEIGHT_200:
+                nrWeight=NR_TYPEFACE_WEIGHT_ULTRALIGHT;
+                break;
+	case SP_CSS_FONT_WEIGHT_300:
+                nrWeight=NR_TYPEFACE_WEIGHT_LIGHT;
+                break;
+	case SP_CSS_FONT_WEIGHT_400:
+                nrWeight=NR_TYPEFACE_WEIGHT_NORMAL;
+                break;
+	case SP_CSS_FONT_WEIGHT_500:
+                nrWeight=NR_TYPEFACE_WEIGHT_MEDIUM;
+                break;
+	case SP_CSS_FONT_WEIGHT_600:
+                nrWeight=NR_TYPEFACE_WEIGHT_DEMIBOLD;
+                break;
+	case SP_CSS_FONT_WEIGHT_700:
+                nrWeight=NR_TYPEFACE_WEIGHT_BOLD;
+                break;
+	case SP_CSS_FONT_WEIGHT_800:
+                nrWeight=NR_TYPEFACE_WEIGHT_ULTRABOLD;
+                break;
+	case SP_CSS_FONT_WEIGHT_900:
+                nrWeight=NR_TYPEFACE_WEIGHT_BLACK;
+                break;
+	default:
+                nrWeight=NR_TYPEFACE_WEIGHT_UNKNOWN;
+		break;
+	}
+
+#if 0
+        fprintf(stderr,"nr_type_directory_lookup_fuzzy(%s,%s,%d => %s,%d => %s)\n",
+                family,description,
+                weight,nrTypefaceWeightToStr(nrWeight),
+                style,nrTypefaceSlantToStr(slant));
+#endif
 
 	best = NR_HUGE_F;
 	bestfdef = NULL;
@@ -126,21 +189,47 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
 	}
 
 	if (!bestfdef) return NULL;
+#if 0
+        fprintf(stderr,"\tfamily: %s\n",bestfdef->name);
+#endif
 
 	best = NR_HUGE_F;
 	besttdef = NULL;
 
 	/* fixme: In reality the latter method reqires full qualified name */
-	nr_type_calculate_position (&apos, description);
+	nr_type_calculate_position (&apos, description,
+                                    nrWeight,
+                                    slant);
 
 	for (tdef = bestfdef->faces; tdef; tdef = tdef->next) {
 		dist = nr_type_distance_position_better (&apos, tdef->pdef, best);
+#if 0
+                fprintf(stderr,"\ttdef: %s: %s %s: dist==%f\n",
+                        tdef->name,
+                        nrTypefaceWeightToStr(tdef->weight),
+                        nrTypefaceSlantToStr(tdef->slant),
+                        dist
+                        );
+#endif
+
 		if (dist < best) {
+#if 0
+                  fprintf(stderr,"\t\tnew best match\n");
+#endif
 			best = dist;
 			besttdef = tdef;
 		}
 		if (best == 0.0) break;
 	}
+
+
+#if 0
+        fprintf(stderr,"\tbest match: %s: %s %s\n",
+                besttdef->name,
+                nrTypefaceWeightToStr(besttdef->weight),
+                nrTypefaceSlantToStr(besttdef->slant)
+                );
+#endif
 
 	if (!besttdef->typeface) {
 		besttdef->typeface = nr_typeface_new (besttdef);
@@ -188,6 +277,11 @@ unsigned int
 nr_type_register (NRTypeFaceDef *def)
 {
 	NRFamilyDef *fdef;
+        const unsigned char* nameBefore=def->name;
+        int newLen;
+        unsigned char* newName;
+        const unsigned char* slantStr;
+        const unsigned char* weightStr;
 
 	if (nr_type_dict_lookup (typedict, def->name)) return 0;
 
@@ -203,6 +297,16 @@ nr_type_register (NRTypeFaceDef *def)
 
 	def->next = fdef->faces;
 	fdef->faces = def;
+
+        slantStr=nrTypefaceSlantToStr(def->slant);
+        weightStr=nrTypefaceWeightToStr(def->weight);
+
+        newLen=strlen(fdef->name)+strlen(slantStr)+strlen(weightStr)+2;
+        newName=(unsigned char*)(malloc(newLen+1));
+        sprintf(newName,"%s %s %s",fdef->name,weightStr,slantStr);
+
+        def->name=newName;
+        /*fprintf(stderr,"%s ==> %s\n",nameBefore,def->name);*/
 
 	nr_type_dict_insert (typedict, def->name, def);
 
@@ -296,7 +400,7 @@ nr_type_directory_build (void)
 	ffdef = nr_new (NRFamilyDef *, fnum);
 	pos = 0;
 	for (fdef = families; fdef; fdef = fdef->next) {
-		ffdef[pos] = fdef;
+                ffdef[pos] = fdef;
 		pos += 1;
 	}
 	qsort (ffdef, fnum, sizeof (NRFamilyDef *), nr_type_family_def_compare);
@@ -314,63 +418,77 @@ nr_type_directory_build (void)
 		for (tdef = fdef->faces; tdef; tdef = tdef->next) tnum += 1;
 	}
 
+
 	pdefs = nr_new (NRTypePosDef, tnum);
 	pos = 0;
 	for (fdef = families; fdef; fdef = fdef->next) {
 		NRTypeFaceDef *tdef;
 		for (tdef = fdef->faces; tdef; tdef = tdef->next) {
+			tdef->typeface=nr_typeface_new(tdef);
 			const unsigned char *s;
 			tdef->pdef = pdefs + pos;
 			s=tdef->name;
 			if (strstr (s, tdef->family) == (const char *) s) s += strlen (tdef->family);
-			nr_type_calculate_position (tdef->pdef, s);
+			nr_type_calculate_position (tdef->pdef, s,
+                                                    tdef->weight,
+                                                    tdef->slant);
 			pos += 1;
 		}
 	}
 }
 
 static void
-nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name)
+nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name,
+                            NRTypeFaceWeight weight,
+                            NRTypeFaceSlant slant)
 {
 	unsigned char c[256];
 	unsigned char *p;
-
+	
 	strncpy (c, name, 255);
 	c[255] = 0;
 	for (p = c; *p; p++) *p = tolower (*p);
 
-	pdef->italic = (strstr (c, "italic") != NULL);
-	pdef->oblique = (strstr (c, "oblique") != NULL);
-	if (strstr (c, "thin")) {
+	pdef->italic = (slant==NR_TYPEFACE_SLANT_ITALIC);
+	pdef->oblique = (slant==NR_TYPEFACE_SLANT_OBLIQUE);
+        switch (weight)
+          {
+          case NR_TYPEFACE_WEIGHT_THIN:
 		pdef->weight = 32;
-	} else if (strstr (c, "extra light")) {
+                break;
+
+          case NR_TYPEFACE_WEIGHT_ULTRALIGHT:
 		pdef->weight = 64;
-	} else if (strstr (c, "ultra light")) {
-		pdef->weight = 64;
-	} else if (strstr (c, "light")) {
+                break;
+
+          case NR_TYPEFACE_WEIGHT_LIGHT:
 		pdef->weight = 96;
-	} else if (strstr (c, "book")) {
-		pdef->weight = 128;
-	} else if (strstr (c, "medium")) {
+                break;
+
+          case NR_TYPEFACE_WEIGHT_MEDIUM:
 		pdef->weight = 144;
-	} else if (strstr (c, "semi bold")) {
+                break;
+
+          case NR_TYPEFACE_WEIGHT_DEMIBOLD:
 		pdef->weight = 160;
-	} else if (strstr (c, "semibold")) {
-		pdef->weight = 160;
-	} else if (strstr (c, "demi bold")) {
-		pdef->weight = 160;
-	} else if (strstr (c, "demibold")) {
-		pdef->weight = 160;
-	} else if (strstr (c, "bold")) {
+                break;
+
+          case NR_TYPEFACE_WEIGHT_BOLD:
 		pdef->weight = 192;
-	} else if (strstr (c, "ultra bold")) {
+                break;
+
+          case NR_TYPEFACE_WEIGHT_ULTRABOLD:
 		pdef->weight = 224;
-	} else if (strstr (c, "extra bold")) {
-		pdef->weight = 224;
-	} else if (strstr (c, "black")) {
+                break;
+
+          case NR_TYPEFACE_WEIGHT_BLACK:
 		pdef->weight = 255;
-	} else {
+                break;
+
+          case NR_TYPEFACE_WEIGHT_NORMAL:
+          default:
 		pdef->weight = 128;
+                break;
 	}
 
 	if (strstr (c, "narrow")) {
@@ -431,6 +549,15 @@ nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float be
 
 	dist = sqrt (ditalic * ditalic + doblique * doblique + dweight * dweight + dstretch * dstretch);
 
+#if 0
+        fprintf(stderr,"nr_type_distance_position_better((%d,%d,%d,%d)->(%d,%d,%d,%d)): (%f,%f,%f,%f) => %f\n",
+                (int)(ask->italic), (int)(ask->oblique),
+                (int)(ask->weight), (int)(ask->stretch),
+                (int)(bid->italic), (int)(bid->oblique),
+                (int)(bid->weight), (int)(bid->stretch),
+                ditalic,doblique,dweight,dstretch,dist);
+#endif
+
 	return MIN (dist, best);
 }
 
@@ -474,12 +601,36 @@ nr_type_read_private_list (void)
 		arikkei_token_get_first_line (&ft, &lt);
 		while (lt.start < lt.end) {
 			if (!arikkei_token_is_empty (&lt) && (lt.cdata[lt.start] != '#')) {
-				ArikkeiToken tokens[4];
+				ArikkeiToken tokens[6];
 				int ntokens;
-				ntokens = arikkei_token_tokenize_ws (&lt, tokens, 4, ",", FALSE);
+				ntokens = arikkei_token_tokenize_ws (&lt, tokens, 6, ",", FALSE);
 				if (ntokens >= 3) {
 					ArikkeiToken fnt[2];
 					ArikkeiToken filet, namet, familyt;
+                                        NRTypeFaceSlant slant
+                                          =NR_TYPEFACE_SLANT_UNKNOWN;
+                                        NRTypeFaceWeight weight
+                                          =NR_TYPEFACE_WEIGHT_UNKNOWN;
+
+                                        if (ntokens >= 5) {
+                                          ArikkeiToken slantt, weightt;
+                                          arikkei_token_strip (&tokens[3], &slantt);
+                                          arikkei_token_strip (&tokens[4], &weightt);
+                                          if (!arikkei_token_is_empty (&slantt))
+                                            {
+                                              unsigned char s[1024];
+                                              arikkei_token_strncpy (&slantt, s, 1024);
+                                              slant=nrTypefaceStrToSlant(s);
+                                            }
+
+                                          if (!arikkei_token_is_empty (&weightt))
+                                            {
+                                              unsigned char s[1024];
+                                              arikkei_token_strncpy (&weightt, s, 1024);
+                                              weight=nrTypefaceStrToWeight(s);
+                                            }
+                                        }
+
 					int nfnt, face;
 					nfnt = arikkei_token_tokenize_ws (&tokens[0], fnt, 2, ":", FALSE);
 					arikkei_token_strip (&fnt[0], &filet);
@@ -502,7 +653,7 @@ nr_type_read_private_list (void)
 						arikkei_token_strncpy (&filet, f, 1024);
 						arikkei_token_strncpy (&namet, n, 1024);
 						arikkei_token_strncpy (&familyt, m, 1024);
-						nr_type_ft2_build_def (dft2, f, n, m, face);
+						nr_type_ft2_build_def (dft2, f, n, m, slant, weight, face);
 						nr_type_register ((NRTypeFaceDef *) dft2);
 					}
 				}
@@ -517,7 +668,9 @@ nr_type_read_private_list (void)
 
 NRTypeFace *
 nr_type_build (const unsigned char *name, const unsigned char *family,
-	       const unsigned char *data, unsigned int size, unsigned int face)
+	       const unsigned char *data, unsigned int size, unsigned int face,
+               NRTypeFaceSlant slant,
+               NRTypeFaceWeight weight)
 {
 	NRTypeFaceDefFT2 *dft2;
 
@@ -526,7 +679,8 @@ nr_type_build (const unsigned char *name, const unsigned char *family,
 	dft2 = nr_new (NRTypeFaceDefFT2, 1);
 	dft2->def.next = NULL;
 	dft2->def.pdef = NULL;
-	nr_type_ft2_build_def_data (dft2, name, family, data, size, face);
+	nr_type_ft2_build_def_data (dft2, name, family, data, size,
+                                    slant, weight, face);
 	nr_type_register ((NRTypeFaceDef *) dft2);
 
 	return nr_type_directory_lookup (name);

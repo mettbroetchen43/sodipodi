@@ -261,7 +261,9 @@ sp_string_calculate_dimensions (SPString *string)
 	style = SP_OBJECT_STYLE (SP_OBJECT_PARENT (string));
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
-	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
+	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style),
+                                               style->font_weight.computed,
+                                               style->font_style.computed);
 	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		metrics = NR_TYPEFACE_METRICS_VERTICAL;
 	} else {

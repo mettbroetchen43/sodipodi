@@ -32,7 +32,35 @@ static unsigned int nr_typeface_gnome_lookup (NRTypeFace *tf, unsigned int rule,
 static NRFont *nr_typeface_gnome_font_new (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
 static void nr_typeface_gnome_font_free (NRFont *font);
 
+static NRTypeFaceWeight gnome_to_nr_weight (int weight_code);
+static NRTypeFaceSlant gnome_to_nr_slant (int isItalic,
+                                          const unsigned char *name);
+
 static NRTypeFaceClass *parent_class;
+
+static NRTypeFaceWeight
+gnome_to_nr_weight (int weight_code)
+{
+        if (weight_code >= GNOME_FONT_BOLD)
+                return NR_TYPEFACE_WEIGHT_BOLD;
+        else
+                return NR_TYPEFACE_WEIGHT_NORMAL;
+}
+
+static NRTypeFaceSlant
+gnome_to_nr_slant (int isItalic,
+                   const unsigned char *name)
+{
+        if (isItalic) {
+          if (strstr (name, "oblique") || strstr (name, "Oblique") || (strstr (name, "OBLIQUE"))) {
+            return NR_TYPEFACE_SLANT_OBLIQUE;
+          } else {
+            return NR_TYPEFACE_SLANT_ITALIC;
+          }
+        } else {
+          return NR_TYPEFACE_SLANT_ROMAN;
+        }
+}
 
 unsigned int
 nr_typeface_gnome_get_type (void)
@@ -116,6 +144,10 @@ nr_typeface_gnome_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 	tfg->fonts = NULL;
 
 	tfg->typeface.nglyphs = gnome_font_face_get_num_glyphs (tfg->face);
+
+        tfg->weight = gnome_to_nr_weight(gnome_font_face_get_weight_code (tfg->face));
+        tfg->slant = gnome_to_nr_slant(gnome_font_face_is_italic (tfg->face),
+                                       def->name);
 
 	tfg->voutlines = NULL;
 }

@@ -41,7 +41,6 @@ static FcFontSet *NRXftPatterns = NULL;
 static XftFontSet *NRXftPatterns = NULL;
 #endif
 
-static ArikkeiDict NRXftNamedict;
 static ArikkeiDict NRXftFamilydict;
 
 void
@@ -61,74 +60,29 @@ nr_type_xft_families_get (NRNameList *names)
 }
 
 void
-nr_type_xft_build_def (NRTypeFaceDefFT2 *dft2, const unsigned char *name, const unsigned char *family)
-{
-#ifdef WITH_FONTCONFIG
-	FcPattern *pat;
-#else
-	XftPattern *pat;
-#endif
-
-	pat = arikkei_dict_lookup (&NRXftNamedict, name);
-	if (pat) {
-		int index;
-#ifdef WITH_FONTCONFIG
-		FcChar8 *file;
-		FcPatternGetString (pat, FC_FILE, 0, &file);
-		FcPatternGetInteger (pat, FC_INDEX, 0, &index);
-#else
-		char *file;
-		XftPatternGetString (pat, XFT_FILE, 0, &file);
-		XftPatternGetInteger (pat, XFT_INDEX, 0, &index);
-#endif
-		if (file) {
-			nr_type_ft2_build_def (dft2, name, family, file, index);
-		}
-	}
-}
-
-void
 nr_type_read_xft_list (void)
 {
-	NRNameList gnames, gfamilies;
 	const char *debugenv;
 	int debug;
-	int i, j;
+
+        /** nr_type_xft_init() now does all the work of registering
+         *   the fonts.
+         */
+        nr_type_xft_init();
 
 	debugenv = getenv ("SODIPODI_DEBUG_XFT");
 	debug = (debugenv && *debugenv && (*debugenv != '0'));
 
-	nr_type_xft_typefaces_get (&gnames);
-	nr_type_xft_families_get (&gfamilies);
-
 	if (debug) {
+		NRNameList gnames, gfamilies;
+		nr_type_xft_typefaces_get (&gnames);
+		nr_type_xft_families_get (&gfamilies);
 		fprintf (stderr, "Number of usable Xft familes: %lu\n", gfamilies.length);
 		fprintf (stderr, "Number of usable Xft typefaces: %lu\n", gnames.length);
+		nr_name_list_release (&gfamilies);
+		nr_name_list_release (&gnames);
 	}
 
-	for (i = gnames.length - 1; i >= 0; i--) {
-		NRTypeFaceDefFT2 *tdef;
-		const unsigned char *family;
-		family = NULL;
-		for (j = gfamilies.length - 1; j >= 0; j--) {
-			int len;
-			len = strlen (gfamilies.names[j]);
-			if (!strncmp (gfamilies.names[j], gnames.names[i], len)) {
-				family = gfamilies.names[j];
-				break;
-			}
-		}
-		if (family) {
-			tdef = nr_new (NRTypeFaceDefFT2, 1);
-			tdef->def.next = NULL;
-			tdef->def.pdef = NULL;
-			nr_type_xft_build_def (tdef, gnames.names[i], family);
-			nr_type_register ((NRTypeFaceDef *) tdef);
-		}
-	}
-
-	nr_name_list_release (&gfamilies);
-	nr_name_list_release (&gnames);
 }
 
 static void
@@ -145,6 +99,8 @@ nr_type_xft_init (void)
 	const char *debugenv;
 	int debug, ret;
 	int i, pos, fpos;
+
+	if (nrxfti) return;
 
 	debugenv = getenv ("SODIPODI_DEBUG_XFT");
 	debug = (debugenv && *debugenv && (*debugenv != '0'));
@@ -197,7 +153,6 @@ nr_type_xft_init (void)
 	NRXftTypefaces.length = NRXftPatterns->nfont;
 	NRXftTypefaces.names = nr_new (unsigned char *, NRXftTypefaces.length);
 	NRXftTypefaces.destructor = NULL;
-	arikkei_dict_setup_string (&NRXftNamedict, 2777);
 	arikkei_dict_setup_string (&NRXftFamilydict, 173);
 
 	if (debug) {
@@ -250,50 +205,63 @@ nr_type_xft_init (void)
 				char *name;
 				int weight;
 				int slant;
+                                NRTypeFaceSlant nrSlant;
+                                NRTypeFaceWeight nrWeight;
 #ifdef WITH_FONTCONFIG
 				FcChar8 *fn, *wn, *sn;
 				if (debug) {
 					fprintf (stderr, "Seems valid\n");
 				}
+
+                                if (debug) {
+                                  FcChar8 *font=FcNameUnparse (NRXftPatterns->fonts[i]);
+                                  fprintf(stderr,"fc: %s\n",font);
+                                  free(font);
+                                }
+
 				FcPatternGetString (NRXftPatterns->fonts[i], FC_FAMILY, 0, &fn);
 				FcPatternGetInteger (NRXftPatterns->fonts[i], FC_WEIGHT, 0, &weight);
 				FcPatternGetInteger (NRXftPatterns->fonts[i], FC_SLANT, 0, &slant);
 				switch (weight) {
 				case FC_WEIGHT_LIGHT:
-					wn = "Light";
+					nrWeight=NR_TYPEFACE_WEIGHT_LIGHT;
 					break;
 				case FC_WEIGHT_MEDIUM:
-					wn = "Book";
+					nrWeight=NR_TYPEFACE_WEIGHT_MEDIUM;
 					break;
 				case FC_WEIGHT_DEMIBOLD:
-					wn = "Demibold";
+					nrWeight=NR_TYPEFACE_WEIGHT_DEMIBOLD;
 					break;
 				case FC_WEIGHT_BOLD:
-					wn = "Bold";
+					nrWeight=NR_TYPEFACE_WEIGHT_BOLD;
 					break;
 				case FC_WEIGHT_BLACK:
-					wn = "Black";
+					nrWeight=NR_TYPEFACE_WEIGHT_BLACK;
 					break;
 				default:
-					wn = "Normal";
+					nrWeight=NR_TYPEFACE_WEIGHT_NORMAL;
 					break;
 				}
 				switch (slant) {
 				case FC_SLANT_ROMAN:
-					sn = "Roman";
+					nrSlant=NR_TYPEFACE_SLANT_ROMAN;
 					break;
 				case FC_SLANT_ITALIC:
-					sn = "Italic";
+					nrSlant=NR_TYPEFACE_SLANT_ITALIC;
 					break;
 				case FC_SLANT_OBLIQUE:
-					sn = "Oblique";
+					nrSlant=NR_TYPEFACE_SLANT_OBLIQUE;
 					break;
 				default:
-					sn = "Normal";
+					nrSlant=NR_TYPEFACE_SLANT_ROMAN;
 					break;
 				}
+
+                                wn=(FcChar8*)nrTypefaceWeightToStr(nrWeight);
+                                sn=(FcChar8*)nrTypefaceSlantToStr(nrSlant);
+
 #else
-				char *fn, *wn, *sn;
+				const unsigned char *fn, *wn, *sn;
 				if (debug) {
 					fprintf (stderr, "Seems valid\n");
 				}
@@ -302,51 +270,81 @@ nr_type_xft_init (void)
 				XftPatternGetInteger (NRXftPatterns->fonts[i], XFT_SLANT, 0, &slant);
 				switch (weight) {
 				case XFT_WEIGHT_LIGHT:
-					wn = "Light";
+					nrWeight=NR_TYPEFACE_WEIGHT_LIGHT;
 					break;
 				case XFT_WEIGHT_MEDIUM:
-					wn = "Book";
+					nrWeight=NR_TYPEFACE_WEIGHT_MEDIUM;
 					break;
 				case XFT_WEIGHT_DEMIBOLD:
-					wn = "Demibold";
+					nrWeight=NR_TYPEFACE_WEIGHT_DEMIBOLD;
 					break;
 				case XFT_WEIGHT_BOLD:
-					wn = "Bold";
+					nrWeight=NR_TYPEFACE_WEIGHT_BOLD;
 					break;
 				case XFT_WEIGHT_BLACK:
-					wn = "Black";
+					nrWeight=NR_TYPEFACE_WEIGHT_BLACK;
 					break;
 				default:
-					wn = "Normal";
+					nrWeight=NR_TYPEFACE_WEIGHT_NORMAL;
 					break;
 				}
 				switch (slant) {
 				case XFT_SLANT_ROMAN:
-					sn = "Roman";
+					nrSlant=NR_TYPEFACE_SLANT_ROMAN;
 					break;
 				case XFT_SLANT_ITALIC:
-					sn = "Italic";
+					nrSlant=NR_TYPEFACE_SLANT_ITALIC;
 					break;
 				case XFT_SLANT_OBLIQUE:
-					sn = "Oblique";
+					nrSlant=NR_TYPEFACE_SLANT_OBLIQUE;
 					break;
 				default:
-					sn = "Normal";
+					nrSlant=NR_TYPEFACE_SLANT_ROMAN;
 					break;
 				}
+
+                                wn=nrTypefaceWeightToStr(nrWeight);
+                                sn=nrTypefaceSlantToStr(nrSlant);
 #endif
+
+                                if (debug) {
+                                  fprintf(stderr,"%s %s (%d) %s (%d)\n",
+                                          fn,wn,(int)weight,sn,(int)slant);
+                                }
+
 				if (strlen (fn) < 1024) {
 					char c[1280];
+                                        int index;
+#ifdef WITH_FONTCONFIG
+                                        FcChar8 *file;
+#else
+                                        char *file;
+#endif
 					sprintf (c, "%s %s %s", fn, wn, sn);
-					if (!arikkei_dict_lookup (&NRXftNamedict, c)) {
-						name = strdup (c);
-						if (!arikkei_dict_lookup (&NRXftFamilydict, fn)) {
-							NRXftFamilies.names[fpos] = strdup (fn);
-							arikkei_dict_insert (&NRXftFamilydict, NRXftFamilies.names[fpos++], (void *) TRUE);
-						}
-						NRXftTypefaces.names[pos++] = name;
-						arikkei_dict_insert (&NRXftNamedict, name, NRXftPatterns->fonts[i]);
-					}
+
+                                        name = strdup (c);
+                                        if (!arikkei_dict_lookup (&NRXftFamilydict, fn)) {
+                                          NRXftFamilies.names[fpos] = strdup (fn);
+                                          arikkei_dict_insert (&NRXftFamilydict, NRXftFamilies.names[fpos++], (void *) TRUE);
+                                        }
+                                        NRXftTypefaces.names[pos++] = name;
+#ifdef WITH_FONTCONFIG
+                                        FcPatternGetString (NRXftPatterns->fonts[i], FC_FILE, 0, &file);
+                                        FcPatternGetInteger (NRXftPatterns->fonts[i], FC_INDEX, 0, &index);
+#else
+                                        XftPatternGetString (NRXftPatterns->fonts[i], XFT_FILE, 0, &file);
+                                        XftPatternGetInteger (NRXftPatterns->fonts[i], XFT_INDEX, 0, &index);
+#endif
+
+                                        if (file) {
+                                          NRTypeFaceDefFT2 *tdef = nr_new (NRTypeFaceDefFT2, 1);
+                                          tdef->def.next = NULL;
+                                          tdef->def.pdef = NULL;
+                                          nr_type_ft2_build_def (tdef, name, fn, file,
+                                                                 nrSlant, nrWeight,
+                                                                 index);
+                                          nr_type_register ((NRTypeFaceDef *) tdef);
+                                        }
 				}
 			}
 		}

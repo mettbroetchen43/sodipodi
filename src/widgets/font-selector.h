@@ -42,7 +42,6 @@ GtkType sp_font_selector_get_type (void);
 GtkWidget *sp_font_selector_new (void);
 
 void sp_font_selector_set_font (SPFontSelector *fsel, NRFont *font);
-void sp_font_selector_set_font_fuzzy (SPFontSelector *fsel, const guchar *family, const guchar *style);
 
 NRFont *sp_font_selector_get_font (SPFontSelector *fsel);
 

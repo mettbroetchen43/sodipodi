@@ -69,6 +69,8 @@ nr_type_ft2_build_def (NRTypeFaceDefFT2 *dft2,
 		       const unsigned char *name,
 		       const unsigned char *family,
 		       const unsigned char *file,
+                       NRTypeFaceSlant slant,
+                       NRTypeFaceWeight weight,
 		       unsigned int face);
 
 void
@@ -77,5 +79,7 @@ nr_type_ft2_build_def_data (NRTypeFaceDefFT2 *dft2,
 			    const unsigned char *family,
 			    const unsigned char *data,
 			    unsigned int size,
+                            NRTypeFaceSlant slant,
+                            NRTypeFaceWeight weight,
 			    unsigned int face);
 #endif

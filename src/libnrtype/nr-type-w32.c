@@ -58,6 +58,9 @@ static unsigned char *nr_multibyte_utf8_strdup (const char *mbs);
 
 static NRTypeFaceClass *parent_class;
 
+static NRTypeFaceWeight w32_to_nr_weight (int lfWeight);
+static NRTypeFaceSlant w32_to_nr_slant (int lfItalic);
+
 unsigned int
 nr_typeface_w32_get_type (void)
 {
@@ -189,6 +192,43 @@ nr_type_read_w32_list (void)
 	nr_name_list_release (&wnames);
 }
 
+static NRTypeFaceWeight
+w32_to_nr_weight (int lfWeight)
+{
+        switch (lfWeight) {
+        case FW_THIN:
+                return NR_TYPEFACE_WEIGHT_THIN;
+        case FW_ULTRALIGHT:
+                return NR_TYPEFACE_WEIGHT_ULTRALIGHT;
+        case FW_LIGHT:
+                return NR_TYPEFACE_WEIGHT_LIGHT;
+        case FW_NORMAL:
+                return NR_TYPEFACE_WEIGHT_NORMAL;
+        case FW_MEDIUM:
+                return NR_TYPEFACE_WEIGHT_MEDIUM;
+        case FW_DEMIBOLD:
+                return NR_TYPEFACE_WEIGHT_DEMIBOLD;
+        case FW_BOLD:
+                return NR_TYPEFACE_WEIGHT_BOLD;
+        case FW_ULTRABOLD:
+                return NR_TYPEFACE_WEIGHT_ULTRABOLD;
+        case FW_BLACK:
+                return NR_TYPEFACE_WEIGHT_BLACK;
+        default:
+                return NR_TYPEFACE_WEIGHT_UNKNOWN;
+        }
+}
+
+static NRTypeFaceSlant
+w32_to_nr_slant (int lfItalic)
+{
+        if (lfItalic) {
+          return NR_TYPEFACE_SLANT_ITALIC;
+        } else {
+          return NR_TYPEFACE_SLANT_ROMAN;
+        }
+}
+
 static void
 nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 { 
@@ -205,6 +245,8 @@ nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 
 	tfw32->fonts = NULL;
 	tfw32->logfont = arikkei_dict_lookup (&namedict, def->name);
+        tfw32->weight=w32_to_nr_weight(tfw32->logfont->lfWeight);
+        tfw32->slant=w32_to_nr_slant(tfw32->logfont->lfItalic);
 	tfw32->logfont->lfHeight = -1000;
 	tfw32->logfont->lfWidth = 0;
 	tfw32->hfont = CreateFontIndirect (tfw32->logfont);
@@ -657,6 +699,8 @@ nr_type_w32_init (void)
 {
     LOGFONT logfont;
     int pos, i;
+
+    if (w32i) return;
 
 	/* g_print ("Loading W32 type directory...\n"); */
 

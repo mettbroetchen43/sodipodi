@@ -367,5 +367,110 @@ nr_type_empty_build_def (NRTypeFaceDef *def, const unsigned char *name, const un
 	def->name = strdup (name);
 	def->family = strdup (family);
 	def->typeface = NULL;
+        def->weight = NR_TYPEFACE_WEIGHT_NORMAL;
+        def->slant = NR_TYPEFACE_SLANT_ROMAN;
 }
 
+NRTypeFaceWeight nr_type_get_weight (NRTypeFace *tf)
+{
+	if (!(tf && tf->def))
+		return NR_TYPEFACE_WEIGHT_UNKNOWN;
+
+        return tf->def->weight;
+}
+
+NRTypeFaceSlant nr_type_get_slant (NRTypeFace *tf)
+{
+	if (!(tf && tf->def))
+		return NR_TYPEFACE_SLANT_UNKNOWN;
+
+        return tf->def->slant;
+}
+
+NRTypeFaceWeight nrTypefaceStrToWeight (const unsigned char *weightStr)
+{
+  if (!strcmp(weightStr,"Normal")) return NR_TYPEFACE_WEIGHT_NORMAL;
+  if (!strcmp(weightStr,"Bold")) return NR_TYPEFACE_WEIGHT_BOLD;
+  if (!strcmp(weightStr,"Ultrabold")) return NR_TYPEFACE_WEIGHT_ULTRABOLD;
+  if (!strcmp(weightStr,"Demibold")) return NR_TYPEFACE_WEIGHT_DEMIBOLD;
+  if (!strcmp(weightStr,"Thin")) return NR_TYPEFACE_WEIGHT_THIN;
+  if (!strcmp(weightStr,"Light")) return NR_TYPEFACE_WEIGHT_LIGHT;
+  if (!strcmp(weightStr,"Ultralight")) return NR_TYPEFACE_WEIGHT_ULTRALIGHT;
+  if (!strcmp(weightStr,"Medium")) return NR_TYPEFACE_WEIGHT_MEDIUM;
+  if (!strcmp(weightStr,"Black")) return NR_TYPEFACE_WEIGHT_BLACK;
+  return NR_TYPEFACE_WEIGHT_UNKNOWN;
+}
+
+const unsigned char *nrTypefaceWeightToStr (NRTypeFaceWeight weight)
+{
+  switch (weight)
+    {
+    case NR_TYPEFACE_WEIGHT_NORMAL:
+      return "Normal";
+    case NR_TYPEFACE_WEIGHT_BOLD:
+      return "Bold";
+    case NR_TYPEFACE_WEIGHT_ULTRABOLD:
+      return "Ultrabold";
+    case NR_TYPEFACE_WEIGHT_DEMIBOLD:
+      return "Demibold";
+    case NR_TYPEFACE_WEIGHT_THIN:
+      return "Thin";
+    case NR_TYPEFACE_WEIGHT_LIGHT:
+      return "Light";
+    case NR_TYPEFACE_WEIGHT_ULTRALIGHT:
+      return "Ultralight";
+    case NR_TYPEFACE_WEIGHT_MEDIUM:
+      return "Medium";
+    case NR_TYPEFACE_WEIGHT_BLACK:
+      return "Black";
+    case NR_TYPEFACE_WEIGHT_UNKNOWN:
+    default:
+      return "?";
+    }
+}
+
+NRTypeFaceSlant nrTypefaceStrToSlant (const unsigned char *slantStr)
+{
+  if (!strcmp(slantStr,"Roman")) return NR_TYPEFACE_SLANT_ROMAN;
+  if (!strcmp(slantStr,"Italic")) return NR_TYPEFACE_SLANT_ITALIC;
+  if (!strcmp(slantStr,"Oblique")) return NR_TYPEFACE_SLANT_OBLIQUE;
+  return NR_TYPEFACE_SLANT_UNKNOWN;
+}
+
+const unsigned char *nrTypefaceSlantToStr (NRTypeFaceSlant slant)
+{
+  switch (slant)
+    {
+    case NR_TYPEFACE_SLANT_ROMAN:
+      return "Roman";
+    case NR_TYPEFACE_SLANT_ITALIC:
+      return "Italic";
+    case NR_TYPEFACE_SLANT_OBLIQUE:
+      return "Oblique";
+    case NR_TYPEFACE_SLANT_UNKNOWN:
+    default:
+      return "?";
+    }
+}
+
+const unsigned char *nrTypefaceMkName(const NRTypeFaceDef *def)
+{
+  const unsigned char* slantStr;
+  const unsigned char* weightStr;
+  unsigned char* res;
+  int len;
+
+  if (!def)
+    return NULL;
+
+  slantStr=nrTypefaceSlantToStr(def->slant);
+  weightStr=nrTypefaceWeightToStr(def->weight);
+
+  len=strlen(slantStr)+strlen(weightStr)+1;
+  res=(unsigned char*)(malloc(len+1));
+  if (!res)
+    return NULL;
+
+  sprintf(res,"%s %s",weightStr,slantStr);
+  return res;
+}

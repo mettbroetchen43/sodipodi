@@ -574,7 +574,10 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 		const unsigned char *sstr;
 
 		c = sp_text_edit_dialog_font_style_to_lookup (style);
-		tf = nr_type_directory_lookup_fuzzy (style->text->font_family.value, c);
+		tf = nr_type_directory_lookup_fuzzy (style->text->font_family.value, c,
+                                                     style->font_weight.computed,
+                                                     style->font_style.computed
+                                                     );
 		font = nr_font_new_default (tf, NR_TYPEFACE_METRICS_HORIZONTAL, style->font_size.computed);
 		nr_typeface_unref (tf);
 
