@@ -3,6 +3,8 @@
 #include <math.h>
 #include "nr-svp-uncross.h"
 
+#define NR_EPSILON 1e-18
+
 static gint nr_svp_slice_compare (NRSVPSlice * l, NRSVPSlice * r);
 
 NRSVP *
@@ -23,6 +25,10 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 
 	/* Main iteration */
 	while ((slices) || (nsvp)) {
+		NRSVPSlice * ss, * cs, * ns;
+		NRVertex * newvertex;
+		NRSVP * newsvp;
+		gint wind;
 		/* Stretch existing slices */
 		/* fixme: This should probably go to end of loop */
 		slices = nr_svp_slice_stretch_list (slices, yslice);
@@ -39,6 +45,302 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 		}
 		/* Now everything should be set up */
 		/* Process intersections */
+		/* This is bitch */
+		ss = NULL;
+		cs = slices;
+		while ((cs) && (cs->next)) {
+			ns = cs->next;
+			if (cs->x == ns->x) {
+				if (nr_svp_slice_compare (cs, ns) == 0) {
+					NRCoord xtop, ytop;
+					/* Colinear slices */
+					if (cs->vertex->next->y < ns->vertex->next->y) {
+						xtop = cs->vertex->next->x;
+						ytop = cs->vertex->next->y;
+					} else {
+						xtop = ns->vertex->next->x;
+						ytop = ns->vertex->next->y;
+					}
+					/* Create continuation of cs->svp */
+					if (ytop < cs->vertex->next->y) {
+						newvertex = nr_vertex_new_xy (xtop, ytop);
+						newvertex->next = cs->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, cs->svp->wind);
+						ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
+						/* fixme: I do not like that - hope it is correct at least */
+						if (newsvp->next == nsvp) nsvp = newsvp;
+						newvertex = nr_vertex_new_xy (xtop, ytop);
+						cs->vertex->next = newvertex;
+						/* fixme: */
+						nr_svp_calculate_bbox (cs->svp);
+					} else if (cs->vertex->next->next) {
+						/* fixme: test for potential flat */
+						newvertex = nr_vertex_new_xy (xtop, ytop);
+						newvertex->next = cs->vertex->next->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, cs->svp->wind);
+						ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
+						/* fixme: I do not like that - hope it is correct at least */
+						if (newsvp->next == nsvp) nsvp = newsvp;
+						cs->vertex->next->next = NULL;
+						/* fixme: */
+						nr_svp_calculate_bbox (cs->svp);
+					}
+					/* cs is now trimmed to common segment */
+					/* Create continuation of ns->svp */
+					if (ytop < ns->vertex->next->y) {
+						newvertex = nr_vertex_new_xy (xtop, ytop);
+						newvertex->next = ns->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, ns->svp->wind);
+						ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
+						/* fixme: I do not like that - hope it is correct at least */
+						if (newsvp->next == nsvp) nsvp = newsvp;
+						newvertex = nr_vertex_new_xy (xtop, ytop);
+						ns->vertex->next = newvertex;
+						/* fixme: */
+						nr_svp_calculate_bbox (ns->svp);
+					} else if (ns->vertex->next->next) {
+						/* fixme: test for potential flat */
+						newvertex = nr_vertex_new_xy (xtop, ytop);
+						newvertex->next = ns->vertex->next->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, ns->svp->wind);
+						ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
+						/* fixme: I do not like that - hope it is correct at least */
+						if (newsvp->next == nsvp) nsvp = newsvp;
+						ns->vertex->next->next = NULL;
+						/* fixme: */
+						nr_svp_calculate_bbox (ns->svp);
+					}
+					/* ns is now trimmed to common segment */
+					/* Create beginning of cs */
+					if (cs->vertex->y != yslice) {
+						g_print ("continuing cs\n");
+						/* This is bitch, but hopefully it is correct - see flat clipping for comments */
+						newvertex = nr_vertex_new_xy (cs->x, yslice);
+						newvertex->next = cs->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, cs->svp->wind);
+						newvertex = nr_vertex_new_xy (cs->x, yslice);
+						cs->vertex->next = newvertex;
+						nr_svp_calculate_bbox (cs->svp);
+						svp = nr_svp_insert_sorted (svp, newsvp);
+						cs->svp = newsvp;
+						cs->vertex = newsvp->vertex;
+					} else if (cs->vertex != cs->svp->vertex) {
+						g_print ("vertex cs\n");
+						/* This is bitch, but hopefully it is correct - see flat clipping for comments */
+						newvertex = nr_vertex_new_xy (cs->x, yslice);
+						newvertex->next = cs->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, cs->svp->wind);
+						cs->vertex->next = NULL;
+						nr_svp_calculate_bbox (cs->svp);
+						svp = nr_svp_insert_sorted (svp, newsvp);
+						cs->svp = newsvp;
+						cs->vertex = newsvp->vertex;
+					}
+					/* cs is truncated from both ends to common segment */
+					/* Create beginning of ns */
+					if (ns->vertex->y != yslice) {
+						g_print ("continuing ns\n");
+						/* This is bitch, but hopefully it is correct - see flat clipping for comments */
+						newvertex = nr_vertex_new_xy (ns->x, yslice);
+						newvertex->next = ns->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, ns->svp->wind);
+						newvertex = nr_vertex_new_xy (ns->x, yslice);
+						ns->vertex->next = newvertex;
+						nr_svp_calculate_bbox (ns->svp);
+						svp = nr_svp_insert_sorted (svp, newsvp);
+						ns->svp = newsvp;
+						ns->vertex = newsvp->vertex;
+					} else if (ns->vertex != ns->svp->vertex) {
+						g_print ("vertex ns\n");
+						/* This is bitch, but hopefully it is correct - see flat clipping for comments */
+						newvertex = nr_vertex_new_xy (ns->x, yslice);
+						newvertex->next = ns->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, ns->svp->wind);
+						ns->vertex->next = NULL;
+						nr_svp_calculate_bbox (ns->svp);
+						svp = nr_svp_insert_sorted (svp, newsvp);
+						ns->svp = newsvp;
+						ns->vertex = newsvp->vertex;
+					}
+					/* ns is truncated from both ends to common segment */
+					/* Calculate common wind */
+					wind = cs->svp->wind + ns->svp->wind;
+					/* Remove ns */
+					s = ns;
+					cs->next = ns->next;
+					/* fixme: use ssvp */
+					svp = nr_svp_remove (svp, s->svp);
+					nr_svp_free_one (s->svp);
+					nr_svp_slice_free_one (s);
+					/* fixme */
+					wind = wind & 0x1;
+					if (wind == 0) {
+						/* fixme: create double-winded segment, if applicable */
+						/* Remove cs */
+						s = cs;
+						if (ss) {
+							ss->next = cs->next;
+						} else {
+							slices = cs->next;
+						}
+						cs = cs->next;
+						/* fixme: use ssvp */
+						svp = nr_svp_remove (svp, s->svp);
+						nr_svp_free_one (s->svp);
+						nr_svp_slice_free_one (s);
+					} else {
+						cs->svp->wind = wind;
+						ss = cs;
+						cs = cs->next;
+					}
+				} else {
+					/* fixme: break if both are mid-svp */
+					/* Create beginning of cs */
+					if (cs->vertex->y != yslice) {
+						/* This is bitch, but hopefully it is correct - see flat clipping for comments */
+						newvertex = nr_vertex_new_xy (cs->x, yslice);
+						newvertex->next = cs->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, cs->svp->wind);
+						newvertex = nr_vertex_new_xy (cs->x, yslice);
+						cs->vertex->next = newvertex;
+						nr_svp_calculate_bbox (cs->svp);
+						svp = nr_svp_insert_sorted (svp, newsvp);
+						cs->svp = newsvp;
+						cs->vertex = newsvp->vertex;
+					} else if (cs->vertex != cs->svp->vertex) {
+						/* This is bitch, but hopefully it is correct - see flat clipping for comments */
+						newvertex = nr_vertex_new_xy (cs->x, yslice);
+						newvertex->next = cs->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, cs->svp->wind);
+						cs->vertex->next = NULL;
+						nr_svp_calculate_bbox (cs->svp);
+						svp = nr_svp_insert_sorted (svp, newsvp);
+						cs->svp = newsvp;
+						cs->vertex = newsvp->vertex;
+					}
+					/* Create beginning of ns */
+					if (ns->vertex->y != yslice) {
+						/* This is bitch, but hopefully it is correct - see flat clipping for comments */
+						newvertex = nr_vertex_new_xy (ns->x, yslice);
+						newvertex->next = ns->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, ns->svp->wind);
+						newvertex = nr_vertex_new_xy (ns->x, yslice);
+						ns->vertex->next = newvertex;
+						nr_svp_calculate_bbox (ns->svp);
+						svp = nr_svp_insert_sorted (svp, newsvp);
+						ns->svp = newsvp;
+						ns->vertex = newsvp->vertex;
+					} else if (ns->vertex != ns->svp->vertex) {
+						/* This is bitch, but hopefully it is correct - see flat clipping for comments */
+						newvertex = nr_vertex_new_xy (ns->x, yslice);
+						newvertex->next = ns->vertex->next;
+						newsvp = nr_svp_new_vertex_wind (newvertex, ns->svp->wind);
+						ns->vertex->next = NULL;
+						nr_svp_calculate_bbox (ns->svp);
+						svp = nr_svp_insert_sorted (svp, newsvp);
+						ns->svp = newsvp;
+						ns->vertex = newsvp->vertex;
+					}
+					/* Bitch - it is possible, that the order of cs & ns is reversed */
+					/* This can happen only if both cs & ns beginnings are cut off */
+					/* fixme: test it */
+					if (nr_svp_slice_compare (cs, ns) > 0) {
+						NRSVP * tsvp;
+						NRVertex * tvertex;
+						tsvp = cs->svp;
+						tvertex = cs->vertex;
+						cs->svp = ns->svp;
+						cs->vertex = ns->vertex;
+						ns->svp = tsvp;
+						ns->vertex = tvertex;
+						/* By definition coordinates are equal */
+					}
+					ss = cs;
+					cs = cs->next;
+				}
+			} else {
+				NRCoord x, y;
+				float xba, xdc, yba, ydc;
+				float xac, yac, numr, nums;
+				float r, s;
+				float d;
+				/* fixme: break if intersect */
+				/* Bitch 'o' bitches */
+				xba = cs->vertex->next->x - cs->x;
+				yba = cs->vertex->next->y - cs->y;
+				xdc = ns->vertex->next->x - ns->x;
+				ydc = ns->vertex->next->y - ns->y;
+				d = xba * ydc - yba * xdc;
+
+				if ((d < -NR_EPSILON) || (d > NR_EPSILON)) {
+					/* Not parallel */
+					xac = cs->x - ns->x;
+					yac = cs->y - ns->y;
+					numr = yac * xdc - xac * ydc;
+					nums = yac * xba - xac * yba;
+					r = numr / d;
+					s = nums / d;
+					if ((r > -NR_EPSILON) && (r < 1.0 + NR_EPSILON) && (s > -NR_EPSILON) && (s < 1.0 + NR_EPSILON)) {
+						x = NR_COORD_SNAP (cs->x + r * xba);
+						y = NR_COORD_SNAP (cs->y + r * yba);
+						if (y > yslice) {
+							/* Simple case */
+							/* continuation of cs */
+							if (y < cs->vertex->next->y) {
+								newvertex = nr_vertex_new_xy (x, y);
+								newvertex->next = cs->vertex->next;
+								newsvp = nr_svp_new_vertex_wind (newvertex, cs->svp->wind);
+								ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
+								/* fixme: I do not like that - hope it is correct at least */
+								if (newsvp->next == nsvp) nsvp = newsvp;
+								newvertex = nr_vertex_new_xy (x, y);
+								cs->vertex->next = newvertex;
+								/* fixme: */
+								nr_svp_calculate_bbox (cs->svp);
+							} else if (cs->vertex->next->next) {
+								/* fixme: test for potential flat */
+								newvertex = nr_vertex_new_xy (x, y);
+								newvertex->next = cs->vertex->next->next;
+								newsvp = nr_svp_new_vertex_wind (newvertex, cs->svp->wind);
+								ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
+								/* fixme: I do not like that - hope it is correct at least */
+								if (newsvp->next == nsvp) nsvp = newsvp;
+								cs->vertex->next->next = NULL;
+								/* fixme: */
+								nr_svp_calculate_bbox (cs->svp);
+							}
+							if (y < ns->vertex->next->y) {
+								newvertex = nr_vertex_new_xy (x, y);
+								newvertex->next = ns->vertex->next;
+								newsvp = nr_svp_new_vertex_wind (newvertex, ns->svp->wind);
+								ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
+								/* fixme: I do not like that - hope it is correct at least */
+								if (newsvp->next == nsvp) nsvp = newsvp;
+								newvertex = nr_vertex_new_xy (x, y);
+								ns->vertex->next = newvertex;
+								/* fixme: */
+								nr_svp_calculate_bbox (ns->svp);
+							} else if (ns->vertex->next->next) {
+								/* fixme: test for potential flat */
+								newvertex = nr_vertex_new_xy (x, y);
+								newvertex->next = ns->vertex->next->next;
+								newsvp = nr_svp_new_vertex_wind (newvertex, ns->svp->wind);
+								ns->svp->next = nr_svp_insert_sorted (ns->svp->next, newsvp);
+								/* fixme: I do not like that - hope it is correct at least */
+								if (newsvp->next == nsvp) nsvp = newsvp;
+								ns->vertex->next->next = NULL;
+								/* fixme: */
+								nr_svp_calculate_bbox (ns->svp);
+							}
+						} else if (x != cs->x) {
+							/* fixme: */
+						}
+					}
+				}
+				ss = cs;
+				cs = cs->next;
+			}
+		}
 		/* Process flats (NB! we advance nflat to first > y) */
 		while ((nflat) && (nflat->y == yslice)) {
 			for (s = slices; s != NULL; s = s->next) {
@@ -47,8 +349,6 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 				/* fixme: We can safely use EPSILON here */
 				if ((s->x >= nflat->x0) && (s->x <= nflat->x1)) {
 					if (s->vertex->y < yslice) {
-						NRVertex * newvertex;
-						NRSVP * newsvp;
 						/* Mid-segment intersection */
 						/* Create continuation svp */
 						newvertex = nr_vertex_new_xy (s->x, s->y);
@@ -68,8 +368,6 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 						s->vertex = newsvp->vertex;
 						/* s->x and s->y are correct by definition */
 					} else if (s->vertex != s->svp->vertex) {
-						NRVertex * newvertex;
-						NRSVP * newsvp;
 						g_assert (s->vertex->y == yslice);
 						/* Inter-segment intersection */
 						/* Create continuation svp */
@@ -93,7 +391,20 @@ nr_svp_uncross_full (NRSVP * svp, NRFlat * flats)
 			}
 			nflat = nflat->next;
 		}
-		/* calculate winds */
+		/* Calculate winds */
+		wind = 0;
+		g_print ("Winding ");
+		for (s = slices; s != NULL; s = s->next) {
+			wind += s->svp->wind;
+			g_print ("[%d %d] ", s->svp->wind, wind);
+			if (s->y == s->svp->vertex->y) {
+				g_print ("* ");
+				/* Starting SVP */
+				/* fixme: winding rules */
+				s->svp->wind = (wind & 0x1) ? 1 : -1;
+			}
+		}
+		g_print ("\n");
 		/* Calculate next yslice */
 		ynew = 1e18;
 		for (s = slices; s != NULL; s = s->next) {
@@ -914,6 +1225,7 @@ nr_svp_slice_stretch_list (NRSVPSlice * slices, NRCoord y)
 				s->x = NR_COORD_SNAP (v->x + (v->next->x - v->x) * (y - v->y) / (v->next->y - v->y));
 			}
 			s->y = y;
+			p = s;
 			s = s->next;
 		}
 	}
@@ -924,8 +1236,12 @@ nr_svp_slice_stretch_list (NRSVPSlice * slices, NRCoord y)
 static gint
 nr_svp_slice_compare (NRSVPSlice * l, NRSVPSlice * r)
 {
+#if 0
 	float xx0, yy0, x1x0, y1y0;
 	float d;
+#else
+	float stepxl, stepxr;
+#endif
 
 	g_assert (l->y == r->y);
 	g_assert (l->vertex->next->y > l->y);
@@ -934,19 +1250,26 @@ nr_svp_slice_compare (NRSVPSlice * l, NRSVPSlice * r)
 	if (l->x < r->x) return -1;
 	if (l->x > r->x) return 1;
 
+#if 0
 	/* Y is same, X is same, checking for line orders */
 
-	xx0 = l->vertex->next->x - r->x;
-	yy0 = l->vertex->next->y - r->y;
-	x1x0 = r->vertex->next->x - r->x;
-	y1y0 = r->vertex->next->y - r->y;
+	xx0 = l->vertex->next->x - l->vertex->x;
+	yy0 = l->vertex->next->y - l->vertex->y;
+	x1x0 = r->vertex->next->x - r->vertex->x;
+	y1y0 = r->vertex->next->y - r->vertex->y;
 
 	d = xx0 * y1y0 - yy0 * x1x0;
-
+	g_print ("d = %f\n", d);
 	/* fixme: test almost zero cases */
-	if (d < 0.0) return -1;
-	if (d > 0.0) return 1;
-
+	if (d < -NR_EPSILON) return -1;
+	if (d > NR_EPSILON) return 1;
+#else
+	stepxl = (l->vertex->next->x - l->vertex->x) / (l->vertex->next->y - l->vertex->y);
+	stepxr = (r->vertex->next->x - r->vertex->x) / (r->vertex->next->y - r->vertex->y);
+	if (stepxl < stepxr) return -1;
+	if (stepxl > stepxr) return 1;
+	return 0;
+#endif
 	return 0;
 }
 

@@ -1,3 +1,10 @@
+2000-12-26  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/display/nr-svp-uncross.c (nr_svp_uncross_full): more cases -
+	rays, intersection - some cleanups
+
+	* src/display/nr-svp-render.c (nr_svp_render_rgb_rgba): Cleanups
+
 2000-12-25  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/display/nr-primitives.h: Move NRCoord and NRPoint here
