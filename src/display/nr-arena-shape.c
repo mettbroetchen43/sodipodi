@@ -182,28 +182,30 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	/* Build state data */
 	if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
-		if (TRUE || !shape->fill_svp) {
-			ArtSVP *svpa, *svpb;
-			abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
-			vp = sp_vpath_from_bpath_closepath (abp, 0.25);
-			art_free (abp);
-			pvp = art_vpath_perturb (vp);
-			art_free (vp);
-			svpa = art_svp_from_vpath (pvp);
-			art_free (pvp);
-			svpb = art_svp_uncross (svpa);
-			art_svp_free (svpa);
-			shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
-			art_svp_free (svpb);
-		} else if (!NR_DF_TEST_CLOSE (gc->affine[4], shape->ctm.c[4], NR_EPSILON_D) ||
-			   !NR_DF_TEST_CLOSE (gc->affine[5], shape->ctm.c[5], NR_EPSILON_D)) {
-			ArtSVP *svpa;
-			/* Concept test */
-			svpa = art_svp_translate (shape->fill_svp, gc->affine[4] - shape->ctm.c[4], gc->affine[5] - shape->ctm.c[5]);
-			art_svp_free (shape->fill_svp);
-			shape->fill_svp = svpa;
+		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
+			if (TRUE || !shape->fill_svp) {
+				ArtSVP *svpa, *svpb;
+				abp = art_bpath_affine_transform (shape->curve->bpath, gc->affine);
+				vp = sp_vpath_from_bpath_closepath (abp, 0.25);
+				art_free (abp);
+				pvp = art_vpath_perturb (vp);
+				art_free (vp);
+				svpa = art_svp_from_vpath (pvp);
+				art_free (pvp);
+				svpb = art_svp_uncross (svpa);
+				art_svp_free (svpa);
+				shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
+				art_svp_free (svpb);
+			} else if (!NR_DF_TEST_CLOSE (gc->affine[4], shape->ctm.c[4], NR_EPSILON_D) ||
+				   !NR_DF_TEST_CLOSE (gc->affine[5], shape->ctm.c[5], NR_EPSILON_D)) {
+				ArtSVP *svpa;
+				/* Concept test */
+				svpa = art_svp_translate (shape->fill_svp, gc->affine[4] - shape->ctm.c[4], gc->affine[5] - shape->ctm.c[5]);
+				art_svp_free (shape->fill_svp);
+				shape->fill_svp = svpa;
+			}
+			memcpy (shape->ctm.c, gc->affine, 6 * sizeof (double));
 		}
-		memcpy (shape->ctm.c, gc->affine, 6 * sizeof (double));
 	}
 
 	if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {

@@ -36,6 +36,7 @@ static gint sp_text_context_root_handler (SPEventContext * event_context, GdkEve
 static gint sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
 static void sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc);
+static void sp_text_context_selection_modified (SPSelection *selection, guint flags, SPTextContext *tc);
 
 static gint sp_text_context_timeout (SPTextContext *tc);
 
@@ -157,7 +158,7 @@ sp_text_context_setup (SPEventContext *ec)
 	tc->cursor = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), 100, 0, 100, 100);
 	gnome_canvas_item_hide (tc->cursor);
-	tc->timeout = gtk_timeout_add (500, (GtkFunction) sp_text_context_timeout, ec);
+	tc->timeout = gtk_timeout_add (250, (GtkFunction) sp_text_context_timeout, ec);
 
 #ifdef SP_TC_XIM
 	if (gdk_im_ready () && (tc->ic_attr = gdk_ic_attr_new ()) != NULL) {
@@ -196,8 +197,8 @@ sp_text_context_setup (SPEventContext *ec)
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
 
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed",
-			    GTK_SIGNAL_FUNC (sp_text_context_selection_changed), tc);
+	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "changed", GTK_SIGNAL_FUNC (sp_text_context_selection_changed), tc);
+	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (desktop)), "modified", GTK_SIGNAL_FUNC (sp_text_context_selection_modified), tc);
 
 	sp_text_context_selection_changed (SP_DT_SELECTION (desktop), tc);
 }
@@ -266,6 +267,8 @@ static gint
 sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 {
 	SPTextContext *tc;
+	SPTSpan *new;
+	guchar *utf8;
 	gint ret;
 
 	tc = SP_TEXT_CONTEXT (ec);
@@ -290,15 +293,8 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_KEY_PRESS:
-#if 0
-		/* fixme: */
-		// filter control-modifier for desktop shortcuts
-		/* I removed this, as we prefer some text specific stuff here (Lauris) */
-                if (event->key.state & GDK_CONTROL_MASK) return FALSE;
-#endif
 		if (!tc->text) {
 			SPRepr *rtext, *rtspan, *rstring, *style;
-
 			/* Create <text> */
 			rtext = sp_repr_new ("text");
 			/* Set style */
@@ -311,42 +307,48 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			}
 			sp_repr_set_double_attribute (rtext, "x", tc->pdoc.x);
 			sp_repr_set_double_attribute (rtext, "y", tc->pdoc.y);
-
 			/* Create <tspan> */
 			rtspan = sp_repr_new ("tspan");
 			sp_repr_add_child (rtext, rtspan, NULL);
 			sp_repr_unref (rtspan);
-
 			/* Create TEXT */
 			rstring = sp_xml_document_createTextNode (sp_repr_document (rtext), "");
 			sp_repr_add_child (rtspan, rstring, NULL);
 			sp_repr_unref (rstring);
-
 			sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), rtext);
 			/* fixme: Is selection::changed really immediate? */
 			sp_selection_set_repr (SP_DT_SELECTION (ec->desktop), rtext);
 			sp_repr_unref (rtext);
-
 			sp_document_done (SP_DT_DOCUMENT (ec->desktop));
 		}
 
 		g_assert (tc->text != NULL);
 
-		if (event->key.keyval == GDK_Return) {
-			SPTSpan *new;
+		switch (event->key.keyval) {
+		case GDK_Return:
 			/* Append new line */
 			/* fixme: Has to be insert here */
 			new = sp_text_append_line (SP_TEXT (tc->text));
 			tc->ipos += 1;
-		} else if ((event->key.keyval == GDK_space) && (event->key.state & GDK_CONTROL_MASK)) {
-			/* Nonbreaking space */
-			tc->ipos = sp_text_append (SP_TEXT (tc->text), "\302\240");
-		} else if (event->key.string) {
-			guchar *utf8;
+			break;
+		case GDK_space:
+			if (event->key.state & GDK_CONTROL_MASK) {
+				/* Nonbreaking space */
+				tc->ipos = sp_text_append (SP_TEXT (tc->text), "\302\240");
+			} else {
+				tc->ipos = sp_text_append (SP_TEXT (tc->text), " ");
+			}
+			break;
+		case GDK_BackSpace:
+			tc->ipos = sp_text_delete (SP_TEXT (tc->text), MAX (tc->ipos - 1, 0), tc->ipos);
+			break;
+		default:
 			utf8 = e_utf8_from_locale_string (event->key.string);
 			tc->ipos = sp_text_append (SP_TEXT (tc->text), utf8);
 			if (utf8) g_free (utf8);
+			break;
 		}
+
 		sp_document_done (SP_DT_DOCUMENT (ec->desktop));
 
 		ret = TRUE;
@@ -373,15 +375,36 @@ sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc)
 	item = sp_selection_item (selection);
 
 	if (SP_IS_TEXT (item)) {
+		ArtPoint p0, p1;
+		gdouble i2d[6];
 		tc->text = item;
 		tc->ipos = sp_text_get_length (SP_TEXT (tc->text));
+		sp_text_get_cursor_coords (SP_TEXT (tc->text), tc->ipos, &p0, &p1);
 		gnome_canvas_item_show (tc->cursor);
+		sp_item_i2d_affine (SP_ITEM (tc->text), i2d);
+		art_affine_point (&p0, &p0, i2d);
+		art_affine_point (&p1, &p1, i2d);
+		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), p0.x, p0.y, p1.x, p1.y);
 		tc->show = TRUE;
 		tc->phase = 1;
 	} else {
 		tc->text = NULL;
 		gnome_canvas_item_hide (tc->cursor);
 		tc->show = FALSE;
+	}
+}
+
+static void
+sp_text_context_selection_modified (SPSelection *selection, guint flags, SPTextContext *tc)
+{
+	if (tc->text) {
+		ArtPoint p0, p1;
+		gdouble i2d[6];
+		sp_text_get_cursor_coords (SP_TEXT (tc->text), tc->ipos, &p0, &p1);
+		sp_item_i2d_affine (SP_ITEM (tc->text), i2d);
+		art_affine_point (&p0, &p0, i2d);
+		art_affine_point (&p1, &p1, i2d);
+		sp_ctrlline_set_coords (SP_CTRLLINE (tc->cursor), p0.x, p0.y, p1.x, p1.y);
 	}
 }
 

@@ -100,6 +100,7 @@ static void
 sp_string_init (SPString *string)
 {
 	string->text = NULL;
+	string->p = NULL;
 	string->start = 0;
 	string->length = 0;
 	string->bbox.x0 = string->bbox.y0 = 0.0;
@@ -114,6 +115,7 @@ sp_string_destroy (GtkObject *object)
 
 	string = SP_STRING (object);
 
+	if (string->p) g_free (string->p);
 	if (string->text) g_free (string->text);
 
 	GTK_OBJECT_CLASS (string_parent_class)->destroy (object);
@@ -140,6 +142,8 @@ sp_string_read_content (SPObject *object)
 
 	string = SP_STRING (object);
 
+	if (string->p) g_free (string->p);
+	string->p = NULL;
 	if (string->text) g_free (string->text);
 	t = sp_repr_content (object->repr);
 	string->text = (t) ? g_strdup (t) : NULL;
@@ -324,11 +328,18 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	gdouble a[6];
 	const guchar *p;
 	gboolean intext;
+	gint len, pos;
 
 	chars = SP_CHARS (string);
 	style = SP_OBJECT_STYLE (string);
 
 	sp_chars_clear (chars);
+
+	if (!string->text || !*string->text) return;
+	len = g_utf8_strlen (string->text, -1);
+	if (!len) return;
+	if (string->p) g_free (string->p);
+	string->p = g_new (NRPointF, len + 1);
 
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
@@ -347,54 +358,75 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 
 	art_affine_scale (a, size * 0.001, size * -0.001);
 
-	if (string->text) {
-
-		intext = FALSE;
-
-		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
-			gunichar unival;
-
-			unival = g_utf8_get_char (p);
-
-			if (unival == ' ') {
-				if (intext) inspace = TRUE;
+	intext = FALSE;
+	pos = 0;
+	for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
+		gunichar unival;
+		if (inspace) {
+			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				string->p[pos].x = x;
+				string->p[pos].y = y + size;
 			} else {
-				ArtPoint adv;
-				gint glyph;
-
-				glyph = gnome_font_lookup_default (font, unival);
-
-				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-					ArtPoint d;
-					if (inspace) {
-						y += size;
-						inspace = FALSE;
-					}
-					sp_font_get_glyph_bbox_lr2tb (font, glyph, &d);
-					g_print ("Unival %d:%c delta %g %g\n", unival, (gchar) unival, d.x, d.y);
-					a[4] = x + d.x;
-					a[5] = y - d.y;
-					sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
-					if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_TB, &adv)) {
-						x += adv.x;
-						y -= adv.y;
-					}
-				} else {
-					if (inspace) {
-						x += spwidth;
-						inspace = FALSE;
-					}
-					a[4] = x;
-					a[5] = y;
-					sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
-					if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_LR, &adv)) {
-						x += adv.x;
-						y -= adv.y;
-					}
-				}
-				intext = TRUE;
+				string->p[pos].x = x + spwidth;
+				string->p[pos].y = y;
 			}
+		} else {
+			string->p[pos].x = x;
+			string->p[pos].y = y;
 		}
+		unival = g_utf8_get_char (p);
+		if (unival == ' ') {
+			if (intext) inspace = TRUE;
+		} else {
+			ArtPoint adv;
+			gint glyph;
+
+			glyph = gnome_font_lookup_default (font, unival);
+
+			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				ArtPoint d;
+				if (inspace) {
+					y += size;
+					inspace = FALSE;
+				}
+				sp_font_get_glyph_bbox_lr2tb (font, glyph, &d);
+				g_print ("Unival %d:%c delta %g %g\n", unival, (gchar) unival, d.x, d.y);
+				a[4] = x + d.x;
+				a[5] = y - d.y;
+				sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
+				if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_TB, &adv)) {
+					x += adv.x;
+					y -= adv.y;
+				}
+			} else {
+				if (inspace) {
+					x += spwidth;
+					inspace = FALSE;
+				}
+				a[4] = x;
+				a[5] = y;
+				sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
+				if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_LR, &adv)) {
+					x += adv.x;
+					y -= adv.y;
+				}
+			}
+			intext = TRUE;
+		}
+		pos += 1;
+	}
+
+	if (inspace) {
+		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+			string->p[pos].x = x;
+			string->p[pos].y = y + size;
+		} else {
+			string->p[pos].x = x + spwidth;
+			string->p[pos].y = y;
+		}
+	} else {
+		string->p[pos].x = x;
+		string->p[pos].y = y;
 	}
 
 	cp->x = x;
@@ -1364,8 +1396,16 @@ sp_text_set_shape (SPText *text)
 				sp_repr_set_double (SP_OBJECT_REPR (tspan), "y", cp.y);
 				break;
 			case SP_TSPAN_ROLE_UNSPECIFIED:
-				if (tspan->ly.x.set) cp.x = tspan->ly.x.computed;
-				if (tspan->ly.y.set) cp.y = tspan->ly.y.computed;
+				if (tspan->ly.x.set) {
+					cp.x = tspan->ly.x.computed;
+				} else {
+					tspan->ly.x.computed = cp.x;
+				}
+				if (tspan->ly.y.set) {
+					cp.y = tspan->ly.y.computed;
+				} else {
+					tspan->ly.y.computed = cp.y;
+				}
 				break;
 			default:
 				/* Error */
@@ -1876,11 +1916,79 @@ sp_text_delete (SPText *text, gint start, gint end)
 	g_return_val_if_fail (end >= start, -1);
 
 	if (!text->children) return 0;
+	if (start == end) return start;
 
 	schild = sp_text_get_child_by_position (text, start);
 	echild = sp_text_get_child_by_position (text, end);
 
-	return 0;
+	if (schild != echild) {
+		SPString *sstring, *estring;
+		SPObject *child;
+		guchar *utf8, *sp, *ep;
+		GSList *cl;
+		/* Easy case */
+		sstring = SP_TEXT_CHILD_STRING (schild);
+		estring = SP_TEXT_CHILD_STRING (echild);
+		sp = g_utf8_offset_to_pointer (sstring->text, start - sstring->start);
+		ep = g_utf8_offset_to_pointer (estring->text, end - estring->start);
+		utf8 = g_new (guchar, (sp - sstring->text) + strlen (ep) + 1);
+		if (sp > sstring->text) memcpy (utf8, sstring->text, sp - sstring->text);
+		memcpy (utf8 + (sp - sstring->text), ep, strlen (ep) + 1);
+		sp_repr_set_content (SP_OBJECT_REPR (sstring), utf8);
+		g_free (utf8);
+		/* Delete nodes */
+		cl = NULL;
+		for (child = schild->next; child != echild; child = child->next) {
+			cl = g_slist_prepend (cl, SP_OBJECT_REPR (child));
+		}
+		cl = g_slist_prepend (cl, SP_OBJECT_REPR (child));
+		while (cl) {
+			sp_repr_unparent ((SPRepr *) cl->data);
+			cl = g_slist_remove (cl, cl->data);
+		}
+	} else {
+		SPString *string;
+		gchar *sp, *ep;
+		/* Easy case */
+		string = SP_TEXT_CHILD_STRING (schild);
+		sp = g_utf8_offset_to_pointer (string->text, start - string->start);
+		ep = g_utf8_offset_to_pointer (string->text, end - string->start);
+		memmove (sp, ep, strlen (ep) + 1);
+		sp_repr_set_content (SP_OBJECT_REPR (string), string->text);
+	}
+
+	return start;
+}
+
+void
+sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *p1)
+{
+	SPObject *child;
+	SPString *string;
+	gfloat x, y;
+
+	child = sp_text_get_child_by_position (text, position);
+	string = SP_TEXT_CHILD_STRING (child);
+
+	if (!string->p) {
+		x = string->ly->x.computed;
+		y = string->ly->y.computed;
+	} else {
+		x = string->p[position - string->start].x;
+		y = string->p[position - string->start].y;
+	}
+
+	if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		p0->x = x - child->style->font_size.computed / 2.0;
+		p0->y = y;
+		p1->x = x + child->style->font_size.computed / 2.0;
+		p1->y = y;
+	} else {
+		p0->x = x;
+		p0->y = y - child->style->font_size.computed;
+		p1->x = x;
+		p1->y = y;
+	}
 }
 
 static SPObject *
@@ -1900,5 +2008,4 @@ sp_text_get_child_by_position (SPText *text, gint pos)
 
 	return child;
 }
-
 

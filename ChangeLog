@@ -1,5 +1,17 @@
 2002-09-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-text.c (sp_string_set_shape): Update position array
+	(sp_text_get_cursor_coords): New method
+	(sp_text_set_shape): Set tspan position to text, if unset
+
+	* src/text-context.c (sp_text_context_setup): Set blink to 250ms
+	(sp_text_context_selection_modified): Implement, update cursor position
+	(sp_text_context_selection_changed): Ditto
+	(sp_text_context_root_handler): BackSpace works
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_update): Do not try to
+	fill paths consisting of single lineto
+
 	* src/gradient-chemistry.c (sp_gradient_ensure_private_normalized): Only keep
 	if hrefcount == 1 (fixed bug)
 

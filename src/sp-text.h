@@ -41,6 +41,7 @@ BEGIN_GNOME_DECLS
 
 #define SP_TSPAN_STRING(t) ((SPString *) SP_TSPAN (t)->string)
 
+#include <libnr/nr-types.h>
 #include "svg/svg-types.h"
 #include "sp-chars.h"
 
@@ -69,6 +70,7 @@ struct _SPString {
 	SPLayoutData *ly;
 	/* Content */
 	guchar *text;
+	NRPointF *p;
 	/* Bookkeeping */
 	guint start;
 	guint length;
@@ -125,6 +127,8 @@ struct _SPTextClass {
 	SPItemClass parent_class;
 };
 
+#define SP_TEXT_CHILD_STRING(c) (SP_IS_TSPAN (c) ? SP_TSPAN_STRING (c) : SP_STRING (c))
+
 GtkType sp_text_get_type (void);
 
 gchar *sp_text_get_string_multiline (SPText *text);
@@ -145,6 +149,8 @@ gint sp_text_get_length (SPText *text);
 gint sp_text_append (SPText *text, const guchar *utf8);
 /* Returns start position */
 gint sp_text_delete (SPText *text, gint start, gint end);
+
+void sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *p1);
 
 END_GNOME_DECLS
 
