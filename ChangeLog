@@ -1,3 +1,9 @@
+Sun Apr  7 01:37:29 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/style.c: (sp_style_read_from_object): Fixed to work stroke-cmyk.
+
+	* src/sp-item.c: (sp_item_read_attr): Ditto
+
 2002-04-06  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/svg/svg-length.c (sp_svg_read_number_f): New method with right signature

@@ -441,6 +441,30 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 			sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
 		}
 	}
+	str = sp_repr_attr (object->repr, "stroke-cmyk");
+	if (str) {
+		gdouble c, m, y, k;
+		gchar *cptr, *eptr;
+		c = m = y = k = 0.0;
+		cptr = (gchar *) str + 1;
+		c = strtod (cptr, &eptr);
+		if (eptr != cptr) {
+			cptr = eptr;
+			m = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			cptr = eptr;
+			y = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			cptr = eptr;
+			k = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			style->fill_set = TRUE;
+			sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
+		}
+	}
 	/* fixme */
 	if (!style->opacity_set) {
 		str = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");

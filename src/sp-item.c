@@ -210,6 +210,7 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 	if (!strcmp (key, "style") ||
 	    !strcmp (key, "fill-cmyk") ||
 	    !strcmp (key, "fill") ||
+	    !strcmp (key, "stroke-cmyk") ||
 	    !strcmp (key, "stroke") ||
 	    !strcmp (key, "opacity")) {
 		sp_style_read_from_object (object->style, object);
