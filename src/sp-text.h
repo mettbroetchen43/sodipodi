@@ -81,6 +81,8 @@ struct _SPStringClass {
 	SPCharsClass parent_class;
 };
 
+#define SP_STRING_TEXT(s) (SP_STRING (s)->text)
+
 GtkType sp_string_get_type (void);
 
 /* SPTSpan */

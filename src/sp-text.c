@@ -413,6 +413,7 @@ static void sp_tspan_read_attr (SPObject * object, const gchar * attr);
 static void sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_tspan_remove_child (SPObject *object, SPRepr *rch);
 static void sp_tspan_modified (SPObject *object, guint flags);
+static SPRepr *sp_tspan_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_tspan_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static NRArenaItem *sp_tspan_show (SPItem *item, NRArena *arena);
@@ -460,6 +461,7 @@ sp_tspan_class_init (SPTSpanClass *class)
 	sp_object_class->child_added = sp_tspan_child_added;
 	sp_object_class->remove_child = sp_tspan_remove_child;
 	sp_object_class->modified = sp_tspan_modified;
+	sp_object_class->write = sp_tspan_write;
 
 	item_class->bbox = sp_tspan_bbox;
 	item_class->show = sp_tspan_show;
@@ -628,6 +630,44 @@ sp_tspan_modified (SPObject *object, guint flags)
 	if (tspan->string) {
 		sp_object_modified (tspan->string, flags);
 	}
+}
+
+static SPRepr *
+sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPTSpan *tspan;
+
+	tspan = SP_TSPAN (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("tspan");
+	}
+
+	if (tspan->ly.x.set) sp_repr_set_double_attribute (repr, "x", tspan->ly.x.computed);
+	if (tspan->ly.y.set) sp_repr_set_double_attribute (repr, "y", tspan->ly.y.computed);
+	if (tspan->ly.dx.set) sp_repr_set_double_attribute (repr, "dx", tspan->ly.dx.computed);
+	if (tspan->ly.dy.set) sp_repr_set_double_attribute (repr, "dy", tspan->ly.dy.computed);
+	if (tspan->ly.rotate_set) sp_repr_set_double_attribute (repr, "rotate", tspan->ly.rotate);
+	if (flags & SP_OBJECT_WRITE_SODIPODI) {
+		sp_repr_set_attr (repr, "sodipodi:role", (tspan->role != SP_TSPAN_ROLE_UNSPECIFIED) ? "line" : NULL);
+	}
+
+	if (flags & SP_OBJECT_WRITE_BUILD) {
+		SPRepr *rstr;
+		/* TEXT element */
+		rstr = sp_xml_document_createTextNode (sp_repr_document (repr), SP_STRING_TEXT (tspan->string));
+		sp_repr_append_child (repr, rstr);
+		sp_repr_unref (rstr);
+	} else {
+		sp_repr_set_content (SP_OBJECT_REPR (tspan->string), SP_STRING_TEXT (tspan->string));
+	}
+
+	/* fixme: Strictly speaking, item class write 'transform' too */
+	/* fixme: This is harmless as long as tspan affine is identity (lauris) */
+	if (SP_OBJECT_CLASS (tspan_parent_class)->write)
+		SP_OBJECT_CLASS (tspan_parent_class)->write (object, repr, flags);
+
+	return repr;
 }
 
 static void
@@ -1049,16 +1089,43 @@ static SPRepr *
 sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPText *text;
+	SPObject *child;
+	SPRepr *crepr;
 
 	text = SP_TEXT (object);
 
-	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
-		repr = sp_repr_new ("text");
+	if (flags & SP_OBJECT_WRITE_BUILD) {
+		GSList *l;
+		if (!repr) repr = sp_repr_new ("text");
+		l = NULL;
+		for (child = text->children; child != NULL; child = child->next) {
+			if (SP_IS_TSPAN (child)) {
+				crepr = sp_object_invoke_write (child, NULL, flags);
+				if (crepr) l = g_slist_prepend (l, crepr);
+			} else {
+				crepr = sp_xml_document_createTextNode (sp_repr_document (repr), SP_STRING_TEXT (child));
+			}
+		}
+		while (l) {
+			sp_repr_add_child (repr, (SPRepr *) l->data, NULL);
+			sp_repr_unref ((SPRepr *) l->data);
+			l = g_slist_remove (l, l->data);
+		}
+	} else {
+		for (child = text->children; child != NULL; child = child->next) {
+			if (SP_IS_TSPAN (child)) {
+				sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
+			} else {
+				sp_repr_set_content (SP_OBJECT_REPR (child), SP_STRING_TEXT (child));
+			}
+		}
 	}
 
-	if (repr != SP_OBJECT_REPR (object)) {
-		sp_repr_merge (repr, SP_OBJECT_REPR (object), "id");
-	}
+	if (text->ly.x.set) sp_repr_set_double_attribute (repr, "x", text->ly.x.computed);
+	if (text->ly.y.set) sp_repr_set_double_attribute (repr, "y", text->ly.y.computed);
+	if (text->ly.dx.set) sp_repr_set_double_attribute (repr, "dx", text->ly.dx.computed);
+	if (text->ly.dy.set) sp_repr_set_double_attribute (repr, "dy", text->ly.dy.computed);
+	if (text->ly.rotate_set) sp_repr_set_double_attribute (repr, "rotate", text->ly.rotate);
 
 	if (((SPObjectClass *) (text_parent_class))->write)
 		((SPObjectClass *) (text_parent_class))->write (object, repr, flags);

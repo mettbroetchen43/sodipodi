@@ -722,7 +722,7 @@ sp_style_merge_from_parent (SPStyle *style, SPStyle *parent)
 		style->fill_opacity.value = parent->fill_opacity.value;
 	}
 	if (!style->fill_rule.set || style->fill_rule.inherit) {
-		style->fill_rule.value = parent->fill_rule.value;
+		style->fill_rule.computed = parent->fill_rule.computed;
 	}
 	/* Stroke */
 	if (!style->stroke.set || style->stroke.inherit) {
@@ -741,10 +741,10 @@ sp_style_merge_from_parent (SPStyle *style, SPStyle *parent)
 		style->stroke_width.computed = style->font_size.computed * 0.5;
 	}
 	if (!style->stroke_linecap.set || style->stroke_linecap.inherit) {
-		style->stroke_linecap.value = parent->stroke_linecap.value;
+		style->stroke_linecap.computed = parent->stroke_linecap.computed;
 	}
 	if (!style->stroke_linejoin.set || style->stroke_linejoin.inherit) {
-		style->stroke_linejoin.value = parent->stroke_linejoin.value;
+		style->stroke_linejoin.computed = parent->stroke_linejoin.computed;
 	}
 	if (!style->stroke_miterlimit.set || style->stroke_miterlimit.inherit) {
 		style->stroke_miterlimit.value = parent->stroke_miterlimit.value;
@@ -1668,7 +1668,7 @@ static gint
 sp_style_write_ienum (guchar *p, gint len, const guchar *key, const SPStyleEnum *dict, SPIEnum *val, SPIEnum *base, guint flags)
 {
 	if (((flags & SP_STYLE_FLAG_IFSET) && val->set) ||
-	    ((flags & SP_STYLE_FLAG_IFDIFF) && (val->value != base->value))) {
+	    ((flags & SP_STYLE_FLAG_IFDIFF) && (val->computed != base->computed))) {
 		gint i;
 		for (i = 0; dict[i].key; i++) {
 			if (dict[i].value == val->value) {

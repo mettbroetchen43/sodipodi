@@ -115,7 +115,8 @@ sp_repr_qualified_name (guchar *p, gint len, xmlNsPtr ns, const xmlChar *name)
 	return g_snprintf (p, len, "%s", name);
 }
 
-static SPRepr *sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
+static SPRepr *
+sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
 {
 	SPRepr *repr, *crepr;
 	xmlAttrPtr prop;
@@ -193,19 +194,19 @@ static SPRepr *sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
 }
 
 void
-sp_repr_save_stream (SPReprDoc * doc, FILE * to_file)
+sp_repr_save_stream (SPReprDoc * doc, FILE *fp)
 {
-	SPRepr * repr;
+	SPRepr *repr;
 	/* fixme: do this The Right Way */
 
-	fputs ("<?xml version=\"1.0\" standalone=\"no\"?>\n"
-	       "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
-	       "\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n",
-	       to_file);
+	fputs ("<?xml version=\"1.0\" standalone=\"no\"?>\n", fp);
+	fputs ("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n", fp);
+	fputs ("\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n", fp);
+	fputs ("<!-- Created with Sodipodi (\"http://www.sodipodi.com/\") -->\n", fp);
 
 	repr = sp_repr_document_root (doc);
 
-	repr_write (repr, to_file, 0);
+	repr_write (repr, fp, 0);
 }
 
 void
@@ -256,9 +257,10 @@ repr_quote_write (FILE * file, const gchar * val)
 static void
 repr_write (SPRepr * repr, FILE * file, gint level)
 {
-	SPReprAttr * attr;
-	SPRepr * child;
-	const gchar * key, * val;
+	SPReprAttr *attr;
+	SPRepr *child;
+	const gchar *key, *val;
+	gboolean loose;
 	gint i;
 
 	g_return_if_fail (repr != NULL);
@@ -286,15 +288,18 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 			fputs (">\n", file);
 		}
 
+		loose = TRUE;
 		for (child = repr->children; child != NULL; child = child->next) {
 			if (child->type == SP_XML_TEXT_NODE) {
 				repr_quote_write (file, sp_repr_content (child));
+				loose = FALSE;
 			} else {
-				repr_write (child, file, level + 1);
+				repr_write (child, file, (loose) ? (level + 1) : 0);
+				loose = TRUE;
 			}
 		}
 		
-		if (!sp_repr_content (repr)) {
+		if (loose) {
 			for (i = 0; i < level; i++) fputs ("  ", file);
 		}
 		fprintf (file, "</%s>\n", sp_repr_name (repr));

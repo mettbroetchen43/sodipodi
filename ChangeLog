@@ -1,5 +1,9 @@
 2002-09-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/style.c (sp_style_write_ienum): We compare computed values, to
+	avoid unnecessary setting of attributes
+	(sp_style_merge_from_parent): Set only computed values for everything
+
 	* src/helper/art-utils.c (sp_vpath_from_bpath_closepath): New method,
 	borrowed relevant helpers from libart code
 
