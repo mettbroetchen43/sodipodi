@@ -241,6 +241,41 @@ nr_svp_point_distance (NRSVP *svp, float x, float y)
 	return best;
 }
 
+void
+nr_svp_bbox (NRSVP *svp, NRRectF *bbox, unsigned int clear)
+{
+	unsigned int sidx;
+	float x0, y0, x1, y1;
+
+	x0 = y0 = NR_HUGE_F;
+	x1 = y1 = -NR_HUGE_F;
+
+	for (sidx = 0; sidx < svp->length; sidx++) {
+		NRSVPSegment *seg;
+		seg = svp->segments + sidx;
+		if (seg->length) {
+			x0 = MIN (x0, seg->x0);
+			y0 = MIN (y0, svp->points[seg->start].y);
+			x1 = MAX (x1, seg->x1);
+			y1 = MAX (y1, svp->points[seg->start + seg->length - 1].y);
+		}
+	}
+
+	if ((x1 > x0) && (y1 > y0)) {
+		if (clear || (bbox->x1 <= bbox->x0) || (bbox->y1 <= bbox->y0)) {
+			bbox->x0 = x0;
+			bbox->y0 = y0;
+			bbox->x1 = x1;
+			bbox->y1 = y1;
+		} else {
+			bbox->x0 = MIN (bbox->x0, x0);
+			bbox->y0 = MIN (bbox->y0, y0);
+			bbox->x1 = MAX (bbox->x1, x1);
+			bbox->y1 = MAX (bbox->y1, y1);
+		}
+	}
+}
+
 #include <libart_lgpl/art_misc.h>
 
 #define NR_QUANT_X 16.0

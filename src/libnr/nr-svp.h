@@ -51,6 +51,7 @@ void nr_svp_free (NRSVP *svp);
 
 int nr_svp_point_wind (NRSVP *svp, float x, float y);
 double nr_svp_point_distance (NRSVP *svp, float x, float y);
+void nr_svp_bbox (NRSVP *svp, NRRectF *bbox, unsigned int clear);
 
 /* Sorted vertex lists */
 
@@ -97,7 +98,7 @@ void nr_vertex_free_list (NRVertex *v);
 
 NRVertex *nr_vertex_reverse_list (NRVertex *v);
 
-/* NRSVP */
+/* NRSVL */
 
 NRSVL *nr_svl_new (void);
 NRSVL *nr_svl_new_full (NRVertex *vertex, NRRectF *bbox, int wind);

@@ -17,16 +17,8 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnr/nr-pixops.h>
-
-#include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_bpath.h>
-#include <libart_lgpl/art_vpath_bpath.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_vpath.h>
-#include <libart_lgpl/art_svp_wind.h>
-#include <libart_lgpl/art_rect_svp.h>
-#include <libart_lgpl/art_gray_svp.h>
+#include <libnr/nr-svp.h>
+#include <libnr/nr-svp-render.h>
 
 #include "nr-rasterfont.h"
 
@@ -105,7 +97,7 @@ struct _NRRFGlyphSlot {
 	union {
 		unsigned char d[NRRF_TINY_SIZE];
 		unsigned char *px;
-		ArtSVP *svp;
+		NRSVP *svp;
 	} gmap;
 };
 
@@ -146,7 +138,7 @@ nr_rasterfont_generic_free (NRRasterFont *rf)
 					if (slots[s].has_gmap == NRRF_GMAP_IMAGE) {
 						nr_free (slots[s].gmap.px);
 					} else if (slots[s].has_gmap == NRRF_GMAP_SVP) {
-						art_svp_free (slots[s].gmap.svp);
+						nr_svp_free (slots[s].gmap.svp);
 					}
 				}
 				nr_free (rf->pages[p]);
@@ -182,12 +174,7 @@ nr_rasterfont_generic_glyph_area_get (NRRasterFont *rf, unsigned int glyph, NRRe
 	slot = nr_rasterfont_ensure_glyph_slot (rf, glyph, NR_RASTERFONT_BBOX_FLAG | NR_RASTERFONT_GMAP_FLAG);
 
 	if (slot->has_gmap == NRRF_GMAP_SVP) {
-		ArtDRect dbox;
-		art_drect_svp (&dbox, slot->gmap.svp);
-		area->x0 = dbox.x0;
-		area->y0 = dbox.y0;
-		area->x1 = dbox.x1;
-		area->y1 = dbox.y1;
+		nr_svp_bbox (slot->gmap.svp, area, TRUE);
 	} else {
 		area->x0 = NRRF_COORD_TO_FLOAT (slot->bbox.x0);
 		area->y0 = NRRF_COORD_TO_FLOAT (slot->bbox.y0);
@@ -217,7 +204,7 @@ nr_rasterfont_generic_glyph_mask_render (NRRasterFont *rf, unsigned int glyph, N
 	sx = (int) floor (x + 0.5);
 	sy = (int) floor (y + 0.5);
 
-	spb.empty = 1;
+	spb.empty = TRUE;
 	if (slot->has_gmap == NRRF_GMAP_IMAGE) {
 		spx = slot->gmap.px;
 		srs = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
@@ -233,23 +220,12 @@ nr_rasterfont_generic_glyph_mask_render (NRRasterFont *rf, unsigned int glyph, N
 		area.x1 = NRRF_COORD_INT_UPPER (slot->bbox.x1) + sx;
 		area.y1 = NRRF_COORD_INT_UPPER (slot->bbox.y1) + sy;
 	} else {
-		ArtDRect dbox;
-		art_drect_svp (&dbox, slot->gmap.svp);
-		area.x0 = (int) floor (dbox.x0) + sx;
-		area.y0 = (int) floor (dbox.y0) + sy;
-		area.x1 = (int) ceil (dbox.x1) + sx;
-		area.y1 = (int) ceil (dbox.y1) + sy;
-		area.x0 = MAX (area.x0, m->area.x0);
-		area.y0 = MAX (area.y0, m->area.y0);
-		area.x1 = MIN (area.x1, m->area.x1);
-		area.y1 = MIN (area.y1, m->area.y1);
-		if (nr_rect_s_test_empty (&area)) return;
-		nr_pixblock_setup_fast (&spb, NR_PIXBLOCK_MODE_A8, area.x0, area.y0, area.x1, area.y1, 0);
-		art_gray_svp_aa (slot->gmap.svp, area.x0 - sx, area.y0 - sy, area.x1 - sx, area.y1 - sy,
-				 NR_PIXBLOCK_PX (&spb), spb.rs);
-		spb.empty = 0;
-		spx = NR_PIXBLOCK_PX (&spb);
-		srs = spb.rs;
+		nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_A8,
+					  m->area.x0 - sx, m->area.y0 - sy, m->area.x1 - sx, m->area.y1 - sy,
+					  NR_PIXBLOCK_PX (m), m->rs, FALSE, FALSE);
+		nr_pixblock_render_svp_mask_or (&spb, slot->gmap.svp);
+		nr_pixblock_release (&spb);
+		return;
 	}
 
 	if (nr_rect_s_test_intersect (&area, &m->area)) {
@@ -304,33 +280,23 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 	if (((flags & NR_RASTERFONT_BBOX_FLAG) && !slot->has_bbox) ||
 	    ((flags & NR_RASTERFONT_GMAP_FLAG) && !slot->has_gmap)) {
 		NRBPath gbp;
-		if (nr_font_glyph_outline_get (rf->font, glyph, &gbp, 0)) {
-
-		    if (gbp.path && (gbp.path->code == ART_MOVETO)) {
-			ArtBpath *abp;
-			ArtVpath *vp, *pvp;
-			ArtSVP *svpa, *svpb;
-			ArtDRect bbox;
+		if (nr_font_glyph_outline_get (rf->font, glyph, &gbp, 0) && (gbp.path && (gbp.path->code == ART_MOVETO))) {
+			NRSVL *svl;
+			NRSVP *svp;
+			NRMatrixF a;
+			NRRectF bbox;
 			int x0, y0, x1, y1, w, h;
-			double a[6];
-			a[0] = rf->transform.c[0];
-			a[1] = rf->transform.c[1];
-			a[2] = rf->transform.c[2];
-			a[3] = rf->transform.c[3];
-			a[4] = 0.0;
-			a[5] = 0.0;
-			abp = art_bpath_affine_transform (gbp.path, a);
-			vp = art_bez_path_to_vec (abp, 0.25);
-			art_free (abp);
-			pvp = art_vpath_perturb (vp);
-			art_free (vp);
-			svpa = art_svp_from_vpath (pvp);
-			art_free (pvp);
-			svpb = art_svp_uncross (svpa);
-			art_svp_free (svpa);
-			svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_NONZERO);
-			art_svp_free (svpb);
-			art_drect_svp (&bbox, svpa);
+
+			a = rf->transform;
+			a.c[4] = 0.0;
+			a.c[5] = 0.0;
+
+			svl = nr_svl_from_art_bpath (gbp.path, &a, NR_WIND_RULE_NONZERO, TRUE, 0.25);
+			svp = nr_svp_from_svl (svl, NULL);
+			nr_svl_free_list (svl);
+
+			nr_svp_bbox (svp, &bbox, TRUE);
+
 			x0 = NRRF_COORD_FROM_FLOAT_LOWER (bbox.x0);
 			y0 = NRRF_COORD_FROM_FLOAT_LOWER (bbox.y0);
 			x1 = NRRF_COORD_FROM_FLOAT_UPPER (bbox.x1);
@@ -344,20 +310,23 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 			if ((w >= NRRF_MAX_GLYPH_DIMENSION) ||
 			    (h >= NRRF_MAX_GLYPH_DIMENSION) ||
 			    ((w * h) > NRRF_MAX_GLYPH_SIZE)) {
-				slot->gmap.svp = svpa;
+				slot->gmap.svp = svp;
 				slot->has_gmap = NRRF_GMAP_SVP;
 			} else {
+				NRPixBlock spb;
 				slot->gmap.px = nr_new (unsigned char, w * h);
-				art_gray_svp_aa (svpa,
-						 NRRF_COORD_INT_LOWER (x0),
-						 NRRF_COORD_INT_LOWER (y0),
-						 NRRF_COORD_INT_UPPER (x1),
-						 NRRF_COORD_INT_UPPER (y1),
-						 slot->gmap.px,
-						 w);
-				art_svp_free (svpa);
+				nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_A8,
+							  NRRF_COORD_INT_LOWER (x0),
+							  NRRF_COORD_INT_LOWER (y0),
+							  NRRF_COORD_INT_UPPER (x1),
+							  NRRF_COORD_INT_UPPER (y1),
+							  slot->gmap.px, w,
+							  TRUE, TRUE);
+				nr_pixblock_render_svp_mask_or (&spb, svp);
+				nr_pixblock_release (&spb);
+				nr_svp_free (svp);
 				slot->has_gmap = NRRF_GMAP_IMAGE;
-			}}
+			}
 		} else {
 			slot->bbox.x0 = 0;
 			slot->bbox.y0 = 0;

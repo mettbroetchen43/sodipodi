@@ -203,7 +203,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	SPStyle *style;
 	ArtBpath *abp;
 	ArtVpath *vp, *pvp;
-	ArtDRect bbox;
+	NRRectF bbox;
 	unsigned int newstate, beststate;
 
 	shape = NR_ARENA_SHAPE (item);
@@ -222,7 +222,6 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		if (state & NR_ARENA_ITEM_STATE_BBOX) {
 			if (shape->curve) {
 				NRMatrixF ctm;
-				NRRectF bbox;
 				NRBPath bp;
 				/* fixme: */
 				bbox.x0 = bbox.y0 = NR_HUGE_F;
@@ -354,64 +353,12 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
 	if (shape->stroke_svp && shape->stroke_svp->length > 0) {
-		unsigned int sidx;
-		float x0, y0, x1, y1;
-		x0 = y0 = NR_HUGE_F;
-		x1 = y1 = -NR_HUGE_F;
-		for (sidx = 0; sidx < shape->stroke_svp->length; sidx++) {
-			NRSVPSegment *seg;
-			seg = shape->stroke_svp->segments + sidx;
-			if (seg->length) {
-				x0 = MIN (x0, seg->x0);
-				y0 = MIN (y0, shape->stroke_svp->points[seg->start].y);
-				x1 = MAX (x1, seg->x1);
-				y1 = MAX (y1, shape->stroke_svp->points[seg->start + seg->length - 1].y);
-			}
-		}
-		if ((x1 > x0) && (y1 > y0)) {
-			if ((bbox.x1 > bbox.x0) && (bbox.x1 > bbox.x0)) {
-				bbox.x0 = MIN (bbox.x0, x0);
-				bbox.y0 = MIN (bbox.y0, y0);
-				bbox.x1 = MAX (bbox.x1, x1);
-				bbox.y1 = MAX (bbox.y1, y1);
-			} else {
-				bbox.x0 = x0;
-				bbox.y0 = y0;
-				bbox.x1 = x1;
-				bbox.y1 = y1;
-			}
-		}
+		nr_svp_bbox (shape->stroke_svp, &bbox, FALSE);
 	}
 	if (shape->fill_svp && shape->fill_svp->length > 0) {
-		unsigned int sidx;
-		float x0, y0, x1, y1;
-		x0 = y0 = NR_HUGE_F;
-		x1 = y1 = -NR_HUGE_F;
-		for (sidx = 0; sidx < shape->fill_svp->length; sidx++) {
-			NRSVPSegment *seg;
-			seg = shape->fill_svp->segments + sidx;
-			if (seg->length) {
-				x0 = MIN (x0, seg->x0);
-				y0 = MIN (y0, shape->fill_svp->points[seg->start].y);
-				x1 = MAX (x1, seg->x1);
-				y1 = MAX (y1, shape->fill_svp->points[seg->start + seg->length - 1].y);
-			}
-		}
-		if ((x1 > x0) && (y1 > y0)) {
-			if ((bbox.x1 > bbox.x0) && (bbox.x1 > bbox.x0)) {
-				bbox.x0 = MIN (bbox.x0, x0);
-				bbox.y0 = MIN (bbox.y0, y0);
-				bbox.x1 = MAX (bbox.x1, x1);
-				bbox.y1 = MAX (bbox.y1, y1);
-			} else {
-				bbox.x0 = x0;
-				bbox.y0 = y0;
-				bbox.x1 = x1;
-				bbox.y1 = y1;
-			}
-		}
+		nr_svp_bbox (shape->fill_svp, &bbox, FALSE);
 	}
-	if (art_drect_empty (&bbox)) return NR_ARENA_ITEM_STATE_ALL;
+	if (nr_rect_f_test_empty (&bbox)) return NR_ARENA_ITEM_STATE_ALL;
 
 	item->bbox.x0 = bbox.x0 - 1.0;
 	item->bbox.y0 = bbox.y0 - 1.0;

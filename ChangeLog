@@ -1,3 +1,9 @@
+2003-05-04  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-rasterfont.c (nr_rasterfont_generic_glyph_mask_render): Render
+	using NRSVP and mask OR
+	(nr_rasterfont_ensure_glyph_slot): Build NRSVP
+
 2003-05-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/Makefile.am: Removed art-utils.h
