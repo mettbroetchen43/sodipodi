@@ -47,7 +47,7 @@ struct _NRTypeFaceGlyphW32 {
 	NRRectF area;
 	NRPointF advance;
 	int olref;
-	NRBPath outline;
+	NRPath *outline;
 };
 
 struct _NRTypeFaceW32 {

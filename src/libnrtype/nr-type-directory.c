@@ -35,7 +35,9 @@
 #include <libnr/nr-values.h>
 /* #include "../style.h" */
 #include "nr-type-primitives.h"
+#ifdef WIT_FT2
 #include "nr-type-ft2.h"
+#endif
 #ifdef WITH_GNOME_PRINT
 #include "nr-type-gnome.h"
 #endif
@@ -66,7 +68,9 @@ static void nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char 
 static float nr_type_distance_family_better (const unsigned char *ask, const unsigned char *bid, float best);
 static float nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float best);
 
+#ifdef WITH_FT2
 static void nr_type_read_private_list (void);
+#endif
 #if 0
 static void nr_type_read_w32_list (void);
 #endif
@@ -380,7 +384,9 @@ nr_type_directory_build (void)
 	typedict = nr_type_dict_new ();
 	familydict = nr_type_dict_new ();
 
+#ifdef WITH_FT2
 	nr_type_read_private_list ();
+#endif
 
 #ifdef WIN32
 	nr_type_read_w32_list ();
@@ -522,8 +528,8 @@ nr_type_distance_family_better (const unsigned char *ask, const unsigned char *b
 	if (!stricmp (ask, bid)) return MIN (best, 0.0F);
 #endif
 
-	alen = strlen (ask);
-	blen = strlen (bid);
+	alen = (int) strlen (ask);
+	blen = (int) strlen (bid);
 
 #ifndef WIN32
 	if ((blen < alen) && !strncasecmp (ask, bid, blen)) return MIN (best, 1.0F);
@@ -556,7 +562,7 @@ nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float be
 	dweight = NR_TYPE_WEIGHT_SCALE * ((int) ask->weight - (int) bid->weight);
 	dstretch = NR_TYPE_STRETCH_SCALE * ((int) ask->stretch - (int) bid->stretch);
 
-	dist = sqrt (ditalic * ditalic + doblique * doblique + dweight * dweight + dstretch * dstretch);
+	dist = (float) sqrt (ditalic * ditalic + doblique * doblique + dweight * dweight + dstretch * dstretch);
 
 #if 0
         fprintf(stderr,"nr_type_distance_position_better((%d,%d,%d,%d)->(%d,%d,%d,%d)): (%f,%f,%f,%f) => %f\n",
@@ -570,6 +576,7 @@ nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float be
 	return MIN (dist, best);
 }
 
+#ifdef WITH_FT2
 static unsigned char privatename[] = "/.sodipodi/private-fonts";
 
 #ifndef WIN32
@@ -690,4 +697,5 @@ nr_type_build (const unsigned char *name, const unsigned char *family,
 
 	return nr_type_directory_lookup (name);
 }
+#endif
 

@@ -261,7 +261,7 @@ nr_typeface_empty_attribute_get (NRTypeFace *tf, const unsigned char *key, unsig
 		val = "";
 	}
 
-	len = MIN (size - 1, strlen (val));
+	len = MIN (size - 1, (int) strlen (val));
 	if (len > 0) {
 		memcpy (str, val, len);
 	}
@@ -269,7 +269,7 @@ nr_typeface_empty_attribute_get (NRTypeFace *tf, const unsigned char *key, unsig
 		str[len] = '\0';
 	}
 
-	return strlen (val);
+	return (int) strlen (val);
 }
 
 static NRPath *
@@ -447,7 +447,7 @@ nr_type_make_style_name_dumb (const NRTypeFaceDef *def)
 	slantStr = nr_type_slant_to_string (def->slant);
 	weightStr = nr_type_weight_to_string (def->weight);
 
-	len = strlen (slantStr) + strlen (weightStr) + 2;
+	len = (int) strlen (slantStr) + (int) strlen (weightStr) + 2;
 	res = (unsigned char *) malloc (len + 2);
 	if (!res) return NULL;
 

@@ -18,9 +18,12 @@
 #include <libarikkei/arikkei-dict.h>
 #include <libarikkei/arikkei-strlib.h>
 
+#if 0
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>
 #include <libart_lgpl/art_bpath.h>
+#endif
+
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>
 
@@ -41,7 +44,7 @@ static void nr_typeface_w32_finalize (NRObject *object);
 static void nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def);
 
 static unsigned int nr_typeface_w32_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
-static NRBPath *nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
+static NRPath *nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref);
 static void nr_typeface_w32_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
 static NRPointF *nr_typeface_w32_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
 static unsigned int nr_typeface_w32_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival);
@@ -130,7 +133,7 @@ static NRNameList NRW32Families = {0, NULL, NULL};
 static void nr_type_w32_init (void);
 static NRTypeFaceGlyphW32 *nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned int metrics);
 
-static NRBPath *nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, unsigned int glyph, unsigned int metrics);
+static NRPath *nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, unsigned int glyph, unsigned int metrics);
 
 
 void
@@ -360,8 +363,8 @@ nr_typeface_w32_finalize (NRObject *object)
     if (tfw32->slots) {
         unsigned int i;
         for (i = 0; i < tfw32->slots_length; i++) {
-            if (tfw32->slots[i].outline.path > 0) {
-				art_free (tfw32->slots[i].outline.path);
+            if (tfw32->slots[i].outline > 0) {
+				free (tfw32->slots[i].outline);
             }
         }
 		nr_free (tfw32->slots);
@@ -435,8 +438,8 @@ nr_typeface_w32_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigne
 	return (unsigned int) strlen (val);
 }
 
-static NRBPath *
-nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
+static NRPath *
+nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, unsigned int ref)
 {
 	NRTypeFaceW32 *tfw32;
 	NRTypeFaceGlyphW32 *slot;
@@ -452,11 +455,10 @@ nr_typeface_w32_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 				slot->olref = -1;
 			}
 		}
-		*d = slot->outline;
+		return slot->outline;
 	} else {
-		d->path = NULL;
+		return NULL;
 	}
-	return d;
 }
 
 static void
@@ -471,8 +473,8 @@ nr_typeface_w32_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigne
 	if (slot && slot->olref > 0) {
 		slot->olref -= 1;
 		if (slot->olref < 1) {
-			nr_free (slot->outline.path);
-			slot->outline.path = NULL;
+			free (slot->outline);
+			slot->outline = NULL;
 		}
 	}
 }
@@ -812,7 +814,7 @@ nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned 
 			slot->advance.y = gmetrics.gmCellIncY;
 		}
 		slot->olref = 0;
-		slot->outline.path = NULL;
+		slot->outline = NULL;
 
 		if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
 			tfw32->vgidx[glyph] = tfw32->slots_length;
@@ -831,7 +833,7 @@ nr_typeface_w32_ensure_slot (NRTypeFaceW32 *tfw32, unsigned int glyph, unsigned 
 
 #define FIXED_TO_FLOAT(p) ((p)->value + (double) (p)->fract / 65536.0)
 
-static NRBPath *
+static NRPath *
 nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, unsigned int glyph, unsigned int metrics)
 
 {
@@ -841,8 +843,13 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
 	unsigned char *gol;
 	LPTTPOLYGONHEADER pgh;
     LPTTPOLYCURVE pc;
+#if 1
+	NRDynamicPath *dp;
+	char *bp;
+#else
 	ArtBpath bpath[8192];
     ArtBpath *bp;
+#endif
 	int pos, stop;
     double Ax, Ay, Bx, By, Cx, Cy;
 
@@ -853,7 +860,10 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
     gol = nr_new (unsigned char, golsize);
     GetGlyphOutline (hdc, glyph + tfw32->otm->otmTextMetrics.tmFirstChar, GGO_NATIVE, &gmetrics, golsize, gol, &mat);
 
-    bp = bpath;
+	dp = nr_dynamic_path_new (256);
+	
+	/* bp = bpath; */
+	bp = (char *) gol;
     pos = 0;
     while (pos < golsize) {
         double Sx, Sy;
@@ -863,9 +873,13 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
         Ax = FIXED_TO_FLOAT (&pgh->pfxStart.x);
         Ay = FIXED_TO_FLOAT (&pgh->pfxStart.y);
         /* Always starts with moveto */
-        bp->code = ART_MOVETO;
+#if 1
+		nr_dynamic_path_moveto (dp, Ax, Ay);
+#else
+		bp->code = ART_MOVETO;
         bp->x3 = Ax;
         bp->y3 = Ay;
+#endif
         bp += 1;
         Sx = Ax;
         Sy = Ay;
@@ -877,9 +891,13 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
                 for (i = 0; i < pc->cpfx; i++) {
                     Cx = FIXED_TO_FLOAT (&pc->apfx[i].x);
                     Cy = FIXED_TO_FLOAT (&pc->apfx[i].y);
-                    bp->code = ART_LINETO;
+#if 1
+					nr_dynamic_path_lineto (dp, Cx, Cy);
+#else
+					bp->code = ART_LINETO;
                     bp->x3 = Cx;
                     bp->y3 = Cy;
+#endif
                     bp += 1;
                     Ax = Cx;
                     Ay = Cy;
@@ -896,13 +914,17 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
                         Cx = FIXED_TO_FLOAT (&pc->apfx[i + 1].x);
                         Cy = FIXED_TO_FLOAT (&pc->apfx[i + 1].y);
                     }
-                    bp->code = ART_CURVETO;
+#if 1
+					nr_dynamic_path_curveto2 (dp, Bx, By, Cx, Cy);
+#else
+					bp->code = ART_CURVETO;
                     bp->x1 = Bx - (Bx - Ax) / 3;
                     bp->y1 = By - (By - Ay) / 3;
                     bp->x2 = Bx + (Cx - Bx) / 3;
                     bp->y2 = By + (Cy - By) / 3;
                     bp->x3 = Cx;
                     bp->y3 = Cy;
+#endif
                     bp += 1;
                     Ax = Cx;
                     Ay = Cy;
@@ -911,32 +933,42 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
             pos += sizeof (TTPOLYCURVE) + (pc->cpfx - 1) * sizeof (POINTFX);
         }
         if ((Cx != Sx) || (Cy != Sy)) {
-            bp->code = ART_LINETO;
+#if 1
+			nr_dynamic_path_lineto (dp, Sx, Sy);
+#else
+			bp->code = ART_LINETO;
             bp->x3 = Sx;
             bp->y3 = Sy;
+#endif
             bp += 1;
         }
+		nr_dynamic_path_closepath (dp);
     }
-    bp->code = ART_END;
+#if 0
+	bp->code = ART_END;
+#endif
 
 	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
-		double a[6];
+		NRMatrixF a;
 		static MAT2 mat = {{0, 1}, {0, 0}, {0, 0}, {0, 1}};
 		GLYPHMETRICS gmetrics;
 		/* Have to select font */
 		SelectFont (hdc, tfw32->hfont);
 		GetGlyphOutline (hdc, glyph + tfw32->otm->otmTextMetrics.tmFirstChar, GGO_METRICS, &gmetrics, 0, NULL, &mat);
-		art_affine_translate (a, -0.5 * gmetrics.gmBlackBoxX - gmetrics.gmptGlyphOrigin.x,
+		nr_matrix_f_set_translate (&a, -0.5 * gmetrics.gmBlackBoxX - gmetrics.gmptGlyphOrigin.x,
 							  gmetrics.gmptGlyphOrigin.y - 1000.0 - gmetrics.gmptGlyphOrigin.y);
-		slot->outline.path = art_bpath_affine_transform (bpath, a);
+		slot->outline = nr_path_duplicate_transform (dp->path, &a);
 	} else {
-		slot->outline.path = art_new (ArtBpath, bp - bpath + 1);
-		memcpy (slot->outline.path, bpath, (bp - bpath + 1) * sizeof (ArtBpath));
+		slot->outline = nr_path_duplicate_transform (dp->path, NULL);
 	}
 
-    nr_free (gol);
+#if 1
+	nr_dynamic_path_unref (dp);
+#else
+	nr_free (gol);
+#endif
 
-    return &slot->outline;
+    return slot->outline;
 }
 
 #if 0
