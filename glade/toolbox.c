@@ -19,6 +19,7 @@ gchar *s = N_("Draw ellipse");
 gchar *s = N_("Draw freehand line");
 gchar *s = N_("Draw text");
 gchar *s = N_("Select and transform");
+gchar *s = N_("Draw dynahand line");
 gchar *s = N_("Zoom");
 gchar *s = N_("Zoom to 2:1");
 gchar *s = N_("Zoom to page");

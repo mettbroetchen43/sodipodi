@@ -81,6 +81,7 @@ gchar *s = N_("Node");
 gchar *s = N_("Rectangle");
 gchar *s = N_("Ellipse");
 gchar *s = N_("Freehand");
+gchar *s = N_("Dynahand");
 gchar *s = N_("Text");
 gchar *s = N_("Zoom");
 gchar *s = N_("Fill");

@@ -1,3 +1,11 @@
+2001-09-22  Mitsuru Oka <oka326@parkcity.ne.jp>
+
+	* src/dynadraw-context.c: New file
+
+	* src/dynadraw-context.h: New file
+
+	* src/event-context.c (sp_event_context_set_dynahand): New handler
+
 2001-09-21  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/svg/svg-path.c: Quick port of latest librsvg path code

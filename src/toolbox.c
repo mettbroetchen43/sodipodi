@@ -112,6 +112,8 @@ sp_maintoolbox_create (void)
 		gtk_object_set_data (GTK_OBJECT (t), "SPEllipseContext", w);
 		w = glade_xml_get_widget (xml, "draw_freehand");
 		gtk_object_set_data (GTK_OBJECT (t), "SPDrawContext", w);
+		w = glade_xml_get_widget (xml, "draw_dynahand");
+		gtk_object_set_data (GTK_OBJECT (t), "SPDynaDrawContext", w);
 		if (SP_ACTIVE_DESKTOP) {
 			const gchar * tname;
 			tname = gtk_type_name (GTK_OBJECT_TYPE (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP)));
@@ -253,7 +255,7 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 		if (active) gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active), FALSE);
 		if (new) gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new), TRUE);
 		gtk_object_set_data (GTK_OBJECT (data), "active", new);
-		if ((tname) && ((!strcmp (tname, "SPNodeContext")) || (!strcmp (tname, "SPDrawContext")))) {
+		if ((tname) && ((!strcmp (tname, "SPNodeContext")) || (!strcmp (tname, "SPDrawContext")) || (!strcmp (tname, "SPDynaDrawContext")))) {
 			e = gtk_object_get_data (GTK_OBJECT (toolbox), "edit");
 			w = gtk_object_get_data (GTK_OBJECT (e), "undo");
 			gtk_widget_set_sensitive (GTK_WIDGET (w), FALSE);

@@ -78,6 +78,7 @@ sodipodi_SOURCES = \
 	rect-context.c rect-context.h \
 	ellipse-context.c ellipse-context.h \
 	draw-context.c draw-context.h \
+	dyna-draw-context.c dyna-draw-context.h \
 	text-context.c text-context.h \
 	slide-context.c slide-context.h \
 	\

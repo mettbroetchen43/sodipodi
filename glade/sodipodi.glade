@@ -2116,6 +2116,18 @@ Released under GPL</comments>
 
       <widget>
 	<class>GtkMenuItem</class>
+	<name>dynahand1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_dynahand</handler>
+	  <last_modification_time>Sat, 15 Sep 2001 17:07:12 GMT</last_modification_time>
+	</signal>
+	<label>Dynahand</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
 	<name>text2</name>
 	<signal>
 	  <name>activate</name>

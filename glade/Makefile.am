@@ -43,6 +43,7 @@ pixmaps = \
 	div.xpm \
 	draw_ellipse.xpm \
 	draw_freehand.xpm \
+	draw_dynahand.xpm \
 	draw_node.xpm \
 	draw_rect.xpm \
 	draw_select.xpm \

@@ -5,6 +5,7 @@
 #include "rect-context.h"
 #include "ellipse-context.h"
 #include "draw-context.h"
+#include "dyna-draw-context.h"
 #include "text-context.h"
 #include "zoom-context.h"
 #include "sodipodi-private.h"
@@ -59,6 +60,16 @@ sp_event_context_set_freehand (GtkWidget * widget)
 {
   if (SP_ACTIVE_DESKTOP) {
     sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DRAW_CONTEXT);
+		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
+    sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
+  }
+}
+
+void
+sp_event_context_set_dynahand (GtkWidget * widget)
+{
+  if (SP_ACTIVE_DESKTOP) {
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DYNA_DRAW_CONTEXT);
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
