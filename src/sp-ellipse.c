@@ -307,6 +307,8 @@ g_print ("step %d s %f e %f coords %f %f %f %f %f %f\n",
 	c = sp_curve_new_from_bpath (abp);
 	sp_path_add_bpath (SP_PATH (ellipse), c, TRUE, NULL);
 	sp_curve_unref (c);
+
+	sp_object_request_modified (SP_OBJECT (ellipse), SP_OBJECT_MODIFIED_FLAG);
 }
 
 static GSList * 
@@ -708,7 +710,9 @@ static void sp_arc_destroy (GtkObject *object);
 
 static void sp_arc_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_arc_write (SPObject *object, SPRepr *repr, guint flags);
-static void sp_arc_read_attr (SPObject * object, const gchar * attr);
+static void sp_arc_read_attr (SPObject *object, const gchar *attr);
+static void sp_arc_modified (SPObject *object, guint flags);
+
 static gchar * sp_arc_description (SPItem * item);
 static SPKnotHolder *sp_arc_knot_holder (SPItem * item, SPDesktop *desktop);
 
@@ -750,6 +754,7 @@ sp_arc_class_init (SPArcClass *class)
 	sp_object_class->build = sp_arc_build;
 	sp_object_class->write = sp_arc_write;
 	sp_object_class->read_attr = sp_arc_read_attr;
+	sp_object_class->modified = sp_arc_modified;
 
 	item_class->description = sp_arc_description;
 	item_class->knot_holder = sp_arc_knot_holder;
@@ -984,6 +989,7 @@ sp_arc_read_attr (SPObject *object, const gchar *attr)
 			ellipse->ry.set = FALSE;
 			ellipse->ry.computed = 0.0;
 		}
+		sp_genericellipse_set_shape (ellipse);
 	} else if (!strcmp (attr, "sodipodi:start")) {
 		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->start);
 		ellipse->start = n;
@@ -1001,6 +1007,14 @@ sp_arc_read_attr (SPObject *object, const gchar *attr)
 	} else {
 		if (SP_OBJECT_CLASS(arc_parent_class)->read_attr)
 			(* SP_OBJECT_CLASS (arc_parent_class)->read_attr) (object, attr);
+	}
+}
+
+static void
+sp_arc_modified (SPObject *object, guint flags)
+{
+	if (flags & SP_OBJECT_MODIFIED_FLAG) {
+		sp_arc_set_elliptical_path_attribute (SP_ARC (object), SP_OBJECT_REPR (object));
 	}
 }
 

@@ -1,3 +1,8 @@
+2002-09-21  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-ellipse.c (sp_genericellipse_set_shape): Request modified
+	(sp_arc_modified): Implement, write path attribute
+
 2002-09-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-object.c (sp_object_private_write): Duplicate repr if needed
