@@ -1,5 +1,7 @@
 2001-10-29  Lauris Kaplinski  <lauris@ximian.com>
 
+	* src/desktop.c (sp_desktop_coordinate_status): Free allocated memory
+
 	* src/display/nr-arena-shape.c (nr_arena_shape_group_add_component): Unref
 	item once it is added
 

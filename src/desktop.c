@@ -831,8 +831,8 @@ sp_desktop_coordinate_status (SPDesktop * desktop, gdouble x, gdouble y, gint8 u
   if (underline & 0x02) for (; j<y_str->len; j++,i++) coord_pattern[i]='_';
   if (underline) gtk_label_set_pattern(GTK_LABEL(desktop->owner->coord_status->status), coord_pattern);
 
-  g_string_free (x_str, FALSE);
-  g_string_free (y_str, FALSE);
+  g_string_free (x_str, TRUE);
+  g_string_free (y_str, TRUE);
 }
 
 
