@@ -160,8 +160,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	sp_chars_clear (chars);
 
 	face = gnome_font_unsized_closest (style->text->font_family.value,
-					   sp_text_font_weight_to_gp (style->text->font_weight),
-					   sp_text_font_italic_to_gp (style->text->font_style));
+					   sp_text_font_weight_to_gp (style->text->font_weight.value),
+					   sp_text_font_italic_to_gp (style->text->font_style.value));
 	size = style->text->font_size.value;
 
 	/* fixme: Find a way how to manipulate these */

@@ -80,6 +80,51 @@ static const SPStyleEnum enum_stroke_linejoin[] = {
 	{NULL, -1}
 };
 
+static const SPStyleEnum enum_font_style[] = {
+	{"normal", SP_CSS_FONT_STYLE_NORMAL},
+	{"italic", SP_CSS_FONT_STYLE_ITALIC},
+	{"oblique", SP_CSS_FONT_STYLE_OBLIQUE},
+	{NULL, -1}
+};
+
+static const SPStyleEnum enum_font_variant[] = {
+	{"normal", SP_CSS_FONT_VARIANT_NORMAL},
+	{"small-caps", SP_CSS_FONT_VARIANT_SMALL_CAPS},
+	{NULL, -1}
+};
+
+static const SPStyleEnum enum_font_weight[] = {
+	{"100", SP_CSS_FONT_WEIGHT_100},
+	{"200", SP_CSS_FONT_WEIGHT_200},
+	{"300", SP_CSS_FONT_WEIGHT_300},
+	{"400", SP_CSS_FONT_WEIGHT_400},
+	{"500", SP_CSS_FONT_WEIGHT_500},
+	{"600", SP_CSS_FONT_WEIGHT_600},
+	{"700", SP_CSS_FONT_WEIGHT_700},
+	{"800", SP_CSS_FONT_WEIGHT_800},
+	{"900", SP_CSS_FONT_WEIGHT_900},
+	{"normal", SP_CSS_FONT_WEIGHT_NORMAL},
+	{"bold", SP_CSS_FONT_WEIGHT_BOLD},
+	{"lighter", SP_CSS_FONT_WEIGHT_LIGHTER},
+	{"darker", SP_CSS_FONT_WEIGHT_DARKER},
+	{NULL, -1}
+};
+
+static const SPStyleEnum enum_font_stretch[] = {
+	{"ultra-condensed", SP_CSS_FONT_STRETCH_ULTRA_CONDENSED},
+	{"extra-condensed", SP_CSS_FONT_STRETCH_EXTRA_CONDENSED},
+	{"condensed", SP_CSS_FONT_STRETCH_CONDENSED},
+	{"semi-condensed", SP_CSS_FONT_STRETCH_SEMI_CONDENSED},
+	{"normal", SP_CSS_FONT_STRETCH_NORMAL},
+	{"semi-expanded", SP_CSS_FONT_STRETCH_SEMI_EXPANDED},
+	{"expanded", SP_CSS_FONT_STRETCH_EXPANDED},
+	{"extra-expanded", SP_CSS_FONT_STRETCH_EXTRA_EXPANDED},
+	{"ultra-expanded", SP_CSS_FONT_STRETCH_ULTRA_EXPANDED},
+	{"narrower", SP_CSS_FONT_STRETCH_NARROWER},
+	{"wider", SP_CSS_FONT_STRETCH_WIDER},
+	{NULL, -1}
+};
+
 static const SPStyleEnum enum_writing_mode[] = {
 	{"lr", SP_CSS_WRITING_MODE_LR},
 	{"rl", SP_CSS_WRITING_MODE_RL},
@@ -262,6 +307,38 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 			sp_style_read_inherited_float (&style->text->font_size, val);
 		}
 	}
+	/* font-style */
+	if (!style->text_private || !style->text->writing_mode.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-style");
+		if (val) {
+			if (!style->text_private) sp_style_privatize_text (style);
+			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_style, TRUE);
+		}
+	}
+	/* font-variant */
+	if (!style->text_private || !style->text->writing_mode.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-variant");
+		if (val) {
+			if (!style->text_private) sp_style_privatize_text (style);
+			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_variant, TRUE);
+		}
+	}
+	/* font-weight */
+	if (!style->text_private || !style->text->writing_mode.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-weight");
+		if (val) {
+			if (!style->text_private) sp_style_privatize_text (style);
+			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_weight, TRUE);
+		}
+	}
+	/* font-stretch */
+	if (!style->text_private || !style->text->writing_mode.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-stretch");
+		if (val) {
+			if (!style->text_private) sp_style_privatize_text (style);
+			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_stretch, TRUE);
+		}
+	}
 	/* writing-mode */
 	if (!style->text_private || !style->text->writing_mode.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "writing-mode");
@@ -306,22 +383,30 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		}
 		break;
 	case SP_PROP_FONT_SIZE_ADJUST:
-	case SP_PROP_FONT_STRETCH:
+		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
 	case SP_PROP_FONT_STYLE:
 		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->font_style_set) {
-			/* fixme: */
-			style->text->font_style = SP_CSS_FONT_STYLE_NORMAL;
-			style->text->font_style_set = TRUE;
+		if (!style->text->font_style.set) {
+			sp_style_read_inherited_enum (&style->text->font_style, val, enum_font_style, TRUE);
 		}
 		break;
 	case SP_PROP_FONT_VARIANT:
+		if (!style->text_private) sp_style_privatize_text (style);
+		if (!style->text->font_variant.set) {
+			sp_style_read_inherited_enum (&style->text->font_variant, val, enum_font_variant, TRUE);
+		}
+		break;
 	case SP_PROP_FONT_WEIGHT:
 		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->font_weight_set) {
-			/* fixme: */
-			style->text->font_weight = SP_CSS_FONT_WEIGHT_NORMAL;
-			style->text->font_weight_set = TRUE;
+		if (!style->text->font_weight.set) {
+			sp_style_read_inherited_enum (&style->text->font_weight, val, enum_font_weight, TRUE);
+		}
+		break;
+	case SP_PROP_FONT_STRETCH:
+		if (!style->text_private) sp_style_privatize_text (style);
+		if (!style->text->font_stretch.set) {
+			sp_style_read_inherited_enum (&style->text->font_stretch, val, enum_font_stretch, TRUE);
 		}
 		break;
 	case SP_PROP_FONT:
@@ -603,6 +688,18 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 			if (!style->text->font_size.set || style->text->font_size.inherit) {
 				style->text->font_size.value = object->style->text->font_size.value;
 			}
+			if (!style->text->font_style.set || style->text->font_style.inherit) {
+				style->text->font_style.value = object->style->text->font_style.value;
+			}
+			if (!style->text->font_variant.set || style->text->font_variant.inherit) {
+				style->text->font_variant.value = object->style->text->font_variant.value;
+			}
+			if (!style->text->font_weight.set || style->text->font_weight.inherit) {
+				style->text->font_weight.value = object->style->text->font_weight.value;
+			}
+			if (!style->text->font_stretch.set || style->text->font_stretch.inherit) {
+				style->text->font_stretch.value = object->style->text->font_stretch.value;
+			}
 			if (!style->text->writing_mode.set || style->text->writing_mode.inherit) {
 				style->text->writing_mode.value = object->style->text->writing_mode.value;
 			}
@@ -777,8 +874,8 @@ sp_style_clear (SPStyle *style)
 	/* fixme: */
 	style->text->font_family.set = FALSE;
 	style->text->font_size.set = FALSE;
-	style->text->font_style_set = FALSE;
-	style->text->font_weight_set = FALSE;
+	style->text->font_style.set = FALSE;
+	style->text->font_weight.set = FALSE;
 	style->text->font.set = FALSE;
 
 	style->opacity.value = SP_SCALE30_MAX;
@@ -944,10 +1041,10 @@ sp_text_style_new (void)
 	ts->font.value = g_strdup ("Bitstream Cyberbit 12");
 	ts->font_family.value = g_strdup ("Bitstream Cyberbit");
 	ts->font_size.value = 12.0;
-	ts->font_style = SP_CSS_FONT_STYLE_NORMAL;
-	ts->font_variant = SP_CSS_FONT_VARIANT_NORMAL;
-	ts->font_weight = SP_CSS_FONT_WEIGHT_NORMAL;
-	ts->font_stretch = SP_CSS_FONT_STRETCH_NORMAL;
+	ts->font_style.value = SP_CSS_FONT_STYLE_NORMAL;
+	ts->font_variant.value = SP_CSS_FONT_VARIANT_NORMAL;
+	ts->font_weight.value = SP_CSS_FONT_WEIGHT_NORMAL;
+	ts->font_stretch.value = SP_CSS_FONT_STRETCH_NORMAL;
 
 	ts->writing_mode.value = SP_CSS_WRITING_MODE_LR;
 
@@ -961,10 +1058,10 @@ sp_text_style_clear (SPTextStyle *ts)
 	ts->font_family.set = FALSE;
 	ts->font_size.set = FALSE;
 	ts->font_size_adjust_set = FALSE;
-	ts->font_stretch_set = FALSE;
-	ts->font_style_set = FALSE;
-	ts->font_variant_set = FALSE;
-	ts->font_weight_set = FALSE;
+	ts->font_stretch.set = FALSE;
+	ts->font_style.set = FALSE;
+	ts->font_variant.set = FALSE;
+	ts->font_weight.set = FALSE;
 
 	ts->direction_set = FALSE;
 	ts->letter_spacing_set = FALSE;
@@ -1010,11 +1107,11 @@ sp_text_style_duplicate_unset (SPTextStyle *st)
 	nt->font.value = g_strdup (st->font.value);
 	nt->font_family.value = g_strdup (st->font_family.value);
 
-	nt->font_size = st->font_size;
-	nt->font_style = st->font_style;
-	nt->font_variant = st->font_variant;
-	nt->font_weight = st->font_weight;
-	nt->font_stretch = st->font_stretch;
+	nt->font_size.value = st->font_size.value;
+	nt->font_style.value = st->font_style.value;
+	nt->font_variant.value = st->font_variant.value;
+	nt->font_weight.value = st->font_weight.value;
+	nt->font_stretch.value = st->font_stretch.value;
 
 	/* fixme: ??? */
 	nt->writing_mode = st->writing_mode;
@@ -1022,6 +1119,7 @@ sp_text_style_duplicate_unset (SPTextStyle *st)
 	return nt;
 }
 
+#if 0
 static guint
 sp_text_style_write_property (guchar *p, guint len, const guchar *key, const guchar *value)
 {
@@ -1040,6 +1138,7 @@ sp_text_style_write_property (guchar *p, guint len, const guchar *key, const guc
 
 	return 0;
 }
+#endif
 
 static guint
 sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
@@ -1054,28 +1153,17 @@ sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
 	if (st->font_size.set) {
 		d += sp_style_write_inherited_float (p + d, len - d, "font-size", &st->font_size);
 	}
-
-	if (st->font_style_set) {
-		static const guchar *s[] = {"normal", "italic", "oblique"};
-		d += sp_text_style_write_property (p + d, len - d, "font-style", s[st->font_style]);
+	if (st->font_style.set) {
+		d += sp_style_write_inherited_enum (p + d, len - d, "font-style", enum_font_style, &st->font_style);
 	}
-
-	if (st->font_variant_set) {
-		static const guchar *s[] = {"normal", "small-caps"};
-		d += sp_text_style_write_property (p + d, len - d, "font-variant", s[st->font_variant]);
+	if (st->font_variant.set) {
+		d += sp_style_write_inherited_enum (p + d, len - d, "font-variant", enum_font_variant, &st->font_variant);
 	}
-
-	if (st->font_weight_set) {
-		static const guchar *s[] = {"100", "200", "300", "400", "500", "600", "700", "800", "900",
-					    "normal", "bold", "lighter", "darker"};
-		d += sp_text_style_write_property (p + d, len - d, "font-weight", s[st->font_weight]);
+	if (st->font_weight.set) {
+		d += sp_style_write_inherited_enum (p + d, len - d, "font-weight", enum_font_weight, &st->font_weight);
 	}
-
-	if (st->font_stretch_set) {
-		static const guchar *s[] = {"ultra-condensed", "extra-condensed", "condensed", "semi-condensed", "normal",
-					    "semi-expanded", "expanded", "extra-expanded", "ultra-expanded",
-					    "narrower", "wider"};
-		d += sp_text_style_write_property (p + d, len - d, "font-stretch", s[st->font_stretch]);
+	if (st->font_stretch.set) {
+		d += sp_style_write_inherited_enum (p + d, len - d, "font-stretch", enum_font_stretch, &st->font_stretch);
 	}
 
 	if (st->writing_mode.set) {

@@ -228,21 +228,17 @@ struct _SPTextStyle {
 
 	/* CSS font properties */
 	SPInheritedString font_family;
+	SPInheritedShort font_style;
+	SPInheritedShort font_variant;
+	SPInheritedShort font_weight;
+	SPInheritedShort font_stretch;
 	/* fixme: Should this be SPDistance ? (Lauris) */
 	SPInheritedFloat font_size;
 
 	guint font_size_adjust_set : 1;
-	guint font_stretch_set : 1;
-	guint font_style_set : 1;
-	guint font_variant_set : 1;
-	guint font_weight_set : 1;
 
 	/* fixme: Has to have 'none' option here */
 	gfloat font_size_adjust;
-	guint font_stretch : 4;
-	guint font_style : 2;
-	guint font_variant : 1;
-	guint font_weight : 4;
 
 	/* fixme: The 'font' property is ugly, and not working (lauris) */
 	SPInheritedString font;

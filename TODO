@@ -2,7 +2,7 @@
 
 TODO for 0.25
 
-- SVG spec conforming text object
+- SVG spec conforming text object (Mostly done)
 - Dynamic stroke dialog (Mostly done - needs unit cleanup)
 - Replace static fill dialog with dynamic one (Mostly done)
 - Fix stack order undo (1 day)
