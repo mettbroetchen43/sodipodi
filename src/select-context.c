@@ -35,10 +35,6 @@
 #include "pixmaps/cursor-select-m.xpm"
 #include "pixmaps/cursor-select-d.xpm"
 #include "pixmaps/handles.xpm"
-#if 0
-/* This is not needed, so kill warning (Lauris) */
-#include "pixmaps/cursor-select.xpm"
-#endif
 #include "select-context.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"

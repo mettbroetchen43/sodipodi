@@ -115,10 +115,10 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 		"shape", SP_CTRL_SHAPE_BITMAP,
 		"size", 13.0,
 		"filled", TRUE,
-		"fill_color", 0x40ff40a0,
+		"fill_color", 0x00000000,
 		"stroked", TRUE,
 		"stroke_color", 0x000000a0,
-		"pixbuf", handles[12],				
+		"pixbuf", handles[12],
 		NULL);
 	seltrans->grip = sp_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
@@ -127,10 +127,10 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 		"shape", SP_CTRL_SHAPE_CROSS,
 		"size", 7.0,
 		"filled", TRUE,
-		"fill_color", 0xff40ffa0,
+		"fill_color", 0xffffff7f,
 		"stroked", TRUE,
-		"stroke_color", 0xffffffFF,
-		"pixbuf", handles[12],				
+		"stroke_color", 0xffffffff,
+		"pixbuf", handles[12],
 		NULL);
 	sp_canvas_item_hide (seltrans->grip);
 	sp_canvas_item_hide (seltrans->norm);
@@ -149,11 +149,7 @@ void
 sp_sel_trans_shutdown (SPSelTrans *seltrans)
 {
 	gint i;
-#if 0
-	seltrans->show_handles = FALSE;
 
-	sp_sel_trans_update_handles (seltrans);
-#else
 	for (i = 0; i < 8; i++) {
 		if (seltrans->shandle[i]) {
 			gtk_object_unref (GTK_OBJECT (seltrans->shandle[i]));
@@ -168,7 +164,6 @@ sp_sel_trans_shutdown (SPSelTrans *seltrans)
 		gtk_object_unref (GTK_OBJECT (seltrans->chandle));
 		seltrans->chandle = NULL;
 	}
-#endif
 
 	if (seltrans->norm) {
 		gtk_object_destroy (GTK_OBJECT (seltrans->norm));
@@ -503,10 +498,10 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 			  "shape", SP_CTRL_SHAPE_BITMAP,
 			  "size", 13,
 			  "mode", SP_CTRL_MODE_COLOR,
-					"fill", 0x40ff40a0,
-					"fill_mouseover", 0xff4040f0,
-					"stroke", 0x000000a0,
-					"stroke_mouseover", 0x000000FF,
+					"fill", 0x00000000,
+					"fill_mouseover", 0x0000007f,
+					"stroke", 0x000000ff,
+					"stroke_mouseover", 0x000000ff,
 			  //"fill", 0xff40ffa0,
 			  //"fill_mouseover", 0x40ffffa0,
 			  //"stroke", 0xFFb0b0ff,

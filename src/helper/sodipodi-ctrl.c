@@ -377,31 +377,38 @@ sp_ctrl_build_cache (SPCtrl *ctrl)
 		break;
 	case SP_CTRL_SHAPE_BITMAP:
 		if (ctrl->pixbuf) {
-			guint r = gdk_pixbuf_get_rowstride (ctrl->pixbuf);
-			guint * pix;
-			q = gdk_pixbuf_get_pixels (ctrl->pixbuf);
-			p = ctrl->cache;
+			unsigned char *px;
+			unsigned int rs;
+			px = gdk_pixbuf_get_pixels (ctrl->pixbuf);
+			rs = gdk_pixbuf_get_rowstride (ctrl->pixbuf);
 			for (y = 0; y < side; y++){
+				unsigned char *s, *d;
+				s = px + y * rs;
+				d = ctrl->cache + 4 * side * y;
 				for (x = 0; x < side; x++) {
-					pix = (gpointer)q + (y * r) + x * 4;
-					if ((*pix & 0xff000000) < 0x80000000) {
-						*p++ = 0x00;
-						*p++ = 0x00;
-						*p++ = 0x00;
-						*p++ = 0x00;
-					} else if (*pix < 0xff800000){
-						*p++ = sr;
-						*p++ = sg;
-						*p++ = sb;
-						*p++ = sa;
+					if (s[3] < 0x80) {
+						d[0] = 0x00;
+						d[1] = 0x00;
+						d[2] = 0x00;
+						d[3] = 0x00;
+					} else if (s[0] < 0x80) {
+						d[0] = sr;
+						d[1] = sg;
+						d[2] = sb;
+						d[3] = sa;
 					} else {
-						*p++ = fr;
-						*p++ = fg;
-						*p++ = fb;
-						*p++ = fa;
+						d[0] = fr;
+						d[1] = fg;
+						d[2] = fb;
+						d[3] = fa;
 					}
-				}}
-		} else { g_print ("control has no pixmap\n"); }
+					s += 4;
+					d += 4;
+				}
+			}
+		} else {
+			g_print ("control has no pixmap\n");
+		}
 		ctrl->build = TRUE;
 		break;
 	case SP_CTRL_SHAPE_IMAGE:
