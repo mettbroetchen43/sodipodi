@@ -51,8 +51,8 @@ typedef enum {
 } SPDTStateType;
 
 static SPDTStateType state = SP_DT_NONE;
-static SPGuide * hguide = NULL;
-static SPGuide * vguide = NULL;
+static SPGuideLine * hguide = NULL;
+static SPGuideLine * vguide = NULL;
 
 gint
 sp_desktop_button_press (GtkWidget * widget, GdkEventButton * event)
@@ -68,9 +68,9 @@ sp_desktop_button_press (GtkWidget * widget, GdkEventButton * event)
 				event->time);
 			state = SP_DT_HGUIDE;
 			if (hguide == NULL) {
-				hguide = (SPGuide *) gnome_canvas_item_new (desktop->guides,
-					SP_TYPE_GUIDE,
-					"orientation", SP_GUIDE_ORIENTATION_HORIZONTAL,
+				hguide = (SPGuideLine *) gnome_canvas_item_new (desktop->guides,
+					SP_TYPE_GUIDELINE,
+					"orientation", SP_GUIDELINE_ORIENTATION_HORIZONTAL,
 					NULL);
 			}
 			gnome_canvas_item_show (GNOME_CANVAS_ITEM (hguide));
@@ -83,9 +83,9 @@ sp_desktop_button_press (GtkWidget * widget, GdkEventButton * event)
 				event->time);
 			state = SP_DT_VGUIDE;
 			if (vguide == NULL) {
-				vguide = (SPGuide *) gnome_canvas_item_new (desktop->guides,
-					SP_TYPE_GUIDE,
-					"orientation", SP_GUIDE_ORIENTATION_VERTICAL,
+				vguide = (SPGuideLine *) gnome_canvas_item_new (desktop->guides,
+					SP_TYPE_GUIDELINE,
+					"orientation", SP_GUIDELINE_ORIENTATION_VERTICAL,
 					NULL);
 			}
 			gnome_canvas_item_show (GNOME_CANVAS_ITEM (vguide));
@@ -133,14 +133,14 @@ sp_desktop_motion_notify (GtkWidget * widget, GdkEventMotion * event)
 			0, event->y - GTK_WIDGET (desktop->canvas)->allocation.y,
 			&p.x, &p.y);
 		sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
-		sp_guide_moveto (hguide, p.x, p.y);
+		sp_guideline_moveto (hguide, p.x, p.y);
 		break;
 	case SP_DT_VGUIDE:
 		gnome_canvas_window_to_world (desktop->canvas,
 			event->x - GTK_WIDGET (desktop->canvas)->allocation.x, 0,
 			&p.x, &p.y);
 		sp_desktop_w2d_xy_point (desktop, &p, p.x, p.y);
-		sp_guide_moveto (vguide, p.x, p.y);
+		sp_guideline_moveto (vguide, p.x, p.y);
 		break;
 	default:
 		break;

@@ -1,4 +1,4 @@
-#define SP_ITEM_GROUP_C
+#define SP_ITEM_C
 
 #include <gnome.h>
 #include "svg/svg.h"
@@ -76,7 +76,7 @@ sp_item_destroy (GtkObject * object)
 
 	while (item->display) {
 		gtk_object_destroy ((GtkObject *) item->display->data);
-		item->display = g_slist_remove (item->display, item->display->data);
+		item->display = g_slist_remove_link (item->display, item->display);
 	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)

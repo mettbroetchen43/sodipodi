@@ -16,7 +16,6 @@
 #include <gnome.h>
 #include <glade/glade.h>
 #include "helper/canvas-helper.h"
-#include "helper/sp-guide.h"
 #include "mdi-desktop.h"
 #include "desktop-events.h"
 #include "desktop-affine.h"
@@ -176,8 +175,6 @@ SPDesktop *
 sp_desktop_new (SPDocument * document)
 {
 	SPDesktop * desktop;
-	GtkWidget * dwidget;
-	GladeXML * xml;
 	GtkStyle * style;
 	GnomeCanvasGroup * root;
 	GnomeCanvasItem * ci;

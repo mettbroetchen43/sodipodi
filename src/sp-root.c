@@ -1,12 +1,5 @@
 #define SP_ROOT_C
 
-#if 0
-#include <libgnomeui/gnome-canvas.h>
-#include <libgnomeui/gnome-canvas-util.h>
-#include "xml/repr.h"
-#include "canvas-helper/sp-canvas-util.h"
-#include "sp-item-util.h"
-#endif
 #include "sp-root.h"
 
 #define SP_SVG_DEFAULT_WIDTH 595.27

@@ -1,3 +1,13 @@
+2000-05-12  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/sp-namedview.*: Implemented skeleton
+
+	* src/sp-guide.*: Implemented skeleton
+
+	* src/sp-object-repr.c: Added NamedView and Guide
+
+	* src/helper/sp-guide.*: Changed name to SPGuideLine
+ 
 2000-05-11  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/desktop-events.c: Collected events to separate file

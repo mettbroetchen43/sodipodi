@@ -1,10 +1,10 @@
-#ifndef SODIPODI_GUIDE_H
-#define SODIPODI_GUIDE_H
+#ifndef SODIPODI_GUIDELINE_H
+#define SODIPODI_GUIDELINE_H
 
 /*
- * SPGuide
+ * SPGuideLine
  *
- * This is axis-aligned dotted line, usable for guidelines etc.
+ * This is axis-aligned dotted line, usable for guidelinelines etc.
  *
  * Copyright (C) Lauris Kaplinski 2000
  *
@@ -15,39 +15,39 @@
 BEGIN_GNOME_DECLS
 
 typedef enum {
-	SP_GUIDE_ORIENTATION_HORIZONTAL,
-	SP_GUIDE_ORIENTATION_VERTICAL
-} SPGuideOrientationType;
+	SP_GUIDELINE_ORIENTATION_HORIZONTAL,
+	SP_GUIDELINE_ORIENTATION_VERTICAL
+} SPGuideLineOrientationType;
 
-#define SP_TYPE_GUIDE            (sp_guide_get_type ())
-#define SP_GUIDE(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_GUIDE, SPGuide))
-#define SP_GUIDE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_GUIDE, SPGuideClass))
-#define SP_IS_GUIDE(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_GUIDE))
-#define SP_IS_GUIDE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_GUIDE))
+#define SP_TYPE_GUIDELINE            (sp_guideline_get_type ())
+#define SP_GUIDELINE(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_GUIDELINE, SPGuideLine))
+#define SP_GUIDELINE_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_GUIDELINE, SPGuideLineClass))
+#define SP_IS_GUIDELINE(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_GUIDELINE))
+#define SP_IS_GUIDELINE_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_GUIDELINE))
 
 
-typedef struct _SPGuide SPGuide;
-typedef struct _SPGuideClass SPGuideClass;
+typedef struct _SPGuideLine SPGuideLine;
+typedef struct _SPGuideLineClass SPGuideLineClass;
 
-struct _SPGuide {
+struct _SPGuideLine {
 	GnomeCanvasItem item;
 
-	SPGuideOrientationType orientation;
+	SPGuideLineOrientationType orientation;
 	guint32 color;
 
 	gint position;
 	gboolean shown;
 };
 
-struct _SPGuideClass {
+struct _SPGuideLineClass {
 	GnomeCanvasItemClass parent_class;
 };
 
 
 /* Standard Gtk function */
-GtkType sp_guide_get_type (void);
+GtkType sp_guideline_get_type (void);
 
-void sp_guide_moveto (SPGuide * guide, double x, double y);
+void sp_guideline_moveto (SPGuideLine * guideline, double x, double y);
 
 END_GNOME_DECLS
 

@@ -3,6 +3,8 @@
 #include "sp-item.h"
 #include "sp-defs.h"
 #include "sp-root.h"
+#include "sp-namedview.h"
+#include "sp-guide.h"
 #include "sp-image.h"
 #include "sp-rect.h" 
 #include "sp-text.h" 
@@ -43,6 +45,8 @@ sp_object_type_lookup (const gchar * name)
 		g_assert (dtable != NULL);
 		g_hash_table_insert (dtable, "defs", GINT_TO_POINTER (SP_TYPE_DEFS));
 		g_hash_table_insert (dtable, "g", GINT_TO_POINTER (SP_TYPE_GROUP));
+		g_hash_table_insert (dtable, "sodipodi:namedview", GINT_TO_POINTER (SP_TYPE_NAMEDVIEW));
+		g_hash_table_insert (dtable, "sodipodi:guide", GINT_TO_POINTER (SP_TYPE_GUIDE));
 		g_hash_table_insert (dtable, "svg", GINT_TO_POINTER (SP_TYPE_ROOT));
 		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_SHAPE));
 		g_hash_table_insert (dtable, "rect", GINT_TO_POINTER (SP_TYPE_RECT));

@@ -28,6 +28,8 @@ sodipodi_SOURCES = \
 	sp-item.c sp-item.h \
 	sp-item-group.c \
 	sp-root.c sp-root.h \
+	sp-namedview.c sp-namedview.h \
+	sp-guide.c sp-guide.h \
 	sp-image.c sp-image.h \
 	sp-path-component.c sp-path-component.h \
 	sp-path.c sp-path.h \

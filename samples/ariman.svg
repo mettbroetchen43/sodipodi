@@ -8,6 +8,10 @@
    sodipodi:docname="/home/lauris/src/sodipodi/samples/ariman.svg"
    transform="matrix (1.0 0.0 0.0 -1.0 0.0 841.889764)"
    id="svg2">
+<sodipodi:namedview>
+	<sodipodi:guide orientation="horizontal" position="24.0"/>
+	<sodipodi:guide orientation="vertical" position="100"></sodipodi:guide>
+</sodipodi:namedview>
 <defs>
    <linearGradient id="MyGradient">
         <stop offset="0%" style="stop-color:#F60"/>
