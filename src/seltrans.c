@@ -354,7 +354,6 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 
 	updh = TRUE;
 	if (!seltrans->empty && seltrans->changed) {
-
 		l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
 		while (l != NULL) {
 			item = SP_ITEM (l->data);

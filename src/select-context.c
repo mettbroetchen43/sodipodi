@@ -240,6 +240,11 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 		break;
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 1) {
+			if (sc->grabbed) {
+				/* Better release grab here to make debugging easier */
+				sp_canvas_item_ungrab (sc->grabbed, event->button.time);
+				sc->grabbed = NULL;
+			}
 			if (sc->moved) {
 				// item has been moved
 				sp_sel_trans_ungrab (seltrans);
@@ -270,10 +275,6 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 			}
 			sc->dragging = FALSE;
 			sc->item = NULL;
-			if (sc->grabbed) {
-				sp_canvas_item_ungrab (sc->grabbed, event->button.time);
-				sc->grabbed = NULL;
-			}
 			ret = TRUE;
 		} 
 		break;

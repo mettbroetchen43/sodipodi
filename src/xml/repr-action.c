@@ -11,6 +11,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define noVERBOSE
+
 #include <string.h>
 #include <glib.h>
 
@@ -29,17 +31,26 @@ static void free_action (SPReprAction *action);
 void
 sp_repr_begin_transaction (SPReprDoc *doc)
 {
+#ifdef VERBOSE
+	g_print ("Before: logging %d log %p\n", doc->is_logging, doc->log);
+#endif
 	if (doc->is_logging) {
 		sp_repr_free_log (doc->log);
 		doc->log = NULL;
 	} else {
 		doc->is_logging = 1;
 	}
+#ifdef VERBOSE
+	g_print ("After: logging %d log %p\n", doc->is_logging, doc->log);
+#endif
 }
 
 void
 sp_repr_rollback (SPReprDoc *doc)
 {
+#ifdef VERBOSE
+	g_print ("Rollback\n");
+#endif
 	if (doc->is_logging) {
 		sp_repr_undo_log (doc, doc->log);
 		sp_repr_free_log (doc->log);
@@ -51,6 +62,9 @@ sp_repr_rollback (SPReprDoc *doc)
 void
 sp_repr_commit (SPReprDoc *doc)
 {
+#ifdef VERBOSE
+	g_print ("Commit\n");
+#endif
 	if (doc->is_logging) {
 		sp_repr_free_log (doc->log);
 		doc->log = NULL;
@@ -61,6 +75,10 @@ sp_repr_commit (SPReprDoc *doc)
 SPReprAction *
 sp_repr_commit_undoable (SPReprDoc *doc)
 {
+#ifdef VERBOSE
+	g_print ("Commit undoable\n");
+#endif
+
 	SPReprAction *log=NULL;
 
 	if (doc->is_logging) {
@@ -80,15 +98,32 @@ sp_repr_undo_log (SPReprDoc *doc, SPReprAction *log)
 	for ( action = log ; action ; action = action->next ) {
 		switch (action->type) {
 		case SP_REPR_ACTION_ADD:
+#ifdef VERBOSE
+			g_print ("Undoing add %s->%s\n",
+				 SP_REPR_NAME (action->repr),
+				 SP_REPR_NAME (action->act.add.child));
+#endif
 			sp_repr_remove_child (action->repr,
 			                      action->act.add.child);
 			break;
 		case SP_REPR_ACTION_DEL:
+#ifdef VERBOSE
+			g_print ("Undoing delete %s->%s\n",
+				 SP_REPR_NAME (action->repr),
+				 SP_REPR_NAME (action->act.del.child));
+#endif
 			sp_repr_add_child (action->repr,
 			                   action->act.del.child,
 			                   action->act.del.ref);
 			break;
 		case SP_REPR_ACTION_CHGATTR:
+#ifdef VERBOSE
+			g_print ("Undoing changeattr %s:%s %s -> %s\n",
+				 SP_REPR_NAME (action->repr),
+				 g_quark_to_string (action->act.chgattr.key),
+				 action->act.chgattr.oldval,
+				 action->act.chgattr.newval);
+#endif
 			sp_repr_set_attr (action->repr,
 			                  g_quark_to_string (action->act.chgattr.key),
 			                  action->act.chgattr.oldval);
@@ -119,15 +154,32 @@ sp_repr_replay_log (SPReprDoc *doc, SPReprAction *log)
 	for ( action = log ; action ; action = action->next ) {
 		switch (action->type) {
 		case SP_REPR_ACTION_ADD:
+#ifdef VERBOSE
+			g_print ("Redoing add %s->%s\n",
+				 SP_REPR_NAME (action->repr),
+				 SP_REPR_NAME (action->act.add.child));
+#endif
 			sp_repr_add_child (action->repr,
 			                   action->act.add.child,
 			                   action->act.add.ref);
 			break;
 		case SP_REPR_ACTION_DEL:
+#ifdef VERBOSE
+			g_print ("Redoing delete %s->%s\n",
+				 SP_REPR_NAME (action->repr),
+				 SP_REPR_NAME (action->act.del.child));
+#endif
 			sp_repr_remove_child (action->repr,
 			                      action->act.del.child);
 			break;
 		case SP_REPR_ACTION_CHGATTR:
+#ifdef VERBOSE
+			g_print ("Redoing changeattr %s:%s %s -> %s\n",
+				 SP_REPR_NAME (action->repr),
+				 g_quark_to_string (action->act.chgattr.key),
+				 action->act.chgattr.oldval,
+				 action->act.chgattr.newval);
+#endif
 			sp_repr_set_attr (action->repr,
 			                  g_quark_to_string (action->act.chgattr.key),
 			                  action->act.chgattr.newval);

@@ -1,3 +1,9 @@
+2003-11-26  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/document-undo.c (sp_document_undo): Begin transaction
+	even if current list is empty (fixes disappearing undo bug)
+	(sp_document_redo): Ditto
+
 2003-11-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libarikkei/arikkei-strlib.c: New file, implement localeless
