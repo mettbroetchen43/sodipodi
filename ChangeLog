@@ -1,5 +1,7 @@
 2003-02-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/print.c (sp_print_fill): Use new paint server signature (does it work?)
+
 	* src/document.c (sp_document_idle_handler): Use new flags signature
 	(sp_document_ensure_up_to_date): Ditto
 

@@ -153,7 +153,6 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 			NRMatrixF d2i;
 			double dd2i[6];
 			int x, y;
-			unsigned char *rgba;
 
 			nr_rect_f_intersect (&cbox, dbox, bbox);
 			ibox.x0 = (long) cbox.x0;
@@ -180,19 +179,19 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 			dd2i[5] = d2i.c[5];
 			gnome_print_concat (ctx->gpc, dd2i);
 			/* Now we are in desktop coordinates */
-			rgba = nr_pixelstore_16K_new (FALSE, 0x0);
 			for (y = ibox.y0; y < ibox.y1; y+= 64) {
 				for (x = ibox.x0; x < ibox.x1; x+= 64) {
-					memset (rgba, 0x0, 4 * 64 * 64);
-					painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
+					NRPixBlock pb;
+					nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8A8, x, y, x + 64, y + 64, TRUE);
+					painter->fill (painter, &pb);
 					gnome_print_gsave (ctx->gpc);
 					gnome_print_translate (ctx->gpc, x, y + 64);
 					gnome_print_scale (ctx->gpc, 64, -64);
-					gnome_print_rgbaimage (ctx->gpc, rgba, 64, 64, 4 * 64);
+					gnome_print_rgbaimage (ctx->gpc, NR_PIXBLOCK_PX (&pb), 64, 64, pb.rs);
 					gnome_print_grestore (ctx->gpc);
+					nr_pixblock_release (&pb);
 				}
 			}
-			nr_pixelstore_16K_free (rgba);
 			gnome_print_grestore (ctx->gpc);
 			sp_painter_free (painter);
 		}
