@@ -1233,15 +1233,6 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		SP_PRINT_TRANSFORM ("color2user", color2user);
 		art_affine_multiply (color2px, color2user, ctm);
 		SP_PRINT_TRANSFORM ("color2px", color2px);
-#if 0
-		art_affine_invert (px2color, color2px);
-		SP_PRINT_TRANSFORM ("px2color", px2color);
-
-		lgp->x0 = color2px[4];
-		lgp->y0 = color2px[5];
-		lgp->dx = px2color[0];
-		lgp->dy = px2color[2];
-#endif
 	} else {
 		gdouble norm2pos[6];
 		gdouble color2pos[6], color2tpos[6];
@@ -1273,15 +1264,6 @@ sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		SP_PRINT_TRANSFORM ("color2tpos", color2tpos);
 		art_affine_multiply (color2px, color2tpos, ctm);
 		SP_PRINT_TRANSFORM ("color2px", color2px);
-#if 0
-		art_affine_invert (px2color, color2px);
-		SP_PRINT_TRANSFORM ("px2color", px2color);
-
-		lgp->x0 = color2px[4];
-		lgp->y0 = color2px[5];
-		lgp->dx = px2color[0];
-		lgp->dy = px2color[2];
-#endif
 	}
 
 	v2px.c[0] = color2px[0];
@@ -1439,7 +1421,6 @@ sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector)
 static void
 sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
-#if 1
 	SPLGPainter *lgp;
 	NRPixBlock pb;
 
@@ -1450,46 +1431,6 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 	nr_lgradient_render (&lgp->lgr, &pb);
 
 	nr_pixblock_release (&pb);
-#else
-	SPLGPainter *lgp;
-	SPLinearGradient *lg;
-	SPGradient *g;
-	gdouble pos;
-	gint x, y;
-	guchar *p;
-
-	lgp = (SPLGPainter *) painter;
-	lg = lgp->lg;
-	g = (SPGradient *) lg;
-
-	if (!g->color) {
-		/* fixme: This is forbidden, so we should paint some mishmesh instead */
-		nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
-		return;
-	}
-
-	for (y = 0; y < height; y++) {
-		p = px + y * rowstride;
-		pos = (y + y0 - lgp->y0) * lgp->dy + (0 + x0 - lgp->x0) * lgp->dx;
-		for (x = 0; x < width; x++) {
-			gint idx;
-			if (g->spread == SP_GRADIENT_SPREAD_REFLECT) {
-				idx = ((gint) pos) & (2 * NCOLORS - 1);
-				if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
-			} else if (g->spread == SP_GRADIENT_SPREAD_REPEAT) {
-				idx = ((gint) pos) & (NCOLORS - 1);
-			} else {
-				idx = CLAMP (((gint) pos), 0, (NCOLORS - 1));
-			}
-			idx = idx * 4;
-			*p++ = g->color[idx];
-			*p++ = g->color[idx + 1];
-			*p++ = g->color[idx + 2];
-			*p++ = g->color[idx + 3];
-			pos += lgp->dx;
-		}
-	}
-#endif
 }
 
 /*
@@ -1502,9 +1443,6 @@ struct _SPRGPainter {
 	SPPainter painter;
 	SPRadialGradient *rg;
 	NRRGradientRenderer rgr;
-#if 0
-	NRMatrixF px2gs;
-#endif
 };
 
 static void sp_radialgradient_class_init (SPRadialGradientClass *klass);
@@ -1687,9 +1625,6 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 		/* fixme: (Lauris) */
 		nr_matrix_multiply_fdf (&gs2user, (NRMatrixD *) gr->transform, &bbox2user);
 		nr_matrix_multiply_ffd (&gs2px, &gs2user, (NRMatrixD *) ctm);
-#if 0
-		nr_matrix_f_invert (&rgp->px2gs, &gs2px);
-#endif
 	} else {
 		/* Problem: What to do, if we have mixed lengths and percentages? */
 		/* Currently we do ignore percentages at all, but that is not good (lauris) */
@@ -1698,9 +1633,6 @@ sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtD
 
 		/* fixme: (Lauris) */
 		nr_matrix_multiply_fdd (&gs2px, (NRMatrixD *) gr->transform, (NRMatrixD *) ctm);
-#if 0
-		nr_matrix_f_invert (&rgp->px2gs, &gs2px);
-#endif
 	}
 
 	nr_rgradient_renderer_setup (&rgp->rgr, gr->color, gr->spread,
@@ -1758,12 +1690,9 @@ sp_radialgradient_build_repr (SPRadialGradient *rg, gboolean vector)
 	return repr;
 }
 
-#define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
-
 static void
 sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
 {
-#if 1
 	SPRGPainter *rgp;
 	NRPixBlock pb;
 
@@ -1774,129 +1703,5 @@ sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 	nr_rgradient_render (&rgp->rgr, &pb);
 
 	nr_pixblock_release (&pb);
-#else
-	SPRGPainter *rgp;
-	SPRadialGradient *rg;
-	SPGradient *gr;
-	gint x, y;
-	guchar *p;
-
-	rgp = (SPRGPainter *) painter;
-	rg = rgp->rg;
-	gr = (SPGradient *) rg;
-
-	if (!gr->color) {
-		/* fixme: This is forbidden, so we should paint some mishmesh instead */
-		nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
-		return;
-	}
-
-	if (NR_DF_TEST_CLOSE (rg->cx.computed, rg->fx.computed, NR_EPSILON_D) &&
-	    NR_DF_TEST_CLOSE (rg->cy.computed, rg->fy.computed, NR_EPSILON_D)) {
-		for (y = 0; y < height; y++) {
-			p = px + y * rowstride;
-			for (x = 0; x < width; x++) {
-				double gx, gy;
-				double r, pos;
-				gint idx;
-
-				gx = rgp->px2gs.c[0] * (x + x0) + rgp->px2gs.c[2] * (y + y0) + rgp->px2gs.c[4];
-				gy = rgp->px2gs.c[1] * (x + x0) + rgp->px2gs.c[3] * (y + y0) + rgp->px2gs.c[5];
-
-				r = MAX (rg->r.computed, 1e-9);
-				pos = hypot (gx - rg->cx.computed, gy - rg->cy.computed) * NCOLORS / r;
-
-				if (gr->spread == SP_GRADIENT_SPREAD_REFLECT) {
-					idx = ((gint) pos) & (2 * NCOLORS - 1);
-					if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
-				} else if (gr->spread == SP_GRADIENT_SPREAD_REPEAT) {
-					idx = ((gint) pos) & (NCOLORS - 1);
-				} else {
-					idx = CLAMP (((gint) pos), 0, (NCOLORS - 1));
-				}
-				idx = idx * 4;
-				*p++ = gr->color[idx];
-				*p++ = gr->color[idx + 1];
-				*p++ = gr->color[idx + 2];
-				*p++ = gr->color[idx + 3];
-			}
-		}
-	} else {
-		for (y = 0; y < height; y++) {
-			p = px + y * rowstride;
-			for (x = 0; x < width; x++) {
-				double gx, gy;
-				double r, pos;
-				double D, N, A, B, C;
-				gint idx;
-
-				gx = rgp->px2gs.c[0] * (x + x0) + rgp->px2gs.c[2] * (y + y0) + rgp->px2gs.c[4];
-				gy = rgp->px2gs.c[1] * (x + x0) + rgp->px2gs.c[3] * (y + y0) + rgp->px2gs.c[5];
-
-				/*
-				 * (1)  (gx - fx) * (Py - fy) = (gy - fy) * (Px - fx)
-				 * (2)  (Px - cx) * (Px - cx) + (Py - cy) * (Py - cy) = r * r
-				 *
-				 * (3)   Py = (Px - fx) * (gy - fy) / (gx - fx) + fy
-				 * (4)  (gy - fy) / (gx - fx) = D
-				 * (5)   Py = D * Px - D * fx + fy
-				 *
-				 * (6)   D * fx - fy + cy = N
-				 * (7)   Px * Px - 2 * Px * cx + cx * cx + (D * Px) * (D * Px) - 2 * (D * Px) * N + N * N = r * r
-				 * (8)  (D * D + 1) * (Px * Px) - 2 * (cx + D * N) * Px + cx * cx + N * N = r * r
-				 *
-				 * (9)   A = D * D + 1
-				 * (10)  B = -2 * (cx + D * N)
-				 * (11)  C = cx * cx + N * N - r * r
-				 *
-				 * (12)  Px = (-B +- SQRT (B * B - 4 * A * C)) / 2 * A
-				 */
-
-				r = MAX (rg->r.computed, 1e-9);
-
-				if (NR_DF_TEST_CLOSE (gx, rg->fx.computed, NR_EPSILON_D)) {
-					gx = rg->fx.computed + NR_EPSILON_D;
-				}
-
-				D = (gy - rg->fy.computed) / (gx - rg->fx.computed);
-				N = D * rg->fx.computed - rg->fy.computed + rg->cy.computed;
-				A = D * D + 1;
-				B = -2 * (rg->cx.computed + D * N);
-				C = rg->cx.computed * rg->cx.computed + N * N - r * r;
-				if (NR_DF_TEST_CLOSE (A, 0.0, NR_EPSILON_D)) {
-					pos = 0.0;
-				} else {
-					double q;
-					q = B * B - 4 * A * C;
-					if (q < 0.0) {
-						pos = 0.0;
-					} else {
-						double px;
-						if ((gx - rg->fx.computed) < 0.0) {
-							px = (-B - sqrt (q)) / (2 * A);
-						} else {
-							px = (-B + sqrt (q)) / (2 * A);
-						}
-						pos = (gx - rg->fx.computed) / (px - rg->fx.computed) * NCOLORS;
-					}
-				}
-
-				if (gr->spread == SP_GRADIENT_SPREAD_REFLECT) {
-					idx = ((gint) pos) & (2 * NCOLORS - 1);
-					if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
-				} else if (gr->spread == SP_GRADIENT_SPREAD_REPEAT) {
-					idx = ((gint) pos) & (NCOLORS - 1);
-				} else {
-					idx = CLAMP (((gint) pos), 0, (NCOLORS - 1));
-				}
-				idx = idx * 4;
-				*p++ = gr->color[idx];
-				*p++ = gr->color[idx + 1];
-				*p++ = gr->color[idx + 2];
-				*p++ = gr->color[idx + 3];
-			}
-		}
-	}
-#endif
 }
 

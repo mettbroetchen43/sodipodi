@@ -1,5 +1,5 @@
-#ifndef __NR_BLIT_H__
-#define __NR_BLIT_H__
+#ifndef __NR_PIXBLOCK_PIXEL_H__
+#define __NR_PIXBLOCK_PIXEL_H__
 
 /*
  * Pixel buffer rendering library
@@ -14,6 +14,6 @@
 
 #include <libnr/nr-pixblock.h>
 
-void nr_blit_pixblock_pixblock (NRPixBlock *d, NRPixBlock *s);
+void nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRPixBlock *spb, const unsigned char *s);
 
 #endif
