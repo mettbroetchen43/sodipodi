@@ -1,5 +1,7 @@
 2003-11-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* configure.in: Version 0.33
+
 	* src/libarikkei/arikkei-iolib.c: New file
 
 	* src/libarikkei/arikkei-iolib.h: New file
