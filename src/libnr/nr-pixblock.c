@@ -176,7 +176,7 @@ nr_pixelstore_4K_new (int clear, unsigned char val)
 		px = nr_new (unsigned char, 4096);
 	}
 	
-	if (clear) memset (px, 4096, val);
+	if (clear) memset (px, val, 4096);
 
 	return px;
 }
@@ -210,7 +210,7 @@ nr_pixelstore_16K_new (int clear, unsigned char val)
 		px = nr_new (unsigned char, 16384);
 	}
 	
-	if (clear) memset (px, 16384, val);
+	if (clear) memset (px, val, 16384);
 
 	return px;
 }
@@ -244,7 +244,7 @@ nr_pixelstore_64K_new (int clear, unsigned char val)
 		px = nr_new (unsigned char, 65536);
 	}
 
-	if (clear) memset (px, 65536, val);
+	if (clear) memset (px, val, 65536);
 
 	return px;
 }

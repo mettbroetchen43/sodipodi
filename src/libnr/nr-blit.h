@@ -15,5 +15,6 @@
 #include <libnr/nr-pixblock.h>
 
 void nr_blit_pixblock_pixblock (NRPixBlock *d, NRPixBlock *s);
+void nr_blit_pixblock_mask_rgba32 (NRPixBlock *d, NRPixBlock *m, unsigned long rgba32);
 
 #endif

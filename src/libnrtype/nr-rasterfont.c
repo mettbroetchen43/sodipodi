@@ -307,8 +307,8 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 	code = glyph % NRRF_PAGE_SIZE;
 
 	if (!rf->pages) {
-		rf->pages = nr_new (NRRFGlyphSlot *, rf->nglyphs / NRRF_PAGE_SIZE);
-		memset (rf->pages, 0x0, (rf->nglyphs / NRRF_PAGE_SIZE) * sizeof (NRRFGlyphSlot *));
+		rf->pages = nr_new (NRRFGlyphSlot *, rf->nglyphs / NRRF_PAGE_SIZE + 1);
+		memset (rf->pages, 0x0, (rf->nglyphs / NRRF_PAGE_SIZE + 1) * sizeof (NRRFGlyphSlot *));
 	}
 
 	if (!rf->pages[page]) {

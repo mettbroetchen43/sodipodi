@@ -101,3 +101,42 @@ nr_blit_pixblock_pixblock (NRPixBlock *d, NRPixBlock *s)
 	}
 }
 
+void
+nr_blit_pixblock_mask_rgba32 (NRPixBlock *d, NRPixBlock *m, unsigned long rgba)
+{
+	NRRectS clip;
+	unsigned char *dpx, *mpx;
+	int w, h;
+
+	if (m->mode != NR_PIXBLOCK_MODE_A8) return;
+
+	if (!nr_rect_s_test_intersect (&d->area, &m->area)) return;
+
+	nr_rect_s_intersect (&clip, &d->area, &m->area);
+
+	/* Pointers */
+	dpx = NR_PIXBLOCK_PX (d) + (clip.y0 - d->area.y0) * d->rs + NR_PIXBLOCK_BPP (d) * (clip.x0 - d->area.x0);
+	mpx = NR_PIXBLOCK_PX (m) + (clip.y0 - m->area.y0) * m->rs + (clip.x0 - m->area.x0);
+	w = clip.x1 - clip.x0;
+	h = clip.y1 - clip.y0;
+
+	if (d->empty) {
+		if (d->mode == NR_PIXBLOCK_MODE_R8G8B8) {
+			nr_R8G8B8_EMPTY_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
+		} else if (d->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
+			nr_R8G8B8A8_P_EMPTY_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
+		} else {
+			nr_R8G8B8A8_N_EMPTY_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
+		}
+		d->empty = 0;
+	} else {
+		if (d->mode == NR_PIXBLOCK_MODE_R8G8B8) {
+			nr_R8G8B8_R8G8B8_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
+		} else if (d->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
+			nr_R8G8B8A8_P_R8G8B8A8_P_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
+		} else {
+			nr_R8G8B8A8_N_R8G8B8A8_N_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
+		}
+	}
+}
+

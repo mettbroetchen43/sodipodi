@@ -1,5 +1,16 @@
 2002-10-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnrtype/nr-rasterfont.c (nr_rasterfont_ensure_glyph_slot): Oops, alloc
+	and clear the right number of blocks
+
+	* src/libnr/nr-compose.c (nr_R8G8B8_R8G8B8_A8_RGBA32): Implement
+	(nr_R8G8B8_EMPTY_A8_RGBA32): Implement
+
+	* src/libnr/nr-blit.c (nr_blit_pixblock_mask_rgba32): Implement
+
+	* src/widgets/font-selector.c (sp_font_preview_expose): Implement
+	(sp_font_preview_set_font): Ditto
+
 	* src/libnr/nr-pixblock-pattern.h: New file
 
 	* src/libnr/nr-pixblock-pattern.c: New file

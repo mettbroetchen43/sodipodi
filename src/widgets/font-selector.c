@@ -17,6 +17,9 @@
 
 #include <stdlib.h>
 
+#include <libnr/nr-matrix.h>
+#include <libnr/nr-blit.h>
+
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -33,6 +36,7 @@
 #include <gtk/gtkcombo.h>
 #include <gtk/gtkentry.h>
 #include <gtk/gtkdrawingarea.h>
+#include <gal/unicode/gunicode.h>
 
 #include "../helper/nr-plain-stuff-gdk.h"
 
@@ -357,6 +361,7 @@ struct _SPFontPreview
 	NRFont *font;
 	NRRasterFont *rfont;
 	unsigned char *phrase;
+	unsigned long rgba;
 };
 
 
@@ -408,8 +413,9 @@ sp_font_preview_class_init (SPFontPreviewClass *klass)
 }
 
 static void
-sp_font_preview_init (SPFontPreview *fsel)
+sp_font_preview_init (SPFontPreview *fprev)
 {
+	fprev->rgba = 0x000000ff;
 }
 
 static void
@@ -436,6 +442,8 @@ sp_font_preview_destroy (GtkObject *object)
 		GTK_OBJECT_CLASS (fp_parent_class)->destroy (object);
 }
 
+#define SPFP_MAX_LEN 64
+
 static gint
 sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 {
@@ -444,22 +452,72 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 	fprev = SP_FONT_PREVIEW (widget);
 
 	if (GTK_WIDGET_DRAWABLE (widget)) {
-		int x, y;
-		for (y = event->area.y; y < event->area.y + event->area.height; y += 64) {
-			for (x = event->area.x; x < event->area.x + event->area.width; x += 64) {
-				int x0, y0, x1, y1;
-				
-
-				x0 = x;
-				y0 = y;
-				x1 = MIN (x0 + 64, event->area.x + event->area.width);
-				y1 = MIN (y0 + 64, event->area.y + event->area.height);
+		if (fprev->rfont) {
+			NRTypeFace *tface;
+			unsigned char *p;
+			int glyphs[SPFP_MAX_LEN];
+			int hpos[SPFP_MAX_LEN];
+			float px, py;
+			int len;
+			NRRectF bbox;
+			float startx, starty;
+			int x, y;
+			tface = nr_rasterfont_get_typeface (fprev->rfont);
+			if (fprev->phrase) {
+				p = fprev->phrase;
+			} else {
+				p = _("AaBbCcIiPpQq12368.;/()");
 			}
+			px = 0.0;
+			py = 0.0;
+			len = 0;
+			bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
+			while (p && *p && (len < SPFP_MAX_LEN)) {
+				unsigned int unival;
+				NRPointF adv;
+				NRRectF gbox;
+				unival = g_utf8_get_char (p);
+				glyphs[len] = nr_typeface_lookup_default (tface, unival);
+				hpos[len] = px;
+				nr_rasterfont_get_glyph_advance (fprev->rfont, glyphs[len], &adv);
+				nr_rasterfont_get_glyph_area (fprev->rfont, glyphs[len], &gbox);
+				bbox.x0 = MIN (px + gbox.x0, bbox.x0);
+				bbox.y0 = MIN (py + gbox.y0, bbox.y0);
+				bbox.x1 = MAX (px + gbox.x1, bbox.x1);
+				bbox.y1 = MAX (py + gbox.y1, bbox.y1);
+				px += adv.x;
+				len += 1;
+				p = g_utf8_next_char (p);
+			}
+			startx = (widget->allocation.width - (bbox.x1 - bbox.x0)) / 2;
+			starty = widget->allocation.height - (widget->allocation.height - (bbox.y1 - bbox.y0)) / 2 - bbox.y1;
+			for (y = event->area.y; y < event->area.y + event->area.height; y += 64) {
+				for (x = event->area.x; x < event->area.x + event->area.width; x += 64) {
+					NRPixBlock pb, m;
+					int x0, y0, x1, y1;
+					int i;
+					x0 = x;
+					y0 = y;
+					x1 = MIN (x0 + 64, event->area.x + event->area.width);
+					y1 = MIN (y0 + 64, event->area.y + event->area.height);
+					nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8, x0, y0, x1, y1, FALSE);
+					nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, x0, y0, x1, y1, TRUE);
+					for (i = 0; i < len; i++) {
+						nr_rasterfont_render_glyph_mask (fprev->rfont, glyphs[i], &m, hpos[i] + startx, starty);
+					}
+					nr_blit_pixblock_mask_rgba32 (&pb, &m, fprev->rgba);
+					gdk_draw_rgb_image (widget->window, widget->style->black_gc,
+							    x0, y0, x1 - x0, y1 - y0,
+							    GDK_RGB_DITHER_NONE, NR_PIXBLOCK_PX (&pb), pb.rs);
+					nr_pixblock_release (&m);
+					nr_pixblock_release (&pb);
+				}
+			}
+		} else {
+			nr_gdk_draw_gray_garbage (widget->window, widget->style->black_gc,
+						  event->area.x, event->area.y,
+						  event->area.width, event->area.height);
 		}
-
-		nr_gdk_draw_gray_garbage (widget->window, widget->style->black_gc,
-					  event->area.x, event->area.y,
-					  event->area.width, event->area.height);
 	}
 
 	return TRUE;
@@ -478,16 +536,38 @@ sp_font_preview_new (void)
 void
 sp_font_preview_set_font (SPFontPreview *fprev, NRFont *font)
 {
+	if (font) nr_font_ref (font);
+	if (fprev->font) nr_font_unref (fprev->font);
+	fprev->font = font;
+
+	if (fprev->rfont) {
+		fprev->rfont = nr_rasterfont_unref (fprev->rfont);
+	}
+	if (fprev->font) {
+		NRMatrixF flip;
+		nr_matrix_f_set_scale (&flip, 1.0, -1.0);
+		fprev->rfont = nr_rasterfont_new (fprev->font, &flip);
+	}
+	if (GTK_WIDGET_DRAWABLE (fprev)) gtk_widget_queue_draw (GTK_WIDGET (fprev));
 }
 
 void
 sp_font_preview_set_rgba32 (SPFontPreview *fprev, guint32 rgba)
 {
+	fprev->rgba = rgba;
+	if (GTK_WIDGET_DRAWABLE (fprev)) gtk_widget_queue_draw (GTK_WIDGET (fprev));
 }
 
 void
 sp_font_preview_set_phrase (SPFontPreview *fprev, const guchar *phrase)
 {
+	if (fprev->phrase) g_free (fprev->phrase);
+	if (phrase) {
+		fprev->phrase = g_strdup (phrase);
+	} else {
+		fprev->phrase = NULL;
+	}
+	if (GTK_WIDGET_DRAWABLE (fprev)) gtk_widget_queue_draw (GTK_WIDGET (fprev));
 }
 
 #if 0
