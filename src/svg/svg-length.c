@@ -269,3 +269,56 @@ sp_svg_write_percentage (char *buf, int buflen, double val)
 	return len;
 }
 
+/* Read list of coords (unitless numbers) */
+
+static unsigned int
+sp_svg_coords_read (const unsigned char *str, float *coords, unsigned int *ncoords)
+{
+	const unsigned char *p;
+	unsigned int count, valid;
+	p = str;
+	count = 0;
+	/* Skip initial whitespace */
+	while (*p && isspace (*p)) p += 1;
+	valid = 1;
+	while (*p) {
+		const unsigned char *p0;
+		unsigned int len;
+		double val;
+		if (count > 0) {
+			/* We are in the middle of coords list */
+			/* Skip comma-wsp */
+			p0 = p;
+			while (*p && isspace (*p)) p += 1;
+			if (!*p) break;
+			valid = 0;
+			if (*p == ',') p += 1;
+			while (*p && isspace (*p)) p += 1;
+			if (p == p0) break;
+		}
+		valid = 0;
+		/* Parse coordinate */
+		len = arikkei_strtod_exp (p, 256, &val);
+		if (len < 1) break;
+		p += len;
+		/* If we got here everything was valid */
+		valid = 1;
+		if (coords) coords[count] = val;
+		count += 1;
+	}
+	if (valid && ncoords) *ncoords = count;
+	return valid;
+}
+
+/* Read list of points for <polyline> or <polygon> */
+
+unsigned int
+sp_svg_points_read (const unsigned char *str, float *coords, unsigned int *ncoords)
+{
+	unsigned int count;
+	if (!sp_svg_coords_read (str, coords, &count)) return 0;
+	if (count & 0x1) return 0;
+	if (ncoords) *ncoords = count;
+	return 1;
+}
+

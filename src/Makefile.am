@@ -58,7 +58,6 @@ sodipodilib_src = \
 	sp-star.c sp-star.h \
 	sp-spiral.c sp-spiral.h \
 	sp-line.c sp-line.h \
-	sp-polyline.c sp-polyline.h \
 	sp-polygon.c sp-polygon.h \
 	sp-chars.c sp-chars.h \
 	sp-text.c sp-text.h \

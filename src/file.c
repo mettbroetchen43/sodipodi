@@ -190,7 +190,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 
 	/* g_signal_connect (G_OBJECT (fsel->ok_button), "clicked", G_CALLBACK (file_open_ok), fsel); */
 	/* g_signal_connect (G_OBJECT (fsel->cancel_button), "clicked", G_CALLBACK (file_open_cancel), fsel); */
-	open_path = NULL;
+	/* open_path = NULL; */
 	if (open_path) gtk_file_selection_set_filename (fsel, open_path);
 
 	/* Create file type box */
@@ -208,13 +208,11 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 	gtk_box_pack_end (GTK_BOX (hb), l, FALSE, FALSE, 0);
 	gtk_widget_show_all (hb);
 
-	res = gtk_dialog_run ((GtkDialog *) fsel);
-
+	res = GTK_RESPONSE_OK;
 	while (res != GTK_RESPONSE_CANCEL) {
 		unsigned char *filename;
-
+		res = gtk_dialog_run ((GtkDialog *) fsel);
 		filename = g_strdup (gtk_file_selection_get_filename (fsel));
-
 		if (filename && g_file_test (filename, G_FILE_TEST_IS_DIR)) {
 			if (open_path) g_free (open_path);
 			if (filename[strlen(filename) - 1] != G_DIR_SEPARATOR) {
@@ -224,7 +222,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 				open_path = filename;
 			}
 			gtk_file_selection_set_filename (fsel, open_path);
-		} else if (filename != NULL) {
+		} else if (filename && *filename) {
 			gpointer key;
 			if (open_path) g_free (open_path);
 			open_path = g_dirname (filename);
@@ -556,7 +554,7 @@ struct SPEBP {
 	unsigned char r, g, b, a;
 	NRArenaItem *root;
 	unsigned char *px;
-	unsigned int (*status) (float);
+	unsigned int (*status) (float, void *);
 	void *data;
 };
 
@@ -572,7 +570,7 @@ sp_export_get_rows (const unsigned char **rows, int row, int num_rows, void *dat
 	ebp = (struct SPEBP *) data;
 
 	if (ebp->status) {
-		if (!ebp->status ((float) row / ebp->height)) return 0;
+		if (!ebp->status ((float) row / ebp->height, ebp->data)) return 0;
 	}
 
 	num_rows = MIN (num_rows, ebp->sheight);
@@ -619,7 +617,7 @@ sp_export_png_file (SPDocument *doc, const unsigned char *filename,
 		    double x0, double y0, double x1, double y1,
 		    unsigned int width, unsigned int height,
 		    unsigned long bgcolor,
-			unsigned int (*status) (float), void *data)
+		    unsigned int (*status) (float, void *), void *data)
 {
 	NRMatrixF affine;
 	gdouble t;

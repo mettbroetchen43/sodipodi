@@ -1,3 +1,8 @@
+2003-12-14  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/export.c (sp_export_progress_callback): New method
+	(sp_export_export_clicked): Added progress dialog
+
 2003-12-12  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-text.c: (sp_string_set_shape):

@@ -27,7 +27,6 @@
 #include "sp-star.h" 
 #include "sp-spiral.h" 
 #include "sp-line.h"
-#include "sp-polyline.h"
 #include "sp-polygon.h"
 #include "sp-text.h" 
 #include "sp-gradient.h"

@@ -56,6 +56,9 @@ void sp_svg_length_set (SPSVGLength *length, unsigned long unit, float value, fl
 void sp_svg_length_unset (SPSVGLength *length, unsigned long unit, float value, float computed);
 void sp_svg_length_update (SPSVGLength *length, double em, double ex, double scale);
 
+/* Read list of points for <polyline> or <polygon> */
+unsigned int sp_svg_points_read (const unsigned char *str, float *coords, unsigned int *ncoords);
+
 unsigned int sp_svg_transform_read (const unsigned char *str, NRMatrixF *transform);
 
 unsigned int sp_svg_transform_write (unsigned char *str, unsigned int size, NRMatrixF *transform);

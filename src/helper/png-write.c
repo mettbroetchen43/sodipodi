@@ -265,14 +265,16 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
 	if (png_ptr == NULL) {
-		fclose(fp);
+		fclose (fp);
+		unlink (filename);
 		return FALSE;
 	}
 
 	/* Allocate/initialize the image information data.  REQUIRED */
 	info_ptr = png_create_info_struct(png_ptr);
 	if (info_ptr == NULL) {
-		fclose(fp);
+		fclose (fp);
+		unlink (filename);
 		png_destroy_write_struct(&png_ptr, NULL);
 		return FALSE;
 	}
@@ -282,7 +284,8 @@ sp_png_write_rgba_striped (const unsigned char *filename, int width, int height,
 	 */
 	if (setjmp (png_ptr->jmpbuf)) {
 		/* If we get here, we had a problem reading the file */
-		fclose(fp);
+		fclose (fp);
+		unlink (filename);
 		png_destroy_write_struct (&png_ptr, &info_ptr);
 		return FALSE;
 	}

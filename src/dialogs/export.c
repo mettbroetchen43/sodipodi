@@ -19,7 +19,10 @@
 #include <math.h>
 #include <string.h>
 #include <glib.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
+#include <gtk/gtkstock.h>
+#include <gtk/gtkdialog.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkframe.h>
@@ -28,6 +31,7 @@
 #include <gtk/gtkspinbutton.h>
 #include <gtk/gtktogglebutton.h>
 #include <gtk/gtkhseparator.h>
+#include <gtk/gtkprogressbar.h>
 
 #include "helper/sp-intl.h"
 #include "helper/window.h"
@@ -287,6 +291,37 @@ sp_export_area_toggled (GtkToggleButton *tb, GtkObject *base)
 	}
 }
 
+static gint
+sp_export_progress_delete (GtkWidget *widget, GdkEvent *event, GObject *base)
+{
+	g_object_set_data (base, "cancel", (gpointer) 1);
+	return TRUE;
+}
+
+static void
+sp_export_progress_cancel (GtkWidget *widget, GObject *base)
+{
+	g_object_set_data (base, "cancel", (gpointer) 1);
+}
+
+static unsigned int
+sp_export_progress_callback (float value, void *data)
+{
+	GtkWidget *prg;
+	int evtcount;
+	if (g_object_get_data ((GObject *) data, "cancel")) return FALSE;
+	prg = (GtkWidget *) g_object_get_data ((GObject *) data, "progress");
+	gtk_progress_bar_set_fraction ((GtkProgressBar *) prg, value);
+	evtcount = 0;
+	while ((evtcount < 16) && gdk_events_pending ()) {
+		/* g_print ("Iteration %d\n", evtcount); */
+		gtk_main_iteration_do (FALSE);
+		evtcount += 1;
+	}
+	gtk_main_iteration_do (FALSE);
+	return TRUE;
+}
+
 static void
 sp_export_export_clicked (GtkButton *button, GtkObject *base)
 {
@@ -315,9 +350,33 @@ sp_export_export_clicked (GtkButton *button, GtkObject *base)
 	cpicker = g_object_get_data ((GObject *) base, "bgcolor");
 	rgba = (cpicker) ? sp_color_picker_get_rgba32 (cpicker) : 0x00000000;
 	if ((x1 > x0) && (y1 > y0) && (width > 0) && (height > 0)) {
+		GtkWidget *dlg, *prg, *btn;
+		const char *fn;
+		gchar *text;
+		/* Everything seems OK */
+		/* Create progress dialog */
+		dlg = gtk_dialog_new ();
+		gtk_window_set_title ((GtkWindow *) dlg, _("Export in progress"));
+		prg = gtk_progress_bar_new ();
+		g_object_set_data ((GObject *) base, "progress", prg);
+		fn = sp_filename_from_path (filename);
+		text = g_strdup_printf (_("Exporting [%d x %d] %s"), width, height, fn);
+		gtk_progress_bar_set_text ((GtkProgressBar *) prg, text);
+		g_free (text);
+		gtk_progress_bar_set_orientation ((GtkProgressBar *) prg, GTK_PROGRESS_LEFT_TO_RIGHT);
+		gtk_box_pack_start ((GtkBox *) ((GtkDialog *) dlg)->vbox, prg, FALSE, FALSE, 4);
+		btn = gtk_dialog_add_button (GTK_DIALOG (dlg), GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL);
+		g_signal_connect ((GObject *) dlg, "delete_event", (GCallback) sp_export_progress_delete, base);
+		g_signal_connect ((GObject *) btn, "clicked", (GCallback) sp_export_progress_cancel, base);
+		gtk_window_set_modal ((GtkWindow *) dlg, TRUE);
+		gtk_widget_show_all (dlg);
+		/* Do export */
 		sp_export_png_file (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP), filename,
 				    x0, y0, x1, y1, width, height,
-				    rgba, NULL, NULL);
+				    rgba,
+				    sp_export_progress_callback, base);
+		gtk_widget_destroy (dlg);
+		g_object_set_data ((GObject *) base, "cancel", (gpointer) 0);
 	}
 }
 

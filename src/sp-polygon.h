@@ -2,7 +2,7 @@
 #define __SP_POLYGON_H__
 
 /*
- * SVG <polygon> implementation
+ * SVG <polygon> and <polyline> implementation
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
@@ -13,13 +13,23 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include "sp-shape.h"
+typedef struct _SPPolygon SPPolygon;
+typedef struct _SPPolygonClass SPPolygonClass;
 
 #define SP_TYPE_POLYGON (sp_polygon_get_type ())
 #define SP_POLYGON(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_POLYGON, SPPolygon))
-#define SP_POLYGON_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), SP_TYPE_POLYGON, SPPolygonClass))
 #define SP_IS_POLYGON(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_POLYGON))
-#define SP_IS_POLYGON_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_POLYGON))
+
+typedef struct _SPPolyLine SPPolyLine;
+typedef struct _SPPolyLineClass SPPolyLineClass;
+
+#define SP_TYPE_POLYLINE (sp_polyline_get_type ())
+#define SP_POLYLINE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_POLYLINE, SPPolyLine))
+#define SP_IS_POLYLINE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_POLYLINE))
+
+#include "sp-shape.h"
+
+/* SPPolygon */
 
 struct _SPPolygon {
 	SPShape shape;
@@ -30,5 +40,17 @@ struct _SPPolygonClass {
 };
 
 GType sp_polygon_get_type (void);
+
+/* SPPolyline */
+
+struct _SPPolyLine {
+	SPShape shape;
+};
+
+struct _SPPolyLineClass {
+	SPShapeClass parent_class;
+};
+
+GType sp_polyline_get_type (void);
 
 #endif
