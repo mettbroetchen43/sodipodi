@@ -207,7 +207,9 @@ main (int argc, char *argv[])
 
 		sp_svg_doc_factory_init ();
 
-#else /* ENABLE_BONOBO */
+		if (!bonobo_client) {
+
+#endif /* ENABLE_BONOBO */
 
 		if (!restored) {
 
@@ -242,6 +244,8 @@ main (int argc, char *argv[])
 
 		}
 
+#ifdef ENABLE_BONOBO
+		}
 #endif /* ENABLE_BONOBO */
 
 		poptFreeContext (ctx);
