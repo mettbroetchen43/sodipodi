@@ -1,17 +1,25 @@
 # Sodipodi Portuguese Translation.
 # Copyright (C) 2001 Free Software Foundation, Inc.
-# Álvaro Lopes <alvieboy@alvie.com>, 2001.
+# Álvaro Lopes <alvieboy@alvie.com>, 2001, 2002
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24.1\n"
-"POT-Creation-Date: 2002-01-06 12:59+0000\n"
-"PO-Revision-Date: 2002-01-06 13:00+0000\n"
+"POT-Creation-Date: 2002-01-23 23:21+0000\n"
+"PO-Revision-Date: 2002-01-23 23:30+0000\n"
 "Last-Translator: Álvaro Lopes <alvieboy@alvie.com>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: GNOME_Sodipodi.oaf.in.h:1
+msgid "Sodipodi SVG Document"
+msgstr "Documento SVG Sodipodi"
+
+#: GNOME_Sodipodi.oaf.in.h:2
+msgid "Sodipodi SVG Document factory"
+msgstr "Fábrica Sodipodi de Documento SVG"
 
 #: glade/align.glade.h:1 glade/transformation.glade.h:3
 msgid "Align"
@@ -164,7 +172,7 @@ msgid "Highlited guideline color"
 msgstr "Cor das guias seleccionadas"
 
 #: glade/desktop.glade.h:17 glade/display.glade.h:18 glade/document.glade.h:7
-#: src/helper/unit-menu.c:91
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
 msgid "Millimeters"
 msgstr "Milímetros"
 
@@ -176,7 +184,8 @@ msgstr "Origem X:"
 msgid "Origin Y:"
 msgstr "Origem Y:"
 
-#: glade/desktop.glade.h:20 glade/display.glade.h:23 src/helper/unit-menu.c:95
+#: glade/desktop.glade.h:20 glade/display.glade.h:23
+#: src/helper/unit-menu.c:358 src/helper/units.c:37
 msgid "Pixels"
 msgstr "Pixels"
 
@@ -304,7 +313,7 @@ msgid "ID:"
 msgstr "Identificação:"
 
 #. Create toplevel menuitem
-#: glade/item.glade.h:3 src/sp-item.c:646
+#: glade/item.glade.h:3 src/sp-item.c:660
 msgid "Item"
 msgstr "Item"
 
@@ -369,8 +378,8 @@ msgstr " Estilo "
 msgid "Add new gradient"
 msgstr "Adicionar novo gradiente"
 
-#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:610
-#: src/widgets/sp-color-selector.c:630 src/widgets/sp-color-selector.c:652
+#: glade/object_props.glade.h:5 src/widgets/sp-color-selector.c:607
+#: src/widgets/sp-color-selector.c:627 src/widgets/sp-color-selector.c:649
 msgid "Alpha:"
 msgstr "Transparência:"
 
@@ -382,7 +391,7 @@ msgstr "Preenchimento de fundo"
 msgid "Bevel join"
 msgstr "Conexão hiperbólica"
 
-#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:609
+#: glade/object_props.glade.h:8 src/widgets/sp-color-selector.c:606
 msgid "Blue:"
 msgstr "Azul:"
 
@@ -434,7 +443,7 @@ msgstr "Preencher com fractal"
 msgid "Gradient fill"
 msgstr "Preencher com Gradiente"
 
-#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:608
+#: glade/object_props.glade.h:21 src/widgets/sp-color-selector.c:605
 msgid "Green:"
 msgstr "Verde:"
 
@@ -478,7 +487,7 @@ msgstr "Escolha a cor da rasura"
 msgid "Position"
 msgstr "Posição"
 
-#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:607
+#: glade/object_props.glade.h:33 src/widgets/sp-color-selector.c:604
 msgid "Red:"
 msgstr "Vermelho:"
 
@@ -525,7 +534,7 @@ msgid "centimeter"
 msgstr "centímetros"
 
 #: glade/object_props.glade.h:45 glade/transformation.glade.h:48
-#: src/helper/unit-menu.c:92
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
 msgid "cm"
 msgstr "cm"
 
@@ -534,6 +543,7 @@ msgid "color"
 msgstr "cor"
 
 #: glade/object_props.glade.h:47 glade/transformation.glade.h:55
+#: src/helper/units.c:44
 msgid "in"
 msgstr "polegadas"
 
@@ -546,7 +556,7 @@ msgid "millimeters"
 msgstr "milímetros"
 
 #: glade/object_props.glade.h:50 glade/transformation.glade.h:58
-#: src/helper/unit-menu.c:91
+#: src/helper/unit-menu.c:354 src/helper/units.c:41
 msgid "mm"
 msgstr "mm"
 
@@ -567,11 +577,11 @@ msgid "points"
 msgstr "pontos"
 
 #: glade/object_props.glade.h:55 glade/transformation.glade.h:59
-#: src/helper/unit-menu.c:94
+#: src/helper/unit-menu.c:357
 msgid "pt"
 msgstr "pt"
 
-#: glade/object_props.glade.h:56 src/helper/unit-menu.c:95
+#: glade/object_props.glade.h:56 src/helper/unit-menu.c:358
 msgid "px"
 msgstr "px"
 
@@ -624,7 +634,7 @@ msgid "Cusp line at selected nodes"
 msgstr "Remover suavização nos nós seleccionados"
 
 #: glade/sodipodi.glade.h:13 glade/xml-tree.glade.h:11
-#: src/dialogs/gradient-selector.c:84
+#: src/dialogs/gradient-selector.c:96 src/dialogs/gradient-vector.c:106
 msgid "Delete"
 msgstr "Apagar"
 
@@ -770,7 +780,7 @@ msgid "Spiral"
 msgstr "Espiral"
 
 #. Create toplevel menuitem
-#: glade/sodipodi.glade.h:53 src/sp-star.c:475
+#: glade/sodipodi.glade.h:53 src/sp-star.c:476
 msgid "Star"
 msgstr "Estrela"
 
@@ -935,8 +945,8 @@ msgstr "Contexto de desenho"
 msgid "Duplicate selection"
 msgstr "Duplicar selecção"
 
-#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:74
-#: src/toolbox.c:78
+#: glade/toolbox.glade.h:23 src/dialogs/gradient-selector.c:86
+#: src/dialogs/gradient-vector.c:98 src/toolbox.c:78
 msgid "Edit"
 msgstr "Editar"
 
@@ -1137,7 +1147,8 @@ msgstr "_Sair"
 msgid "lower selection to bottom"
 msgstr "enviar selecção para o fundo"
 
-#: glade/transformation.glade.h:2 src/helper/unit-menu.c:97
+#: glade/transformation.glade.h:2 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
 #, no-c-format
 msgid "%"
 msgstr "%"
@@ -1186,7 +1197,8 @@ msgstr "Aplicar a transformação à cópia Ctl+m"
 msgid "Center"
 msgstr "Centrar"
 
-#: glade/transformation.glade.h:15 src/helper/unit-menu.c:92
+#: glade/transformation.glade.h:15 src/helper/unit-menu.c:355
+#: src/helper/units.c:42
 msgid "Centimeter"
 msgstr "Centímetro"
 
@@ -1214,7 +1226,8 @@ msgstr "Altura: "
 msgid "Horizontal center value"
 msgstr "Valor horizontal do centro"
 
-#: glade/transformation.glade.h:22 src/helper/unit-menu.c:93
+#: glade/transformation.glade.h:22 src/helper/unit-menu.c:356
+#: src/helper/units.c:44
 msgid "Inch"
 msgstr "Polegada"
 
@@ -1226,7 +1239,8 @@ msgstr "Manter altura da selecção durante a transformação"
 msgid "Keep width of selection during transformation"
 msgstr "Manter largura da selecção durante a transformação"
 
-#: glade/transformation.glade.h:25 src/helper/unit-menu.c:91
+#: glade/transformation.glade.h:25 src/helper/unit-menu.c:354
+#: src/helper/units.c:41
 msgid "Millimeter"
 msgstr "Milímetro"
 
@@ -1242,11 +1256,15 @@ msgstr "Largura da origem: "
 msgid "Orig. X: "
 msgstr "Orig. X: "
 
-#: glade/transformation.glade.h:29 src/helper/unit-menu.c:97
+#. Volatiles do not have default, so there are not here
+#. You can add new elements from this point forward
+#: glade/transformation.glade.h:29 src/helper/unit-menu.c:360
+#: src/helper/units.c:40
 msgid "Percent"
 msgstr "Percentual"
 
-#: glade/transformation.glade.h:30 src/helper/unit-menu.c:94
+#: glade/transformation.glade.h:30 src/helper/unit-menu.c:357
+#: src/helper/units.c:35
 msgid "Points"
 msgstr "Pontos"
 
@@ -1382,7 +1400,8 @@ msgstr "mover verticalmente"
 msgid "vertical scale value"
 msgstr "valor do escalamento vertical"
 
-#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:79
+#: glade/xml-tree.glade.h:1 src/dialogs/gradient-selector.c:91
+#: src/dialogs/gradient-vector.c:102
 msgid "Add"
 msgstr "Adicionar"
 
@@ -1454,13 +1473,17 @@ msgstr "Colar"
 msgid "Value"
 msgstr "Valor"
 
-#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:629
+#: glade/xml-tree.glade.h:20 src/widgets/sp-color-selector.c:626
 msgid "Value:"
 msgstr "Valor:"
 
 #: glade/xml-tree.glade.h:22
 msgid "name"
 msgstr "nome"
+
+#: sodipodi.desktop.in.h:2
+msgid "Vector illustrator"
+msgstr "Ilustrador de Vectores"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
@@ -1546,6 +1569,28 @@ msgstr "CMYK"
 msgid "Gradient"
 msgstr "Gradiente"
 
+#. Reset button
+#: src/dialogs/gradient-selector.c:115
+msgid "Reset"
+msgstr "Repor"
+
+#. No document or no gradients
+#: src/dialogs/gradient-vector.c:225
+msgid "No gradients defined"
+msgstr "Nenhum gradiente definido"
+
+#: src/dialogs/gradient-vector.c:378
+msgid "Start color"
+msgstr "Cor inicial"
+
+#: src/dialogs/gradient-vector.c:390
+msgid "End color"
+msgstr "Cor final"
+
+#: src/dialogs/gradient-vector.c:417
+msgid "Gradient vector"
+msgstr "Vector do gradiente"
+
 #: src/dialogs/item-properties.c:175
 msgid "Item is reference"
 msgstr "O item é referência"
@@ -1561,23 +1606,6 @@ msgstr "O identificador já está definido"
 #: src/dialogs/item-properties.c:258 src/dialogs/item-properties.c:498
 msgid "The ID is valid"
 msgstr "O identificador é válido"
-
-#. Reset button
-#: src/dialogs/gradient-selector.c:102
-msgid "Reset"
-msgstr "Repor"
-
-#: src/dialogs/gradient-vector.c:58
-msgid "Start color"
-msgstr "Cor inicial"
-
-#: src/dialogs/gradient-vector.c:70
-msgid "End color"
-msgstr "Cor final"
-
-#: src/dialogs/gradient-vector.c:97
-msgid "Gradient vector"
-msgstr "Vector do gradiente"
 
 #: src/dialogs/object-attributes.c:29
 msgid "Href:"
@@ -1716,62 +1744,107 @@ msgstr "Sodipodi (documento %s..): Pré-visualização"
 msgid "About sodipodi"
 msgstr "Sobre sodipodi"
 
-#: src/helper/unit-menu.c:92
+#: src/helper/unit-menu.c:355 src/helper/units.c:42
 msgid "Centimeters"
 msgstr "Centímetros"
 
-#: src/helper/unit-menu.c:93
+#: src/helper/unit-menu.c:356 src/helper/units.c:44
 msgid "Inches"
 msgstr "Polegadas"
 
-#: src/helper/unit-menu.c:93
+#: src/helper/unit-menu.c:356
 msgid "\""
 msgstr "\""
 
-#: src/helper/unit-menu.c:94
+#: src/helper/unit-menu.c:357 src/helper/units.c:35
 msgid "Point"
 msgstr "Pontos"
 
-#: src/helper/unit-menu.c:95
+#: src/helper/unit-menu.c:358 src/helper/units.c:37
 msgid "Pixel"
 msgstr "Pixel"
 
-#: src/helper/unit-menu.c:96
+#: src/helper/unit-menu.c:359
 msgid "Userspace"
 msgstr "Espaço de utilizador"
 
-#: src/helper/unit-menu.c:96
+#: src/helper/unit-menu.c:359
 msgid "us"
 msgstr "us"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "Em squares"
 msgstr "Quadrados em"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "Em square"
 msgstr "Quadrado em"
 
-#: src/helper/unit-menu.c:98
+#: src/helper/unit-menu.c:361 src/helper/units.c:45
 msgid "em"
 msgstr "em"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "Ex squares"
 msgstr "Quadrados ex"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "Ex square"
 msgstr "Quadrado ex"
 
-#: src/helper/unit-menu.c:99
+#: src/helper/unit-menu.c:362 src/helper/units.c:46
 msgid "ex"
 msgstr "ex"
+
+#. Do not insert any elements before/between first 4
+#: src/helper/units.c:34
+msgid "Unit"
+msgstr "Unidade"
+
+#: src/helper/units.c:34
+msgid "Units"
+msgstr "Unidades"
+
+#: src/helper/units.c:35
+msgid "Pt"
+msgstr "Pt"
+
+#: src/helper/units.c:36
+msgid "Userspace unit"
+msgstr "Unidade de espaço de utilizador"
+
+#: src/helper/units.c:36
+msgid "User"
+msgstr "Utilizador"
+
+#: src/helper/units.c:36
+msgid "Userspace units"
+msgstr "Unidades de espaço de utilizador"
+
+#: src/helper/units.c:37
+msgid "Px"
+msgstr "Px"
+
+#: src/helper/units.c:40
+msgid "Percents"
+msgstr "Percento"
+
+#: src/helper/units.c:43
+msgid "Meter"
+msgstr "Metro"
+
+#: src/helper/units.c:43
+msgid "m"
+msgstr "m"
+
+#: src/helper/units.c:43
+msgid "meters"
+msgstr "metros"
 
 #: src/main.c:51
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
-"Não usar o interface gráfico. Atenção: esta opção para funcionar tem que ser "
+"Não usar o interface gráfico. Atenção! esta opção para funcionar tem que ser "
 "a primeira especificada!"
 
 #: src/main.c:60
@@ -1893,6 +1966,31 @@ msgstr ""
 "Apesar do sodipodi correr, não vai ser possível\n"
 "nem abrir nem gravar preferências."
 
+#: src/sp-anchor.c:158
+#, c-format
+msgid "Link to %s"
+msgstr "Ligar a %s"
+
+#. Create toplevel menuitem
+#: src/sp-anchor.c:219
+msgid "Link"
+msgstr "Ligar"
+
+#. Link dialog
+#: src/sp-anchor.c:222
+msgid "Link Properties"
+msgstr "Propriedades da ligação"
+
+#. Select item
+#: src/sp-anchor.c:232
+msgid "Follow link"
+msgstr "Seguir ligação"
+
+#. Reset transformations
+#: src/sp-anchor.c:237
+msgid "Remove link"
+msgstr "Remover ligação"
+
 #: src/sp-image.c:291
 msgid "Broken bitmap"
 msgstr "Imagem inválida"
@@ -1911,56 +2009,56 @@ msgstr "Imagem"
 msgid "Image Properties"
 msgstr "Propriedades da Imagem"
 
-#: src/sp-item.c:386
-msgid "Unknown item :-("
-msgstr "Item desconhecido :-("
-
-#. Item dialog
-#: src/sp-item.c:649
-msgid "Item Properties"
-msgstr "Propriedades do Item"
-
-#. Select item
-#: src/sp-item.c:659
-msgid "Select this"
-msgstr "Seleccionar este"
-
-#. Reset transformations
-#: src/sp-item.c:669
-msgid "Reset transformation"
-msgstr "Repor transformação"
-
-#: src/sp-item.c:675
-msgid "Make sensitive"
-msgstr "Tornar sensível"
-
-#: src/sp-item.c:675
-msgid "Make insensitive"
-msgstr "Tornar insensível"
-
-#. Create link
-#: src/sp-item.c:680
-msgid "Create link"
-msgstr "Criar ligação"
-
-#: src/sp-item-group.c:434
+#: src/sp-item-group.c:435
 #, c-format
 msgid "Group of %d objects"
 msgstr "Grupo de %d objectos"
 
-#: src/sp-item-group.c:496
+#: src/sp-item-group.c:497
 msgid "Group"
 msgstr "Agrupar"
 
 #. Group dialog
-#: src/sp-item-group.c:500
+#: src/sp-item-group.c:501
 msgid "Group Properties"
 msgstr "Propriedades do Grupo"
 
 #. "Ungroup"
-#: src/sp-item-group.c:513
+#: src/sp-item-group.c:514
 msgid "Ungroup"
 msgstr "Desagrupar"
+
+#: src/sp-item.c:400
+msgid "Unknown item :-("
+msgstr "Item desconhecido :-("
+
+#. Item dialog
+#: src/sp-item.c:663
+msgid "Item Properties"
+msgstr "Propriedades do Item"
+
+#. Select item
+#: src/sp-item.c:673
+msgid "Select this"
+msgstr "Seleccionar este"
+
+#. Reset transformations
+#: src/sp-item.c:683
+msgid "Reset transformation"
+msgstr "Repor transformação"
+
+#: src/sp-item.c:689
+msgid "Make sensitive"
+msgstr "Tornar sensível"
+
+#: src/sp-item.c:689
+msgid "Make insensitive"
+msgstr "Tornar insensível"
+
+#. Create link
+#: src/sp-item.c:694
+msgid "Create link"
+msgstr "Criar ligação"
 
 #. Create toplevel menuitem
 #: src/sp-rect.c:363
@@ -1992,7 +2090,7 @@ msgid "Spiral Properties"
 msgstr "Propriedades da Espiral"
 
 #. Link dialog
-#: src/sp-star.c:478
+#: src/sp-star.c:479
 msgid "Star Properties"
 msgstr "Propriedades da Estrela"
 
@@ -2000,70 +2098,33 @@ msgstr "Propriedades da Estrela"
 msgid "Text object"
 msgstr "Objecto de texto"
 
-#: src/sp-anchor.c:158
-#, c-format
-msgid "Link to %s"
-msgstr "Ligar a %s"
-
-#. Create toplevel menuitem
-#: src/sp-anchor.c:219
-msgid "Link"
-msgstr "Ligar"
-
-#. Link dialog
-#: src/sp-anchor.c:222
-msgid "Link Properties"
-msgstr "Propriedades da ligação"
-
-#. Select item
-#: src/sp-anchor.c:232
-msgid "Follow link"
-msgstr "Seguir ligação"
-
-#. Reset transformations
-#: src/sp-anchor.c:237
-msgid "Remove link"
-msgstr "Remover ligação"
-
 #: src/toolbox.c:99
 msgid "Draw"
 msgstr "Desenhar"
 
-#: src/widgets/sp-color-selector.c:627
+#: src/widgets/sp-color-selector.c:624
 msgid "Hue:"
 msgstr "Tonalidade:"
 
-#: src/widgets/sp-color-selector.c:628
+#: src/widgets/sp-color-selector.c:625
 msgid "Saturation:"
 msgstr "Saturação:"
 
-#: src/widgets/sp-color-selector.c:648
+#: src/widgets/sp-color-selector.c:645
 msgid "Cyan:"
 msgstr "Ciano:"
 
-#: src/widgets/sp-color-selector.c:649
+#: src/widgets/sp-color-selector.c:646
 msgid "Magenta:"
 msgstr "Magenta:"
 
-#: src/widgets/sp-color-selector.c:650
+#: src/widgets/sp-color-selector.c:647
 msgid "Yellow:"
 msgstr "Amarelo:"
 
-#: src/widgets/sp-color-selector.c:651
+#: src/widgets/sp-color-selector.c:648
 msgid "Black:"
 msgstr "Preto:"
-
-#: GNOME_Sodipodi.oaf.in.h:1
-msgid "Sodipodi SVG Document"
-msgstr "Documento SVG Sodipodi"
-
-#: GNOME_Sodipodi.oaf.in.h:2
-msgid "Sodipodi SVG Document factory"
-msgstr "Fábrica Sodipodi de Documento SVG"
-
-#: sodipodi.desktop.in.h:2
-msgid "Vector illustrator"
-msgstr "Ilustrador de Vectores"
 
 #~ msgid "Millimeters\n"
 #~ msgstr "Milímetros\n"
