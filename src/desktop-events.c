@@ -78,7 +78,6 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 {
 	static gboolean dragging = FALSE;
 	static GnomeCanvasItem * guide = NULL;
-	static ArtPoint p;
 	SPDesktopWidget *dtw;
 	SPDesktop *desktop;
 
@@ -120,10 +119,20 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 				sp_desktop_set_coordinate_status (desktop, p.x, p.y, SP_COORDINATES_UNDERLINE_X);
 				break;
 			}
+			sp_view_set_position (SP_VIEW (desktop), p.x, p.y);
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
 		if (dragging && event->button.button == 1) {
+			NRPointF p;
+			double px, py;
+			/* we have to substract (x|y) thickness from the position */
+			/* since there is a frame between ruler and canvas */
+			gnome_canvas_window_to_world (dtw->canvas,
+						      event->motion.x - (horiz ? 0 : widget->allocation.width + widget->style->klass->xthickness),
+						      event->motion.y - (horiz ? widget->allocation.height + widget->style->klass->ythickness : 0),
+						      &px, &py);
+			sp_desktop_w2d_xy_point (desktop, &p, px, py);
 		        gdk_pointer_ungrab (event->button.time);
 			dragging = FALSE;
 			gtk_object_destroy (GTK_OBJECT (guide));
@@ -203,6 +212,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				sp_desktop_set_coordinate_status (desktop, p.x, p.y, SP_COORDINATES_UNDERLINE_X);
 				break;
 			}
+			sp_view_set_position (SP_VIEW (desktop), p.x, p.y);
 			ret=TRUE;
 		}
 		break;
@@ -225,6 +235,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				moved = FALSE;
 				sp_document_done (SP_DT_DOCUMENT (desktop));
 				sp_desktop_set_coordinate_status (desktop, p.x, p.y, 0);
+				sp_view_set_position (SP_VIEW (desktop), p.x, p.y);
 			}
 			dragging = FALSE;
 			gnome_canvas_item_ungrab (item, event->button.time);

@@ -18,10 +18,6 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
-#if 0
-#include <gtk/gtkwindow.h>
-#include <gtk/gtkcheckbutton.h>
-#endif
 #include <libgnomeui/gnome-color-picker.h>
 
 #include "../helper/unit-menu.h"
@@ -53,8 +49,7 @@ sp_desktop_dialog (void)
 {
 	if (!dialog) {
 		dialog = sp_desktop_dialog_new ();
-		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-				    GTK_SIGNAL_FUNC (sp_dtw_dialog_destroy), NULL);
+		gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (sp_dtw_dialog_destroy), NULL);
 	}
 
 	gtk_widget_show (dialog);

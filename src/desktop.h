@@ -76,7 +76,6 @@ gboolean SPShowFullFielName = TRUE;
 
 /* Show/hide rulers & scrollbars */
 
-void sp_desktop_show_decorations (SPDesktop *desktop, gboolean show);
 void sp_desktop_activate_guides (SPDesktop *desktop, gboolean activate);
 
 void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
@@ -88,10 +87,7 @@ void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
 #define SP_DESKTOP_ZOOM_MIN     0.01
 
 gdouble sp_desktop_zoom_factor (SPDesktop * desktop);
-#if 0
-/* Use sp_view_set_position instead */
-void sp_desktop_set_position (SPDesktop * desktop, gdouble x, gdouble y);
-#endif
+
 void sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy);
 ArtDRect *sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area);
 void sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint border);
@@ -103,13 +99,6 @@ void sp_desktop_toggle_borders (GtkWidget * widget);
 
 /* Context */
 void sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *config);
-
-#if 0
-// statusbars
-void sp_desktop_default_status (SPDesktop *desktop, const gchar * text);
-void sp_desktop_set_status (SPDesktop * desktop, const gchar * stat);
-void sp_desktop_clear_status (SPDesktop * desktop);
-#endif
 
 #define SP_COORDINATES_UNDERLINE_X (1 << 0)
 #define SP_COORDINATES_UNDERLINE_Y (1 << 1)
@@ -124,7 +113,12 @@ struct _SPDesktopWidget {
 	gint decorations : 1;
 	GtkWidget *table;
 	GtkWidget *hscrollbar, *vscrollbar;
+
+	/* Rulers */
 	GtkWidget *hruler, *vruler;
+	double dt2r;
+	double rx0, ry0;
+
         GtkWidget *active;
         GtkWidget *inactive;
         GtkWidget *menubutton;   
@@ -147,5 +141,7 @@ GtkType sp_desktop_widget_get_type (void);
 SPViewWidget *sp_desktop_widget_new (SPNamedView *namedview);
 
 gint sp_desktop_widget_set_focus (GtkWidget *widget, GdkEvent *event, SPDesktopWidget  *dtw);
+
+void sp_desktop_widget_show_decorations (SPDesktopWidget *dtw, gboolean show);
 
 #endif

@@ -699,6 +699,7 @@ sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * position, guint state, gb
 	handle = (SPSelTransHandle *) data;
 
 	sp_desktop_set_coordinate_status (desktop, position->x, position->y, 0);
+	sp_view_set_position (SP_VIEW (desktop), position->x, position->y);
 
 	if (state & GDK_MOD1_MASK) {
 	  sp_sel_trans_point_desktop (seltrans, &point);

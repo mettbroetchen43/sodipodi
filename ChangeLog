@@ -1,5 +1,10 @@
 2002-10-07  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/desktop.c (sp_desktop_widget_view_position_set): Use grid placement
+	(sp_desktop_widget_namedview_modified): Read grid placement
+	(sp_desktop_widget_update_rulers): Use grid placement
+	(sp_desktop_set_coordinate_status): Disable, until sorted out
+
 	* src/widgets/font-selector.c (sp_font_selector_set_font): Implement
 
 	* src/libnrtype/nr-rasterfont.c (nr_rasterfont_ensure_glyph_slot): Oops, alloc

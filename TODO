@@ -3,7 +3,8 @@
 TODO for 0.27
 =============
 
-- Fix text dialog
+- Fix node dialog callbacks
+- Fix text dialog (DONE)
 - Garbage collection on save
 - Stamping (DONE) (Masatake)
 - Empty bbox of horizontal/vertical lines bug (DONE)

@@ -133,11 +133,6 @@ sp_document_init (SPDocument *doc)
 	p->aspect = SPXMidYMid;
 	p->clip = FALSE;
 
-#if 0
-	p->namedviews = NULL;
-	p->defs = NULL;
-#endif
-
 	p->resources = g_hash_table_new (g_str_hash, g_str_equal);
 
 	p->sensitive = FALSE;
@@ -287,8 +282,9 @@ sp_document_new (const gchar *uri, gboolean public)
 
 	/* Namedviews */
 	if (!SP_ROOT (document->root)->namedviews) {
-		SPRepr * r;
-		r = sp_repr_new ("sodipodi:namedview");
+		SPRepr *r;
+		r = sodipodi_get_repr (SODIPODI, "template.sodipodi:namedview");
+		if (!r) r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, NULL);
 		sp_repr_unref (r);
@@ -373,8 +369,9 @@ sp_document_new_from_mem (const gchar *buffer, gint length, gboolean public)
 
 	/* Namedviews */
 	if (!SP_ROOT (document->root)->namedviews) {
-		SPRepr * r;
-		r = sp_repr_new ("sodipodi:namedview");
+		SPRepr *r;
+		r = sodipodi_get_repr (SODIPODI, "template.sodipodi:namedview");
+		if (!r) r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, 0);
 		sp_repr_unref (r);

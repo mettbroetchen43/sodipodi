@@ -499,14 +499,28 @@ sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const gu
 void
 sp_object_invoke_forall (SPObject *object, SPObjectMethod func, gpointer data)
 {
+	SPRepr *repr, *child;
+
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
 	g_return_if_fail (func != NULL);
 
 	func (object, data);
 
+#if 0
+
 	if (((SPObjectClass *) (((GtkObject *) object)->klass))->forall)
 		((SPObjectClass *) (((GtkObject *) object)->klass))->forall (object, func, data);
+#else
+	repr = SP_OBJECT_REPR (object);
+	for (child = repr->children; child != NULL; child = child->next) {
+		const unsigned char *id;
+		SPObject *cho;
+		id = sp_repr_attr (child, "id");
+		cho = sp_document_lookup_id (SP_OBJECT_DOCUMENT (object), id);
+		if (cho) sp_object_invoke_forall (cho, func, data);
+	}
+#endif
 }
 
 static SPRepr *

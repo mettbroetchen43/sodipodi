@@ -263,11 +263,6 @@ nr_rasterfont_render_glyph_mask (NRRasterFont *rf, int glyph, NRPixBlock *m, flo
 	area.y1 = NRRF_COORD_INT_UPPER (slot->bbox.y1) + sy;
 
 	spb.empty = TRUE;
-#if 0
-	if (slot->has_gmap == NRRF_GMAP_TINY) {
-		spx = slot->gmap.d;
-	}
-#endif
 	if (slot->has_gmap == NRRF_GMAP_IMAGE) {
 		spx = slot->gmap.px;
 		srs = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
