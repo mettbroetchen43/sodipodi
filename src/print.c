@@ -22,13 +22,10 @@
 #include <glib.h>
 
 #ifdef WITH_GNOME_PRINT
-#include <libgnome/gnome-defs.h>
-#include <libgnome/gnome-i18n.h>
-#include <libgnome/gnome-paper.h>
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeprint/gnome-print-master.h>
-#include <libgnomeprint/gnome-print-master-preview.h>
-#include <libgnomeprint/gnome-printer-dialog.h>
+#include <libgnomeprintui/gnome-print-master-preview.h>
+#include <libgnomeprintui/gnome-printer-dialog.h>
 #endif
 
 #include <gtk/gtkstock.h>
@@ -139,21 +136,16 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 		}
 	} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		SPPainter *painter;
-		gdouble dctm[6];
-		ArtDRect dpbox;
+		NRMatrixD dctm;
+		NRRectD dpbox;
 
 		/* fixme: */
-		dctm[0] = ctm->c[0];
-		dctm[1] = ctm->c[1];
-		dctm[2] = ctm->c[2];
-		dctm[3] = ctm->c[3];
-		dctm[4] = ctm->c[4];
-		dctm[5] = ctm->c[5];
+		nr_matrix_d_from_f (&dctm, ctm);
 		dpbox.x0 = pbox->x0;
 		dpbox.y0 = pbox->y0;
 		dpbox.x1 = pbox->x1;
 		dpbox.y1 = pbox->y1;
-		painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (style), dctm, &dpbox);
+		painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (style), NR_MATRIX_D_TO_DOUBLE (&dctm), &dpbox);
 		if (painter) {
 			NRRectF cbox;
 			NRRectL ibox;
@@ -316,7 +308,7 @@ sp_print_preview_document (SPDocument *doc)
 	SPPrintContext ctx;
         GnomePrintContext *gpc;
         GnomePrintMaster *gpm;
-	GnomePrintMasterPreview *gpmp;
+	GtkWidget *gpmp;
 	gchar *title;
 
 	sp_document_ensure_up_to_date (doc);
@@ -352,16 +344,21 @@ void
 sp_print_document (SPDocument *doc)
 {
 #ifdef WITH_GNOME_PRINT
-        GnomePrinter *printer;
+        GnomePrintConfig *config;
+	GtkWidget *dlg;
 	SPPrintContext ctx;
         GnomePrintContext *gpc;
+	int btn;
 
-        printer = gnome_printer_dialog_new_modal ();
-        if (printer == NULL) return;
+	config = gnome_print_config_default ();
+        dlg = gnome_printer_dialog_new (config);
+	btn = gtk_dialog_run (GTK_DIALOG (dlg));
+	gtk_widget_destroy (dlg);
+        if (btn != GTK_RESPONSE_OK) return;
 
 	sp_document_ensure_up_to_date (doc);
 
-	gpc = gnome_print_context_new (printer);
+	gpc = gnome_print_context_new (config);
 	ctx.gpc = gpc;
 
 	g_return_if_fail (gpc != NULL);
@@ -374,6 +371,8 @@ sp_print_document (SPDocument *doc)
 	sp_item_invoke_print (SP_ITEM (sp_document_root (doc)), &ctx);
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
+
+	gnome_print_config_unref (config);
 #else
 	GtkWidget *dlg, *vbox, *f, *vb, *l, *e;
 	int response;
@@ -457,16 +456,18 @@ void
 sp_print_document_to_file (SPDocument *doc, const unsigned char *filename)
 {
 #ifdef WITH_GNOME_PRINT
-        GnomePrinter *printer;
+        GnomePrintConfig *config;
 	SPPrintContext ctx;
         GnomePrintContext *gpc;
 
-        printer = gnome_printer_new_generic_ps (filename);
-        if (printer == NULL) return;
+	config = gnome_print_config_default ();
+        if (!gnome_print_config_set (config, "Settings.Engine.Backend.Driver", "gnome-print-ps")) return;
+        if (!gnome_print_config_set (config, "Settings.Transport.Backend", "file")) return;
+        if (!gnome_print_config_set (config, GNOME_PRINT_KEY_OUTPUT_FILENAME, filename)) return;
 
 	sp_document_ensure_up_to_date (doc);
 
-	gpc = gnome_print_context_new (printer);
+	gpc = gnome_print_context_new (config);
 	ctx.gpc = gpc;
 
 	g_return_if_fail (gpc != NULL);

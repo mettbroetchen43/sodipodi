@@ -330,8 +330,6 @@ sp_unit_selector_update_test (SPUnitSelector *selector)
 float
 sp_unit_selector_get_value_in_points (SPUnitSelector *selector, GtkAdjustment *adj)
 {
-	const SPUnit *unit;
-
 	g_return_val_if_fail (selector != NULL, adj->value);
 	g_return_val_if_fail (SP_IS_UNIT_SELECTOR (selector), adj->value);
 

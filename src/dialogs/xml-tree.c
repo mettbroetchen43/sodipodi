@@ -1026,7 +1026,6 @@ void
 cmd_indent_node (GtkObject * object, gpointer data)
 {
 	SPRepr * prev, * parent, * repr, * moved_repr, * ref;
-	gboolean success;
 
 	repr = selected_repr;
 	g_assert (repr != NULL);
@@ -1060,7 +1059,6 @@ void
 cmd_unindent_node (GtkObject * object, gpointer data)
 {
 	SPRepr * grandparent, * parent, * repr, * moved_repr;
-	gboolean success;
 
 	repr = selected_repr;
 	g_assert (repr != NULL);

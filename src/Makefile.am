@@ -21,7 +21,7 @@ INCLUDES = \
 	-I$(srcdir/xml) \
 	-I$(srcdir/svg) \
 	$(SODIPODI_CFLAGS) \
-	$(SODIPODI_BONOBO_CFLAGS)
+	$(GNOME_PRINT_CFLAGS)
 
 bin_PROGRAMS = sodipodi
 
@@ -133,7 +133,7 @@ sodipodi_LDADD = \
 	$(sodipodi_private_libs) \
 	$(bonobo_libs) \
 	$(SODIPODI_LIBS) \
-	$(SODIPODI_BONOBO_LIBS)
+	$(GNOME_PRINT_LIBS)
 
 sodipodi_LDFLAGS = -Wl,--export-dynamic
 

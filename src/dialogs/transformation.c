@@ -31,6 +31,7 @@
 #include "widgets/icon.h"
 #include "macros.h"
 #include "sodipodi.h"
+#include "document.h"
 #include "desktop.h"
 #include "selection.h"
 #include "selection-chemistry.h"
@@ -133,6 +134,8 @@ sp_transformation_dialog_update_selection (GObject *dlg, unsigned int page, SPSe
 		sp_transformation_scale_update (dlg, selection);
 		break;
 	case SP_TRANSFORMATION_ROTATE:
+		sp_transformation_rotate_update (dlg, selection);
+		break;
 	case SP_TRANSFORMATION_SKEW:
 	default:
 		break;
@@ -502,7 +505,6 @@ sp_transformation_scale_set_unit (SPUnitSelector *us, const SPUnit *old, const S
 		SPUnitSelector *us;
 		GtkAdjustment *ax, *ay;
 		NRRectF bbox;
-		float x, y;
 		/* Percentage to absolute */
 		g_object_set_data (dlg, "update", GUINT_TO_POINTER (TRUE));
 		us = g_object_get_data (dlg, "scale_units");
@@ -532,7 +534,7 @@ sp_transformation_scale_value_changed (GtkAdjustment *adj, GObject *dlg)
 static GtkWidget *
 sp_transformation_page_scale_new (GObject *obj)
 {
-	GtkWidget *frame, *vb, *tbl, *lbl, *img, *sb, *us, *cb;
+	GtkWidget *frame, *vb, *tbl, *lbl, *img, *sb, *us;
 	GtkAdjustment *adj;
 
 	frame = gtk_frame_new (_("Scale"));

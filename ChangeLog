@@ -1,5 +1,10 @@
 2003-01-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnrtype/nr-type-gnome.c (nr_typeface_gnome_new): Ditto
+
+	* src/print.c (sp_print_preview_document): Fix gnome-print support
+	(sp_print_document): Ditto
+
 	* src/libnrtype/nr-type-xft.c (nr_type_xft_init): Added ebug printout
 
 	* src/widgets/button.c (sp_button_button_press): Do not grab mouse

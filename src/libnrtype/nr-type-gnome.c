@@ -140,7 +140,7 @@ nr_typeface_gnome_new (NRTypeFaceDef *def)
 	tfg->typeface.refcount = 1;
 	tfg->typeface.def = def;
 
-	tfg->face = gnome_font_face_new (def->name);
+	tfg->face = gnome_font_face_find (def->name);
 	tfg->fonts = NULL;
 
 	tfg->typeface.nglyphs = gnome_font_face_get_num_glyphs (tfg->face);
