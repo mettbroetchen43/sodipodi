@@ -88,4 +88,6 @@ unsigned int nr_typeface_lookup_default (NRTypeFace *tf, unsigned int unival);
 
 NRFont *nr_font_new_default (NRTypeFace *tf, unsigned int metrics, float size);
 
+void nr_type_empty_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family);
+
 #endif

@@ -11,8 +11,8 @@ TODO for 0.29
 - Fix unstable SPMenuButton/SPToolbox behavior (FIXED)
 - Fix GuideLine bug (DONE)
 - Fix snapping (DONE)
-- Test gnome-print support
-- Replacement for uri lists
+- Test gnome-print support (DONE)
+- Replacement for uri lists (DONE)
 - Replacement for uri handler
 - Optional libgnome support? (POSTPONED)
 - Save on close dialog buttons (DONE)

@@ -13,6 +13,8 @@
 
 #include "nr-path.h"
 
+static void nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, double y011, double x111, double y111, NRRectF *bbox);
+
 NRBPath *
 nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform)
 {
@@ -113,15 +115,16 @@ nr_curve_bbox_wind_distance (double x000, double y000,
 {
 	double x0, y0, x1, y1, len2;
 	double Px, Py;
-	int needdist, needwind, needbbox, needline;
+	int needdist, needwind, needline;
 
 	Px = pt->x;
 	Py = pt->y;
 
 	needdist = 0;
 	needwind = 0;
-	needbbox = 0;
 	needline = 0;
+
+	if (bbox) nr_curve_bbox (x000, y000, x001, y001, x011, y011, x111, y111, bbox);
 
 	x0 = MIN (x000, x001);
 	x0 = MIN (x0, x011);
@@ -167,26 +170,7 @@ nr_curve_bbox_wind_distance (double x000, double y000,
 		}
 	}
 
-	if (bbox) {
-		bbox->x0 = MIN (bbox->x0, x111);
-		bbox->y0 = MIN (bbox->y0, y111);
-		bbox->x1 = MAX (bbox->x1, x111);
-		bbox->y1 = MAX (bbox->y1, y111);
-		if (!needdist && !needwind) {
-			if (((bbox->x0 - x001) > tolerance) ||
-			    ((x001 - bbox->x1) > tolerance) ||
-			    ((bbox->y0 - y001) > tolerance) ||
-			    ((y001 - bbox->y1) > tolerance) ||
-			    ((bbox->x0 - x011) > tolerance) ||
-			    ((x011 - bbox->x1) > tolerance) ||
-			    ((bbox->y0 - y011) > tolerance) ||
-			    ((y011 - bbox->y1) > tolerance)) {
-				needbbox = 1;
-			}
-		}
-	}
-
-	if (needdist || needwind || needbbox) {
+	if (needdist || needwind) {
 		double x00t, x0tt, xttt, x1tt, x11t, x01t;
 		double y00t, y0tt, yttt, y1tt, y11t, y01t;
 		double s, t;
@@ -208,8 +192,8 @@ nr_curve_bbox_wind_distance (double x000, double y000,
 		y1tt = s * y01t + t * y11t;
 		yttt = s * y0tt + t * y1tt;
 
-		nr_curve_bbox_wind_distance (x000, y000, x00t, y00t, x0tt, y0tt, xttt, yttt, pt, bbox, wind, best, tolerance);
-		nr_curve_bbox_wind_distance (xttt, yttt, x1tt, y1tt, x11t, y11t, x111, y111, pt, bbox, wind, best, tolerance);
+		nr_curve_bbox_wind_distance (x000, y000, x00t, y00t, x0tt, y0tt, xttt, yttt, pt, NULL, wind, best, tolerance);
+		nr_curve_bbox_wind_distance (xttt, yttt, x1tt, y1tt, x11t, y11t, x111, y111, pt, NULL, wind, best, tolerance);
 	} else if (1 || needline) {
 		nr_line_wind_distance (x000, y000, x111, y111, pt, wind, best);
 	}
@@ -283,66 +267,89 @@ nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPoi
 }
 
 /* Fast bbox calculation */
+/* Thanks to Nathan Hurst for suggesting it */
 
 static void
-nr_curve_bbox (double x000, double y000,
-	       double x001, double y001,
-	       double x011, double y011,
-	       double x111, double y111,
-	       NRRectF *bbox,
-	       float tolerance)
+nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, double y011, double x111, double y111, NRRectF *bbox)
 {
+	double a, b, c, D;
+
 	bbox->x0 = MIN (bbox->x0, x111);
 	bbox->y0 = MIN (bbox->y0, y111);
 	bbox->x1 = MAX (bbox->x1, x111);
 	bbox->y1 = MAX (bbox->y1, y111);
 
-	if (((bbox->x0 - tolerance) > x001) ||
-	    ((bbox->x0 - tolerance) > x011) ||
-	    ((bbox->x1 + tolerance) < x001) ||
-	    ((bbox->x1 + tolerance) < x011) ||
-	    ((bbox->y0 - tolerance) > y001) ||
-	    ((bbox->y0 - tolerance) > y011) ||
-	    ((bbox->y1 + tolerance) < y001) ||
-	    ((bbox->y1 + tolerance) < y011)) {
-		double x00t, x0tt, xttt, x1tt, x11t, x01t;
-		double y00t, y0tt, yttt, y1tt, y11t, y01t;
+	/*
+	 * xttt = s * (s * (s * x000 + t * x001) + t * (s * x001 + t * x011)) + t * (s * (s * x001 + t * x011) + t * (s * x011 + t * x111))
+	 * xttt = s * (s2 * x000 + s * t * x001 + t * s * x001 + t2 * x011) + t * (s2 * x001 + s * t * x011 + t * s * x011 + t2 * x111)
+	 * xttt = s * (s2 * x000 + 2 * st * x001 + t2 * x011) + t * (s2 * x001 + 2 * st * x011 + t2 * x111)
+	 * xttt = s3 * x000 + 2 * s2t * x001 + st2 * x011 + s2t * x001 + 2st2 * x011 + t3 * x111
+	 * xttt = s3 * x000 + 3s2t * x001 + 3st2 * x011 + t3 * x111
+	 * xttt = s3 * x000 + (1 - s) 3s2 * x001 + (1 - s) * (1 - s) * 3s * x011 + (1 - s) * (1 - s) * (1 - s) * x111
+	 * xttt = s3 * x000 + (3s2 - 3s3) * x001 + (3s - 6s2 + 3s3) * x011 + (1 - 2s + s2 - s + 2s2 - s3) * x111
+	 * xttt = (x000 - 3 * x001 + 3 * x011 -     x111) * s3 +
+	 *        (       3 * x001 - 6 * x011 + 3 * x111) * s2 +
+	 *        (                  3 * x011 - 3 * x111) * s  +
+	 *        (                                 x111)
+	 * xttt' = (3 * x000 - 9 * x001 +  9 * x011 - 3 * x111) * s2 +
+	 *         (           6 * x001 - 12 * x011 + 6 * x111) * s  +
+	 *         (                       3 * x011 - 3 * x111)
+	 */
 
-		/*
-		 * t = 0.5;
-		 * s = 1 - t;
+	a = 3 * x000 - 9 * x001 + 9 * x011 - 3 * x111;
+	b = 6 * x001 - 12 * x011 + 6 * x111;
+	c = 3 * x011 - 3 * x111;
 
-		 * x00t = s * x000 + t * x001;
-		 * x01t = s * x001 + t * x011;
-		 * x11t = s * x011 + t * x111;
-		 * x0tt = s * x00t + t * x01t;
-		 * x1tt = s * x01t + t * x11t;
-		 * xttt = s * x0tt + t * x1tt;
-		 *
-		 * y00t = s * y000 + t * y001;
-		 * y01t = s * y001 + t * y011;
-		 * y11t = s * y011 + t * y111;
-		 * y0tt = s * y00t + t * y01t;
-		 * y1tt = s * y01t + t * y11t;
-		 * yttt = s * y0tt + t * y1tt;
-		 */
+	/*
+	 * s = (-b +/- sqrt (b * b - 4 * a * c)) / 2 * a;
+	 */
 
-		x00t = 0.5 * (x000 + x001);
-		x01t = 0.5 * (x001 + x011);
-		x11t = 0.5 * (x011 + x111);
-		x0tt = 0.5 * (x00t + x01t);
-		x1tt = 0.5 * (x01t + x11t);
-		xttt = 0.5 * (x0tt + x1tt);
+	D = b * b - 4 * a * c;
 
-		y00t = 0.5 * (y000 + y001);
-		y01t = 0.5 * (y001 + y011);
-		y11t = 0.5 * (y011 + y111);
-		y0tt = 0.5 * (y00t + y01t);
-		y1tt = 0.5 * (y01t + y11t);
-		yttt = 0.5 * (y0tt + y1tt);
+	if (D >= 0.0) {
+		double d, s, t, xttt;
+		/* Have solution */
+		d = sqrt (D);
+		s = (-b + d) / (2 * a);
+		if ((s > 0.0) && (s < 1.0)) {
+			t = 1.0 - s;
+			xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
+			bbox->x0 = MIN (bbox->x0, xttt);
+			bbox->x1 = MAX (bbox->x1, xttt);
+		}
+		s = (-b - d) / (2 * a);
+		if ((s > 0.0) && (s < 1.0)) {
+			t = 1.0 - s;
+			xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
+			bbox->x0 = MIN (bbox->x0, xttt);
+			bbox->x1 = MAX (bbox->x1, xttt);
+		}
+	}
 
-		nr_curve_bbox (x000, y000, x00t, y00t, x0tt, y0tt, xttt, yttt, bbox, tolerance);
-		nr_curve_bbox (xttt, yttt, x1tt, y1tt, x11t, y11t, x111, y111, bbox, tolerance);
+	a = 3 * y000 - 9 * y001 + 9 * y011 - 3 * y111;
+	b = 6 * y001 - 12 * y011 + 6 * y111;
+	c = 3 * y011 - 3 * y111;
+
+	D = b * b - 4 * a * c;
+
+	if (D >= 0.0) {
+		double d, s, t, yttt;
+		/* Have solution */
+		d = sqrt (D);
+		s = (-b + d) / (2 * a);
+		if ((s > 0.0) && (s < 1.0)) {
+			t = 1.0 - s;
+			yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
+			bbox->y0 = MIN (bbox->y0, yttt);
+			bbox->y1 = MAX (bbox->y1, yttt);
+		}
+		s = (-b - d) / (2 * a);
+		if ((s > 0.0) && (s < 1.0)) {
+			t = 1.0 - s;
+			yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
+			bbox->y0 = MIN (bbox->y0, yttt);
+			bbox->y1 = MAX (bbox->y1, yttt);
+		}
 	}
 }
 
@@ -391,8 +398,7 @@ nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m,
 				       m->c[0] * p->x2 + m->c[2] * p->y2 + m->c[4],
 				       m->c[1] * p->x2 + m->c[3] * p->y2 + m->c[5],
 				       x3, y3,
-				       bbox,
-				       tolerance);
+				       bbox);
 			x0 = x3;
 			y0 = y3;
 			break;

@@ -166,8 +166,8 @@ subpath_from_bpath (SPNodePath * np, ArtBpath * b, const gchar * t)
 	pos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b->x3, b->y3);
 	pos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b->x3, b->y3);
 	if (b[1].code == ART_CURVETO) {
-		npos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b[1].x3, b[1].y3);
-		npos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b[1].x3, b[1].y3);
+		npos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b[1].x1, b[1].y1);
+		npos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b[1].x1, b[1].y1);
 	} else {
 		npos = pos;
 	}
@@ -188,8 +188,8 @@ subpath_from_bpath (SPNodePath * np, ArtBpath * b, const gchar * t)
 			ppos = pos;
 		}
 		if (b[1].code == ART_CURVETO) {
-			npos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b[1].x3, b[1].y3);
-			npos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b[1].x3, b[1].y3);
+			npos.x = NR_MATRIX_DF_TRANSFORM_X (&np->i2d, b[1].x1, b[1].y1);
+			npos.y = NR_MATRIX_DF_TRANSFORM_Y (&np->i2d, b[1].x1, b[1].y1);
 		} else {
 			npos = pos;
 		}
@@ -342,7 +342,7 @@ create_curve (SPNodePath * np)
 			case ART_CURVETO:
 				p1.x = NR_MATRIX_DF_TRANSFORM_X (&np->d2i, n->p.other->n.pos.x, n->p.other->n.pos.y);
 				p1.y = NR_MATRIX_DF_TRANSFORM_Y (&np->d2i, n->p.other->n.pos.x, n->p.other->n.pos.y);
-				p2.x = NR_MATRIX_DF_TRANSFORM_X (&np->d2i, n->p.pos.x, n->p.pos.y);
+				p2.x = NR_MATRIX_DF_TRANSFORM_X (&np->d2i, n->p.pos.x, n->p.pos.y + 50);
 				p2.y = NR_MATRIX_DF_TRANSFORM_Y (&np->d2i, n->p.pos.x, n->p.pos.y);
 				sp_curve_curveto (curve, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 				break;

@@ -212,6 +212,31 @@ nr_type_directory_style_list_get (const unsigned char *family, NRNameList *style
 }
 
 static int
+nr_type_register (NRTypeFaceDef *def)
+{
+	NRFamilyDef *fdef;
+
+	if (nr_type_dict_lookup (typedict, def->name)) return 0;
+
+	fdef = nr_type_dict_lookup (familydict, def->family);
+	if (!fdef) {
+		fdef = nr_new (NRFamilyDef, 1);
+		fdef->name = strdup (def->family);
+		fdef->faces = NULL;
+		fdef->next = families;
+		families = fdef;
+		nr_type_dict_insert (familydict, fdef->name, fdef);
+	}
+
+	def->next = fdef->faces;
+	fdef->faces = def;
+
+	nr_type_dict_insert (typedict, def->name, def);
+
+	return 1;
+}
+
+static int
 nr_type_family_def_compare (const void *a, const void *b)
 {
 	return strcasecmp ((*((NRFamilyDef **) a))->name, (*((NRFamilyDef **) b))->name);
@@ -240,6 +265,16 @@ nr_type_directory_build (void)
 #ifdef WITH_GNOME_PRINT
 	nr_type_read_gnome_list ();
 #endif
+
+	if (!families) {
+		NRTypeFaceDef *def;
+		/* No families, register empty typeface */
+		def = nr_new (NRTypeFaceDef, 1);
+		def->next = NULL;
+		def->pdef = NULL;
+		nr_type_empty_build_def (def, "empty", "Empty");
+		nr_type_register (def);
+	}
 
 	/* Sort families */
 	fnum = 0;
@@ -275,31 +310,6 @@ nr_type_directory_build (void)
 			pos += 1;
 		}
 	}
-}
-
-static int
-nr_type_register (NRTypeFaceDef *def)
-{
-	NRFamilyDef *fdef;
-
-	if (nr_type_dict_lookup (typedict, def->name)) return 0;
-
-	fdef = nr_type_dict_lookup (familydict, def->family);
-	if (!fdef) {
-		fdef = nr_new (NRFamilyDef, 1);
-		fdef->name = strdup (def->family);
-		fdef->faces = NULL;
-		fdef->next = families;
-		families = fdef;
-		nr_type_dict_insert (familydict, fdef->name, fdef);
-	}
-
-	def->next = fdef->faces;
-	fdef->faces = def;
-
-	nr_type_dict_insert (typedict, def->name, def);
-
-	return 1;
 }
 
 static void

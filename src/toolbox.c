@@ -30,7 +30,6 @@
 #include "widgets/icon.h"
 #include "widgets/button.h"
 #include "widgets/sp-toolbox.h"
-#include "widgets/sp-hwrap-box.h"
 #include "file.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
@@ -637,26 +636,26 @@ sp_maintoolbox_drag_data_received (GtkWidget * widget,
 }
 
 static void
-sp_maintoolbox_open_files(gchar * buffer)
+sp_maintoolbox_open_files (gchar *buffer)
 {
-  	GList * list = gnome_uri_list_extract_filenames(buffer);
-	if (!list)
-		return;
-	g_list_foreach (list, sp_maintoolbox_open_one_file_with_check, NULL);
+  	GList *list;
 
+	list = gnome_uri_list_extract_filenames (buffer);
+	if (!list) return;
+	g_list_foreach (list, sp_maintoolbox_open_one_file_with_check, NULL);
 }
 
 static void
-sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused)
+sp_maintoolbox_open_one_file_with_check (gpointer filename, gpointer unused)
 {
-	const gchar * svg_suffix   = ".svg";
-	gint  svg_suffix_len = strlen(svg_suffix);
-	gint  filename_len;
+	static const gchar *svg_suffix = ".svg";
+
 	if (filename) {
-		filename_len = strlen(filename);
-		if (filename_len > svg_suffix_len
-		    && !strcmp((char *)filename + filename_len - svg_suffix_len, svg_suffix))
+		int len;
+		len = strlen (filename);
+		if (len > 4 && !strcmp ((char *) filename + len - 4, svg_suffix)) {
 			sp_file_open (filename);
+		}
 	}
 }
 
