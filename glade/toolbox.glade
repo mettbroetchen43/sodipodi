@@ -23,6 +23,11 @@
     <handler>sp_maintoolbox_close</handler>
     <last_modification_time>Wed, 23 Aug 2000 19:17:40 GMT</last_modification_time>
   </signal>
+  <signal>
+    <name>drag_data_received</name>
+    <handler>sp_maintoolbox_drag_data_received</handler>
+    <last_modification_time>Sun, 17 Mar 2002 21:38:06 GMT</last_modification_time>
+  </signal>
   <title>Sodipodi</title>
   <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>

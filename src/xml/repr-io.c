@@ -248,16 +248,19 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 		putc ('"', file);
 	}
 	
-	if (repr->children || sp_repr_content(repr)) {
-		fputs (">\n", file);
-		
+	if (repr->children || sp_repr_content (repr)) {
+		if (sp_repr_content (repr)) {
+			fputs (">", file);
+			repr_quote_write (file, sp_repr_content (repr));
+		} else {
+			fputs (">\n", file);
+		}
+
 		for (child = repr->children; child != NULL; child = child->next) {
 			repr_write (child, file, level + 1);
 		}
 		
-		if (sp_repr_content (repr)) {
-			repr_quote_write (file, sp_repr_content (repr));
-		} else {
+		if (!sp_repr_content (repr)) {
 			for (i = 0; i < level; i++) fputs ("  ", file);
 		}
 		fprintf (file, "</%s>\n", sp_repr_name (repr));

@@ -1,5 +1,6 @@
 #define SP_INTERFACE_C
 
+#include <string.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
@@ -18,6 +19,9 @@
 #include "event-broker.h"
 #include "svg-view.h"
 
+#include "dir-util.h"
+#include "xml/repr-private.h"
+
 #include "dialogs/text-edit.h"
 #include "dialogs/export.h"
 #include "dialogs/xml-tree.h"
@@ -32,6 +36,24 @@ void fake_dialogs (void);
 
 static gint sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPView *view);
 
+/* Drag and Drop */
+typedef enum {
+  URI_LIST
+} ui_drop_target_info;
+static GtkTargetEntry ui_drop_target_entries [] = {
+  {"text/uri-list", 0, URI_LIST},
+};
+#define ENTRIES_SIZE(n) sizeof(n)/sizeof(n[0]) 
+static guint nui_drop_target_entries = ENTRIES_SIZE(ui_drop_target_entries);
+static void sp_ui_import_files(gchar * buffer);
+static void sp_ui_import_one_file(gchar * filename);
+static void sp_ui_drag_data_received (GtkWidget * widget,
+				      GdkDragContext * drag_context,
+				      gint x, gint y,
+				      GtkSelectionData * data,
+				      guint info,
+				      guint event_time,
+				      gpointer user_data);
 void
 sp_create_window (SPViewWidget *vw, gboolean editable)
 {
@@ -61,7 +83,15 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 	gtk_widget_show (GTK_WIDGET (vw));
 
 	gnome_window_icon_set_from_default (GTK_WINDOW (w));
-
+	gtk_drag_dest_set(w, 
+			  GTK_DEST_DEFAULT_ALL,
+			  ui_drop_target_entries,
+			  nui_drop_target_entries,
+			  GDK_ACTION_COPY);
+	gtk_signal_connect(GTK_OBJECT(w),
+			   "drag_data_received",
+			   GTK_SIGNAL_FUNC(sp_ui_drag_data_received),
+			   NULL);
 	gtk_widget_show (w);
 }
 
@@ -460,6 +490,138 @@ fake_dialogs (void)
 	sp_display_dialog ();
 }
 
+/* Drag and Drop */
+void 
+sp_ui_drag_data_received (GtkWidget * widget,
+			  GdkDragContext * drag_context,
+			  gint x, gint y,
+			  GtkSelectionData * data,
+			  guint info,
+			  guint event_time,
+			  gpointer user_data)
+{
+	gchar * uri;
+	
+	switch(info) {
+	case URI_LIST:
+		uri = (gchar *)data->data;
+		sp_ui_import_files(uri);
+		break;
+	}
+}
 
+/* Most code of this function is copied from 
+   gimp-1.2.1/gimpdnd.c:gimp_dnd_file_open_files */
+static void
+sp_ui_import_files(gchar * buffer)
+{
+	gchar  name_buffer[1024];
+	const gchar *data_type 	   = "file:";
+	const gint   sig_len 	   = strlen (data_type);
+	gint  name_len;
 
+	while (*buffer) {
+		gchar *name = name_buffer;
+		gint len = 0;
 
+		while ((*buffer != 0) && (*buffer != '\n') && len < 1024) {
+			*name++ = *buffer++;
+			len++;
+		}
+		if (len == 0)
+			break;
+
+		if (*(name - 1) == 0xd)   /* gmc uses RETURN+NEWLINE as delimiter */
+			*(name - 1) = '\0';
+		else
+			*name = '\0';
+		name = name_buffer;
+		if ((sig_len < len) && (! strncmp (name, data_type, sig_len)))
+			name += sig_len;
+			
+		name_len = name? strlen(name): 0;
+
+		/* SVG file */
+		if (name_len >  2) {
+		  sp_ui_import_one_file(name);
+		}
+		/* TODO: other file supports here... */
+		
+		if (*buffer)
+			buffer++;
+	}
+}
+
+/* Cut&Paste'ed from file.c:file_import_ok */
+static void
+sp_ui_import_one_file(gchar * filename)
+{
+	SPDocument * doc;
+	SPRepr * rdoc;
+	const gchar * e, * docbase, * relname;
+	SPRepr * repr;
+	SPReprDoc * rnewdoc;
+
+	doc = SP_ACTIVE_DOCUMENT;
+	if (!SP_IS_DOCUMENT(doc)) return;
+	
+	if (filename == NULL) return;  
+
+	rdoc = sp_document_repr_root (doc);
+
+	docbase = sp_repr_attr (rdoc, "sodipodi:docbase");
+	relname = sp_relative_path_from_path (filename, docbase);
+	/* fixme: this should be implemented with mime types */
+	e = sp_extension_from_path (filename);
+
+	if ((e == NULL) || (strcmp (e, "svg") == 0) || (strcmp (e, "xml") == 0)) {
+		SPRepr * newgroup;
+		const gchar * style;
+		SPRepr * child;
+
+		rnewdoc = sp_repr_read_file (filename);
+		if (rnewdoc == NULL) return;
+		repr = sp_repr_document_root (rnewdoc);
+		style = sp_repr_attr (repr, "style");
+
+		newgroup = sp_repr_new ("g");
+		sp_repr_set_attr (newgroup, "style", style);
+
+		for (child = repr->children; child != NULL; child = child->next) {
+			SPRepr * newchild;
+			newchild = sp_repr_duplicate (child);
+			sp_repr_append_child (newgroup, newchild);
+		}
+
+		sp_repr_document_unref (rnewdoc);
+
+		sp_document_add_repr (doc, newgroup);
+		sp_repr_unref (newgroup);
+		sp_document_done (doc);
+		return;
+	}
+
+	if ((strcmp (e, "png") == 0) ||
+	    (strcmp (e, "jpg") == 0) ||
+	    (strcmp (e, "jpeg") == 0) ||
+	    (strcmp (e, "bmp") == 0) ||
+	    (strcmp (e, "gif") == 0) ||
+	    (strcmp (e, "tiff") == 0) ||
+	    (strcmp (e, "xpm") == 0)) {
+		/* Try pixbuf */
+		GdkPixbuf *pb;
+		pb = gdk_pixbuf_new_from_file (filename);
+		if (pb) {
+			/* We are readable */
+			repr = sp_repr_new ("image");
+			sp_repr_set_attr (repr, "xlink:href", relname);
+			sp_repr_set_attr (repr, "sodipodi:absref", filename);
+			sp_repr_set_double_attribute (repr, "width", gdk_pixbuf_get_width (pb));
+			sp_repr_set_double_attribute (repr, "height", gdk_pixbuf_get_height (pb));
+			sp_document_add_repr (doc, repr);
+			sp_repr_unref (repr);
+			sp_document_done (doc);
+			gdk_pixbuf_unref (pb);
+		}
+	}
+}

@@ -10,4 +10,5 @@
 #undef ENABLE_BONOBO
 #undef USING_OAF
 #undef NEW_RENDER
+#undef ENABLE_AUTOTRACE
 

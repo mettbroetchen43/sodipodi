@@ -27,6 +27,7 @@
 #include "selection.h"
 #include "sp-item-transform.h"
 #include "desktop-handles.h"
+#include "interface.h"
 
 GtkWidget * sp_toolbox_create (GladeXML * xml,
 			       const gchar * widgetname,
@@ -51,6 +52,17 @@ typedef enum {
 
 SPObjectFlipMode object_flip_mode = FLIP_HOR;
 
+/* Drag and Drop */
+typedef enum {
+  URI_LIST
+} toolbox_drop_target_info;
+static GtkTargetEntry toolbox_drop_target_entries [] = {
+  {"text/uri-list", 0, URI_LIST},
+};
+#define ENTRIES_SIZE(n) sizeof(n)/sizeof(n[0]) 
+static guint ntoolbox_drop_target_entries = ENTRIES_SIZE(toolbox_drop_target_entries);
+static void sp_maintoolbox_open_files(gchar * buffer);
+static void sp_maintoolbox_open_one_file(gchar * svg_path);
 
 void
 sp_maintoolbox_create (void)
@@ -143,6 +155,11 @@ sp_maintoolbox_create (void)
 	if (!GTK_WIDGET_VISIBLE (toolbox)) sodipodi_ref ();
 
 	gnome_window_icon_set_from_default (GTK_WINDOW (toolbox));
+	gtk_drag_dest_set(toolbox, 
+			  GTK_DEST_DEFAULT_ALL,
+			  toolbox_drop_target_entries,
+			  ntoolbox_drop_target_entries,
+			  GDK_ACTION_COPY);
 	gtk_widget_show (toolbox);
 }
 
@@ -193,6 +210,84 @@ sp_maintoolbox_close (GtkWidget * widget, GdkEventAny * event, gpointer data)
 	gtk_widget_hide (GTK_WIDGET (toolbox));
 
 	return TRUE;
+}
+
+void 
+sp_maintoolbox_drag_data_received (GtkWidget * widget,
+		       GdkDragContext * drag_context,
+		       gint x, gint y,
+		       GtkSelectionData * data,
+		       guint info,
+		       guint event_time,
+		       gpointer user_data)
+{
+	gchar * uri;
+	
+	switch(info) {
+	case URI_LIST:
+		uri = (gchar *)data->data;
+		sp_maintoolbox_open_files(uri);
+		break;
+	}
+}
+
+/* Most code of this function is copied from 
+   gimp-1.2.1/gimpdnd.c:gimp_dnd_file_open_files */
+static void
+sp_maintoolbox_open_files(gchar * buffer)
+{
+	gchar  name_buffer[1024];
+	const gchar *data_type 	   = "file:";
+	const gint   sig_len 	   = strlen (data_type);
+	gint  name_len;
+	
+	const gchar * svg_suffix   = ".svg";
+	gint  svg_suffix_len = strlen(svg_suffix);
+
+	while (*buffer) {
+		gchar *name = name_buffer;
+		gint len = 0;
+
+		while ((*buffer != 0) && (*buffer != '\n') && len < 1024) {
+			*name++ = *buffer++;
+			len++;
+		}
+		if (len == 0)
+			break;
+
+		if (*(name - 1) == 0xd)   /* gmc uses RETURN+NEWLINE as delimiter */
+			*(name - 1) = '\0';
+		else
+			*name = '\0';
+		name = name_buffer;
+		if ((sig_len < len) && (! strncmp (name, data_type, sig_len)))
+			name += sig_len;
+			
+		name_len = name? strlen(name): 0;
+
+		/* SVG file */
+		if (name_len >  svg_suffix_len) {
+			if (!strcmp(name + name_len - svg_suffix_len, svg_suffix))
+				sp_maintoolbox_open_one_file(name);
+		}
+		/* TODO: other file supports here... */
+		
+		if (*buffer)
+			buffer++;
+	}
+}
+
+/* FIXME: The same function definition in sp-image.c:load_file. */
+static void
+sp_maintoolbox_open_one_file(gchar * svg_path)
+{
+	SPDocument * doc;
+	SPViewWidget *dtw;
+  
+	doc = sp_document_new (svg_path);
+	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
+	sp_document_unref (doc);
+	sp_create_window (dtw, TRUE);
 }
 
 /* 

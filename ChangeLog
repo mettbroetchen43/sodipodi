@@ -1,3 +1,42 @@
+2002-03-18  Lauris Kaplinski <lauris@ximian.com>
+
+	* configure.in: Disabled frontline check, until I find time
+	to make it to work without frontline too
+
+2002-03-18  Masatake YAMATO  <jet@gyve.org, masata-y@maa.spacetown.ne.jp>
+
+	* src/toolbox.h (sp_maintoolbox_drag_data_received): New
+	declaration.
+
+	* src/toolbox.c (sp_maintoolbox_open_one_file) 
+	(sp_maintoolbox_open_files, sp_maintoolbox_drag_data_received): 
+	New functions.
+	(sp_maintoolbox_create): Invoked gtk_drag_dest_set 
+	against ui.
+	(toolbox_drop_target_info, toolbox_drop_target_entries,
+	ENTRIES_SIZE, ntoolbox_drop_target_entries): New constants
+	and macros for DnD.
+
+	* src/interface.c (sp_ui_import_one_file, sp_ui_import_files) 
+	(sp_ui_drag_data_received): New functions.
+	(sp_create_window): sp_ui_drag_data_received is connected
+	to "drag_data_received" of ui. Invoked gtk_drag_dest_set 
+	against ui.
+	(nui_drop_target_entries, ENTRIES_SIZE, ui_drop_target_entries,
+	ui_drop_target_info): New constants and macros for DnD.
+
+	* glade/toolbox.glade: sp_maintoolbox_drag_data_received is
+	connected to drag_data_received of maintoolbox.
+
+2002-03-18  Masatake YAMATO  <jet@gyve.org, masatake@maa.sst.ne.jp>
+
+	* configure.in (ENABLE_AUTOTRACE): Check Frontline.
+
+	* acconfig.h: Added ENABLE_AUTOTRACE.
+
+	* src/sp-image.c: Added code that supports Frontline.
+	New codes are wrapped by ENABLE_AUTOTRACE. 
+
 Tue Mar 19 02:30:40 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* New SPRect rx, ry editing feature in node context.

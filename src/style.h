@@ -19,6 +19,7 @@ BEGIN_GNOME_DECLS
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_vpath_dash.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
+#include <libgnomeprint/gnome-font-face.h>
 #include "helper/units.h"
 #include "color.h"
 #include "forward.h"
@@ -44,12 +45,17 @@ struct _SPPaint {
 #define SP_OBJECT_STYLE_FILL_SERVER(o) (SP_OBJECT (o)->style->fill.server)
 #define SP_OBJECT_STYLE_STROKE_SERVER(o) (SP_OBJECT (o)->style->stroke.server)
 
+typedef struct _SPStyleText SPStyleText;
+
 struct _SPStyle {
 	gint refcount;
 	/* Object we are attached to */
 	/* fixme: I am not sure, whether style should be SPObject itself */
 	/* fixme: Or alternatively, whole style to be moved inside SPObject[Styled] */
 	SPObject *object;
+	/* Our text style component */
+	SPStyleText *text;
+	guint text_private : 1;
 	/* Global opacity */
 	gdouble opacity;
 	guint opacity_set : 1;
@@ -116,6 +122,89 @@ void sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b,
 void sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set);
 void sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean fill_set, gboolean opacity_set);
 void sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set);
+
+/* SPStyleText */
+
+typedef enum {
+	SP_CSS_FONT_STYLE_NORMAL,
+	SP_CSS_FONT_STYLE_ITALIC,
+	SP_CSS_FONT_STYLE_OBLIQUE
+} SPCSSFontStyle;
+
+typedef enum {
+	SP_CSS_FONT_VARIANT_NORMAL,
+	SP_CSS_FONT_VARIANT_SMALL_CAPS
+} SPCSSFontVariant;
+
+typedef enum {
+	SP_CSS_FONT_WEIGHT_100,
+	SP_CSS_FONT_WEIGHT_200,
+	SP_CSS_FONT_WEIGHT_300,
+	SP_CSS_FONT_WEIGHT_400,
+	SP_CSS_FONT_WEIGHT_500,
+	SP_CSS_FONT_WEIGHT_600,
+	SP_CSS_FONT_WEIGHT_700,
+	SP_CSS_FONT_WEIGHT_800,
+	SP_CSS_FONT_WEIGHT_900,
+	SP_CSS_FONT_WEIGHT_NORMAL,
+	SP_CSS_FONT_WEIGHT_BOLD,
+	SP_CSS_FONT_WEIGHT_LIGHTER,
+	SP_CSS_FONT_WEIGHT_DARKER
+} SPCSSFontWeight;
+
+typedef enum {
+	SP_CSS_FONT_STRETCH_ULTRA_CONDENSED,
+	SP_CSS_FONT_STRETCH_EXTRA_CONDENSED,
+	SP_CSS_FONT_STRETCH_CONDENSED,
+	SP_CSS_FONT_STRETCH_SEMI_CONDENSED,
+	SP_CSS_FONT_STRETCH_NORMAL,
+	SP_CSS_FONT_STRETCH_SEMI_EXPANDED,
+	SP_CSS_FONT_STRETCH_EXPANDED,
+	SP_CSS_FONT_STRETCH_EXTRA_EXPANDED,
+	SP_CSS_FONT_STRETCH_ULTRA_EXPANDED,
+	SP_CSS_FONT_STRETCH_NARROWER,
+	SP_CSS_FONT_STRETCH_WIDER
+} SPCSSFontStretch;
+
+typedef enum {
+	SP_CSS_WRITING_MODE_LR,
+	SP_CSS_WRITING_MODE_RL,
+	SP_CSS_WRITING_MODE_TB
+} SPWritingMode;
+
+struct _SPStyleText {
+	gint refcount;
+	/* SVG properties */
+	guchar *font_family;
+	guint font_family_set : 1;
+
+	/* fixme: relatives, units, percentages... */
+	gfloat font_size;
+	guint font_size_set : 1;
+#if 0
+	/* fixme: Has to have 'none' option here */
+	gfloat font_size_adjust;
+	guint font_size_adjust_set : 1;
+#endif
+	guint font_style : 2;
+	guint font_style_set : 1;
+
+	guint font_variant : 1;
+	guint font_variant_set : 1;
+
+	guint font_weight : 4;
+	guint font_weight_set : 1;
+
+	guint font_stretch : 4;
+	guint font_stretch_set : 1;
+
+	/* Parsed values */
+	GnomeFontFace *face;
+	gfloat size;
+	/* Text direction */
+	SPWritingMode writing_mode;
+	guint writing_mode_set : 1;
+};
 
 END_GNOME_DECLS
 

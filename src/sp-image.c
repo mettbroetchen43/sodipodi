@@ -48,6 +48,10 @@ static void sp_image_write_transform (SPItem *item, SPRepr *repr, gdouble *trans
 static void sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);
 
 static void sp_image_image_properties (GtkMenuItem *menuitem, SPAnchor *anchor);
+#ifdef ENABLE_AUTOTRACE
+static void sp_image_autotrace (GtkMenuItem *menuitem, SPAnchor *anchor);
+static void autotrace_dialog(SPImage * img);
+#endif /* Def: ENABLE_AUTOTRACE */
 
 GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
 static GdkPixbuf *sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
@@ -513,6 +517,16 @@ sp_image_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu)
 	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_image_image_properties), item);
 	gtk_widget_show (w);
 	gtk_menu_append (GTK_MENU (m), w);
+
+#ifdef ENABLE_AUTOTRACE
+	/* Autotrace dialog */
+	w = gtk_menu_item_new_with_label (_("Trace"));
+	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
+	gtk_signal_connect (GTK_OBJECT (w), "activate", GTK_SIGNAL_FUNC (sp_image_autotrace), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+#endif /* Def: ENABLE_AUTOTRACE */
+
 	/* Show menu */
 	gtk_widget_show (m);
 
@@ -527,6 +541,14 @@ sp_image_image_properties (GtkMenuItem *menuitem, SPAnchor *anchor)
 {
 	sp_object_attributes_dialog (SP_OBJECT (anchor), "SPImage");
 }
+
+#ifdef ENABLE_AUTOTRACE
+static void
+sp_image_autotrace (GtkMenuItem *menuitem, SPAnchor *anchor)
+{
+  autotrace_dialog (SP_IMAGE(anchor));
+}
+#endif /* Def: ENABLE_AUTOTRACE */
 
 static GdkPixbuf *
 sp_image_repr_read_dataURI (const gchar * uri_data)
@@ -667,3 +689,250 @@ sp_image_repr_read_b64 (const gchar * uri_data)
 	return pixbuf;
 }
 
+#ifdef ENABLE_AUTOTRACE
+#define GDK_PIXBUF_TO_AT_BITMAP_DEBUG 0
+#include <autotrace/autotrace.h>
+#include <frontline/frontline.h>
+
+#include "view.h"
+#include "desktop.h"
+#include "interface.h"
+
+/* getpid and umask */
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/stat.h>
+
+/* g_strdup_printf */
+#include <glib.h>
+
+/* GnomeMessageBox */
+#include <libgnomeui/libgnomeui.h>
+
+static void object_destroyed (GtkObject *object, GtkWidget *widget);
+static at_bitmap_type * gdk_pixbuf_to_at_bitmap (GdkPixbuf * pixbuf);
+static void load_trace_result(FrontlineDialog * fl_dialog, gpointer user_data);
+static void load_splines(at_splines_type * splines);
+static void load_file(const guchar * filename);
+static void handle_msg(at_string msg, at_msg_type msg_type, at_address client_data);
+static GtkWidget *  build_header_area(SPRepr *repr);
+
+static void
+autotrace_dialog(SPImage * img)
+{
+	gchar *title = _("Trace");
+
+	GtkWidget *trace_dialog;
+	GtkWidget * header_area;
+	GtkWidget * header_sep;
+	at_bitmap_type * bitmap;
+
+	trace_dialog = frontline_dialog_new();
+	gtk_window_set_title (GTK_WINDOW (trace_dialog), title);
+	gtk_signal_connect_while_alive (GTK_OBJECT (img), "destroy",
+					GTK_SIGNAL_FUNC (object_destroyed), 
+					trace_dialog, 
+					GTK_OBJECT (trace_dialog));
+	gtk_signal_connect(GTK_OBJECT(FRONTLINE_DIALOG(trace_dialog)->close_button),
+			   "clicked",
+			   GTK_SIGNAL_FUNC (object_destroyed), 
+			   trace_dialog);
+	gtk_signal_connect(GTK_OBJECT(trace_dialog),
+			   "trace_done",
+			   GTK_SIGNAL_FUNC (load_trace_result), 
+			   trace_dialog);
+	
+	header_area = build_header_area(SP_OBJECT_REPR(img));
+	gtk_box_pack_start_defaults(GTK_BOX(FRONTLINE_DIALOG(trace_dialog)->header_area),
+				    header_area);
+	gtk_widget_show(header_area);
+	
+	header_sep = gtk_hseparator_new();
+	gtk_box_pack_start_defaults(GTK_BOX(FRONTLINE_DIALOG(trace_dialog)->header_area), 
+				    header_sep);
+	gtk_widget_show(header_sep);
+
+	
+	bitmap = gdk_pixbuf_to_at_bitmap(img->pixbuf);
+	frontline_dialog_set_bitmap(FRONTLINE_DIALOG(trace_dialog), bitmap);
+	
+	gtk_widget_show (trace_dialog);
+}
+
+static void
+object_destroyed (GtkObject *object, GtkWidget *widget)
+{
+	gtk_widget_destroy (widget);
+}
+
+static at_bitmap_type *
+gdk_pixbuf_to_at_bitmap (GdkPixbuf * pixbuf)
+{
+	guchar *    datum;
+	at_bitmap_type * bitmap;
+	unsigned short width, height;
+	int i, j;
+
+	if (GDK_PIXBUF_TO_AT_BITMAP_DEBUG)
+		g_message("%d:channel %d:width %d:height %d:bits_per_sample %d:has_alpha %d:rowstride\n", 
+			  gdk_pixbuf_get_n_channels(pixbuf),
+			  gdk_pixbuf_get_width(pixbuf),
+			  gdk_pixbuf_get_height(pixbuf),
+			  gdk_pixbuf_get_bits_per_sample(pixbuf),
+			  gdk_pixbuf_get_has_alpha(pixbuf),
+			  gdk_pixbuf_get_rowstride(pixbuf));
+
+	datum   = gdk_pixbuf_get_pixels(pixbuf);
+	width   = gdk_pixbuf_get_width(pixbuf);
+	height  = gdk_pixbuf_get_height(pixbuf);
+
+	bitmap = at_bitmap_new(width, height, 3);
+
+	if (gdk_pixbuf_get_has_alpha(pixbuf)) {
+		j = 0;
+		for(i = 0; i < width * height * 4; i++)
+			if (3 != (i % 4))
+				bitmap->bitmap[j++] = datum[i];
+	}
+	else
+		memmove(bitmap->bitmap, datum, width * height * 3);
+	return bitmap;
+}
+
+static void
+load_trace_result(FrontlineDialog * fl_dialog, gpointer user_data)
+{
+	FrontlineDialog * trace_dialog;
+	trace_dialog = FRONTLINE_DIALOG(user_data);
+	
+	if (!trace_dialog->splines) 
+	  return;
+	
+	load_splines(trace_dialog->splines);
+}
+
+
+static void
+load_splines(at_splines_type * splines)
+{
+  	static int serial_num = 0;
+	FILE * tmp_fp;
+	at_output_write_func writer;
+	gchar * filename;
+
+	mode_t old_mask;
+
+  	filename = g_strdup_printf("/tmp/at-%s-%d-%d.svg", 
+				   g_get_user_name(),
+				   getpid(), 
+				   serial_num++);
+	
+	/* Make the mode of temporary svg file 
+	   "readable and writable by the user only". */
+	old_mask = umask(066);
+	tmp_fp = fopen(filename, "w");
+	umask(old_mask);
+  
+	writer = at_output_get_handler_by_suffix ("svg");
+	at_splines_write(splines, tmp_fp, filename, AT_DEFAULT_DPI,
+			 writer, 
+			 handle_msg, 
+			 filename);
+	fclose(tmp_fp);
+  
+	load_file (filename);
+
+	unlink(filename);
+	g_free(filename);
+}
+
+
+static void
+load_file(const guchar * filename)
+{
+	SPDocument * doc;
+	SPViewWidget *dtw;
+  
+	doc = sp_document_new (filename);
+	dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
+	sp_document_unref (doc);
+	sp_create_window (dtw, TRUE);
+}
+
+static void
+handle_msg(at_string msg, at_msg_type msg_type, at_address client_data)
+{
+	GtkWidget *dialog;
+	guchar * long_msg;
+	guchar * target = client_data;
+	
+	if (msg_type == AT_MSG_FATAL) {
+		long_msg = g_strdup_printf(_("Error to write %s: %s"), 
+					   target, msg);	
+		dialog = gnome_message_box_new(long_msg,
+					       GNOME_MESSAGE_BOX_ERROR,
+					       _("Ok"), NULL);
+		gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+		gnome_dialog_run(GNOME_DIALOG(dialog));
+		g_free(long_msg);
+	}
+	else {
+		long_msg = g_strdup_printf("%s: %s", msg, target);	
+		g_warning("%s", long_msg);
+		g_free(long_msg);
+	}
+}
+
+static GtkWidget *
+build_header_area(SPRepr *repr)
+{
+	const gchar * doc_name, * img_uri;
+	GtkWidget * vbox;
+	GtkWidget * hbox;
+	GtkWidget * label;
+	GtkWidget * entry;
+	
+	vbox = gtk_vbox_new(TRUE, 4);
+	gtk_container_set_border_width(GTK_CONTAINER(vbox), 8);
+	
+	/* Doc name */
+	doc_name = sp_repr_attr(sp_repr_document_root(sp_repr_document(repr)), 
+				"sodipodi:docname");
+	if (!doc_name)
+		doc_name = _("Untitled");
+	hbox = gtk_hbox_new(FALSE, 2);
+	gtk_box_pack_start_defaults(GTK_BOX(vbox), hbox);
+	gtk_widget_show(hbox);
+	
+	label = gtk_label_new(_("Document Name:"));
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), doc_name);
+	gtk_entry_set_editable(GTK_ENTRY(entry), FALSE);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 4);
+	gtk_widget_show(label);
+	gtk_widget_show(entry);
+	gtk_widget_set_sensitive(entry, FALSE);
+
+	/* Image URI */
+	img_uri = sp_repr_attr(repr, "xlink:href");
+	if (!img_uri)
+		img_uri = _("Unknown");
+
+	hbox = gtk_hbox_new(FALSE, 2);
+	gtk_box_pack_start_defaults(GTK_BOX(vbox), hbox);
+	gtk_widget_show(hbox);
+	
+	label = gtk_label_new(_("Image URI:"));
+	entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), img_uri);
+	gtk_entry_set_editable(GTK_ENTRY(entry), FALSE);
+	gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(hbox), entry, TRUE, TRUE, 4);
+	gtk_widget_show(label);
+	gtk_widget_show(entry);
+	gtk_widget_set_sensitive(entry, FALSE);
+	
+	return vbox;
+}
+#endif /* Def: ENABLE_AUTOTRACE */

@@ -202,6 +202,16 @@ fi
 CPPFLAGS=$_cppflags
 LDFLAGS=$_ldflags
 
+dnl ******************************
+dnl Frontline/Autotrace support
+dnl ******************************
+dnl AM_PATH_FRONTLINE([AC_DEFINE(ENABLE_AUTOTRACE)
+dnl SODIPODI_CFLAGS="$FRONTLINE_CFLAGS $SODIPODI_CFLAGS"
+dnl SODIPODI_LIBS="$FRONTLINE_LIBS $SODIPODI_LIBS"], 
+dnl AC_MSG_WARN(
+dnl [Cannot find Frontline library.
+dnl AutoTrace function are disabled.] ))
+
 AC_SUBST(SODIPODI_CFLAGS)
 AC_SUBST(SODIPODI_LIBS)
 

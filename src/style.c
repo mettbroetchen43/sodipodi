@@ -29,6 +29,12 @@ static void sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *s
 static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
 static const guchar *sp_style_str_value (const guchar *str, const guchar *key);
 
+static SPStyleText *sp_style_text_new (void);
+static SPStyleText *sp_style_text_ref (SPStyleText *st);
+static SPStyleText *sp_style_text_unref (SPStyleText *st);
+static SPStyleText *sp_style_text_duplicate_unset (SPStyleText *st);
+static guint sp_style_text_write (guchar *p, guint len, SPStyleText *st);
+
 static void
 sp_style_object_destroyed (GtkObject *object, SPStyle *style)
 {
@@ -46,9 +52,9 @@ sp_style_new (SPObject *object)
 
 	style->refcount = 1;
 	style->object = object;
+
 	if (object) {
-		gtk_signal_connect (GTK_OBJECT (object), "destroy",
-				    GTK_SIGNAL_FUNC (sp_style_object_destroyed), style);
+		gtk_signal_connect (GTK_OBJECT (object), "destroy", GTK_SIGNAL_FUNC (sp_style_object_destroyed), style);
 	}
 
 	sp_style_init (style);
@@ -60,6 +66,7 @@ SPStyle *
 sp_style_ref (SPStyle *style)
 {
 	g_return_val_if_fail (style != NULL, NULL);
+	g_return_val_if_fail (style->refcount > 0, NULL);
 
 	style->refcount += 1;
 
@@ -70,9 +77,13 @@ SPStyle *
 sp_style_unref (SPStyle *style)
 {
 	g_return_val_if_fail (style != NULL, NULL);
+	g_return_val_if_fail (style->refcount > 0, NULL);
 
-	if (--style->refcount < 1) {
+	style->refcount -= 1;
+
+	if (style->refcount < 1) {
 		if (style->object) gtk_signal_disconnect_by_data (GTK_OBJECT (style->object), style);
+		if (style->text) sp_style_text_unref (style->text);
 		if (style->fill.server) {
 			sp_object_hunref (SP_OBJECT (style->fill.server), style);
 			gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
@@ -718,5 +729,137 @@ sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, g
 	sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
 	style->stroke_opacity_set = opacity_set;
 	style->stroke_opacity = a;
+}
+
+/* SPStyleText operations */
+
+static SPStyleText *
+sp_style_text_new (void)
+{
+	SPStyleText *st;
+
+	st = g_new0 (SPStyleText, 1);
+
+	st->refcount = 1;
+
+	st->font_family = "Bitstream Cyberbit";
+	st->font_size = 12.0;
+	st->font_style = SP_CSS_FONT_STYLE_NORMAL;
+	st->font_variant = SP_CSS_FONT_VARIANT_NORMAL;
+	st->font_weight = SP_CSS_FONT_WEIGHT_NORMAL;
+	st->font_stretch = SP_CSS_FONT_STRETCH_NORMAL;
+
+	st->writing_mode = SP_CSS_WRITING_MODE_LR;
+
+	return st;
+}
+
+static SPStyleText *
+sp_style_text_ref (SPStyleText *st)
+{
+	st->refcount += 1;
+
+	return st;
+}
+
+static SPStyleText *
+sp_style_text_unref (SPStyleText *st)
+{
+	st->refcount -= 1;
+
+	if (st->refcount < 1) {
+		if (st->font_family && st->font_family_set) g_free (st->font_family);
+		if (st->face) gnome_font_face_unref (st->face);
+		g_free (st);
+	}
+
+	return NULL;
+}
+
+static SPStyleText *
+sp_style_text_duplicate (SPStyleText *st)
+{
+	SPStyleText *nt;
+
+	nt = g_new0 (SPStyleText, 1);
+
+	nt->refcount = 1;
+
+	nt->font_family = g_strdup (st->font_family);
+
+	nt->font_size = st->font_size;
+	nt->font_style = st->font_style;
+	nt->font_variant = st->font_variant;
+	nt->font_weight = st->font_weight;
+	nt->font_stretch = st->font_stretch;
+
+	nt->writing_mode = st->writing_mode;
+
+	return nt;
+}
+
+static guint
+sp_style_text_write_property (guchar *p, guint len, const guchar *key, const guchar *value)
+{
+	guint klen, vlen;
+
+	klen = strlen (key);
+	vlen = strlen (value);
+
+	if ((klen + vlen + 2) <= len) {
+		memcpy (p, key, klen);
+		*(p + klen) = ':';
+		memcpy (p + klen + 1, value, vlen);
+		*(p + klen + vlen + 1) = ';';
+		return klen + vlen + 2;
+	}
+
+	return 0;
+}
+
+static guint
+sp_style_text_write (guchar *p, guint len, SPStyleText *st)
+{
+	gint d;
+
+	d = 0;
+
+	if (st->font_family_set) {
+		d += sp_style_text_write_property (p + d, len - d, "font-family", st->font_family);
+	}
+
+	if (st->font_size_set) {
+		d += g_snprintf (p + d, len - d, "font-size:%g;", st->font_size);
+	}
+
+	if (st->font_style_set) {
+		static const guchar *s[] = {"normal", "italic", "oblique"};
+		d += sp_style_text_write_property (p + d, len - d, "font-style", s[st->font_style]);
+	}
+
+	if (st->font_variant_set) {
+		static const guchar *s[] = {"normal", "small-caps"};
+		d += sp_style_text_write_property (p + d, len - d, "font-variant", s[st->font_variant]);
+	}
+
+	if (st->font_weight_set) {
+		static const guchar *s[] = {"100", "200", "300", "400", "500", "600", "700", "800", "900",
+					    "normal", "bold", "lighter", "darker"};
+		d += sp_style_text_write_property (p + d, len - d, "font-weight", s[st->font_weight]);
+	}
+
+	if (st->font_stretch_set) {
+		static const guchar *s[] = {"ultra-condensed", "extra-condensed", "condensed", "semi-condensed", "normal",
+					    "semi-expanded", "expanded", "extra-expanded", "ultra-expanded",
+					    "narrower", "wider"};
+		d += sp_style_text_write_property (p + d, len - d, "font-stretch", s[st->font_stretch]);
+	}
+
+	if (st->writing_mode_set) {
+		static const guchar *s[] = {"lr", "rl", "tb"};
+		d += sp_style_text_write_property (p + d, len - d, "writing-mode", s[st->writing_mode]);
+	}
+
+	return d;
 }
 
