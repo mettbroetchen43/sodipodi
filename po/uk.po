@@ -520,7 +520,7 @@ msgstr "Малювання"
 
 #: glade/toolbox.c:15 glade/toolbox.c:21
 msgid "Edit nodes"
-msgstr ""
+msgstr "Виправлення вузл╕в"
 
 #: glade/toolbox.c:16 glade/toolbox.c:25
 msgid "Zoom in"
@@ -535,9 +535,8 @@ msgid "Draw ellipse"
 msgstr "Малювати ел╕пс"
 
 #: glade/toolbox.c:19
-#, fuzzy
 msgid "Draw freehand line"
-msgstr "Малювати ел╕пси"
+msgstr "Малювати в╕льну л╕н╕ю"
 
 #: glade/toolbox.c:20
 msgid "Draw text"
@@ -676,9 +675,8 @@ msgid "Open new drawing"
 msgstr ""
 
 #: glade/toolbox.c:56
-#, fuzzy
 msgid "Import "
-msgstr "╤мпортувати"
+msgstr "╤мпорт "
 
 #: glade/toolbox.c:57
 #, fuzzy
@@ -814,7 +812,7 @@ msgstr "Перенести"
 
 #: glade/transformation.c:9
 msgid "Y: "
-msgstr ""
+msgstr "Y: "
 
 #: glade/transformation.c:10
 #, fuzzy
@@ -937,14 +935,12 @@ msgid "keep aspect"
 msgstr ""
 
 #: glade/transformation.c:40
-#, fuzzy
 msgid "Start transformation - Ctl+a"
-msgstr "Д╕алог трансформац╕╖"
+msgstr "Почати трансформац╕ю - Ctrl+A"
 
 #: glade/transformation.c:41
-#, fuzzy
 msgid "Close dialog - Ctl+c"
-msgstr "Закрити д╕алог"
+msgstr "Закрити д╕алог - Ctrl+C"
 
 #: glade/transformation.c:42
 msgid "Expand dialog - Ctl+e"
