@@ -1,3 +1,7 @@
+2002-09-09  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
 2002-09-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* POTFILES.in: Added tool-options.c
@@ -31,10 +35,6 @@
 
         * pt.po: Updated Portuguese translation.
 
-2002-07-19  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
-
 2002-07-12  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* ru.po: updated Russian translation from Vitaly Lipatov
@@ -64,24 +64,6 @@ Wed Apr 10 00:59:46 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* pl.po: Updated Polish translation by
 	GNOME PL Team <translators@gnome.pl>.
-
-2002-03-21  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
-
-2002-03-19  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
-
-2002-03-19  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
-
-2002-03-19  gettextize  <bug-gnu-utils@gnu.org>
-
-	* Makefile.in.in: Upgrade to gettext-0.10.40.
-	* cat-id-tbl.c: Remove file.
-	* stamp-cat-id: Remove file.
 
 2002-03-17  Wang Jian  <lark@linux.net.cn>
 
