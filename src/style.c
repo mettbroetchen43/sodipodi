@@ -1120,6 +1120,7 @@ sp_text_style_clear (SPTextStyle *ts)
 	ts->writing_mode.set = FALSE;
 }
 
+#if 0
 static SPTextStyle *
 sp_text_style_ref (SPTextStyle *st)
 {
@@ -1127,6 +1128,7 @@ sp_text_style_ref (SPTextStyle *st)
 
 	return st;
 }
+#endif
 
 static SPTextStyle *
 sp_text_style_unref (SPTextStyle *st)

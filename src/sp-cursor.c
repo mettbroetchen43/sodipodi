@@ -1,5 +1,18 @@
-#define SP_CURSOR_C
+#define __SP_CURSOR_C__
 
+/*
+ * Some convenience stuff
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include <string.h>
 #include <stdio.h>
 #include <ctype.h>
 #include "sp-cursor.h"

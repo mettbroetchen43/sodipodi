@@ -161,57 +161,83 @@ sp_selection_ungroup (gpointer data)
 
 	dt = SP_ACTIVE_DESKTOP;
 	if (!dt) return;
-	if (sp_selection_is_empty (SP_DT_SELECTION (dt))) return;
 	group = sp_selection_item (SP_DT_SELECTION (dt));
 	if (!group) return;
+	/* We do not allow ungrouping <svg> etc. */
 	if (strcmp (sp_repr_name (SP_OBJECT_REPR (group)), "g")) return;
 
-	sp_selection_empty (SP_DT_SELECTION (dt));
-
 	children = NULL;
-
+	/* This is not strictly required, but is nicer to rely on group ::destroy */
+	sp_selection_empty (SP_DT_SELECTION (dt));
 	sp_item_group_ungroup (SP_GROUP (group), &children);
-
 	sp_selection_set_item_list (SP_DT_SELECTION (dt), children);
-
 	g_slist_free (children);
 }
 
+static SPGroup *
+sp_item_list_common_parent_group (const GSList *items)
+{
+	SPObject *parent;
+
+	if (!items) return NULL;
+	parent = SP_OBJECT_PARENT (items->data);
+	/* Strictly speaking this CAN happen, if user selects <svg> from XML editor */
+	if (!SP_IS_GROUP (parent)) return NULL;
+	for (items = items->next; items; items = items->next) {
+		if (SP_OBJECT_PARENT (items->data) != parent) return NULL;
+	}
+
+	return SP_GROUP (parent);
+}
+
+#if 0
+#define PRINT_STR(s) g_print (s)
+#define PRINT_OBJ(s, o) g_print ("%s: %s\n", s, (o) ? (gchar *) sp_repr_attr (SP_OBJECT_REPR (o), "id") : "NULL")
+#else
+#define PRINT_STR(s)
+#define PRINT_OBJ(s, o)
+#endif
+
 void sp_selection_raise (GtkWidget * widget)
 {
-	SPDocument * document;
-	SPSelection * selection;
-	SPDesktop * desktop;
-	SPRepr * repr;
-	GSList * rl;
-	GSList * l;
-	GSList * pl;
+	SPDesktop *dt;
+	const GSList *items;
+	SPGroup *group;
+	SPRepr *grepr;
+	SPObject *child, *newref;
+	GSList *rev;
 
-	desktop = SP_ACTIVE_DESKTOP;
-	if (desktop == NULL) return;
-	document = SP_DT_DOCUMENT (desktop);
-	selection = SP_DT_SELECTION (desktop);
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	items = sp_selection_item_list (SP_DT_SELECTION (dt));
+	if (!items) return;
+	group = sp_item_list_common_parent_group (items);
+	if (!group) return;
+	grepr = SP_OBJECT_REPR (group);
 
-	if (sp_selection_is_empty (selection)) return;
-
-	rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
-
-	pl = NULL;
-
-	for (l = rl; l != NULL; l = l->next) {
-		repr = (SPRepr *) l->data;
-		pl = g_slist_append (pl, GINT_TO_POINTER (sp_repr_position (repr)));
+	/* construct reverse-ordered list of selected children */
+	rev = NULL;
+	for (child = group->children; child; child = child->next) {
+		if (g_slist_find ((GSList *) items, child)) {
+			rev = g_slist_prepend (rev, child);
+		}
 	}
 
-	for (l = rl; l != NULL; l = l->next) {
-		repr = (SPRepr *) l->data;
-		sp_repr_set_position_absolute (repr, GPOINTER_TO_INT (pl->data) + 1);
-		pl = g_slist_remove (pl, pl->data);
+	while (rev) {
+		child = SP_OBJECT (rev->data);
+		for (newref = child->next; newref; newref = newref->next) {
+			if (SP_IS_ITEM (newref)) {
+				if (!g_slist_find ((GSList *) items, newref)) {
+					/* Found available position */
+					sp_repr_change_order (grepr, SP_OBJECT_REPR (child), SP_OBJECT_REPR (newref));
+				}
+				break;
+			}
+		}
+		rev = g_slist_remove (rev, child);
 	}
 
-	g_slist_free (rl);
-
-	sp_document_done (document);
+	sp_document_done (SP_DT_DOCUMENT (dt));
 }
 
 void sp_selection_raise_to_top (GtkWidget * widget)
@@ -242,54 +268,89 @@ void sp_selection_raise_to_top (GtkWidget * widget)
 	sp_document_done (document);
 }
 
-void sp_selection_lower (GtkWidget * widget)
+void
+sp_selection_lower (GtkWidget *widget)
 {
-	SPDocument * document;
-	SPSelection * selection;
-	SPDesktop * desktop;
-	SPRepr * repr;
-	GSList * rl;
-	GSList * l;
-	GSList * pl;
-	gint pos;
+	SPDesktop *dt;
+	const GSList *items;
+	SPGroup *group;
+	SPRepr *grepr;
+	SPObject *child, *newref, *oldref;
+	gboolean skip;
 
-	desktop = SP_ACTIVE_DESKTOP;
-	if (desktop == NULL) return;
-	document = SP_DT_DOCUMENT (desktop);
-	selection = SP_DT_SELECTION (desktop);
+	dt = SP_ACTIVE_DESKTOP;
+	if (!dt) return;
+	items = sp_selection_item_list (SP_DT_SELECTION (dt));
+	if (!items) return;
+	group = sp_item_list_common_parent_group (items);
+	if (!group) return;
+	grepr = SP_OBJECT_REPR (group);
 
-	if (sp_selection_is_empty (selection)) return;
-
-	rl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
-
-	pl = NULL;
-
-	for (l = rl; l != NULL; l = l->next) {
-		repr = (SPRepr *) l->data;
-		pl = g_slist_append (pl, GINT_TO_POINTER (sp_repr_position (repr)));
-	}
-
-	for (l = rl; l != NULL; l = l->next) {
-		gint minpos;
-		SPObject *pp, *pc;
-		repr = (SPRepr *) l->data;
-		pp = sp_document_lookup_id (document, sp_repr_attr (sp_repr_parent (repr), "id"));
-		minpos = 0;
-		g_assert (SP_IS_GROUP (pp));
-		pc = SP_GROUP (pp)->children;
-		while (!SP_IS_ITEM (pc)) {
-			minpos += 1;
-			pc = pc->next;
+	PRINT_STR ("STARTING\n");
+	/* Start from beginning */
+	skip = TRUE;
+	newref = NULL;
+	oldref = NULL;
+	child = group->children;
+	while (child != NULL) {
+		if (SP_IS_ITEM (child)) {
+			/* We are item */
+			skip = FALSE;
+			/* fixme: Remove from list (Lauris) */
+			if (g_slist_find ((GSList *) items, child)) {
+				/* Need lower */
+				if (newref != oldref) {
+					if (sp_repr_change_order (grepr, SP_OBJECT_REPR (child), (newref) ? SP_OBJECT_REPR (newref) : NULL)) {
+						PRINT_STR ("Change order succeeded\n");
+						PRINT_OBJ ("  child", child);
+						PRINT_OBJ ("  oldref", oldref);
+						PRINT_OBJ ("  newref", newref);
+						/* Order change succeeded */
+						/* Next available position */
+						newref = child;
+						/* Oldref is just what it was */
+						/* Continue from oldref */
+						child = oldref->next;
+					} else {
+						PRINT_STR ("Change order failed\n");
+						PRINT_OBJ ("  child", child);
+						PRINT_OBJ ("  oldref", oldref);
+						PRINT_OBJ ("  newref", newref);
+						/* Order change did not succeed */
+						newref = oldref;
+						oldref = child;
+						child = child->next;
+					}
+				} else {
+					/* Item position will not change */
+					/* Other items will lower only following positions */
+					newref = child;
+					oldref = child;
+					child = child->next;
+				}
+			} else {
+				PRINT_STR ("Item not in list\n");
+				PRINT_OBJ ("  child", child);
+				PRINT_OBJ ("  oldref", oldref);
+				PRINT_OBJ ("  newref", newref);
+				/* We were item, but not in list */
+				newref = oldref;
+				oldref = child;
+				child = child->next;
+			}
+		} else {
+			PRINT_STR ("Not an item\n");
+			PRINT_OBJ ("  child", child);
+			PRINT_OBJ ("  oldref", oldref);
+			PRINT_OBJ ("  newref", newref);
+			/* We want to refind newref only to skip initial non-items */
+			if (skip) newref = child;
+			oldref = child;
+			child = child->next;
 		}
-		pos = GPOINTER_TO_INT (pl->data) - 1;
-		if (pos < minpos) pos = minpos;
-		sp_repr_set_position_absolute (repr, pos);
-		pl = g_slist_remove (pl, pl->data);
 	}
 
-	g_slist_free (rl);
-
-	sp_document_done (document);
+	sp_document_done (SP_DT_DOCUMENT (dt));
 }
 
 void sp_selection_lower_to_bottom (GtkWidget * widget)

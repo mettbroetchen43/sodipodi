@@ -1,3 +1,15 @@
+2002-08-19  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/selection-chemistry.c (sp_item_list_common_parent_group): Helper
+	(sp_selection_raise): Made it to work with all item combinations
+	(sp_selection_lower): Ditto, do not lower under non-items
+
+	* src/sp-item-group.c (sp_group_order_changed): Fix item order calculation
+
+2002-08-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/document-undo.c (sp_document_order_changed): Set correct action type
+
 2002-08-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/selection-chemistry.c (sp_selection_ungroup): Use method from item group

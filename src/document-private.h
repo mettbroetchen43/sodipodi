@@ -1,5 +1,17 @@
-#ifndef SP_DOCUMENT_PRIVATE_H
-#define SP_DOCUMENT_PRIVATE_H
+#ifndef __SP_DOCUMENT_PRIVATE_H__
+#define __SP_DOCUMENT_PRIVATE_H__
+
+/*
+ * Seldom needed document data
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "sp-defs.h"
 #include "sp-root.h"

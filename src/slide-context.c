@@ -1,5 +1,17 @@
 #define SP_SLIDE_CONTEXT_C
 
+/*
+ * Event context for slideshow
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <math.h>
 #include "sodipodi.h"
 #include "interface.h"
@@ -80,8 +92,8 @@ sp_slide_context_destroy (GtkObject * object)
 static void
 sp_slide_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 {
-	/* fixme: */
-	sp_desktop_toggle_borders (desktop);
+	/* fixme: This is not widget after all (Lauris) */
+	sp_desktop_toggle_borders ((GtkWidget *) desktop);
 	sp_slide_context_zoom (desktop);
 
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)

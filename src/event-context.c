@@ -1,4 +1,17 @@
-#define SP_EVENT_CONTEXT_C
+#define __SP_EVENT_CONTEXT_C__
+
+/*
+ * Base class for event processors
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <config.h>
 #include <gtk/gtkmenu.h>
@@ -29,7 +42,9 @@ static gint sp_event_context_private_item_handler (SPEventContext * event_contex
 
 static void set_event_location (SPDesktop * desktop, GdkEvent * event);
 
+#if 0
 static void sp_event_grab_item_destroy (GtkObject * object, gpointer data);
+#endif
 
 static GtkObjectClass * parent_class;
 
@@ -433,9 +448,11 @@ sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 	}
 }
 
+#if 0
 static void
 sp_event_grab_item_destroy (GtkObject * object, gpointer data)
 {
 	gtk_menu_item_remove_submenu (GTK_MENU_ITEM (data));
 	gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
 }
+#endif

@@ -1,9 +1,23 @@
-#define SP_INTERFACE_C
+#define __SP_INTERFACE_C__
+
+/*
+ * Toplevel windows etc.
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <string.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <libgnome/gnome-mime.h>
 #include <libgnomeui/gnome-stock.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <libgnomeui/gnome-window-icon.h>
@@ -438,37 +452,37 @@ sp_ui_generic_menu (SPView *v, SPItem *item)
 	/* File submenu */
 	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("File"), NULL, NULL);
 	sm = gtk_menu_new ();
-	sp_ui_file_menu (sm, NULL);
+	sp_ui_file_menu (GTK_MENU (sm), NULL);
 	gtk_widget_show (sm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
 	/* Edit submenu */
 	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("Edit"), NULL, NULL);
 	sm = gtk_menu_new ();
-	sp_ui_edit_menu (sm, NULL);
+	sp_ui_edit_menu (GTK_MENU (sm), NULL);
 	gtk_widget_show (sm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
 	/* Selection submenu */
 	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("Selection"), NULL, NULL);
 	sm = gtk_menu_new ();
-	sp_ui_selection_menu (sm, NULL);
+	sp_ui_selection_menu (GTK_MENU (sm), NULL);
 	gtk_widget_show (sm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
 	/* View submenu */
 	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("View"), NULL, NULL);
 	sm = gtk_menu_new ();
-	sp_ui_view_menu (sm, NULL);
+	sp_ui_view_menu (GTK_MENU (sm), NULL);
 	gtk_widget_show (sm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
 	/* Drawing mode submenu */
 	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("Drawing Mode"), NULL, NULL);
 	sm = gtk_menu_new ();
-	sp_ui_event_context_menu (sm, NULL);
+	sp_ui_event_context_menu (GTK_MENU (sm), NULL);
 	gtk_widget_show (sm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
 	/* Dialog submenu */
 	i = sp_ui_menu_append_item (GTK_MENU (m), GNOME_STOCK_MENU_BLANK, _("Dialogs"), NULL, NULL);
 	sm = gtk_menu_new ();
-	sp_ui_dialog_menu (sm, NULL);
+	sp_ui_dialog_menu (GTK_MENU (sm), NULL);
 	gtk_widget_show (sm);
 	gtk_menu_item_set_submenu (GTK_MENU_ITEM (i), sm);
 

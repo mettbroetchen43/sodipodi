@@ -87,9 +87,6 @@ static gint select_set_id =0;
 
 void sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw);
 
-/* fixme: */
-void sp_desktop_toggle_borders (GtkWidget * widget);
-
 static void sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
 
 /* fixme: These are widget forward decls, that are here, until things will be sorted out */

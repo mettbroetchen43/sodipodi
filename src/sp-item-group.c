@@ -1,15 +1,15 @@
 #define __SP_GROUP_C__
 
 /*
- * SPItemGroup
+ * SVG <g> implementation
  *
  * Author:
  *   Lauris Kaplinski <lauris@ximian.com>
  *
- * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -158,10 +158,10 @@ sp_group_read_attr (SPObject * object, const gchar * attr)
 }
 
 static void
-sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
+sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
-	SPGroup * group;
-	SPItem * item;
+	SPGroup *group;
+	SPItem *item;
 	GtkType type;
 	SPObject *ochild, *prev;
 	gint position;
@@ -238,55 +238,56 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 }
 
 static void
-sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new)
+sp_group_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *new)
 {
-	SPGroup * group;
-	SPObject * ochild, * oold, * onew, * o;
-	gint pos, oldpos, newpos;
+	SPGroup *group;
+	SPObject *childobj, *oldobj, *newobj, *o;
+	gint childpos, oldpos, newpos;
 
 	group = SP_GROUP (object);
 
 	if (((SPObjectClass *) (parent_class))->order_changed)
 		(* ((SPObjectClass *) (parent_class))->order_changed) (object, child, old, new);
 
-	ochild = NULL;
-	oold = NULL;
-	onew = NULL;
-	pos = oldpos = newpos = 0;
+	childobj = oldobj = newobj = NULL;
+	oldpos = newpos = 0;
 
-	o = group->children;
-	while ((!ochild) || (old && !oold) || (new && !onew)) {
-		if (SP_IS_ITEM (o)) pos += 1;
-		if (o->repr == child) ochild = o;
+	/* Scan children list */
+	childpos = 0;
+	for (o = group->children; !childobj || (old && !oldobj) || (new && !newobj); o = o->next) {
+		if (o->repr == child) {
+			childobj = o;
+		} else {
+			if (SP_IS_ITEM (o)) childpos += 1;
+		}
 		if (old && o->repr == old) {
-			oold = o;
-			oldpos = pos;
+			oldobj = o;
+			oldpos = childpos;
 		}
 		if (new && o->repr == new) {
-			onew = o;
-			newpos = pos;
+			newobj = o;
+			newpos = childpos;
 		}
-		o = o->next;
 	}
 
 	g_print ("oldpos %d newpos %d\n", oldpos, newpos);
 
-	if (oold) {
-		oold->next = ochild->next;
+	if (oldobj) {
+		oldobj->next = childobj->next;
 	} else {
-		group->children = ochild->next;
+		group->children = childobj->next;
 	}
-	if (onew) {
-		ochild->next = onew->next;
-		onew->next = ochild;
+	if (newobj) {
+		childobj->next = newobj->next;
+		newobj->next = childobj;
 	} else {
-		ochild->next = group->children;
-		group->children = ochild;
+		childobj->next = group->children;
+		group->children = childobj;
 	}
 
-	if (SP_IS_ITEM (ochild)) {
+	if (SP_IS_ITEM (childobj)) {
 		SPItemView *v;
-		for (v = SP_ITEM (ochild)->display; v != NULL; v = v->next) {
+		for (v = SP_ITEM (childobj)->display; v != NULL; v = v->next) {
 			nr_arena_item_set_order (v->arenaitem, newpos);
 		}
 	}
@@ -548,12 +549,6 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 			ss = sp_style_write_difference (SP_OBJECT_STYLE (citem), SP_OBJECT_STYLE (pitem));
 			sp_repr_set_attr (nrepr, "style", ss);
 			g_free (ss);
-#if 0
-			css = sp_repr_css_attr_inherited (nrepr, "style");
-			sp_repr_css_set (nrepr, css, "style");
-			sp_repr_css_attr_unref (css);
-#endif
-
 #if 0
 			/* fixme: Sort up that item/object stuff (lauris) */
 			nitem = (SPItem *) sp_document_add_repr (document, nrepr);

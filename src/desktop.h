@@ -101,6 +101,9 @@ void sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdoubl
 void sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
 void sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
 
+/* fixme: */
+void sp_desktop_toggle_borders (GtkWidget * widget);
+
 /* Context */
 
 void sp_desktop_set_event_context (SPDesktop * desktop, GtkType type);

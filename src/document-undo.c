@@ -1,4 +1,16 @@
-#define SP_DOCUMENT_UNDO_C
+#define __SP_DOCUMENT_UNDO_C__
+
+/*
+ * Undo/Redo stack implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <string.h>
 #include <stdlib.h>
@@ -321,7 +333,7 @@ sp_document_content_changed (SPDocument *doc, SPObject *object, const guchar *ol
 }
 
 /*
- * <order id="parent_id" id="repr_id" old="oldref_id" new="newref_id">
+ * <order id="parent_id" child="repr_id" oldref="oldref_id" newref="newref_id">
  */
 
 void
@@ -337,7 +349,7 @@ sp_document_order_changed (SPDocument *doc, SPObject *object, SPRepr *child, SPR
 
 		sp_document_clear_redo (doc);
 
-		action = sp_action_new (SP_ACTION_CHGCONTENT, object->id);
+		action = sp_action_new (SP_ACTION_CHGORDER, object->id);
 		id = sp_repr_attr (child, "id");
 		action->act.chgorder.child = g_strdup (id);
 		id = (oldref) ? sp_repr_attr (oldref, "id") : NULL;
