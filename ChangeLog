@@ -1,3 +1,14 @@
+2003-04-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-svp-render.c (nr_pixblock_render_svp_mask_or): new method
+	(nr_pixblock_render_svp_rgba): Frontend, implement for all pixblock modes
+	(nr_svp_run_A8_OR): Run callback implementation
+	(nr_svp_run_R8G8B8): Ditto
+	(nr_svp_run_R8G8B8A8P_EMPTY): Ditto
+	(nr_svp_run_R8G8B8A8P_R8G8B8A8P): Ditto
+	(nr_svp_run_R8G8B8A8N_R8G8B8A8N): Ditto
+	(nr_svp_render): Implement using generic run callbacks
+
 2003-04-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp-render.c (nr_pixblock_render_svp_rgba): Do runs properly,
