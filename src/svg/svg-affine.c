@@ -160,6 +160,8 @@ sp_svg_transform_read (const unsigned char *str, NRMatrixF *transform)
 unsigned int
 sp_svg_transform_write (unsigned char *str, unsigned int size, NRMatrixF *transform)
 {
+	unsigned char c[256];
+	int p;
 	double e;
 
 	if (!transform) {
@@ -169,6 +171,7 @@ sp_svg_transform_write (unsigned char *str, unsigned int size, NRMatrixF *transf
 
 	e = 0.000001 * NR_MATRIX_DF_EXPANSION (transform);
 
+	p = 0;
 	/* fixme: We could use t1 * t1 + t2 * t2 here instead */
 	if (NR_DF_TEST_CLOSE (transform->c[1], 0.0, e) && NR_DF_TEST_CLOSE (transform->c[2], 0.0, e)) {
 		if (NR_DF_TEST_CLOSE (transform->c[4], 0.0, e) && NR_DF_TEST_CLOSE (transform->c[5], 0.0, e)) {
@@ -178,24 +181,70 @@ sp_svg_transform_write (unsigned char *str, unsigned int size, NRMatrixF *transf
 				return 0;
 			} else {
 				/* We are more or less scale */
-				return g_snprintf (str, size, "scale(%g,%g)", transform->c[0], transform->c[3]);
+				strcpy (c + p, "scale(");
+				p += 6;
+				p += sp_svg_number_write_de (c + p, transform->c[0], 6, FALSE);
+				c[p++] = ',';
+				p += sp_svg_number_write_de (c + p, transform->c[3], 6, FALSE);
+				c[p++] = ')';
+				p = MIN (p, size - 1);
+				memcpy (str, c, p);
+				str[p] = 0;
+				return p;
 			}
 		} else {
 			if (NR_DF_TEST_CLOSE (transform->c[0], 1.0, e) && NR_DF_TEST_CLOSE (transform->c[3], 1.0, e)) {
 				/* We are more or less translate */
-				return g_snprintf (str, size, "translate(%g,%g)", transform->c[4], transform->c[5]);
+				strcpy (c + p, "translate(");
+				p += 10;
+				p += sp_svg_number_write_de (c + p, transform->c[4], 6, FALSE);
+				c[p++] = ',';
+				p += sp_svg_number_write_de (c + p, transform->c[5], 6, FALSE);
+				c[p++] = ')';
+				p = MIN (p, size - 1);
+				memcpy (str, c, p);
+				str[p] = 0;
+				return p;
 			} else {
-				return g_snprintf (str, size, "matrix(%g,%g,%g,%g,%g,%g)",
-						   transform->c[0], transform->c[1],
-						   transform->c[2], transform->c[3],
-						   transform->c[4], transform->c[5]);
+				strcpy (c + p, "matrix(");
+				p += 7;
+				p += sp_svg_number_write_de (c + p, transform->c[0], 6, FALSE);
+				c[p++] = ',';
+				p += sp_svg_number_write_de (c + p, transform->c[1], 6, FALSE);
+				c[p++] = ',';
+				p += sp_svg_number_write_de (c + p, transform->c[2], 6, FALSE);
+				c[p++] = ',';
+				p += sp_svg_number_write_de (c + p, transform->c[3], 6, FALSE);
+				c[p++] = ',';
+				p += sp_svg_number_write_de (c + p, transform->c[4], 6, FALSE);
+				c[p++] = ',';
+				p += sp_svg_number_write_de (c + p, transform->c[5], 6, FALSE);
+				c[p++] = ')';
+				p = MIN (p, size - 1);
+				memcpy (str, c, p);
+				str[p] = 0;
+				return p;
 			}
 		}
 	} else {
-		return g_snprintf (str, size, "matrix(%g,%g,%g,%g,%g,%g)",
-				   transform->c[0], transform->c[1],
-				   transform->c[2], transform->c[3],
-				   transform->c[4], transform->c[5]);
+		strcpy (c + p, "matrix(");
+		p += 7;
+		p += sp_svg_number_write_de (c + p, transform->c[0], 6, FALSE);
+		c[p++] = ',';
+		p += sp_svg_number_write_de (c + p, transform->c[1], 6, FALSE);
+		c[p++] = ',';
+		p += sp_svg_number_write_de (c + p, transform->c[2], 6, FALSE);
+		c[p++] = ',';
+		p += sp_svg_number_write_de (c + p, transform->c[3], 6, FALSE);
+		c[p++] = ',';
+		p += sp_svg_number_write_de (c + p, transform->c[4], 6, FALSE);
+		c[p++] = ',';
+		p += sp_svg_number_write_de (c + p, transform->c[5], 6, FALSE);
+		c[p++] = ')';
+		p = MIN (p, size - 1);
+		memcpy (str, c, p);
+		str[p] = 0;
+		return p;
 	}
 }
 

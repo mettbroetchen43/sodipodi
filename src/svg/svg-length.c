@@ -8,9 +8,10 @@
  *
  * Copyright (C) 1999-2002 Lauris Kaplinski
  *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -47,6 +48,92 @@ sp_svg_number_read_d (const unsigned char *str, double *val)
 	if ((const unsigned char *) e == str) return 0;
 	*val = v;
 	return 1;
+}
+
+unsigned int
+sp_svg_number_write_i (unsigned char *buf, int val)
+{
+	char c[32];
+	int p, i;
+	p = 0;
+	if (val < 0) {
+		buf[p++] = '-';
+		val = -val;
+	}
+	i = 0;
+	do {
+		c[32 - (++i)] = '0' + (val % 10);
+		val /= 10;
+	} while (val > 0);
+	memcpy (buf + p, &c[32 - i], i);
+	p += i;
+	buf[p] = 0;
+	return p;
+}
+
+unsigned int
+sp_svg_number_write_d (unsigned char *buf, double val, unsigned int tprec, unsigned int fprec, unsigned int padf)
+{
+	double dival, fval;
+	int ival, i, j;
+	i = 0;
+	/* Process sign */
+	if (val < 0.0) {
+		buf[i++] = '-';
+		val = fabs (val);
+	}
+	/* Extract integral and fractional parts */
+	dival = floor (val);
+	ival = (int) dival;
+	fval = val - dival;
+	/* Write integra */
+	j = sp_svg_number_write_i (buf + i, ival);
+	i += j;
+	tprec -= j;
+	fprec = MAX (tprec, fprec);
+	if ((fprec > 0) && (padf || (fval > 0.0))) {
+		fval += 0.5 * pow (10.0, -((double) fprec));
+		buf[i++] = '.';
+		while ((fprec > 0) && (padf || (fval > 0.0))) {
+			fval *= 10.0;
+			dival = floor (fval);
+			fval -= dival;
+			buf[i++] = '0' + (int) dival;
+			fprec -= 1;
+		}
+
+	}
+	buf[i] = 0;
+	return i;
+}
+
+unsigned int
+sp_svg_number_write_f (unsigned char *buf, float val, unsigned int tprec, unsigned int fprec, unsigned int padf)
+{
+	return sp_svg_number_write_d (buf, val, tprec, fprec, padf);
+}
+
+unsigned int
+sp_svg_number_write_de (unsigned char *buf, double val, unsigned int tprec, unsigned int padf)
+{
+	if ((val == 0.0) || ((fabs (val) >= 0.1) && (fabs(val) < 10000000))) {
+		return sp_svg_number_write_d (buf, val, tprec, 0, padf);
+	} else {
+		double eval;
+		int p;
+		eval = floor (log10 (fabs (val)));
+		val = val / pow (10.0, eval);
+		p = sp_svg_number_write_d (buf, val, tprec, 0, padf);
+		buf[p++] = 'e';
+		p += sp_svg_number_write_i (buf + p, (int) eval);
+		return p;
+	}
+}
+
+unsigned int
+sp_svg_number_write_fe (unsigned char *buf, float val, unsigned int tprec, unsigned int padf)
+{
+	return sp_svg_number_write_de (buf, val, tprec, padf);
 }
 
 /* Length */
@@ -156,67 +243,6 @@ sp_svg_length_unset (SPSVGLength *length, unsigned long unit, float value, float
 	length->value = value;
 	length->computed = computed;
 }
-
-#if 0
-/* NB! px is absolute in SVG, but we prefer to keep it separate for UI reasons */
-
-gdouble
-sp_svg_read_length (const SPUnit **unit, const gchar *str, gdouble def)
-{
-	char * u;
-	gdouble v;
-
-	*unit = sp_unit_get_identity (SP_UNIT_USERSPACE);
-	if (str == NULL) return def;
-
-	v = strtod (str, &u);
-	while (isspace (*u)) {
-		if (*u == '\0') return v;
-		u++;
-	}
-
-	if (strncmp (u, "px", 2) == 0) {
-		*unit = sp_unit_get_identity (SP_UNIT_DEVICE);
-	} else if (strncmp (u, "pt", 2) == 0) {
-		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
-	} else if (strncmp (u, "pc", 2) == 0) {
-		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
-		v *= 12.0;
-	} else if (strncmp (u, "mm", 2) == 0) {
-		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
-		v *= (72.0 / 25.4);
-	} else if (strncmp (u, "cm", 2) == 0) {
-		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
-		v *= (72.0 / 2.54);
-	} else if (strncmp (u, "m", 1) == 0) {
-		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
-		v *= (72.0 / 0.0254);
-	} else if (strncmp (u, "in", 2) == 0) {
-		*unit = sp_unit_get_identity (SP_UNIT_ABSOLUTE);
-		v *= 72.0;
-	} else if (strncmp (u, "em", 2) == 0) {
-		*unit = sp_unit_get_by_abbreviation ("em");
-	} else if (strncmp (u, "ex", 2) == 0) {
-		*unit = sp_unit_get_by_abbreviation ("ex");
-	} else if (*u == '%') {
-		*unit = sp_unit_get_by_abbreviation ("%");
-	}
-
-	return v;
-}
-#endif
-
-#if 0
-int
-sp_svg_write_length (char *buf, gint buflen, gdouble val, const SPUnit *unit)
-{
-	if (unit->base != SP_UNIT_USERSPACE) {
-		return snprintf (buf, buflen, "%g%s", val, unit->abbr);
-	} else {
-		return snprintf (buf, buflen, "%g", val);
-	}
-}
-#endif
 
 double
 sp_svg_read_percentage (const char * str, double def)

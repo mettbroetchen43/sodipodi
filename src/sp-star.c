@@ -140,13 +140,13 @@ sp_star_write (SPObject *object, SPRepr *repr, guint flags)
 
 	if (flags & SP_OBJECT_WRITE_SODIPODI) {
 		sp_repr_set_attr (repr, "sodipodi:type", "star");
-		sp_repr_set_int_attribute (repr, "sodipodi:sides", star->sides);
-		sp_repr_set_double_attribute (repr, "sodipodi:cx", star->cx);
-		sp_repr_set_double_attribute (repr, "sodipodi:cy", star->cy);
-		sp_repr_set_double_attribute (repr, "sodipodi:r1", star->r1);
-		sp_repr_set_double_attribute (repr, "sodipodi:r2", star->r2);
-		sp_repr_set_double_attribute (repr, "sodipodi:arg1", star->arg1);
-		sp_repr_set_double_attribute (repr, "sodipodi:arg2", star->arg2);
+		sp_repr_set_int (repr, "sodipodi:sides", star->sides);
+		sp_repr_set_double (repr, "sodipodi:cx", star->cx);
+		sp_repr_set_double (repr, "sodipodi:cy", star->cy);
+		sp_repr_set_double (repr, "sodipodi:r1", star->r1);
+		sp_repr_set_double (repr, "sodipodi:r2", star->r2);
+		sp_repr_set_double (repr, "sodipodi:arg1", star->arg1);
+		sp_repr_set_double (repr, "sodipodi:arg2", star->arg2);
 	}
 
 	if (((SPObjectClass *) (parent_class))->write)
@@ -279,7 +279,7 @@ sp_star_set_shape (SPShape *shape)
 	}
 	
 	sp_curve_closepath (c);
-	sp_shape_set_curve (SP_SHAPE (star), c, TRUE);
+	sp_shape_set_curve_insync (SP_SHAPE (star), c, TRUE);
 	sp_curve_unref (c);
 }
 

@@ -27,6 +27,16 @@
 unsigned int sp_svg_number_read_f (const unsigned char *str, float *val);
 unsigned int sp_svg_number_read_d (const unsigned char *str, double *val);
 
+/*
+ * No buffer overflow checking is done, so better wrap them if needed
+ */
+
+unsigned int sp_svg_number_write_i (unsigned char *buf, int val);
+unsigned int sp_svg_number_write_d (unsigned char *buf, double val, unsigned int tprec, unsigned int fprec, unsigned int padf);
+unsigned int sp_svg_number_write_f (unsigned char *buf, float val, unsigned int tprec, unsigned int fprec, unsigned int padf);
+unsigned int sp_svg_number_write_de (unsigned char *buf, double val, unsigned int tprec, unsigned int padf);
+unsigned int sp_svg_number_write_fe (unsigned char *buf, float val, unsigned int tprec, unsigned int padf);
+
 /* Length */
 
 /*

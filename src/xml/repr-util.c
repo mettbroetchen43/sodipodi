@@ -570,22 +570,62 @@ sp_repr_set_int (SPRepr *repr, const guchar *key, gint val)
 	return sp_repr_set_attr (repr, key, c);
 }
 
-#if 0
-static gint
-sp_svg_write_double (guchar *c, gdouble val)
+unsigned int
+sp_xml_dtoa (unsigned char *buf, double val, unsigned int tprec, unsigned int fprec, unsigned int padf)
 {
+	double dival, fval;
+	int ival, i;
+	i = 0;
+	if (val < 0.0) {
+		buf[i++] = '-';
+		val = fabs (val);
+	}
+	/* Extract integral and fractional parts */
+	dival = floor (val);
+	ival = (int) dival;
+	fval = val - dival;
+	/* Write integra */
+	if (ival > 0) {
+		char c[32];
+		int j;
+		j = 0;
+		while (ival > 0) {
+			c[32 - (++j)] = '0' + (ival % 10);
+			ival /= 10;
+		}
+		memcpy (buf, &c[32 - j], j);
+		i += j;
+		tprec -= j;
+	} else {
+		buf[i++] = '0';
+		tprec -= 1;
+	}
+	fprec = MAX (tprec, fprec);
+	if ((fprec > 0) && (padf || (fval > 0.0))) {
+		fval += 0.5 * pow (10.0, -((double) fprec));
+		buf[i++] = '.';
+		while ((fprec > 0) && (padf || (fval > 0.0))) {
+			fval *= 10.0;
+			dival = floor (fval);
+			fval -= dival;
+			buf[i++] = '0' + (int) dival;
+			fprec -= 1;
+		}
+
+	}
+	buf[i] = 0;
+	return i;
 }
-#endif
 
 gboolean
 sp_repr_set_double (SPRepr *repr, const guchar *key, gdouble val)
 {
-	guchar c[32];
+	unsigned char c[32];
 
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (key != NULL, FALSE);
 
-	g_snprintf (c, 32, "%g", val);
+	sp_xml_dtoa (c, val, 8, 0, FALSE);
 
 	return sp_repr_set_attr (repr, key, c);
 }

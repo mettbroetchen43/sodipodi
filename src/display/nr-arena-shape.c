@@ -270,6 +270,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		}
 #ifdef WITH_NRSVP
 		if (shape->nrsvp) nr_svp_free_list (shape->nrsvp);
+		shape->nrsvp = NULL;
 #endif
 	}
 	if (shape->stroke_svp) {

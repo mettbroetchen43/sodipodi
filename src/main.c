@@ -159,6 +159,8 @@ WinMain (HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, i
 	char **argv;
 	char *a[] = {"Sodipodi"};
 
+	char *lala = setlocale (LC_NUMERIC, "C");
+
 	argc = 1;
 	argv = a;
 	gtk_init (&argc, &argv);
@@ -168,7 +170,6 @@ WinMain (HINSTANCE hThisInstance, HINSTANCE hPrevInstance, LPSTR lpszArgument, i
 	/* We must set LC_NUMERIC to default, or otherwise */
 	/* we'll end with localised SVG files :-( */
 
-	setlocale (LC_NUMERIC, "C");
 
 	sodipodi = sodipodi_application_new ();
 	sodipodi_load_preferences (sodipodi);
