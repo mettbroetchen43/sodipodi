@@ -36,6 +36,10 @@
 #include "nr-arena.h"
 #include "nr-arena-shape.h"
 
+#ifdef WITH_NRSVP
+#include <libnr/nr-svp-render.h>
+#endif
+
 static void nr_arena_shape_class_init (NRArenaShapeClass *klass);
 static void nr_arena_shape_init (NRArenaShape *shape);
 static void nr_arena_shape_finalize (NRObject *object);
@@ -117,6 +121,10 @@ nr_arena_shape_finalize (NRObject *object)
 	while (shape->markers) {
 		shape->markers = nr_arena_item_detach_unref (item, shape->markers);
 	}
+
+#ifdef WITH_NRSVP
+	if (shape->nrsvp) nr_svp_free_list (shape->nrsvp);
+#endif
 
 	if (shape->fill_svp) art_svp_free (shape->fill_svp);
 	if (shape->stroke_svp) art_svp_free (shape->stroke_svp);
@@ -260,6 +268,9 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 			art_svp_free (shape->fill_svp);
 			shape->fill_svp = NULL;
 		}
+#ifdef WITH_NRSVP
+		if (shape->nrsvp) nr_svp_free_list (shape->nrsvp);
+#endif
 	}
 	if (shape->stroke_svp) {
 		art_svp_free (shape->stroke_svp);
@@ -292,6 +303,9 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				art_svp_free (svpa);
 				shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
 				art_svp_free (svpb);
+#ifdef WITH_NRSVP
+				shape->nrsvp = nr_svp_from_art_svp (shape->fill_svp);
+#endif
 			} else if (!NR_MATRIX_DF_TEST_TRANSLATE_CLOSE (&gc->transform, &NR_MATRIX_D_IDENTITY, NR_EPSILON_D)) {
 				ArtSVP *svpa;
 				/* Concept test */
@@ -400,7 +414,11 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 			rgba = sp_color_get_rgba32_falpha (&style->fill.value.color,
 							   SP_SCALE24_TO_FLOAT (style->fill_opacity.value) *
 							   SP_SCALE24_TO_FLOAT (style->opacity.value));
+#ifdef WITH_NRSVP
+			nr_pixblock_render_svp_rgba (pb, shape->nrsvp, rgba);
+#else
 			nr_blit_pixblock_mask_rgba32 (pb, &m, rgba);
+#endif
 			pb->empty = FALSE;
 			break;
 		case SP_PAINT_TYPE_PAINTSERVER:

@@ -1,16 +1,24 @@
-#define _NR_SVP_RENDER_C_
+#define __NR_SVP_RENDER_C__
 
-#include <math.h>
+/*
+ * Pixel buffer rendering library
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * This code is in public domain
+ */
+
+#include "nr-macros.h"
+#include "nr-pixops.h"
 #include "nr-svp-render.h"
-
-#define NR_EPSILON 1e-18
 
 typedef struct _NRSlice NRSlice;
 
 struct _NRSlice {
-	NRSlice * next;
-	NRSVP * svp;
-	NRVertex * vertex;
+	NRSlice *next;
+	NRSVP *svp;
+	NRVertex *vertex;
 	NRCoord x;
 	NRCoord y;
 	NRCoord stepx;
@@ -19,7 +27,7 @@ struct _NRSlice {
 typedef struct _NRRun NRRun;
 
 struct _NRRun {
-	NRRun * next;
+	NRRun *next;
 	NRCoord x0, y0, x1, y1;
 	float step;
 	float final;
@@ -27,39 +35,43 @@ struct _NRRun {
 	float value;
 };
 
-static NRSlice * nr_slice_new (NRSVP * svp, NRCoord y);
-static void nr_slice_free_one (NRSlice * s);
-static void nr_slice_free_list (NRSlice * s);
-static NRSlice * nr_slice_insert_sorted (NRSlice * start, NRSlice * slice);
-static gint nr_slice_compare (NRSlice * l, NRSlice * r);
+static NRSlice *nr_slice_new (NRSVP *svp, NRCoord y);
+static void nr_slice_free_one (NRSlice *s);
+static void nr_slice_free_list (NRSlice *s);
+static NRSlice *nr_slice_insert_sorted (NRSlice *start, NRSlice *slice);
+static int nr_slice_compare (NRSlice *l, NRSlice *r);
 
-static NRRun * nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, gint wind);
-static void nr_run_free_one (NRRun * run);
-static void nr_run_free_list (NRRun * run);
-static NRRun * nr_run_insert_sorted (NRRun * start, NRRun * run);
+static NRRun *nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, int wind);
+static void nr_run_free_one (NRRun *run);
+static void nr_run_free_list (NRRun *run);
+static NRRun *nr_run_insert_sorted (NRRun *start, NRRun *run);
 
 void
-nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint width, gint height, gint rowstride, guint32 rgba)
+nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 {
-	NRSVP * nsvp;
-	NRSlice * slices;
-	gint x1, y1, ystart;
-	guint32 fg_r, fg_g, fg_b, fg_a;
-	guchar * rowbuffer;
-	gint y;
+	NRSVP *nsvp;
+	NRSlice *slices;
+	int x0, y0, x1, y1, ystart;
+	unsigned long fg_r, fg_g, fg_b, fg_a;
+	unsigned char *px, *rowbuffer;
+	int y;
 
 	if (!svp) return;
 
-	x1 = x0 + width;
-	y1 = y0 + height;
+	if (dpb->mode != NR_PIXBLOCK_MODE_R8G8B8A8P) return;
+
+	x0 = dpb->area.x0;
+	y0 = dpb->area.y0;
+	x1 = dpb->area.x1;
+	y1 = dpb->area.y1;
+	px = NR_PIXBLOCK_PX (dpb);
 
 	/* Find starting pixel row */
-	g_assert (svp->bbox.y0 == svp->vertex->y);
-	ystart = (gint) floor (svp->bbox.y0);
+	/* g_assert (svp->bbox.y0 == svp->vertex->y); */
+	ystart = (int) svp->bbox.y0;
 	if (ystart >= y1) return;
 	if (ystart > y0) {
-		buffer += (ystart - y0) * rowstride;
-		height -= (ystart - y0);
+		px += (ystart - y0) * dpb->rs;
 		y0 = ystart;
 	}
 
@@ -67,9 +79,9 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 	slices = NULL;
 	nsvp = svp;
 	while ((nsvp) && (nsvp->bbox.y0 <= y0)) {
-		g_assert (nsvp->bbox.y0 == nsvp->vertex->y);
+		/* g_assert (nsvp->bbox.y0 == nsvp->vertex->y); */
 		if (nsvp->bbox.y1 > y0) {
-			NRSlice * newslice;
+			NRSlice *newslice;
 			newslice = nr_slice_new (nsvp, y0);
 			slices = nr_slice_insert_sorted (slices, newslice);
 		}
@@ -85,16 +97,16 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 
 	/* Row buffer */
 	/* fixme: not needed */
-	rowbuffer = buffer;
+	rowbuffer = px;
 
 	/* Main iteration */
 	for (y = y0; y < y1; y++) {
 		NRSlice * ss, * cs;
 		NRRun * runs;
-		gint xstart;
+		int xstart;
 		float globalval;
-		guchar * br;
-		gint x;
+		unsigned char *d;
+		int x;
 
 		/* Add possible new svps to slice list */
 		while ((nsvp) && (nsvp->bbox.y0 < (y + 1))) {
@@ -109,8 +121,8 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 		ss = NULL;
 		cs = slices;
 		while (cs) {
-			g_assert (cs->y >= y0);
-			g_assert (cs->y < (y + 1));
+			/* g_assert (cs->y >= y0); */
+			/* g_assert (cs->y < (y + 1)); */
 			while ((cs->y < (y + 1)) && (cs->vertex->next)) {
 				NRCoord x0, y0, x1, y1;
 				NRRun * newrun;
@@ -158,7 +170,7 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 		globalval = 0.0;
 		if ((runs) && (x0 < runs->x0)) {
 			/* First run starts right from x0 */
-			xstart = (gint32) floor (runs->x0);
+			xstart = (int) runs->x0;
 		} else {
 			NRRun * sr, * cr;
 			/* First run starts left from x0 */
@@ -187,13 +199,14 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 		}
 
 		/* Running buffer */
-		br = rowbuffer + 3 * (xstart - x0);
+		d = rowbuffer + 4 * (xstart - x0);
 
 		for (x = xstart; (runs) && (x < x1); x++) {
-			NRRun * sr, * cr;
+			NRRun *sr, *cr;
 			float xnext;
 			float localval;
-			guint coverage;
+			int coverage;
+			unsigned int ca;
 
 			xnext = x + 1.0;
 			/* process runs */
@@ -241,14 +254,35 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 				}
 			}
 			/* Draw */
-			coverage = (guint) (floor (localval * 255.99));
-			coverage = (coverage * fg_a + 0x80) >> 8;
-			*br++ = *br + (((fg_r - *br) * coverage + 0x80) >> 8);
-			*br++ = *br + (((fg_g - *br) * coverage + 0x80) >> 8);
-			*br++ = *br + (((fg_b - *br) * coverage + 0x80) >> 8);
+			coverage = (int) (localval * 255.9999);
+			coverage = CLAMP (coverage, 0, 255);
+			ca = NR_PREMUL (coverage, fg_a);
+#if 1
+			if (ca == 0) {
+				/* Transparent FG, NOP */
+			} else if ((ca == 255) || (d[3] == 0)) {
+				/* Full coverage, COPY */
+				d[0] = NR_PREMUL (fg_r, ca);
+				d[1] = NR_PREMUL (fg_g, ca);
+				d[2] = NR_PREMUL (fg_b, ca);
+				d[3] = ca;
+			} else {
+				/* Full composition */
+				d[0] = NR_COMPOSENPP (fg_r, ca, d[0], d[3]);
+				d[1] = NR_COMPOSENPP (fg_g, ca, d[1], d[3]);
+				d[2] = NR_COMPOSENPP (fg_b, ca, d[2], d[3]);
+				d[3] = (65025 - (255 - ca) * (255 - d[3]) + 127) / 255;
+			}
+#else
+			d[0] = fg_r;
+			d[1] = fg_g;
+			d[2] = fg_b;
+			d[3] = fg_a;
+#endif
+			d += 4;
 		}
 		nr_run_free_list (runs);
-		rowbuffer += rowstride;
+		rowbuffer += dpb->rs;
 	}
 	if (slices) nr_slice_free_list (slices);
 }
@@ -260,27 +294,27 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 /* Slices */
 
 #define NR_SLICE_ALLOC_SIZE 32
-static NRSlice * ffslice = NULL;
+static NRSlice *ffslice = NULL;
 
 NRSlice *
 nr_slice_new (NRSVP * svp, NRCoord y)
 {
-	NRSlice * s;
-	NRVertex * v;
+	NRSlice *s;
+	NRVertex *v;
 
-	g_assert (svp);
-	g_assert (svp->vertex);
+	/* g_assert (svp); */
+	/* g_assert (svp->vertex); */
 	/* fixme: not sure, whether correct */
-	g_assert (y == NR_COORD_SNAP (y));
+	/* g_assert (y == NR_COORD_SNAP (y)); */
 	/* Slices startpoints are included, endpoints excluded */
-	g_return_val_if_fail (y >= svp->bbox.y0, NULL);
-	g_return_val_if_fail (y < svp->bbox.y1, NULL);
+	/* g_return_val_if_fail (y >= svp->bbox.y0, NULL); */
+	/* g_return_val_if_fail (y < svp->bbox.y1, NULL); */
 
 	s = ffslice;
 
 	if (s == NULL) {
-		gint i;
-		s = g_new (NRSlice, NR_SLICE_ALLOC_SIZE);
+		int i;
+		s = nr_new (NRSlice, NR_SLICE_ALLOC_SIZE);
 		for (i = 1; i < (NR_SLICE_ALLOC_SIZE - 1); i++) s[i].next = &s[i + 1];
 		s[NR_SLICE_ALLOC_SIZE - 1].next = NULL;
 		ffslice = s + 1;
@@ -293,7 +327,7 @@ nr_slice_new (NRSVP * svp, NRCoord y)
 
 	v = svp->vertex;
 	while ((v->next) && (v->next->y <= y)) v = v->next;
-	g_assert (v->next);
+	/* g_assert (v->next); */
 
 	s->vertex = v;
 	if (v->y == y) {
@@ -356,7 +390,7 @@ nr_slice_insert_sorted (NRSlice * start, NRSlice * slice)
 	return start;
 }
 
-static gint
+static int
 nr_slice_compare (NRSlice * l, NRSlice * r)
 {
 	if (l->y == r->y) {
@@ -407,18 +441,18 @@ nr_slice_compare (NRSlice * l, NRSlice * r)
 }
 
 #define NR_RUN_ALLOC_SIZE 32
-static NRRun * ffrun = NULL;
+static NRRun *ffrun = NULL;
 
 static NRRun *
-nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, gint wind)
+nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, int wind)
 {
 	NRRun * r;
 
 	r = ffrun;
 
 	if (r == NULL) {
-		gint i;
-		r = g_new (NRRun, NR_RUN_ALLOC_SIZE);
+		int i;
+		r = nr_new (NRRun, NR_RUN_ALLOC_SIZE);
 		for (i = 1; i < (NR_RUN_ALLOC_SIZE - 1); i++) (r + i)->next = (r + i + 1);
 		(r + NR_RUN_ALLOC_SIZE - 1)->next = NULL;
 		ffrun = r + 1;

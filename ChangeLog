@@ -1,5 +1,15 @@
 2003-04-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/libnr/nr-svp-render.c: Moved here from old arena code
+
+	* src/libnr/nr-svp-render.h: Ditto
+
+	* src/libnr/nr-svp.c: Ditto
+
+	* src/libnr/nr-svp.h: Ditto
+
+	* src/display/nr-arena-shape.h: Optional experimental new renderer
+
 	* src/libnrtype/nr-typeface.h: Port to NRObject
 
 	* src/display/canvas-arena.c (sp_canvas_arena_init): Use active object

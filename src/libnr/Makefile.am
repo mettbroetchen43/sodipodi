@@ -39,6 +39,8 @@ libnr_a_SOURCES = \
 	nr-render.h \
 	nr-gradient.c nr-gradient.h \
 	nr-path.c nr-path.h \
+	nr-svp.c nr-svp.h \
+	nr-svp-render.c nr-svp-render.h \
 	nr-object.c nr-object.h \
 	$(mmx_sources)
 
