@@ -142,6 +142,8 @@ gdouble *sp_item_i2doc_affine (SPItem *item, gdouble affine[]);
 gdouble *sp_item_i2d_affine (SPItem *item, gdouble affine[]);
 void sp_item_set_i2d_affine (SPItem *item, gdouble affine[]);
 
+gdouble *sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, gdouble affine[]);
+
 /* Context menu stuff */
 
 void sp_item_menu (SPItem *item, SPDesktop *desktop, GtkMenu *menu);

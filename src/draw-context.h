@@ -20,16 +20,16 @@ struct _SPDrawContext {
 	guint addline : 1;
 
 	/* Current item */
-	SPItem *wi;
+	SPItem *white_item;
 	/* White curve list */
-	GSList *wcl;
+	GSList *white_cl;
 	/* White anchor list */
-	GSList *wal;
+	GSList *white_al;
 
 	/* Red bpath */
-	GnomeCanvasItem *rbp;
+	GnomeCanvasItem *red_bpath;
 	/* Red curve */
-	SPCurve *rc;
+	SPCurve *red_curve;
 
 	/* Blue bpath */
 	GnomeCanvasItem *bbp;

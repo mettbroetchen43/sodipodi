@@ -23,10 +23,10 @@
 
 struct _SPEventContext {
 	GtkObject object;
-	SPDesktop * desktop;
-	gchar ** cursor_shape;
+	SPDesktop *desktop;
+	gchar **cursor_shape;
 	gint hot_x, hot_y;
-	GdkCursor * cursor;
+	GdkCursor *cursor;
 };
 
 struct _SPEventContextClass {
@@ -35,6 +35,8 @@ struct _SPEventContextClass {
 	gint (* root_handler) (SPEventContext * event_context, GdkEvent * event);
 	gint (* item_handler) (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 };
+
+#define SP_EVENT_CONTEXT_DESKTOP(e) (SP_EVENT_CONTEXT (e)->desktop)
 
 /* Standard Gtk function */
 

@@ -613,6 +613,18 @@ sp_item_set_i2d_affine (SPItem *item, gdouble affine[])
 	sp_item_set_item_transform (item, i2p);
 }
 
+gdouble *
+sp_item_dt2i_affine (SPItem *item, SPDesktop *dt, gdouble affine[])
+{
+	gdouble i2dt[6];
+
+	/* fixme: Implement the right way (Lauris) */
+	sp_item_i2d_affine (item, i2dt);
+	art_affine_invert (affine, i2dt);
+
+	return affine;
+}
+
 /* Generate context menu item section */
 
 static void

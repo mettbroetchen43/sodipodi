@@ -11,7 +11,7 @@
  *
  */
 
-#define noDRAW_VERBOSE
+#define DRAW_VERBOSE
 
 #include <math.h>
 #include "xml/repr.h"
@@ -44,21 +44,22 @@ static void sp_draw_context_setup (SPEventContext * event_context, SPDesktop * d
 static gint sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_draw_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
+static void sp_draw_context_selection_changed (SPSelection *sel, SPDrawContext *dc);
+static void sp_draw_context_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc);
+
 static void spdc_set_endpoint (SPDrawContext *dc, ArtPoint *p, guint state);
 static void spdc_finish_endpoint (SPDrawContext *dc, ArtPoint *p, guint state);
 static void spdc_concat_colors_and_flush (SPDrawContext *dc);
 static void spdc_flush_white (SPDrawContext *dc, SPCurve *gc);
 
 static void spdc_clear_white_data (SPDrawContext *dc);
+static void spdc_clear_red_data (SPDrawContext *dc);
 
 SPDrawAnchor *sp_draw_anchor_test (SPDrawAnchor *anchor, gdouble wx, gdouble wy, gboolean activate);
 
 static void clear_current (SPDrawContext * dc);
 static void set_to_accumulated (SPDrawContext * dc);
 static void concat_current (SPDrawContext * dc);
-#if 0
-static void repr_destroyed (SPRepr * repr, gpointer data);
-#endif
 
 static void test_inside (SPDrawContext * dc, double x, double y);
 static void move_ctrl (SPDrawContext * dc, double x, double y);
@@ -113,12 +114,12 @@ sp_draw_context_class_init (SPDrawContextClass * klass)
 static void
 sp_draw_context_init (SPDrawContext * dc)
 {
-	dc->wi = NULL;
-	dc->wcl = NULL;
-	dc->wal = NULL;
+	dc->white_item = NULL;
+	dc->white_cl = NULL;
+	dc->white_al = NULL;
 
-	dc->rbp = NULL;
-	dc->rc = NULL;
+	dc->red_bpath = NULL;
+	dc->red_curve = NULL;
 
 	dc->bbp = NULL;
 	dc->bc = NULL;
@@ -139,17 +140,7 @@ sp_draw_context_destroy (GtkObject *object)
 	gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (DC_DESKTOP (dc))), dc);
 
 	spdc_clear_white_data (dc);
-
-	if (dc->rbp) {
-		/* Destroy red bpath */
-		gtk_object_destroy (GTK_OBJECT (dc->rbp));
-		dc->rbp = NULL;
-	}
-
-	if (dc->rc) {
-		/* Destroy red curve */
-		dc->rc = sp_curve_unref (dc->rc);
-	}
+	spdc_clear_red_data (dc);
 
 	if (dc->bbp) {
 		/* Destroy blue bpath */
@@ -196,6 +187,44 @@ sp_draw_context_destroy (GtkObject *object)
 }
 
 static void
+sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
+{
+	SPDrawContext *dc;
+
+	dc = SP_DRAW_CONTEXT (ec);
+
+	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
+		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec, dt);
+
+	/* Connect signals to track selection changes */
+	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "changed",
+			    GTK_SIGNAL_FUNC (sp_draw_context_selection_changed), dc);
+	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "modified",
+			    GTK_SIGNAL_FUNC (sp_draw_context_selection_modified), dc);
+
+	/* Create red bpath */
+	dc->red_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->red_bpath), 0xff00007f, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+	/* Create red curve */
+	dc->red_curve = sp_curve_new_sized (4);
+
+	/* Create blue bpath */
+	dc->bbp = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
+	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->bbp), 0x0000ff7f, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+	/* Create blue curve */
+	dc->bc = sp_curve_new_sized (8);
+
+	/* Create green curve */
+	dc->gc = sp_curve_new_sized (64);
+	/* Create hidden green anchor */
+	dc->ga = sp_draw_anchor_new (dc, dc->gc, FALSE, 0, 0);
+	gnome_canvas_item_hide (dc->ga->ctrl);
+
+	/* Attach existing selection */
+	/* fixme: fixme: fixme: (lauris) */
+}
+
+static void
 sp_draw_context_selection_changed (SPSelection *sel, SPDrawContext *dc)
 {
 	g_print ("Selection changed in draw context\n");
@@ -212,6 +241,9 @@ sp_draw_context_selection_modified (SPSelection *sel, guint flags, SPDrawContext
 
 	/* Clear white data */
 	spdc_clear_white_data (dc);
+	/* Reset red data */
+	sp_curve_reset (dc->red_curve);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
 
 	item = sp_selection_item (SP_DT_SELECTION (DC_DESKTOP (dc)));
 
@@ -220,14 +252,14 @@ sp_draw_context_selection_modified (SPSelection *sel, guint flags, SPDrawContext
 		GSList *l;
 		/* Create new white data */
 		/* Item */
-		dc->wi = item;
+		dc->white_item = item;
 		/* Curve list */
 		norm = sp_path_normalized_bpath (SP_PATH (item));
 		g_return_if_fail (norm != NULL);
-		dc->wcl = sp_curve_split (norm);
+		dc->white_cl = sp_curve_split (norm);
 		sp_curve_unref (norm);
 		/* Anchor list */
-		for (l = dc->wcl; l != NULL; l = l->next) {
+		for (l = dc->white_cl; l != NULL; l = l->next) {
 			SPCurve *c;
 			c = l->data;
 			g_return_if_fail (c->end > 1);
@@ -236,63 +268,15 @@ sp_draw_context_selection_modified (SPSelection *sel, guint flags, SPDrawContext
 				ArtPoint p;
 				sp_desktop_doc2d_xy_point (DC_DESKTOP (dc), &p, c->bpath[0].x3, c->bpath[0].y3);
 				a = sp_draw_anchor_new (dc, c, TRUE, p.x, p.y);
-				dc->wal = g_slist_prepend (dc->wal, a);
+				dc->white_al = g_slist_prepend (dc->white_al, a);
 				sp_desktop_doc2d_xy_point (DC_DESKTOP (dc), &p, c->bpath[c->end - 1].x3, c->bpath[c->end - 1].y3);
 				a = sp_draw_anchor_new (dc, c, FALSE, p.x, p.y);
-				dc->wal = g_slist_prepend (dc->wal, a);
+				dc->white_al = g_slist_prepend (dc->white_al, a);
 			}
 		}
-		/* fixme: recalculate active anchor, reset red, green and blue, release drags */
+		/* fixme: recalculate active anchor, reset red (DONE), green and blue, release drags */
 		/* The latter is not needed, if we can ensure that 'modified' is not delayed */
 	}
-}
-
-static void
-sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
-{
-	SPDrawContext *dc;
-
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec, dt);
-
-	dc = SP_DRAW_CONTEXT (ec);
-
-	/* Connect signals to track selection changes */
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "changed",
-			    GTK_SIGNAL_FUNC (sp_draw_context_selection_changed), dc);
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "modified",
-			    GTK_SIGNAL_FUNC (sp_draw_context_selection_modified), dc);
-
-	/* Create red bpath */
-	dc->rbp = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
-	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->rbp), 0xff00007f, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
-	/* Create red curve */
-	dc->rc = sp_curve_new_sized (4);
-
-	/* Create blue bpath */
-	dc->bbp = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
-	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (dc->bbp), 0x0000ff7f, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
-	/* Create blue curve */
-	dc->bc = sp_curve_new_sized (8);
-
-	/* Create green curve */
-	dc->gc = sp_curve_new_sized (64);
-	/* Create hidden green anchor */
-	dc->ga = sp_draw_anchor_new (dc, dc->gc, FALSE, 0, 0);
-	gnome_canvas_item_hide (dc->ga->ctrl);
-#if 0
-		gtk_signal_connect (GTK_OBJECT (dc->citem), "event",
-			GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
-#endif
-
-
-	/* Check for existing selection */
-	/* blablabla */
-
-#if 0
-	gtk_signal_connect (GTK_OBJECT (dc->currentshape), "event",
-			    GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
-#endif
 }
 
 static gint
@@ -485,14 +469,16 @@ spdc_set_endpoint (SPDrawContext *dc, ArtPoint *p, guint state)
 	dc->p[1] = *p;
 	dc->npoints = 2;
 
-	sp_curve_reset (dc->rc);
-	sp_curve_moveto (dc->rc, dc->p[0].x, dc->p[0].y);
-	sp_curve_lineto (dc->rc, dc->p[1].x, dc->p[1].y);
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->rbp), dc->rc);
+	sp_curve_reset (dc->red_curve);
+	sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
+	sp_curve_lineto (dc->red_curve, dc->p[1].x, dc->p[1].y);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
 }
 
 /*
  * Set endpoint final position and end addline mode
+ * fixme: I'd like remove red reset from concat colors (lauris)
+ * fixme: Still not sure, how it will make most sense
  */
 
 static void
@@ -500,25 +486,34 @@ spdc_finish_endpoint (SPDrawContext *dc, ArtPoint *p, guint state)
 {
 	dc->addline = FALSE;
 
-	if (dc->rc->end < 2) {
+	if (SP_CURVE_LENGTH (dc->red_curve) < 2) {
 		/* Just a click, reset red curve and continue */
-		sp_curve_reset (dc->rc);
-		return;
+		g_print ("Finishing empty red curve\n");
+		sp_curve_reset (dc->red_curve);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+	} else if (SP_CURVE_LENGTH (dc->red_curve) > 2) {
+		g_warning ("Red curve length is %d", SP_CURVE_LENGTH (dc->red_curve));
+		sp_curve_reset (dc->red_curve);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+	} else {
+		ArtBpath *s, *e;
+		/* We have actual line */
+		/* Do (bogus?) snap */
+		spdc_endpoint_snap (dc, p, state);
+		/* fixme: We really should test start and end anchors instead */
+		s = SP_CURVE_SEGMENT (dc->red_curve, 0);
+		e = SP_CURVE_SEGMENT (dc->red_curve, 1);
+		if ((e->x3 == s->x3) && (e->y3 == s->y3)) {
+			/* Empty line, reset red curve and continue */
+			g_print ("Finishing zero length red curve\n");
+			sp_curve_reset (dc->red_curve);
+			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+		} else {
+			/* Write curves to object */
+			g_print ("Finishing real red curve curve\n");
+			spdc_concat_colors_and_flush (dc);
+		}
 	}
-
-	/* We have actual line */
-
-	spdc_endpoint_snap (dc, p, state);
-
-	/* fixme: We really should test start and end anchors instead */
-	if ((dc->rc->bpath[0].x3 == dc->rc->bpath[dc->rc->end - 1].x3) && (dc->rc->bpath[0].y3 == dc->rc->bpath[dc->rc->end - 1].y3)) {
-		/* Empty line, reset red curve and continue */
-		sp_curve_reset (dc->rc);
-		return;
-	}
-
-	/* Write curves to object */
-	spdc_concat_colors_and_flush (dc);
 }
 
 /*
@@ -548,9 +543,9 @@ spdc_concat_colors_and_flush (SPDrawContext *dc)
 	sp_curve_reset (dc->bc);
 	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->bbp), NULL);
 	/* Red */
-	sp_curve_append (c, dc->rc, TRUE);
-	sp_curve_reset (dc->rc);
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->rbp), NULL);
+	sp_curve_append (c, dc->red_curve, TRUE);
+	sp_curve_reset (dc->red_curve);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
 
 	/* Step A - test, whether we ended on green anchor */
 	if (dc->ga->active) {
@@ -580,7 +575,7 @@ spdc_concat_colors_and_flush (SPDrawContext *dc)
 	if (dc->sa) {
 		SPCurve *s;
 		s = dc->sa->curve;
-		dc->wcl = g_slist_remove (dc->wcl, s);
+		dc->white_cl = g_slist_remove (dc->white_cl, s);
 		if (dc->sa->start) {
 			SPCurve *r;
 			r = sp_curve_reverse (s);
@@ -596,7 +591,7 @@ spdc_concat_colors_and_flush (SPDrawContext *dc)
 	if (dc->ea) {
 		SPCurve *e;
 		e = dc->ea->curve;
-		dc->wcl = g_slist_remove (dc->wcl, e);
+		dc->white_cl = g_slist_remove (dc->white_cl, e);
 		if (!dc->ea->start) {
 			SPCurve *r;
 			r = sp_curve_reverse (e);
@@ -608,6 +603,8 @@ spdc_concat_colors_and_flush (SPDrawContext *dc)
 	}
 
 	spdc_flush_white (dc, c);
+
+	sp_curve_unref (c);
 }
 
 /*
@@ -623,57 +620,78 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 {
 	SPCurve *c;
 
-	if (dc->wcl) {
-		c = sp_curve_concat (dc->wcl);
-		g_slist_free (dc->wcl);
-		dc->wcl = NULL;
+	if (dc->white_cl) {
+		g_assert (dc->white_item);
+		c = sp_curve_concat (dc->white_cl);
+		g_slist_free (dc->white_cl);
+		dc->white_cl = NULL;
 		if (gc) {
-			sp_curve_append (c, gc, FALSE);
+			gdouble d2item[6];
+			ArtBpath *abp;
+			SPCurve *new;
+			sp_item_dt2i_affine (dc->white_item, SP_EVENT_CONTEXT_DESKTOP (dc), d2item);
+			abp = art_bpath_affine_transform (SP_CURVE_BPATH (gc), d2item);
+			new = sp_curve_new_from_static_bpath (abp);
+			sp_curve_append (c, new, FALSE);
+			art_free (abp);
 		}
+	} else if (gc) {
+		gdouble d2item[6];
+		ArtBpath *abp;
+		SPCurve *new;
+		sp_desktop_d2doc_affine (SP_EVENT_CONTEXT_DESKTOP (dc), d2item);
+		abp = art_bpath_affine_transform (SP_CURVE_BPATH (gc), d2item);
+		new = sp_curve_new_from_foreign_bpath (abp);
+		art_free (abp);
+		c = new;
 	} else {
-		if (!gc) return;
-		c = gc;
-		sp_curve_ref (c);
+		return;
 	}
 
 	if (c && !sp_curve_empty (c)) {
+		SPRepr *repr;
+		gchar *str;
+
 		/* We actually have something to write */
+
+		if (dc->white_item) {
+			repr = SP_OBJECT_REPR (dc->white_item);
+		} else {
+			SPRepr *style;
+			repr = sp_repr_new ("path");
+			style = sodipodi_get_repr (SODIPODI, "paint.freehand");
+			if (style) {
+				SPCSSAttr *css;
+				css = sp_repr_css_attr_inherited (style, "style");
+				sp_repr_css_set (repr, css, "style");
+				sp_repr_css_attr_unref (css);
+			}
+		}
+
+		str = sp_svg_write_path (SP_CURVE_BPATH (c));
+		g_assert (str != NULL);
+		sp_repr_set_attr (repr, "d", str);
+		g_free (str);
+
+		if (!dc->white_item) {
+			SPDesktop *dt;
+			dt = SP_EVENT_CONTEXT_DESKTOP (dc);
+			/* Attach repr */
+			sp_document_add_repr (SP_DT_DOCUMENT (dt), repr);
+			sp_selection_set_repr (SP_DT_SELECTION (dt), repr);
+			sp_repr_unref (repr);
+		}
 	}
 
 	sp_curve_unref (c);
 }
 
-#if 0
-	bp = sp_curve_last_bpath (dc->rc);
-	p.x = bp->x3;
-	p.y = bp->y3;
-	/* We were in straight-line mode - draw it now */
-	concat_current (dc);
-	if (dc->ga && dc->ga->active) {
-		if (dc->gc->end > 3) {
-			sp_curve_closepath_current (dc->gc);
-		}
-	}
-	set_to_accumulated (dc);
-	clear_current (dc);
-	if (dc->gc->closed) {
-		/* reset accumulated curve */
-		sp_curve_reset (dc->gc);
-		if (dc->repr) {
-			dc->repr = NULL;
-		}
-		remove_ctrl (dc);
-	} else if (dc->rc->end > 1) {
-		move_ctrl (dc, dc->gc->bpath->x3, dc->gc->bpath->y3);
-	}
-#endif
-
 static void
 clear_current (SPDrawContext * dc)
 {
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->rbp), NULL);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
 	/* reset curve */
-	sp_curve_reset (dc->rc);
+	sp_curve_reset (dc->red_curve);
 	/* reset points */
 	dc->npoints = 0;
 }
@@ -725,14 +743,14 @@ set_to_accumulated (SPDrawContext * dc)
 static void
 concat_current (SPDrawContext * dc)
 {
-	if (!sp_curve_empty (dc->rc)) {
+	if (!sp_curve_empty (dc->red_curve)) {
 		ArtBpath * bpath;
 		if (sp_curve_empty (dc->gc)) {
-			bpath = sp_curve_first_bpath (dc->rc);
+			bpath = sp_curve_first_bpath (dc->red_curve);
 			g_assert (bpath->code == ART_MOVETO_OPEN);
 			sp_curve_moveto (dc->gc, bpath->x3, bpath->y3);
 		}
-		bpath = sp_curve_last_bpath (dc->rc);
+		bpath = sp_curve_last_bpath (dc->red_curve);
 		if (bpath->code == ART_CURVETO) {
 			sp_curve_curveto (dc->gc, bpath->x1, bpath->y1, bpath->x2, bpath->y2, bpath->x3, bpath->y3);
 		} else if (bpath->code == ART_LINETO) {
@@ -742,21 +760,6 @@ concat_current (SPDrawContext * dc)
 		}
 	}
 }
-
-#if 0
-static void
-repr_destroyed (SPRepr * repr, gpointer data)
-{
-	SPDrawContext * dc;
-
-	dc = SP_DRAW_CONTEXT (data);
-
-	dc->repr = NULL;
-	sp_curve_reset (dc->gc);
-
-	remove_ctrl (dc);
-}
-#endif
 
 static void
 test_inside (SPDrawContext *dc, double x, double y)
@@ -773,7 +776,7 @@ test_inside (SPDrawContext *dc, double x, double y)
 		active = sp_draw_anchor_test (dc->ga, wp.x, wp.y, TRUE);
 	}
 
-	for (l = dc->wal; l != NULL; l = l->next) {
+	for (l = dc->white_al; l != NULL; l = l->next) {
 		SPDrawAnchor *na;
 		na = sp_draw_anchor_test ((SPDrawAnchor *) l->data, wp.x, wp.y, !active);
 		if (!active && na) active = na;
@@ -828,10 +831,10 @@ fit_and_split (SPDrawContext * dc)
 		g_assert ((b[3].x > -8000.0) && (b[3].x < 8000.0));
 		g_assert ((b[3].y > -8000.0) && (b[3].y < 8000.0));
 #endif
-		sp_curve_reset (dc->rc);
-		sp_curve_moveto (dc->rc, b[0].x, b[0].y);
-		sp_curve_curveto (dc->rc, b[1].x, b[1].y, b[2].x, b[2].y, b[3].x, b[3].y);
-		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->rbp), dc->rc);
+		sp_curve_reset (dc->red_curve);
+		sp_curve_moveto (dc->red_curve, b[0].x, b[0].y);
+		sp_curve_curveto (dc->red_curve, b[1].x, b[1].y, b[2].x, b[2].y, b[3].x, b[3].y);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
 	} else {
 		SPCurve *curve;
 		GnomeCanvasItem *cshape;
@@ -839,9 +842,9 @@ fit_and_split (SPDrawContext * dc)
 #ifdef DRAW_VERBOSE
 		g_print("[%d]Yup\n", dc->npoints);
 #endif
-		g_assert (!sp_curve_empty (dc->rc));
+		g_assert (!sp_curve_empty (dc->red_curve));
 		concat_current (dc);
-		curve = sp_curve_copy (dc->rc);
+		curve = sp_curve_copy (dc->red_curve);
 
 		/* fixme: */
 		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
@@ -862,30 +865,48 @@ fit_and_split (SPDrawContext * dc)
 }
 
 /*
- * Clears data associated with white curve:
- * - Item
+ * - White item
  * - White curve list
  * - White anchor list
- *
  */
 
 static void
 spdc_clear_white_data (SPDrawContext *dc)
 {
-	if (dc->wi) {
+	if (dc->white_item) {
 		/* We do not reference item */
-		dc->wi = NULL;
+		dc->white_item = NULL;
 	}
 
-	while (dc->wcl) {
+	while (dc->white_cl) {
 		/* Clear white curve list */
-		sp_curve_unref ((SPCurve *) dc->wcl->data);
-		dc->wcl = g_slist_remove (dc->wcl, dc->wcl->data);
+		sp_curve_unref ((SPCurve *) dc->white_cl->data);
+		dc->white_cl = g_slist_remove (dc->white_cl, dc->white_cl->data);
 	}
 
-	while (dc->wal) {
-		sp_draw_anchor_destroy ((SPDrawAnchor *) dc->wal->data);
-		dc->wal = g_slist_remove (dc->wal, dc->wal->data);
+	while (dc->white_al) {
+		sp_draw_anchor_destroy ((SPDrawAnchor *) dc->white_al->data);
+		dc->white_al = g_slist_remove (dc->white_al, dc->white_al->data);
+	}
+}
+
+/*
+ * - Red bpath
+ * - Red curve
+ */
+
+static void
+spdc_clear_red_data (SPDrawContext *dc)
+{
+	if (dc->red_bpath) {
+		/* Destroy red bpath */
+		gtk_object_destroy (GTK_OBJECT (dc->red_bpath));
+		dc->red_bpath = NULL;
+	}
+
+	if (dc->red_curve) {
+		/* Destroy red curve */
+		dc->red_curve = sp_curve_unref (dc->red_curve);
 	}
 }
 

@@ -1,4 +1,17 @@
+2002-08-12  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/draw-context.c (spdc_finish_endpoint): Cleanup
+	(spdc_flush_white): Do concat, create object if needed, do red->white transform if needed
+	(spdc_clear_red_data): Helper
+
+	* src/draw-context.h: Member rename
+
+	* src/helper/curve.c (sp_curve_append): Append the whole curve, not just last segment
+	(sp_curve_concat): Set lengths etc. correctly, fixes draw crash
+
 2002-08-08  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/text-edit.c (sp_text_dialog_apply): Why there were strdups here?
 
 	* src/style.c (sp_style_read_from_object): Cleanup font-family and font-size
 	(sp_style_merge_property): Ditto

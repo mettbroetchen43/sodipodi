@@ -26,6 +26,9 @@ struct _SPCurve {
 	guint closed : 1;	/* All subpaths are closed */
 };
 
+#define SP_CURVE_LENGTH(c) (((SPCurve *)(c))->end)
+#define SP_CURVE_BPATH(c) (((SPCurve *)(c))->bpath)
+#define SP_CURVE_SEGMENT(c,i) (((SPCurve *)(c))->bpath + (i))
 /* Constructors */
 
 SPCurve * sp_curve_new (void);

@@ -196,26 +196,26 @@ sp_curve_concat (const GSList * list)
 
 	g_return_val_if_fail (list != NULL, NULL);
 
-	length = 1;
+	length = 0;
 
 	for (l = list; l != NULL; l = l->next) {
 		c = (SPCurve *) l->data;
 		length += c->end;
 	}
 
-	new = sp_curve_new_sized (length);
+	new = sp_curve_new_sized (length + 1);
 
 	bp = new->bpath;
 
 	for (l = list; l != NULL; l = l->next) {
 		c = (SPCurve *) l->data;
-		memcpy (bp, c->bpath, c->end);
+		memcpy (bp, c->bpath, c->end * sizeof (ArtBpath));
 		bp += c->end;
 	}
 
 	bp->code = ART_END;
 
-	new->end = length - 1;
+	new->end = length;
 
 	return new;
 }
@@ -582,27 +582,34 @@ sp_curve_append (SPCurve *curve,
                  gboolean use_lineto)
 {
 	ArtBpath *bs, *bp;
+	gboolean closed;
 
 	g_return_if_fail (curve != NULL);
 	g_return_if_fail (curve2 != NULL);
 
 	if (curve2->end < 1) return;
 
-	bs = curve2->bpath + curve2->substart;
+	bs = curve2->bpath;
 
 	if (use_lineto && (curve->end > 0)) {
 		sp_curve_lineto (curve, bs->x3, bs->y3);
+		closed = FALSE;
 	} else {
 		sp_curve_moveto (curve, bs->x3, bs->y3);
+		closed = FALSE;
 	}
 
 	for (bp = bs+1; bp->code != ART_END; bp++) {
 		switch (bp->code) {
 		case ART_MOVETO_OPEN:
+			if (closed) sp_curve_closepath (curve);
 			sp_curve_moveto (curve, bp->x3, bp->y3);
+			closed = FALSE;
 			break;
 		case ART_MOVETO:
+			if (closed) sp_curve_closepath (curve);
 			sp_curve_moveto (curve, bp->x3, bp->y3);
+			closed = TRUE;
 			break;
 		case ART_LINETO:
 			sp_curve_lineto (curve, bp->x3, bp->y3);
@@ -614,6 +621,8 @@ sp_curve_append (SPCurve *curve,
 			g_assert_not_reached ();
 		}
 	}
+
+	if (closed) sp_curve_closepath (curve);
 }
 
 /* Private methods */

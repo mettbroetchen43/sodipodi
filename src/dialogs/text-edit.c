@@ -161,7 +161,7 @@ sp_text_dialog_apply (GtkButton * button, gpointer data)
 	font = gnome_font_selection_get_font ((GnomeFontSelection *) fontsel);
 
 	str = (gchar *) gnome_font_get_family_name (font);
-	sp_repr_css_set_property (css, "font-family", g_strdup (str));
+	sp_repr_css_set_property (css, "font-family", str);
 
 	weight = gnome_font_get_weight_code (font);
 	if (weight < GNOME_FONT_SEMI) {
@@ -169,18 +169,18 @@ sp_text_dialog_apply (GtkButton * button, gpointer data)
 	} else {
 		str = "bold";
 	}
-	sp_repr_css_set_property (css, "font-weight", g_strdup (str));
+	sp_repr_css_set_property (css, "font-weight", str);
 
 	if (gnome_font_is_italic (font)) {
 		str = "italic";
 	} else {
 		str = "normal";
 	}
-	sp_repr_css_set_property (css, "font-style", g_strdup (str));
+	sp_repr_css_set_property (css, "font-style", str);
 
 	size = gnome_font_get_size (font);
 	snprintf (c, 64, "%f", size);
-	sp_repr_css_set_property (css, "font-size", g_strdup (c));
+	sp_repr_css_set_property (css, "font-size", str);
 
 	gnome_font_unref (font);
 
