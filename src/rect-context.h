@@ -29,6 +29,9 @@ struct _SPRectContext {
 	SPEventContext event_context;
 	SPItem *item;
 	ArtPoint center;
+	
+  	gdouble rx_ratio;	/* roundness ratio (x direction) */
+  	gdouble ry_ratio;	/* roundness ratio (y direction) */
 };
 
 struct _SPRectContextClass {

@@ -300,6 +300,26 @@ sp_sc_proportion_value_changed (GtkAdjustment *adj, SPStarContext *sc)
 }
 
 static void
+sp_sc_make_sides_flat_clicked(GtkWidget *widget, GtkObject *obj)
+{
+	GtkAdjustment *adj;
+	gint n;
+	gfloat proportion;
+	gdouble k;
+	
+	adj = gtk_object_get_data (obj, "magnitude");
+	n   = (gint)adj->value;
+	
+	
+	k = sin(M_PI/n);
+	k = (1 - k) * (1 + k);
+	proportion = (gfloat)sqrt((double)k);
+
+	adj = gtk_object_get_data (obj, "proportion");
+	gtk_adjustment_set_value (adj, proportion);
+}
+
+static void
 sp_sc_defaults (GtkWidget *widget, GtkObject *obj)
 {
 	GtkAdjustment *adj;
@@ -319,7 +339,7 @@ sp_star_context_config_widget (SPEventContext *ec)
 
 	sc = SP_STAR_CONTEXT (ec);
 
-	tbl = gtk_table_new (3, 2, FALSE);
+	tbl = gtk_table_new (4, 2, FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER (tbl), 4);
 	gtk_table_set_row_spacings (GTK_TABLE (tbl), 4);
 
@@ -346,11 +366,18 @@ sp_star_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (sb);
 	gtk_table_attach (GTK_TABLE (tbl), sb, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_sc_proportion_value_changed), sc);
+	
 
+	/* Making sides flat */
+	b = gtk_button_new_with_label (_("Make sides flat"));
+	gtk_widget_show (b);
+	gtk_table_attach (GTK_TABLE (tbl), b, 0, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_sc_make_sides_flat_clicked), tbl);
+	
 	/* Reset */
 	b = gtk_button_new_with_label (_("Defaults"));
 	gtk_widget_show (b);
-	gtk_table_attach (GTK_TABLE (tbl), b, 0, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
+	gtk_table_attach (GTK_TABLE (tbl), b, 0, 2, 3, 4, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_sc_defaults), tbl);
 
 	return tbl;

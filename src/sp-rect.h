@@ -48,6 +48,9 @@ GtkType sp_rect_get_type (void);
 
 void sp_rect_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdouble height);
 
+/* If SET if FALSE, VALUE is just ignored */
+void sp_rect_set_rx(SPRect * rect, gboolean set, gdouble value);
+void sp_rect_set_ry(SPRect * rect, gboolean set, gdouble value);
 
 END_GNOME_DECLS
 

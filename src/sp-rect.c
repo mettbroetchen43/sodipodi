@@ -369,6 +369,30 @@ sp_rect_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdouble height)
 	sp_rect_set_shape (rect);
 }
 
+void
+sp_rect_set_rx(SPRect * rect, gboolean set, gdouble value)
+{
+	g_return_if_fail (rect != NULL);
+	g_return_if_fail (SP_IS_RECT (rect));
+
+	rect->rx.set = set;
+	if (set)
+		rect->rx.computed = value;
+	sp_rect_set_shape (rect);
+}
+
+void
+sp_rect_set_ry(SPRect * rect, gboolean set, gdouble value)
+{
+	g_return_if_fail (rect != NULL);
+	g_return_if_fail (SP_IS_RECT (rect));
+
+	rect->ry.set = set;
+	if (set)
+		rect->ry.computed = value;
+	sp_rect_set_shape (rect);
+}
+
 static GSList * 
 sp_rect_snappoints (SPItem *item, GSList *points)
 {
