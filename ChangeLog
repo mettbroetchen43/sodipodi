@@ -3,6 +3,10 @@
 	* src/style.c (sp_style_merge_from_style_string): Fixed CSS inline
 	style white space handling bug, thanks to rindolf
 
+	* src/svg/svg-path.c (rsvg_path_arc): Added raddi correction
+	described in Appendix F 6.6, thanks to Infallible for his patch
+	(#882348)
+
 2004-01-23  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/libnrtype/nr-glyphs.c (nr_pgl_free): Fixed memory leak
