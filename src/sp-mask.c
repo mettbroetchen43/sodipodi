@@ -11,22 +11,33 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <string.h>
+
+#include <libnr/nr-matrix.h>
+
 #include "display/nr-arena.h"
 #include "display/nr-arena-group.h"
+
+#include "enums.h"
+#include "attributes.h"
 #include "document.h"
 #include "sp-item.h"
+
 #include "sp-mask.h"
 
 struct _SPMaskView {
 	SPMaskView *next;
 	unsigned int key;
 	NRArenaItem *arenaitem;
+	NRRectF bbox;
 };
 
 static void sp_mask_class_init (SPMaskClass *klass);
 static void sp_mask_init (SPMask *mask);
 
+static void sp_mask_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_mask_release (SPObject * object);
+static void sp_mask_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_mask_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_mask_remove_child (SPObject *object, SPRepr *child);
 static void sp_mask_update (SPObject *object, SPCtx *ctx, guint flags);
@@ -68,7 +79,9 @@ sp_mask_class_init (SPMaskClass *klass)
 
 	parent_class = g_type_class_ref (SP_TYPE_OBJECTGROUP);
 
+	sp_object_class->build = sp_mask_build;
 	sp_object_class->release = sp_mask_release;
+	sp_object_class->set = sp_mask_set;
 	sp_object_class->child_added = sp_mask_child_added;
 	sp_object_class->remove_child = sp_mask_remove_child;
 	sp_object_class->update = sp_mask_update;
@@ -79,7 +92,30 @@ sp_mask_class_init (SPMaskClass *klass)
 static void
 sp_mask_init (SPMask *mask)
 {
+	mask->maskUnits_set = FALSE;
+	mask->maskUnits = SP_CONTENT_UNITS_OBJECTBOUNDINGBOX;
+
+	mask->maskUnits_set = FALSE;
+	mask->maskUnits = SP_CONTENT_UNITS_USERSPACEONUSE;
+
 	mask->display = NULL;
+}
+
+static void
+sp_mask_build (SPObject *object, SPDocument *document, SPRepr *repr)
+{
+	SPMask *mask;
+
+	mask = SP_MASK (object);
+
+	if (((SPObjectClass *) parent_class)->build)
+		((SPObjectClass *) parent_class)->build (object, document, repr);
+
+	sp_object_read_attr (object, "maskUnits");
+	sp_object_read_attr (object, "maskContentUnits");
+
+	/* Register ourselves */
+	sp_document_add_resource (document, "mask", object);
 }
 
 static void
@@ -89,6 +125,11 @@ sp_mask_release (SPObject * object)
 
 	cp = SP_MASK (object);
 
+	if (SP_OBJECT_DOCUMENT (object)) {
+		/* Unregister ourselves */
+		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "mask", object);
+	}
+
 	while (cp->display) {
 		/* We simply unref and let item to manage this in handler */
 		cp->display = sp_mask_view_list_remove (cp->display, cp->display);
@@ -96,6 +137,47 @@ sp_mask_release (SPObject * object)
 
 	if (((SPObjectClass *) (parent_class))->release)
 		((SPObjectClass *) parent_class)->release (object);
+}
+
+static void
+sp_mask_set (SPObject *object, unsigned int key, const unsigned char *value)
+{
+	SPMask *mask;
+
+	mask = SP_MASK (object);
+
+	switch (key) {
+	case SP_ATTR_MASKUNITS:
+		mask->maskUnits = SP_CONTENT_UNITS_OBJECTBOUNDINGBOX;
+		mask->maskUnits_set = FALSE;
+		if (value) {
+			if (!strcmp (value, "userSpaceOnUse")) {
+				mask->maskUnits = SP_CONTENT_UNITS_USERSPACEONUSE;
+				mask->maskUnits_set = TRUE;
+			} else if (!strcmp (value, "objectBoundingBox")) {
+				mask->maskUnits_set = TRUE;
+			}
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_MASKCONTENTUNITS:
+		mask->maskContentUnits = SP_CONTENT_UNITS_USERSPACEONUSE;
+		mask->maskContentUnits_set = FALSE;
+		if (value) {
+			if (!strcmp (value, "userSpaceOnUse")) {
+				mask->maskContentUnits_set = TRUE;
+			} else if (!strcmp (value, "objectBoundingBox")) {
+				mask->maskContentUnits = SP_CONTENT_UNITS_OBJECTBOUNDINGBOX;
+				mask->maskContentUnits_set = TRUE;
+			}
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
+	}
 }
 
 static void
@@ -139,12 +221,13 @@ static void
 sp_mask_update (SPObject *object, SPCtx *ctx, guint flags)
 {
 	SPObjectGroup *og;
-	SPMask *cp;
+	SPMask *mask;
 	SPObject *child;
+	SPMaskView *v;
 	GSList *l;
 
 	og = SP_OBJECTGROUP (object);
-	cp = SP_MASK (object);
+	mask = SP_MASK (object);
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
@@ -162,6 +245,18 @@ sp_mask_update (SPObject *object, SPCtx *ctx, guint flags)
 			sp_object_invoke_update (child, ctx, flags);
 		}
 		g_object_unref (G_OBJECT (child));
+	}
+
+	for (v = mask->display; v != NULL; v = v->next) {
+		if (mask->maskContentUnits == SP_CONTENT_UNITS_OBJECTBOUNDINGBOX) {
+			NRMatrixF t;
+			nr_matrix_f_set_scale (&t, v->bbox.x1 - v->bbox.x0, v->bbox.y1 - v->bbox.y0);
+			t.c[4] = v->bbox.x0;
+			t.c[5] = v->bbox.y0;
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), &t);
+		} else {
+			nr_arena_group_set_child_transform (NR_ARENA_GROUP (v->arenaitem), NULL);
+		}
 	}
 }
 
@@ -213,20 +308,20 @@ sp_mask_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 NRArenaItem *
-sp_mask_show (SPMask *cp, NRArena *arena, unsigned int key)
+sp_mask_show (SPMask *mask, NRArena *arena, unsigned int key)
 {
 	NRArenaItem *ai, *ac;
 	SPObject *child;
 
-	g_return_val_if_fail (cp != NULL, NULL);
-	g_return_val_if_fail (SP_IS_MASK (cp), NULL);
+	g_return_val_if_fail (mask != NULL, NULL);
+	g_return_val_if_fail (SP_IS_MASK (mask), NULL);
 	g_return_val_if_fail (arena != NULL, NULL);
 	g_return_val_if_fail (NR_IS_ARENA (arena), NULL);
 
 	ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
-	cp->display = sp_mask_view_new_prepend (cp->display, key, ai);
+	mask->display = sp_mask_view_new_prepend (mask->display, key, ai);
 
-	for (child = SP_OBJECTGROUP (cp)->children; child != NULL; child = child->next) {
+	for (child = SP_OBJECTGROUP (mask)->children; child != NULL; child = child->next) {
 		if (SP_IS_ITEM (child)) {
 			ac = sp_item_show (SP_ITEM (child), arena, key);
 			if (ac) {
@@ -235,6 +330,14 @@ sp_mask_show (SPMask *cp, NRArena *arena, unsigned int key)
 				nr_arena_item_unref (ac);
 			}
 		}
+	}
+
+	if (mask->maskContentUnits == SP_CONTENT_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF t;
+		nr_matrix_f_set_scale (&t, mask->display->bbox.x1 - mask->display->bbox.x0, mask->display->bbox.y1 - mask->display->bbox.y0);
+		t.c[4] = mask->display->bbox.x0;
+		t.c[5] = mask->display->bbox.y0;
+		nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &t);
 	}
 
 	return ai;
@@ -266,6 +369,25 @@ sp_mask_hide (SPMask *cp, unsigned int key)
 	g_assert_not_reached ();
 }
 
+void
+sp_mask_set_bbox (SPMask *mask, unsigned int key, NRRectF *bbox)
+{
+	SPMaskView *v;
+
+	for (v = mask->display; v != NULL; v = v->next) {
+		if (v->key == key) {
+			if (!NR_DF_TEST_CLOSE (v->bbox.x0, bbox->x0, NR_EPSILON_F) ||
+			    !NR_DF_TEST_CLOSE (v->bbox.y0, bbox->y0, NR_EPSILON_F) ||
+			    !NR_DF_TEST_CLOSE (v->bbox.x1, bbox->x1, NR_EPSILON_F) ||
+			    !NR_DF_TEST_CLOSE (v->bbox.y1, bbox->y1, NR_EPSILON_F)) {
+				v->bbox = *bbox;
+				sp_object_request_update (SP_OBJECT (mask), SP_OBJECT_MODIFIED_FLAG);
+			}
+			break;
+		}
+	}
+}
+
 /* Mask views */
 
 SPMaskView *
@@ -278,6 +400,8 @@ sp_mask_view_new_prepend (SPMaskView *list, unsigned int key, NRArenaItem *arena
 	new->next = list;
 	new->key = key;
 	new->arenaitem = nr_arena_item_ref (arenaitem);
+	new->bbox.x0 = new->bbox.x1 = 0.0;
+	new->bbox.y0 = new->bbox.y1 = 0.0;
 
 	return new;
 }

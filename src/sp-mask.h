@@ -28,6 +28,12 @@ typedef struct _SPMaskView SPMaskView;
 struct _SPMask {
 	SPObjectGroup group;
 
+	unsigned int maskUnits_set : 1;
+	unsigned int maskUnits : 1;
+
+	unsigned int maskContentUnits_set : 1;
+	unsigned int maskContentUnits : 1;
+
 	SPMaskView *display;
 };
 
@@ -39,5 +45,7 @@ GType sp_mask_get_type (void);
 
 NRArenaItem *sp_mask_show (SPMask *mask, NRArena *arena, unsigned int key);
 void sp_mask_hide (SPMask *mask, unsigned int key);
+
+void sp_mask_set_bbox (SPMask *mask, unsigned int key, NRRectF *bbox);
 
 #endif

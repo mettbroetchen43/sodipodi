@@ -296,16 +296,19 @@ sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 				item->mask = sp_object_hunref (item->mask, object);
 			}
 			if (SP_IS_MASK (m)) {
+				NRRectF bbox;
 				SPItemView *v;
 				item->mask = sp_object_href (m, object);
 				g_signal_connect (G_OBJECT (item->mask), "release", G_CALLBACK (sp_item_mask_release), item);
 				g_signal_connect (G_OBJECT (item->mask), "modified", G_CALLBACK (sp_item_mask_modified), item);
+				sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
 				for (v = item->display; v != NULL; v = v->next) {
 					NRArenaItem *ai;
 					if (!v->pkey) v->pkey = sp_item_display_key_new ();
 					ai = sp_mask_show (SP_MASK (item->mask), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
 					nr_arena_item_set_mask (v->arenaitem, ai);
 					nr_arena_item_unref (ai);
+					sp_mask_set_bbox (SP_MASK (item->mask), v->pkey, &bbox);
 				}
 			}
 		}
@@ -346,13 +349,19 @@ sp_item_update (SPObject *object, SPCtx *ctx, guint flags)
 		(* ((SPObjectClass *) (parent_class))->update) (object, ctx, flags);
 
 	if (flags & (SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG)) {
-		if (item->clip) {
+		if ((item->clip) || (item->mask)) {
 			NRRectF bbox;
 			SPItemView *v;
-			printf ("Flags %x\n", flags);
 			sp_item_invoke_bbox (item, &bbox, NULL, TRUE);
-			for (v = item->display; v != NULL; v = v->next) {
-				sp_clippath_set_bbox (SP_CLIPPATH (item->clip), v->pkey, &bbox);
+			if (item->clip) {
+				for (v = item->display; v != NULL; v = v->next) {
+					sp_clippath_set_bbox (SP_CLIPPATH (item->clip), v->pkey, &bbox);
+				}
+			}
+			if (item->mask) {
+				for (v = item->display; v != NULL; v = v->next) {
+					sp_mask_set_bbox (SP_MASK (item->mask), v->pkey, &bbox);
+				}
 			}
 		}
 	}

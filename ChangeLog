@@ -1,10 +1,12 @@
 2003-02-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-mask.c: support maskContentUnits
+
 	* src/nodepath.c (create_curve): Do not add 50 to y (why was it here?)
 
 	* src/sp-item-group.c (sp_group_update): Propagate only if update flag set
 
-	* src/sp-item.c (sp_item_set): Set clippath bbox
+	* src/sp-item.c (sp_item_set): Set clippath and mask bbox
 	(sp_item_update): Ditto
 
 	* src/sp-clippath.c (sp_clippath_build): Implement
