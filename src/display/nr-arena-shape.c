@@ -119,11 +119,7 @@ nr_arena_shape_finalize (NRObject *object)
 		shape->markers = nr_arena_item_detach_unref (item, shape->markers);
 	}
 
-	if (shape->path.elements) {
-		nr_path_release (&shape->path);
-		shape->path.elements = NULL;
-	}
-
+	if (shape->path) free (shape->path);
 	if (shape->fill_svp) nr_svp_free (shape->fill_svp);
 	if (shape->stroke_svp) nr_svp_free (shape->stroke_svp);
 	if (shape->fill_painter) sp_painter_free (shape->fill_painter);
@@ -218,9 +214,9 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	beststate = NR_ARENA_ITEM_STATE_ALL;
 
-	if (shape->path.elements) {
-		nr_path_release (&shape->path);
-		shape->path.elements = NULL;
+	if (shape->path) {
+		free (shape->path);
+		shape->path = NULL;
 	}
 
 	for (child = shape->markers; child != NULL; child = child->next) {
@@ -290,7 +286,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 
 	/* Build state data */
 	shape->ctm = gc->transform;
-	nr_path_setup_from_art_bpath (&shape->path, shape->curve->bpath);
+	shape->path = nr_path_new_from_art_bpath (shape->curve->bpath);
 
 	if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
 		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
@@ -442,11 +438,11 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 
 	style = shape->style;
 
-	if (flags & NR_ARENA_ITEM_RENDER_WIREFRAME) {
-		if (shape->path.elements) {
+	if (0 || (flags & NR_ARENA_ITEM_RENDER_WIREFRAME)) {
+		if (shape->path) {
 			NRMatrixF ctmf;
 			nr_matrix_f_from_d (&ctmf, &shape->ctm);
-			nr_pixblock_draw_path_rgba32 (pb, &shape->path, &ctmf, 0x000000ff);
+			nr_pixblock_draw_path_rgba32 (pb, shape->path, &ctmf, 0x000000ff);
 			pb->empty = FALSE;
 		}
 		return item->state;

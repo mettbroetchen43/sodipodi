@@ -235,148 +235,52 @@ nr_pixblock_draw_line_rgba32 (NRPixBlock *pb, int x0, int y0, int x1, int y1,
 	nr_pixblock_release (&spb);
 }
 
-#define flatness 0.5
+struct _NRPBPathData {
+	NRPixBlock *pb;
+	unsigned int rgba;
+};
 
-static void
-nr_pixblock_draw_curve_rgba32 (NRPixBlock *pb,
-			       double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
-			       unsigned int first, unsigned int rgba)
+static unsigned int
+nr_pb_path_draw_lineto (float x0, float y0, float x1, float y1, unsigned int flags, void *data)
 {
-	double dx1_0, dy1_0, dx2_0, dy2_0, dx3_0, dy3_0, dx2_3, dy2_3, d3_0_2;
-	double s1_q, t1_q, s2_q, t2_q, v2_q;
-	double f2, f2_q;
-	double x00t, y00t, x0tt, y0tt, xttt, yttt, x1tt, y1tt, x11t, y11t;
-
-	dx1_0 = x1 - x0;
-	dy1_0 = y1 - y0;
-	dx2_0 = x2 - x0;
-	dy2_0 = y2 - y0;
-	dx3_0 = x3 - x0;
-	dy3_0 = y3 - y0;
-	dx2_3 = x3 - x2;
-	dy2_3 = y3 - y2;
-	f2 = flatness * flatness;
-	d3_0_2 = dx3_0 * dx3_0 + dy3_0 * dy3_0;
-	if (d3_0_2 < f2) {
-		double d1_0_2, d2_0_2;
-		d1_0_2 = dx1_0 * dx1_0 + dy1_0 * dy1_0;
-		d2_0_2 = dx2_0 * dx2_0 + dy2_0 * dy2_0;
-		if ((d1_0_2 < f2) && (d2_0_2 < f2)) {
-			goto nosubdivide;
-		} else {
-			goto subdivide;
-		}
-	}
-	f2_q = flatness * flatness * d3_0_2;
-	s1_q = dx1_0 * dx3_0 + dy1_0 * dy3_0;
-	t1_q = dy1_0 * dx3_0 - dx1_0 * dy3_0;
-	s2_q = dx2_0 * dx3_0 + dy2_0 * dy3_0;
-	t2_q = dy2_0 * dx3_0 - dx2_0 * dy3_0;
-	v2_q = dx2_3 * dx3_0 + dy2_3 * dy3_0;
-	if ((t1_q * t1_q) > f2_q) goto subdivide;
-	if ((t2_q * t2_q) > f2_q) goto subdivide;
-	if ((s1_q < 0.0) && ((s1_q * s1_q) > f2_q)) goto subdivide;
-	if ((v2_q < 0.0) && ((v2_q * v2_q) > f2_q)) goto subdivide;
-	if (s1_q >= s2_q) goto subdivide;
-
- nosubdivide:
-	nr_pixblock_draw_line_rgba32 (pb,
+	struct _NRPBPathData *pbdata;
+	pbdata = (struct _NRPBPathData *) data;
+	nr_pixblock_draw_line_rgba32 (pbdata->pb,
 				      (int) floor (x0 + 0.5), (int) floor (y0 + 0.5),
-				      (int) floor (x3 + 0.5), (int) floor (y3 + 0.5),
-				      first, rgba);
-	return;
-
- subdivide:
-	x00t = (x0 + x1) * 0.5;
-	y00t = (y0 + y1) * 0.5;
-	x0tt = (x0 + 2 * x1 + x2) * 0.25;
-	y0tt = (y0 + 2 * y1 + y2) * 0.25;
-	x1tt = (x1 + 2 * x2 + x3) * 0.25;
-	y1tt = (y1 + 2 * y2 + y3) * 0.25;
-	x11t = (x2 + x3) * 0.5;
-	y11t = (y2 + y3) * 0.5;
-	xttt = (x0tt + x1tt) * 0.5;
-	yttt = (y0tt + y1tt) * 0.5;
-
-	nr_pixblock_draw_curve_rgba32 (pb, x0, y0, x00t, y00t, x0tt, y0tt, xttt, yttt, first, rgba);
-	nr_pixblock_draw_curve_rgba32 (pb, xttt, yttt, x1tt, y1tt, x11t, y11t, x3, y3, 0, rgba);
+				      (int) floor (x1 + 0.5), (int) floor (y1 + 0.5),
+				      (flags & NR_PATH_FIRST) && !(flags & NR_PATH_CLOSED), pbdata->rgba);
+	return TRUE;
 }
+
+static unsigned int
+nr_pb_path_draw_closepath (float ex, float ey, float sx, float sy, unsigned int flags, void *data)
+{
+	struct _NRPBPathData *pbdata;
+	pbdata = (struct _NRPBPathData *) data;
+	if ((ex != sx) || (ey != sy)) {
+		nr_pixblock_draw_line_rgba32 (pbdata->pb,
+					      (int) floor (ex + 0.5), (int) floor (ey + 0.5),
+					      (int) floor (sx + 0.5), (int) floor (sy + 0.5),
+					      FALSE, pbdata->rgba);
+	}
+	return TRUE;
+}
+
+static NRPathGVector pbpgv = {
+	NULL,
+	nr_pb_path_draw_lineto,
+	NULL,
+	NULL,
+	nr_pb_path_draw_closepath
+};
 
 void
 nr_pixblock_draw_path_rgba32 (NRPixBlock *pb, NRPath *path, NRMatrixF *transform, unsigned int rgba)
 {
-	double x, y, sx, sy, spsx, spsy;
-	unsigned int sidx;
-
-	x = y = 0.0;
-	sx = sy = 0.0;
-
-	for (sidx = 0; sidx < path->nelements; sidx += path->elements[sidx].code.length) {
-		NRPathElement *sel;
-		unsigned int idx, first;
-		/* Start new path */
-		sel = path->elements + sidx;
-		if (transform) {
-			spsx = sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, sel[1].value, sel[2].value);
-			spsy = sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, sel[1].value, sel[2].value);
-		} else {
-			spsx = sx = x = sel[1].value;
-			spsy = sy = y = sel[2].value;
-		}
-		first = !sel[0].code.closed;
-		idx = 3;
-		while (idx < sel[0].code.length) {
-			int nmulti, i;
-			nmulti = sel[idx].code.length;
-			if (sel[idx].code.code == NR_PATH_LINETO) {
-				idx += 1;
-				for (i = 0; i < nmulti; i++) {
-					if (transform) {
-						x = NR_MATRIX_DF_TRANSFORM_X (transform, sel[idx].value, sel[idx + 1].value);
-						y = NR_MATRIX_DF_TRANSFORM_Y (transform, sel[idx].value, sel[idx + 1].value);
-					} else {
-						x = sel[idx].value;
-						y = sel[idx + 1].value;
-					}
-					nr_pixblock_draw_line_rgba32 (pb, sx, sy, x, y, first, rgba);
-					first = 0;
-					sx = x;
-					sy = y;
-					idx += 2;
-				}
-			} else {
-				idx += 1;
-				for (i = 0; i < nmulti; i++) {
-					if (transform) {
-						double x1, y1, x2, y2;
-						x = NR_MATRIX_DF_TRANSFORM_X (transform, sel[idx + 4].value, sel[idx + 5].value);
-						y = NR_MATRIX_DF_TRANSFORM_Y (transform, sel[idx + 4].value, sel[idx + 5].value);
-						x1 = NR_MATRIX_DF_TRANSFORM_X (transform, sel[idx].value, sel[idx + 1].value);
-						y1 = NR_MATRIX_DF_TRANSFORM_Y (transform, sel[idx].value, sel[idx + 1].value);
-						x2 = NR_MATRIX_DF_TRANSFORM_X (transform, sel[idx + 2].value, sel[idx + 3].value);
-						y2 = NR_MATRIX_DF_TRANSFORM_Y (transform, sel[idx + 2].value, sel[idx + 3].value);
-						nr_pixblock_draw_curve_rgba32 (pb, sx, sy, x1, y1, x2, y2, x, y, first, rgba);
-					} else {
-						x = sel[idx + 4].value;
-						y = sel[idx + 5].value;
-						nr_pixblock_draw_curve_rgba32 (pb,
-									       sx, sy,
-									       sel[idx].value, sel[idx + 1].value,
-									       sel[idx + 2].value, sel[idx + 3].value,
-									       x, y, first, rgba);
-					}
-					idx += 6;
-					sx = x;
-					sy = y;
-					first = 0;
-				}
-			}
-		}
-		/* Close if needed */
-		if (sel[0].code.closed && ((x != spsx) || (y != spsy))) {
-			nr_pixblock_draw_line_rgba32 (pb, x, y, spsx, spsy, first, rgba);
-		}
-	}
+	struct _NRPBPathData pbdata;
+	pbdata.pb = pb;
+	pbdata.rgba = rgba;
+	nr_path_forall_flat (path, transform, 0.5, &pbpgv, &pbdata);
 }
 
 

@@ -51,7 +51,7 @@ NRNodePathGroup *nr_node_path_group_free (NRNodePathGroup *npg);
 
 void nr_node_path_group_join_coincident (NRNodePathGroup *npg);
 
-NRPath *nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *npg);
+NRPath *nr_path_new_from_node_path_group (NRNodePathGroup *npg);
 
 /* Lala */
 

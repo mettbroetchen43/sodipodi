@@ -34,9 +34,11 @@ struct _NRSVLBuild {
 void nr_svl_build_finish_segment (NRSVLBuild *svlb);
 void nr_svl_build_moveto (NRSVLBuild *svlb, float x, float y);
 void nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y);
+#if 0
 void nr_svl_build_curveto (NRSVLBuild *svlb,
 			   double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
 			   float flatness);
+#endif
 
 NRSVL *nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness);
 

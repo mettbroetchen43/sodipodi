@@ -322,7 +322,7 @@ nr_type_directory_build (void)
 			const unsigned char *s;
 			tdef->pdef = pdefs + pos;
 			s=tdef->name;
-			if (strstr (s, tdef->family) == s) s += strlen (tdef->family);
+			if (strstr (s, tdef->family) == (const char *) s) s += strlen (tdef->family);
 			nr_type_calculate_position (tdef->pdef, s);
 			pos += 1;
 		}

@@ -253,8 +253,9 @@ void nr_node_path_group_break_at_nodes (NRNodePathGroup *npg)
 }
 
 NRPath *
-nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *ngr)
+nr_path_setup_from_node_path_group (NRNodePathGroup *ngr)
 {
+	NRPath *path;
 	unsigned int nelements, pidx, nidx;
 
 	nelements = 0;
@@ -279,9 +280,9 @@ nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *ngr)
 		} while (node && !node->islast && !node->isfirst);
 	}
 
+	path = (NRPath *) malloc (sizeof (NRPath) + (nelements - 1) * sizeof (NRPathElement));
 	path->nelements = nelements;
 	path->nsegments = ngr->npaths;
-	path->elements = (NRPathElement *) malloc (nelements * sizeof (NRPathElement));
 
 	nidx = 0;
 	for (pidx = 0; pidx < ngr->npaths; pidx++) {
@@ -310,7 +311,7 @@ nr_path_setup_from_node_path_group (NRPath *path, NRNodePathGroup *ngr)
 			} else {
 				/* Append curveto x1 y1 x2 y2 x y */
 				path->elements[nidx].code.length = 1;
-				path->elements[nidx].code.code = NR_PATH_CURVETO;
+				path->elements[nidx].code.code = NR_PATH_CURVETO3;
 				path->elements[nidx + 1].value = (float) node->connections[1].x;
 				path->elements[nidx + 2].value = (float) node->connections[1].y;
 				path->elements[nidx + 3].value = (float) other->connections[0].x;

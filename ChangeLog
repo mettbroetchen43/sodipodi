@@ -1,3 +1,35 @@
+2004-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-svp.c (nr_svl_from_path): Use iterators
+	(nr_svl_from_art_vpath): Ditto
+	(nr_svl_from_art_bpath): Ditto
+
+	* src/libnr/nr-pixblock-line.c (nr_pixblock_draw_path_rgba32): Use path iterators
+
+	* src/libnr/nr-pathops.c (nr_path_setup_from_node_path_group): New structore
+
+	* src/libnr/nr-path.h: New structure, added iterators, added quadratic beziers
+
+	* src/libnr/nr-path.c (nr_path_new_from_art_bpath): New structure
+	(nr_path_forall): Basic iterator
+	(nr_curve_flatten): Bezier decomposer
+	(nr_path_flatten_moveto): Helper
+	(nr_path_flatten_lineto): Helper
+	(nr_path_flatten_curveto2): Helper
+	(nr_path_flatten_curveto3): Helper
+	(nr_path_flatten_closepath): Helper
+	(nr_path_forall_flat): Flattening iterator
+	(nr_path_forall_art): Iterator for libart path
+	(nr_path_forall_art_flat): Ditto
+	(nr_path_forall_art_vpath): Ditto
+
+	* src/libnr/Makefile.am (INCLUDES): Remove all references to sodipodi
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_finalize): New NRPath
+	(nr_arena_shape_update): Ditto
+
+	* configure.in: Added separate libart check for LIBNR_CFLAGS
+
 2004-01-04  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/text-context.c (sp_text_context_root_handler):

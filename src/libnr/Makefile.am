@@ -10,9 +10,9 @@ nr_config.h: gen_nr_config
 INCLUDES = \
 	-DHAVE_NR_CONFIG_H \
 	-I.. \
-        -I$(top_srcdir)/src \
-	$(cflags) \
-	$(SODIPODI_CFLAGS)
+	$(LIBNR_CFLAGS)
+
+#	$(SODIPODI_CFLAGS)
 
 if USE_MMX
 mmx_sources = \

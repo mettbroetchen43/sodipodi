@@ -9,85 +9,22 @@
  * This code is in public domain
  */
 
+#include <stdio.h>
+
 #include "nr-matrix.h"
 #include "nr-path.h"
-
-/* fixme: (Lauris) */
-
-NRVPath *
-nr_vpath_setup_from_art_vpath (NRVPath *d, const ArtVpath *avpath)
-{
-	const ArtVpath *avp;
-	int nsegments, nelements, sidx, idx;
-	/* Number of elements and number of segments */
-	nsegments = 0;
-	nelements = 2;
-	for (avp = avpath; avp->code != ART_END; avp += 1) {
-		switch (avp->code) {
-		case ART_MOVETO:
-			nsegments += 1;
-			nelements += 3;
-			break;
-		case ART_MOVETO_OPEN:
-			/* Number of points in segment */
-			nsegments += 1;
-			nelements += 3;
-			break;
-		case ART_LINETO:
-			nelements += 2;
-			break;
-		default:
-			break;
-		}
-	}
-	d->elements = nr_new (NRPathElement, nelements);
-	sidx = 0;
-	idx = 0;
-	d->elements[idx++].code.length = nelements;
-	d->elements[idx++].code.length = nsegments;
-	for (avp = avpath; avp->code != ART_END; avp += 1) {
-		switch (avp->code) {
-		case ART_MOVETO:
-			if (sidx > 0) d->elements[sidx].code.length = idx - sidx;
-			sidx = idx;
-			d->elements[idx++].code.closed = TRUE;
-			d->elements[idx++].value = (float) avp->x;
-			d->elements[idx++].value = (float) avp->y;
-			break;
-		case ART_MOVETO_OPEN:
-			if (sidx > 0) d->elements[sidx].code.length = idx - sidx;
-			sidx = idx;
-			d->elements[idx++].code.closed = FALSE;
-			d->elements[idx++].value = (float) avp->x;
-			d->elements[idx++].value = (float) avp->y;
-			break;
-		case ART_LINETO:
-			d->elements[idx++].value = (float) avp->x;
-			d->elements[idx++].value = (float) avp->y;
-			break;
-		default:
-			break;
-		}
-	}
-	if (sidx > 0) d->elements[sidx].code.length = idx - sidx;
-	return d;
-}
-
-void
-nr_vpath_release (NRVPath *vpath)
-{
-	nr_free (vpath->elements);
-}
 
 enum {
 	MULTI_NONE,
 	MULTI_LINE,
-	MULTI_CURVE
+	MULTI_CURVE2,
+	MULTI_CURVE3
 };
 
 NRPath *
-nr_path_setup_from_art_bpath (NRPath *path, const ArtBpath *bpath)
+nr_path_new_from_art_bpath (const ArtBpath *bpath)
 {
+	NRPath *path;
 	const ArtBpath *bp;
 	int nsegments, nelements;
 	int idx, sidx, midx;
@@ -118,22 +55,22 @@ nr_path_setup_from_art_bpath (NRPath *path, const ArtBpath *bpath)
 			break;
 		case ART_CURVETO:
 			/* Possible code and point coordinates */
-			if (multi != MULTI_CURVE) nelements += 1;
+			if (multi != MULTI_CURVE3) nelements += 1;
 			nelements += 6;
-			multi = MULTI_CURVE;
+			multi = MULTI_CURVE3;
 			break;
 		default:
 			break;
 		}
 	}
-	path->elements = nr_new (NRPathElement, nelements);
+	path = (NRPath *) malloc (sizeof (NRPath) + (nelements - 1) * sizeof (NRPathElement));
+	path->nelements = nelements;
+	path->nsegments = nsegments;
 	sidx = 0;
 	midx = 0;
 	idx = 0;
 	multi = MULTI_NONE;
 	nmulti = 0;
-	path->nelements = nelements;
-	path->nsegments = nsegments;
 	for (bp = bpath; bp->code != ART_END; bp++) {
 		switch (bp->code) {
 		case ART_MOVETO:
@@ -167,12 +104,12 @@ nr_path_setup_from_art_bpath (NRPath *path, const ArtBpath *bpath)
 			nmulti += 1;
 			break;
 		case ART_CURVETO:
-			if (multi != MULTI_CURVE) {
+			if (multi != MULTI_CURVE3) {
 				if (nmulti > 0) path->elements[midx].code.length = nmulti;
 				midx = idx;
 				nmulti = 0;
-				multi = MULTI_CURVE;
-				path->elements[idx++].code.code = NR_PATH_CURVETO;
+				multi = MULTI_CURVE3;
+				path->elements[idx++].code.code = NR_PATH_CURVETO3;
 			}
 			path->elements[idx++].value = (float) bp->x1;
 			path->elements[idx++].value = (float) bp->y1;
@@ -192,10 +129,475 @@ nr_path_setup_from_art_bpath (NRPath *path, const ArtBpath *bpath)
 	return path;
 }
 
-void
-nr_path_release (NRPath *path)
+unsigned int
+nr_path_forall (const NRPath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data)
 {
-	nr_free (path->elements);
+	float x0, y0, sx, sy;
+	unsigned int sstart;
+
+	sstart = 0;
+	while (sstart < path->nelements) {
+		const NRPathElement *seg;
+		unsigned int slen, cflags, fflags, lflags, idx, flags;
+
+		seg = path->elements + sstart;
+		slen = NR_PATH_ELEMENT_LENGTH (seg);
+		cflags = NR_PATH_ELEMENT_CLOSED (seg) ? NR_PATH_CLOSED : 0; 
+		fflags = NR_PATH_FIRST;
+		lflags = 0;
+
+		/* Start new subpath */
+		if (transform) {
+			x0 = sx = NR_MATRIX_DF_TRANSFORM_X (transform, seg[1].value, seg[2].value);
+			y0 = sy = NR_MATRIX_DF_TRANSFORM_Y (transform, seg[1].value, seg[2].value);
+		} else {
+			x0 = sx = seg[1].value;
+			y0 = sy = seg[2].value;
+		}
+		if (gv->moveto) {
+			/* Moveto is always first */
+			flags = cflags | fflags | lflags;
+			if (!gv->moveto (x0, y0, flags, data)) return FALSE;
+		}
+
+		idx = 3;
+		while (idx < slen) {
+			int nmulti, i;
+			nmulti = NR_PATH_ELEMENT_LENGTH (seg + idx);
+			switch (NR_PATH_ELEMENT_CODE (seg + idx)) {
+			case NR_PATH_LINETO:
+				idx += 1;
+				for (i = 0; i < nmulti; i++) {
+					float x1, y1;
+					if (transform) {
+						x1 = NR_MATRIX_DF_TRANSFORM_X (transform,
+									       seg[idx].value, seg[idx + 1].value);
+						y1 = NR_MATRIX_DF_TRANSFORM_Y (transform,
+									       seg[idx].value, seg[idx + 1].value);
+					} else {
+						x1 = seg[idx].value;
+						y1 = seg[idx + 1].value;
+					}
+					idx += 2;
+					if (idx >= slen) lflags = NR_PATH_LAST;
+					flags = cflags | fflags | lflags;
+					if (gv->lineto && !gv->lineto (x0, y0, x1, y1, flags, data)) {
+						return FALSE;
+					}
+					fflags = 0;
+					x0 = x1;
+					y0 = y1;
+				}
+				break;
+			case NR_PATH_CURVETO2:
+				idx += 1;
+				for (i = 0; i < nmulti; i++) {
+					float x1, y1, x2, y2;
+					if (transform) {
+						x1 = NR_MATRIX_DF_TRANSFORM_X (transform,
+									       seg[idx].value, seg[idx + 1].value);
+						y1 = NR_MATRIX_DF_TRANSFORM_Y (transform,
+									       seg[idx].value, seg[idx + 1].value);
+						x2 = NR_MATRIX_DF_TRANSFORM_X (transform,
+									       seg[idx + 2].value, seg[idx + 3].value);
+						y2 = NR_MATRIX_DF_TRANSFORM_Y (transform,
+									       seg[idx + 2].value, seg[idx + 3].value);
+					} else {
+						x1 = seg[idx].value;
+						y1 = seg[idx + 1].value;
+						x2 = seg[idx + 2].value;
+						y2 = seg[idx + 3].value;
+					}
+					idx += 4;
+					if (idx >= slen) lflags = NR_PATH_LAST;
+					flags = cflags | fflags | lflags;
+					if (gv->curveto2 && !gv->curveto2 (x0, y0, x1, y1, x2, y2, flags, data)) {
+						return FALSE;
+					}
+					fflags = 0;
+					x0 = x2;
+					y0 = y2;
+				}
+				break;
+			case NR_PATH_CURVETO3:
+				idx += 1;
+				for (i = 0; i < nmulti; i++) {
+					float x1, y1, x2, y2, x3, y3;
+					if (transform) {
+						x1 = NR_MATRIX_DF_TRANSFORM_X (transform,
+									       seg[idx].value, seg[idx + 1].value);
+						y1 = NR_MATRIX_DF_TRANSFORM_Y (transform,
+									       seg[idx].value, seg[idx + 1].value);
+						x2 = NR_MATRIX_DF_TRANSFORM_X (transform,
+									       seg[idx + 2].value, seg[idx + 3].value);
+						y2 = NR_MATRIX_DF_TRANSFORM_Y (transform,
+									       seg[idx + 2].value, seg[idx + 3].value);
+						x3 = NR_MATRIX_DF_TRANSFORM_X (transform,
+									       seg[idx + 4].value, seg[idx + 5].value);
+						y3 = NR_MATRIX_DF_TRANSFORM_Y (transform,
+									       seg[idx + 4].value, seg[idx + 5].value);
+					} else {
+						x1 = seg[idx].value;
+						y1 = seg[idx + 1].value;
+						x2 = seg[idx + 2].value;
+						y2 = seg[idx + 3].value;
+						x3 = seg[idx + 4].value;
+						y3 = seg[idx + 5].value;
+					}
+					idx += 6;
+					/* fixme: LAST flag may be wrong if autoclose is on */
+					if (idx >= slen) lflags = NR_PATH_LAST;
+					flags = cflags | fflags | lflags;
+					if (gv->curveto3 && !gv->curveto3 (x0, y0, x1, y1, x2, y2, x3, y3, flags, data)) {
+						return FALSE;
+					}
+					fflags = 0;
+					x0 = x3;
+					y0 = y3;
+				}
+				break;
+			default:
+				fprintf (stderr, "Invalid path code '%d'\n", NR_PATH_ELEMENT_CODE (seg + idx));
+				return FALSE;
+				break;
+			}
+		}
+		/* Close if needed */
+		if (cflags) {
+			if (gv->closepath) {
+				fflags = 0;
+				lflags = NR_PATH_LAST;
+				flags = cflags | fflags | lflags;
+				if (!gv->closepath (x0, y0, sx, sy, flags, data)) return FALSE;
+			}
+		}
+		sstart += slen;
+	}
+	return TRUE;
+}
+
+struct _NRPathFlattenData {
+	const NRPathGVector *pgv;
+	void *data;
+	double tolerance2;
+};
+
+static unsigned int
+nr_curve_flatten (double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3,
+		  unsigned int flags, struct _NRPathFlattenData *fdata)
+{
+	double dx1_0, dy1_0, dx2_0, dy2_0, dx3_0, dy3_0, dx2_3, dy2_3, d3_0_2;
+	double s1_q, t1_q, s2_q, t2_q, v2_q;
+	double f2, f2_q;
+	double x00t, y00t, x0tt, y0tt, xttt, yttt, x1tt, y1tt, x11t, y11t;
+
+	dx1_0 = x1 - x0;
+	dy1_0 = y1 - y0;
+	dx2_0 = x2 - x0;
+	dy2_0 = y2 - y0;
+	dx3_0 = x3 - x0;
+	dy3_0 = y3 - y0;
+	dx2_3 = x3 - x2;
+	dy2_3 = y3 - y2;
+	f2 = fdata->tolerance2;
+	d3_0_2 = dx3_0 * dx3_0 + dy3_0 * dy3_0;
+	if (d3_0_2 < f2) {
+		double d1_0_2, d2_0_2;
+		d1_0_2 = dx1_0 * dx1_0 + dy1_0 * dy1_0;
+		d2_0_2 = dx2_0 * dx2_0 + dy2_0 * dy2_0;
+		if ((d1_0_2 < f2) && (d2_0_2 < f2)) {
+			goto nosubdivide;
+		} else {
+			goto subdivide;
+		}
+	}
+	f2_q = f2 * d3_0_2;
+	s1_q = dx1_0 * dx3_0 + dy1_0 * dy3_0;
+	t1_q = dy1_0 * dx3_0 - dx1_0 * dy3_0;
+	s2_q = dx2_0 * dx3_0 + dy2_0 * dy3_0;
+	t2_q = dy2_0 * dx3_0 - dx2_0 * dy3_0;
+	v2_q = dx2_3 * dx3_0 + dy2_3 * dy3_0;
+	if ((t1_q * t1_q) > f2_q) goto subdivide;
+	if ((t2_q * t2_q) > f2_q) goto subdivide;
+	if ((s1_q < 0.0) && ((s1_q * s1_q) > f2_q)) goto subdivide;
+	if ((v2_q < 0.0) && ((v2_q * v2_q) > f2_q)) goto subdivide;
+	if (s1_q >= s2_q) goto subdivide;
+
+ nosubdivide:
+	if (fdata->pgv->lineto) {
+		return fdata->pgv->lineto (x0, y0, x3, y3, flags, fdata->data);
+	}
+	return TRUE;
+
+ subdivide:
+	x00t = (x0 + x1) * 0.5;
+	y00t = (y0 + y1) * 0.5;
+	x0tt = (x0 + 2 * x1 + x2) * 0.25;
+	y0tt = (y0 + 2 * y1 + y2) * 0.25;
+	x1tt = (x1 + 2 * x2 + x3) * 0.25;
+	y1tt = (y1 + 2 * y2 + y3) * 0.25;
+	x11t = (x2 + x3) * 0.5;
+	y11t = (y2 + y3) * 0.5;
+	xttt = (x0tt + x1tt) * 0.5;
+	yttt = (y0tt + y1tt) * 0.5;
+
+	if (!nr_curve_flatten (x0, y0, x00t, y00t, x0tt, y0tt, xttt, yttt, flags & (~NR_PATH_LAST), fdata)) return FALSE;
+	if (!nr_curve_flatten (xttt, yttt, x1tt, y1tt, x11t, y11t, x3, y3, flags & (~NR_PATH_FIRST), fdata)) return FALSE;
+	return TRUE;
+}
+
+static unsigned int
+nr_path_flatten_moveto (float x0, float y0, unsigned int flags, void *data)
+{
+	struct _NRPathFlattenData *fdata;
+	fdata = (struct _NRPathFlattenData *) data;
+	if (fdata->pgv->moveto) {
+		return fdata->pgv->moveto (x0, y0, flags, fdata->data);
+	}
+	return TRUE;
+}
+
+static unsigned int
+nr_path_flatten_lineto (float x0, float y0, float x1, float y1, unsigned int flags, void *data)
+{
+	struct _NRPathFlattenData *fdata;
+	fdata = (struct _NRPathFlattenData *) data;
+	if (fdata->pgv->lineto) {
+		return fdata->pgv->lineto (x0, y0, x1, y1, flags, fdata->data);
+	}
+	return TRUE;
+}
+
+static unsigned int
+nr_path_flatten_curveto2 (float x0, float y0, float x1, float y1, float x2, float y2,
+			  unsigned int flags, void *data)
+{
+	struct _NRPathFlattenData *fdata;
+	fdata = (struct _NRPathFlattenData *) data;
+	return nr_curve_flatten (x0, y0,
+				 x1 + (x0 - x1) / 3.0, y1 + (y0 - y1) / 3.0,
+				 x1 + (x2 - x1) / 3.0, y1 + (y2 - y1) / 3.0, x2, y2, flags, fdata);
+}
+
+static unsigned int
+nr_path_flatten_curveto3 (float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
+			  unsigned int flags, void *data)
+{
+	struct _NRPathFlattenData *fdata;
+	fdata = (struct _NRPathFlattenData *) data;
+	return nr_curve_flatten (x0, y0, x1, y1, x2, y2, x3, y3, flags, fdata);
+}
+
+static unsigned int
+nr_path_flatten_closepath (float ex, float ey, float sx, float sy, unsigned int flags, void *data)
+{
+	struct _NRPathFlattenData *fdata;
+	fdata = (struct _NRPathFlattenData *) data;
+	if (fdata->pgv->closepath) {
+		return fdata->pgv->closepath (ex, ey, sx, sy, flags, fdata->data);
+	}
+	return TRUE;
+}
+
+static NRPathGVector fpgv = {
+	nr_path_flatten_moveto,
+	nr_path_flatten_lineto,
+	nr_path_flatten_curveto2,
+	nr_path_flatten_curveto3,
+	nr_path_flatten_closepath
+};
+
+unsigned int
+nr_path_forall_flat (const NRPath *path, NRMatrixF *transform, float tolerance, const NRPathGVector *gv, void *data)
+{
+	struct _NRPathFlattenData fdata;
+	fdata.pgv = gv;
+	fdata.data = data;
+	fdata.tolerance2 = tolerance * tolerance;
+
+	return nr_path_forall (path, transform, &fpgv, &fdata);
+}
+
+unsigned int
+nr_path_forall_art (const ArtBpath *bpath, NRMatrixF *transform, const NRPathGVector *gv, void *data)
+{
+	const ArtBpath *bp;
+	float x0, y0, x1, y1, sx, sy;
+	float x2, y2, x3, y3;
+	unsigned int cflags, fflags, lflags, flags;
+
+	x0 = y0 = x1 = y1 = 0.0;
+	sx = sy = 0.0;
+	cflags = 0;
+	fflags = NR_PATH_FIRST;
+	lflags = 0;
+
+	for (bp = bpath; bp->code != ART_END; bp++) {
+		switch (bp->code) {
+		case ART_MOVETO:
+		case ART_MOVETO_OPEN:
+			if (cflags && ((x0 != sx) || (y0 != sy))) {
+				/* Have to close previous subpath */
+				if (gv->closepath) {
+					flags = NR_PATH_CLOSED | NR_PATH_LAST;
+					if (!gv->closepath (x0, y0, sx, sy, flags, data)) return FALSE;
+				}
+			}
+			if (transform) {
+				sx = x0 = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y0 = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x0 = bp->x3;
+				sy = y0 = bp->y3;
+			}
+			if (gv->moveto) {
+				cflags = (bp->code == ART_MOVETO) ? NR_PATH_CLOSED : 0;
+				fflags = NR_PATH_FIRST;
+				lflags = 0;
+				flags = cflags | fflags | lflags;
+				if (!gv->moveto (x0, y0, flags, data)) return FALSE;
+			}
+			break;
+		case ART_LINETO:
+			if (transform) {
+				x1 = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				y1 = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				x1 = bp->x3;
+				y1 = bp->y3;
+			}
+			if (gv->lineto) {
+				lflags = ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO)) ? NR_PATH_LAST : 0;
+				flags = cflags | fflags | lflags;
+				if (!gv->lineto (x0, y0, x1, y1, flags, data)) return FALSE;
+				fflags = FALSE;
+			}
+			x0 = x1;
+			y0 = y1;
+			break;
+		case ART_CURVETO:
+			if (transform) {
+				x1 = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x1, bp->y1);
+				y1 = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x1, bp->y1);
+				x2 = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x2, bp->y2);
+				y2 = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x2, bp->y2);
+				x3 = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				y3 = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				x1 = bp->x1;
+				y1 = bp->y1;
+				x2 = bp->x2;
+				y2 = bp->y2;
+				x3 = bp->x3;
+				y3 = bp->y3;
+			}
+			if (gv->curveto3) {
+				lflags = ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO)) ? NR_PATH_LAST : 0;
+				flags = cflags | fflags | lflags;
+				if (!gv->curveto3 (x0, y0, x1, y1, x2, y2, x3, y3, flags, data)) return FALSE;
+				fflags = FALSE;
+			}
+			x0 = x3;
+			y0 = y3;
+			break;
+		default:
+			fprintf (stderr, "Invalid ArtBpath code '%d'\n", bp->code);
+			return FALSE;
+			break;
+		}
+	}
+	if (cflags && ((x0 != sx) || (y0 != sy))) {
+		/* Have to close previous subpath */
+		if (gv->closepath) {
+			flags = NR_PATH_CLOSED | NR_PATH_LAST;
+			if (!gv->closepath (x0, y0, sx, sy, flags, data)) return FALSE;
+		}
+	}
+	return TRUE;
+}
+
+unsigned int
+nr_path_forall_art_flat (const ArtBpath *path, NRMatrixF *transform, float tolerance,
+			 const NRPathGVector *gv, void *data)
+{
+	struct _NRPathFlattenData fdata;
+	fdata.pgv = gv;
+	fdata.data = data;
+	fdata.tolerance2 = tolerance * tolerance;
+
+	return nr_path_forall_art (path, transform, &fpgv, &fdata);
+}
+
+unsigned int
+nr_path_forall_art_vpath (const ArtVpath *vpath, NRMatrixF *transform, const NRPathGVector *gv, void *data)
+{
+	const ArtVpath *vp;
+	float x0, y0, x1, y1, sx, sy;
+	unsigned int cflags, fflags, lflags, flags;
+
+	x0 = y0 = x1 = y1 = 0.0;
+	sx = sy = 0.0;
+	cflags = 0;
+	fflags = NR_PATH_FIRST;
+	lflags = 0;
+
+	for (vp = vpath; vp->code != ART_END; vp++) {
+		switch (vp->code) {
+		case ART_MOVETO:
+		case ART_MOVETO_OPEN:
+			if (cflags && ((x0 != sx) || (y0 != sy))) {
+				/* Have to close previous subpath */
+				if (gv->closepath) {
+					flags = NR_PATH_CLOSED | NR_PATH_LAST;
+					if (!gv->closepath (x0, y0, sx, sy, flags, data)) return FALSE;
+				}
+			}
+			if (transform) {
+				sx = x0 = NR_MATRIX_DF_TRANSFORM_X (transform, vp->x, vp->y);
+				sy = y0 = NR_MATRIX_DF_TRANSFORM_Y (transform, vp->x, vp->y);
+			} else {
+				sx = x0 = vp->x;
+				sy = y0 = vp->y;
+			}
+			if (gv->moveto) {
+				cflags = (vp->code == ART_MOVETO) ? NR_PATH_CLOSED : 0;
+				fflags = NR_PATH_FIRST;
+				lflags = 0;
+				flags = cflags | fflags | lflags;
+				if (!gv->moveto (x0, y0, flags, data)) return FALSE;
+			}
+			break;
+		case ART_LINETO:
+			if (transform) {
+				x1 = NR_MATRIX_DF_TRANSFORM_X (transform, vp->x, vp->y);
+				y1 = NR_MATRIX_DF_TRANSFORM_Y (transform, vp->x, vp->y);
+			} else {
+				x1 = vp->x;
+				y1 = vp->y;
+			}
+			if (gv->lineto) {
+				lflags = (vp[1].code != ART_LINETO) ? NR_PATH_LAST : 0;
+				flags = cflags | fflags | lflags;
+				if (!gv->lineto (x0, y0, x1, y1, flags, data)) return FALSE;
+				fflags = FALSE;
+			}
+			x0 = x1;
+			y0 = y1;
+			break;
+		default:
+			fprintf (stderr, "Invalid ArtVpath code '%d'\n", vp->code);
+			return FALSE;
+			break;
+		}
+	}
+	if (cflags && ((x0 != sx) || (y0 != sy))) {
+		/* Have to close previous subpath */
+		if (gv->closepath) {
+			flags = NR_PATH_CLOSED | NR_PATH_LAST;
+			if (!gv->closepath (x0, y0, sx, sy, flags, data)) return FALSE;
+		}
+	}
+	return TRUE;
 }
 
 static void nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, double y011, double x111, double y111, NRRectF *bbox);

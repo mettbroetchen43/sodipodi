@@ -40,7 +40,7 @@ struct _NRArenaShape {
 	NRArenaItem *markers;
 
 	/* Experimental */
-	NRPath path;
+	NRPath *path;
 };
 
 struct _NRArenaShapeClass {

@@ -10,13 +10,12 @@
  * This code is in public domain
  */
 
-typedef struct _NRVPath NRVPath;
-typedef struct _NRBPath NRBPath;
 typedef struct _NRPath NRPath;
 
 enum {
 	NR_PATH_LINETO,
-	NR_PATH_CURVETO
+	NR_PATH_CURVETO2,
+	NR_PATH_CURVETO3
 };
 
 enum {
@@ -31,11 +30,12 @@ enum {
 
 typedef struct _NRPathCode NRPathCode;
 typedef union _NRPathElement NRPathElement;
+typedef struct _NRPathGVector NRPathGVector;
 
 struct _NRPathCode {
 	unsigned int length : 24;
 	unsigned int closed : 1;
-	unsigned int code : 1;
+	unsigned int code : 7;
 };
 
 union _NRPathElement {
@@ -43,23 +43,26 @@ union _NRPathElement {
 	float value;
 };
 
-/*
- * VPath structure:
- *   Number of elements
- *   Number of segments
- *   Length (elements) + closed
- *   x, y, x, y...
- */
+#define NR_PATH_ELEMENT_LENGTH(e) ((e)->code.length)
+#define NR_PATH_ELEMENT_CLOSED(e) ((e)->code.closed)
+#define NR_PATH_ELEMENT_CODE(e) ((e)->code.code)
+#define NR_PATH_ELEMENT_VALUE(e) ((e)->value)
 
-struct _NRVPath {
-	NRPathElement *elements;
+/* Return value FALSE means error and stops processing */
+
+#define NR_PATH_CLOSED (1 << 0)
+#define NR_PATH_FIRST (1 << 1)
+#define NR_PATH_LAST (1 << 2)
+
+struct _NRPathGVector {
+	unsigned int (* moveto) (float x0, float y0, unsigned int flags, void *data);
+	unsigned int (* lineto) (float x0, float y0, float x1, float y1, unsigned int flags, void *data);
+	unsigned int (* curveto2) (float x0, float y0, float x1, float y1, float x2, float y2,
+				   unsigned int flags, void *data);
+	unsigned int (* curveto3) (float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
+				   unsigned int flags, void *data);
+	unsigned int (* closepath) (float ex, float ey, float sx, float sy, unsigned int flags, void *data);
 };
-
-/* fixme: (Lauris) */
-
-NRVPath *nr_vpath_setup_from_art_vpath (NRVPath *d, const ArtVpath *avpath);
-
-void nr_vpath_release (NRVPath *vpath);
 
 /*
  * Path structure
@@ -71,12 +74,36 @@ void nr_vpath_release (NRVPath *vpath);
 struct _NRPath {
 	unsigned int nelements;
 	unsigned int nsegments;
-	NRPathElement *elements;
+	NRPathElement elements[1];
 };
 
-NRPath *nr_path_setup_from_art_bpath (NRPath *path, const ArtBpath *bpath);
+NRPath *nr_path_new_from_art_bpath (const ArtBpath *bpath);
 
-void nr_path_release (NRPath *path);
+unsigned int nr_path_forall (const NRPath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
+unsigned int nr_path_forall_flat (const NRPath *path, NRMatrixF *transform, float tolerance,
+				  const NRPathGVector *gv, void *data);
+
+/* Temporary */
+unsigned int nr_path_forall_art (const ArtBpath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
+unsigned int nr_path_forall_art_flat (const ArtBpath *path, NRMatrixF *transform, float tolerance,
+				      const NRPathGVector *gv, void *data);
+unsigned int nr_path_forall_art_vpath (const ArtVpath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
+
+#if 0
+struct _NRDynamicPath {
+	unsigned int refcount;
+	unsigned int nelements;
+	unsigned int hascpt : 1;
+	float cpx, cpy;
+	NRPath *path;
+};
+
+NRDynamicPath *nr_dynamic_path_new (unsigned int nelements);
+#endif
+
+/* fixme: Get rid of this (Lauris) */
+
+typedef struct _NRBPath NRBPath;
 
 struct _NRBPath {
 	ArtBpath *path;
