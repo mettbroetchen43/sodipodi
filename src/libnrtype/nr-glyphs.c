@@ -61,6 +61,8 @@ nr_pgl_free (NRPGL *pgl)
 {
 	nr_rasterfont_unref (pgl->rfont);
 
+	free (pgl);
+
 	return NULL;
 }
 
