@@ -9,7 +9,8 @@
 #include "sp-draw-context.h"
 #include "text-context.h"
 #include "zoom-context.h"
-#include "desktop.h"
+#include "mdi-desktop.h"
+#include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "event-broker.h"
 
@@ -56,7 +57,7 @@ sp_event_handler (GnomeCanvasItem * ci, GdkEvent * event, gpointer data)
 
 	ret = FALSE;
 
-	desktop = SP_CANVAS_ITEM_DESKTOP (ci);
+	desktop = SP_ACTIVE_DESKTOP;
 	item = SP_ITEM (data);
 
 	switch (event_context) {
@@ -101,7 +102,7 @@ sp_root_handler (GnomeCanvasItem * ci, GdkEvent * event, gpointer data)
 	static ArtPoint s;
 	double x, y;
 
-	desktop = SP_DESKTOP (data);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	switch (event_context) {
 		case SP_EVENT_CONTEXT_SELECT:
@@ -182,9 +183,10 @@ sp_broker_selection_changed (SPDesktop * desktop)
 		default:
 			break;
 	}
-
+#if 0
 	sp_object_fill_selection_changed ();
 	sp_object_stroke_selection_changed ();
+#endif
 }
 
 void
@@ -192,7 +194,7 @@ sp_event_context_set_select (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	sp_event_context_release (desktop);
 	event_context = SP_EVENT_CONTEXT_SELECT;
@@ -204,7 +206,7 @@ sp_event_context_set_node_edit (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	sp_event_context_release (desktop);
 	event_context = SP_EVENT_CONTEXT_NODE_EDIT;
@@ -216,7 +218,7 @@ sp_event_context_set_rect (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	sp_event_context_release (desktop);
 	event_context = SP_EVENT_CONTEXT_RECT;
@@ -228,7 +230,7 @@ sp_event_context_set_ellipse (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	sp_event_context_release (desktop);
 	event_context = SP_EVENT_CONTEXT_ELLIPSE;
@@ -240,7 +242,7 @@ sp_event_context_set_freehand (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	sp_event_context_release (desktop);
 	event_context = SP_EVENT_CONTEXT_DRAW;
@@ -252,7 +254,7 @@ sp_event_context_set_text (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	sp_event_context_release (desktop);
 	event_context = SP_EVENT_CONTEXT_TEXT;
@@ -264,7 +266,7 @@ sp_event_context_set_zoom (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	sp_event_context_release (desktop);
 	event_context = SP_EVENT_CONTEXT_ZOOM;

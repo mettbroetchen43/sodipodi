@@ -78,29 +78,6 @@ gchar *s = N_("Feature not yet implemented :-(\n"
 gchar *s = N_("Copyright Lauris Kaplinski 1999.");
 gchar *s = N_("A Vector Drawing Program.\n"
               "Released under GPL");
-gchar *s = N_("Stroke settings");
-gchar *s = N_("General");
-gchar *s = N_("Is stroked");
-gchar *s = N_("Valige värv");
-gchar *s = N_("Stroke color");
-gchar *s = N_("Width");
-gchar *s = N_("Stroke width");
-gchar *s = N_("pixels\n"
-              "millimeters\n"
-              "points\n"
-              "inches\n"
-              "");
-gchar *s = N_("Scale with image");
-gchar *s = N_("Behind fill");
-gchar *s = N_("Join & cap");
-gchar *s = N_("Join");
-gchar *s = N_("Cap");
-gchar *s = N_("miter");
-gchar *s = N_("butt");
-gchar *s = N_("round");
-gchar *s = N_("bevel");
-gchar *s = N_("round");
-gchar *s = N_("square");
 gchar *s = N_("Fill type");
 gchar *s = N_("None");
 gchar *s = N_("Color");
@@ -134,3 +111,27 @@ gchar *s = N_("Cusp");
 gchar *s = N_("Smooth");
 gchar *s = N_("Symmetric");
 gchar *s = N_("Close");
+gchar *s = N_("General");
+gchar *s = N_("Is stroked");
+gchar *s = N_("Valige värv");
+gchar *s = N_("Stroke color");
+gchar *s = N_("Width");
+gchar *s = N_("Stroke width");
+gchar *s = N_("pixels\n"
+              "millimeters\n"
+              "points\n"
+              "inches\n"
+              "");
+gchar *s = N_("Scale with image");
+gchar *s = N_("Behind fill");
+gchar *s = N_("Join & cap");
+gchar *s = N_("Join");
+gchar *s = N_("Cap");
+gchar *s = N_("miter");
+gchar *s = N_("butt");
+gchar *s = N_("round");
+gchar *s = N_("bevel");
+gchar *s = N_("round");
+gchar *s = N_("square");
+gchar *s = N_("Stroke");
+gchar *s = N_("Fill");

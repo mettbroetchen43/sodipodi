@@ -6,7 +6,7 @@
 #include "helper/sodipodi-ctrl.h"
 #include "helper/sp-ctrlline.h"
 #include "sp-path.h"
-#include "desktop.h"
+#include "desktop-handles.h"
 
 typedef struct _SPNodePath SPNodePath;
 typedef struct _SPNodeSubPath SPNodeSubPath;

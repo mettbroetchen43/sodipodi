@@ -10,7 +10,9 @@
  */
 
 #include "svg/svg.h"
-#include "desktop.h"
+#include "document.h"
+#include "mdi-desktop.h"
+#include "desktop-handles.h"
 #include "selection-chemistry.h"
 
 void
@@ -23,10 +25,9 @@ sp_selection_delete (GtkWidget * widget)
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
 	selection = SP_DT_SELECTION (desktop);
 
@@ -52,10 +53,9 @@ void sp_selection_duplicate (GtkWidget * widget)
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
 	selection = SP_DT_SELECTION (desktop);
 
@@ -86,10 +86,9 @@ sp_selection_group (GtkWidget * widget)
 	const GSList * l;
 	GSList * p;
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
 	selection = SP_DT_SELECTION (desktop);
 
@@ -136,10 +135,9 @@ void sp_selection_ungroup (GtkWidget * widget)
 	SPCSSAttr * css;
 	gchar affinestr[80];
 
-	desktop = SP_WIDGET_DESKTOP (widget);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
 	selection = SP_DT_SELECTION (desktop);
 

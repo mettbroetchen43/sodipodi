@@ -6,14 +6,15 @@
 #include <libgnomeprint/gnome-printer-dialog.h>
 #include "xml/repr.h"
 #include "dir-util.h"
-#include "desktop.h"
+#include "sodipodi.h"
+#include "mdi.h"
+#include "mdi-child.h"
 #include "sp-image.h"
 #include "file.h"
 
 gchar * open_path = NULL;
 gchar * save_path = NULL;
 gchar * import_path = NULL;
-SPDesktop * import_desktop, * save_desktop;
 
 static void
 file_selection_destroy (GtkWidget * widget, GtkFileSelection * fs)
@@ -24,19 +25,20 @@ file_selection_destroy (GtkWidget * widget, GtkFileSelection * fs)
 void sp_file_new (void)
 {
 	SPDocument * doc;
-	SPDesktop * desktop;
+	SPMDIChild * child;
 
 	doc = sp_document_new ();
 	g_return_if_fail (doc != NULL);
 
-	desktop = sp_desktop_new (SP_APP_MAIN, doc);
-	g_return_if_fail (desktop != NULL);
+	child = sp_mdi_child_new (doc);
+
+	gnome_mdi_add_child (SODIPODI, GNOME_MDI_CHILD (child));
 }
 
 void
 file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 {
-	SPDesktop * desktop;
+	SPMDIChild * child;
 	SPDocument * doc;
 	gchar * filename;
 
@@ -53,11 +55,9 @@ file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 	doc = sp_document_new_from_file (filename);
 	g_return_if_fail (doc != NULL);
 
-	desktop = sp_desktop_new (SP_APP_MAIN, doc);
-	if (desktop == NULL) {
-		sp_document_destroy (doc);
-		return;
-	}
+	child = sp_mdi_child_new (doc);
+
+	gnome_mdi_add_child (SODIPODI, GNOME_MDI_CHILD (child));
 }
 
 void sp_file_open (void)
@@ -82,13 +82,15 @@ void sp_file_open (void)
 
 void sp_file_save (GtkWidget * widget)
 {
+#if 0
+	GtkWidget * view;
 	SPRepr * repr;
 	const gchar * fn;
 
-	save_desktop = SP_WIDGET_DESKTOP (widget);
-	g_return_if_fail (save_desktop != NULL);
+	view = gnome_mdi_active_view (SODIPODI);
+	g_return_if_fail (view != NULL);
 
-	repr = SP_ITEM (SP_DT_DOCUMENT (save_desktop))->repr;
+	repr = SP_ITEM (SP_DT_DOCUMENT ())->repr;
 
 	fn = sp_repr_attr (repr, "SP-DOCNAME");
 	if (fn == NULL) {
@@ -96,11 +98,13 @@ void sp_file_save (GtkWidget * widget)
 	} else {
 		sp_repr_save_file (repr, fn);
 	}
+#endif
 }
 
 static void
 file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 {
+#if 0
 	SPRepr * repr;
 	gchar * filename;
 
@@ -122,10 +126,12 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 #if 0
 	sp_desktop_set_title (sp_filename_from_path (filename));
 #endif
+#endif
 }
 
 void sp_file_save_as (GtkWidget * widget)
 {
+#if 0
 	static GtkWidget * w = NULL;
 
 	save_desktop = SP_WIDGET_DESKTOP (widget);
@@ -143,6 +149,7 @@ void sp_file_save_as (GtkWidget * widget)
 		gtk_file_selection_set_filename (GTK_FILE_SELECTION (w),save_path);
 
 	gtk_widget_show (w);
+#endif
 }
 
 void sp_file_exit (void)
@@ -153,6 +160,7 @@ void sp_file_exit (void)
 static void
 file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 {
+#if 0
 	SPDocument * doc;
 	SPRepr * rdoc;
 	gchar * filename;
@@ -198,10 +206,12 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 		sp_repr_append_child (rdoc, repr);
 		sp_repr_unref (repr);
 	}
+#endif
 }
 
 void sp_file_import (GtkWidget * widget)
 {
+#if 0
 	static GtkWidget * w = NULL;
 
 	if (w == NULL) {
@@ -220,10 +230,12 @@ void sp_file_import (GtkWidget * widget)
 	import_desktop = SP_WIDGET_DESKTOP (widget);
 
 	gtk_widget_show (w);
+#endif
 }
 
 void sp_file_print (GtkWidget * widget)
 {
+#if 0
 	GnomePrinter * printer;
 	GnomePrintContext * gpc;
 	SPDesktop * desktop;
@@ -248,5 +260,6 @@ void sp_file_print (GtkWidget * widget)
 	gnome_print_context_close (gpc);
 #if 0
 	gnome_print_context_free (gpc);
+#endif
 #endif
 }

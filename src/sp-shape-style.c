@@ -59,7 +59,7 @@ sp_stroke_read (SPStroke * stroke, SPCSSAttr * css)
 		if (strcmp (prop, "round") == 0) {
 			stroke->cap = ART_PATH_STROKE_CAP_ROUND;
 		} else if (strcmp (prop, "square") == 0) {
-			stroke->cap = ART_PATH_STROKE_CAP_ROUND;
+			stroke->cap = ART_PATH_STROKE_CAP_SQUARE;
 		} else {
 			stroke->cap = ART_PATH_STROKE_CAP_BUTT;
 		}

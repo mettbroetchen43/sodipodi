@@ -4,240 +4,178 @@
 #include <glade/glade.h>
 #include "../xml/repr.h"
 #include "../svg/svg.h"
+#include "../mdi-desktop.h"
 #include "../selection.h"
-#include "../display/fill.h"
+#include "../desktop-handles.h"
 #include "object-fill.h"
 
-static void apply_fill_list (GList * list);
+static void apply_fill (void);
+static void sp_fill_read_selection (void);
 
-static void read_selection (void);
-static void show_fill (void);
+static void sp_fill_show_dialog (void);
+static void sp_fill_hide_dialog (void);
 
-GladeXML * xml = NULL;
-GtkWidget * dialog = NULL;
-SPCSSAttr * settings = NULL;
+/* glade gui handlers */
 
-void
-sp_object_fill_selection_changed (void)
+void sp_object_fill_apply (void);
+void sp_object_fill_close (void);
+void sp_object_fill_color_changed (void);
+void sp_object_fill_none (void);
+void sp_object_fill_color (void);
+void sp_object_fill_gradient (void);
+void sp_object_fill_special (void);
+void sp_object_fill_fractal (void);
+
+/* Signal handlers */
+
+static void sp_fill_view_changed (GnomeMDI * mdi, GtkWidget * widget, gpointer data);
+static void sp_fill_sel_changed (SPSelection * selection, gpointer data);
+static void sp_fill_sel_destroy (GtkObject * object, gpointer data);
+
+static GladeXML * xml;
+static GtkWidget * dialog = NULL;
+
+GtkColorSelection * cs;
+GtkToggleButton * tb_none, * tb_color;
+
+static SPCSSAttr * css = NULL;
+
+static guint view_changed_id = 0;
+static guint sel_destroy_id = 0;
+static guint sel_changed_id = 0;
+static SPSelection * sel_current;
+
+void sp_object_fill_dialog (void)
 {
-#if 0
-	if (dialog != NULL) {
-		if (GTK_WIDGET_VISIBLE (dialog)) {
-			read_selection ();
-			show_fill ();
-		}
-	}
-#endif
-}
-
-void sp_object_fill (void)
-{
-#if 0
 	if (xml == NULL) {
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "fill");
 		glade_xml_signal_autoconnect (xml);
 		dialog = glade_xml_get_widget (xml, "fill");
-	}
-
-	read_selection ();
-	show_fill ();
-#endif
-};
-
-static void
-read_selection (void)
-{
-#if 0
-	GList * list;
-	SPRepr * repr;
-
-	if (settings != NULL)
-		sp_repr_css_attr_unref (settings);
-	settings = NULL;
-
-	list = sp_selection_list ();
-
-	if (list != NULL) {
-		repr = (SPRepr *) list->data;
-		settings = sp_repr_css_attr_inherited (repr, "style");
-	}
-#endif
-};
-
-static void
-show_fill (void)
-{
-#if 0
-	GtkToggleButton * tb;
-	GtkColorSelection * cs;
-	gdouble color[4];
-	SPFill * fill;
-
-	g_assert (dialog != NULL);
-
-	fill = sp_fill_new ();
-	if (settings != NULL) {
-		sp_fill_read (fill, settings);
-	}
-
-	cs = (GtkColorSelection *) glade_xml_get_widget (xml, "fill_color");
-
-	switch (fill->type) {
-	case SP_FILL_NONE:
-		tb = (GtkToggleButton *) glade_xml_get_widget (xml, "type_none");
-		gtk_toggle_button_set_active (tb, TRUE);
-		gtk_widget_set_sensitive ((GtkWidget *) cs, FALSE);
-		break;
-	case SP_FILL_COLOR:
-		tb = (GtkToggleButton *) glade_xml_get_widget (xml, "type_color");
-		gtk_toggle_button_set_active (tb, TRUE);
-		gtk_widget_set_sensitive ((GtkWidget *) cs, TRUE);
+		cs = (GtkColorSelection *) glade_xml_get_widget (xml, "fill_color");
 		gtk_color_selection_set_opacity (cs, TRUE);
-		color[0] = (double)((fill->color >> 24) & 0xff) / 255;
-		color[1] = (double)((fill->color >> 16) & 0xff) / 255;
-		color[2] = (double)((fill->color >>  8) & 0xff) / 255;
-		color[3] = (double)((fill->color      ) & 0xff) / 255;
-		gtk_color_selection_set_color (cs, color);
-		break;
-	default:
-		g_assert_not_reached ();
-		break;
+		tb_none = (GtkToggleButton *) glade_xml_get_widget (xml, "type_none");
+		tb_color = (GtkToggleButton *) glade_xml_get_widget (xml, "type_color");
 	}
 
-	sp_fill_unref (fill);
-	gtk_widget_show (dialog);
-#endif
-}
+	sp_fill_read_selection ();
+	sp_fill_show_dialog ();
+};
 
-void
-sp_object_fill_close (void)
+static void
+sp_fill_read_selection (void)
 {
+	SPSelection * selection;
+	const GSList * l;
+	SPRepr * repr;
+	const gchar * str;
+	SPFillType fill_type;
+	guint32 fill_color;
+	gdouble color[4];
+	gdouble opacity;
+
+	g_return_if_fail (dialog != NULL);
+
+	if (css != NULL) {
+		sp_repr_css_attr_unref (css);
+		css = NULL;
+	}
+
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+
+	g_return_if_fail (selection != NULL);
+
+	l = sp_selection_repr_list (selection);
+
+	if (l != NULL) {
+		repr = (SPRepr *) l->data;
+		css = sp_repr_css_attr_inherited (repr, "style");
+	}
+
+	if (css != NULL) {
+		str = sp_repr_css_property (css, "fill", "none");
+		fill_type = sp_svg_read_fill_type (str);
+
+		switch (fill_type) {
+		case SP_FILL_NONE:
+			gtk_toggle_button_set_active (tb_none, TRUE);
+			break;
+		case SP_FILL_COLOR:
+			gtk_toggle_button_set_active (tb_color, TRUE);
+			fill_color = sp_svg_read_color (str);
+			color[0] = (gdouble)((fill_color >> 24) & 0xff) / 255;
+			color[1] = (gdouble)((fill_color >> 16) & 0xff) / 255;
+			color[2] = (gdouble)((fill_color >>  8) & 0xff) / 255;
+			str = sp_repr_css_property (css, "fill-opacity", "100%");
+			opacity = sp_svg_read_percentage (str);
+			color[3] = opacity;
+			gtk_color_selection_set_color (cs, color);
+			gtk_color_selection_set_color (cs, color);
+			break;
+		default:
 #if 0
-	g_assert (dialog != NULL);
-	gtk_widget_hide (dialog);
-g_print ("meso\n");
+			g_assert_not_reached ();
 #endif
+			break;
+		}
+	}
 }
 
 void
 sp_object_fill_apply (void)
 {
-#if 0
-	GtkColorSelection * cs;
 	gdouble color[4];
-	GList * list;
-	guint32 cval;
+	guint32 fill_color;
+	SPFillType fill_type;
 	gchar cstr[80];
 
-	cs = (GtkColorSelection *) glade_xml_get_widget (xml, "fill_color");
+	/* fixme: */
+	if (css == NULL) return;
+
 	gtk_color_selection_get_color (cs, color);
 
-	cval =
-		(guint)(color[0] * 255) << 24 |
-		(guint)(color[1] * 255) << 16 |
-		(guint)(color[2] * 255) << 8 |
-		(guint)(color[3] * 255);
+	fill_color =	(guint)(color[0] * 255) << 24 |
+			(guint)(color[1] * 255) << 16 |
+			(guint)(color[2] * 255) << 8 |
+			(guint)(color[3] * 255);
+
+	if (gtk_toggle_button_get_active (tb_color)) {
+		fill_type = SP_FILL_COLOR;
+	} else {
+		fill_type = SP_FILL_NONE;
+	}
 
 	cstr[79] = '\0';
-	sp_svg_write_color (cstr, 79, cval);
+	sp_svg_write_fill_type (cstr, 79, fill_type, fill_color);
+	sp_repr_css_set_property (css, "fill", cstr);
 
-	sp_repr_css_set_property (settings, "fill", cstr);
+	sp_svg_write_percentage (cstr, 79, color[3]);
+	sp_repr_css_set_property (css, "fill-opacity", cstr);
 
-	list = sp_selection_list ();
-	apply_fill_list (list);
-#endif
+	apply_fill ();
+}
+
+void
+sp_object_fill_close (void)
+{
+	sp_fill_hide_dialog ();
 }
 
 void
 sp_object_fill_color_changed (void)
 {
-#if 0
 	gnome_property_box_changed ((GnomePropertyBox *) dialog);
-#endif
-}
-
-static void ok_clicked (GtkButton * button, gpointer data)
-{
-#if 0
-	GList * list;
-
-	list = sp_selection_list ();
-
-	if (list != NULL) {
-		apply_fill_list (list);
-	}
-	gtk_widget_destroy (GTK_WIDGET (data));
-#endif
-}
-
-static void apply_clicked (GtkButton * button, gpointer data)
-{
-#if 0
-	GList * list;
-
-	list = sp_selection_list ();
-
-	if (list != NULL) {
-		apply_fill_list (list);
-	}
-#endif
-}
-
-static void cancel_clicked (GtkButton * button, gpointer data)
-{
-#if 0
-	gtk_widget_destroy (GTK_WIDGET (data));
-#endif
-}
-
-static void
-apply_fill_list (GList * list)
-{
-#if 0
-	SPRepr * repr;
-
-	while (list != NULL) {
-		repr = (SPRepr *) list->data;
-		sp_repr_css_change_recursive (repr, settings, "style");
-		list = list->next;
-	}
-#endif
 }
 
 void
 sp_object_fill_none (void)
 {
-#if 0
-	sp_repr_css_set_property (settings, "fill", "none");
 	gnome_property_box_changed ((GnomePropertyBox *) dialog);
-#endif
 }
 
 void
 sp_object_fill_color (void)
 {
-#if 0
-	GtkColorSelection * cs;
-	gdouble color[4];
-	guint32 cval;
-	gchar cstr[80];
-
-	cs = (GtkColorSelection *) glade_xml_get_widget (xml, "fill_color");
-	gtk_color_selection_get_color (cs, color);
-
-	cval =
-		(guint)(color[0] * 255) << 24 |
-		(guint)(color[1] * 255) << 16 |
-		(guint)(color[2] * 255) << 8 |
-		(guint)(color[3] * 255);
-
-	cstr[79] = '\0';
-	sp_svg_write_color (cstr, 79, cval);
-
-	sp_repr_css_set_property (settings, "fill", cstr);
-
 	gnome_property_box_changed ((GnomePropertyBox *) dialog);
-#endif
 }
 
 void
@@ -253,5 +191,139 @@ sp_object_fill_special (void)
 void
 sp_object_fill_fractal (void)
 {
+}
+
+static void
+apply_fill (void)
+{
+	SPDesktop * desktop;
+	SPSelection * selection;
+	SPRepr * repr;
+	const GSList * l;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	selection = SP_DT_SELECTION (desktop);
+
+	l = sp_selection_repr_list (selection);
+
+	while (l != NULL) {
+		repr = (SPRepr *) l->data;
+		sp_repr_css_change_recursive (repr, css, "style");
+		l = l->next;
+	}
+}
+
+/*
+ * selection handlers
+ *
+ */
+
+static void
+sp_fill_sel_changed (SPSelection * selection, gpointer data)
+{
+	sp_fill_read_selection ();
+}
+
+static void
+sp_fill_sel_destroy (GtkObject * object, gpointer data)
+{
+	SPSelection * selection;
+
+	selection = SP_SELECTION (object);
+
+	if (selection == sel_current) {
+		if (sel_destroy_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
+			sel_destroy_id = 0;
+		}
+		if (sel_changed_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
+			sel_changed_id = 0;
+		}
+	}
+}
+
+static void
+sp_fill_view_changed (GnomeMDI * mdi, GtkWidget * widget, gpointer data)
+{
+	if (sel_current != NULL) {
+		if (sel_destroy_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
+			sel_destroy_id = 0;
+		}
+		if (sel_changed_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
+			sel_changed_id = 0;
+		}
+	}
+
+	sel_current = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+
+	if (sel_current != NULL) {
+		if (sel_destroy_id < 1) {
+			sel_destroy_id = gtk_signal_connect (GTK_OBJECT (sel_current), "destroy",
+				GTK_SIGNAL_FUNC (sp_fill_sel_destroy), NULL);
+		}
+		if (sel_changed_id < 1) {
+			sel_changed_id = gtk_signal_connect (GTK_OBJECT (sel_current), "changed",
+				GTK_SIGNAL_FUNC (sp_fill_sel_changed), NULL);
+		}
+	}
+
+	sp_fill_read_selection ();
+}
+
+static void
+sp_fill_show_dialog (void)
+{
+	g_return_if_fail (dialog != NULL);
+
+	sel_current = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+
+	if (sel_current != NULL) {
+		if (sel_destroy_id < 1) {
+			sel_destroy_id = gtk_signal_connect (GTK_OBJECT (sel_current), "destroy",
+				GTK_SIGNAL_FUNC (sp_fill_sel_destroy), NULL);
+		}
+		if (sel_changed_id < 1) {
+			sel_changed_id = gtk_signal_connect (GTK_OBJECT (sel_current), "changed",
+				GTK_SIGNAL_FUNC (sp_fill_sel_changed), NULL);
+		}
+	}
+
+	if (view_changed_id < 1) {
+		view_changed_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "view_changed",
+			GTK_SIGNAL_FUNC (sp_fill_view_changed), NULL);
+	}
+	if (!GTK_WIDGET_VISIBLE (dialog)) {
+		gtk_widget_show (dialog);
+	}
+}
+
+void
+sp_fill_hide_dialog (void)
+{
+	g_return_if_fail (dialog != NULL);
+
+	if (GTK_WIDGET_VISIBLE (dialog)) {
+		gtk_widget_hide (dialog);
+	}
+
+	if (view_changed_id > 0) {
+		gtk_signal_disconnect (GTK_OBJECT (SODIPODI), view_changed_id);
+		view_changed_id = 0;
+	}
+
+	if (sel_current != NULL) {
+		if (sel_destroy_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
+			sel_destroy_id = 0;
+		}
+		if (sel_changed_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
+			sel_changed_id = 0;
+		}
+	}
 }
 

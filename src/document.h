@@ -11,7 +11,11 @@
 
 #include "sp-root.h"
 
+#ifndef SP_DOCUMENT_DEFINED
+#define SP_DOCUMENT_DEFINED
 #define SPDocument SPRoot
+#endif
+
 #define SP_DOCUMENT SP_ROOT
 #define SP_IS_DOCUMENT SP_IS_ROOT
 

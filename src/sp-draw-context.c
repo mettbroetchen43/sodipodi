@@ -15,7 +15,7 @@
 #include "helper/sodipodi-ctrl.h"
 #include "display/canvas-shape.h"
 
-#include "desktop.h"
+#include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "event-broker.h"
 #include "sp-draw-context.h"

@@ -2,7 +2,7 @@
 #define TEXT_CONTEXT_H
 
 #include <libgnomeui/gnome-canvas.h>
-#include "desktop.h"
+#include "desktop-handles.h"
 
 gint sp_text_handler (SPDesktop * desktop, SPItem * item, GdkEvent * event);
 gint sp_text_root_handler (SPDesktop * desktop, GdkEvent * event);

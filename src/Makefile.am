@@ -15,6 +15,7 @@ bin_PROGRAMS = sodipodi
 
 sodipodi_SOURCES = \
 	sodipodi.h \
+	\
 	sp-item.c sp-item.h \
 	sp-item-repr.c \
 	sp-item-group.c \
@@ -31,13 +32,17 @@ sodipodi_SOURCES = \
 	\
 	repr-item.c repr-item.h \
 	\
-	application.c application.h \
 	document.c document.h \
+	mdi.c mdi.h \
+	mdi-child.c mdi-child.h \
+	mdi-desktop.c mdi-desktop.h \
+	mdi-document.c mdi-document.h \
+	mdi-ui.c mdi-ui.h \
 	selection.c selection.h \
 	desktop.c desktop.h \
 	desktop-units.h \
+	desktop-handles.c desktop-handles.h \
 	desktop-affine.c desktop-affine.h \
-	desktop-ui.c desktop-ui.h \
 	\
 	main.c \
 	help.c help.h \
@@ -61,11 +66,13 @@ sodipodi_SOURCES = \
 	font-wrapper.c font-wrapper.h \
 	file.c file.h
 
+sodipodi_LDFLAGS = -export-dynamic
+
 sodipodi_libs = \
 	xml/libspxml.a \
-	svg/libspsvg.a \
 	helper/libspgt1.a \
 	dialogs/libspdialogs.a \
+	svg/libspsvg.a \
 	display/libspdisplay.a \
 	helper/libspchelp.a
 

@@ -10,19 +10,19 @@
 
 #define SP_DESKTOP_SCROLL_LIMIT 4000.0
 
-SPDesktop * active_desktop = NULL;
-gint num_desktops = 0;
-
 static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_destroy (GtkObject * object);
+
+static void sp_desktop_size_request (GtkWidget * widget, GtkRequisition * requisition);
+static void sp_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation);
 
 static void sp_desktop_document_destroyed (SPDocument * document, SPDesktop * desktop);
 
 static void sp_desktop_update_rulers (SPDesktop * desktop);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
 
-static GtkObjectClass * parent_class = NULL;
+GtkBoxClass * parent_class;
 
 GtkType
 sp_desktop_get_type (void)
@@ -41,7 +41,7 @@ sp_desktop_get_type (void)
 			(GtkClassInitFunc) NULL
 		};
 
-		desktop_type = gtk_type_unique (gtk_object_get_type (), &desktop_info);
+		desktop_type = gtk_type_unique (gtk_box_get_type (), &desktop_info);
 	}
 
 	return desktop_type;
@@ -51,12 +51,17 @@ static void
 sp_desktop_class_init (SPDesktopClass * klass)
 {
 	GtkObjectClass * object_class;
+	GtkWidgetClass * widget_class;
+
+	parent_class = gtk_type_class (gtk_box_get_type ());
 
 	object_class = (GtkObjectClass *) klass;
-
-	parent_class = gtk_type_class (gtk_object_get_type ());
+	widget_class = (GtkWidgetClass *) klass;
 
 	object_class->destroy = sp_desktop_destroy;
+
+	widget_class->size_request = sp_desktop_size_request;
+	widget_class->size_allocate = sp_desktop_size_allocate;
 }
 
 static void
@@ -64,8 +69,6 @@ sp_desktop_init (SPDesktop * desktop)
 {
 	desktop->document = NULL;
 	desktop->selection = NULL;
-	desktop->window = NULL;
-	desktop->statusbar = NULL;
 	desktop->canvas = NULL;
 	desktop->acetate = NULL;
 	desktop->main = NULL;
@@ -93,19 +96,64 @@ sp_desktop_destroy (GtkObject * object)
 		gtk_object_destroy (GTK_OBJECT (desktop->selection));
 	if ((desktop->document) && (desktop->canvas))
 		sp_item_hide (SP_ITEM (desktop->document), desktop->canvas);
+#if 0
 	if (desktop->window)
 		gtk_object_destroy (GTK_OBJECT (desktop->window));
+#endif
+	if (GTK_OBJECT_CLASS (parent_class)->destroy)
+		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
 
-	if (parent_class->destroy)
-		(* parent_class->destroy) (object);
+static void
+sp_desktop_size_request (GtkWidget * widget, GtkRequisition * requisition)
+{
+	GtkBox * box;
+	GtkWidget * child;
+
+	box = GTK_BOX (widget);
+
+	if (box->children != NULL) {
+		child = ((GtkBoxChild *) box->children->data)->widget;
+		gtk_widget_size_request (child, requisition);
+	} else {
+		requisition->width = 600;
+		requisition->height = 400;
+	}
+
+	requisition->width += GTK_CONTAINER (box)->border_width * 2;
+	requisition->height += GTK_CONTAINER (box)->border_width * 2;
+}
+
+static void
+sp_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocation)
+{
+	GtkBox * box;
+	GtkWidget * child;
+	GtkAllocation child_allocation;
+
+	box = GTK_BOX (widget);
+
+	widget->allocation = * allocation;
+
+	if (box->children != NULL) {
+		child = ((GtkBoxChild *) box->children->data)->widget;
+
+		child_allocation.x = allocation->x + GTK_CONTAINER (widget)->border_width;
+		child_allocation.y = allocation->y + GTK_CONTAINER (widget)->border_width;
+		child_allocation.width = allocation->width - 2 * GTK_CONTAINER (widget)->border_width;
+		child_allocation.height = allocation->height - 2 * GTK_CONTAINER (widget)->border_width;
+
+		gtk_widget_size_allocate (child, &child_allocation);
+	}
 }
 
 /* Constructor */
 
 SPDesktop *
-sp_desktop_new (SPApp * app, SPDocument * document)
+sp_desktop_new (SPDocument * document)
 {
 	SPDesktop * desktop;
+	GtkWidget * dwidget;
 	GladeXML * xml;
 	GnomeCanvasGroup * root;
 	GnomeCanvasItem * ci;
@@ -115,22 +163,32 @@ sp_desktop_new (SPApp * app, SPDocument * document)
 	g_return_val_if_fail (document != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
 
-	xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "sodipodi");
+	xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "desktop");
 	g_return_val_if_fail (xml != NULL, NULL);
 	glade_xml_signal_autoconnect (xml);
 
 	desktop = (SPDesktop *) gtk_type_new (sp_desktop_get_type ());
 
-	desktop->app = app;
+	GTK_BOX (desktop)->spacing = 4;
+	GTK_BOX (desktop)->homogeneous = TRUE;
+
 	desktop->document = document;
+#if 0
 	gtk_signal_connect (GTK_OBJECT (document), "destroy",
 		GTK_SIGNAL_FUNC (sp_desktop_document_destroyed), desktop);
+#endif
 
 	desktop->selection = sp_selection_new ();
 
+#if 0
 	desktop->window = glade_xml_get_widget (xml, "sodipodi");
-	gtk_object_set_data (GTK_OBJECT (desktop->window), "SPDesktop", desktop);
+#endif
+	dwidget = glade_xml_get_widget (xml, "desktop");
+	gtk_object_set_data (GTK_OBJECT (dwidget), "SPDesktop", desktop);
+	gtk_box_pack_start_defaults (GTK_BOX (desktop), dwidget);
+#if 0
 	desktop->statusbar = glade_xml_get_widget (xml, "status_bar");
+#endif
 	desktop->hscrollbar = (GtkScrollbar *) glade_xml_get_widget (xml, "hscrollbar");
 	desktop->vscrollbar = (GtkScrollbar *) glade_xml_get_widget (xml, "vscrollbar");
 	desktop->hruler = (GtkRuler *) glade_xml_get_widget (xml, "hruler");
@@ -200,9 +258,11 @@ sp_desktop_new (SPApp * app, SPDocument * document)
 	sp_context_set (desktop, SP_CONTEXT_SELECT);
 #endif
 
+#if 0
 	active_desktop = desktop;
 
 	num_desktops++;
+#endif
 
 	return desktop;
 }
@@ -250,8 +310,9 @@ sp_desktop_set_focus (GtkWidget * widget)
 
 	g_return_if_fail (desktop != NULL);
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
+#if 0
 	active_desktop = desktop;
+#endif
 }
 
 gboolean
@@ -267,11 +328,12 @@ sp_desktop_close (GtkWidget * widget)
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), TRUE);
 
 	gtk_object_destroy (GTK_OBJECT (desktop));
+#if 0
 	num_desktops--;
 
 	if (num_desktops < 1)
 		gtk_main_quit ();
-
+#endif
 	return FALSE;
 }
 
@@ -287,9 +349,9 @@ sp_desktop_widget_desktop (GtkWidget * widget)
 		widget = widget->parent;
 	}
 	desktop = (SPDesktop *) gtk_object_get_data (GTK_OBJECT (widget), "SPDesktop");
-
+#if 0
 	if (desktop == NULL) desktop = active_desktop;
-
+#endif
 	g_return_val_if_fail (desktop != NULL, NULL);
 	g_return_val_if_fail (SP_IS_DESKTOP (desktop), NULL);
 

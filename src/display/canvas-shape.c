@@ -100,6 +100,15 @@ sp_canvas_shape_request_redraw (SPCanvasShape * shape)
 	for (l = shape->comp; l != NULL; l = l->next) {
 		comp = (SPCPathComp *) l->data;
 		if (comp->archetype) {
+			if (((comp->bbox.x1 - comp->bbox.x0) < 64.0) &&
+				((comp->bbox.y1 - comp->bbox.y0) < 64.0)) {
+				/* fixme: cope with miter lines */
+				gnome_canvas_request_redraw (GNOME_CANVAS_ITEM (shape)->canvas,
+					comp->bbox.x0 - comp->stroke_width - 1.0,
+					comp->bbox.y0 - comp->stroke_width - 1.0,
+					comp->bbox.x1 + comp->stroke_width + 1.0,
+					comp->bbox.y1 + comp->stroke_width + 1.0);
+			} else {
 			if (comp->archetype->svp != NULL) {
 				uta = art_uta_from_svp_translated (comp->archetype->svp, comp->cx, comp->cy);
 				gnome_canvas_request_redraw_uta (item->canvas, uta);
@@ -107,6 +116,7 @@ sp_canvas_shape_request_redraw (SPCanvasShape * shape)
 			if (comp->archetype->stroke != NULL) {
 				uta = art_uta_from_svp_translated (comp->archetype->stroke, comp->cx, comp->cy);
 				gnome_canvas_request_redraw_uta (item->canvas, uta);
+			}
 			}
 		}
 	}
@@ -417,6 +427,8 @@ sp_canvas_shape_set_fill (SPCanvasShape * shape, SPFill * fill)
 	shape->fill = fill;
 	sp_fill_ref (shape->fill);
 	sp_fill_unref (old);
+
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (shape));
 }
 
 void
@@ -432,6 +444,8 @@ sp_canvas_shape_set_stroke (SPCanvasShape * shape, SPStroke * stroke)
 	shape->stroke = stroke;
 	sp_stroke_ref (shape->stroke);
 	sp_stroke_unref (old);
+
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (shape));
 }
 
 

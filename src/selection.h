@@ -19,7 +19,10 @@
 #define SP_IS_SELECTION(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_SELECTION))
 #define SP_IS_SELECTION_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SELECTION))
 
+#ifndef SP_SELECTION_DEFINED
+#define SP_SELECTION_DEFINED
 typedef struct _SPSelection SPSelection;
+#endif
 typedef struct _SPSelectionClass SPSelectionClass;
 
 struct _SPSelection {

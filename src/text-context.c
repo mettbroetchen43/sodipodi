@@ -6,6 +6,7 @@
 #include "font-wrapper.h"
 #include "sp-text.h"
 #include "sp-rect.h"
+#include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "event-broker.h"
 #include "selection.h"

@@ -1,5 +1,6 @@
 #define SP_DESKTOP_AFFINE_C
 
+#include "desktop.h"
 #include "desktop-affine.h"
 
 gdouble *

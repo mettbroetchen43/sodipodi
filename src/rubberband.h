@@ -7,7 +7,7 @@
  * uses desktop coordinates
  */
 
-#include "desktop.h"
+#include "desktop-handles.h"
 
 /* fixme: do multidocument safe */
 

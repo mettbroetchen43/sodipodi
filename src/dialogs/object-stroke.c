@@ -4,274 +4,362 @@
 #include <glade/glade.h>
 #include "../xml/repr.h"
 #include "../svg/svg.h"
-#include "../sp-shape.h"
+#include "../mdi-desktop.h"
 #include "../selection.h"
+#include "../desktop-handles.h"
 #include "object-stroke.h"
 
-void stroke_dialog_ok (GtkButton * button, gpointer data);
-void stroke_dialog_apply (GtkButton * button, gpointer data);
-void stroke_dialog_cancel (GtkButton * button, gpointer data);
-void stroke_dialog_stroked_toggled (GtkToggleButton * button, gpointer data);
-void stroke_dialog_color_set (GnomeColorPicker * picker, gpointer data);
-void stroke_dialog_width_changed (GtkSpinButton * spinbutton, gpointer data);
-void stroke_dialog_scale_toggled (GtkToggleButton * button, gpointer data);
-void stroke_dialog_join_miter (GtkToggleButton * button, gpointer data);
-void stroke_dialog_join_round (GtkToggleButton * button, gpointer data);
-void stroke_dialog_join_bevel (GtkToggleButton * button, gpointer data);
+static void apply_stroke (void);
+static void sp_stroke_read_selection (void);
 
-static void stroke_dialog_show (SPCSSAttr * css);
-static void stroke_dialog_hide (void);
+static void sp_stroke_show_dialog (void);
+static void sp_stroke_hide_dialog (void);
 
-static void apply_stroke_list (GList * list);
+/* glade_gui_handlers */
+
+void sp_object_stroke_apply (void);
+void sp_object_stroke_close (void);
+
+void sp_object_stroke_changed (void);
+
+/* Signal handlers */
+
+static void sp_stroke_view_changed (GnomeMDI * mdi, GtkWidget * widget, gpointer data);
+static void sp_stroke_sel_changed (SPSelection * selection, gpointer data);
+static void sp_stroke_sel_destroy (GtkObject * object, gpointer data);
 
 static GladeXML * xml = NULL;
 static GtkWidget * dialog = NULL;
-static SPCSSAttr * settings = NULL;
-static guint32 stroke_color = 0x000000ff;
 
-void
-sp_object_stroke_selection_changed (void)
-{
-}
+GtkToggleButton * tb_stroked;
+GnomeColorPicker * cp_stroke_color;
+GtkSpinButton * sp_stroke_width;
+GtkToggleButton * tb_stroke_scaled;
+GtkToggleButton * tb_join_miter;
+GtkToggleButton * tb_join_round;
+GtkToggleButton * tb_join_bevel;
+GtkToggleButton * tb_cap_butt;
+GtkToggleButton * tb_cap_round;
+GtkToggleButton * tb_cap_square;
+
+static SPCSSAttr * css = NULL;
+
+static guint view_changed_id = 0;
+static guint sel_destroy_id = 0;
+static guint sel_changed_id = 0;
+static SPSelection * sel_current;
 
 void sp_object_stroke_dialog (void)
 {
-#if 0
-	SPRepr * repr;
-
-	if (settings != NULL) sp_repr_css_attr_unref (settings);
-	settings = NULL;
-
-	repr = sp_selection_repr ();
-
-	if (repr != NULL) {
-		settings = sp_repr_css_attr_inherited (repr, "style");
-	} else {
-		settings = sp_repr_css_attr (sp_drawing_root (), "style");
-	}
-
-	stroke_dialog_show (settings);
-
-	return;
-#endif
-}
-
-void
-stroke_dialog_ok (GtkButton * button, gpointer data)
-{
-#if 0
-	GList * list;
-
-	list = sp_selection_list ();
-
-	if (list != NULL) {
-		apply_stroke_list (list);
-	}
-	stroke_dialog_hide ();
-#endif
-}
-
-void
-stroke_dialog_apply (GtkButton * button, gpointer data)
-{
-#if 0
-	GList * list;
-
-	list = sp_selection_list ();
-
-	if (list != NULL)
-		apply_stroke_list (list);
-#endif
-}
-
-void
-stroke_dialog_cancel (GtkButton * button, gpointer data)
-{
-#if 0
-	stroke_dialog_hide ();
-#endif
-}
-
-void
-stroke_dialog_stroked_toggled (GtkToggleButton * button, gpointer data)
-{
-#if 0
-	gboolean active;
-	gchar scs[80];
-
-	active = gtk_toggle_button_get_active (button);
-
-	if (active) {
-		scs[79] = '\0';
-		sp_svg_write_color (scs, 79, stroke_color);
-		sp_repr_css_set_property (settings, "stroke", scs);
-	} else {
-		sp_repr_css_set_property (settings, "stroke", "none");
-	}
-#endif
-}
-
-void
-stroke_dialog_color_set (GnomeColorPicker * picker, gpointer data)
-{
-#if 0
-	guint32 r, g, b, a;
-
-	r = picker->r * 255;
-	g = picker->g * 255;
-	b = picker->b * 255;
-	a = picker->a * 255;
-
-	stroke_color = (r << 24) | (g << 16) | (b << 8) | a;
-#endif
-}
-
-void
-stroke_dialog_width_changed (GtkSpinButton * spinbutton, gpointer data)
-{
-#if 0
-	gdouble width;
-	gchar sws[16];
-
-	width = gtk_spin_button_get_value_as_float (spinbutton);
-
-	snprintf (sws, 16, "%g", width);
-	sp_repr_css_set_property (settings, "stroke-width", sws);
-#endif
-}
-
-
-void
-stroke_dialog_scale_toggled (GtkToggleButton * button, gpointer data)
-{
-#if 0
-	gboolean active;
-
-	active = gtk_toggle_button_get_active (button);
-
-	stroke_scaled = active;
-#endif
-}
-
-void
-stroke_dialog_join_miter (GtkToggleButton * button, gpointer data)
-{
-#if 0
-	gboolean active;
-
-	active = gtk_toggle_button_get_active (button);
-
-	if (active)
-		sp_repr_css_set_property (settings, "stroke-linejoin", "miter");
-#endif
-}
-
-void
-stroke_dialog_join_round (GtkToggleButton * button, gpointer data)
-{
-#if 0
-	gboolean active;
-
-	active = gtk_toggle_button_get_active (button);
-
-	if (active)
-		sp_repr_css_set_property (settings, "stroke-linejoin", "round");
-#endif
-}
-
-void
-stroke_dialog_join_bevel (GtkToggleButton * button, gpointer data)
-{
-#if 0
-	gboolean active;
-
-	active = gtk_toggle_button_get_active (button);
-
-	if (active)
-		sp_repr_css_set_property (settings, "stroke-linejoin", "bevel");
-#endif
-}
-
-
-static void
-apply_stroke_list (GList * list)
-{
-#if 0
-	SPRepr * repr;
-
-	while (list != NULL) {
-		repr = (SPRepr *) list->data;
-		sp_repr_css_change_recursive (repr, settings, "style");
-		list = list->next;
-	}
-#endif
-}
-
-static void
-stroke_dialog_show (SPCSSAttr * css)
-{
-#if 0
-	GtkToggleButton * tb;
-	GnomeColorPicker * cp;
-	GtkSpinButton * sp;
-	SPStroke * stroke;
-
-	stroke = sp_stroke_new ();
-	if (css != NULL)
-		sp_stroke_read (stroke, css);
-
-	if (dialog == NULL) {
-		xml = glade_xml_new (SODIPODI_GLADEDIR "/stroke-dialog.glade", NULL);
-		g_assert (xml != NULL);
-
+	if (xml == NULL) {
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "stroke");
 		glade_xml_signal_autoconnect (xml);
-
-		dialog = glade_xml_get_widget (xml, "stroke_dialog");
-		g_assert (dialog != NULL);
-	} else {
-		gtk_widget_show (dialog);
+		dialog = glade_xml_get_widget (xml, "stroke");
+		tb_stroked = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_stroked");
+		cp_stroke_color = (GnomeColorPicker *) glade_xml_get_widget (xml, "stroke_dialog_color");
+		sp_stroke_width = (GtkSpinButton *) glade_xml_get_widget (xml, "stroke_dialog_width");
+		tb_stroke_scaled = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_scale");
+		tb_join_miter = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_join_miter");
+		tb_join_round = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_join_round");
+		tb_join_bevel = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_join_bevel");
+		tb_cap_butt = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_cap_butt");
+		tb_cap_round = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_cap_round");
+		tb_cap_square = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_cap_square");
 	}
 
-	tb = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_stroked");
-	gtk_toggle_button_set_active (tb, stroke->type == SP_STROKE_COLOR);
-	cp = (GnomeColorPicker *) glade_xml_get_widget (xml, "stroke_dialog_color");
-	gnome_color_picker_set_i8 (cp,
-		stroke->color >> 24,
-		(stroke->color >> 16) & 0xff,
-		(stroke->color >> 8) & 0xff,
-		stroke->color & 0xff);
-	sp = (GtkSpinButton *) glade_xml_get_widget (xml, "stroke_dialog_width");
-	gtk_spin_button_set_value (sp, stroke->width);
-	tb = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_scale");
-	gtk_toggle_button_set_active (tb, stroke->scaled);
+	sp_stroke_read_selection ();
+	sp_stroke_show_dialog ();
+}
 
-	switch (stroke->join) {
+static void
+sp_stroke_read_selection (void)
+{
+	SPSelection * selection;
+	const GSList * l;
+	SPRepr * repr;
+	const gchar * str;
+	SPStrokeType stroke_type;
+	guint32 stroke_color;
+	gdouble stroke_opacity;
+	gdouble stroke_width;
+	SPSVGUnit stroke_units;
+	ArtPathStrokeJoinType stroke_join;
+	ArtPathStrokeCapType stroke_cap;
+
+	g_return_if_fail (dialog != NULL);
+
+	if (css != NULL) {
+		sp_repr_css_attr_unref (css);
+		css = NULL;
+	}
+
+	selection = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+
+	g_return_if_fail (selection != NULL);
+
+	l = sp_selection_repr_list (selection);
+
+	if (l != NULL) {
+		repr = (SPRepr *) l->data;
+		css = sp_repr_css_attr_inherited (repr, "style");
+	}
+
+	if (css != NULL) {
+		str = sp_repr_css_property (css, "stroke", "none");
+		stroke_type = sp_svg_read_stroke_type (str);
+
+		switch (stroke_type) {
+		case SP_STROKE_NONE:
+			gtk_toggle_button_set_active (tb_stroked, FALSE);
+			break;
+		case SP_STROKE_COLOR:
+			gtk_toggle_button_set_active (tb_stroked, TRUE);
+			stroke_color = sp_svg_read_color (str);
+			str = sp_repr_css_property (css, "stroke-opacity", "100%");
+			stroke_opacity = sp_svg_read_percentage (str);
+			gnome_color_picker_set_i8 (cp_stroke_color,
+				(stroke_color >> 24),
+				(stroke_color >> 16) & 0xff,
+				(stroke_color >>  8) & 0xff,
+				((guint) (stroke_opacity * 255 + 0.5)) & 0xff);
+			break;
+		}
+
+		str = sp_repr_css_property (css, "stroke-width", "1.0");
+		stroke_width = sp_svg_read_length (&stroke_units, str);
+		gtk_spin_button_set_value (sp_stroke_width, stroke_width);
+		gtk_toggle_button_set_active (tb_stroke_scaled, stroke_units != SP_SVG_UNIT_PIXELS);
+
+		str = sp_repr_css_property (css, "stroke-linejoin", "miter");
+		stroke_join = sp_svg_read_stroke_join (str);
+		switch (stroke_join) {
 		case ART_PATH_STROKE_JOIN_MITER:
-			tb = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_join_miter");
-			gtk_toggle_button_set_active (tb, TRUE);
+			gtk_toggle_button_set_active (tb_join_miter, TRUE);
 			break;
 		case ART_PATH_STROKE_JOIN_ROUND:
-			tb = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_join_round");
-			gtk_toggle_button_set_active (tb, TRUE);
+			gtk_toggle_button_set_active (tb_join_round, TRUE);
 			break;
 		case ART_PATH_STROKE_JOIN_BEVEL:
-			tb = (GtkToggleButton *) glade_xml_get_widget (xml, "stroke_dialog_join_bevel");
-			gtk_toggle_button_set_active (tb, TRUE);
+			gtk_toggle_button_set_active (tb_join_bevel, TRUE);
 			break;
 		default:
 			g_assert_not_reached ();
+		}
+
+		str = sp_repr_css_property (css, "stroke-linecap", "butt");
+		stroke_cap = sp_svg_read_stroke_cap (str);
+		switch (stroke_cap) {
+		case ART_PATH_STROKE_CAP_BUTT:
+			gtk_toggle_button_set_active (tb_cap_butt, TRUE);
+			break;
+		case ART_PATH_STROKE_CAP_ROUND:
+			gtk_toggle_button_set_active (tb_cap_round, TRUE);
+			break;
+		case ART_PATH_STROKE_CAP_SQUARE:
+			gtk_toggle_button_set_active (tb_cap_square, TRUE);
+			break;
+		default:
+			g_assert_not_reached ();
+		}
 	}
-	sp_stroke_unref (stroke);
-#endif
+}
+
+void
+sp_object_stroke_apply (void)
+{
+	gdouble stroke_width;
+	gchar cstr[80];
+
+	/* fixme: */
+	if (css == NULL) return;
+
+	cstr[79] = '\0';
+
+	if (gtk_toggle_button_get_active (tb_stroked)) {
+		sp_svg_write_color (cstr, 79,
+			((guint32) (cp_stroke_color->r * 255 + 0.5) << 24) |
+			((guint32) (cp_stroke_color->g * 255 + 0.5) << 16) |
+			((guint32) (cp_stroke_color->b * 255 + 0.5) <<  8));
+		sp_repr_css_set_property (css, "stroke", cstr);
+	} else {
+		sp_repr_css_set_property (css, "stroke", "none");
+	}
+
+	sp_svg_write_percentage (cstr, 79, cp_stroke_color->a);
+	sp_repr_css_set_property (css, "stroke-opacity", cstr);
+
+	stroke_width = gtk_spin_button_get_value_as_float (sp_stroke_width);
+
+	if (gtk_toggle_button_get_active (tb_stroke_scaled)) {
+		sp_svg_write_length (cstr, 79, stroke_width, SP_SVG_UNIT_USER);
+		sp_repr_css_set_property (css, "stroke-width", cstr);
+	} else {
+		sp_svg_write_length (cstr, 79, stroke_width, SP_SVG_UNIT_PIXELS);
+		sp_repr_css_set_property (css, "stroke-width", cstr);
+	}
+
+	if (gtk_toggle_button_get_active (tb_join_round)) {
+		sp_repr_css_set_property (css, "stroke-linejoin", "round");
+	} else if (gtk_toggle_button_get_active (tb_join_bevel)) {
+		sp_repr_css_set_property (css, "stroke-linejoin", "bevel");
+	} else {
+		sp_repr_css_set_property (css, "stroke-linejoin", "miter");
+	}
+
+	if (gtk_toggle_button_get_active (tb_cap_round)) {
+		sp_repr_css_set_property (css, "stroke-linecap", "round");
+	} else if (gtk_toggle_button_get_active (tb_cap_square)) {
+		sp_repr_css_set_property (css, "stroke-linecap", "square");
+	} else {
+		sp_repr_css_set_property (css, "stroke-linecap", "butt");
+	}
+
+	apply_stroke ();
+}
+
+void
+sp_object_stroke_close (void)
+{
+	sp_stroke_hide_dialog ();
+}
+
+void
+sp_object_stroke_changed (void)
+{
+	gnome_property_box_changed (GNOME_PROPERTY_BOX (dialog));
 }
 
 static void
-stroke_dialog_hide (void)
+apply_stroke (void)
 {
-#if 0
-	g_assert (dialog != NULL);
-	g_assert (GTK_WIDGET_VISIBLE (dialog));
+	SPDesktop * desktop;
+	SPSelection * selection;
+	SPRepr * repr;
+	const GSList * l;
 
-	gtk_widget_hide (dialog);
-#endif
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	selection = SP_DT_SELECTION (desktop);
+
+	l = sp_selection_repr_list (selection);
+
+	while (l != NULL) {
+		repr = (SPRepr *) l->data;
+		sp_repr_css_change_recursive (repr, css, "style");
+		l = l->next;
+	}
 }
+
+/*
+ * selection handlers
+ *
+ */
+
+static void
+sp_stroke_sel_changed (SPSelection * selection, gpointer data)
+{
+	sp_stroke_read_selection ();
+}
+
+static void
+sp_stroke_sel_destroy (GtkObject * object, gpointer data)
+{
+	SPSelection * selection;
+
+	selection = SP_SELECTION (object);
+
+	if (selection == sel_current) {
+		if (sel_destroy_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
+			sel_destroy_id = 0;
+		}
+		if (sel_changed_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
+			sel_changed_id = 0;
+		}
+	}
+}
+
+static void
+sp_stroke_view_changed (GnomeMDI * mdi, GtkWidget * widget, gpointer data)
+{
+	if (sel_current != NULL) {
+		if (sel_destroy_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
+			sel_destroy_id = 0;
+		}
+		if (sel_changed_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
+			sel_changed_id = 0;
+		}
+	}
+
+	sel_current = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+
+	if (sel_current != NULL) {
+		if (sel_destroy_id < 1) {
+			sel_destroy_id = gtk_signal_connect (GTK_OBJECT (sel_current), "destroy",
+				GTK_SIGNAL_FUNC (sp_stroke_sel_destroy), NULL);
+		}
+		if (sel_changed_id < 1) {
+			sel_changed_id = gtk_signal_connect (GTK_OBJECT (sel_current), "changed",
+				GTK_SIGNAL_FUNC (sp_stroke_sel_changed), NULL);
+		}
+	}
+
+	sp_stroke_read_selection ();
+}
+
+static void
+sp_stroke_show_dialog (void)
+{
+	g_return_if_fail (dialog != NULL);
+
+	sel_current = SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+
+	if (sel_current != NULL) {
+		if (sel_destroy_id < 1) {
+			sel_destroy_id = gtk_signal_connect (GTK_OBJECT (sel_current), "destroy",
+				GTK_SIGNAL_FUNC (sp_stroke_sel_destroy), NULL);
+		}
+		if (sel_changed_id < 1) {
+			sel_changed_id = gtk_signal_connect (GTK_OBJECT (sel_current), "changed",
+				GTK_SIGNAL_FUNC (sp_stroke_sel_changed), NULL);
+		}
+	}
+
+	if (view_changed_id < 1) {
+		view_changed_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "view_changed",
+			GTK_SIGNAL_FUNC (sp_stroke_view_changed), NULL);
+	}
+	if (!GTK_WIDGET_VISIBLE (dialog)) {
+		gtk_widget_show (dialog);
+	}
+}
+
+void
+sp_stroke_hide_dialog (void)
+{
+	g_return_if_fail (dialog != NULL);
+
+	if (GTK_WIDGET_VISIBLE (dialog)) {
+		gtk_widget_hide (dialog);
+	}
+
+	if (view_changed_id > 0) {
+		gtk_signal_disconnect (GTK_OBJECT (SODIPODI), view_changed_id);
+		view_changed_id = 0;
+	}
+
+	if (sel_current != NULL) {
+		if (sel_destroy_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_destroy_id);
+			sel_destroy_id = 0;
+		}
+		if (sel_changed_id > 0) {
+			gtk_signal_disconnect (GTK_OBJECT (sel_current), sel_changed_id);
+			sel_changed_id = 0;
+		}
+	}
+}
+

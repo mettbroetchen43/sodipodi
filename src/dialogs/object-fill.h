@@ -8,8 +8,6 @@
  *
  */
 
-void sp_object_fill (void);
-
-void sp_object_fill_selection_changed (void);
+void sp_object_fill_dialog (void);
 
 #endif

@@ -1,8 +1,13 @@
+2000-01-14  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Now uses Gnome MDI
+    * Stroke & fill dialogs almost work for multiple displays
+
 2000-01-08  Lauris Kaplinski <lauris@ariman.ee>
 
     * Major rewrite of object system
     * Multiple views almost work
-    * Rultiple documents almost work
+    * Multiple documents almost work
     * Rects, Ellipses, Drawing and Nodes almost work
     * Nothing else works ;-(
     

@@ -16,4 +16,6 @@ libspsvg_a_SOURCES = \
 	svg-color.c svg-color.h \
 	svg-affine.c svg-affine.h \
 	svg-path.c svg-path.h \
-	gnome-canvas-bpath-util.c gnome-canvas-bpath-util.h
+	gnome-canvas-bpath-util.c gnome-canvas-bpath-util.h \
+	svg-fill.c \
+	svg-stroke.c

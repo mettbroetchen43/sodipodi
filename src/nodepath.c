@@ -4,6 +4,7 @@
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
 #include "desktop.h"
+#include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "nodepath.h"
 

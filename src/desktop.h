@@ -4,13 +4,15 @@
 /*
  * SPDesktop
  *
- * A per view object
+ * A per view drawing object which implements:
+ *   - scrollbars
+ *   - postscript coordinates
+ *   - comfortable canvas groups
  *
  */
 
 #include <gtk/gtk.h>
 #include <libgnomeui/gnome-canvas.h>
-#include "application.h"
 #include "document.h"
 #include "selection.h"
 
@@ -20,16 +22,16 @@
 #define SP_IS_DESKTOP(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_DESKTOP))
 #define SP_IS_DESKTOP_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_DESKTOP))
 
+#ifndef SP_DESKTOP_DEFINED
+#define SP_DESKTOP_DEFINED
 typedef struct _SPDesktop SPDesktop;
+#endif
 typedef struct _SPDesktopClass SPDesktopClass;
 
 struct _SPDesktop {
-	GtkObject object;
-	SPApp * app;
+	GtkBox box;
 	SPDocument * document;
 	SPSelection * selection;
-	GtkWidget * window;
-	GtkWidget * statusbar;
 	GtkScrollbar * hscrollbar, * vscrollbar;
 	GtkRuler * hruler, * vruler;
 	GnomeCanvas * canvas;
@@ -44,7 +46,7 @@ struct _SPDesktop {
 };
 
 struct _SPDesktopClass {
-	GtkObjectClass parent_class;
+	GtkBoxClass parent_class;
 };
 
 /* Standard Gtk function */
@@ -53,10 +55,11 @@ GtkType sp_desktop_get_type (void);
 
 /* Constructor */
 
-SPDesktop * sp_desktop_new (SPApp * app, SPDocument * document);
+SPDesktop * sp_desktop_new (SPDocument * document);
 
 /* Utility macros */
 
+#if 0
 #define SP_WIDGET_DESKTOP(w) sp_desktop_widget_desktop(w)
 #define SP_CANVAS_ITEM_DESKTOP(i) sp_desktop_widget_desktop(GTK_WIDGET(i->canvas))
 
@@ -73,6 +76,7 @@ SPDesktop * sp_desktop_new (SPApp * app, SPDocument * document);
 #define SP_DT_CONTROLS(d) (SP_DESKTOP(d)->controls)
 
 SPDesktop * sp_desktop_widget_desktop (GtkWidget * widget);
+#endif
 
 /* Zooming, viewport, position & similar */
 

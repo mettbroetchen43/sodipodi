@@ -1,3 +1,8 @@
+2000/14/01 Version 0.16
+
+Started hacking with GnomeMDI. You can fire up fill & stroke dialogs again
+and these even update itself, if active view changes.
+
 2000/09/01 Version 0.16
 
 Imported to CVS.

@@ -3,6 +3,8 @@
 
 #include <glib.h>
 #include <libart_lgpl/art_bpath.h>
+#include "../display/fill.h"
+#include "../display/stroke.h"
 
 typedef enum {
 	SP_SVG_UNIT_USER,
@@ -32,5 +34,12 @@ gint sp_svg_write_affine (gchar * buf, gint buflen, gdouble affine[]);
 
 ArtBpath * sp_svg_read_path (const gchar * str);
 gchar * sp_svg_write_path (const ArtBpath * bpath);
+
+SPFillType sp_svg_read_fill_type (const gchar * str);
+gint sp_svg_write_fill_type (gchar * buf, gint buflen, SPFillType type, guint32 color);
+
+SPStrokeType sp_svg_read_stroke_type (const gchar * str);
+ArtPathStrokeJoinType sp_svg_read_stroke_join (const gchar * str);
+ArtPathStrokeCapType sp_svg_read_stroke_cap (const gchar * str);
 
 #endif

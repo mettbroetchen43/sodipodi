@@ -2,6 +2,8 @@
 
 #include <math.h>
 #include "svg/svg.h"
+#include "mdi-desktop.h"
+#include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "seltrans-handles.h"
 #include "seltrans.h"
@@ -485,7 +487,7 @@ sp_sel_trans_handle_event (GnomeCanvasItem * item, GdkEvent * event, SPSelTransH
 	
 	g_return_val_if_fail (SP_IS_CTRL (item), FALSE);
 	control = SP_CTRL (item);
-	desktop = SP_CANVAS_ITEM_DESKTOP (item);
+	desktop = SP_ACTIVE_DESKTOP;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:

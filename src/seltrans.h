@@ -2,7 +2,7 @@
 #define SP_SELTRANS_H
 
 #include "helper/sodipodi-ctrl.h"
-#include "desktop.h"
+#include "desktop-handles.h"
 
 typedef struct _SPSelTrans SPSelTrans;
 
