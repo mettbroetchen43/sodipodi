@@ -242,22 +242,28 @@ sp_shape_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	if (shape->marker_start && shape->curve) {
 		SPItemView *v;
 		ArtBpath *bp;
-		for (v = item->display; v != NULL; v = v->next) {
-			if (v->pkey) sp_marker_hide ((SPMarker *) shape->marker_start, v->pkey);
+		int nstart, npos;
+		/* Determine the number of markers needed */
+		printf ("ara ara\n");
+		nstart = 0;
+		for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
+			if ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN)) nstart += 1;
 		}
+		/* Dimension marker views */
+		for (v = item->display; v != NULL; v = v->next) {
+			if (!v->pkey) v->pkey = sp_item_display_key_new ();
+			sp_marker_show_dimension ((SPMarker *) shape->marker_start, v->pkey, nstart);
+		}
+		npos = 0;
 		for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
 			if ((bp->code == ART_MOVETO) || (bp->code == ART_MOVETO_OPEN)) {
 				NRMatrixF m;
 				nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
 				for (v = item->display; v != NULL; v = v->next) {
-					NRArenaItem *ai;
-					if (!v->pkey) v->pkey = sp_item_display_key_new ();
-					ai = sp_marker_show (SP_MARKER (shape->marker_start), NR_ARENA_ITEM_ARENA (v->arenaitem), v->pkey);
-					/* fixme: Order (Lauris) */
-					nr_arena_item_add_child (v->arenaitem, ai, NULL);
-					/* fixme: This is not correct (Lauris) */
-					nr_arena_item_set_transform (ai, &m);
-					nr_arena_item_unref (ai);
+					/* NRArenaItem *ai; */
+					sp_marker_show_instance (SP_MARKER (shape->marker_start), v->arenaitem, v->pkey, npos,
+								      &m, object->style->stroke_width.computed);
+					/* nr_arena_item_set_transform (ai, &m); */
 				}
 			}
 		}
@@ -347,6 +353,9 @@ sp_shape_show (SPItem *item, NRArena *arena, unsigned int key)
 	nr_arena_shape_set_path (NR_ARENA_SHAPE (arenaitem), shape->curve, TRUE, NULL);
 	sp_item_invoke_bbox (item, &paintbox, NULL, TRUE);
 	nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (arenaitem), &paintbox);
+
+	/* fixme: (Lauris) */
+	/* sp_object_request_update ((SPObject *) item, SP_OBJECT_MODIFIED_FLAG); */
 
 	return arenaitem;
 }
@@ -469,6 +478,7 @@ sp_shape_set_marker (SPObject *object, unsigned int key, const unsigned char *va
 				}
 #endif
 			}
+			sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
 		}
 		break;
 	}

@@ -606,7 +606,7 @@ sp_document_idle_handler (gpointer data)
 		ctx.vp.y1 = 29.7 / 2.54 * 72.0 * 1.25;
 		nr_matrix_d_set_identity (&ctx.i2vp);
 		sp_object_invoke_update (doc->root, (SPCtx *) &ctx, 0);
-		if (doc->root->uflags & SP_OBJECT_MODIFIED_FLAG) return FALSE;
+		/* if (doc->root->uflags & SP_OBJECT_MODIFIED_FLAG) return TRUE; */
 	}
 
 	/* Emit "modified" signal on objects */

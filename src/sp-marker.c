@@ -38,6 +38,8 @@ static void sp_marker_set (SPObject *object, unsigned int key, const unsigned ch
 static void sp_marker_update (SPObject *object, SPCtx *ctx, guint flags);
 static SPRepr *sp_marker_write (SPObject *object, SPRepr *repr, guint flags);
 
+static NRArenaItem *sp_marker_private_show (SPItem *item, NRArena *arena, unsigned int key);
+static void sp_marker_private_hide (SPItem *item, unsigned int key);
 static void sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_marker_print (SPItem *item, SPPrintContext *ctx);
 
@@ -83,6 +85,8 @@ sp_marker_class_init (SPMarkerClass *klass)
 	sp_object_class->update = sp_marker_update;
 	sp_object_class->write = sp_marker_write;
 
+	sp_item_class->show = sp_marker_private_show;
+	sp_item_class->hide = sp_marker_private_hide;
 	sp_item_class->bbox = sp_marker_bbox;
 	sp_item_class->print = sp_marker_print;
 }
@@ -398,6 +402,13 @@ sp_marker_update (SPObject *object, SPCtx *ctx, guint flags)
 	/* Append viewbox transformation */
 	nr_matrix_multiply_ddd (&marker->c2p, &q, &marker->c2p);
 
+
+	/* Append reference translation */
+	/* fixme: lala (Lauris) */
+	nr_matrix_d_set_translate (&q, -marker->refX.computed, -marker->refY.computed);
+	nr_matrix_multiply_ddd (&marker->c2p, &q, &marker->c2p);
+
+
 	nr_matrix_multiply_ddd (&rctx.i2doc, &marker->c2p, &rctx.i2doc);
 
 	/* If viewBox is set reinitialize child viewport */
@@ -409,11 +420,6 @@ sp_marker_update (SPObject *object, SPCtx *ctx, guint flags)
 		rctx.vp.y1 = marker->viewBox.y1;
 		nr_matrix_d_set_identity (&rctx.i2vp);
 	}
-
-	/* Append reference translation */
-	nr_matrix_d_set_translate (&q, -marker->refX.computed, -marker->refY.computed);
-	nr_matrix_multiply_ddd (&rctx.i2doc, &q, &rctx.i2doc);
-	nr_matrix_multiply_ddd (&rctx.i2vp, &q, &rctx.i2vp);
 
 	/* And invoke parent method */
 	if (((SPObjectClass *) (parent_class))->update)
@@ -489,6 +495,19 @@ sp_marker_write (SPObject *object, SPRepr *repr, guint flags)
 	return repr;
 }
 
+static NRArenaItem *
+sp_marker_private_show (SPItem *item, NRArena *arena, unsigned int key)
+{
+	/* Break propagation */
+	return NULL;
+}
+
+static void
+sp_marker_private_hide (SPItem *item, unsigned int key)
+{
+	/* Break propagation */
+}
+
 static void
 sp_marker_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
 {
@@ -521,34 +540,111 @@ sp_marker_print (SPItem *item, SPPrintContext *ctx)
 	sp_print_release (ctx);
 }
 
-NRArenaItem *
-sp_marker_show (SPMarker *marker, NRArena *arena, unsigned int key)
+void
+sp_marker_show_dimension (SPMarker *marker, unsigned int key, unsigned int size)
 {
-	NRArenaItem *ai;
+	SPMarkerView *ref, *view, *new;
+	int i;
 
-	if (((SPItemClass *) (parent_class))->show) {
-		ai = ((SPItemClass *) (parent_class))->show ((SPItem *) marker, arena, key);
-		if (ai) {
-			NRMatrixF vbf;
-			nr_matrix_f_from_d (&vbf, &marker->c2p);
-			nr_arena_group_set_child_transform (NR_ARENA_GROUP (ai), &vbf);
+	ref = NULL;
+	view = NULL;
+	if (marker->views) {
+		if (marker->views->key == key) {
+			view = marker->views;
+		} else {
+			ref = marker->views;
+			while (ref->next && (ref->next->key != key)) ref = ref->next;
+			view = ref->next;
 		}
+	}
+	new = malloc (sizeof (SPMarkerView) + (size - 1) * sizeof (NRArenaItem *));
+	if (ref) {
+		ref->next = new;
 	} else {
-		ai = NULL;
+		marker->views = new;
+	}
+	if (view) {
+		new->next = view->next;
+	} else {
+		new->next = NULL;
+	}
+	new->key = key;
+	new->size = size;
+	if (view) {
+		int clen;
+		clen = MIN (new->size, view->size);
+		for (i = 0; i < clen; i++) new->items[i] = view->items[i];
+		for (i = clen; i < new->size; i++) new->items[i] = NULL;
+		for (i = clen; i < view->size; i++) {
+			nr_arena_item_destroy (view->items[i]);
+		}
+		free (view);
+	} else {
+		for (i = 0; i < size; i++) new->items[i] = NULL;
+	}
+}
+
+NRArenaItem *
+sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent, unsigned int key, unsigned int pos, NRMatrixF *base, float linewidth)
+{
+	SPMarkerView *v;
+
+	for (v = marker->views; v != NULL; v = v->next) {
+		if (v->key == key) {
+			if (pos >= v->size) return NULL;
+			if (!v->items[pos]) {
+				v->items[pos] = ((SPItemClass *) parent_class)->show ((SPItem *) marker, parent->arena, key);
+				if (v->items[pos]) {
+					NRMatrixF vbf;
+					/* fixme: Position (Lauris) */
+					nr_arena_item_add_child (parent, v->items[pos], NULL);
+					nr_arena_item_unref (v->items[pos]);
+					nr_matrix_f_from_d (&vbf, &marker->c2p);
+					nr_arena_group_set_child_transform ((NRArenaGroup *) v->items[pos], &vbf);
+				}
+			}
+			if (v->items[pos]) {
+				if (marker->markerUnits == SP_MARKER_UNITS_STROKEWIDTH) {
+					NRMatrixF m;
+					nr_matrix_f_set_scale (&m, linewidth, linewidth);
+					nr_matrix_multiply_fff (&m, &m, base);
+					nr_arena_item_set_transform (v->items[pos], &m);
+				} else {
+					nr_arena_item_set_transform (v->items[pos], base);
+				}
+			}
+			return v->items[pos];
+		}
 	}
 
-	return ai;
+	return NULL;
 }
+
+/* This replaces SPItem implementation because we have own views */
 
 void
 sp_marker_hide (SPMarker *marker, unsigned int key)
 {
-	if (((SPItemClass *) (parent_class))->hide)
-		((SPItemClass *) (parent_class))->hide ((SPItem *) marker, key);
+	while (marker->views) {
+		/* Destroy all NRArenaitems etc. */
+		sp_marker_view_erase (marker, marker->views);
+	}
 }
 
 static void
 sp_marker_view_erase (SPMarker *marker, SPMarkerView *view)
 {
+	int i;
+	if (view == marker->views) {
+		marker->views = view->next;
+	} else {
+		SPMarkerView *v;
+		for (v = marker->views; v->next != view; v = v->next) if (!v->next) return;
+		v->next = view->next;
+	}
+	for (i = 0; i < view->size; i++) {
+		if (view->items[i]) nr_arena_item_destroy (view->items[i]);
+	}
+	g_free (view);
 }
 

@@ -1,3 +1,11 @@
+2003-03-21  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-shape.c (sp_shape_update): Update marker properly
+
+	* src/sp-marker.c (sp_marker_update): Set reference point in child2parent matrix
+	(sp_marker_show_dimension): Copy and set arena items properly
+	(sp_marker_show_instance): Set base transfoarm and scale by line width if needed
+
 2003-03-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/uri-references.c (sp_uri_reference_resolve): Allow '_' and

@@ -167,6 +167,8 @@ nr_arena_shape_add_child (NRArenaItem *item, NRArenaItem *child, NRArenaItem *re
 
 	shape = (NRArenaShape *) item;
 
+	g_print ("nr_arena_shape_add_child: Added child item\n");
+
 	if (!ref) {
 		shape->markers = nr_arena_item_attach_ref (item, child, NULL, shape->markers);
 	} else {
@@ -222,13 +224,22 @@ static guint
 nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, guint reset)
 {
 	NRArenaShape *shape;
+	NRArenaItem *child;
 	SPStyle *style;
 	ArtBpath *abp;
 	ArtVpath *vp, *pvp;
 	ArtDRect bbox;
+	unsigned int newstate, beststate;
 
 	shape = NR_ARENA_SHAPE (item);
 	style = shape->style;
+
+	beststate = NR_ARENA_ITEM_STATE_ALL;
+
+	for (child = shape->markers; child != NULL; child = child->next) {
+		newstate = nr_arena_item_invoke_update (child, area, gc, state, reset);
+		beststate = beststate & newstate;
+	}
 
 	if (!(state & NR_ARENA_ITEM_STATE_RENDER)) {
 		/* We do not have to create rendering structures */
@@ -248,6 +259,11 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				item->bbox.y0 = bbox.y0 - 1.0;
 				item->bbox.x1 = bbox.x1 + 1.9999;
 				item->bbox.y1 = bbox.y1 + 1.9999;
+			}
+			if (beststate & NR_ARENA_ITEM_STATE_BBOX) {
+				for (child = shape->markers; child != NULL; child = child->next) {
+					nr_rect_l_union (&item->bbox, &item->bbox, &child->bbox);
+				}
 			}
 		}
 		return (state | item->state);
@@ -372,6 +388,12 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		item->render_opacity = FALSE;
 	}
 
+	if (beststate & NR_ARENA_ITEM_STATE_BBOX) {
+		for (child = shape->markers; child != NULL; child = child->next) {
+			nr_rect_l_union (&item->bbox, &item->bbox, &child->bbox);
+		}
+	}
+
 	return NR_ARENA_ITEM_STATE_ALL;
 }
 
@@ -379,6 +401,7 @@ static unsigned int
 nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigned int flags)
 {
 	NRArenaShape *shape;
+	NRArenaItem *child;
 	SPStyle *style;
 
 	shape = NR_ARENA_SHAPE (item);
@@ -456,6 +479,13 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 			break;
 		}
 		nr_pixblock_release (&m);
+	}
+
+	/* Just compose children into parent buffer */
+	for (child = shape->markers; child != NULL; child = child->next) {
+		unsigned int ret;
+		ret = nr_arena_item_invoke_render (child, area, pb, flags);
+		if (ret & NR_ARENA_ITEM_STATE_INVALID) return ret;
 	}
 
 	return item->state;
