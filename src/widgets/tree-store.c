@@ -474,6 +474,8 @@ sp_tree_store_iter_children (GtkTreeModel *model, GtkTreeIter *iter, GtkTreeIter
 	SPTreeStore *store;
 	SPObject *object;
 
+	store = (SPTreeStore *) model;
+
 	if (parent) {
 		object = (SPObject *) parent->user_data;
 	} else {

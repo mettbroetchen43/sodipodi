@@ -74,7 +74,7 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			CharacterSet="1">
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
@@ -759,6 +759,12 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 				RelativePath="..\..\src\dialogs\document-properties.h">
 			</File>
 			<File
+				RelativePath="..\..\src\dialogs\document-tree.c">
+			</File>
+			<File
+				RelativePath="..\..\src\dialogs\document-tree.h">
+			</File>
+			<File
 				RelativePath="..\..\src\dialogs\export.c">
 			</File>
 			<File
@@ -1166,6 +1172,12 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 			</File>
 			<File
 				RelativePath="..\..\src\widgets\spw-utilities.h">
+			</File>
+			<File
+				RelativePath="..\..\src\widgets\tree-store.c">
+			</File>
+			<File
+				RelativePath="..\..\src\widgets\tree-store.h">
 			</File>
 		</Filter>
 		<Filter
