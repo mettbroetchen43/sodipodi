@@ -191,16 +191,16 @@ sp_objectgroup_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRe
 	oold = sp_objectgroup_get_le_child_by_repr (og, old);
 	onew = sp_objectgroup_get_le_child_by_repr (og, new);
 
-	if (ochild) {
+	if (ochild && (oold != onew)) {
 		if (oold) {
 			oold->next = sp_object_detach (object, ochild);
 		} else {
 			og->children = sp_object_detach (object, ochild);
 		}
 		if (onew) {
-			onew->next = sp_object_attach_reref (object, ochild, (onew) ? onew->next : og->children);
+			onew->next = sp_object_attach_reref (object, ochild, onew->next);
 		} else {
-			og->children = sp_object_attach_reref (object, ochild, (onew) ? onew->next : og->children);
+			og->children = sp_object_attach_reref (object, ochild, og->children);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	}

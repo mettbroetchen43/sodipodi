@@ -427,20 +427,6 @@ nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float be
 
 static unsigned char privatename[] = "/.sodipodi/private-fonts";
 
-#if 0
-static unsigned int
-nr_type_next_token (const unsigned char *img, unsigned int len, unsigned int p, int *tokenp)
-{
-	/* Skip whitespace */
-	while (((img[p] == ' ') || (img[p] == '\t')) && (p < len)) p++;
-	if (p >= len) return p;
-	if (!isalnum (img[p]) && (img[p] != '/')) return p;
-	*tokenp = p;
-	while (!iscntrl (img[p]) && (img[p] != ',') && (p < len)) p++;
-	return p;
-}
-#endif
-
 #include <unistd.h>
 #include <sys/mman.h>
 
@@ -466,7 +452,6 @@ nr_type_read_private_list (void)
 #define O_BINARY 0
 #endif
 
-#if 1
 	if (!stat (filename, &st) && S_ISREG (st.st_mode) && (st.st_size > 8)) {
 		unsigned char *cdata;
 		ArikkeiToken ft, lt;
@@ -510,7 +495,6 @@ nr_type_read_private_list (void)
 						arikkei_token_strncpy (&familyt, m, 1024);
 						nr_type_ft2_build_def (dft2, f, n, m, face);
 						nr_type_register ((NRTypeFaceDef *) dft2);
-						printf ("Regstered %s : %d, %s, %s\n", f, face, n, m);
 					}
 				}
 			}
@@ -518,78 +502,6 @@ nr_type_read_private_list (void)
 		}
 		munmap (cdata, st.st_size);
 	}
-#else
-	if (!stat (filename, &st) && S_ISREG (st.st_mode) && (st.st_size > 8)) {
-		unsigned char *img;
-		int fh, rbytes, nentries, p;
-		img = nr_new (unsigned char, st.st_size + 1);
-		if (!img) return;
-		fh = open (filename, O_RDONLY);
-		if (fh < 1) return;
-		rbytes = read (fh, img, st.st_size);
-		close (fh);
-		if (rbytes < st.st_size) return;
-		*(img + st.st_size) = 0;
-
-		/* format: file, name, family */
-		nentries = 0;
-		p = 0;
-		while (p < st.st_size) {
-			int filep, namep, familyp;
-			int e0, e1, e2;
-			filep = -1;
-			namep = -1;
-			familyp = -1;
-			/* File */
-			p = nr_type_next_token (img, st.st_size, p, &filep);
-			if (p >= st.st_size) break;
-			if (!iscntrl (img[p])) {
-				e0 = p;
-				p += 1;
-				/* Name */
-				p = nr_type_next_token (img, st.st_size, p, &namep);
-				if (p >= st.st_size) break;
-				if (!iscntrl (img[p])) {
-					e1 = p;
-					p += 1;
-					/* Family */
-					p = nr_type_next_token (img, st.st_size, p, &familyp);
-					e2 = p;
-					p += 1;
-					if ((filep >= 0) && (namep >= 0) && (familyp >= 0)) {
-						struct stat st;
-						if (!stat (filename, &st) && S_ISREG (st.st_mode)) {
-							NRTypeFaceDefFT2 *dft2;
-							int face;
-							char *cp;
-							img[e0] = 0;
-							img[e1] = 0;
-							img[e2] = 0;
-							cp = strchr (img + filep, ':');
-							if (cp) {
-								*cp = 0;
-								face = atoi (cp + 1);
-							} else {
-								face = 0;
-							}
-							/* printf ("Found %s | %d | %s | %s\n", img + filep, face, img + namep, img + familyp); */
-							dft2 = nr_new (NRTypeFaceDefFT2, 1);
-							dft2->def.next = NULL;
-							dft2->def.pdef = NULL;
-							nr_type_ft2_build_def (dft2, img + namep, img + familyp, img + filep, face);
-							nr_type_register ((NRTypeFaceDef *) dft2);
-							nentries += 1;
-						}
-					}
-				}
-			}
-			while (iscntrl (img[p]) && (p < st.st_size)) p++;
-		}
-
-		if (nentries > 0) {
-		}
-	}
-#endif
 
 	nr_free (filename);
 }

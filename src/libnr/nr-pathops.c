@@ -9,6 +9,8 @@
  * This code is in public domain
  */
 
+#include <string.h>
+
 #include "nr-macros.h"
 
 #include "nr-pathops.h"
@@ -21,6 +23,155 @@ static double nr_curve_point_distance (double x0, double y0, double x1, double y
 static unsigned int nr_path_intersect_inner (double a[], double b[], double ta[], double tb[], double tolerance);
 static void nr_path_bbox_loose (double p[], double *x0, double *y0, double *x1, double *y1);
 static void nr_path_subdivide (double path[], double a[], double b[], double pos);
+
+/* Node management */
+
+static NRNode *nr_node_new (unsigned int value, unsigned int isfirst, unsigned int islast,
+			    double x, double y, unsigned int nconnections);
+static void nr_node_connect_line (NRNode *a, unsigned int apos, NRNode *b, unsigned int bpos);
+static void nr_node_connect_curve (NRNode *a, unsigned int apos, NRNode *b, unsigned int bpos,
+				   double x1, double y1, double x2, double y2);
+static void nr_node_join_end (NRNode *start, NRNode *end);
+
+NRNodePathGroup *
+nr_node_path_group_build (NRPath *path)
+{
+	NRNodePathGroup *npg;
+	int seg, sidx;
+
+	npg = (NRNodePathGroup *) malloc (sizeof (NRNodePathGroup) + (path->nsegments - 1) * sizeof (NRNodePath));
+	npg->npaths = path->nsegments;
+
+	double x, y, sx, sy;
+
+	x = y = 0.0;
+	sx = sy = 0.0;
+
+	seg = 0;
+	sidx = 0;
+	while (seg < path->nsegments) {
+		NRPathElement *sel;
+		NRNode *cnode, *nnode;
+		int nelements, idx;
+
+		sel = path->elements + sidx;
+		nelements = sel[0].code.length;
+
+		/* Initialize path */
+		npg->paths[seg].closed = sel[0].code.closed;
+
+		/* First node */
+		cnode = nr_node_new (0, 1, 0, sel[1].value, sel[2].value, 2);
+		npg->paths[seg].nodes = cnode;
+
+		idx = 3;
+		while (idx < nelements) {
+			int nmulti, i;
+			nmulti = sel[idx].code.length;
+			if (sel[idx].code.code == NR_PATH_LINETO) {
+				idx += 1;
+				for (i = 0; i < nmulti; i++) {
+					/* Append new node at sel[idx], sel[idx + 1] using line */
+					nnode = nr_node_new (0, 0, 0, sel[idx].value, sel[idx + 1].value, 2);
+					nr_node_connect_line (cnode, 1, nnode, 0);
+					cnode = nnode;
+					idx += 2;
+				}
+			} else {
+				idx += 1;
+				for (i = 0; i < nmulti; i++) {
+					/* Append new node at sel[idx + 4], sel[idx + 5] using curve */
+					nnode = nr_node_new (0, 0, 0, sel[idx + 4].value, sel[idx + 5].value, 2);
+					nr_node_connect_curve (cnode, 1, nnode, 0,
+							       sel[idx].value, sel[idx + 1].value,
+							       sel[idx + 2].value, sel[idx + 3].value);
+					cnode = nnode;
+					idx += 6;
+				}
+			}
+		}
+		/* Closing segment if needed */
+		if (npg->paths[seg].closed) {
+			nr_node_join_end (npg->paths[seg].nodes, cnode);
+		} else {
+			cnode->islast = 1;
+		}
+		seg += 1;
+		sidx += nelements;
+	}
+
+	return npg;
+}
+
+NRPath *
+nr_path_from_node_path_group (NRNodePathGroup *ngr)
+{
+	int nelements, pidx;
+
+	nelements = 0;
+	for (pidx = 0; pidx < ngr->npaths; pidx++) {
+		NRNodePath *path;
+		path = ngr->paths + pidx;
+		/* Number of subpath elements */
+		nelements += 1;
+		/* Initial moveto */
+		nelements += 2;
+	}
+
+	return NULL;
+}
+
+static NRNode *
+nr_node_new (unsigned int value, unsigned int isfirst, unsigned int islast, double x, double y, unsigned int nconnections)
+{
+	NRNode *node;
+	node = (NRNode *) malloc (sizeof (NRNode) + (nconnections - 2) * sizeof (NRConnection));
+	node->next = NULL;
+	node->prev = NULL;
+	node->value = value;
+	node->isfirst = isfirst;
+	node->islast = islast;
+	node->x = x;
+	node->y = y;
+	node->nconnections = nconnections;
+	memset (&node->connections[0], 0, nconnections * sizeof (NRConnection));
+	return node;
+}
+
+static void
+nr_node_connect_line (NRNode *a, unsigned int apos, NRNode *b, unsigned int bpos)
+{
+	a->connections[apos].node = b;
+	a->connections[apos].isline = TRUE;
+	b->connections[bpos].node = a;
+	b->connections[bpos].isline = TRUE;
+}
+
+static void
+nr_node_connect_curve (NRNode *a, unsigned int apos, NRNode *b, unsigned int bpos, double x1, double y1, double x2, double y2)
+{
+	a->connections[apos].node = b;
+	a->connections[apos].isline = TRUE;
+	a->connections[apos].x = x1;
+	a->connections[apos].y = y1;
+	b->connections[bpos].node = a;
+	b->connections[bpos].isline = TRUE;
+	b->connections[bpos].x = x2;
+	b->connections[bpos].y = y2;
+}
+
+/* This works only for initial construction */
+
+static void
+nr_node_join_end (NRNode *start, NRNode *end)
+{
+	NRNode *prev;
+	if (end == start) return;
+	prev = end->connections[0].node;
+	start->connections[0] = end->connections[0];
+	prev->connections[1].node = start;
+	free (end);
+}
 
 int
 nr_path_intersect_self (double path[], double pos[], double tolerance)
