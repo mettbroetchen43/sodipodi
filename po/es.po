@@ -1,3 +1,4 @@
+# traducción de es.po al Spanish
 # translation of es.po to Spanish
 # translation of sodipodi.HEAD.es.po to Spanish
 # translation of es.po to spanish
@@ -13,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-03-11 20:18+0100\n"
-"PO-Revision-Date: 2004-03-11 20:20+0100\n"
+"POT-Creation-Date: 2004-10-09 02:32+0200\n"
+"PO-Revision-Date: 2004-10-09 02:38+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +34,7 @@ msgstr "Ilustrador vectorial SVG"
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
-#: src/arc-context.c:302
+#: src/arc-context.c:254
 #, c-format
 msgid "Drawing arc %s x %s"
 msgstr "Dibujando arco %s x %s"
@@ -42,20 +43,20 @@ msgstr "Dibujando arco %s x %s"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "No se ha podido crear un documento de la fábrica sodipodi-svg-doc"
 
-#: src/desktop.c:924
+#: src/desktop.c:990
 msgid "Zoom drawing if window size changes"
 msgstr "Dibujar con ampliación si el tamaño de la ventana cambia"
 
-#: src/desktop.c:931
+#: src/desktop.c:997
 msgid "Drawing target is constrained to active group"
 msgstr "El dibujo objetivo está restringido al grupo activo"
 
-#: src/desktop.c:1024
+#: src/desktop.c:1089
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1131
+#: src/desktop.c:1196
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "El documento %s ha sido modificado. ¿Desea guardar los cambios?"
@@ -63,19 +64,19 @@ msgstr "El documento %s ha sido modificado. ¿Desea guardar los cambios?"
 #. Page page
 #. Page settings
 #. Notebook tab
-#: src/desktop.c:1684 src/dialogs/align.c:291
+#: src/desktop.c:1776 src/dialogs/align.c:291
 #: src/dialogs/desktop-properties.c:284 src/dialogs/document-properties.c:168
-#: src/dialogs/export.c:161 src/verbs.c:471
+#: src/dialogs/export.c:161 src/verbs.c:471 src/widgets/sp-dock-notebook.c:135
 msgid "Page"
 msgstr "Página"
 
-#: src/desktop.c:1688 src/dialogs/align.c:292 src/dialogs/export.c:166
+#: src/desktop.c:1780 src/dialogs/align.c:292 src/dialogs/export.c:166
 #: src/verbs.c:472
 msgid "Drawing"
 msgstr "Dibujo"
 
 #. Selection submenu
-#: src/desktop.c:1692 src/dialogs/align.c:293 src/dialogs/export.c:171
+#: src/desktop.c:1784 src/dialogs/align.c:293 src/dialogs/export.c:171
 #: src/interface.c:597 src/toolbox.c:448 src/verbs.c:473
 msgid "Selection"
 msgstr "Selección"
@@ -405,6 +406,10 @@ msgstr "Ancho:"
 msgid "Height:"
 msgstr "Alto:"
 
+#: src/dialogs/document-tree.c:60 src/verbs.c:476
+msgid "Document"
+msgstr "Documento"
+
 #: src/dialogs/export.c:141
 msgid "Export bitmap"
 msgstr "Exportar mapa de bits"
@@ -499,7 +504,7 @@ msgid "Sensitive"
 msgstr "Sensible"
 
 #. Visible
-#: src/dialogs/item-properties.c:109
+#: src/dialogs/item-properties.c:109 src/widgets/sp-dock-layout.c:734
 msgid "Visible"
 msgstr "Visible"
 
@@ -598,13 +603,13 @@ msgid "ARG2:"
 msgstr "ARG2:"
 
 #. Expansion
-#: src/dialogs/object-attributes.c:59 src/spiral-context.c:363
+#: src/dialogs/object-attributes.c:59 src/spiral-context.c:343
 msgid "Expansion:"
 msgstr "Expansión:"
 
 #. Revolution
 #: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
-#: src/spiral-context.c:351
+#: src/spiral-context.c:331
 msgid "Revolution:"
 msgstr "Revolución:"
 
@@ -781,7 +786,7 @@ msgid "Missing tool preferences"
 msgstr "Herramienta sin preferencias"
 
 #. Magnitude
-#: src/dialogs/tool-attributes.c:105 src/star-context.c:356
+#: src/dialogs/tool-attributes.c:105 src/star-context.c:343
 msgid "Corners:"
 msgstr "Esquinas:"
 
@@ -946,8 +951,8 @@ msgid "Angle:"
 msgstr "Ángulo:"
 
 #. Reset
-#: src/dyna-draw-context.c:1099 src/rect-context.c:424
-#: src/spiral-context.c:387 src/star-context.c:387
+#: src/dyna-draw-context.c:1099 src/rect-context.c:382
+#: src/spiral-context.c:367 src/star-context.c:374
 msgid "Defaults"
 msgstr "Predeterminados"
 
@@ -1371,7 +1376,7 @@ msgstr ""
 msgid "Save document as"
 msgstr "Guardar documento como"
 
-#: src/modules/plain-pdf.c:1050 src/modules/plain-ps.c:651
+#: src/modules/plain-pdf.c:1105 src/modules/plain-ps.c:745
 #: src/modules/ps.c:961
 msgid "write error occured"
 msgstr "ocurrió un error de escritura"
@@ -1413,7 +1418,7 @@ msgid "Use Portable Document Format for printing"
 msgstr "Usar formato de documento portable (PDF) para imprimir"
 
 #. Print destination frame
-#: src/modules/plain.c:224 src/modules/plain.c:292 src/modules/ps.c:245
+#: src/modules/plain.c:224 src/modules/plain.c:293 src/modules/ps.c:245
 #: src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Imprimir destino"
@@ -1423,15 +1428,15 @@ msgstr "Imprimir destino"
 msgid "Print properties"
 msgstr "Propiedades de impresión"
 
-#: src/modules/plain.c:273 src/modules/ps.c:287
+#: src/modules/plain.c:274 src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
 msgstr "Resolución preferida (puntos por pulgada) de mapa de bits"
 
-#: src/modules/plain.c:288 src/modules/ps.c:302
+#: src/modules/plain.c:289 src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Resolución:"
 
-#: src/modules/plain.c:298 src/modules/ps.c:312
+#: src/modules/plain.c:299 src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -1442,144 +1447,154 @@ msgstr ""
 "Emplee «| prog arg...» para enviar a un programa"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:108
+#: src/object-ui.c:111 src/widgets/sp-dock-layout.c:741
 msgid "Item"
 msgstr "Elemento"
 
 #. Item dialog
-#: src/object-ui.c:111 src/verbs.c:487
+#: src/object-ui.c:114 src/verbs.c:487
 msgid "Item Properties"
 msgstr "Propiedades del elemento"
 
 #. Select item
-#: src/object-ui.c:119
+#: src/object-ui.c:122
 msgid "Select this"
 msgstr "Seleccionar esto"
 
 #. Reset transformations
-#: src/object-ui.c:128
+#: src/object-ui.c:131
 msgid "Reset transformation"
 msgstr "Reiniciar transformación"
 
 #. Apply transformation
-#: src/object-ui.c:132
+#: src/object-ui.c:135
 msgid "Apply transformation"
 msgstr "Aplicar transformación"
 
-#: src/object-ui.c:137
+#: src/object-ui.c:140
 msgid "Make sensitive"
 msgstr "Definir como sensible"
 
-#: src/object-ui.c:137
+#: src/object-ui.c:140
 msgid "Make insensitive"
 msgstr "Definir como insensible"
 
 #. Create link
-#: src/object-ui.c:141
+#: src/object-ui.c:144
 msgid "Create link"
 msgstr "Crear enlace"
 
-#: src/object-ui.c:273 src/verbs.c:435
+#: src/object-ui.c:276 src/verbs.c:435
 msgid "Group"
 msgstr "Agrupar"
 
 #. Group dialog
-#: src/object-ui.c:277
+#: src/object-ui.c:280
 msgid "Group Properties"
 msgstr "Propiedades del grupo"
 
 #. "Ungroup"
-#: src/object-ui.c:288 src/verbs.c:436
+#: src/object-ui.c:291 src/verbs.c:436
 msgid "Ungroup"
 msgstr "Desagrupar"
 
 #. Dive
-#: src/object-ui.c:293
+#: src/object-ui.c:296
 msgid "Set as layer"
 msgstr "Definir como capa"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:338
+#: src/object-ui.c:341
 msgid "Link"
 msgstr "Enlace"
 
 #. Link dialog
-#: src/object-ui.c:341
+#: src/object-ui.c:344
 msgid "Link Properties"
 msgstr "Propiedades del enlace"
 
 #. Select item
-#: src/object-ui.c:351
+#: src/object-ui.c:354
 msgid "Follow link"
 msgstr "Seguir enlace"
 
 #. Reset transformations
-#: src/object-ui.c:356
+#: src/object-ui.c:359
 msgid "Remove link"
 msgstr "Eliminar enlace"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:419
+#: src/object-ui.c:422
 msgid "Image"
 msgstr "Imagen"
 
 #. Link dialog
-#: src/object-ui.c:422
+#: src/object-ui.c:425
 msgid "Image Properties"
 msgstr "Propiedades de la imagen"
 
 #. Autotrace dialog
-#: src/object-ui.c:430 src/sp-image.c:762
+#: src/object-ui.c:433 src/sp-image.c:762
 msgid "Trace"
 msgstr "Traza"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:479
+#: src/object-ui.c:482
 msgid "Shape"
 msgstr "Forma"
 
 #. Item dialog
-#: src/object-ui.c:482 src/toolbox.c:402
+#: src/object-ui.c:485 src/toolbox.c:402
 msgid "Fill settings"
 msgstr "Parámetros de relleno"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:509
+#: src/object-ui.c:516
+msgid "Path"
+msgstr "Ruta"
+
+#. Reverse
+#: src/object-ui.c:519
+msgid "Reverse"
+msgstr "Invertido"
+
+#. Create toplevel menuitem
+#: src/object-ui.c:542
 msgid "Rect"
 msgstr "Rectángulo"
 
 #. Link dialog
-#: src/object-ui.c:512
+#: src/object-ui.c:545
 msgid "Rect Properties"
 msgstr "Propiedades del rectángulo"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:545 src/verbs.c:457
+#: src/object-ui.c:578 src/verbs.c:457
 msgid "Star"
 msgstr "Estrella"
 
 #. Link dialog
-#: src/object-ui.c:548
+#: src/object-ui.c:581
 msgid "Star Properties"
 msgstr "Propiedades de la estrella"
 
 #. Create toplevel menuitem
-#: src/object-ui.c:581 src/verbs.c:458
+#: src/object-ui.c:614 src/verbs.c:458
 msgid "Spiral"
 msgstr "Espiral"
 
 #. Link dialog
-#: src/object-ui.c:584
+#: src/object-ui.c:617
 msgid "Spiral Properties"
 msgstr "Propiedades de la espiral"
 
 #. rx_ratio
-#: src/rect-context.c:400
+#: src/rect-context.c:358
 msgid "Roundness ratio for x:"
 msgstr "Radio de curvatura para x:"
 
 #. ry_ratio
-#: src/rect-context.c:412
+#: src/rect-context.c:370
 msgid "Roundness ratio for y:"
 msgstr "Radio de curvatura para y:"
 
@@ -1828,27 +1843,27 @@ msgstr "URI de la imagen:"
 msgid "Group of %d objects"
 msgstr "Grupo de %d objetos"
 
-#: src/sp-item.c:553
+#: src/sp-item.c:554
 msgid "Unknown item :-("
 msgstr "Elemento desconocido :-("
 
 #. fixme:
-#: src/sp-text.c:1294
+#: src/sp-text.c:1293
 msgid "Text object"
 msgstr "Objeto de texto"
 
 #. T0
-#: src/spiral-context.c:375
+#: src/spiral-context.c:355
 msgid "Inner radius:"
 msgstr "Radio interior:"
 
 #. Proportion
-#: src/star-context.c:368
+#: src/star-context.c:355
 msgid "Proportion:"
 msgstr "Proporción:"
 
 #. Making sides flat
-#: src/star-context.c:381
+#: src/star-context.c:368
 msgid "Make sides flat"
 msgstr "Aplanar lados"
 
@@ -2351,10 +2366,6 @@ msgid "Global display settings"
 msgstr "Parámetros de pantalla globales"
 
 #: src/verbs.c:476
-msgid "Document"
-msgstr "Documento"
-
-#: src/verbs.c:476
 msgid "Page layout"
 msgstr "Disposición de página"
 
@@ -2424,7 +2435,7 @@ msgstr "Estilo"
 msgid "Font size:"
 msgstr "Tamaño de tipografía:"
 
-#: src/widgets/font-selector.c:562
+#: src/widgets/font-selector.c:560
 msgid "AaBbCcIiPpQq12368.;/()"
 msgstr "AaBbCcIiPpQq12368.;/()"
 
@@ -2562,6 +2573,350 @@ msgstr "Amarillo:"
 #: src/widgets/sp-color-selector.c:667
 msgid "Black:"
 msgstr "Negro:"
+
+#: src/widgets/sp-dock-item.c:243
+msgid "Orientation"
+msgstr "Orientación"
+
+#: src/widgets/sp-dock-item.c:244
+msgid "Orientation of the docking item"
+msgstr "Orientación del elemento que se empotra"
+
+#: src/widgets/sp-dock-item.c:259
+msgid "Resizable"
+msgstr "Redimensionable"
+
+#: src/widgets/sp-dock-item.c:260
+msgid "If set, the dock item can be resized when docked in a paned"
+msgstr ""
+"Si esta activado, el elemento empotrable puede ser redimensionado cuando se"
+"empotra en un panel"
+
+#: src/widgets/sp-dock-item.c:267
+msgid "Item behavior"
+msgstr "Comportamiento del elemento"
+
+#: src/widgets/sp-dock-item.c:268
+msgid ""
+"General behavior for the dock item (i.e. whether it can float, if it's "
+"locked, etc.)"
+msgstr ""
+"Comportamiento general para el elemento acoplable ( si puede flotar, si "
+"está bloqueado, etc)"
+
+#: src/widgets/sp-dock-item.c:276
+msgid "Grip size"
+msgstr "Tamaño de rejilla"
+
+#: src/widgets/sp-dock-item.c:277
+msgid "Size in pixels of the grip to drag the dock item"
+msgstr "Tamaño en píxeles de la rejilla para arrastrar el elemento acoplable"
+
+#: src/widgets/sp-dock-item.c:283 src/widgets/sp-dock-master.c:149
+msgid "Locked"
+msgstr "Bloqueado"
+
+#: src/widgets/sp-dock-item.c:284
+msgid "If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr "Si esta activado el elemento empotrable no puede ser arrastrado fuera y no muestra un tirador"
+
+#: src/widgets/sp-dock-item.c:292
+msgid "Preferred width"
+msgstr "Anchura preferida"
+
+#: src/widgets/sp-dock-item.c:293
+msgid "Preferred width for the dock item"
+msgstr "Anchura preferida para el elemento empotrado"
+
+#: src/widgets/sp-dock-item.c:299
+msgid "Preferred height"
+msgstr "Altura preferida"
+
+#: src/widgets/sp-dock-item.c:300
+msgid "Preferred height for the dock item"
+msgstr "Altura preferida para el elemento empotrado"
+
+#: src/widgets/sp-dock-item.c:547
+#, c-format
+msgid ""
+"You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
+"some other compound dock object."
+msgstr ""
+
+#: src/widgets/sp-dock-item.c:554
+#, c-format
+msgid ""
+"Attempting to add a widget with type %s to a %s, but it can only contain one "
+"widget at a time; it already contains a widget of type %s"
+msgstr ""
+"Intentando añadir un widget con tipo %s a un %s, pero éste sólo puede "
+"contener un widget a la vez; ya contiene un widget de tipo %s"
+
+#: src/widgets/sp-dock-item.c:1156
+#, c-format
+msgid "Unsupported docking strategy %s in dock object of type %s"
+msgstr "Estrategia de acoplado no soportada %s en objeto acoplable de tipo %s"
+
+#. Hide menuitem.
+#: src/widgets/sp-dock-item.c:1238
+msgid "Hide"
+msgstr "Ocultar"
+
+#. Lock menuitem
+#: src/widgets/sp-dock-item.c:1244
+msgid "Lock"
+msgstr "Bloquear"
+
+#: src/widgets/sp-dock-item.c:1411
+#, c-format
+msgid "Attempt to bind an unbound item %p"
+msgstr "Se intentó vincular un elemento no vinculado %p"
+
+#: src/widgets/sp-dock-layout.c:144
+msgid "Master"
+msgstr "Dueño"
+
+#: src/widgets/sp-dock-layout.c:145
+msgid "SPDockMaster object which the layout object is attached to"
+msgstr "Objeto SPDockMaster al que el objeto de colocación está adjuntado"
+
+#: src/widgets/sp-dock-layout.c:152
+msgid "Dirty"
+msgstr "Modificado"
+
+#: src/widgets/sp-dock-layout.c:153
+msgid "True if the layouts have changed and need to be saved to a file"
+msgstr "Verdadero si el formato ha cambiado y necesita guardarse en un archivo"
+
+#: src/widgets/sp-dock-layout.c:500
+msgid "You must provide a name for the layout"
+msgstr "Debe proporcionar un nombre para la distribución"
+
+#. FIXME: pop up an error dialog
+#: src/widgets/sp-dock-layout.c:679
+#, c-format
+msgid "Could not load layout user interface file '%s'"
+msgstr "No se pudo cargar el archivo de distribución del interfaz de usuario «%s»"
+
+#: src/widgets/sp-dock-layout.c:791 src/widgets/sp-dock-object.c:123
+msgid "Name"
+msgstr "Nombre"
+
+#: src/widgets/sp-dock-layout.c:830
+msgid "Dock items"
+msgstr "Elementos empotrados"
+
+#: src/widgets/sp-dock-layout.c:836
+msgid "Saved layouts"
+msgstr "Colocación guardada"
+
+#: src/widgets/sp-dock-layout.c:902
+#, c-format
+msgid ""
+"While loading layout: don't know how to create a dock object whose nick is '%"
+"s'"
+msgstr ""
+"Al cargar la colocación: no se sabe cómo crear un objeto acoplable cuyo "
+"apodo es «%s»"
+
+#: src/widgets/sp-dock-layout.c:1459
+msgid "Layout managment"
+msgstr "Administración de la colocación"
+
+#: src/widgets/sp-dock-master.c:142 src/widgets/sp-dock.c:184
+msgid "Default title"
+msgstr "Título predeterminado"
+
+#: src/widgets/sp-dock-master.c:143
+msgid "Default title for newly created floating docks"
+msgstr "Título predeterminado para los acoplables flotantes creados"
+
+#: src/widgets/sp-dock-master.c:150
+msgid ""
+"If is set to 1, all the dock items bound to the master are locked; if it's "
+"0, all are unlocked; -1 indicates inconsistency among the items"
+msgstr "Si se establece a 1, todos los elementos acoplable vinculados al maestro serán bloqueados; si es 0, todos serán desbloqueados; -1 indica inconsistencia entre los elementos"
+
+#: src/widgets/sp-dock-master.c:741
+#, c-format
+msgid ""
+"master %p: unable to add object %p[%s] to the hash.  There already is an "
+"item with that name (%p)."
+msgstr ""
+"maestro %p: No se puede añadir objeto %p[%s] al hash. Ya hay un elemento con "
+"el nombre (%p)."
+
+#: src/widgets/sp-dock-master.c:906
+#, c-format
+msgid ""
+"The new dock controller %p is automatic.  Only manual dock objects should be "
+"named controller."
+msgstr "El controlador de empotrables %p es automático. Sólo los objetos empotrables manuales deberían llamarse controladores."
+
+#: src/widgets/sp-dock-notebook.c:136
+msgid "The index of the current page"
+msgstr "El índice de la página actual"
+
+#: src/widgets/sp-dock-object.c:124
+msgid "Unique name for identifying the dock object"
+msgstr "Nombre único para identificar al objeto empotrable"
+
+#: src/widgets/sp-dock-object.c:131
+msgid "Long name"
+msgstr "Nombre largo"
+
+#: src/widgets/sp-dock-object.c:132
+msgid "Human readable name for the dock object"
+msgstr "Nombre legible por el humano para el objeto empotrable"
+
+#: src/widgets/sp-dock-object.c:138
+msgid "Dock master"
+msgstr "Empotrable principal"
+
+#: src/widgets/sp-dock-object.c:139
+msgid "Dock master this dock object is bound to"
+msgstr "El empotrable principal al que este objeto empotrable está vinculado"
+
+#: src/widgets/sp-dock-object.c:408
+#, c-format
+msgid ""
+"Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
+"hasn't implemented this method"
+msgstr "Llamada a sp_dock_object_dock en un objeto empotrable %p (el tipo del objeto es %s) que no tiene implantado este método"
+
+#: src/widgets/sp-dock-object.c:537
+#, c-format
+msgid ""
+"Dock operation requested in a non-bound object %p. The application might "
+"crash"
+msgstr "Operación de empotrar solicitada a un objeto no vinculado %p. La aplicación puede colgarse"
+
+#: src/widgets/sp-dock-object.c:544
+#, c-format
+msgid "Cannot dock %p to %p because they belong to different masters"
+msgstr "No se puede empotrar %p en %p porque pertenecen a diferentes principales"
+
+#: src/widgets/sp-dock-object.c:586
+#, c-format
+msgid "Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgstr ""
+"Se intentó vincular con %p un objeto %p que ya está vinculado y empotrado (principal"
+"actual: %p)"
+
+#: src/widgets/sp-dock-paned.c:134
+msgid "Position"
+msgstr "Posición"
+
+#: src/widgets/sp-dock-paned.c:135
+msgid "Position of the divider in pixels"
+msgstr "Posición del divisor en píxeles"
+
+#: src/widgets/sp-dock-placeholder.c:125
+msgid "Sticky"
+msgstr "Persistente"
+
+#: src/widgets/sp-dock-placeholder.c:126
+msgid ""
+"Whether the placeholder will stick to its host or move up the hierarchy when "
+"the host is redocked"
+msgstr "Indica si el contenedor permanecerá unido a su anfitrión o subirá por la jerarquía cuando el anfitrión sea reacoplado"
+
+#: src/widgets/sp-dock-placeholder.c:133
+msgid "Host"
+msgstr "Anfitrión"
+
+#: src/widgets/sp-dock-placeholder.c:134
+msgid "The dock object this placeholder is attached to"
+msgstr "El objeto acoplado al que este lugar contenedor está conectado"
+
+#: src/widgets/sp-dock-placeholder.c:141
+msgid "Next placement"
+msgstr "Siguiente emplazamiento"
+
+#: src/widgets/sp-dock-placeholder.c:142
+msgid ""
+"The position an item will be docked to our host if a request is made to dock "
+"to us"
+msgstr ""
+"La posición en que un elemento será acoplado en nuestro anfitrión si se "
+"realiza una petición para acoplarse con nosotros"
+
+#: src/widgets/sp-dock-placeholder.c:303
+msgid "Attempt to dock a dock object to an unbound placeholder"
+msgstr "Se intentó acoplar un objeto acoplable en un contenedor no vinculado"
+
+#: src/widgets/sp-dock-placeholder.c:417
+#, c-format
+msgid "Got a detach signal from an object (%p) who is not our host %p"
+msgstr ""
+"Se obtuvo una señal de desacoplar de un objeto (%p) que no es nuestro "
+"hospedador %p"
+
+#: src/widgets/sp-dock-placeholder.c:438
+#, c-format
+msgid ""
+"Something weird happened while getting the child placement for %p from "
+"parent %p"
+msgstr ""
+"Algo extraño ha ocurrido al obtener la ubicación del hijo para %p desde el "
+"padre %p"
+
+#: src/widgets/sp-dock-tablabel.c:131
+msgid "Controlling dock item"
+msgstr "Elemento controlador de acoplamiento"
+
+#: src/widgets/sp-dock-tablabel.c:132
+msgid "Dockitem which 'owns' this tablabel"
+msgstr "Elemento acoplado que 'es dueño' de esta tablabel"
+
+#: src/widgets/sp-dock.c:176
+msgid "Floating"
+msgstr "Flotante"
+
+#: src/widgets/sp-dock.c:177
+msgid "Whether the dock is floating in its own window"
+msgstr "Indica si el acoplable está flotando en su propia ventana"
+
+#: src/widgets/sp-dock.c:185
+msgid "Default title for the newly created floating docks"
+msgstr "Título preestablecido para los acoplables flotantes nuevamente creados"
+
+#: src/widgets/sp-dock.c:191
+msgid "Width"
+msgstr "Ancho"
+
+#: src/widgets/sp-dock.c:192
+msgid "Width for the dock when it's of floating type"
+msgstr "Anchura del acoplable cuando es de tipo flotante"
+
+#: src/widgets/sp-dock.c:199
+msgid "Height"
+msgstr "Alto"
+
+#: src/widgets/sp-dock.c:200
+msgid "Height for the dock when it's of floating type"
+msgstr "Altura del acoplable cuando es de tipo flotante"
+
+#: src/widgets/sp-dock.c:207
+msgid "Float X"
+msgstr "Flotante X"
+
+#: src/widgets/sp-dock.c:208
+msgid "X coordinate for a floating dock"
+msgstr "Coordenada X para un acoplable flotante"
+
+#: src/widgets/sp-dock.c:215
+msgid "Float Y"
+msgstr "Flotante Y"
+
+#: src/widgets/sp-dock.c:216
+msgid "Y coordinate for a floating dock"
+msgstr "Coordenada Y para un acoplable flotante"
+
+#: src/widgets/sp-dock.c:509
+#, c-format
+msgid "Dock #%d"
+msgstr "Empotrado #%d"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
