@@ -22,8 +22,11 @@
 #define SP_MODULE_KEY_PRINT_WIN32 "printing.win32"
 #define SP_MODULE_KEY_PRINT_KDE "printing.kde"
 #define SP_MODULE_KEY_PRINT_GNOME "printing.gnome"
+#ifdef USE_PRINT_DRIVERS
+#define SP_MODULE_KEY_PRINT_PLAIN "printing.plain"
+#else
 #define SP_MODULE_KEY_PRINT_PLAIN "printing.ps"
-#define SP_MODULE_KEY_PRINT_PLAIN2 "printing.plain"
+#endif
 
 #define SP_TYPE_MODULE (sp_module_get_type ())
 #define SP_MODULE(o)  (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE, SPModule))

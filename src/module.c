@@ -26,7 +26,6 @@
 #include "helper/sp-intl.h"
 #include "widgets/menu.h"
 #include "xml/repr-private.h"
-#include "modules/ps.h"
 #include "dir-util.h"
 #include "sodipodi.h"
 #include "sp-object.h"
@@ -588,6 +587,12 @@ sp_module_print_finalize (GObject *object)
 /* Global methods */
 
 #include <gmodule.h>
+
+#ifdef USE_PRINT_DRIVERS
+#include "modules/plain.h"
+#else
+#include "modules/ps.h"
+#endif
 
 #ifdef WITH_GNOME_PRINT
 #include "modules/gnome.h"

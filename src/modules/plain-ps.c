@@ -72,12 +72,10 @@ sp_plain_ps_finalize (SPPrintPlainDriver *driver)
 static unsigned int
 sp_plain_ps_begin (SPPrintPlainDriver *driver, SPDocument *doc)
 {
-	int res;
-
-#if 1
 	SPModulePrintPlain *pmod;
 	SPPrintPlainPSDriver *driverps;
 	unsigned char c[32];
+	int res;
 
 	driverps = (SPPrintPlainPSDriver *)driver;
 	pmod = driverps->module;
@@ -105,30 +103,7 @@ sp_plain_ps_begin (SPPrintPlainDriver *driver, SPDocument *doc)
 	arikkei_dtoa_simple (c, 32, sp_document_height (doc), 6, 0, FALSE);
 	if (res >= 0) res = fprintf (pmod->stream, "0.0 %s translate\n", c);
 	if (res >= 0) res = fprintf (pmod->stream, "0.8 -0.8 scale\n");
-#else
-	res = fprintf (pmod->stream, "%%!\n");
-	/* flush this to test output stream as early as possible */
-	if (fflush (pmod->stream)) {
-	/* g_print("caught error in sp_module_print_plain_begin\n");*/
-		if (ferror (pmod->stream)) {
-			g_print("Error %d on output stream: %s\n", errno,
-				g_strerror(errno));
-		}
-		g_print ("Printing failed\n");
-		/* fixme: should use pclose() for pipes */
-		fclose (pmod->stream);
-		pmod->stream = NULL;
-		fflush (stdout);
-		return 0;
-	}
-	pmod->width = sp_document_width (doc);
-	pmod->height = sp_document_height (doc);
 
-	if (pmod->driver_type == SP_PRINT_PLAIN_DRIVER_PS_BITMAP) return 0;
-
-	if (res >= 0) res = fprintf (pmod->stream, "%g %g translate\n", 0.0, sp_document_height (doc));
-	if (res >= 0) res = fprintf (pmod->stream, "0.8 -0.8 scale\n");
-#endif
 	return res;
 }
 

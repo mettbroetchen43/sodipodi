@@ -44,6 +44,8 @@ struct _SPModulePrintPlainClass {
 GType sp_module_print_plain_get_type (void);
 
 
+/* Driver */
+
 struct _SPPrintPlainDriver {
 	void (*initialize) (SPPrintPlainDriver *driver);
 	void (*finalize) (SPPrintPlainDriver *driver);
