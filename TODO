@@ -5,7 +5,6 @@ TODO for 0.27
 
 - Illustrator import/export
 - Stamping (Masatake)
-- Make useless scaling knots insensitive?
 - Empty bbox of horizontal/vertical lines bug (DONE)
 - Toolbox scaling bug
 - Tooltips for tools

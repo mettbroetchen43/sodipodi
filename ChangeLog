@@ -1,9 +1,10 @@
 2002-09-24  Lauris Kaplinski  <lauris@kaplinski.com>
 
-	* src/sp-path.c (sp_path_bbox): Allow empty bboxen
+	* src/seltrans.c (sp_sel_trans_scale): Allow scaling in one dimension,
+	if it is > 0.0
+	(sp_sel_trans_scale_request): Snap in one dimension, if > 0.0
 
-	* src/seltrans.c (sp_sel_trans_update_volatile_state): Increase bbox
-	by 1/8 pixels to behave well with zero-size items
+	* src/sp-path.c (sp_path_bbox): Allow empty bboxen
 
 	* src/helper/art-utils.c (sp_bpath_matrix_d_bbox_d_union): Union always,
 	even if computed bbox is empty

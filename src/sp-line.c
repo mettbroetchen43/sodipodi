@@ -13,6 +13,7 @@
 
 #include <math.h>
 #include <string.h>
+#include "style.h"
 #include "sp-line.h"
 
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
@@ -25,7 +26,8 @@ static void sp_line_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_line_read_attr (SPObject * object, const gchar * attr);
 static SPRepr *sp_line_write (SPObject *object, SPRepr *repr, guint flags);
 
-static gchar * sp_line_description (SPItem * item);
+static gchar *sp_line_description (SPItem * item);
+static void sp_line_write_transform (SPItem *item, SPRepr *repr, gdouble *t);
 
 static void sp_line_set_shape (SPLine * line);
 
@@ -71,6 +73,7 @@ sp_line_class_init (SPLineClass *class)
 	sp_object_class->write = sp_line_write;
 
 	item_class->description = sp_line_description;
+	item_class->write_transform = sp_line_write_transform;
 }
 
 static void
@@ -169,6 +172,37 @@ static gchar *
 sp_line_description (SPItem * item)
 {
 	return g_strdup ("Line");
+}
+
+static void
+sp_line_write_transform (SPItem *item, SPRepr *repr, gdouble *t)
+{
+	double sw, sh;
+	SPLine *line;
+
+	line = SP_LINE (item);
+
+	/* fixme: Would be nice to preserve units here */
+	sp_repr_set_double (repr, "x1", t[0] * line->x1 + t[2] * line->y1 + t[4]);
+	sp_repr_set_double (repr, "y1", t[1] * line->x1 + t[3] * line->y1 + t[5]);
+	sp_repr_set_double (repr, "x2", t[0] * line->x2 + t[2] * line->y2 + t[4]);
+	sp_repr_set_double (repr, "y2", t[1] * line->x2 + t[3] * line->y2 + t[5]);
+
+	/* Scalers */
+	sw = sqrt (t[0] * t[0] + t[1] * t[1]);
+	sh = sqrt (t[2] * t[2] + t[3] * t[3]);
+
+	/* And last but not least */
+	if ((fabs (sw - 1.0) > 1e-9) || (fabs (sh - 1.0) > 1e-9)) {
+		SPStyle *style;
+		guchar *str;
+		/* Scale changed, so we have to adjust stroke width */
+		style = SP_OBJECT_STYLE (item);
+		style->stroke_width.computed *= sqrt (fabs (sw * sh));
+		str = sp_style_write_difference (style, SP_OBJECT_STYLE (SP_OBJECT_PARENT (item)));
+		sp_repr_set_attr (SP_OBJECT_REPR (item), "style", str);
+		g_free (str);
+	}
 }
 
 static void

@@ -526,10 +526,12 @@ sp_sel_trans_update_volatile_state (SPSelTrans * seltrans)
 
 	sp_selection_bbox (SP_DT_SELECTION (seltrans->desktop), &seltrans->box);
 
+#if 0
 	seltrans->box.x0 -= 0.125;
 	seltrans->box.y0 -= 0.125;
 	seltrans->box.x1 += 0.125;
 	seltrans->box.y1 += 0.125;
+#endif
 
 	art_affine_identity (seltrans->current);
 }
@@ -759,40 +761,51 @@ sp_sel_trans_sel_modified (SPSelection *selection, guint flags, gpointer data)
  */
 
 gboolean
-sp_sel_trans_scale_request (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint * p, guint state)
+sp_sel_trans_scale_request (SPSelTrans *seltrans, SPSelTransHandle *handle, ArtPoint *p, guint state)
 {
 	ArtPoint norm, point;
-	gdouble sx, sy, ratio;
+	gdouble sx, sy;
 	gchar status[80];
-	SPDesktop * desktop;
+	SPDesktop *desktop;
+	int xd, yd;
 
 	desktop = seltrans->desktop;
 
 	sp_sel_trans_point_desktop (seltrans, &point);
 	sp_sel_trans_origin_desktop (seltrans, &norm);
 
-	if ((fabs(point.x - norm.x)<1e-15) || (fabs(point.x - norm.x)<1e-15)) return FALSE;
-
-	sx = (p->x - norm.x) / (point.x - norm.x);
-	sy = (p->y - norm.y) / (point.y - norm.y);
-
-	if (state & GDK_CONTROL_MASK) {
-        	if (fabs (sx)<1e-15) sx = 1e-15;
-	        if (fabs (sy)<1e-15) sy = 1e-15;
-	        if (fabs (sy) > fabs (sx)) sy = fabs (sx) * sy / fabs (sy);
-		if (fabs (sx) > fabs (sy)) sx = fabs (sy) * sx / fabs (sx);
-		ratio = sp_desktop_vector_snap_list (desktop, seltrans->snappoints, &norm, sx, sy);
-		sx = fabs (ratio) * sx / fabs (sx);
-		sy = fabs (ratio) * sy / fabs (sy);
+	if (fabs (point.x - norm.x) > 0.0625) {
+		sx = (p->x - norm.x) / (point.x - norm.x);
+		if (fabs (sx) < 1e-9) sx = 1e-9;
+		xd = TRUE;
 	} else {
-	  sx = sp_desktop_horizontal_snap_list_scale (desktop, seltrans->snappoints, &norm, sx);
-	  sy = sp_desktop_vertical_snap_list_scale (desktop, seltrans->snappoints, &norm, sy);
+		sx = 0.0;
+		xd = FALSE;
+	}
+	if (fabs (point.y - norm.y) > 0.0625) {
+		sy = (p->y - norm.y) / (point.y - norm.y);
+		if (fabs (sy) < 1e-9) sy = 1e-9;
+		yd = TRUE;
+	} else {
+		sy = 0.0;
+		yd = FALSE;
 	}
 
-	if (fabs (sx)<1e-15) sx = 1e-15;
-	if (fabs (sy)<1e-15) sy = 1e-15;
-	p->x = (point.x - norm.x)* sx + norm.x;
-	p->y = (point.y - norm.y)* sy + norm.y;
+	if (state & GDK_CONTROL_MASK) {
+		double r;
+		if (!xd || !yd) return FALSE;
+	        if (fabs (sy) > fabs (sx)) sy = fabs (sx) * sy / fabs (sy);
+		if (fabs (sx) > fabs (sy)) sx = fabs (sy) * sx / fabs (sx);
+		r = sp_desktop_vector_snap_list (desktop, seltrans->snappoints, &norm, sx, sy);
+		sx = fabs (r) * sx / fabs (sx);
+		sy = fabs (r) * sy / fabs (sy);
+	} else {
+		if (xd) sx = sp_desktop_horizontal_snap_list_scale (desktop, seltrans->snappoints, &norm, sx);
+		if (yd) sy = sp_desktop_vertical_snap_list_scale (desktop, seltrans->snappoints, &norm, sy);
+	}
+
+	p->x = (point.x - norm.x) * sx + norm.x;
+	p->y = (point.y - norm.y) * sy + norm.y;
 
 	// status text
 	sprintf (status, "Scale  %0.2f%c, %0.2f%c", 100 * sx, '%', 100 * sy, '%');
@@ -817,19 +830,19 @@ sp_sel_trans_stretch_request (SPSelTrans * seltrans, SPSelTransHandle * handle, 
 	switch (handle->cursor) {
 	case GDK_TOP_SIDE:
 	case GDK_BOTTOM_SIDE:
-	  if (fabs (point.y - norm.y) < 1e-15) return FALSE;
-	  sy = (p->y - norm.y) / (point.y - norm.y);	    
-	  if (fabs (sy) < 1e-15) sy = 1e-15;
-	  if (state & GDK_CONTROL_MASK) {
-	    if (fabs (sy) > 1) sy = sy / fabs (sy);
-	    sx = fabs (sy);
-	    ratio = sp_desktop_vector_snap_list (desktop, seltrans->snappoints, &norm, sx, sy);
-	    sy = (fabs (ratio) < 1) ? fabs (ratio) * sy / fabs (sy) : sy / fabs (sy);
-	    sx = fabs (sy);
-	  } else {
-	    sy = sp_desktop_vertical_snap_list_scale (desktop, seltrans->snappoints, &norm, sy); 
-	  }
-	  break;
+		if (fabs (point.y - norm.y) < 1e-15) return FALSE;
+		sy = (p->y - norm.y) / (point.y - norm.y);	    
+		if (fabs (sy) < 1e-15) sy = 1e-15;
+		if (state & GDK_CONTROL_MASK) {
+			if (fabs (sy) > 1) sy = sy / fabs (sy);
+			sx = fabs (sy);
+			ratio = sp_desktop_vector_snap_list (desktop, seltrans->snappoints, &norm, sx, sy);
+			sy = (fabs (ratio) < 1) ? fabs (ratio) * sy / fabs (sy) : sy / fabs (sy);
+			sx = fabs (sy);
+		} else {
+			sy = sp_desktop_vertical_snap_list_scale (desktop, seltrans->snappoints, &norm, sy); 
+		}
+		break;
 	case GDK_LEFT_SIDE:
 	case GDK_RIGHT_SIDE:
 		if (fabs (point.x - norm.x) < 1e-5) return FALSE;
@@ -1031,24 +1044,24 @@ sp_sel_trans_stretch (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint
 	switch (handle->cursor) {
 	case GDK_TOP_SIDE:
 	case GDK_BOTTOM_SIDE:
-	  if (fabs (point.y - norm.y) < 1e-15) return;
-	  sy = (p->y - norm.y) / (point.y - norm.y);
-	  if (fabs (sy) < 1e-15) sy = 1e-15;
-	  if (state & GDK_CONTROL_MASK) {
-	    if (fabs (sy) > fabs (sx)) sy = sy / fabs (sy);
-	    if (fabs (sy) < fabs (sx)) sx = fabs (sy) * sx / fabs (sx);
-	}
-	  break;
+		if (fabs (point.y - norm.y) < 1e-15) return;
+		sy = (p->y - norm.y) / (point.y - norm.y);
+		if (fabs (sy) < 1e-15) sy = 1e-15;
+		if (state & GDK_CONTROL_MASK) {
+			if (fabs (sy) > fabs (sx)) sy = sy / fabs (sy);
+			if (fabs (sy) < fabs (sx)) sx = fabs (sy) * sx / fabs (sx);
+		}
+		break;
 	case GDK_LEFT_SIDE:
 	case GDK_RIGHT_SIDE:
-	  if (fabs (point.x - norm.x) < 1e-15) return;
-	  sx = (p->x - norm.x) / (point.x - norm.x);
-	  if (fabs (sx) < 1e-15) sx = 1e-15;
-	  if (state & GDK_CONTROL_MASK) {
-	    if (fabs (sx) > fabs (sy)) sx = sx / fabs (sx);
-	    if (fabs (sx) < fabs (sy)) sy = fabs (sx) * sy / fabs (sy);
-	  }
-	  break;
+		if (fabs (point.x - norm.x) < 1e-15) return;
+		sx = (p->x - norm.x) / (point.x - norm.x);
+		if (fabs (sx) < 1e-15) sx = 1e-15;
+		if (state & GDK_CONTROL_MASK) {
+			if (fabs (sx) > fabs (sy)) sx = sx / fabs (sx);
+			if (fabs (sx) < fabs (sy)) sy = fabs (sx) * sy / fabs (sy);
+		}
+		break;
 	default:
 		break;
 	}
@@ -1068,13 +1081,21 @@ sp_sel_trans_scale (SPSelTrans * seltrans, SPSelTransHandle * handle, ArtPoint *
 	sp_sel_trans_point_desktop (seltrans, &point);
 	sp_sel_trans_origin_desktop (seltrans, &norm);
 
-	if ((fabs(point.x - norm.x)<1e-15) || (fabs(point.x - norm.x)<1e-15)) return;
+	if (fabs (point.x - norm.x) > 1e-9) {
+		sx = (p->x - norm.x) / (point.x - norm.x);
+	} else {
+		sx = 1.0;
+	}
 
-	sx = (p->x - norm.x) / (point.x - norm.x);
-	sy = (p->y - norm.y) / (point.y - norm.y);
+	if (fabs (point.y - norm.y) > 1e-9) {
+		sy = (p->y - norm.y) / (point.y - norm.y);
+	} else {
+		sy = 1.0;
+	}
 
-	if (fabs (sx) < 1e-15) sx = 1e-15; 
-	if (fabs (sy) < 1e-15) sy = 1e-15;
+	if (fabs (sx) < 1e-9) sx = 1e-9; 
+	if (fabs (sy) < 1e-9) sy = 1e-9;
+
 	art_affine_scale (scale, sx, sy);
 	sp_sel_trans_transform (seltrans, scale, &norm);
 }
