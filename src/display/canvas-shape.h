@@ -28,8 +28,7 @@ struct _SPCanvasShape {
 	SPStyle *style;
 	GList * comp;
 	gboolean sensitive;
-	/* Paint server */
-	SPPaintServer *ps;
+	/* Paint server stuff */
 	SPPainter *painter;
 };
 

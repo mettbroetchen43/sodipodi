@@ -76,7 +76,6 @@ sp_canvas_shape_init (SPCanvasShape * shape)
 	shape->style = NULL;
 	shape->comp = NULL;
 	shape->sensitive = TRUE;
-	shape->ps = NULL;
 	shape->painter = NULL;
 }
 
@@ -87,10 +86,8 @@ sp_canvas_shape_destroy (GtkObject *object)
 
 	shape = (SPCanvasShape *) object;
 
-	if (shape->ps) {
-		sp_paint_server_painter_free (shape->ps, shape->painter);
-		gtk_object_unref (GTK_OBJECT (shape->ps));
-		shape->ps = NULL;
+	if (shape->painter) {
+		sp_painter_free (shape->painter);
 		shape->painter = NULL;
 	}
 
@@ -160,10 +157,8 @@ g_print ("sp_canvas_shape_update: entering\n");
 	gnome_canvas_item_reset_bounds (item);
 
 	/* Free painter */
-	if (shape->ps) {
-		sp_paint_server_painter_free (shape->ps, shape->painter);
-		gtk_object_unref (GTK_OBJECT (shape->ps));
-		shape->ps = NULL;
+	if (shape->painter) {
+		sp_painter_free (shape->painter);
 		shape->painter = NULL;
 	}
 
@@ -211,13 +206,11 @@ g_print ("sp_canvas_shape_update: entering\n");
 	/* Create painter */
 	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		ArtDRect bbox;
-		shape->ps = shape->style->fill.server;
-		gtk_object_ref (GTK_OBJECT (shape->ps));
 		bbox.x0 = item->x1;
 		bbox.y0 = item->y1;
 		bbox.x1 = item->x2;
 		bbox.y1 = item->y2;
-		shape->painter = sp_paint_server_painter_new (shape->ps, affine, shape->style->opacity, &bbox);
+		shape->painter = sp_paint_server_painter_new (shape->style->fill.server, affine, shape->style->opacity, &bbox);
 	}
 
 #ifdef CANVAS_SHAPE_VERBOSE

@@ -13,14 +13,16 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <gtk/gtksignal.h>
 #include "svg/svg.h"
 #include "document.h"
 #include "sp-paint-server.h"
 #include "style.h"
 
+static void sp_style_merge_paint (SPStyle *style, SPPaint *paint, SPPaint *parent);
 static gint sp_style_write_paint (guchar *b, gint len, SPPaint *paint);
 static void sp_style_init (SPStyle *style);
-static void sp_style_read_paint (SPPaint *paint, const guchar *str, SPDocument *document);
+static void sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document);
 static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
 static const guchar *sp_style_str_value (const guchar *str, const guchar *key);
 
@@ -53,10 +55,10 @@ sp_style_unref (SPStyle *style)
 
 	if (--style->refcount < 1) {
 		if (style->fill.server) {
-			gtk_object_unref (GTK_OBJECT (style->fill.server));
+			gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
 		}
 		if (style->stroke.server) {
-			gtk_object_unref (GTK_OBJECT (style->stroke.server));
+			gtk_signal_disconnect_by_data (GTK_OBJECT (style->stroke.server), style);
 		}
 		if (style->stroke_dash.dash) {
 			g_free (style->stroke_dash.dash);
@@ -96,7 +98,7 @@ sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *docume
 		}
 		val = sp_style_str_value (str, "fill");
 		if (val) {
-			sp_style_read_paint (&style->fill, val, document);
+			sp_style_read_paint (style, &style->fill, val, document);
 			style->fill_set = TRUE;
 		}
 		val = sp_style_str_value (str, "fill-rule");
@@ -112,7 +114,7 @@ sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *docume
 		}
 		val = sp_style_str_value (str, "stroke");
 		if (val) {
-			sp_style_read_paint (&style->stroke, val, document);
+			sp_style_read_paint (style, &style->stroke, val, document);
 			style->stroke_set = TRUE;
 		}
 		val = sp_style_str_value (str, "stroke-width");
@@ -238,14 +240,8 @@ sp_style_merge_from_object (SPStyle *style, SPObject *object)
 			style->visibility_set = TRUE;
 		}
 		if (!style->fill_set && object->style->fill_set) {
-			style->fill.type = object->style->fill.type;
+			sp_style_merge_paint (style, &style->fill, &object->style->fill);
 			style->fill_set = TRUE;
-			if (style->fill.type == SP_PAINT_TYPE_COLOR) {
-				style->fill.color = object->style->fill.color;
-			} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-				style->fill.server = object->style->fill.server;
-				if (style->fill.server) gtk_object_ref (GTK_OBJECT (style->fill.server));
-			}
 		}
 		if (!style->fill_rule_set && object->style->fill_rule_set) {
 			style->fill_rule = object->style->fill_rule;
@@ -256,14 +252,8 @@ sp_style_merge_from_object (SPStyle *style, SPObject *object)
 			style->fill_opacity_set = TRUE;
 		}
 		if (!style->stroke_set && object->style->stroke_set) {
-			style->stroke.type = object->style->stroke.type;
+			sp_style_merge_paint (style, &style->stroke, &object->style->stroke);
 			style->stroke_set = TRUE;
-			if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
-				style->stroke.color = object->style->stroke.color;
-			} else if (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
-				style->stroke.server = object->style->stroke.server;
-				if (style->stroke.server) gtk_object_ref (GTK_OBJECT (style->stroke.server));
-			}
 		}
 		if (!style->stroke_width_set && object->style->stroke_width_set) {
 			style->stroke_width = object->style->stroke_width;
@@ -302,6 +292,68 @@ sp_style_merge_from_object (SPStyle *style, SPObject *object)
 
 	if (object->parent) {
 		sp_style_merge_from_object (style, object->parent);
+	}
+}
+
+static void
+sp_style_paint_server_destroy (SPPaintServer *server, SPStyle *style)
+{
+	if (server == style->fill.server) {
+		g_assert (style->fill_set);
+		g_assert (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
+		style->fill.type = SP_PAINT_TYPE_NONE;
+		style->fill.server = NULL;
+	} else if (server == style->stroke.server) {
+		g_assert (style->stroke_set);
+		g_assert (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER);
+		style->stroke.type = SP_PAINT_TYPE_NONE;
+		style->stroke.server = NULL;
+	} else {
+		g_assert_not_reached ();
+	}
+}
+
+static void
+sp_style_paint_server_modified (SPPaintServer *server, guint flags, SPStyle *style)
+{
+	if (server == style->fill.server) {
+		g_assert (style->fill_set);
+		g_assert (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
+		/* fixme: Implement style ::modified (Lauris) */
+	} else if (server == style->stroke.server) {
+		g_assert (style->stroke_set);
+		g_assert (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER);
+		/* fixme: */
+	} else {
+		g_assert_not_reached ();
+	}
+}
+
+static void
+sp_style_merge_paint (SPStyle *style, SPPaint *paint, SPPaint *parent)
+{
+	if ((paint->type == SP_PAINT_TYPE_PAINTSERVER) && paint->server) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (paint->server), style);
+	}
+	paint->type = parent->type;
+	switch (paint->type) {
+	case SP_PAINT_TYPE_COLOR:
+		sp_color_copy (&paint->color, &parent->color);
+		break;
+	case SP_PAINT_TYPE_PAINTSERVER:
+		paint->server = parent->server;
+		if (paint->server) {
+			gtk_signal_connect (GTK_OBJECT (paint->server), "destroy",
+					    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
+			gtk_signal_connect (GTK_OBJECT (paint->server), "modified",
+					    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
+		}
+		break;
+	case SP_PAINT_TYPE_NONE:
+		break;
+	default:
+		g_assert_not_reached ();
+		break;
 	}
 }
 
@@ -414,10 +466,10 @@ sp_style_init (SPStyle *style)
 	g_return_if_fail (style != NULL);
 
 	if (style->fill.server) {
-		gtk_object_unref (GTK_OBJECT (style->fill.server));
+		gtk_signal_disconnect_by_data (GTK_OBJECT (style->fill.server), style);
 	}
 	if (style->stroke.server) {
-		gtk_object_unref (GTK_OBJECT (style->stroke.server));
+		gtk_signal_disconnect_by_data (GTK_OBJECT (style->stroke.server), style);
 	}
 	if (style->stroke_dash.dash) {
 		g_free (style->stroke_dash.dash);
@@ -453,7 +505,7 @@ sp_style_init (SPStyle *style)
 }
 
 static void
-sp_style_read_paint (SPPaint *paint, const guchar *str, SPDocument *document)
+sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document)
 {
 	guint32 color;
 
@@ -484,18 +536,20 @@ sp_style_read_paint (SPPaint *paint, const guchar *str, SPDocument *document)
 			}
 		}
 		len = e - str;
-		id = g_new (guchar, len + 1);
+		id = alloca (len + 1);
 		memcpy (id, str, len);
 		id[len] = '\0';
 		ps = sp_document_lookup_id (document, id);
-		g_free (id);
 		if (!ps || !SP_IS_PAINT_SERVER (ps)) {
 			paint->type = SP_PAINT_TYPE_NONE;
 			return;
 		}
 		paint->type = SP_PAINT_TYPE_PAINTSERVER;
 		paint->server = SP_PAINT_SERVER (ps);
-		gtk_object_ref (GTK_OBJECT (ps));
+		gtk_signal_connect (GTK_OBJECT (paint->server), "destroy",
+				    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
+		gtk_signal_connect (GTK_OBJECT (paint->server), "modified",
+				    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
 		return;
 	} else if (!strncmp (str, "none", 4)) {
 		paint->type = SP_PAINT_TYPE_NONE;

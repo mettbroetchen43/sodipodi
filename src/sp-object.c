@@ -146,6 +146,79 @@ sp_object_destroy (GtkObject * object)
 }
 
 /*
+ * Refcounting
+ *
+ * Owner is here for debug reasons, you can set it to NULL safely
+ * Ref should return object, NULL is error, unref return always NULL
+ */
+
+SPObject *
+sp_object_ref (SPObject *object, SPObject *owner)
+{
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (!owner || SP_IS_OBJECT (owner), NULL);
+
+	gtk_object_ref (GTK_OBJECT (object));
+
+	return object;
+}
+
+SPObject *
+sp_object_unref (SPObject *object, SPObject *owner)
+{
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (!owner || SP_IS_OBJECT (owner), NULL);
+
+	gtk_object_unref (GTK_OBJECT (object));
+
+	return NULL;
+}
+
+/*
+ * Attaching/detaching
+ */
+
+SPObject *
+sp_object_attach_reref (SPObject *parent, SPObject *object, SPObject *next)
+{
+	g_return_val_if_fail (parent != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (parent), NULL);
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (!next || SP_IS_OBJECT (next), NULL);
+	g_return_val_if_fail (!object->parent, NULL);
+	g_return_val_if_fail (!object->next, NULL);
+
+	sp_object_ref (object, parent);
+	gtk_object_unref (GTK_OBJECT (object));
+	object->parent = parent;
+	object->next = next;
+
+	return object;
+}
+
+SPObject *
+sp_object_detach_unref (SPObject *parent, SPObject *object)
+{
+	SPObject *next;
+
+	g_return_val_if_fail (parent != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (parent), NULL);
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (object->parent == parent, NULL);
+
+	next = object->next;
+	object->parent = NULL;
+	object->next = NULL;
+	sp_object_unref (object, parent);
+
+	return next;
+}
+
+/*
  * SPObject specific build method
  */
 
@@ -189,7 +262,9 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 		/* Redefine ID, if required */
 		if ((id == NULL) || (strcmp (id, realid) != 0)) {
 			ret = sp_repr_set_attr (repr, "id", realid);
-			g_assert (ret);
+			if (!ret) {
+				g_error ("Cannot change id %s -> %s - probably there is stale ref", id, realid);
+			}
 		}
 	} else {
 		g_assert (object->id == NULL);

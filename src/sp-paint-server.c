@@ -20,7 +20,10 @@ static void sp_paint_server_init (SPPaintServer *ps);
 
 static void sp_paint_server_destroy (GtkObject *object);
 
+static void sp_painter_stale_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride);
+
 static SPObjectClass *parent_class;
+static GSList *stale_painters = NULL;
 
 GtkType
 sp_paint_server_get_type (void)
@@ -65,7 +68,13 @@ sp_paint_server_destroy (GtkObject *object)
 
 	ps = SP_PAINT_SERVER (object);
 
-	g_assert (ps->painters == NULL);
+	while (ps->painters) {
+		stale_painters = g_slist_prepend (stale_painters, ps->painters);
+		ps->painters->next = NULL;
+		ps->painters->server = NULL;
+		ps->painters->fill = sp_painter_stale_fill;
+		ps->painters = ps->painters->next;
+	}
 
 	if (((GtkObjectClass *) parent_class)->destroy)
 		(* ((GtkObjectClass *) parent_class)->destroy) (object);
@@ -86,15 +95,16 @@ sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity
 		painter = (* ((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_new) (ps, affine, opacity, bbox);
 
 	if (painter) {
-		gtk_object_ref (GTK_OBJECT (ps));
 		painter->next = ps->painters;
+		painter->server = ps;
+		painter->type = GTK_OBJECT_TYPE (ps);
 		ps->painters = painter;
 	}
 
 	return painter;
 }
 
-void
+static void
 sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter)
 {
 	SPPainter *p, *r;
@@ -114,11 +124,37 @@ sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter)
 			p->next = NULL;
 			if (((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_free)
 				(* ((SPPaintServerClass *) ((GtkObject *) ps)->klass)->painter_free) (ps, painter);
-			gtk_object_unref (GTK_OBJECT (ps));
 			return;
 		}
 		r = p;
 	}
 	g_assert_not_reached ();
 }
+
+void
+sp_painter_free (SPPainter *painter)
+{
+	g_return_if_fail (painter != NULL);
+
+	if (painter->server) {
+		sp_paint_server_painter_free (painter->server, painter);
+	} else {
+		if (((SPPaintServerClass *) gtk_type_class (painter->type))->painter_free)
+			(* ((SPPaintServerClass *) gtk_type_class (painter->type))->painter_free) (NULL, painter);
+		stale_painters = g_slist_remove (stale_painters, painter);
+	}
+}
+
+static void
+sp_painter_stale_fill (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride)
+{
+	gint x, y;
+
+	for (y = 0; y < height; y++) {
+		for (x = 0; x < width; x++) {
+			*(buf + rowstride * y + x) = ((x + y) & 1) ? 0xff0000ff : 0xffffffff;
+		}
+	}
+}
+
 

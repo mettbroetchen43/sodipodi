@@ -1,3 +1,25 @@
+2001-09-05  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-paint-server.c (sp_paint_server_destroy): Removed insane
+	paint server referencing by painters and replaced it witw (a bit)
+	less insane stale painter maintenance
+	(sp_paint_server_painter_new): Ditto
+	(sp_paint_server_painter_free): Ditto
+	(sp_painter_free): Ditto
+	(sp_painter_stale_fill): Ditto
+
+	* src/sp-object.c (sp_object_invoke_build): Added verbose error
+
+	* src/style.c (sp_style_paint_server_destroy): Implemented signal-based
+	paintserver spying, instead of hardrefing it
+	(sp_style_paint_server_changed): Ditto
+	(sp_style_merge_paint): Ditto
+
+	* src/sp-object.c (sp_object_ref): Wrapper method for debugging
+	(sp_object_unref): Ditto
+	(sp_object_attach_reref): Convenience connect method
+	(sp_object_detach_unref): Ditto
+
 2001-09-04  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-shape.c (sp_shape_print): Do not fill open paths

@@ -37,8 +37,11 @@ typedef enum {
 
 typedef void (* SPPainterFillFunc) (SPPainter *painter, guint32 *buf, gint x0, gint y0, gint width, gint height, gint rowstride);
 
+/* fixme: I do not like that class thingie (Lauris) */
 struct _SPPainter {
 	SPPainter *next;
+	SPPaintServer *server;
+	GtkType server_type;
 	SPPainterType type;
 	SPPainterFillFunc fill;
 };
@@ -60,7 +63,10 @@ struct _SPPaintServerClass {
 GtkType sp_paint_server_get_type (void);
 
 SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opacity, ArtDRect *bbox);
+#if 0
 void sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter);
+#endif
+void sp_painter_free (SPPainter *painter);
 
 END_GNOME_DECLS
 

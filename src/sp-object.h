@@ -104,6 +104,26 @@ struct _SPObjectClass {
 
 GtkType sp_object_get_type (void);
 
+/*
+ * Refcounting
+ *
+ * Owner is here for debug reasons, you can set it to NULL safely
+ * Ref should return object, NULL is error, unref return always NULL
+ */
+
+SPObject *sp_object_ref (SPObject *object, SPObject *owner);
+SPObject *sp_object_unref (SPObject *object, SPObject *owner);
+
+/*
+ * Attaching/detaching
+ *
+ * Attach returns object itself, or NULL on error
+ * Detach returns next object, NULL on error
+ */
+
+SPObject *sp_object_attach_reref (SPObject *parent, SPObject *object, SPObject *next);
+SPObject *sp_object_detach_unref (SPObject *parent, SPObject *object);
+
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
 void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 

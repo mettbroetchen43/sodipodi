@@ -106,19 +106,14 @@ sp_group_destroy (GtkObject *object)
 	group = SP_GROUP (object);
 
 	while (group->children) {
-		SPObject * child;
-		child = group->children;
-		group->children = child->next;
-		child->parent = NULL;
-		child->next = NULL;
-		gtk_object_unref (GTK_OBJECT (child));
+		group->children = sp_object_detach_unref (SP_OBJECT (object), group->children);
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr)
+static void sp_group_build (SPObject *object, SPDocument * document, SPRepr * repr)
 {
 	SPGroup * group;
 	SPObject * last;
@@ -135,12 +130,7 @@ static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * r
 		SPObject * child;
 		type = sp_object_type_lookup (sp_repr_name (rchild));
 		child = gtk_type_new (type);
-		child->parent = object;
-		if (last) {
-			last->next = child;
-		} else {
-			group->children = child;
-		}
+		last ? last->next : group->children = sp_object_attach_reref (object, child, NULL);
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}
@@ -188,10 +178,7 @@ sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 	if (((SPObjectClass *) (parent_class))->child_added)
 		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
-	type = sp_object_type_lookup (sp_repr_name (child));
-	ochild = gtk_type_new (type);
-	ochild->parent = object;
-
+	/* Search for position reference */
 	prev = NULL;
 	position = 0;
 	if (ref != NULL) {
@@ -203,12 +190,12 @@ sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 		if (SP_IS_ITEM (prev)) position += 1;
 	}
 
+	type = sp_object_type_lookup (sp_repr_name (child));
+	ochild = gtk_type_new (type);
 	if (prev) {
-		ochild->next = prev->next;
-		prev->next = ochild;
+		prev->next = sp_object_attach_reref (object, ochild, prev->next);
 	} else {
-		ochild->next = group->children;
-		group->children = ochild;
+		group->children = sp_object_attach_reref (object, ochild, group->children);
 	}
 
 	sp_object_invoke_build (ochild, object->document, child, SP_OBJECT_IS_CLONED (object));
