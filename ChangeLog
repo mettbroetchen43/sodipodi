@@ -1,5 +1,7 @@
 2002-08-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-text.c (sp_text_set_shape): Do layouting here, so we can handle blocks
+
 	* src/dialogs/text-edit.c (sp_text_edit_dialog): Layout radiobuttons
 	(sp_text_edit_dialog_apply): Do layout
 	(sp_text_edit_dialog_read_selection): Ditto

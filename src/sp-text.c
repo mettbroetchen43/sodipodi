@@ -31,6 +31,7 @@
 #include <gal/unicode/gunicode.h>
 
 #include "macros.h"
+#include "helper/art-utils.h"
 #include "xml/repr-private.h"
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
@@ -101,7 +102,9 @@ sp_string_init (SPString *string)
 	string->length = 0;
 	string->bbox.x0 = string->bbox.y0 = 0.0;
 	string->bbox.x1 = string->bbox.y1 = 0.0;
+#if 0
 	string->initial.x = string->initial.y = 0.0;
+#endif
 	string->advance.x = string->advance.y = 0.0;
 }
 
@@ -159,18 +162,80 @@ sp_string_modified (SPObject *object, guint flags)
 	}
 }
 
+/* Vertical metric simulator */
+
+static ArtDRect *
+sp_font_get_glyph_bbox (const GnomeFont *font, gint glyph, gint mode, ArtDRect *bbox)
+{
+	const ArtBpath *bpath;
+	ArtDRect hbox;
+
+	/* Find correct bbox (gnome-print does it wrong) */
+	bpath = gnome_font_get_glyph_stdoutline (font, glyph);
+	if (!bpath) return NULL;
+	hbox.x0 = hbox.y0 = 1e18;
+	hbox.x1 = hbox.y1 = -1e18;
+	sp_bpath_matrix_d_bbox_d_union (bpath, NULL, &hbox, 0.25);
+	if (art_drect_empty (&hbox)) return NULL;
+
+	if (mode == SP_CSS_WRITING_MODE_LR) {
+		*bbox = hbox;
+		return bbox;
+	} else {
+		gdouble dy;
+		/* Center horizontally */
+		bbox->x0 = 0.0 - (hbox.x1 - hbox.x0) / 2;
+		bbox->x1 = 0.0 + (hbox.x1 - hbox.x0) / 2;
+		/* Just move down by EM */
+		dy = gnome_font_get_size (font);
+		bbox->y0 = hbox.y0 - dy;
+		bbox->y1 = hbox.y1 - dy;
+		return bbox;
+	}
+}
+
+static ArtPoint *
+sp_font_get_glyph_advance (const GnomeFont *font, gint glyph, gint mode, ArtPoint *adv)
+{
+	if (mode == SP_CSS_WRITING_MODE_LR) {
+		return gnome_font_get_glyph_stdadvance (font, glyph, adv);
+	} else {
+		adv->x = 0.0;
+		adv->y = -gnome_font_get_size (font);
+		return adv;
+	}
+}
+
+static void
+sp_font_get_glyph_bbox_lr2tb (const GnomeFont *font, gint glyph, ArtPoint *d)
+{
+	ArtDRect hbox;
+
+	d->x = 0.0;
+	d->y = 0.0;
+
+	if (sp_font_get_glyph_bbox (font, glyph, SP_CSS_WRITING_MODE_LR, &hbox)) {
+		/* Center horizontally */
+		d->x = 0.0 - (hbox.x1 + hbox.x0) / 2;
+		/* Just move down by EM */
+		d->y = 0.0 - gnome_font_get_size (font);
+	}
+}
+
 static void
 sp_string_calculate_dimensions (SPString *string)
 {
 	SPStyle *style;
 	const GnomeFont *font;
-	gdouble size, spwidth, xdim, ydim;
+	gdouble size, spwidth;
 	gint spglyph;
 
 	string->bbox.x0 = string->bbox.y0 = 1e18;
 	string->bbox.x1 = string->bbox.y1 = -1e18;
+#if 0
 	string->initial.x = 0.0;
 	string->initial.y = 0.0;
+#endif
 	string->advance.x = 0.0;
 	string->advance.y = 0.0;
 
@@ -200,34 +265,41 @@ sp_string_calculate_dimensions (SPString *string)
 				if (intext) inspace = TRUE;
 			} else {
 				ArtDRect bbox;
+				ArtPoint adv;
 				gint glyph;
 
 				glyph = gnome_font_lookup_default (font, unival);
 
-				if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 					if (inspace) {
 						string->advance.y += size;
 						inspace = FALSE;
 					}
-					if (gnome_font_get_glyph_stdbbox (font, glyph, &bbox)) {
-						string->bbox.x0 = MIN (string->bbox.x0, bbox.x0 + string->advance.x);
-						string->bbox.y0 = MIN (string->bbox.y0, bbox.y0 + string->advance.y + size);
-						string->bbox.x1 = MAX (string->bbox.x1, bbox.x1 + string->advance.x);
-						string->bbox.y1 = MAX (string->bbox.y1, bbox.y1 + string->advance.y + size);
+					if (sp_font_get_glyph_bbox (font, glyph, SP_CSS_WRITING_MODE_TB, &bbox)) {
+						string->bbox.x0 = MIN (string->bbox.x0, string->advance.x + bbox.x0);
+						string->bbox.y0 = MIN (string->bbox.y0, string->advance.y - bbox.y1);
+						string->bbox.x1 = MAX (string->bbox.x1, string->advance.x + bbox.x1);
+						string->bbox.y1 = MAX (string->bbox.y1, string->advance.y - bbox.y0);
 					}
-					string->advance.y += size;
+					if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_TB, &adv)) {
+						string->advance.x += adv.x;
+						string->advance.y -= adv.y;
+					}
 				} else {
 					if (inspace) {
 						string->advance.x += spwidth;
 						inspace = FALSE;
 					}
-					if (gnome_font_get_glyph_stdbbox (font, glyph, &bbox)) {
-						string->bbox.x0 = MIN (string->bbox.x0, bbox.x0 + string->advance.x);
-						string->bbox.y0 = MIN (string->bbox.y0, bbox.y0 + string->advance.y);
-						string->bbox.x1 = MAX (string->bbox.x1, bbox.x1 + string->advance.x);
-						string->bbox.y1 = MAX (string->bbox.y1, bbox.y1 + string->advance.y);
+					if (sp_font_get_glyph_bbox (font, glyph, SP_CSS_WRITING_MODE_LR, &bbox)) {
+						string->bbox.x0 = MIN (string->bbox.x0, string->advance.x + bbox.x0);
+						string->bbox.y0 = MIN (string->bbox.y0, string->advance.y - bbox.y1);
+						string->bbox.x1 = MAX (string->bbox.x1, string->advance.x + bbox.x1);
+						string->bbox.y1 = MAX (string->bbox.y1, string->advance.y - bbox.y0);
 					}
-					string->advance.x += gnome_font_get_glyph_width (font, glyph);
+					if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_LR, &adv)) {
+						string->advance.x += adv.x;
+						string->advance.y -= adv.y;
+					}
 				}
 				intext = TRUE;
 			}
@@ -241,35 +313,37 @@ sp_string_calculate_dimensions (SPString *string)
 		string->bbox.x1 = string->bbox.y1 = 0.0;
 	}
 
-	if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-		xdim = 0.0;
-		ydim = string->bbox.y1 - string->bbox.y0;
-	} else {
-		xdim = string->bbox.x1 - string->bbox.x0;
-		ydim = 0.0;
-	}
-
+#if 0
 	switch (style->text_anchor.computed) {
 	case SP_CSS_TEXT_ANCHOR_START:
 		break;
 	case SP_CSS_TEXT_ANCHOR_MIDDLE:
-		string->initial.x = -xdim / 2;
-		string->initial.y = -ydim / 2;
+		/* Ink midpoint */
+		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+			string->initial.y -= (string->bbox.y0 + string->bbox.y1) / 2;
+		} else {
+			string->initial.x -= (string->bbox.x0 + string->bbox.x1) / 2;
+		}
 		break;
 	case SP_CSS_TEXT_ANCHOR_END:
-		string->initial.x = -xdim;
-		string->initial.y = -ydim;
+		/* Ink endpoint */
+		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+			string->initial.y -= string->bbox.y1;
+		} else {
+			string->initial.x -= string->bbox.x1;
+		}
 		break;
 	default:
 		break;
 	}
 
-	string->bbox.x0 -= string->initial.x;
-	string->bbox.y0 -= string->initial.y;
-	string->bbox.x1 -= string->initial.x;
-	string->bbox.y1 -= string->initial.y;
-	string->advance.x -= string->initial.x;
-	string->advance.y -= string->initial.y;
+	string->bbox.x0 += string->initial.x;
+	string->bbox.y0 += string->initial.y;
+	string->bbox.x1 += string->initial.x;
+	string->bbox.y1 += string->initial.y;
+	string->advance.x += string->initial.x;
+	string->advance.y += string->initial.y;
+#endif
 }
 
 /* fixme: Should values be parsed by parent? */
@@ -282,10 +356,8 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	const GnomeFont *font;
 	gdouble size, spwidth;
 	gint spglyph;
-	guint glyph;
 	gdouble x, y;
 	gdouble a[6];
-	gdouble w;
 	const guchar *p;
 	gboolean intext;
 
@@ -304,8 +376,13 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	spwidth = (spglyph > 0) ? gnome_font_get_glyph_width (font, spglyph) : size;
 
 	/* fixme: Find a way how to manipulate these */
+#if 0
 	x = cp->x + string->initial.x;
 	y = cp->y + string->initial.y;
+#else
+	x = cp->x;
+	y = cp->y;
+#endif
 	g_print ("Drawing string (%s) at %g %g\n", string->text, x, y);
 
 	art_affine_scale (a, size * 0.001, size * -0.001);
@@ -322,26 +399,38 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 			if (unival == ' ') {
 				if (intext) inspace = TRUE;
 			} else {
+				ArtPoint adv;
+				gint glyph;
+
 				glyph = gnome_font_lookup_default (font, unival);
-				if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+
+				if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+					ArtPoint d;
 					if (inspace) {
 						y += size;
 						inspace = FALSE;
 					}
-					a[4] = x;
-					a[5] = y + size;
+					sp_font_get_glyph_bbox_lr2tb (font, glyph, &d);
+					g_print ("Unival %d:%c delta %g %g\n", unival, (gchar) unival, d.x, d.y);
+					a[4] = x + d.x;
+					a[5] = y - d.y;
 					sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
-					y += size;
+					if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_TB, &adv)) {
+						x += adv.x;
+						y -= adv.y;
+					}
 				} else {
 					if (inspace) {
 						x += spwidth;
 						inspace = FALSE;
 					}
-					w = gnome_font_get_glyph_width (font, glyph);
 					a[4] = x;
 					a[5] = y;
 					sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
-					x += w;
+					if (sp_font_get_glyph_advance (font, glyph, SP_CSS_WRITING_MODE_LR, &adv)) {
+						x += adv.x;
+						y -= adv.y;
+					}
 				}
 				intext = TRUE;
 			}
@@ -513,10 +602,10 @@ sp_tspan_read_attr (SPObject *object, const gchar *attr)
 		/* fixme: Re-layout it */
 		return;
 	} else if (!strcmp (attr, "sodipodi:role")) {
-		if (astr && !strcmp (astr, "line")) {
+		if (astr && (!strcmp (astr, "line") || !strcmp (astr, "paragraph"))) {
 			tspan->role = SP_TSPAN_ROLE_LINE;
 		} else {
-			tspan->role = SP_TSPAN_ROLE_UNKNOWN;
+			tspan->role = SP_TSPAN_ROLE_UNSPECIFIED;
 		}
 	}
 
@@ -624,11 +713,16 @@ sp_tspan_hide (SPItem *item, NRArena *arena)
 static void
 sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean firstline, gboolean inspace)
 {
-	if (tspan->role == SP_TSPAN_ROLE_LINE) {
-		SPStyle *style;
-		style = SP_OBJECT_STYLE (tspan);
+	SPStyle *style;
+
+	style = SP_OBJECT_STYLE (tspan);
+
+#if 0
+	switch (tspan->role) {
+	case SP_TSPAN_ROLE_PARAGRAPH:
+	case SP_TSPAN_ROLE_LINE:
 		if (!firstline) {
-			if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+			if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 				cp->x -= style->font_size.computed;
 				cp->y = ly->y;
 			} else {
@@ -640,10 +734,16 @@ sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean fir
 		/* fixme: Our only hope is to ensure LINE tspans do not request ::modified */
 		sp_repr_set_double (SP_OBJECT_REPR (tspan), "x", cp->x);
 		sp_repr_set_double (SP_OBJECT_REPR (tspan), "y", cp->y);
-	} else {
+		break;
+	case SP_TSPAN_ROLE_UNSPECIFIED:
 		if (tspan->ly.x_set) cp->x = tspan->ly.x;
 		if (tspan->ly.y_set) cp->y = tspan->ly.y;
+		break;
+	default:
+		/* Error */
+		break;
 	}
+#endif
 
 	sp_string_set_shape (SP_STRING (tspan->string), &tspan->ly, cp, inspace);
 }
@@ -1104,36 +1204,130 @@ sp_text_font_italic_to_gp (SPCSSFontStyle style)
 }
 #endif
 
+/* fixme: Do text chunks here (Lauris) */
+/* fixme: We'll remove string bbox adjustment and bring it here for the whole chunk (Lauris) */
+
 static void
 sp_text_set_shape (SPText *text)
 {
 	ArtPoint cp;
 	SPObject *child;
-	gboolean isfirst, haslast, lastwastspan;
+	gboolean isfirstline, haslast, lastwastspan;
 
 	/* The logic should be: */
 	/* 1. Calculate attributes */
 	/* 2. Iterate through children asking them to set shape */
 
+#if 0
 	cp.x = cp.y = 0.0;
 	if (text->ly.x_set) cp.x = text->ly.x;
 	if (text->ly.y_set) cp.y = text->ly.y;
+#else
+	cp.x = text->ly.x;
+	cp.y = text->ly.y;
+#endif
 
-	isfirst = TRUE;
+	isfirstline = TRUE;
 	haslast = FALSE;
 	lastwastspan = FALSE;
 
-	for (child = text->children; child != NULL; child = child->next) {
-		if (SP_IS_STRING (child)) {
-			sp_string_set_shape (SP_STRING (child), &text->ly, &cp, haslast);
-			haslast = TRUE;
-			lastwastspan = FALSE;
+	child = text->children;
+	while (child != NULL) {
+		SPObject *next, *new;
+		SPString *string;
+		ArtDRect bbox;
+		ArtPoint advance;
+		if (SP_IS_TSPAN (child)) {
+			SPTSpan *tspan;
+			/* fixme: Maybe break this up into 2 pieces - relayout and set shape (Lauris) */
+			tspan = SP_TSPAN (child);
+			string = SP_TSPAN_STRING (tspan);
+			switch (tspan->role) {
+			case SP_TSPAN_ROLE_PARAGRAPH:
+			case SP_TSPAN_ROLE_LINE:
+				if (!isfirstline) {
+					if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+						cp.x -= child->style->font_size.computed;
+						cp.y = text->ly.y;
+					} else {
+						cp.x = text->ly.x;
+						cp.y += child->style->font_size.computed;
+					}
+				}
+				/* fixme: This is extremely (EXTREMELY) dangerous (Lauris) */
+				/* fixme: Our only hope is to ensure LINE tspans do not request ::modified */
+				sp_repr_set_double (SP_OBJECT_REPR (tspan), "x", cp.x);
+				sp_repr_set_double (SP_OBJECT_REPR (tspan), "y", cp.y);
+				break;
+			case SP_TSPAN_ROLE_UNSPECIFIED:
+				if (tspan->ly.x_set) cp.x = tspan->ly.x;
+				if (tspan->ly.y_set) cp.y = tspan->ly.y;
+				break;
+			default:
+				/* Error */
+				break;
+			}
 		} else {
-			sp_tspan_set_shape (SP_TSPAN (child), &text->ly, &cp, isfirst, haslast && !lastwastspan);
-			haslast = TRUE;
-			lastwastspan = TRUE;
+			string = SP_STRING (child);
 		}
-		isfirst = FALSE;
+		/* Calculate block bbox */
+		bbox = string->bbox;
+		advance = string->advance;
+		for (next = child->next; next != NULL; next = next->next) {
+			SPString *string;
+			if (SP_IS_TSPAN (next)) {
+				SPTSpan *tspan;
+				tspan = SP_TSPAN (next);
+				if ((tspan->ly.x_set) || (tspan->ly.y_set)) break;
+				string = SP_TSPAN_STRING (tspan);
+			} else {
+				string = SP_STRING (next);
+			}
+			bbox.x0 = MIN (bbox.x0, string->bbox.x0 + advance.x);
+			bbox.y0 = MIN (bbox.y0, string->bbox.y0 + advance.y);
+			bbox.x1 = MIN (bbox.x1, string->bbox.x1 + advance.x);
+			bbox.y1 = MIN (bbox.y1, string->bbox.y1 + advance.y);
+			advance.x += string->advance.x;
+			advance.y += string->advance.y;
+		}
+		new = next;
+		/* Calculate starting position */
+		switch (child->style->text_anchor.computed) {
+		case SP_CSS_TEXT_ANCHOR_START:
+			break;
+		case SP_CSS_TEXT_ANCHOR_MIDDLE:
+			/* Ink midpoint */
+			if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				cp.y -= (bbox.y0 + bbox.y1) / 2;
+			} else {
+				cp.x -= (bbox.x0 + bbox.x1) / 2;
+			}
+			break;
+		case SP_CSS_TEXT_ANCHOR_END:
+			/* Ink endpoint */
+			if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+				cp.y -= bbox.y1;
+			} else {
+				cp.x -= bbox.x1;
+			}
+			break;
+		default:
+			break;
+		}
+		/* Set child shapes */
+		for (next = child; (next != NULL) && (next != new); next = next->next) {
+			if (SP_IS_STRING (next)) {
+				sp_string_set_shape (SP_STRING (next), &text->ly, &cp, haslast);
+				haslast = TRUE;
+				lastwastspan = FALSE;
+			} else {
+				sp_tspan_set_shape (SP_TSPAN (next), &text->ly, &cp, isfirstline, haslast && !lastwastspan);
+				haslast = TRUE;
+				lastwastspan = TRUE;
+			}
+		}
+		child = next;
+		isfirstline = FALSE;
 	}
 }
 
@@ -1331,7 +1525,7 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 		rtspan = sp_repr_new ("tspan");
 		sp_repr_set_double (rtspan, "x", cp.x);
 		sp_repr_set_double (rtspan, "y", cp.y);
-		if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 			/* fixme: real line height */
 			/* fixme: What to do with mixed direction tspans? */
 			cp.x -= style->font_size.computed;
@@ -1416,7 +1610,7 @@ sp_text_append_line (SPText *text)
 
 	/* Create <tspan> */
 	rtspan = sp_repr_new ("tspan");
-	if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		/* fixme: real line height */
 		/* fixme: What to do with mixed direction tspans? */
 		sp_repr_set_double (rtspan, "x", cp.x - style->font_size.computed);

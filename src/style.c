@@ -357,14 +357,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	}
 	/* SVG */
 	SPS_READ_PENUM_IF_UNSET (&style->text_anchor, repr, "text-anchor", enum_text_anchor, TRUE);
-	/* writing-mode */
-	if (!style->text_private || !style->text->writing_mode.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "writing-mode");
-		if (val) {
-			if (!style->text_private) sp_style_privatize_text (style);
-			sp_style_read_ienum (&style->text->writing_mode, val, enum_writing_mode, TRUE);
-		}
-	}
+	SPS_READ_PENUM_IF_UNSET (&style->writing_mode, repr, "writing-mode", enum_writing_mode, TRUE);
 
 	/* 5. Merge from parent */
 	if (object->parent) {
@@ -564,10 +557,7 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		SPS_READ_IENUM_IF_UNSET (&style->text_anchor, val, enum_text_anchor, TRUE);
 		break;
 	case SP_PROP_WRITING_MODE:
-		if (!style->text_private) sp_style_privatize_text (style);
-		if (!style->text->writing_mode.set) {
-			sp_style_read_ienum (&style->text->writing_mode, val, enum_writing_mode, TRUE);
-		}
+		SPS_READ_IENUM_IF_UNSET (&style->writing_mode, val, enum_writing_mode, TRUE);
 		break;
 	default:
 		g_warning ("Invalid style property id: %d value: %s", id, val);
@@ -751,14 +741,14 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 		if (!style->text_anchor.set || style->text_anchor.inherit) {
 			style->text_anchor.computed = object->style->text_anchor.computed;
 		}
+		if (!style->writing_mode.set || style->writing_mode.inherit) {
+			style->writing_mode.computed = object->style->writing_mode.computed;
+		}
 
 		if (style->text && object->style->text) {
 			if (!style->text->font_family.set || style->text->font_family.inherit) {
 				if (style->text->font_family.value) g_free (style->text->font_family.value);
 				style->text->font_family.value = g_strdup (object->style->text->font_family.value);
-			}
-			if (!style->text->writing_mode.set || style->text->writing_mode.inherit) {
-				style->text->writing_mode.value = object->style->text->writing_mode.value;
 			}
 		}
 	}
@@ -874,6 +864,7 @@ sp_style_write_string (SPStyle *style)
 	sp_text_style_write (p, c + BMAX - p, style->text);
 
 	p += sp_style_write_ienum (p, c + BMAX - p, "text-anchor", enum_text_anchor, &style->text_anchor, NULL, SP_STYLE_FLAG_IFSET);
+	p += sp_style_write_ienum (p, c + BMAX - p, "writing-mode", enum_writing_mode, &style->writing_mode, NULL, SP_STYLE_FLAG_IFSET);
 
 	return g_strdup (c);
 }
@@ -938,6 +929,8 @@ sp_style_write_difference (SPStyle *from, SPStyle *to)
 	sp_text_style_write (p, c + BMAX - p, from->text);
 
 	p += sp_style_write_ienum (p, c + BMAX - p, "text-anchor", enum_text_anchor, &from->text_anchor, &to->text_anchor, SP_STYLE_FLAG_IFDIFF);
+	p += sp_style_write_ienum (p, c + BMAX - p, "writing-mode", enum_writing_mode, &from->writing_mode, &to->writing_mode, SP_STYLE_FLAG_IFDIFF);
+
 
 	return g_strdup (c);
 }
@@ -1010,6 +1003,8 @@ sp_style_clear (SPStyle *style)
 
 	style->text_anchor.set = FALSE;
 	style->text_anchor.computed = SP_CSS_TEXT_ANCHOR_START;
+	style->writing_mode.set = FALSE;
+	style->writing_mode.computed = SP_CSS_WRITING_MODE_LR;
 }
 
 static void
@@ -1137,8 +1132,6 @@ sp_text_style_new (void)
 	ts->font.value = g_strdup ("Bitstream Cyberbit 12");
 	ts->font_family.value = g_strdup ("Bitstream Cyberbit");
 
-	ts->writing_mode.value = SP_CSS_WRITING_MODE_LR;
-
 	return ts;
 }
 
@@ -1154,8 +1147,6 @@ sp_text_style_clear (SPTextStyle *ts)
 	ts->text_decoration_set = FALSE;
 	ts->unicode_bidi_set = FALSE;
 	ts->word_spacing_set = FALSE;
-
-	ts->writing_mode.set = FALSE;
 }
 
 #if 0
@@ -1195,9 +1186,6 @@ sp_text_style_duplicate_unset (SPTextStyle *st)
 	nt->font.value = g_strdup (st->font.value);
 	nt->font_family.value = g_strdup (st->font_family.value);
 
-	/* fixme: ??? */
-	nt->writing_mode = st->writing_mode;
-
 	return nt;
 }
 
@@ -1231,10 +1219,6 @@ sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
 
 	if (st->font_family.set) {
 		d += sp_style_write_istring (p + d, len - d, "font-family", &st->font_family, NULL, SP_STYLE_FLAG_IFSET);
-	}
-
-	if (st->writing_mode.set) {
-		d += sp_style_write_ienum (p + d, len - d, "writing-mode", enum_writing_mode, &st->writing_mode, NULL, SP_STYLE_FLAG_IFSET);
 	}
 
 	return d;

@@ -191,6 +191,7 @@ struct _SPStyle {
 
 	/* SVG */
 	SPIEnum text_anchor;
+	SPIEnum writing_mode;
 };
 
 SPStyle *sp_style_new_from_object (SPObject *object);
@@ -314,8 +315,6 @@ struct _SPTextStyle {
 	/* Parsed values */
 	GnomeFontFace *face;
 	gfloat size;
-	/* Text direction */
-	SPIEnum writing_mode;
 };
 
 /*

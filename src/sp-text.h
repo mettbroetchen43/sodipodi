@@ -72,9 +72,11 @@ struct _SPString {
 	/* Bookkeeping */
 	guint start;
 	guint length;
-	/* These are from 0 taking anchoring into account */
+	/* Using current direction and style */
 	ArtDRect bbox;
+#if 0
 	ArtPoint initial;
+#endif
 	ArtPoint advance;
 };
 
@@ -87,7 +89,8 @@ GtkType sp_string_get_type (void);
 /* SPTSpan */
 
 enum {
-	SP_TSPAN_ROLE_UNKNOWN,
+	SP_TSPAN_ROLE_UNSPECIFIED,
+	SP_TSPAN_ROLE_PARAGRAPH,
 	SP_TSPAN_ROLE_LINE
 };
 
