@@ -135,7 +135,11 @@ sp_object_destroy (GtkObject * object)
 
 	spobject = (SPObject *) object;
 
-	sp_object_invoke_release (spobject);
+	/* fixme: This is here temporarily */
+	/* fixme: I f everything is ported to ::release, we can remove destroy at all */
+	if (spobject->document) {
+		sp_object_invoke_release (spobject);
+	}
 
 	if (((GtkObjectClass *) (parent_class))->destroy)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
@@ -233,6 +237,8 @@ sp_object_detach (SPObject *parent, SPObject *object)
 	object->parent = NULL;
 	object->next = NULL;
 
+	sp_object_invoke_release (object);
+
 	return next;
 }
 
@@ -250,6 +256,9 @@ sp_object_detach_unref (SPObject *parent, SPObject *object)
 	next = object->next;
 	object->parent = NULL;
 	object->next = NULL;
+
+	sp_object_invoke_release (object);
+
 	sp_object_unref (object, parent);
 
 	return next;

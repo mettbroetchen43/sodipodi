@@ -42,9 +42,9 @@
 
 static void sp_item_class_init (SPItemClass *klass);
 static void sp_item_init (SPItem *item);
-static void sp_item_destroy (GtkObject *object);
 
 static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_item_release (SPObject *object);
 static void sp_item_read_attr (SPObject *object, const gchar *key);
 static void sp_item_modified (SPObject *object, guint flags);
 static void sp_item_style_modified (SPObject *object, guint flags);
@@ -94,9 +94,8 @@ sp_item_class_init (SPItemClass *klass)
 
 	parent_class = gtk_type_class (SP_TYPE_OBJECT);
 
-	gtk_object_class->destroy = sp_item_destroy;
-
 	sp_object_class->build = sp_item_build;
+	sp_object_class->release = sp_item_release;
 	sp_object_class->read_attr = sp_item_read_attr;
 	sp_object_class->modified = sp_item_modified;
 	sp_object_class->style_modified = sp_item_style_modified;
@@ -128,9 +127,21 @@ sp_item_init (SPItem *item)
 }
 
 static void
-sp_item_destroy (GtkObject * object)
+sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
-	SPItem * item;
+	if (((SPObjectClass *) (parent_class))->build)
+		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
+
+	sp_item_read_attr (object, "transform");
+	sp_item_read_attr (object, "style");
+	sp_item_read_attr (object, "clip-path");
+	sp_item_read_attr (object, "sodipodi:insensitive");
+}
+
+static void
+sp_item_release (SPObject * object)
+{
+	SPItem *item;
 
 	item = (SPItem *) object;
 
@@ -141,23 +152,11 @@ sp_item_destroy (GtkObject * object)
 
 	if (item->clip) {
 		gtk_signal_disconnect_by_data (GTK_OBJECT (item->clip), item);
-		item->clip = (SPClipPath *) sp_object_hunref (SP_OBJECT (item->clip), SP_OBJECT (item));
+		item->clip = (SPClipPath *) sp_object_hunref (SP_OBJECT (item->clip), object);
 	}
 
-	if (((GtkObjectClass *) (parent_class))->destroy)
-		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
-}
-
-static void
-sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
-{
-	if (((SPObjectClass *) (parent_class))->build)
-		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
-
-	sp_item_read_attr (object, "transform");
-	sp_item_read_attr (object, "style");
-	sp_item_read_attr (object, "clip-path");
-	sp_item_read_attr (object, "sodipodi:insensitive");
+	if (((SPObjectClass *) (parent_class))->release)
+		((SPObjectClass *) parent_class)->release (object);
 }
 
 static void

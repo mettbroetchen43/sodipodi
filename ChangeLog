@@ -1,6 +1,8 @@
 2002-10-05  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-object.c (sp_object_invoke_release): new frontend
+	(sp_object_detach): release object
+	(sp_object_detach_unref): Ditto
 
 	* src/sp-object.h: Added ::release virtual method
 
