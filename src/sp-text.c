@@ -1495,51 +1495,43 @@ static void
 sp_text_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 {
 	SPText *text;
-	gdouble d;
+	NRMatrixF i2p, p2i;
+	gdouble px, py, x, y;
+	SPObject *child;
 	guchar c[80];
 
 	text = SP_TEXT (item);
 
-	/*
-	 * x * t[0] + y * t[2] = TRANS (lyx);
-	 * x * t[1] + y * t[3] = TRANS (lyy);
-	 * x = (t[3] * TRANS (lyx) - t[2] * TRANS (lyy)) / (t[0] * t[3] - t[1] * t[2]);
-	 * y = (t[0] * TRANS (lyy) - t[1] * TRANS (lyx)) / (t[0] * t[3] - t[1] * t[2]);
-	 */
+	i2p = *t;
+	i2p.c[4] = 0.0;
+	i2p.c[5] = 0.0;
+	nr_matrix_f_invert (&p2i, &i2p);
 
-	d = NR_MATRIX_DF_EXPANSION (t);
-
-	if (fabs (d) > 1e-18) {
-		gdouble px, py, x, y;
-		SPObject *child;
-		px = NR_MATRIX_DF_TRANSFORM_X (t, text->ly.x.computed, text->ly.y.computed);
-		py = NR_MATRIX_DF_TRANSFORM_Y (t, text->ly.x.computed, text->ly.y.computed);
-		x = (t->c[3] * px - t->c[2] * py) / d;
-		y = (t->c[0] * py - t->c[1] * px) / d;
-		sp_repr_set_double_attribute (repr, "x", x);
-		sp_repr_set_double_attribute (repr, "y", y);
-		for (child = text->children; child != NULL; child = child->next) {
-			if (SP_IS_TSPAN (child)) {
-				SPTSpan *tspan;
-				tspan = SP_TSPAN (child);
-				if (tspan->ly.x.set || tspan->ly.y.set) {
-					x = (tspan->ly.x.set) ? tspan->ly.x.computed : text->ly.x.computed;
-					y = (tspan->ly.y.set) ? tspan->ly.y.computed : text->ly.y.computed;
-					px = NR_MATRIX_DF_TRANSFORM_X (t, x, y);
-					py = NR_MATRIX_DF_TRANSFORM_Y (t, x, y);
-					x = (t->c[3] * px - t->c[2] * py) / d;
-					y = (t->c[0] * py - t->c[1] * px) / d;
-					sp_repr_set_double_attribute (SP_OBJECT_REPR (tspan), "x", x);
-					sp_repr_set_double_attribute (SP_OBJECT_REPR (tspan), "y", y);
-				}
+	px = NR_MATRIX_DF_TRANSFORM_X (t, text->ly.x.computed, text->ly.y.computed);
+	py = NR_MATRIX_DF_TRANSFORM_Y (t, text->ly.x.computed, text->ly.y.computed);
+	x = NR_MATRIX_DF_TRANSFORM_X (&p2i, px, py);
+	y = NR_MATRIX_DF_TRANSFORM_Y (&p2i, px, py);
+	sp_repr_set_double (repr, "x", x);
+	sp_repr_set_double (repr, "y", y);
+	for (child = text->children; child != NULL; child = child->next) {
+		if (SP_IS_TSPAN (child)) {
+			SPTSpan *tspan;
+			tspan = SP_TSPAN (child);
+			if (tspan->ly.x.set || tspan->ly.y.set) {
+				x = (tspan->ly.x.set) ? tspan->ly.x.computed : text->ly.x.computed;
+				y = (tspan->ly.y.set) ? tspan->ly.y.computed : text->ly.y.computed;
+				px = NR_MATRIX_DF_TRANSFORM_X (t, x, y);
+				py = NR_MATRIX_DF_TRANSFORM_Y (t, x, y);
+				x = NR_MATRIX_DF_TRANSFORM_X (&p2i, px, py);
+				y = NR_MATRIX_DF_TRANSFORM_Y (&p2i, px, py);
+				/* fixme: This is wrong - what if repr != SP_OBJECT_REPR (text) */
+				sp_repr_set_double (SP_OBJECT_REPR (tspan), "x", x);
+				sp_repr_set_double (SP_OBJECT_REPR (tspan), "y", y);
 			}
 		}
 	}
 
-	t->c[4] = 0.0;
-	t->c[5] = 0.0;
-
-	if (sp_svg_transform_write (c, 80, t)) {
+	if (sp_svg_transform_write (c, 80, &i2p)) {
 		sp_repr_set_attr (repr, "transform", c);
 	} else {
 		sp_repr_set_attr (repr, "transform", NULL);

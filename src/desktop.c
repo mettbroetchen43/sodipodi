@@ -663,6 +663,7 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	// Sticky zoom
 	dtw->sticky_zoom = sp_button_new (SP_ICON_SIZE_BUTTON, "sticky_zoom", _("Whether zoom follows window size"));
 	gtk_table_attach (GTK_TABLE (tbl), dtw->sticky_zoom, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
+	gtk_widget_set_sensitive (dtw->sticky_zoom, FALSE);
 
        // status bars
        	hbox = gtk_hbox_new (FALSE,0);

@@ -646,17 +646,37 @@ sp_button_paint (SPButton *button, GdkRectangle *area)
 				bg = (color->green & 0xff00) >> 8;
 				bb = (color->blue & 0xff00) >> 8;
 
-				for (yy = y; yy < ye; yy++) {
-					const unsigned char *s;
-					unsigned char *d;
-					d = NR_PIXBLOCK_PX (&bpb) + (yy - y) * bpb.rs;
-					s = px + 4 * (yy - pady - iarea.y0) * button->size + 4 * (x - padx - iarea.x0);
-					for (xx = x; xx < xe; xx++) {
-						d[0] = NR_COMPOSEN11 (s[0], s[3], br);
-						d[1] = NR_COMPOSEN11 (s[1], s[3], bg);
-						d[2] = NR_COMPOSEN11 (s[2], s[3], bb);
-						s += 4;
-						d += 3;
+				if (GTK_WIDGET_SENSITIVE (button) && GTK_WIDGET_PARENT_SENSITIVE (button)) {
+					for (yy = y; yy < ye; yy++) {
+						const unsigned char *s;
+						unsigned char *d;
+						d = NR_PIXBLOCK_PX (&bpb) + (yy - y) * bpb.rs;
+						s = px + 4 * (yy - pady - iarea.y0) * button->size + 4 * (x - padx - iarea.x0);
+						for (xx = x; xx < xe; xx++) {
+							d[0] = NR_COMPOSEN11 (s[0], s[3], br);
+							d[1] = NR_COMPOSEN11 (s[1], s[3], bg);
+							d[2] = NR_COMPOSEN11 (s[2], s[3], bb);
+							s += 4;
+							d += 3;
+						}
+					}
+				} else {
+					for (yy = y; yy < ye; yy++) {
+						const unsigned char *s;
+						unsigned char *d;
+						unsigned int r, g, b;
+						d = NR_PIXBLOCK_PX (&bpb) + (yy - y) * bpb.rs;
+						s = px + 4 * (yy - pady - iarea.y0) * button->size + 4 * (x - padx - iarea.x0);
+						for (xx = x; xx < xe; xx++) {
+							r = br + ((int) s[0] - (int) br) / 2;
+							g = bg + ((int) s[1] - (int) bg) / 2;
+							b = bb + ((int) s[2] - (int) bb) / 2;
+							d[0] = NR_COMPOSEN11 (r, s[3], br);
+							d[1] = NR_COMPOSEN11 (g, s[3], bg);
+							d[2] = NR_COMPOSEN11 (b, s[3], bb);
+							s += 4;
+							d += 3;
+						}
 					}
 				}
 			} else {

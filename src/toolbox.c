@@ -304,7 +304,7 @@ sp_toolbox_toggle_button_new (const unsigned char *pxname, GtkTooltips *tt, cons
 static GtkWidget *
 sp_toolbox_file_create (void)
 {
-	GtkWidget *t, *tb;
+	GtkWidget *t, *tb, *b;
 	GtkTooltips *tt;
 	SPRepr *repr;
 
@@ -318,8 +318,10 @@ sp_toolbox_file_create (void)
 	sp_toolbox_button_new (t, 4, "file_open", GTK_SIGNAL_FUNC (sp_file_open_dialog), tt, _("Open existing SVG document"));
 	sp_toolbox_button_new (t, 1, "file_save", GTK_SIGNAL_FUNC (sp_file_save), tt, _("Save document"));
 	sp_toolbox_button_new (t, 5, "file_save_as", GTK_SIGNAL_FUNC (sp_file_save_as), tt, _("Save document under new name"));
-	sp_toolbox_button_new (t, 2, "file_print", GTK_SIGNAL_FUNC (sp_file_print), tt, _("Print document"));
-	sp_toolbox_button_new (t, 6, "file_print_preview", GTK_SIGNAL_FUNC (sp_file_print_preview), tt, _("Preview document printout"));
+	b = sp_toolbox_button_new (t, 2, "file_print", GTK_SIGNAL_FUNC (sp_file_print), tt, _("Print document"));
+	gtk_widget_set_sensitive (b, FALSE);
+	b = sp_toolbox_button_new (t, 6, "file_print_preview", GTK_SIGNAL_FUNC (sp_file_print_preview), tt, _("Preview document printout"));
+	gtk_widget_set_sensitive (b, FALSE);
 	sp_toolbox_button_new (t, 3, "file_import", GTK_SIGNAL_FUNC (sp_file_import), tt, _("Import bitmap or SVG image into document"));
 	sp_toolbox_button_new (t, 7, "file_export", GTK_SIGNAL_FUNC (sp_file_export_dialog), tt, _("Export document as PNG bitmap"));
 

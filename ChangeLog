@@ -1,5 +1,9 @@
 2002-12-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/toolbox.c (sp_toolbox_file_create): Mek print buttons insensitive
+
+	* src/sp-text.c (sp_text_write_transform): Fixed it
+
 	* src/main.c (sp_do_export_png): Initialize y0
 
 	* src/file.c (sp_export_png_file): Use pixelstore, export min 64 rows at once,
