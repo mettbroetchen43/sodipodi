@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: pa\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-17 12:30+0530\n"
-"PO-Revision-Date: 2005-01-17 14:26+0530\n"
+"PO-Revision-Date: 2005-01-17 14:56+0530\n"
 "Last-Translator: Amanpreet Singh Alam <aalam@redhat.com>\n"
 "Language-Team: Punjabi <fedora-trans-pa@redhat.com>\n"
 "MIME-Version: 1.0\n"
@@ -108,7 +108,7 @@ msgstr ""
 
 #: src/dialogs/align.c:197
 msgid "Center vertically"
-msgstr ""
+msgstr "ਕੇਂਦਰੀ ਲੰਬਕਾਰੀ"
 
 #: src/dialogs/align.c:200
 msgid "Bottom of aligned objects to bottom of anchor"
@@ -120,7 +120,7 @@ msgstr ""
 
 #: src/dialogs/align.c:206
 msgid "Align"
-msgstr ""
+msgstr "ਇਕਸਾਰ"
 
 #: src/dialogs/align.c:224
 msgid "Distribute left sides of objects at even distances"
@@ -156,37 +156,37 @@ msgstr ""
 
 #: src/dialogs/align.c:249
 msgid "Distribute"
-msgstr ""
+msgstr "ਵੰਡ"
 
 #: src/dialogs/align.c:287
 msgid "Last selected"
-msgstr ""
+msgstr "ਆਖਰੀ ਇਕਾਈ"
 
 #: src/dialogs/align.c:288
 msgid "First selected"
-msgstr ""
+msgstr "ਪਹਿਲਾਂ ਚੁਣੀ"
 
 #: src/dialogs/align.c:289
 msgid "Biggest item"
-msgstr ""
+msgstr "ਸਭ ਤੋਂ ਵੱਡੀ ਇਕਾਈ"
 
 #: src/dialogs/align.c:290
 msgid "Smallest item"
-msgstr ""
+msgstr "ਸਭ ਤੋਂ ਛੋਟੀ ਇਕਾਈ"
 
 #: src/dialogs/desktop-properties.c:195
 msgid "Desktop settings"
-msgstr ""
+msgstr "ਵਿਹੜਾ ਵਿਵਸਥਾ"
 
 #. Grid settings
 #. Notebook tab
 #: src/dialogs/desktop-properties.c:204
 msgid "Grid"
-msgstr ""
+msgstr "ਗਰਿੱਡ"
 
 #: src/dialogs/desktop-properties.c:217
 msgid "Show grid"
-msgstr ""
+msgstr "ਜਾਲ ਵੇਖਾਓ"
 
 #: src/dialogs/desktop-properties.c:218
 msgid "Snap to grid"
@@ -194,11 +194,11 @@ msgstr ""
 
 #: src/dialogs/desktop-properties.c:221
 msgid "Horizontal lines"
-msgstr ""
+msgstr "ਖਿਤਿਜੀ ਰੇਖਾਵਾਂ"
 
 #: src/dialogs/desktop-properties.c:222
 msgid "Vertical lines"
-msgstr ""
+msgstr "ਲੰਬਕਾਰੀ ਰੇਖਾਵਾਂ"
 
 #: src/dialogs/desktop-properties.c:224
 msgid "Iso grid"
@@ -238,7 +238,7 @@ msgstr ""
 
 #: src/dialogs/desktop-properties.c:249
 msgid "Grid color:"
-msgstr ""
+msgstr "ਗਰਿੱਡ ਰੰਗ:"
 
 #: src/dialogs/desktop-properties.c:250
 msgid "Grid color"
@@ -247,7 +247,7 @@ msgstr ""
 #. Guidelines page
 #: src/dialogs/desktop-properties.c:254
 msgid "Guides"
-msgstr ""
+msgstr "ਗਾਈਡ"
 
 #: src/dialogs/desktop-properties.c:265
 msgid "Show guides"
@@ -275,7 +275,7 @@ msgstr ""
 
 #: src/dialogs/desktop-properties.c:295
 msgid "Show border"
-msgstr ""
+msgstr "ਹਾਸ਼ੀਆ ਵੇਖਾਓ"
 
 #: src/dialogs/desktop-properties.c:301
 msgid "Border on top of drawing"
@@ -283,33 +283,33 @@ msgstr ""
 
 #: src/dialogs/desktop-properties.c:306
 msgid "Border color:"
-msgstr ""
+msgstr "ਹਾਸ਼ੀਆ ਰੰਗ:"
 
 #: src/dialogs/desktop-properties.c:307
 msgid "Page border color"
-msgstr ""
+msgstr "ਸਫਾ ਹਾਸ਼ੀਆ ਰੰਗ"
 
 #: src/dialogs/desktop-properties.c:308
 msgid "Page color:"
-msgstr ""
+msgstr "ਸਫਾ ਰੰਗ:"
 
 #: src/dialogs/desktop-properties.c:309
 msgid "Page color"
-msgstr ""
+msgstr "ਸਫਾ ਰੰਗ"
 
 #: src/dialogs/desktop-properties.c:580 src/widgets/sp-color-preview.c:424
 msgid "Close"
-msgstr ""
+msgstr "ਬੰਦ ਕਰੋ"
 
 #: src/dialogs/display-settings.c:101
 msgid "Display settings"
-msgstr ""
+msgstr "ਦਰਿਸ਼ ਵਿਵਸਥਾ"
 
 #. Rendering settings
 #. Notebook tab
 #: src/dialogs/display-settings.c:108
 msgid "Rendering"
-msgstr ""
+msgstr "ਪੇਸ਼ਕਾਰੀ"
 
 #: src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
@@ -317,29 +317,29 @@ msgstr ""
 
 #: src/dialogs/display-settings.c:125 src/verbs.c:407
 msgid "None"
-msgstr ""
+msgstr "ਕੋਈ ਨਹੀਂ"
 
 #: src/dialogs/display-settings.c:128
 msgid "2x2"
-msgstr ""
+msgstr "2x2"
 
 #: src/dialogs/display-settings.c:131
 msgid "4x4"
-msgstr ""
+msgstr "4x4"
 
 #: src/dialogs/display-settings.c:134
 msgid "8x8"
-msgstr ""
+msgstr "8x8"
 
 #: src/dialogs/display-settings.c:137
 msgid "16x16"
-msgstr ""
+msgstr "16x16"
 
 #. Input settings
 #. Notebook tab
 #: src/dialogs/display-settings.c:147
 msgid "Input"
-msgstr ""
+msgstr "ਇੰਪੁੱਟ"
 
 #: src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
@@ -349,7 +349,7 @@ msgstr ""
 #. Notebook tab
 #: src/dialogs/display-settings.c:169
 msgid "Windows"
-msgstr ""
+msgstr "ਝਰੋਖਾ"
 
 #: src/dialogs/display-settings.c:174
 msgid "Set dialog hint for dialogs"
@@ -361,27 +361,27 @@ msgstr ""
 
 #: src/dialogs/document-properties.c:159
 msgid "Document settings"
-msgstr ""
+msgstr "ਦਸਤਾਵੇਜ਼ ਵਿਵਸਥਾ"
 
 #: src/dialogs/document-properties.c:180
 msgid "Paper size:"
-msgstr ""
+msgstr "ਸਫਾ ਆਕਾਰ:"
 
 #: src/dialogs/document-properties.c:201
 msgid "Custom"
-msgstr ""
+msgstr "ਪ੍ਰਚਲਣ"
 
 #. Custom paper frame
 #: src/dialogs/document-properties.c:208
 msgid "Custom paper"
-msgstr ""
+msgstr "ਪਸੰਦੀਦਾ ਸਫਾ"
 
 #. Unit selector
 #: src/dialogs/document-properties.c:219 src/dialogs/export.c:179
 #: src/dialogs/object-properties.c:323 src/dialogs/transformation.c:347
 #: src/dialogs/transformation.c:494
 msgid "Units:"
-msgstr ""
+msgstr "ਇਕਾਈ:"
 
 #. Stroke width
 #. Width
@@ -391,17 +391,17 @@ msgstr ""
 #: src/dialogs/stroke-style.c:567 src/dialogs/tool-attributes.c:125
 #: src/dyna-draw-context.c:1087
 msgid "Width:"
-msgstr ""
+msgstr "ਚੌੜਾਈ:"
 
 #: src/dialogs/document-properties.c:243 src/dialogs/export.c:198
 #: src/dialogs/export.c:221 src/dialogs/object-attributes.c:72
 #: src/dialogs/object-attributes.c:80 src/dialogs/object-properties.c:368
 msgid "Height:"
-msgstr ""
+msgstr "ਉਚਾਈ:"
 
 #: src/dialogs/document-tree.c:60 src/verbs.c:476
 msgid "Document"
-msgstr ""
+msgstr "ਦਸਤਾਵੇਜ"
 
 #: src/dialogs/export.c:141
 msgid "Export bitmap"
@@ -435,7 +435,7 @@ msgstr ""
 
 #: src/dialogs/export.c:213 src/dialogs/export.c:221
 msgid "pixels"
-msgstr ""
+msgstr "ਪਿਕਸਲ"
 
 #: src/dialogs/export.c:217 src/dialogs/export.c:225
 msgid "dpi"
@@ -468,11 +468,11 @@ msgstr ""
 
 #: src/dialogs/fill-style.c:87
 msgid "Fill style"
-msgstr ""
+msgstr "ਭਰਨ ਸ਼ੈਲੀ"
 
 #: src/dialogs/fill-style.c:124
 msgid "Fill Rule"
-msgstr ""
+msgstr "ਭਰਨ ਨਿਯਮ"
 
 #: src/dialogs/fill-style.c:138
 msgid "nonzero"
@@ -485,7 +485,7 @@ msgstr ""
 #: src/dialogs/item-properties.c:84 src/dialogs/item-properties.c:269
 #: src/dialogs/item-properties.c:368 src/dialogs/item-properties.c:375
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: src/dialogs/item-properties.c:95
 msgid "Set ID"
@@ -494,17 +494,17 @@ msgstr ""
 #. Sensitive
 #: src/dialogs/item-properties.c:104
 msgid "Sensitive"
-msgstr ""
+msgstr "ਸੰਵੇਦਨਸ਼ੀਲ"
 
 #. Visible
 #: src/dialogs/item-properties.c:109 src/widgets/sp-dock-layout.c:734
 msgid "Visible"
-msgstr ""
+msgstr "ਦਿੱਖ"
 
 #. Active
 #: src/dialogs/item-properties.c:114
 msgid "Active"
-msgstr ""
+msgstr "ਸਰਗਰਮ"
 
 #. Printable
 #: src/dialogs/item-properties.c:119
@@ -533,7 +533,7 @@ msgstr ""
 
 #: src/dialogs/item-properties.c:448 src/verbs.c:487
 msgid "Item properties"
-msgstr ""
+msgstr "ਇਕਾਈ ਵਿਸ਼ੇਸ਼ਤਾ"
 
 #: src/dialogs/object-attributes.c:34
 msgid "Href:"
@@ -541,15 +541,15 @@ msgstr ""
 
 #: src/dialogs/object-attributes.c:35
 msgid "Target:"
-msgstr ""
+msgstr "ਨਿਸ਼ਾਨਾ:"
 
 #: src/dialogs/object-attributes.c:36
 msgid "Type:"
-msgstr ""
+msgstr "ਕਿਸਮ"
 
 #: src/dialogs/object-attributes.c:37
 msgid "Role:"
-msgstr ""
+msgstr "ਕੰਮ:"
 
 #: src/dialogs/object-attributes.c:38
 msgid "Arcrole:"
@@ -557,11 +557,11 @@ msgstr ""
 
 #: src/dialogs/object-attributes.c:39
 msgid "Title:"
-msgstr ""
+msgstr "ਨਾਂ:"
 
 #: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
 msgid "Show:"
-msgstr ""
+msgstr "ਵੇਖਾਓ:"
 
 #: src/dialogs/object-attributes.c:41
 msgid "Actuate:"
@@ -573,42 +573,42 @@ msgstr ""
 
 #: src/dialogs/object-attributes.c:47 src/dialogs/object-attributes.c:57
 msgid "Center X:"
-msgstr ""
+msgstr "ਕੇਂਦਰ X:"
 
 #: src/dialogs/object-attributes.c:48 src/dialogs/object-attributes.c:58
 msgid "Center Y:"
-msgstr ""
+msgstr "ਕੇਂਦਰ Y:"
 
 #: src/dialogs/object-attributes.c:49
 msgid "R1:"
-msgstr ""
+msgstr "R1:"
 
 #: src/dialogs/object-attributes.c:50
 msgid "R2:"
-msgstr ""
+msgstr "R2:"
 
 #: src/dialogs/object-attributes.c:51
 msgid "ARG1:"
-msgstr ""
+msgstr "ARG1:"
 
 #: src/dialogs/object-attributes.c:52
 msgid "ARG2:"
-msgstr ""
+msgstr "ARG2:"
 
 #. Expansion
 #: src/dialogs/object-attributes.c:59 src/spiral-context.c:343
 msgid "Expansion:"
-msgstr ""
+msgstr "ਫੈਲਾਓ:"
 
 #. Revolution
 #: src/dialogs/object-attributes.c:60 src/dialogs/tool-attributes.c:95
 #: src/spiral-context.c:331
 msgid "Revolution:"
-msgstr ""
+msgstr "ਰੈਜ਼ੋਲੇਸ਼ਨ:"
 
 #: src/dialogs/object-attributes.c:61
 msgid "Radius:"
-msgstr ""
+msgstr "ਅਰਧ-ਵਿਆਸ:"
 
 #: src/dialogs/object-attributes.c:62
 msgid "Argument:"
@@ -616,180 +616,180 @@ msgstr ""
 
 #: src/dialogs/object-attributes.c:63
 msgid "T0:"
-msgstr ""
+msgstr "T0:"
 
 #: src/dialogs/object-attributes.c:68
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: src/dialogs/object-attributes.c:69 src/dialogs/object-attributes.c:77
 #: src/dialogs/object-properties.c:332
 msgid "X:"
-msgstr ""
+msgstr "X:"
 
 #: src/dialogs/object-attributes.c:70 src/dialogs/object-attributes.c:78
 #: src/dialogs/object-properties.c:344
 msgid "Y:"
-msgstr ""
+msgstr "Y:"
 
 #: src/dialogs/object-attributes.c:81
 msgid "RX:"
-msgstr ""
+msgstr "RX:"
 
 #: src/dialogs/object-attributes.c:82
 msgid "RY:"
-msgstr ""
+msgstr "RY:"
 
 #: src/dialogs/object-attributes.c:117
 #, c-format
 msgid "%s attributes"
-msgstr ""
+msgstr "%s ਗੁਣ"
 
 #: src/dialogs/object-properties.c:113
 msgid "Object style"
-msgstr ""
+msgstr "ਇਕਾਈ ਸ਼ੈਲੀ"
 
 #: src/dialogs/object-properties.c:128
 msgid "Fill"
-msgstr ""
+msgstr "ਭਰਨ"
 
 #: src/dialogs/object-properties.c:142
 msgid "Stroke paint"
-msgstr ""
+msgstr "ਠੋਲਾ ਪੇਂਟ"
 
 #: src/dialogs/object-properties.c:156
 msgid "Stroke style"
-msgstr ""
+msgstr "ਠੋਲਾ ਸ਼ੈਲੀ"
 
 #: src/dialogs/object-properties.c:176
 msgid "Apply to:"
-msgstr ""
+msgstr "ਲਾਗੂ:"
 
 #: src/dialogs/object-properties.c:186
 msgid "Selected objects"
-msgstr ""
+msgstr "ਚੁਣੀਆਂ ਇਕਾਈਆਂ"
 
 #: src/dialogs/object-properties.c:189
 msgid "All shape tools"
-msgstr ""
+msgstr "ਸਭ ਸ਼ਕਲ ਸੰਦ"
 
 #: src/dialogs/object-properties.c:192
 msgid "Rectangle tool"
-msgstr ""
+msgstr "ਚਤੁਰਭੁਜ ਸੰਦ"
 
 #: src/dialogs/object-properties.c:195
 msgid "Arc tool"
-msgstr ""
+msgstr "ਚਾਪ ਸੰਦ"
 
 #: src/dialogs/object-properties.c:198
 msgid "Star tool"
-msgstr ""
+msgstr "ਤਾਰਾ ਸੰਦ"
 
 #: src/dialogs/object-properties.c:201
 msgid "Spiral tool"
-msgstr ""
+msgstr "ਚੱਕਰਾਕਾਰ ਸੰਦ"
 
 #: src/dialogs/object-properties.c:204
 msgid "Freehand and pen"
-msgstr ""
+msgstr "ਹੱਥ ਤੇ ਪੈਨ"
 
 #: src/dialogs/object-properties.c:207
 msgid "Calligraphic line"
-msgstr ""
+msgstr "ਸੁਲੇਖ ਰੇਖਾ"
 
 #: src/dialogs/object-properties.c:210 src/verbs.c:462
 msgid "Text"
-msgstr ""
+msgstr "ਪਾਠ"
 
 #: src/dialogs/object-properties.c:289
 msgid "Object Size and Position"
-msgstr ""
+msgstr "ਇਕਾਈ ਆਕਾਰ ਤੇ ਸਥਿਤੀ"
 
 #: src/dialogs/object-properties.c:312 src/verbs.c:481
 msgid "Size and Position"
-msgstr ""
+msgstr "ਆਕਾਰ ਤੇ ਸਥਿਤੀ"
 
 #: src/dialogs/stroke-style.c:554 src/toolbox.c:401
 msgid "Stroke settings"
-msgstr ""
+msgstr "ਠੋਲਾ ਵਿਵਸਥਾ"
 
 #. Join type
 #: src/dialogs/stroke-style.c:590
 msgid "Join:"
-msgstr ""
+msgstr "ਸ਼ਾਮਿਲ:"
 
 #. Cap type
 #: src/dialogs/stroke-style.c:633
 msgid "Cap:"
-msgstr ""
+msgstr "ਕੈਪ:"
 
 #. Dash
 #: src/dialogs/stroke-style.c:676
 msgid "Pattern:"
-msgstr ""
+msgstr "ਰੰਗ-ਪੱਟੀ:"
 
 #: src/dialogs/text-edit.c:102
 msgid "Text properties"
-msgstr ""
+msgstr "ਪਾਠ ਵਿਸ਼ੇਸਤਾ"
 
 #. Layout
 #: src/dialogs/text-edit.c:141
 msgid "Layout"
-msgstr ""
+msgstr "ਖਾਕਾ"
 
 #: src/dialogs/text-edit.c:149
 msgid "Alignment:"
-msgstr ""
+msgstr "ਇਕਸਾਰ:"
 
 #: src/dialogs/text-edit.c:174
 msgid "Orientation:"
-msgstr ""
+msgstr "ਸਥਿਤੀ:੪"
 
 #: src/dialogs/text-edit.c:192
 msgid "Line spacing:"
-msgstr ""
+msgstr "ਰੇਖਾ ਥਾਂ:"
 
 #: src/dialogs/text-edit.c:212
 msgid "Spacing:"
-msgstr ""
+msgstr "ਖਾਲੀ ਥਾਂ:"
 
 #: src/dialogs/text-edit.c:235
 msgid "Text and font"
-msgstr ""
+msgstr "ਪਾਠ ਤੇ ਫੋਂਟ"
 
 #: src/dialogs/text-edit.c:246
 msgid "Set as default"
-msgstr ""
+msgstr "ਮੂਲ ਨਿਰਧਾਰਨ"
 
 #: src/dialogs/tool-attributes.c:48 src/verbs.c:479
 msgid "Tool attributes"
-msgstr ""
+msgstr "ਸੰਦ ਗੁਣ"
 
 #: src/dialogs/tool-attributes.c:95
 msgid "Expansion"
-msgstr ""
+msgstr "ਫੈਲਾ"
 
 #: src/dialogs/tool-attributes.c:95
 msgid "Inner radius"
-msgstr ""
+msgstr "ਅੰਦਰੂਨੀ ਅਰਧ-ਵਿਆਸ"
 
 #: src/dialogs/tool-attributes.c:99 src/dialogs/tool-attributes.c:109
 #: src/dialogs/tool-attributes.c:119 src/dialogs/tool-attributes.c:129
 msgid "Missing tool preferences"
-msgstr ""
+msgstr "ਗੁੰਮ ਸੰਦ ਪਸੰਦ"
 
 #. Magnitude
 #: src/dialogs/tool-attributes.c:105 src/star-context.c:343
 msgid "Corners:"
-msgstr ""
+msgstr "ਕੋਨੇ:"
 
 #: src/dialogs/tool-attributes.c:105
 msgid "Proportion"
-msgstr ""
+msgstr "ਅਨੁਮਾਨ"
 
 #: src/dialogs/tool-attributes.c:115
 msgid "Transform:"
-msgstr ""
+msgstr "ਤਬਦੀਲ:"
 
 #. Mass
 #: src/dialogs/tool-attributes.c:125 src/dyna-draw-context.c:1051
@@ -803,19 +803,19 @@ msgstr ""
 
 #: src/dialogs/tool-attributes.c:125
 msgid "Angle"
-msgstr ""
+msgstr "ਕੋਣ"
 
 #: src/dialogs/tool-attributes.c:132
 msgid "Tool has no attributes"
-msgstr ""
+msgstr "ਸੰਦਾਂ ਲਈ ਕੋਈ ਗੁਣ ਨਹੀਂ ਹੈ"
 
 #: src/dialogs/tool-attributes.c:135 src/dialogs/tool-options.c:93
 msgid "No active tool"
-msgstr ""
+msgstr "ਕੋਈ ਸਰਗਰਮ ਸੰਦ"
 
 #: src/dialogs/tool-options.c:47 src/verbs.c:478
 msgid "Tool options"
-msgstr ""
+msgstr "ਸੰਦ ਚੋਣ"
 
 #: src/dialogs/tool-options.c:90
 msgid "Tool has no options"
@@ -832,15 +832,15 @@ msgstr ""
 
 #: src/dialogs/transformation.c:313
 msgid "Move"
-msgstr ""
+msgstr "ਏਧਰ-ਓਧਰ"
 
 #: src/dialogs/transformation.c:457
 msgid "Scale"
-msgstr ""
+msgstr "ਪੈਮਾਨਾ"
 
 #: src/dialogs/transformation.c:584
 msgid "Rotate"
-msgstr ""
+msgstr "ਘੁੰਮਾਓ"
 
 #: src/dialogs/transformation.c:602
 msgid "deg"
@@ -852,11 +852,11 @@ msgstr ""
 
 #: src/dialogs/xml-tree.c:170
 msgid "New element node"
-msgstr ""
+msgstr "ਨਵਾਂ ਇਕਾਈ ਨੋਡ"
 
 #: src/dialogs/xml-tree.c:188
 msgid "New text node"
-msgstr ""
+msgstr "ਨਵਾਂ ਪਾਠ ਨੋਡ"
 
 #: src/dialogs/xml-tree.c:205
 msgid "Duplicate node"
@@ -864,7 +864,7 @@ msgstr ""
 
 #: src/dialogs/xml-tree.c:221
 msgid "Delete node"
-msgstr ""
+msgstr "ਹਟਾਉਣ ਨੋਡ"
 
 #: src/dialogs/xml-tree.c:234
 msgid "Unindent node"
@@ -876,11 +876,11 @@ msgstr ""
 
 #: src/dialogs/xml-tree.c:255
 msgid "Raise node"
-msgstr ""
+msgstr "ਉਭਰਿਆ ਨੋਡ"
 
 #: src/dialogs/xml-tree.c:266
 msgid "Lower node"
-msgstr ""
+msgstr "ਹੇਠਲਾ ਨੋਡ"
 
 #: src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
@@ -909,26 +909,26 @@ msgstr ""
 
 #: src/dialogs/xml-tree.c:876
 msgid "Cancel"
-msgstr ""
+msgstr "ਰੱਦ ਕਰੋ"
 
 #: src/dialogs/xml-tree.c:880
 msgid "Create"
-msgstr ""
+msgstr "ਬਣਾਓ"
 
 #: src/document.c:389
 #, c-format
 msgid "New document %d"
-msgstr ""
+msgstr "ਨਵਾਂ ਦਸਤਾਵੇਜ਼ %d"
 
 #: src/document.c:425
 #, c-format
 msgid "Memory document %d"
-msgstr ""
+msgstr "ਮੈਮੋਰੀ ਦਸਤਾਵੇਜ਼ %d"
 
 #: src/document.c:572
 #, c-format
 msgid "Unnamed document %d"
-msgstr ""
+msgstr "ਬਿਨਾਂ ਨਾਂ ਦਸਤਾਵੇਜ਼ %d"
 
 #: src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
@@ -941,21 +941,21 @@ msgstr ""
 #. Angle
 #: src/dyna-draw-context.c:1075
 msgid "Angle:"
-msgstr ""
+msgstr "ਕੋਣ:"
 
 #. Reset
 #: src/dyna-draw-context.c:1099 src/rect-context.c:382
 #: src/spiral-context.c:367 src/star-context.c:374
 msgid "Defaults"
-msgstr ""
+msgstr "ਮੂਲ"
 
 #: src/file.c:123 src/file.c:137 src/file.c:149
 msgid "Select file to open"
-msgstr ""
+msgstr "ਖੋਲਣ ਲਈ ਫਾਇਲ ਚੁਣੋ"
 
 #: src/file.c:174 src/file.c:278
 msgid "File type:"
-msgstr ""
+msgstr "ਫਾਇਲ ਕਿਸਮ:"
 
 #: src/file.c:263
 msgid "Save file"
