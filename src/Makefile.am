@@ -17,6 +17,7 @@ INCLUDES = \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
 	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" \
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" \
+	-DPACKAGE_LOCALE_DIR=\""$(datadir)/locale"\" \
 	-I$(srcdir) \
 	-I$(srcdir/xml) \
 	-I$(srcdir/svg) \

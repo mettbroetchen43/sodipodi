@@ -1,3 +1,11 @@
+2003-02-24  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Removed PACKAGE_LOCALE_DIR definition
+
+	* src/Makefile.am (INCLUDES): Set PACKAGE_LOCALE_DIR here
+
+	* configure.in: Skip xft checking if fontcofig present
+
 2003-02-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/print.c (sp_print_fill): Use new paint server signature (does it work?)

@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.50)
-AC_INIT(sodipodi, 0.32pre)
+AC_INIT(sodipodi, 0.31.1)
 AC_CONFIG_SRCDIR(src/main.c)
 AM_INIT_AUTOMAKE
 
@@ -17,11 +17,11 @@ AM_PROG_AS
 AC_HEADER_STDC
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-	AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Localization directory])
-else
-	AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [Localization directory])
-fi
+dnl if test "x${prefix}" = "xNONE"; then
+dnl 	AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale", [Localization directory])
+dnl else
+dnl 	AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale", [Localization directory])
+dnl fi
 
 dnl AM_PROG_LIBTOOL
 
@@ -102,6 +102,7 @@ AC_SUBST(FONTCONFIG_LIBS)
 
 AM_CONDITIONAL(USE_FONTCONFIG, test "x$fc" = "xyes")
 if test "x$fc" = "xyes"; then
+	xft_ok=yes
 	AC_DEFINE(WITH_FONTCONFIG, 1, [Use fontconfig version of xft])
 fi
 
@@ -113,7 +114,7 @@ AC_ARG_WITH(xft,
             AC_HELP_STRING([--with-xft], [use xft scalable font database (default is auto)]),
             [with_xft=$withval], [with_xft=auto])
 
-if test "x$with_xft" != "xno"; then
+if test "x$with_xft" != "xno" & test "x$fc" != "xyes" ; then
 	dnl Have to test xft presence
 	AC_CHECK_HEADER(X11/Xft/Xft.h, xft_ok=yes, xft_ok=no)
 	if test "x$xft_ok" != "xyes"; then

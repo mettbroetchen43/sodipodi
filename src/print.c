@@ -182,7 +182,7 @@ sp_print_fill (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm, 
 			for (y = ibox.y0; y < ibox.y1; y+= 64) {
 				for (x = ibox.x0; x < ibox.x1; x+= 64) {
 					NRPixBlock pb;
-					nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8A8, x, y, x + 64, y + 64, TRUE);
+					nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, x, y, x + 64, y + 64, TRUE);
 					painter->fill (painter, &pb);
 					gnome_print_gsave (ctx->gpc);
 					gnome_print_translate (ctx->gpc, x, y + 64);
