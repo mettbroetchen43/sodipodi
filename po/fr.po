@@ -1,14 +1,12 @@
 # sodipodi fr.po.
-#
 # Copyright (C) 2000-2001 Free Software Foundation, Inc.
 # Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2001-01-09 18:45+0100\n"
-"PO-Revision-Date: 2001-01-09 18:46+0100\n"
+"POT-Creation-Date: 2001-01-15 15:43+0100\n"
+"PO-Revision-Date: 2001-01-15 15:46+0100\n"
 "Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
@@ -924,7 +922,7 @@ msgstr "Ordonner"
 
 #: glade/sodipodi-glade.c:159
 msgid "Toggle Borders"
-msgstr "(Dés)activer les bordure"
+msgstr "(Dés)activer les bordures"
 
 #: glade/sodipodi-glade.c:160
 msgid "Drawing Context"
@@ -1096,7 +1094,7 @@ msgstr "Quitter ou non ?"
 
 #: glade/toolbox.c:62
 msgid "Yes quick! I want to leave sodipodi and come back later."
-msgstr "Oui vite ! Je veux quitter sodipodi et y revenir plustard."
+msgstr "Oui vite ! Je veux quitter sodipodi et y revenir plus tard."
 
 #: glade/toolbox.c:63
 msgid "Yep !"
@@ -1247,7 +1245,7 @@ msgstr "valeur de l'échelle verticale"
 
 #: glade/transformation.c:21
 msgid "lock/unlock horizontal and vertical scale"
-msgstr ""
+msgstr "(Dé)vérouille l'échelle horizontale/verticale"
 
 #: glade/transformation.c:22
 msgid "toggle absolute/relative scale"
@@ -1299,15 +1297,15 @@ msgstr "Définir l'angle à 270°"
 
 #: glade/transformation.c:35
 msgid "Skew"
-msgstr ""
+msgstr "En biais"
 
 #: glade/transformation.c:36
 msgid "select direction (horizontal/vertical skew)"
-msgstr ""
+msgstr "sélectionnez la direction (en biais horizontal/vertical)"
 
 #: glade/transformation.c:37
 msgid "skew"
-msgstr ""
+msgstr "en biais"
 
 #: glade/transformation.c:39
 msgid "keep aspect"
