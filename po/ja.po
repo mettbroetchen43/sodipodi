@@ -2351,7 +2351,7 @@ msgstr "黒:"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
-msgstr "分割ウィンドウとメインツールボックスの配置を入れ換え"
+msgstr "別ウィンドウとメインツールボックスのトグル"
 
 #: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Attribute"
