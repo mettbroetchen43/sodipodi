@@ -37,6 +37,7 @@ struct _NRTypeFaceFT2 {
 
 	FT_Face ft_face;
 	double ft2ps;
+	unsigned int unimap : 1;
 
 	NRFont *fonts;
 

@@ -101,11 +101,6 @@ nr_typeface_ft2_new (NRTypeFaceDef *def)
 
 	/* fixme: Test scalability */
 
-	ft_result = FT_Select_Charmap (ft_face, ft_encoding_unicode);
-	if (ft_result != FT_Err_Ok) {
-		fprintf (stderr, "Typeface %s does not have unicode charmap", def->name);
-	}
-
 	tff = nr_new (NRTypeFaceFT2, 1);
 
 	tff->typeface.vmv = def->vmv;
@@ -115,6 +110,16 @@ nr_typeface_ft2_new (NRTypeFaceDef *def)
 	tff->ft_face = ft_face;
 
 	tff->typeface.nglyphs = tff->ft_face->num_glyphs;
+
+	ft_result = FT_Select_Charmap (ft_face, ft_encoding_unicode);
+	if (ft_result != FT_Err_Ok) {
+		tff->unimap = 0;
+#if 0
+		fprintf (stderr, "Typeface %s does not have unicode charmap", def->name);
+#endif
+	} else {
+		tff->unimap = 1;
+	}
 
 	tff->ft2ps = 1000.0 / tff->ft_face->units_per_EM;
 	tff->fonts = NULL;
@@ -272,7 +277,13 @@ nr_typeface_ft2_lookup (NRTypeFace *tf, unsigned int rule, unsigned int unival)
 	tff = (NRTypeFaceFT2 *) tf;
 
 	if (rule == NR_TYPEFACE_LOOKUP_RULE_DEFAULT) {
-		return FT_Get_Char_Index (tff->ft_face, unival);
+		if (!tff->unimap || (unival >= 0xe000) && (unival <= 0xf8ff)) {
+			unsigned int idx;
+			idx = CLAMP (unival, 0xe000, 0xf8ff) - 0xe000;
+			return MIN (idx, tf->nglyphs);
+		} else {
+			return FT_Get_Char_Index (tff->ft_face, unival);
+		}
 	}
 
 	return 0;

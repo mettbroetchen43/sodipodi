@@ -40,12 +40,4 @@ struct _NRBuffer {
 NRBuffer *nr_buffer_get (NRImageMode mode, gint w, gint h, gboolean clear, gboolean premul);
 NRBuffer *nr_buffer_free (NRBuffer *buffer);
 
-#if 0
-guchar *nr_buffer_1_4096_get (gboolean clear, guint val);
-void nr_buffer_1_4096_free (guchar *buf);
-
-guchar *nr_buffer_4_4096_get (gboolean clear, guint32 rgba);
-void nr_buffer_4_4096_free (guchar *buf);
-#endif
-
 #endif

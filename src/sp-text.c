@@ -1650,6 +1650,7 @@ sp_text_is_empty (SPText *text)
 		for (p = str->text; p && *p; p = g_utf8_next_char (p)) {
 			gunichar unival;
 			unival = g_utf8_get_char (p);
+			if ((unival > 0xe000) && (unival <= 0xf8ff)) return FALSE;
 			if (g_unichar_isgraph (unival)) return FALSE;
 		}
 	}
