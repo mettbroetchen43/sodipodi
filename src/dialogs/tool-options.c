@@ -34,7 +34,7 @@ static GtkWidget *dlg = NULL;
 static GtkWidget *tbl = NULL;
 
 void
-sp_tool_options_dialog (gpointer object, gpointer data)
+sp_tool_options_dialog (void)
 {
 	SPEventContext *ec;
 

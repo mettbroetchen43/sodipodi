@@ -1,15 +1,13 @@
-#ifndef __NODEPATH_H__
-#define __NODEPATH_H__
+#ifndef __SP_NODEPATH_H__
+#define __SP_NODEPATH_H__
 
 /*
- * Container for node editing
+ * Path handler in node edit mode
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 authors
- *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
 #include "xml/repr.h"

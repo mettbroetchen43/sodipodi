@@ -922,7 +922,7 @@ sp_item_properties (GtkMenuItem *menuitem, SPItem *item)
 
 	sp_selection_set_item (SP_DT_SELECTION (desktop), item);
 
-	sp_item_dialog (item);
+	sp_item_dialog ();
 }
 
 static void

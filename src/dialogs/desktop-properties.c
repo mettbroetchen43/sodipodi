@@ -58,7 +58,7 @@ sp_dtw_dialog_destroy (GtkObject *object, gpointer data)
 }
 
 void
-sp_desktop_dialog (void *object, void *data)
+sp_desktop_dialog (void)
 {
 	if (!dlg) {
 		dlg = sp_desktop_dialog_new ();

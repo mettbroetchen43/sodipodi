@@ -1,5 +1,14 @@
-#ifndef SP_NODE_CONTEXT_H
-#define SP_NODE_CONTEXT_H
+#ifndef __SP_NODE_CONTEXT_H__
+#define __SP_NODE_CONTEXT_H__
+
+/*
+ * Node editing context
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * This code is in public domain
+ */
 
 #include "event-context.h"
 #include "nodepath.h"

@@ -20,7 +20,7 @@ G_BEGIN_DECLS
 
 GtkWidget *sp_item_widget_new (void);
 
-void sp_item_dialog (SPItem *item);
+void sp_item_dialog (void);
 
 G_END_DECLS
 

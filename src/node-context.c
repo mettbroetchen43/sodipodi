@@ -3,12 +3,11 @@
 /*
  * Node editing context
  *
- * Author:
+ * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 Lauris Kaplinski
- *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain, except stamping code,
+ * which is Copyright (C) Masatake Yamato 2002
  */
 
 #include <gdk/gdkkeysyms.h>

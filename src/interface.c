@@ -48,17 +48,6 @@
 #include "helper/sp-intl.h"
 #include "helper/window.h"
 
-#include "dialogs/text-edit.h"
-#include "dialogs/export.h"
-#include "dialogs/xml-tree.h"
-#include "dialogs/align.h"
-#include "dialogs/transformation.h"
-#include "dialogs/object-properties.h"
-#include "dialogs/desktop-properties.h"
-#include "dialogs/document-properties.h"
-#include "dialogs/display-settings.h"
-#include "dialogs/tool-options.h"
-#include "dialogs/tool-attributes.h"
 #include "dialogs/node-edit.h"
 
 static gint sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPView *view);
@@ -447,7 +436,8 @@ sp_ui_event_context_menu (GtkMenu *menu, SPDocument *doc)
 		SP_VERB_CONTEXT_SELECT, SP_VERB_CONTEXT_NODE,
 		SP_VERB_CONTEXT_RECT, SP_VERB_CONTEXT_ARC, SP_VERB_CONTEXT_STAR, SP_VERB_CONTEXT_SPIRAL,
 		SP_VERB_CONTEXT_PEN, SP_VERB_CONTEXT_PENCIL, SP_VERB_CONTEXT_CALLIGRAPHIC,
-		SP_VERB_CONTEXT_TEXT, SP_VERB_CONTEXT_ZOOM
+		SP_VERB_CONTEXT_TEXT, SP_VERB_CONTEXT_ZOOM,
+		SP_VERB_LAST
 	};
 	sp_ui_menu_append (menu, context_verbs);
 }
@@ -455,17 +445,22 @@ sp_ui_event_context_menu (GtkMenu *menu, SPDocument *doc)
 static void
 sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
 {
-	sp_ui_menu_append_item (menu, NULL, _("Fill and Stroke"), G_CALLBACK (sp_object_properties_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Size and Position"), G_CALLBACK (sp_object_properties_layout), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Align Objects"), G_CALLBACK (sp_quick_align_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Text Editing"), G_CALLBACK (sp_text_edit_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Transformations"), G_CALLBACK (sp_transformation_dialog_move), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Tool Options"), G_CALLBACK (sp_tool_options_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Tool Attributes"), G_CALLBACK (sp_tool_attributes_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Document"), G_CALLBACK (sp_document_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Editing Window"), G_CALLBACK (sp_desktop_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("XML Editor"), G_CALLBACK (sp_xml_tree_dialog), NULL);
-	sp_ui_menu_append_item (menu, NULL, _("Display Properties"), G_CALLBACK (sp_display_dialog), NULL);
+	static const unsigned int verbs[] = {
+		SP_VERB_DIALOG_FILL_STROKE,
+		SP_VERB_DIALOG_TEXT,
+		SP_VERB_DIALOG_SIZE_POSITION,
+		SP_VERB_DIALOG_TRANSFORM,
+		SP_VERB_DIALOG_ALIGN_DISTRIBUTE,
+		SP_VERB_DIALOG_ITEM,
+		SP_VERB_DIALOG_XML_EDITOR,
+		SP_VERB_DIALOG_DOCUMENT,
+		SP_VERB_DIALOG_NAMEDVIEW,
+		SP_VERB_DIALOG_TOOL_OPTIONS,
+		SP_VERB_DIALOG_TOOL_ATTRIBUTES,
+		SP_VERB_DIALOG_DISPLAY,
+		SP_VERB_LAST
+	};
+	sp_ui_menu_append (menu, verbs);
 }
 
 /* Menus */

@@ -373,11 +373,8 @@ sp_item_widget_transform_value_changed (GtkWidget *widget, SPWidget *spw)
 /* Dialog */
 
 void
-sp_item_dialog (SPItem *item)
+sp_item_dialog (void)
 {
-	g_return_if_fail (item != NULL);
-	g_return_if_fail (SP_IS_ITEM (item));
-
 	if (dlg == NULL) {
 		GtkWidget *itemw;
 		dlg = sp_window_new (_("Item properties"), TRUE);

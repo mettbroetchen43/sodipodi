@@ -12,6 +12,6 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-void sp_tool_options_dialog (gpointer object, gpointer data);
+void sp_tool_options_dialog (void);
 
 #endif

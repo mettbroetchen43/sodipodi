@@ -1,4 +1,4 @@
-#define __NODEPATH_C__
+#define __SP_NODEPATH_C__
 
 /*
  * Path handler in node edit mode
@@ -6,9 +6,7 @@
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 Authors
- *
- * Released under GNU GPL, read the file 'COPYING' for more information
+ * This code is in public domain
  */
 
 #include <math.h>

@@ -15,6 +15,19 @@
 
 #include "helper/sp-intl.h"
 
+#include "dialogs/text-edit.h"
+#include "dialogs/export.h"
+#include "dialogs/xml-tree.h"
+#include "dialogs/align.h"
+#include "dialogs/transformation.h"
+#include "dialogs/object-properties.h"
+#include "dialogs/desktop-properties.h"
+#include "dialogs/document-properties.h"
+#include "dialogs/display-settings.h"
+#include "dialogs/tool-options.h"
+#include "dialogs/tool-attributes.h"
+#include "dialogs/item-properties.h"
+
 #include "select-context.h"
 #include "node-context.h"
 #include "rect-context.h"
@@ -330,12 +343,58 @@ sp_verb_action_zoom_perform (SPAction *action, void *data)
 	}
 }
 
+static void
+sp_verb_action_dialog_perform (SPAction *action, void *data)
+{
+	switch ((int) data) {
+	case SP_VERB_DIALOG_DISPLAY:
+		sp_display_dialog ();
+		break;
+	case SP_VERB_DIALOG_DOCUMENT:
+		sp_document_dialog ();
+		break;
+	case SP_VERB_DIALOG_NAMEDVIEW:
+		sp_desktop_dialog ();
+		break;
+	case SP_VERB_DIALOG_TOOL_OPTIONS:
+		sp_tool_options_dialog ();
+		break;
+	case SP_VERB_DIALOG_TOOL_ATTRIBUTES:
+		sp_tool_attributes_dialog ();
+		break;
+	case SP_VERB_DIALOG_FILL_STROKE:
+		sp_object_properties_dialog ();
+		break;
+	case SP_VERB_DIALOG_SIZE_POSITION:
+		sp_object_properties_layout ();
+		break;
+	case SP_VERB_DIALOG_TRANSFORM:
+		sp_transformation_dialog_move ();
+		break;
+	case SP_VERB_DIALOG_ALIGN_DISTRIBUTE:
+		sp_quick_align_dialog ();
+		break;
+	case SP_VERB_DIALOG_TEXT:
+		sp_text_edit_dialog ();
+		break;
+	case SP_VERB_DIALOG_XML_EDITOR:
+		sp_xml_tree_dialog ();
+		break;
+	case SP_VERB_DIALOG_ITEM:
+		sp_item_dialog ();
+		break;
+	default:
+		break;
+	}
+}
+
 static SPActionEventVector action_file_vector = {{NULL}, sp_verb_action_file_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_edit_vector = {{NULL}, sp_verb_action_edit_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_selection_vector = {{NULL}, sp_verb_action_selection_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_object_vector = {{NULL}, sp_verb_action_object_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_ctx_vector = {{NULL}, sp_verb_action_ctx_perform, NULL, NULL, sp_verb_action_set_shortcut};
 static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_perform, NULL, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_dialog_vector = {{NULL}, sp_verb_action_dialog_perform, NULL, NULL, sp_verb_action_set_shortcut};
 
 #define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXPORT))
 #define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_DUPLICATE))
@@ -343,6 +402,7 @@ static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_per
 #define SP_VERB_IS_OBJECT(v) ((v >= SP_VERB_OBJECT_ROTATE_90) && (v <= SP_VERB_OBJECT_FLIP_VERTICAL))
 #define SP_VERB_IS_CONTEXT(v) ((v >= SP_VERB_CONTEXT_SELECT) && (v <= SP_VERB_CONTEXT_DROPPER))
 #define SP_VERB_IS_ZOOM(v) ((v >= SP_VERB_ZOOM_IN) && (v <= SP_VERB_ZOOM_SELECTION))
+#define SP_VERB_IS_DIALOG(v) ((v >= SP_VERB_DIALOG_DISPLAY) && (v <= SP_VERB_DIALOG_ITEM))
 
 typedef struct {
 	unsigned int code;
@@ -414,6 +474,19 @@ static const SPVerbActionDef props[] = {
 	{SP_VERB_ZOOM_PAGE, "ZoomPage", N_("Page"), N_("Fit the whole page into window"), "zoom_page"},
 	{SP_VERB_ZOOM_DRAWING, "ZoomDrawing", N_("Drawing"), N_("Fit the whole drawing into window"), "zoom_draw"},
 	{SP_VERB_ZOOM_SELECTION, "ZoomSelection", N_("Selection"), N_("Fit the whole selection into window"), "zoom_select"},
+	/* Dialogs */
+	{SP_VERB_DIALOG_DISPLAY, "DialogDisplay", N_("Display"), N_("Global display settings"), NULL},
+	{SP_VERB_DIALOG_DOCUMENT, "DialogDocument", N_("Document"), N_("Page layout"), NULL},
+	{SP_VERB_DIALOG_NAMEDVIEW, "DialogNamedview", N_("Editing Window"), N_("Editing window properties"), NULL},
+	{SP_VERB_DIALOG_TOOL_OPTIONS, "DialogToolOptions", N_("Tool Options"), N_("Tool options"), NULL},
+	{SP_VERB_DIALOG_TOOL_ATTRIBUTES, "DialogToolAttributes", N_("Tool Attributes"), N_("Tool attributes"), NULL},
+	{SP_VERB_DIALOG_FILL_STROKE, "DialogFillStroke", N_("Fill and Stroke"), N_("Fill and stroke settings"), NULL},
+	{SP_VERB_DIALOG_SIZE_POSITION, "DialogSizePosition", N_("Size and Position"), N_("Object size and position"), "object_layout"},
+	{SP_VERB_DIALOG_TRANSFORM, "DialogTransform", N_("Transformations"), N_("Object transformations"), "object_trans"},
+	{SP_VERB_DIALOG_ALIGN_DISTRIBUTE, "DialogAlignDistribute", N_("Align and Distribute"), N_("Align and distribute"), "object_align"},
+	{SP_VERB_DIALOG_TEXT, "Dialogtext", N_("Text and Font"), N_("Text editing and font settings"), "object_font"},
+	{SP_VERB_DIALOG_XML_EDITOR, "DialogXMLEditor", N_("XML Editor"), N_("XML Editor"), NULL},
+	{SP_VERB_DIALOG_ITEM, "DialogItem", N_("Item Properties"), N_("Item properties"), NULL},
 	/* Footer */
 	{SP_VERB_LAST, NULL, NULL, NULL, NULL}
 };
@@ -455,6 +528,11 @@ sp_verbs_init (void)
 		} else if (SP_VERB_IS_ZOOM (v)) {
 			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
 						       (NRObjectEventVector *) &action_zoom_vector,
+						       sizeof (SPActionEventVector),
+						       (void *) v);
+		} else if (SP_VERB_IS_DIALOG (v)) {
+			nr_active_object_add_listener ((NRActiveObject *) &verb_actions[v],
+						       (NRObjectEventVector *) &action_dialog_vector,
 						       sizeof (SPActionEventVector),
 						       (void *) v);
 		}
