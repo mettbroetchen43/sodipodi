@@ -1,7 +1,7 @@
 #ifndef SP_STAR_H
 #define SP_STAR_H
 
-#include "sp-shape.h"
+#include "sp-polygon.h"
 
 BEGIN_GNOME_DECLS
 
@@ -15,19 +15,18 @@ typedef struct _SPStar SPStar;
 typedef struct _SPStarClass SPStarClass;
 
 struct _SPStar {
-  SPShape shape;
+	SPPolygon polygon;
 
-  gint   sides;
-  double cx;
-  double cy;
-  double r1;
-  double r2;
-  double arg1;
-  double arg2;
+	gint   sides;
+	ArtPoint center;
+	double r1;
+	double r2;
+	double arg1;
+	double arg2;
 };
 
 struct _SPStarClass {
-  SPShapeClass parent_class;
+	SPPolygonClass parent_class;
 };
 
 
@@ -43,8 +42,6 @@ void    sp_star_set             (SPStar         *star,
                                  gdouble         arg1,
                                  gdouble         arg2);
 
-void    sp_star_build_repr      (SPStar         *star,
-                                 SPRepr         *repr);
 
 END_GNOME_DECLS
 

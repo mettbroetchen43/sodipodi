@@ -189,7 +189,7 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 		SPRepr * repr, * style;
 		SPCSSAttr * css;
 		/* Create object */
-		repr = sp_repr_new ("path");
+		repr = sp_repr_new ("polygon");
                 sp_repr_set_attr (repr, "sodipodi:type", "star");
 		/* Set style */
 		style = sodipodi_get_repr (SODIPODI, "paint.shape.star");
@@ -242,33 +242,14 @@ static void
 sp_star_finish (SPStarContext * sc)
 {
 	if (sc->item != NULL) {
-		SPDesktop * desktop;
-		SPStar * star;
-		SPRepr * repr;
-#if 1  /* d="" */
-                SPPathComp *pathcomp;
-                ArtBpath *abp;
-                gchar * str;
-#endif
+		SPDesktop *desktop;
+		SPObject  *object;
 
 		desktop = SP_EVENT_CONTEXT (sc)->desktop;
-		star = SP_STAR (sc->item);
-		repr = SP_OBJECT (sc->item)->repr;
-
-#if 1 /* d="" */
-                sp_shape_set_shape(SP_SHAPE(star));
-                g_assert (SP_PATH(star)->comp);
-                g_assert (SP_PATH(star)->comp->data);
-                pathcomp = (SPPathComp *)SP_PATH(star)->comp->data;
-                g_assert (pathcomp);
-
-		abp = sp_curve_first_bpath (pathcomp->curve);
-		str = sp_svg_write_path (abp);
-		g_assert (str != NULL);
-		sp_repr_set_attr (repr, "d", str);
-		g_free (str);
-#endif
-                sp_star_build_repr (star, repr);
+		object  = SP_OBJECT(sc->item);
+		
+                sp_shape_set_shape(SP_SHAPE(sc->item));
+		sp_object_invoke_write_repr (object, object->repr);
 
 		sp_selection_set_item (SP_DT_SELECTION (desktop), sc->item);
 		sp_document_done (SP_DT_DOCUMENT (desktop));

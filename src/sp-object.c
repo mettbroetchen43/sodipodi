@@ -97,6 +97,7 @@ sp_object_class_init (SPObjectClass * klass)
 	gtk_object_class->destroy = sp_object_destroy;
 
 	klass->build = sp_object_build;
+	klass->write_repr = NULL;
 	klass->read_attr = sp_object_read_attr;
 }
 
@@ -365,6 +366,23 @@ sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRep
 		(* ((SPObjectClass *)(((GtkObject *) object)->klass))->order_changed) (object, child, old, new);
 
 	sp_document_order_changed (object->document, object, child, old, new);
+}
+
+void
+sp_object_invoke_write_repr (SPObject * object,
+			     SPRepr * repr)
+{
+	g_assert (object != NULL);
+	g_assert (SP_IS_OBJECT (object));
+	g_assert (repr != NULL);
+
+	g_assert (SP_IS_DOCUMENT (object->document));
+	g_assert (object->repr != NULL);
+	/* fixme: rething that cloning issue */
+	g_assert (SP_OBJECT_IS_CLONED (object) || object->id != NULL);
+
+	if (((SPObjectClass *)(((GtkObject *) object)->klass))->write_repr)
+		(*((SPObjectClass *)(((GtkObject *) object)->klass))->write_repr) (object, repr);
 }
 
 static void

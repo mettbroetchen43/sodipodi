@@ -1,3 +1,20 @@
+2001-10-31  Mitsuru Oka <oka326@parkcity.ne.jp>
+
+	* src/knotholder.c:
+	Removed unnecessary ref/unref.
+	Added sp_object_invoke_write_repr() to reflect item changes to repr
+
+	* src/sp-object.c: Added new virtual function SPObject::write_repr()
+
+	* src/sp-object.h: Ditto
+
+	* src/sp-shape.c (sp_shape_write_repr): Added
+
+	* src/sp-star.c (sp_star_write_repr): Added.
+	Moved subclass of SPShape to SPPolygon
+
+	* src/star-context.c: Ditto
+
 2001-10-30 Mitsuru Oka <oka326@parkcity.ne.jp>
 
 	* src/knotholder.c: New file

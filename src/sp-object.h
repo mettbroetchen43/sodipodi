@@ -86,6 +86,7 @@ struct _SPObject {
 struct _SPObjectClass {
 	GtkObjectClass parent_class;
 	void (* build) (SPObject * object, SPDocument * document, SPRepr * repr);
+	void (* write_repr) (SPObject * object, SPRepr * repr);
 
 	/* Virtual handlers of repr signals */
 	void (* child_added) (SPObject * object, SPRepr * child, SPRepr * ref);
@@ -132,6 +133,7 @@ SPObject *sp_object_detach (SPObject *parent, SPObject *object);
 SPObject *sp_object_detach_unref (SPObject *parent, SPObject *object);
 
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
+void sp_object_invoke_write_repr (SPObject * object, SPRepr * repr);
 void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 
 /* Styling */

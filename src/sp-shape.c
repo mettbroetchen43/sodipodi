@@ -42,6 +42,7 @@ static void sp_shape_init (SPShape *shape);
 static void sp_shape_destroy (GtkObject *object);
 
 static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_shape_write_repr (SPObject * object, SPRepr * repr);
 static void sp_shape_read_attr (SPObject * object, const gchar * attr);
 static void sp_shape_style_changed (SPObject *object, guint flags);
 
@@ -95,6 +96,7 @@ sp_shape_class_init (SPShapeClass * klass)
 	gtk_object_class->destroy = sp_shape_destroy;
 
 	sp_object_class->build = sp_shape_build;
+	sp_object_class->write_repr = sp_shape_write_repr;
 	sp_object_class->read_attr = sp_shape_read_attr;
 	sp_object_class->style_changed = sp_shape_style_changed;
 
@@ -132,6 +134,31 @@ sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	if (((SPObjectClass *) (parent_class))->build)
 		(*((SPObjectClass *) (parent_class))->build) (object, document, repr);
+}
+
+static void
+sp_shape_write_repr (SPObject * object, SPRepr * repr)
+{
+	SPPath     *path;
+	SPPathComp *pathcomp;
+	ArtBpath   *abp;
+	gchar      *str;
+
+	path = SP_PATH(object);
+	g_assert (path->comp);
+	g_assert (path->comp->data);
+	pathcomp = path->comp->data;
+	g_assert (pathcomp);
+	abp = sp_curve_first_bpath (pathcomp->curve);
+	str = sp_svg_write_path (abp);
+	g_assert (str != NULL);
+	sp_repr_set_attr (repr, "d", str);
+	g_free (str);
+
+#if 0
+	if (((SPObjectClass *) (parent_class))->write_repr)
+		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
+#endif
 }
 
 static void

@@ -51,10 +51,6 @@ void		sp_knot_holder_add	(SPKnotHolder       *knots,
 					 SPKnotHolderSetFunc knot_set,
 					 SPKnotHolderGetFunc knot_get);
 
-#if 0
-void		sp_knot_holder_select	(SPKnotHolder       *knots);
-#endif
-
 /* possibly private functions */
 
 

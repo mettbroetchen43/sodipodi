@@ -12,6 +12,7 @@ static void sp_polygon_destroy (GtkObject *object);
 static void sp_polygon_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
 
 static void sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_polygon_write_repr (SPObject * object, SPRepr * repr);
 static void sp_polygon_read_attr (SPObject * object, const gchar * attr);
 
 static void sp_polygon_bbox (SPItem * item, ArtDRect * bbox);
@@ -58,6 +59,7 @@ sp_polygon_class_init (SPPolygonClass *class)
 	gtk_object_class->set_arg = sp_polygon_set_arg;
 
 	sp_object_class->build = sp_polygon_build;
+	sp_object_class->write_repr = sp_polygon_write_repr;
 	sp_object_class->read_attr = sp_polygon_read_attr;
 
 	item_class->bbox = sp_polygon_bbox;
@@ -103,6 +105,70 @@ sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr)
 		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
 
 	sp_polygon_read_attr (object, "points");
+}
+
+/*
+ * sp_svg_write_polygon: Write points attribute for polygon tag.
+ * @bpath: 
+ *
+ * Return value: points attribute string.
+ */
+static gchar *
+sp_svg_write_polygon (const ArtBpath * bpath)
+{
+	GString *result;
+	int i;
+	int closed = 0;
+	char *res;
+	
+	g_return_val_if_fail (bpath != NULL, NULL);
+
+	result = g_string_sized_new (40);
+
+	for (i = 0; bpath[i].code != ART_END; i++){
+		switch (bpath [i].code){
+		case ART_LINETO:
+		case ART_MOVETO:
+		case ART_MOVETO_OPEN:
+			g_string_sprintfa (result, "%g,%g ", bpath [i].x3, bpath [i].y3);
+			break;
+
+		case ART_CURVETO:
+		default:
+			g_assert_not_reached ();
+		}
+	}
+	res = result->str;
+	g_string_free (result, FALSE);
+
+	return res;
+}
+
+static void
+sp_polygon_write_repr (SPObject * object, SPRepr * repr)
+{
+        SPPath     *path;
+        SPPathComp *pathcomp;
+        ArtBpath   *abp;
+        gchar      *str;
+
+        path = SP_PATH(object);
+        g_assert (path->comp);
+        g_assert (path->comp->data);
+        pathcomp = path->comp->data;
+        g_assert (pathcomp);
+        abp = sp_curve_first_bpath (pathcomp->curve);
+	str = sp_svg_write_polygon (abp);
+	sp_repr_set_attr (repr, "points", str);
+	g_free (str);
+
+#if 0
+	/* stop to propagete to parent class.
+	 * we don't need to generate d="" attribute.
+	 */
+	if (((SPObjectClass *) (parent_class))->write_repr)
+		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
+#endif
 }
 
 static void
