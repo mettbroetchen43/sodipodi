@@ -7,7 +7,7 @@
 #include <libart_lgpl/art_svp_wind.h>
 #include "cpath-component.h"
 
-#define noDEBUG_PATH_COMP
+#define DEBUG_PATH_COMP
 
 #ifdef DEBUG_PATH_COMP
 	gint num_comp = 0;

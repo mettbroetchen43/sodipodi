@@ -473,6 +473,7 @@ nr_arena_shape_group_add_component (NRArenaShapeGroup *sg, SPCurve *curve, gbool
 
 	new = nr_arena_item_new (NR_ARENA_ITEM (group)->arena, NR_TYPE_ARENA_SHAPE);
 	nr_arena_item_append_child (NR_ARENA_ITEM (group), new);
+	nr_arena_item_unref (new);
 	nr_arena_shape_set_path (NR_ARENA_SHAPE (new), curve, private, affine);
 	nr_arena_shape_set_style (NR_ARENA_SHAPE (new), sg->style);
 }

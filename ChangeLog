@@ -1,3 +1,8 @@
+2001-10-29  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_group_add_component): Unref
+	item once it is added
+
 2001-10-29 Mitsuru Oka <oka326@parkcity.ne.jp>
 
 	* src/desktop.c:
