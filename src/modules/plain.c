@@ -241,6 +241,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 	if (repr) {
 		const unsigned char *driver_name;
 		driver_name = sp_repr_get_attr (repr, "driver");
+		if (! driver_name) driver_name = "ps";
 		for (i = 0; i < n_drivers; i++) {
 			if (! strcmp (drivers[i].name, driver_name)) {
 				pmod->driver_type = drivers[i].type;
