@@ -1,3 +1,8 @@
+2000-10-21  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* sodipodi/src/toolbox.c (sp_maintoolbox_create):
+	Marked strings for translation.
+
 2000-10-18  Christophe Merlet  <christophe@merlet.net>
 
 	* configure.in: Oups, forgotten to add French (fr) to $ALL_LINGUAS
