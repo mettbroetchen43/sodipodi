@@ -168,9 +168,18 @@ static void
 sp_verb_action_ctx_perform (SPAction *action, void *data)
 {
 	SPDesktop *dt;
+	unsigned int verb;
+	int vidx;
 
 	dt = SP_ACTIVE_DESKTOP;
 	if (!dt) return;
+	verb = (unsigned int) data;
+
+	g_printf ("Setting context %d %s\n", verb, action->name);
+
+	for (vidx = SP_VERB_CONTEXT_SELECT; vidx <= SP_VERB_CONTEXT_DROPPER; vidx++) {
+		sp_action_set_active (&verb_actions[vidx], vidx == verb);
+	}
 
 	switch ((int) data) {
 	case SP_VERB_CONTEXT_SELECT:
@@ -283,11 +292,11 @@ sp_verb_action_zoom_perform (SPAction *action, void *data)
 	}
 }
 
-static SPActionEventVector action_file_vector = {{NULL}, sp_verb_action_file_perform, NULL, sp_verb_action_set_shortcut};
-static SPActionEventVector action_edit_vector = {{NULL}, sp_verb_action_edit_perform, NULL, sp_verb_action_set_shortcut};
-static SPActionEventVector action_selection_vector = {{NULL}, sp_verb_action_selection_perform, NULL, sp_verb_action_set_shortcut};
-static SPActionEventVector action_ctx_vector = {{NULL}, sp_verb_action_ctx_perform, NULL, sp_verb_action_set_shortcut};
-static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_perform, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_file_vector = {{NULL}, sp_verb_action_file_perform, NULL, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_edit_vector = {{NULL}, sp_verb_action_edit_perform, NULL, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_selection_vector = {{NULL}, sp_verb_action_selection_perform, NULL, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_ctx_vector = {{NULL}, sp_verb_action_ctx_perform, NULL, NULL, sp_verb_action_set_shortcut};
+static SPActionEventVector action_zoom_vector = {{NULL}, sp_verb_action_zoom_perform, NULL, NULL, sp_verb_action_set_shortcut};
 
 #define SP_VERB_IS_FILE(v) ((v >= SP_VERB_FILE_NEW) && (v <= SP_VERB_FILE_EXPORT))
 #define SP_VERB_IS_EDIT(v) ((v >= SP_VERB_EDIT_UNDO) && (v <= SP_VERB_EDIT_DUPLICATE))

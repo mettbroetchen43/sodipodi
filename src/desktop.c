@@ -732,10 +732,12 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
       	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (dtw->canvas));
 
 	/* Sticky zoom */
-	dtw->sticky_zoom = sp_button_toggle_new (SP_ICON_SIZE_BUTTON, "sticky_zoom", _("Zoom drawing if window size changes"));
+	dtw->sticky_zoom = sp_button_new_from_data (SP_ICON_SIZE_BUTTON,
+						    SP_BUTTON_TYPE_TOGGLE,
+						    "sticky_zoom",
+						    _("Zoom drawing if window size changes"),
+						    tt);
 	gtk_table_attach (GTK_TABLE (tbl), dtw->sticky_zoom, 2, 3, 0, 1, GTK_FILL, GTK_FILL, 0, 0);
-	/* gtk_widget_set_sensitive (dtw->sticky_zoom, FALSE); */
-	sp_button_set_tooltips (SP_BUTTON (dtw->sticky_zoom), tt);
 
 	/* Status bars */
        	hbox = gtk_hbox_new (FALSE,0);

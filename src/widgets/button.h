@@ -15,7 +15,7 @@
 typedef struct _SPButton SPButton;
 typedef struct _SPButtonClass SPButtonClass;
 
-typedef struct _SPBImageData SPBImageData;
+typedef struct _SPBChoiceData SPBChoiceData;
 
 #define SP_TYPE_BUTTON (sp_button_get_type ())
 #define SP_BUTTON(o) (GTK_CHECK_CAST ((o), SP_TYPE_BUTTON, SPButton))
@@ -24,14 +24,16 @@ typedef struct _SPBImageData SPBImageData;
 #include <gtk/gtkwidget.h>
 #include <gtk/gtktooltips.h>
 
+#include <helper/action.h>
+
 enum {
 	SP_BUTTON_TYPE_NORMAL,
 	SP_BUTTON_TYPE_TOGGLE
 };
 
-struct _SPBImageData {
+struct _SPBChoiceData {
 	unsigned char *px;
-	unsigned char *tip;
+	SPAction *action;
 };
 
 struct _SPButton {
@@ -47,7 +49,7 @@ struct _SPButton {
 	unsigned int grabbed : 1;
 	unsigned int size : 8;
 
-	SPBImageData *options;
+	SPBChoiceData *options;
 
 	GtkWidget *menu;
 	GtkTooltips *tooltips;
@@ -70,17 +72,18 @@ struct _SPButtonClass {
 
 GType sp_button_get_type (void);
 
-GtkWidget *sp_button_new (unsigned int size, const unsigned char *name, const unsigned char *tip);
-GtkWidget *sp_button_toggle_new (unsigned int size, const unsigned char *name, const unsigned char *tip);
-GtkWidget *sp_button_menu_new (unsigned int size, unsigned int noptions);
-GtkWidget *sp_button_toggle_menu_new (unsigned int size, unsigned int noptions);
-
-void sp_button_set_tooltips (SPButton *button, GtkTooltips *tooltips);
+GtkWidget *sp_button_new (unsigned int size, unsigned int type, SPAction *action, GtkTooltips *tooltips);
+GtkWidget *sp_button_menu_new (unsigned int size, unsigned int type, unsigned int noptions, GtkTooltips *tooltips);
 
 void sp_button_toggle_set_down (SPButton *button, unsigned int down, unsigned int signal);
 
-void sp_button_add_option (SPButton *button, unsigned int option, const unsigned char *name, const unsigned char *tip);
+void sp_button_add_option (SPButton *button, unsigned int option, SPAction *action);
 unsigned int sp_button_get_option (SPButton *button);
 void sp_button_set_option (SPButton *button, unsigned int option);
+
+GtkWidget *sp_button_new_from_data (unsigned int size, unsigned int type,
+				    const unsigned char *name,
+				    const unsigned char *tip,
+				    GtkTooltips *tooltips);
 
 #endif

@@ -79,6 +79,8 @@ static void sp_maintoolbox_drag_data_received (GtkWidget * widget,
 					       guint info,
 					       guint event_time,
 					       gpointer user_data);
+
+/* fixme: Move this to some sensible place (Lauris) */
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObject *toolbox);
 
 static void sp_toolbox_object_flip_clicked (SPButton *button, gpointer data);
@@ -171,7 +173,9 @@ sp_maintoolbox_new (void)
 			g_object_set_data (G_OBJECT (t), "active", w);
 		}
 	}
+
 	g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_update_draw_toolbox), toolbox);
+
 #ifndef WITH_MODULES
 #ifdef WITH_EXTENSIONS_TOOLBOX
 	/* Extension */
@@ -219,6 +223,7 @@ enum {
 	SP_TOOLBOX_DRAW_DYNAHAND
 };
 
+#if 0
 static void
 sp_toolbox_draw_set_object (SPButton *button, gpointer data)
 {
@@ -267,6 +272,7 @@ sp_toolbox_draw_set_freehand (SPButton *button, gpointer data)
 		break;
 	}
 }
+#endif
 
 static GtkWidget *
 sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSignalFunc handler, GtkTooltips *tt, unsigned char *tip)
@@ -274,8 +280,7 @@ sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSi
 	GtkWidget *b;
 	int xpos, ypos;
 
-	b = sp_button_new (24, pxname, tip);
-	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	b = sp_button_new_from_data (24, SP_BUTTON_TYPE_NORMAL, pxname, tip, tt);
 	gtk_widget_show (b);
 	if (handler) gtk_signal_connect (GTK_OBJECT (b), "clicked", handler, NULL);
 	xpos = pos % 4;
@@ -285,14 +290,16 @@ sp_toolbox_button_new (GtkWidget *t, int pos, const unsigned char *pxname, GtkSi
 	return b;
 }
 
+#if 0
 static void
 sp_toolbox_button_clicked (void *object, SPAction *action)
 {
 	sp_action_perform (action);
 }
+#endif
 
 static GtkWidget *
-sp_toolbox_button_new_from_verb (GtkWidget *t, int pos, unsigned int verb, GtkTooltips *tt)
+sp_toolbox_button_new_from_verb (GtkWidget *t, int pos, unsigned int type, unsigned int verb, GtkTooltips *tt)
 {
 	SPAction *action;
 	GtkWidget *b;
@@ -302,10 +309,8 @@ sp_toolbox_button_new_from_verb (GtkWidget *t, int pos, unsigned int verb, GtkTo
 	if (!action) return NULL;
 	/* fixme: Handle sensitive/unsensitive */
 	/* fixme: Implement sp_button_new_from_action */
-	b = sp_button_new (24, action->image, action->tip);
-	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	b = sp_button_new (24, type, action, tt);
 	gtk_widget_show (b);
-	g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK (sp_toolbox_button_clicked), action);
 	xpos = pos % 4;
 	ypos = pos / 4;
 	gtk_table_attach (GTK_TABLE (t), b, xpos, xpos + 1, ypos, ypos + 1, 0, 0, 0, 0);
@@ -317,8 +322,7 @@ sp_toolbox_toggle_button_new (const unsigned char *pxname, GtkTooltips *tt, cons
 {
 	GtkWidget *b;
 
-	b = sp_button_toggle_new (24, pxname, tip);
-	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	b = sp_button_new_from_data (24, SP_BUTTON_TYPE_TOGGLE, pxname, tip, tt);
 	gtk_widget_show (b);
 
 	return b;
@@ -337,17 +341,17 @@ sp_toolbox_file_create (void)
 	tb = sp_toolbox_new (t, _("File"), "file", "toolbox_file");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_FILE_NEW, tt);
-	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_FILE_OPEN, tt);
-	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_FILE_SAVE, tt);
-	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_FILE_SAVE_AS, tt);
-	sp_toolbox_button_new_from_verb (t, 2, SP_VERB_FILE_PRINT, tt);
-	b = sp_toolbox_button_new_from_verb (t, 6, SP_VERB_FILE_PRINT_PREVIEW, tt);
+	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_NEW, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_OPEN, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_SAVE, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_SAVE_AS, tt);
+	sp_toolbox_button_new_from_verb (t, 2, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_PRINT, tt);
+	b = sp_toolbox_button_new_from_verb (t, 6, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_PRINT_PREVIEW, tt);
 #ifndef WITH_GNOME_PRINT
 	gtk_widget_set_sensitive (b, FALSE);
 #endif
-	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_FILE_IMPORT, tt);
-	sp_toolbox_button_new_from_verb (t, 7, SP_VERB_FILE_EXPORT, tt);
+	sp_toolbox_button_new_from_verb (t, 3, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_IMPORT, tt);
+	sp_toolbox_button_new_from_verb (t, 7, SP_BUTTON_TYPE_NORMAL, SP_VERB_FILE_EXPORT, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.file");
 	if (repr) {
@@ -374,13 +378,13 @@ sp_toolbox_edit_create (void)
 	tb = sp_toolbox_new (t, _("Edit"), "edit", "toolbox_edit");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_EDIT_UNDO, tt);
-	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_EDIT_REDO, tt);
-	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_EDIT_DELETE, tt);
-	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_EDIT_CUT, tt);
-	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_EDIT_COPY, tt);
-	sp_toolbox_button_new_from_verb (t, 6, SP_VERB_EDIT_PASTE, tt);
-	sp_toolbox_button_new_from_verb (t, 7, SP_VERB_EDIT_DUPLICATE, tt);
+	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_UNDO, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_REDO, tt);
+	sp_toolbox_button_new_from_verb (t, 3, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_DELETE, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_CUT, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_COPY, tt);
+	sp_toolbox_button_new_from_verb (t, 6, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_PASTE, tt);
+	sp_toolbox_button_new_from_verb (t, 7, SP_BUTTON_TYPE_NORMAL, SP_VERB_EDIT_DUPLICATE, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.edit");
 	if (repr) {
@@ -397,7 +401,7 @@ sp_toolbox_edit_create (void)
 static GtkWidget *
 sp_toolbox_object_create (void)
 {
-	GtkWidget *t, *tb, *b;
+	GtkWidget *t, *tb;
 	GtkTooltips *tt;
 	SPRepr *repr;
 
@@ -414,15 +418,18 @@ sp_toolbox_object_create (void)
 	sp_toolbox_button_new (t, 4, "object_align", GTK_SIGNAL_FUNC (sp_quick_align_dialog), tt, _("Align objects"));
 	sp_toolbox_button_new (t, 5, "object_trans", GTK_SIGNAL_FUNC (sp_transformation_dialog_move), tt, _("Object transformations"));
 
+#if 0
 	/* Mirror */
-	b = sp_button_menu_new (24, 2);
-	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	b = sp_button_menu_new (24, SP_BUTTON_TYPE_NORMAL, 2, tt);
 	gtk_widget_show (b);
 	/* START COMPONENTS */
-	sp_button_add_option (SP_BUTTON (b), 0, "object_flip_hor", _("Flip selected objects horizontally"));
-	sp_button_add_option (SP_BUTTON (b), 1, "object_flip_ver", _("Flip selected objects vertically"));
+	action = sp_verb_get_action (SP_VERB_OBJECT_FLIP_HORIZONTAL);
+	sp_button_add_option (SP_BUTTON (b), 0, action);
+	action = sp_verb_get_action (SP_VERB_OBJECT_FLIP_VERTICAL);
+	sp_button_add_option (SP_BUTTON (b), 1, action);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_object_flip_clicked), NULL);
 	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 1, 2, 0, 0, 0, 0);
+#endif
 
 	sp_toolbox_button_new (t, 7, "object_rotate", GTK_SIGNAL_FUNC (sp_selection_rotate_90), tt, _("Rotate object 90 deg clockwise"));
 	sp_toolbox_button_new (t, 8, "object_reset", GTK_SIGNAL_FUNC (sp_selection_remove_transform), tt, _("Remove transformations"));
@@ -453,14 +460,14 @@ sp_toolbox_selection_create (void)
 	tb = sp_toolbox_new (t, _("Selection"), "selection", "toolbox_select");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_SELECTION_TO_FRONT, tt);
-	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_SELECTION_RAISE, tt);
-	sp_toolbox_button_new_from_verb (t, 2, SP_VERB_SELECTION_COMBINE, tt);
-	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_SELECTION_GROUP, tt);
-	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_SELECTION_TO_BACK, tt);
-	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_SELECTION_LOWER, tt);
-	sp_toolbox_button_new_from_verb (t, 6, SP_VERB_SELECTION_BREAK_APART, tt);
-	sp_toolbox_button_new_from_verb (t, 7, SP_VERB_SELECTION_UNGROUP, tt);
+	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_TO_FRONT, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_RAISE, tt);
+	sp_toolbox_button_new_from_verb (t, 2, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_COMBINE, tt);
+	sp_toolbox_button_new_from_verb (t, 3, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_GROUP, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_TO_BACK, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_LOWER, tt);
+	sp_toolbox_button_new_from_verb (t, 6, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_BREAK_APART, tt);
+	sp_toolbox_button_new_from_verb (t, 7, SP_BUTTON_TYPE_NORMAL, SP_VERB_SELECTION_UNGROUP, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.selection");
 	if (repr) {
@@ -480,6 +487,7 @@ sp_toolbox_draw_create (void)
 	GtkWidget *tb, *t, *b;
 	SPRepr *repr;
 	GtkTooltips *tt;
+	SPAction *action;
 	
 	t = gtk_table_new (2, 4, TRUE);
 	gtk_widget_show (t);
@@ -488,69 +496,54 @@ sp_toolbox_draw_create (void)
 	tt = gtk_tooltips_new ();
 	
 	/* Select */
-	b = sp_toolbox_toggle_button_new ("draw_select", tt, _("Select tool - select and transform objects"));
-	sp_button_set_tooltips (SP_BUTTON (b), tt);
-	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_select), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 0, 1, 0, 0, 0, 0);
+	b = sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_SELECT, tt);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPSelectContext", b);
-
 	/* Node */
-	b = sp_toolbox_toggle_button_new ("draw_node", tt, _("Node tool - modify different aspects of existing objects"));
-	sp_button_set_tooltips (SP_BUTTON (b), tt);
-	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_node_edit), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 0, 1, 0, 0, 0, 0);
+	b = sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_NODE, tt);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPNodeContext", b);
-
 	/* Draw */
-	b = sp_button_toggle_menu_new (24, 4);
-	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	b = sp_button_menu_new (24, SP_BUTTON_TYPE_TOGGLE, 4, tt);
 	gtk_widget_show (b);
 	/* START COMPONENTS */
 	/* Rect */
-	sp_button_add_option (SP_BUTTON (b), 0, "draw_rect", _("Rectangle tool - create rectangles and squares with optional rounded corners"));
-	sp_button_add_option (SP_BUTTON (b), 1, "draw_arc", _("Arc tool - create circles, ellipses and arcs"));
-	sp_button_add_option (SP_BUTTON (b), 2, "draw_star", _("Star tool - create stars and polygons"));
-	sp_button_add_option (SP_BUTTON (b), 3, "draw_spiral", _("Spiral tool - create spirals"));
-	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_object), NULL);
+	action = sp_verb_get_action (SP_VERB_CONTEXT_RECT);
+	sp_button_add_option (SP_BUTTON (b), 0, action);
+	action = sp_verb_get_action (SP_VERB_CONTEXT_ARC);
+	sp_button_add_option (SP_BUTTON (b), 1, action);
+	action = sp_verb_get_action (SP_VERB_CONTEXT_STAR);
+	sp_button_add_option (SP_BUTTON (b), 2, action);
+	action = sp_verb_get_action (SP_VERB_CONTEXT_SPIRAL);
+	sp_button_add_option (SP_BUTTON (b), 3, action);
 	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPRectContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPArcContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPStarContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPSpiralContext", b);
-
 	/* Freehand */
-	b = sp_button_toggle_menu_new (24, 3);
-	sp_button_set_tooltips (SP_BUTTON (b), tt);
+	b = sp_button_menu_new (24, SP_BUTTON_TYPE_TOGGLE, 3, tt);
 	gtk_widget_show (b);
 	/* START COMPONENTS */
 	/* Rect */
-	sp_button_add_option (SP_BUTTON (b), 0, "draw_freehand", _("Pencil tool - draw freehand lines and straight segments"));
-	sp_button_add_option (SP_BUTTON (b), 1, "draw_pen", _("Pen tool - draw exactly positioned curved lines"));
-	sp_button_add_option (SP_BUTTON (b), 2, "draw_dynahand", _("Calligraphic tool - draw calligraphic lines"));
-	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_toolbox_draw_set_freehand), NULL);
+	action = sp_verb_get_action (SP_VERB_CONTEXT_PENCIL);
+	sp_button_add_option (SP_BUTTON (b), 0, action);
+	action = sp_verb_get_action (SP_VERB_CONTEXT_PEN);
+	sp_button_add_option (SP_BUTTON (b), 1, action);
+	action = sp_verb_get_action (SP_VERB_CONTEXT_CALLIGRAPHIC);
+	sp_button_add_option (SP_BUTTON (b), 2, action);
 	gtk_table_attach (GTK_TABLE (t), b, 3, 4, 0, 1, 0, 0, 0, 0);
 	/* fixme: */
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPencilContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPPenContext", b);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPDynaDrawContext", b);
-
 	/* Text */
-	b = sp_toolbox_toggle_button_new ("draw_text", tt, _("Text tool - create editable text objects"));
-	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_text), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 0, 1, 1, 2, 0, 0, 0, 0);
+	b = sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_TEXT, tt);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPTextContext", b);
-
 	/* Zoom */
-	b = sp_toolbox_toggle_button_new ("draw_zoom", tt, _("Zoom tool - zoom into choosen area"));
-	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_zoom), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 1, 2, 0, 0, 0, 0);
+	b = sp_toolbox_button_new_from_verb (t, 5, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_ZOOM, tt);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPZoomContext", b);
-	
 	/* Dropper */
-	b = sp_toolbox_toggle_button_new ("draw_dropper", tt, _("Dropper tool - pick averaged colors from image"));
-	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_dropper), NULL);
-	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 1, 2, 0, 0, 0, 0);
+	b = sp_toolbox_button_new_from_verb (t, 6, SP_BUTTON_TYPE_TOGGLE, SP_VERB_CONTEXT_DROPPER, tt);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPDropperContext", b);
 	
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.draw");
@@ -632,14 +625,14 @@ sp_toolbox_zoom_create (void)
 	tb = sp_toolbox_new (t, _("Zoom"), "zoom", "toolbox_zoom");
 	tt = gtk_tooltips_new ();
 
-	sp_toolbox_button_new_from_verb (t, 0, SP_VERB_ZOOM_IN, tt);
-	sp_toolbox_button_new_from_verb (t, 1, SP_VERB_ZOOM_2_1, tt);
-	sp_toolbox_button_new_from_verb (t, 2, SP_VERB_ZOOM_1_1, tt);
-	sp_toolbox_button_new_from_verb (t, 3, SP_VERB_ZOOM_1_2, tt);
-	sp_toolbox_button_new_from_verb (t, 4, SP_VERB_ZOOM_OUT, tt);
-	sp_toolbox_button_new_from_verb (t, 5, SP_VERB_ZOOM_PAGE, tt);
-	sp_toolbox_button_new_from_verb (t, 6, SP_VERB_ZOOM_DRAWING, tt);
-	sp_toolbox_button_new_from_verb (t, 7, SP_VERB_ZOOM_SELECTION, tt);
+	sp_toolbox_button_new_from_verb (t, 0, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_IN, tt);
+	sp_toolbox_button_new_from_verb (t, 1, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_2_1, tt);
+	sp_toolbox_button_new_from_verb (t, 2, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_1_1, tt);
+	sp_toolbox_button_new_from_verb (t, 3, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_1_2, tt);
+	sp_toolbox_button_new_from_verb (t, 4, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_OUT, tt);
+	sp_toolbox_button_new_from_verb (t, 5, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_PAGE, tt);
+	sp_toolbox_button_new_from_verb (t, 6, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_DRAWING, tt);
+	sp_toolbox_button_new_from_verb (t, 7, SP_BUTTON_TYPE_NORMAL, SP_VERB_ZOOM_SELECTION, tt);
 
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.zoom");
 	if (repr) {
@@ -771,66 +764,36 @@ sp_toolbox_object_flip_clicked (SPButton *button, gpointer data)
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
-static void 
-sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, GObject *toolbox)
+static void
+sp_toolbox_verb_activate (unsigned int verb, const unsigned char *tname, const unsigned char *name)
 {
-	GObject *draw;
-	const gchar * tname;
-	gpointer active, new;
+	SPAction *action;
+	action = sp_verb_get_action (verb);
+	sp_action_set_active (action, tname && !strcmp (tname, name));
+}
 
-	tname = NULL;
-
-	draw = g_object_get_data (toolbox, "draw");
-	active = g_object_get_data (draw, "active");
+static void 
+sp_update_draw_toolbox (Sodipodi *sodipodi, SPEventContext *eventcontext, GObject *toolbox)
+{
+	const unsigned char *tname;
 
 	if (eventcontext != NULL) {
 		tname = gtk_type_name (GTK_OBJECT_TYPE (eventcontext));
-		new = g_object_get_data (G_OBJECT (draw), tname);
 	} else {
-		new = NULL;
+		tname = NULL;
 	}
 
-	if (new != active) {
-		if (active && SP_BUTTON_IS_DOWN (SP_BUTTON (active))) {
-			sp_button_toggle_set_down (SP_BUTTON (active), FALSE, TRUE);
-		}
-		if (new && !SP_BUTTON_IS_DOWN (SP_BUTTON (new))) {
-			sp_button_toggle_set_down (SP_BUTTON (new), TRUE, TRUE);
-		}
-		g_object_set_data (draw, "active", new);
-#if 0
-		if (tname && !strcmp (tname, "SPNodeContext")) {
-			e = gtk_object_get_data (GTK_OBJECT (toolbox), "edit");
-			w = gtk_object_get_data (GTK_OBJECT (e), "undo");
-			gtk_widget_set_sensitive (GTK_WIDGET (w), FALSE);
-			w = gtk_object_get_data (GTK_OBJECT (e), "redo");
-			gtk_widget_set_sensitive (GTK_WIDGET (w), FALSE);
-		} else {
-			e = gtk_object_get_data (GTK_OBJECT (toolbox), "edit");
-			w = gtk_object_get_data (GTK_OBJECT (e), "undo");
-			gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
-			w = gtk_object_get_data (GTK_OBJECT (e), "redo");
-			gtk_widget_set_sensitive (GTK_WIDGET (w), TRUE);
-		}
-#endif
-	}
-
-	if (tname) {
-		if (!strcmp (tname, "SPRectContext")) {
-			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_RECT);
-		} else if (!strcmp (tname, "SPArcContext")) {
-			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_ARC);
-		} else if (!strcmp (tname, "SPStarContext")) {
-			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_STAR);
-		} else if (!strcmp (tname, "SPSpiralContext")) {
-			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_SPIRAL);
-		} else if (!strcmp (tname, "SPPencilContext")) {
-			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_FREEHAND);
-		} else if (!strcmp (tname, "SPPenContext")) {
-			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_PEN);
-		} else if (!strcmp (tname, "SPDynaDrawContext")) {
-			sp_button_set_option (SP_BUTTON (new), SP_TOOLBOX_DRAW_DYNAHAND);
-		}
-	}
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_SELECT, tname, "SPSelectContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_NODE, tname, "SPNodeContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_RECT, tname, "SPRectContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_ARC, tname, "SPArcContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_STAR, tname, "SPStarContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_SPIRAL, tname, "SPSpiralContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_PENCIL, tname, "SPPencilContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_PEN, tname, "SPPenContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_CALLIGRAPHIC, tname, "SPDynaDrawContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_TEXT, tname, "SPTextContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_ZOOM, tname, "SPZoomContext");
+	sp_toolbox_verb_activate (SP_VERB_CONTEXT_DROPPER, tname, "SPDropperContext");
 }
 

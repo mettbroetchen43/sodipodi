@@ -295,7 +295,11 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	gtk_widget_show (w);
 	gtk_signal_connect (GTK_OBJECT (b), "clicked", GTK_SIGNAL_FUNC (sp_toolbox_hide), t);
 	/* Separate button */
-	b = sp_button_toggle_new (SP_ICON_SIZE_TITLEBAR, "seperate_tool", _("Toggle separate window and main toolbox placement"));
+	b = sp_button_new_from_data (SP_ICON_SIZE_TITLEBAR,
+				     SP_BUTTON_TYPE_TOGGLE,
+				     "seperate_tool",
+				     _("Toggle separate window and main toolbox placement"),
+				     NULL);
 #if 0
         b = gtk_toggle_button_new ();
 #endif

@@ -109,6 +109,27 @@ sp_action_perform (SPAction *action)
 }
 
 void
+sp_action_set_active (SPAction *action, unsigned int active)
+{
+	nr_return_if_fail (action != NULL);
+	nr_return_if_fail (SP_IS_ACTION (action));
+
+	if (active != action->active) {
+		NRActiveObject *aobject;
+		NRObjectListener *listener;
+		action->active = active;
+		aobject = (NRActiveObject *) action;
+		for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
+			SPActionEventVector *avector;
+			avector = (SPActionEventVector *) listener->vector;
+			if ((listener->size >= sizeof (SPActionEventVector)) && avector->set_active) {
+				avector->set_active (action, active, listener->data);
+			}
+		}
+	}
+}
+
+void
 sp_action_set_sensitive (SPAction *action, unsigned int sensitive)
 {
 	nr_return_if_fail (action != NULL);

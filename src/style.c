@@ -280,14 +280,26 @@ sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 	/* 2. Presentation-only attributes */
 	/* CMYK has precedence and can only be presentation attribute */
 	if (!style->fill.set || (style->fill.type == SP_PAINT_TYPE_COLOR)) {
+		/* backwards-compatability */
 		val = sp_repr_attr (repr, "fill-cmyk");
+		if (val) {
+			sp_repr_set_attr (repr, "sodipodi:fill-cmyk", val);
+			sp_repr_set_attr (repr, "fill-cmyk", NULL);
+		}
+		val = sp_repr_attr (repr, "sodipodi:fill-cmyk");
 		if (val && sp_style_read_color_cmyk (&style->fill.value.color, val)) {
 			style->fill.set = TRUE;
 			style->fill.inherit = FALSE;
 		}
 	}
 	if (!style->stroke.set || (style->stroke.type == SP_PAINT_TYPE_COLOR)) {
+		/* backwards-compatability */
 		val = sp_repr_attr (repr, "stroke-cmyk");
+		if (val) {
+			sp_repr_set_attr (repr, "sodipodi:stroke-cmyk", val);
+			sp_repr_set_attr (repr, "stroke-cmyk", NULL);
+		}
+		val = sp_repr_attr (repr, "sodipodi:stroke-cmyk");
 		if (val && sp_style_read_color_cmyk (&style->stroke.value.color, val)) {
 			style->stroke.set = TRUE;
 			style->stroke.inherit = FALSE;

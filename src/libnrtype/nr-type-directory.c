@@ -524,8 +524,6 @@ nr_type_read_private_list (void)
 
 		if (nentries > 0) {
 		}
-	} else {
-		printf ("File %s does not exist\n", filename);
 	}
 
 	nr_free (filename);

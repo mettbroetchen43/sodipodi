@@ -511,7 +511,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		sp_repr_css_set_property (css, "fill", "none");
 		for (r = reprs; r != NULL; r = r->next) {
 			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
-			sp_repr_set_attr_recursive ((SPRepr *) r->data, "fill-cmyk", NULL);
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "sodipodi:fill-cmyk", NULL);
 		}
 		sp_repr_css_attr_unref (css);
 		if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
@@ -524,7 +524,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		g_snprintf (b, 64, "%g", rgba[3]);
 		sp_repr_css_set_property (css, "fill-opacity", b);
 		for (r = reprs; r != NULL; r = r->next) {
-			sp_repr_set_attr_recursive ((SPRepr *) r->data, "fill-cmyk", NULL);
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "sodipodi:fill-cmyk", NULL);
 			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
 		}
 		sp_repr_css_attr_unref (css);
@@ -540,7 +540,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		sp_repr_css_set_property (css, "fill-opacity", b);
 		g_snprintf (b, 64, "(%g %g %g %g)", cmyka[0], cmyka[1], cmyka[2], cmyka[3]);
 		for (r = reprs; r != NULL; r = r->next) {
-			sp_repr_set_attr_recursive ((SPRepr *) r->data, "fill-cmyk", b);
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "sodipodi:fill-cmyk", b);
 			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
 		}
 		sp_repr_css_attr_unref (css);

@@ -26,6 +26,7 @@ typedef struct _SPActionEventVector SPActionEventVector;
 struct _SPActionEventVector {
 	NRObjectEventVector object_vector;
 	void (* perform) (SPAction *action, void *data);
+	void (* set_active) (SPAction *action, unsigned int active, void *data);
 	void (* set_sensitive) (SPAction *action, unsigned int sensitive, void *data);
 	void (* set_shortcut) (SPAction *action, unsigned int shortcut, void *data);
 };
@@ -33,6 +34,7 @@ struct _SPActionEventVector {
 struct _SPAction {
 	NRActiveObject object;
 	unsigned int sensitive : 1;
+	unsigned int active : 1;
 	unsigned char *id;
 	unsigned char *name;
 	unsigned char *tip;
@@ -53,6 +55,7 @@ SPAction *sp_action_setup (SPAction *action,
 			   const unsigned char *image);
 
 void sp_action_perform (SPAction *action);
+void sp_action_set_active (SPAction *action, unsigned int active);
 void sp_action_set_sensitive (SPAction *action, unsigned int sensitive);
 void sp_action_set_shortcut (SPAction *action, unsigned int shortcut);
 

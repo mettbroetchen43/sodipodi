@@ -45,6 +45,7 @@
 #include "xml/repr-private.h"
 #include "helper/gnome-utils.h"
 #include "helper/sp-intl.h"
+#include "helper/window.h"
 
 #include "dialogs/text-edit.h"
 #include "dialogs/export.h"
@@ -89,7 +90,7 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 	g_return_if_fail (vw != NULL);
 	g_return_if_fail (SP_IS_VIEW_WIDGET (vw));
 
-	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	w = sp_window_new ("", TRUE);
 	g_object_set_data (G_OBJECT (vw), "window", w);
 	g_object_set_data (G_OBJECT (SP_VIEW_WIDGET_VIEW (vw)), "window", w);
 

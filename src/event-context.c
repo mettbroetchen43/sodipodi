@@ -251,38 +251,12 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			if (event->key.state & GDK_MOD1_MASK) shortcut |= SP_SHORTCUT_ALT_MASK;
 			ret = sp_shortcut_run (shortcut);
 			break;
-#if 0
-		case GDK_Z:
-		case GDK_z:
-			/* Undo */
-			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_undo (NULL);
-				ret = TRUE;
-			}
-			break;
-		case GDK_R:
-		case GDK_r:
-			/* Redo */
-			if (event->key.state & GDK_CONTROL_MASK) {
-				sp_redo (NULL);
-				ret = TRUE;
-			}
-			break;
-#endif
 		case GDK_W:
 		case GDK_w:
 			/* Close view */
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_ui_close_view (NULL);
 				ret = TRUE;
-			}
-			break;
-		case GDK_N:
-		case GDK_n:
-			/* New */
-			if (event->key.state & GDK_CONTROL_MASK) {
-				ret = TRUE;
-				sp_file_new ();
 			}
 			break;
 #if 0
@@ -293,6 +267,15 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			}
 			break;
 #endif
+#if 0
+		case GDK_N:
+		case GDK_n:
+			/* New */
+			if (event->key.state & GDK_CONTROL_MASK) {
+				ret = TRUE;
+				sp_file_new ();
+			}
+			break;
 		case GDK_O:
 		case GDK_o:
 			/* Open */
@@ -309,6 +292,7 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				sp_file_save (NULL, NULL);
 			}
 			break;
+#endif
 #if 0
 		case GDK_e: // Ctrl e - export file
 			if (event->key.state & GDK_CONTROL_MASK) {

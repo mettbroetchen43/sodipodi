@@ -427,24 +427,6 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 		break;
 	case GDK_KEY_PRESS: // keybindings for select context
           switch (event->key.keyval) {  
-          case GDK_x: // Ctrl x - cut
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_cut(NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_c:  // Ctrl c - copy
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_copy(NULL);
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_v: // Ctrl v - paste
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_paste(NULL);
-	      ret = TRUE;
-	    }
-	    break;
 	  case GDK_g: // Ctrl g - group
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_selection_group (NULL, NULL);
@@ -466,32 +448,6 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 	  case GDK_K: // Ctrl K - break appart
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_selected_path_break_apart();
-	      ret = TRUE;
-	    }
-	    break;
-	  case GDK_Home: // Home - raise selection to top
-	    sp_selection_raise_to_top (NULL);
-            ret = TRUE;
-            break;
-	  case GDK_End: // End - lower selection to bottom
-	    sp_selection_lower_to_bottom (NULL);
-            ret = TRUE;
-            break;
-	  case GDK_Page_Up: // PageUp - raise selection one layer
-	    sp_selection_raise (NULL);
-            ret = TRUE;
-            break;
-	  case GDK_Page_Down: // PageDown - lower selection one layer
-	    sp_selection_lower (NULL);
-            ret = TRUE;
-            break;
-	  case GDK_Delete: // Del - delete selection
-	    sp_selection_delete (NULL, NULL);
-	    ret = TRUE;
-	    break;
-	  case GDK_d: // Ctrl d - duplicate selection
-	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_duplicate (NULL, NULL);
 	      ret = TRUE;
 	    }
 	    break;

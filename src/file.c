@@ -52,10 +52,10 @@
 #include "helper/kde.h"
 #endif
 
-gchar * open_path = NULL;
-gchar * save_path = NULL;
-gchar * import_path = NULL;
-gchar * export_path = NULL;
+gchar *open_path = NULL;
+gchar *save_path = NULL;
+gchar *import_path = NULL;
+gchar *export_path = NULL;
 
 void sp_file_new (void)
 {
@@ -100,7 +100,7 @@ sp_file_open (const unsigned char *uri, const unsigned char *key)
 static void
 file_open_ok (GtkWidget *widget, GtkFileSelection *fs)
 {
-	gchar *filename;
+	unsigned char *filename;
 
 	filename = g_strdup (gtk_file_selection_get_filename (fs));
 

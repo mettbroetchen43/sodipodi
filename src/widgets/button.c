@@ -55,8 +55,19 @@ static int sp_button_button_press (GtkWidget *widget, GdkEventButton *event);
 static void sp_button_paint (SPButton *button, GdkRectangle *area);
 static void sp_button_paint_arrow (NRRectL *iarea, int x0, int y0, int x1, int y1, unsigned char *px, unsigned int rs);
 
+static void sp_button_action_set_active (SPAction *action, unsigned int active, void *data);
+static void sp_button_action_set_sensitive (SPAction *action, unsigned int sensitive, void *data);
+static void sp_button_action_set_shortcut (SPAction *action, unsigned int shortcut, void *data);
+
 static GtkWidgetClass *parent_class;
 static guint button_signals[LAST_SIGNAL];
+SPActionEventVector button_event_vector = {
+	{NULL},
+	 NULL,
+	 sp_button_action_set_active,
+	 sp_button_action_set_sensitive,
+	 sp_button_action_set_shortcut
+};
 
 GtkType
 sp_button_get_type (void)
@@ -157,8 +168,9 @@ sp_button_destroy (GtkObject *object)
 	if (button->options) {
 		int i;
 		for (i = 0; i < button->noptions; i++) {
+			nr_active_object_remove_listener_by_data ((NRActiveObject *) button->options[i].action, button);
 			nr_free (button->options[i].px);
-			g_free (button->options[i].tip);
+			nr_object_unref ((NRObject *) button->options[i].action);
 		}
 		g_free (button->options);
 		button->options = NULL;
@@ -316,15 +328,19 @@ static void
 sp_button_menu_activate (GObject *object, SPButton *button)
 {
 	button->option = GPOINTER_TO_INT (g_object_get_data (object, "option"));
+#if 0
 	if (button->tooltips) {
-		gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), button->options[button->option].tip, NULL);
+		gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), button->options[button->option].action->tip, NULL);
 	}
+#endif
 	gtk_widget_queue_draw (GTK_WIDGET (button));
 }
 
 static void
 sp_button_menu_selection_done (GObject *object, SPButton *button)
 {
+	SPAction *action;
+	action = button->options[button->option].action;
 	/* Emulate button released */
 	switch (button->type) {
 	case SP_BUTTON_TYPE_NORMAL:
@@ -334,6 +350,7 @@ sp_button_menu_selection_done (GObject *object, SPButton *button)
 		sp_button_update_state (button);
 		g_signal_emit (button, button_signals[RELEASED], 0);
 		g_signal_emit (button, button_signals[CLICKED], 0);
+		sp_action_perform (action);
 		break;
 	case SP_BUTTON_TYPE_TOGGLE:
 		button->pressed = 0;
@@ -342,9 +359,14 @@ sp_button_menu_selection_done (GObject *object, SPButton *button)
 		sp_button_update_state (button);
 		g_signal_emit (button, button_signals[RELEASED], 0);
 		g_signal_emit (button, button_signals[TOGGLED], 0);
+		sp_action_set_active (action, button->down);
+		if (button->down) sp_action_perform (action);
 		break;
 	default:
 		break;
+	}
+	if (button->tooltips) {
+		gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), action->tip, NULL);
 	}
 }
 
@@ -374,7 +396,7 @@ sp_button_timeout (gpointer data)
 		gtk_menu_append (GTK_MENU (button->menu), mi);
 		g_object_set_data (G_OBJECT (mi), "option", GINT_TO_POINTER (i));
 		if (button->tooltips) {
-			gtk_tooltips_set_tip (button->tooltips, mi, button->options[i].tip, NULL);
+			gtk_tooltips_set_tip (button->tooltips, mi, button->options[i].action->tip, NULL);
 		}
 		g_signal_connect (G_OBJECT (mi), "activate", G_CALLBACK (sp_button_menu_activate), button);
 	}
@@ -428,8 +450,10 @@ static int
 sp_button_button_release (GtkWidget *widget, GdkEventButton *event)
 {
 	SPButton *button;
+	SPAction *action;
 
 	button = SP_BUTTON (widget);
+	action = button->options[button->option].action;
 
 	if (event->button == 1) {
 		if (button->timeout) {
@@ -444,6 +468,7 @@ sp_button_button_release (GtkWidget *widget, GdkEventButton *event)
 			sp_button_update_state (button);
 			g_signal_emit (button, button_signals[RELEASED], 0);
 			g_signal_emit (button, button_signals[CLICKED], 0);
+			sp_action_perform (action);
 			break;
 		case SP_BUTTON_TYPE_TOGGLE:
 			button->pressed = 0;
@@ -452,6 +477,8 @@ sp_button_button_release (GtkWidget *widget, GdkEventButton *event)
 			sp_button_update_state (button);
 			g_signal_emit (button, button_signals[RELEASED], 0);
 			g_signal_emit (button, button_signals[TOGGLED], 0);
+			sp_action_set_active (action, button->down);
+			if (button->down) sp_action_perform (action);
 			break;
 		default:
 			break;
@@ -488,95 +515,73 @@ sp_button_leave_notify (GtkWidget *widget, GdkEventCrossing *event)
 }
 
 GtkWidget *
-sp_button_new (unsigned int size, const unsigned char *name, const unsigned char *tip)
+sp_button_new (unsigned int size, unsigned int type, SPAction *action, GtkTooltips *tooltips)
 {
 	SPButton *button;
 
 	button = g_object_new (SP_TYPE_BUTTON, NULL);
 
 	button->noptions = 1;
-	button->size = CLAMP (size, 1, 128);
-	button->options = g_new (SPBImageData, 1);
-	button->options[0].px = sp_icon_image_load_gtk ((GtkWidget *) button, name, button->size);
-	button->options[0].tip = g_strdup (tip);
-
-	return (GtkWidget *) button;
-}
-
-GtkWidget *
-sp_button_toggle_new (unsigned int size, const unsigned char *name, const unsigned char *tip)
-{
-	SPButton *button;
-
-	button = g_object_new (SP_TYPE_BUTTON, NULL);
-
-	button->noptions = 1;
-	button->type = SP_BUTTON_TYPE_TOGGLE;
-	button->size = CLAMP (size, 1, 128);
-	button->options = g_new (SPBImageData, 1);
-	button->options[0].px = sp_icon_image_load_gtk ((GtkWidget *) button, name, button->size);
-	button->options[0].tip = g_strdup (tip);
-
-	return (GtkWidget *) button;
-}
-
-GtkWidget *
-sp_button_menu_new (unsigned int size, unsigned int noptions)
-{
-	SPButton *button;
-
-	button = g_object_new (SP_TYPE_BUTTON, NULL);
-
-	button->noptions = CLAMP (noptions, 1, 16);
-	button->size = CLAMP (size, 1, 128);
-	button->options = g_new0 (SPBImageData, button->noptions);
-
-	return (GtkWidget *) button;
-}
-
-GtkWidget *
-sp_button_toggle_menu_new (unsigned int size, unsigned int noptions)
-{
-	SPButton *button;
-
-	button = g_object_new (SP_TYPE_BUTTON, NULL);
-
-	button->noptions = CLAMP (noptions, 1, 16);
-	button->type = SP_BUTTON_TYPE_TOGGLE;
-	button->size = CLAMP (size, 1, 128);
-	button->options = g_new0 (SPBImageData, button->noptions);
-
-	return (GtkWidget *) button;
-}
-
-void
-sp_button_set_tooltips (SPButton *button, GtkTooltips *tooltips)
-{
-	g_object_ref (G_OBJECT (tooltips));
+	button->type = type;
+	button->size = CLAMP (size, 4, 64);
+	button->options = g_new (SPBChoiceData, 1);
 	button->tooltips = tooltips;
-	gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), button->options[button->option].tip, NULL);
+	if (tooltips) g_object_ref ((GObject *) tooltips);
+	sp_button_add_option (button, 0, action);
+
+	return (GtkWidget *) button;
+}
+
+GtkWidget *
+sp_button_menu_new (unsigned int size, unsigned int type, unsigned int noptions, GtkTooltips *tooltips)
+{
+	SPButton *button;
+
+	button = g_object_new (SP_TYPE_BUTTON, NULL);
+
+	button->noptions = CLAMP (noptions, 1, 16);
+	button->type = type;
+	button->size = CLAMP (size, 4, 64);
+	button->options = g_new0 (SPBChoiceData, button->noptions);
+	if (tooltips) {
+		g_object_ref (G_OBJECT (tooltips));
+		button->tooltips = tooltips;
+	}
+
+	return (GtkWidget *) button;
 }
 
 void
 sp_button_toggle_set_down (SPButton *button, unsigned int down, unsigned int signal)
 {
+	SPAction *action;
+
 	down = (down != 0);
+
+	action = button->options[button->option].action;
 
 	if (button->down != down) {
 		button->down = down;
-		g_signal_emit (button, button_signals[TOGGLED], 0);
+		if (signal) {
+			g_signal_emit (button, button_signals[TOGGLED], 0);
+			sp_action_set_active (action, down);
+		}
 		gtk_widget_queue_draw (GTK_WIDGET (button));
 	}
 }
 
 void
-sp_button_add_option (SPButton *button, unsigned int option, const unsigned char *name, const unsigned char *tip)
+sp_button_add_option (SPButton *button, unsigned int option, SPAction *action)
 {
-	button->options[option].px = sp_icon_image_load_gtk ((GtkWidget *) button, name, button->size);
-	button->options[option].tip = g_strdup (tip);
+	button->options[option].px = sp_icon_image_load_gtk ((GtkWidget *) button, action->image, button->size);
+	button->options[option].action = (SPAction *) nr_object_ref ((NRObject *) action);
+	nr_active_object_add_listener ((NRActiveObject *) action,
+				       (NRObjectEventVector *) &button_event_vector,
+				       sizeof (SPActionEventVector),
+				       button);
 
 	if ((option == button->option) && button->tooltips) {
-		gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), tip, NULL);
+		gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), action->tip, NULL);
 	}
 }
 
@@ -589,8 +594,48 @@ sp_button_get_option (SPButton *button)
 void
 sp_button_set_option (SPButton *button, unsigned int option)
 {
-	button->option = option;
-	gtk_widget_queue_draw (GTK_WIDGET (button));
+	if (option != button->option) {
+		SPAction *action;
+		button->option = option;
+		action = button->options[button->option].action;
+		gtk_widget_queue_draw (GTK_WIDGET (button));
+		if (button->tooltips) {
+			gtk_tooltips_set_tip (button->tooltips, GTK_WIDGET (button), action->tip, NULL);
+		}
+	}
+
+}
+
+static void
+sp_button_action_set_active (SPAction *action, unsigned int active, void *data)
+{
+	SPButton *button;
+	button = (SPButton *) data;
+	if (button->type == SP_BUTTON_TYPE_TOGGLE) {
+		int aidx;
+		for (aidx = 0; aidx < button->noptions; aidx++) {
+			if (action == button->options[aidx].action) break;
+		}
+		if ((active) && (aidx != button->option)) sp_button_set_option (button, aidx);
+		if ((aidx == button->option) && (active != button->down)) sp_button_toggle_set_down (button, active, FALSE);
+	}
+}
+
+static void
+sp_button_action_set_sensitive (SPAction *action, unsigned int sensitive, void *data)
+{
+	SPButton *button;
+	SPAction *ba;
+	button = (SPButton *) data;
+	ba = button->options[button->option].action;
+	if (action == ba) {
+		gtk_widget_set_sensitive ((GtkWidget *) button, sensitive);
+	}
+}
+
+static void
+sp_button_action_set_shortcut (SPAction *action, unsigned int shortcut, void *data)
+{
 }
 
 static void
@@ -774,6 +819,22 @@ sp_button_paint_arrow (NRRectL *parea, int x0, int y0, int x1, int y1, unsigned 
 			}
 		}
 	}
+}
+
+GtkWidget *
+sp_button_new_from_data (unsigned int size,
+			 unsigned int type,
+			 const unsigned char *name,
+			 const unsigned char *tip,
+			 GtkTooltips *tooltips)
+{
+	GtkWidget *button;
+	SPAction *action;
+	action = (SPAction *) nr_object_new (SP_TYPE_ACTION);
+	sp_action_setup (action, name, name, tip, name);
+	button = sp_button_new (size, type, action, tooltips);
+	nr_object_unref ((NRObject *) action);
+	return button;
 }
 
 
