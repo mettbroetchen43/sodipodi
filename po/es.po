@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-10-09 02:32+0200\n"
-"PO-Revision-Date: 2004-10-09 02:38+0200\n"
+"POT-Creation-Date: 2004-10-24 22:03+0200\n"
+"PO-Revision-Date: 2004-10-24 22:36+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -135,7 +135,8 @@ msgstr "Distribuir el lado izquierdo de los objetos a distancias equivalentes"
 
 #: src/dialogs/align.c:227
 msgid "Distribute centres of objects at even distances horizontally"
-msgstr "Distribuir el centro de los objetos a distancias horizontales equivalentes"
+msgstr ""
+"Distribuir el centro de los objetos a distancias horizontales equivalentes"
 
 #: src/dialogs/align.c:230
 msgid "Distribute right sides of objects at even distances"
@@ -151,7 +152,8 @@ msgstr "Distribuir el lado superior de los objetos a la misma distancia"
 
 #: src/dialogs/align.c:240
 msgid "Distribute centres of objects at even distances vertically"
-msgstr "Distribuir los centros de los objetos a distancias iguales verticalmente"
+msgstr ""
+"Distribuir los centros de los objetos a distancias iguales verticalmente"
 
 #: src/dialogs/align.c:243
 msgid "Distribute bottom sides of objects at even distances"
@@ -1238,7 +1240,8 @@ msgstr "Exportar documento a archivo png"
 
 #: src/main.c:135 src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr "La resolución utilizada para convertir SVG en mapa de bits (por omisión 72.0)"
+msgstr ""
+"La resolución utilizada para convertir SVG en mapa de bits (por omisión 72.0)"
 
 #: src/main.c:136
 msgid "DPI"
@@ -1316,7 +1319,8 @@ msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr "Sodipodi ha encontrado un error interno y se cerrará ahora.\n"
 
 #: src/main.c:798
-msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 "Las copias de seguridad automáticas se realizaron a los siguientes "
 "emplazamientos:\n"
@@ -2589,8 +2593,8 @@ msgstr "Redimensionable"
 #: src/widgets/sp-dock-item.c:260
 msgid "If set, the dock item can be resized when docked in a paned"
 msgstr ""
-"Si esta activado, el elemento empotrable puede ser redimensionado cuando se"
-"empotra en un panel"
+"Si esta activado, el elemento empotrable puede ser redimensionado cuando "
+"seempotra en un panel"
 
 #: src/widgets/sp-dock-item.c:267
 msgid "Item behavior"
@@ -2601,8 +2605,8 @@ msgid ""
 "General behavior for the dock item (i.e. whether it can float, if it's "
 "locked, etc.)"
 msgstr ""
-"Comportamiento general para el elemento acoplable ( si puede flotar, si "
-"está bloqueado, etc)"
+"Comportamiento general para el elemento acoplable ( si puede flotar, si está "
+"bloqueado, etc)"
 
 #: src/widgets/sp-dock-item.c:276
 msgid "Grip size"
@@ -2617,8 +2621,11 @@ msgid "Locked"
 msgstr "Bloqueado"
 
 #: src/widgets/sp-dock-item.c:284
-msgid "If set, the dock item cannot be dragged around and it doesn't show a grip"
-msgstr "Si esta activado el elemento empotrable no puede ser arrastrado fuera y no muestra un tirador"
+msgid ""
+"If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr ""
+"Si esta activado el elemento empotrable no puede ser arrastrado fuera y no "
+"muestra un tirador"
 
 #: src/widgets/sp-dock-item.c:292
 msgid "Preferred width"
@@ -2641,7 +2648,7 @@ msgstr "Altura preferida para el elemento empotrado"
 msgid ""
 "You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
 "some other compound dock object."
-msgstr ""
+msgstr "No puede añadir un objeto empotrable (%p de tipo %s) dentro de un %s. Use SPDock u otro objeto empotrable compuesto."
 
 #: src/widgets/sp-dock-item.c:554
 #, c-format
@@ -2696,7 +2703,8 @@ msgstr "Debe proporcionar un nombre para la distribución"
 #: src/widgets/sp-dock-layout.c:679
 #, c-format
 msgid "Could not load layout user interface file '%s'"
-msgstr "No se pudo cargar el archivo de distribución del interfaz de usuario «%s»"
+msgstr ""
+"No se pudo cargar el archivo de distribución del interfaz de usuario «%s»"
 
 #: src/widgets/sp-dock-layout.c:791 src/widgets/sp-dock-object.c:123
 msgid "Name"
@@ -2735,7 +2743,10 @@ msgstr "Título predeterminado para los acoplables flotantes creados"
 msgid ""
 "If is set to 1, all the dock items bound to the master are locked; if it's "
 "0, all are unlocked; -1 indicates inconsistency among the items"
-msgstr "Si se establece a 1, todos los elementos acoplable vinculados al maestro serán bloqueados; si es 0, todos serán desbloqueados; -1 indica inconsistencia entre los elementos"
+msgstr ""
+"Si se establece a 1, todos los elementos acoplable vinculados al maestro "
+"serán bloqueados; si es 0, todos serán desbloqueados; -1 indica "
+"inconsistencia entre los elementos"
 
 #: src/widgets/sp-dock-master.c:741
 #, c-format
@@ -2751,7 +2762,9 @@ msgstr ""
 msgid ""
 "The new dock controller %p is automatic.  Only manual dock objects should be "
 "named controller."
-msgstr "El controlador de empotrables %p es automático. Sólo los objetos empotrables manuales deberían llamarse controladores."
+msgstr ""
+"El controlador de empotrables %p es automático. Sólo los objetos empotrables "
+"manuales deberían llamarse controladores."
 
 #: src/widgets/sp-dock-notebook.c:136
 msgid "The index of the current page"
@@ -2782,26 +2795,32 @@ msgstr "El empotrable principal al que este objeto empotrable está vinculado"
 msgid ""
 "Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
 "hasn't implemented this method"
-msgstr "Llamada a sp_dock_object_dock en un objeto empotrable %p (el tipo del objeto es %s) que no tiene implantado este método"
+msgstr ""
+"Llamada a sp_dock_object_dock en un objeto empotrable %p (el tipo del objeto "
+"es %s) que no tiene implantado este método"
 
 #: src/widgets/sp-dock-object.c:537
 #, c-format
 msgid ""
 "Dock operation requested in a non-bound object %p. The application might "
 "crash"
-msgstr "Operación de empotrar solicitada a un objeto no vinculado %p. La aplicación puede colgarse"
+msgstr ""
+"Operación de empotrar solicitada a un objeto no vinculado %p. La aplicación "
+"puede colgarse"
 
 #: src/widgets/sp-dock-object.c:544
 #, c-format
 msgid "Cannot dock %p to %p because they belong to different masters"
-msgstr "No se puede empotrar %p en %p porque pertenecen a diferentes principales"
+msgstr ""
+"No se puede empotrar %p en %p porque pertenecen a diferentes principales"
 
 #: src/widgets/sp-dock-object.c:586
 #, c-format
-msgid "Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgid ""
+"Attempt to bind to %p an already bound dock object %p (current master: %p)"
 msgstr ""
-"Se intentó vincular con %p un objeto %p que ya está vinculado y empotrado (principal"
-"actual: %p)"
+"Se intentó vincular con %p un objeto %p que ya está vinculado y empotrado "
+"(principalactual: %p)"
 
 #: src/widgets/sp-dock-paned.c:134
 msgid "Position"
@@ -2819,7 +2838,9 @@ msgstr "Persistente"
 msgid ""
 "Whether the placeholder will stick to its host or move up the hierarchy when "
 "the host is redocked"
-msgstr "Indica si el contenedor permanecerá unido a su anfitrión o subirá por la jerarquía cuando el anfitrión sea reacoplado"
+msgstr ""
+"Indica si el contenedor permanecerá unido a su anfitrión o subirá por la "
+"jerarquía cuando el anfitrión sea reacoplado"
 
 #: src/widgets/sp-dock-placeholder.c:133
 msgid "Host"
@@ -3008,4 +3029,3 @@ msgstr "Valor"
 
 #~ msgid "A path - whatever it means"
 #~ msgstr "Una trayectoria - lo que signifique"
-
