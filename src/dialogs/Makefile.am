@@ -17,12 +17,14 @@ INCLUDES = \
 noinst_LIBRARIES = libspdialogs.a
 
 libspdialogs_a_SOURCES = \
-	object-fill.c object-fill.h \
-	object-stroke.c object-stroke.h \
 	text-edit.c text-edit.h \
 	export.c export.h \
 	xml-tree.c xml-tree.h \
 	align.c align.h	\
 	transformation.c transformation.h \
-	desktop-properties.c desktop-properties.h
+	desktop-properties.c desktop-properties.h \
+	object-properties.c object-properties.h
+
+#	object-fill.c object-fill.h
+#	object-stroke.c object-stroke.h
 

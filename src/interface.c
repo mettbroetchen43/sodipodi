@@ -1,7 +1,5 @@
 #define SP_INTERFACE_C
 
-#include <libgnome/gnome-defs.h>
-#include <libgnomeui/gnome-window-icon.h>
 #include "sodipodi.h"
 #include "interface.h"
 
@@ -33,12 +31,13 @@ sp_create_window (SPDesktop * desktop, gboolean editable)
 	gtk_widget_show (vb);
 	gtk_container_add (GTK_CONTAINER (w), vb);
 
-	gtk_box_pack_start (GTK_BOX (vb), GTK_WIDGET (desktop), TRUE, TRUE, 4);
+	gtk_box_pack_start (GTK_BOX (vb), GTK_WIDGET (desktop), TRUE, TRUE, 0);
 	gtk_widget_show (GTK_WIDGET (desktop));
 
-	hb = gtk_hbox_new (FALSE, 4);
+	hb = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (hb);
-	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 4);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
+
 
 	b = gtk_toggle_button_new_with_label ("Show guides");
 	gtk_widget_show (b);
@@ -90,8 +89,10 @@ sp_ui_close_view (GtkWidget * widget)
 static void
 fake_dialogs (void)
 {
-	sp_object_fill_dialog ();
-	sp_object_stroke_dialog ();
+	sp_object_properties_dialog ();
+    	sp_object_properties_fill ();
+    	sp_object_properties_stroke ();
+    	sp_object_properties_layout ();
 	sp_text_edit_dialog ();
 	sp_export_dialog ();
 	sp_xml_tree_dialog ();

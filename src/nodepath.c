@@ -1644,7 +1644,7 @@ sp_nodepath_update_object (SPNodePath * nodepath)
 	str = sp_svg_write_path (nodepath->bpath);
 	sp_repr_set_attr (nodepath->repr, "d", str);
 	g_free (str);
-	sp_repr_set_attr (nodepath->repr, "SODIPODI-PATH-NODE-TYPES", nodepath->typestr);
+	sp_repr_set_attr (nodepath->repr, "sodipodi:nodetypes", nodepath->typestr);
 #endif
 }
 
@@ -1690,7 +1690,7 @@ sp_nodepath_flush (SPNodePath * nodepath)
 
 	str[nodepath->n_bpaths] = '\0';
 
-	sp_repr_set_attr (nodepath->repr, "SODIPODI-PATH-NODE-TYPES", str);
+	sp_repr_set_attr (nodepath->repr, "sodipodi:nodetypes", str);
 	g_free (str);
 	sp_document_done (SP_DT_DOCUMENT (nodepath->desktop));
 }
@@ -1733,7 +1733,7 @@ sp_nodepath_set_selection (SPNodePath * nodepath)
 	typestr = g_new (gchar, n_bpaths);
 	for (i = 0; i < n_bpaths; i++) typestr[i] = 'c';
 	typestr[n_bpaths] = '\0';
-	rtstr = sp_repr_attr (SP_OBJECT (item)->repr, "SODIPODI-PATH-NODE-TYPES");
+	rtstr = sp_repr_attr (SP_OBJECT (item)->repr, "sodipodi:nodetypes");
 	if (rtstr != NULL) {
 		len = strlen (rtstr);
 		for (i = 0; (i < len) && (i < n_bpaths); i++) typestr[i] = rtstr[i];

@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include "svg/svg.h"
+#include "sodipodi-private.h"
 #include "sodipodi.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -171,6 +172,7 @@ sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[])
 	seltrans->changed = TRUE;
 
 	sp_sel_trans_update_handles (seltrans);
+
 }
 
 void
@@ -400,6 +402,8 @@ sp_sel_trans_handle_ungrab (SPKnot * knot, guint state, gpointer data)
 	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
 
 	sp_sel_trans_ungrab (seltrans);
+	sp_selection_changed (SP_DT_SELECTION (seltrans->desktop));
+
 }
 
 static void
@@ -452,6 +456,8 @@ sp_sel_trans_sel_changed (SPSelection * selection, gpointer data)
 	} else {
 		sp_sel_trans_update_volatile_state (seltrans);
 		sp_sel_trans_update_handles (seltrans);
+
 	}
+
 }
 

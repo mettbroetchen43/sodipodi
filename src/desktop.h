@@ -41,6 +41,7 @@ struct _SPDesktop {
 	GtkRuler * vruler;
         GtkWidget * active;
         GtkWidget * inactive;
+        GtkWidget * menubutton;   
 
 	SPDocument * document;
 	SPNamedView * namedview;

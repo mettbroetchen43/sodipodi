@@ -33,6 +33,9 @@ static void sp_desktop_destroy (GtkObject * object);
 static void sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
 
+void sp_desktop_indicator_on (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
+void sp_desktop_indicator_off (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
+
 /* fixme: */
 void sp_desktop_toggle_borders (GtkWidget * widget);
 
@@ -89,7 +92,7 @@ sp_desktop_class_init (SPDesktopClass * klass)
 static void
 sp_desktop_init (SPDesktop * desktop)
 {
-	GtkWidget * menu_button;
+  //	GtkWidget * menu_button;
 	GtkWidget * menu_arrow;
 	GtkWidget * hbox; 
 	GtkWidget * eventbox;
@@ -185,18 +188,21 @@ sp_desktop_init (SPDesktop * desktop)
 		GTK_EXPAND | GTK_FILL,
 		0,0);
 	/* menu button */
-	menu_button = gtk_button_new ();
-	gtk_widget_show (menu_button);
+	desktop->menubutton = gtk_button_new ();
+	gtk_widget_show (desktop->menubutton);
 	gtk_table_attach (desktop->table,
-		GTK_WIDGET (menu_button),
+		GTK_WIDGET (desktop->menubutton),
 		0,1,0,1,
 		FALSE,
 		FALSE,
 		0,0);
 	menu_arrow = gtk_arrow_new (GTK_ARROW_RIGHT,GTK_SHADOW_ETCHED_IN);
 	gtk_widget_show (menu_arrow);
-	gtk_container_add ((GtkContainer *)menu_button, menu_arrow);
-	gtk_signal_connect (GTK_OBJECT (menu_button), "button_press_event", GTK_SIGNAL_FUNC (sp_event_root_menu_popup), NULL);
+	gtk_container_add ((GtkContainer *)desktop->menubutton, menu_arrow);
+	gtk_signal_connect (GTK_OBJECT (desktop-> menubutton), 
+			    "button_press_event", 
+			    GTK_SIGNAL_FUNC (sp_event_root_menu_popup), 
+			    NULL);
 	/* indicator for active desktop */
 	hbox = gtk_vbox_new (FALSE, 0);
 	gtk_table_attach (desktop->table,
@@ -210,8 +216,18 @@ sp_desktop_init (SPDesktop * desktop)
 	gtk_box_pack_start ((GtkBox *) hbox, desktop->active, TRUE, TRUE, 0);
 	desktop->inactive = gnome_pixmap_new_from_file (SODIPODI_GLADEDIR "/dt_inactive.xpm");
 	gtk_box_pack_start ((GtkBox *) hbox, desktop->inactive, TRUE, TRUE, 0);
-	gtk_widget_show (desktop->active);
-	
+       	gtk_widget_show (desktop->inactive);
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "activate_desktop",
+					GTK_SIGNAL_FUNC (sp_desktop_indicator_on),
+					NULL,
+					GTK_OBJECT (desktop));
+
+	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "desactivate_desktop",
+					GTK_SIGNAL_FUNC (sp_desktop_indicator_off),
+					NULL,
+					GTK_OBJECT (desktop));
+
 }
 
 static void
@@ -350,6 +366,7 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 	return desktop;
 }
 
+
 void
 sp_desktop_show_decorations (SPDesktop * desktop, gboolean show)
 {
@@ -365,12 +382,37 @@ sp_desktop_show_decorations (SPDesktop * desktop, gboolean show)
 		gtk_widget_show (GTK_WIDGET (desktop->vscrollbar));
 		gtk_widget_show (GTK_WIDGET (desktop->hruler));
 		gtk_widget_show (GTK_WIDGET (desktop->vruler));
+		gtk_widget_show (GTK_WIDGET (desktop->menubutton));
+		gtk_widget_show (GTK_WIDGET (desktop->active));		
 	} else {
 		gtk_widget_hide (GTK_WIDGET (desktop->hscrollbar));
 		gtk_widget_hide (GTK_WIDGET (desktop->vscrollbar));
 		gtk_widget_hide (GTK_WIDGET (desktop->hruler));
 		gtk_widget_hide (GTK_WIDGET (desktop->vruler));
+		gtk_widget_hide (GTK_WIDGET (desktop->menubutton));
+		gtk_widget_hide (GTK_WIDGET (desktop->active));
+		gtk_widget_hide (GTK_WIDGET (desktop->inactive));
 	}
+}
+
+void
+sp_desktop_indicator_on (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data)
+{
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+	
+	gtk_widget_show (GTK_WIDGET (desktop->active));		
+	gtk_widget_hide (GTK_WIDGET (desktop->inactive));		
+}
+
+void
+sp_desktop_indicator_off (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data)
+{
+	g_assert (desktop != NULL);
+	g_assert (SP_IS_DESKTOP (desktop));
+	
+	gtk_widget_hide (GTK_WIDGET (desktop->active));		
+	gtk_widget_show (GTK_WIDGET (desktop->inactive));		
 }
 
 void

@@ -432,3 +432,41 @@ sp_selection_paste (GtkWidget * widget)
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
+void sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
+  SPItem * item;
+  GSList * l;
+  double curaff[6], newaff[6];
+
+  g_assert (SP_IS_SELECTION (selection));
+
+    
+  for (l = selection->items; l != NULL; l = l-> next) {
+    item = SP_ITEM (l->data);
+
+    sp_item_i2d_affine (item, curaff);
+    art_affine_multiply (newaff,curaff,affine);
+    sp_item_set_i2d_affine (item, newaff);    
+  }
+}
+
+
+void
+sp_selection_remove_transform (void) {
+  SPDesktop * desktop;
+  SPSelection * selection;
+  SPItem * item;
+  GSList * l;
+  double curaff[6], newaff[6];
+
+  desktop = SP_ACTIVE_DESKTOP;
+  if (desktop == NULL) return;
+  selection = SP_DT_SELECTION (desktop);
+  if (!SP_IS_SELECTION (selection)) return;
+
+  l = sp_selection_repr_list (selection);  
+  for (l; l != NULL; l = l-> next) sp_repr_set_attr (l->data,"transform", NULL);
+
+  sp_selection_changed (selection);
+  sp_document_done (SP_DT_DOCUMENT (desktop));
+
+}

@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include "rubberband.h"
+#include "sodipodi-private.h"
 #include "document.h"
 #include "selection.h"
 #include "desktop-affine.h"
@@ -159,6 +160,7 @@ sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, G
 			sp_sel_trans_ungrab (seltrans);
 			dragging = FALSE;
 			ret = TRUE;
+			sp_selection_changed (SP_DT_SELECTION (seltrans->desktop));
 			break;
 		default:
 			break;
@@ -300,6 +302,7 @@ sp_handle_stretch (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, d
 	art_affine_multiply (stretch, stretch, p2n);
 
 	sp_sel_trans_transform (seltrans, stretch);
+
 }
 
 void
@@ -412,6 +415,5 @@ sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state)
 	art_affine_translate (move, dx, dy);
 	sp_sel_trans_transform (seltrans, move);
 	sp_sel_trans_reset_state (seltrans);
-	sp_selection_changed (SP_DT_SELECTION (seltrans->desktop));
 }
 

@@ -209,7 +209,9 @@ sp_text_set_shape (SPText * text)
 	sp_chars_clear (chars);
 
 	face = gnome_font_unsized_closest (text->fontname, text->weight, text->italic);
+#if 0
 	if (!face) face = gnome_font_unsized_closest ("Helvetica", GNOME_FONT_BOOK, FALSE);
+#endif
 
 	if (text->face) gnome_font_face_unref (text->face);
 	text->face = face;

@@ -1,3 +1,16 @@
+2000-09-18  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/dialogs/object-properties.*: New combined fill + stroke +
+	transformation dialog by Frank Felfe
+
+	* glade/*.xpm: Lots of new icons etc. by Frank Felfe
+
+	* src/desktop.*, interface.c, select-context.c, seltrans.c: Changes
+
+	* selection-chemistry.* (sp_selection_apply_affine): New function by
+	Frank Felfe
+	(sp_selection_remove_transforms): Same
+
 2000-09-17  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/draw-context.c (sp_draw_context_root_handler): Handle Ctrl
