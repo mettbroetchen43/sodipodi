@@ -1,5 +1,7 @@
 2001-03-09  Lauris Kaplinski  <lauris@ximian.com>
 
+	* glade/Makefile.am (pixmaps): Added all pixmaps to dist
+
 	* configure.in: Version 0.22
 
 2001-03-09  Frank Felfe  <innerspace@iname.com>
