@@ -65,7 +65,7 @@ sp_chars_destroy (GtkObject *object)
 
 	while (chars->element) {
 		el = (SPCharElement *) chars->element->data;
-		sp_font_unref (el->font);
+		gnome_font_face_unref (el->face);
 		g_free (el);
 		chars->element = g_list_remove (chars->element, el);
 	}
@@ -87,10 +87,14 @@ sp_chars_set_shape (SPChars * chars)
 	sp_path_clear (SP_PATH (chars));
 
 	for (list = chars->element; list != NULL; list = list->next) {
+		const ArtBpath * bpath;
 		el = (SPCharElement *) list->data;
-		curve = sp_font_glyph_outline (el->font, el->glyph);
-		if (curve != NULL)
+		bpath = gnome_font_face_get_glyph_stdoutline (el->face, el->glyph);
+		curve = sp_curve_new_from_static_bpath ((ArtBpath *) bpath);
+		if (curve != NULL) {
 			sp_path_add_bpath (SP_PATH (chars), curve, FALSE, el->affine);
+			sp_curve_unref (curve);
+		}
 	}
 }
 
@@ -103,14 +107,14 @@ sp_chars_clear (SPChars * chars)
 
 	while (chars->element) {
 		el = (SPCharElement *) chars->element->data;
-		sp_font_unref (el->font);
+		gnome_font_face_unref (el->face);
 		g_free (el);
 		chars->element = g_list_remove (chars->element, el);
 	}
 }
 
 void
-sp_chars_add_element (SPChars * chars, guint glyph, SPFont * font, double affine[])
+sp_chars_add_element (SPChars * chars, guint glyph, GnomeFontFace * face, double affine[])
 {
 	SPCharElement * el;
 	gint i;
@@ -118,12 +122,33 @@ sp_chars_add_element (SPChars * chars, guint glyph, SPFont * font, double affine
 	el = g_new (SPCharElement, 1);
 
 	el->glyph = glyph;
-	el->font = font;
+	el->face = face;
 	for (i = 0; i < 6; i++) el->affine[i] = affine[i];
 
-	sp_font_ref (font);
+	gnome_font_face_ref (face);
 
 	chars->element = g_list_prepend (chars->element, el);
 	/* fixme: */
 	sp_chars_set_shape (chars);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,3 +1,18 @@
+2000-08-07  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* configure.in: Require gnome-print >= 0.21
+
+	* glade/text-dialog.glade: New layout, suitable for gnome-font-selection
+
+	* src/Makefile.am: Add libunicode
+
+	* src/sp-chars.h:
+	* src/sp-chars.c:
+	* src/sp-text.h:
+	* src/sp-text.c: Use gnome-font instead of wrapper
+
+	* src/dialogs/text-edit.c: Use new GnomeFontSelection and GnomeFontPreview
+	
 2000-08-03  Michael Meeks  <michael@helixcode.com>
 
 	* configure.in: update for BonoboX

@@ -11,3 +11,5 @@
 #undef USING_OAF
 #undef ENABLE_FRGBA
 #undef ENABLE_RBUF
+#undef NEW_FONT_MODEL
+

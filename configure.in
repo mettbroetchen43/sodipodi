@@ -20,6 +20,7 @@ GNOME_XML_CHECK
 GNOME_PRINT_CHECK
 AC_CHECK_HEADER(libgnomeprint/gnome-print-frgba.h,AC_DEFINE(ENABLE_FRGBA))
 AC_CHECK_HEADER(libgnomeprint/gnome-print-rbuf.h,AC_DEFINE(ENABLE_RBUF))
+AC_CHECK_HEADER(libgnomeprint/gnome-font-face.h,AC_DEFINE(NEW_FONT_MODEL))
 
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="da de et no ru sl sv tr uk"
@@ -87,6 +88,22 @@ fi
 AM_CONDITIONAL(BONOBO, $have_bonobo)
 AC_SUBST(EXTRA_BONOBO_GNOME_CFLAGS)
 AC_SUBST(EXTRA_BONOBO_GNOME_LIBS)
+
+dnl ******************************
+dnl GnomePrint checking
+dnl ******************************
+AC_MSG_CHECKING(for GnomePrint libraries >= 0.21)
+if gnome-config --libs print > /dev/null 2>&1; then
+vers=`gnome-config --modversion print | sed -e "s/gnome-print-//" -e 's/cvs$//' | \
+        awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
+    if test "$vers" -ge 21; then
+        AC_MSG_RESULT(found)
+    else
+         AC_MSG_ERROR(You need at least GNOME print 0.21 for this version of sodipodi)
+    fi
+else
+    AC_MSG_ERROR(Did not find GnomePrint installed)
+fi
 
 AC_OUTPUT([
 Makefile

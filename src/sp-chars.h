@@ -1,8 +1,8 @@
 #ifndef SP_CHARS_H
 #define SP_CHARS_H
 
+#include <libgnomeprint/gnome-font.h>
 #include "sp-shape.h"
-#include "font-wrapper.h"
 
 #define SP_TYPE_CHARS            (sp_chars_get_type ())
 #define SP_CHARS(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_CHARS, SPChars))
@@ -15,7 +15,7 @@ typedef struct _SPCharsClass SPCharsClass;
 
 typedef struct {
 	guint glyph;
-	SPFont * font;
+	GnomeFontFace * face;
 	double affine[6];
 } SPCharElement;
 
@@ -34,6 +34,8 @@ GtkType sp_chars_get_type (void);
 
 void sp_chars_clear (SPChars * chars);
 
-void sp_chars_add_element (SPChars * chars, guint glyph, SPFont * font, double affine[]);
+void sp_chars_add_element (SPChars * chars, guint glyph, GnomeFontFace * face, double affine[]);
 
 #endif
+
+

@@ -21,7 +21,7 @@ struct _SPText {
 	gchar * fontname;
 	GnomeFontWeight weight;
 	gboolean italic;
-	SPFont * font;
+	GnomeFontFace * face;
 	double size;
 };
 

@@ -2,9 +2,9 @@
 
 #include <gnome.h>
 #include <glade/glade.h>
+#include <libgnomeprint/gnome-font-dialog.h>
 #include "../xml/repr.h"
 #include "../svg/svg.h"
-#include "../font-wrapper.h"
 #include "../mdi-desktop.h"
 #include "../selection.h"
 #include "../desktop-handles.h"
@@ -25,16 +25,15 @@ void sp_text_family_select_row (GtkCList * c, gint row, gint column);
 void sp_text_family_unselect_row (GtkCList * c, gint row, gint column);
 
 void sp_text_dialog_text_changed (GtkEditable * editable, gpointer data);
+static void sp_text_dialog_font_changed (GnomeFontSelection * fontsel, GnomeFont * font, gpointer data);
 
 static GladeXML * xml = NULL;
 static GtkWidget * dialog = NULL;
+static GtkWidget * fontsel = NULL;
+static GtkWidget * preview = NULL;
 
 gchar * fontname = NULL;
 GtkText * ttext;
-GtkCList * clfamily;
-GtkCombo * cstyle;
-GtkSpinButton * ssize;
-const gchar * familyname = NULL;
 
 static SPCSSAttr * css = NULL;
 
@@ -45,24 +44,21 @@ static SPSelection * sel_current;
 
 void sp_text_edit_dialog (void)
 {
-	GList * fonts, * l;
-	SPFontFamilyInfo * family;
-	gint row;
-
 	if (xml == NULL) {
+		GtkWidget * vb;
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/text-dialog.glade", "text_dialog");
 		glade_xml_signal_autoconnect (xml);
 		dialog = glade_xml_get_widget (xml, "text_dialog");
-		clfamily = (GtkCList *) glade_xml_get_widget (xml, "family");
-		fonts = sp_font_family_list ();
-		for (l = fonts; l != NULL; l = l->next) {
-			family = (SPFontFamilyInfo *) l->data;
-			row = gtk_clist_append (clfamily, &family->name);
-			gtk_clist_set_row_data (clfamily, row, GINT_TO_POINTER (g_quark_from_string (family->name)));
-		}
-		cstyle = (GtkCombo *) glade_xml_get_widget (xml, "style");
-		ssize = (GtkSpinButton *) glade_xml_get_widget (xml, "size");
 		ttext = (GtkText *) glade_xml_get_widget (xml, "text");
+		vb = glade_xml_get_widget (xml, "vbox");
+		fontsel = gnome_font_selection_new ();
+		gtk_signal_connect (GTK_OBJECT (fontsel), "font_set",
+				    GTK_SIGNAL_FUNC (sp_text_dialog_font_changed), NULL);
+		gtk_widget_show (fontsel);
+		gtk_box_pack_start ((GtkBox *) vb, fontsel, TRUE, TRUE, 4);
+		preview = gnome_font_preview_new ();
+		gtk_widget_show (preview);
+		gtk_box_pack_start ((GtkBox *) vb, preview, TRUE, TRUE, 4);
 	}
 
 	sp_text_read_selection ();
@@ -76,12 +72,13 @@ sp_text_read_selection (void)
 	SPRepr * repr;
 	SPCSSAttr * settings;
 	gint pos;
-	const gchar * str, * sfamily, * sstyle;
-	gint row;
+	const gchar * str;
+	const gchar * family;
 	GnomeFontWeight weight;
 	gboolean italic;
 	double size;
 	SPSVGUnit units;
+	GnomeFont * font;
  
 	g_return_if_fail (dialog != NULL);
 
@@ -106,33 +103,29 @@ sp_text_read_selection (void)
 
 	str = sp_repr_content (repr);
 	gtk_editable_delete_text (GTK_EDITABLE (ttext), 0, -1);
-	gtk_editable_insert_text (GTK_EDITABLE (ttext), str, strlen (str), &pos);
+
+	if (str) {
+		gtk_editable_insert_text (GTK_EDITABLE (ttext), str, strlen (str), &pos);
+	}
 
 	css = sp_repr_css_attr_new ();
 
 	settings = sp_repr_css_attr_inherited (repr, "style");
 
-	str = sp_repr_css_property (settings, "font-family", "Helvetica");
-	sfamily = str;
-	row = gtk_clist_find_row_from_data (clfamily, GINT_TO_POINTER (g_quark_from_string (sfamily)));
-	if (row > 0) gtk_clist_select_row (clfamily, row, 0);
-
+	family = sp_repr_css_property (settings, "font-family", "Helvetica");
 	str = sp_repr_css_property (settings, "font-weight", "normal");
 	weight = sp_svg_read_font_weight (str);
 	str = sp_repr_css_property (settings, "font-style", "normal");
 	italic = sp_svg_read_font_italic (str);
-	sstyle = "Normal";
-	if (weight == GNOME_FONT_BOOK) {
-		if (italic) sstyle = "Italic";
-	} else {
-		sstyle = "Bold";
-		if (italic) sstyle = "Bold-Italic";
-	}
-	gtk_entry_set_text ((GtkEntry *) cstyle->entry, sstyle);
-
 	str = sp_repr_css_property (settings, "font-size", "12pt");
 	size = sp_svg_read_length (&units, str);
-	gtk_spin_button_set_value (ssize, size);
+
+	font = gnome_font_new_closest (family, weight, italic, size);
+
+	if (font != NULL) {
+		gnome_font_selection_set_font ((GnomeFontSelection *) fontsel, font);
+		gnome_font_unref (font);
+	}
 
 	sp_repr_css_attr_unref (settings);
 }
@@ -141,10 +134,12 @@ void
 sp_text_dialog_apply (GnomePropertyBox * propertybox, gint pagenum)
 {
 	SPRepr * repr;
-	gchar * str;
+	const gchar * str;
+	GnomeFontWeight weight;
 	double size;
 	SPCSSAttr * css;
 	gchar c[64];
+	GnomeFont * font;
 
 	repr = sp_selection_repr (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
 	if (repr == NULL) return;
@@ -155,28 +150,31 @@ sp_text_dialog_apply (GnomePropertyBox * propertybox, gint pagenum)
 
 	css = sp_repr_css_attr_new ();
 
-	if (familyname != NULL)
-		sp_repr_css_set_property (css, "font-family", g_strdup (familyname));
-	str = gtk_entry_get_text ((GtkEntry *) cstyle->entry);
-	if (strcmp (str, "Normal") == 0) {
-		sp_repr_css_set_property (css, "font-weight", g_strdup ("normal"));
-		sp_repr_css_set_property (css, "font-style", g_strdup ("normal"));
+	font = gnome_font_selection_get_font ((GnomeFontSelection *) fontsel);
+
+	str = gnome_font_get_family_name (font);
+	sp_repr_css_set_property (css, "font-family", g_strdup (str));
+
+	weight = gnome_font_get_weight_code (font);
+	if (weight < GNOME_FONT_SEMI) {
+		str = "normal";
+	} else {
+		str = "bold";
 	}
-	if (strcmp (str, "Italic") == 0) {
-		sp_repr_css_set_property (css, "font-weight", g_strdup ("normal"));
-		sp_repr_css_set_property (css, "font-style", g_strdup ("italic"));
+	sp_repr_css_set_property (css, "font-weight", g_strdup (str));
+
+	if (gnome_font_is_italic (font)) {
+		str = "italic";
+	} else {
+		str = "normal";
 	}
-	if (strcmp (str, "Bold") == 0) {
-		sp_repr_css_set_property (css, "font-weight", g_strdup ("bold"));
-		sp_repr_css_set_property (css, "font-style", g_strdup ("normal"));
-	}
-	if (strcmp (str, "Bold-Italic") == 0) {
-		sp_repr_css_set_property (css, "font-weight", g_strdup ("bold"));
-		sp_repr_css_set_property (css, "font-style", g_strdup ("italic"));
-	}
-	size = gtk_spin_button_get_value_as_float (ssize);
+	sp_repr_css_set_property (css, "font-style", g_strdup (str));
+
+	size = gnome_font_get_size (font);
 	snprintf (c, 64, "%f", size);
 	sp_repr_css_set_property (css, "font-size", g_strdup (c));
+
+	gnome_font_unref (font);
 
 	sp_repr_css_change (repr, css, "style");
 	sp_repr_css_attr_unref (css);
@@ -190,23 +188,27 @@ sp_text_dialog_close (void)
 	sp_text_hide_dialog ();
 }
 
-void
-sp_text_family_select_row (GtkCList * c, gint row, gint column)
-{
-	gpointer data;
-	data = gtk_clist_get_row_data (clfamily, row);
-	familyname = g_quark_to_string (GPOINTER_TO_INT (data));
-}
-
-void
-sp_text_family_unselect_row (GtkCList * c, gint row, gint column)
-{
-	familyname = NULL;
-}
 
 void
 sp_text_dialog_text_changed (GtkEditable * editable, gpointer data)
 {
+	const gchar * str;
+
+	str = gtk_editable_get_chars ((GtkEditable *) ttext, 0, -1);
+	if (strlen (str) > 0) {
+		gnome_font_preview_set_phrase ((GnomeFontPreview *) preview, str);
+	} else {
+		gnome_font_preview_set_phrase ((GnomeFontPreview *) preview, NULL);
+	}
+
+	gnome_property_box_changed (GNOME_PROPERTY_BOX (dialog));
+}
+
+static void
+sp_text_dialog_font_changed (GnomeFontSelection * fontsel, GnomeFont * font, gpointer data)
+{
+	gnome_font_preview_set_font ((GnomeFontPreview *) preview, font);
+
 	gnome_property_box_changed (GNOME_PROPERTY_BOX (dialog));
 }
 

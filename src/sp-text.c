@@ -62,7 +62,7 @@ sp_text_init (SPText *text)
 	text->fontname = g_strdup ("Helvetica");
 	text->weight = GNOME_FONT_BOOK;
 	text->italic = FALSE;
-	text->font = NULL;
+	text->face = NULL;
 	text->size = 12.0;
 }
 
@@ -80,8 +80,8 @@ sp_text_destroy (GtkObject *object)
 		g_free (text->text);
 	if (text->fontname)
 		g_free (text->fontname);
-	if (text->font)
-		sp_font_unref (text->font);
+	if (text->face)
+		gnome_font_face_unref (text->face);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -135,9 +135,9 @@ sp_text_read_attr (SPObject * object, const gchar * attr)
 		if (text->fontname)
 			g_free (text->fontname);
 		text->fontname = g_strdup (fontname);
-		if (text->font)
-			sp_font_unref (text->font);
-		text->font = NULL;
+		if (text->face)
+			gnome_font_face_unref (text->face);
+		text->face = NULL;
 		text->size = size;
 		text->weight = weight;
 		text->italic = italic;
@@ -176,7 +176,7 @@ static void
 sp_text_set_shape (SPText * text)
 {
 	SPChars * chars;
-	SPFont * font;
+	GnomeFontFace * face;
 	guchar * c;
 	guint glyph;
 	gdouble x, y;
@@ -187,10 +187,10 @@ sp_text_set_shape (SPText * text)
 
 	sp_chars_clear (chars);
 
-	font = sp_font_get (text->fontname, text->weight, text->italic);
-	if (text->font)
-		sp_font_unref (text->font);
-	text->font = font;
+	face = gnome_font_unsized_closest (text->fontname, text->weight, text->italic);
+
+	if (text->face) gnome_font_face_unref (text->face);
+	text->face = face;
 
 	x = text->x;
 	y = text->y;
@@ -206,11 +206,11 @@ sp_text_set_shape (SPText * text)
 			y += text->size;
 			break;
 		default:
-			w = sp_font_glyph_width (font, glyph);
+			w = gnome_font_face_get_glyph_width (face, glyph);
 			w = w * text->size / 1000.0;
 			art_affine_translate (trans, x, y);
 			art_affine_multiply (a, scale, trans);
-			sp_chars_add_element (chars, glyph, text->font, a);
+			sp_chars_add_element (chars, glyph, text->face, a);
 			x += w;
 		}
 		}
