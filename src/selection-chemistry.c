@@ -16,6 +16,9 @@
 #include "desktop-handles.h"
 #include "selection-chemistry.h"
 
+/* fixme: find a better place */
+GSList * clipboard = NULL;
+
 void
 sp_selection_delete (GtkWidget * widget)
 {
@@ -351,15 +354,69 @@ sp_redo (GtkWidget * widget)
 void
 sp_selection_cut (GtkWidget * widget)
 {
+	sp_selection_copy (widget);
+	sp_selection_delete (widget);
 }
 
 void
 sp_selection_copy (GtkWidget * widget)
 {
+	SPDesktop * desktop;
+	SPSelection * selection;
+	SPRepr * repr, * copy;
+	SPCSSAttr * css;
+	const GSList * sl, * l;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	g_return_if_fail (desktop != NULL);
+
+	selection = SP_DT_SELECTION (desktop);
+	if (sp_selection_is_empty (selection)) return;
+
+	sl = sp_selection_repr_list (selection);
+
+	while (clipboard) {
+		sp_repr_unref ((SPRepr *) clipboard->data);
+		clipboard = g_slist_remove_link (clipboard, clipboard);
+	}
+
+	for (l = sl; l != NULL; l = l->next) {
+		repr = (SPRepr *) l->data;
+		css = sp_repr_css_attr_inherited (repr, "style");
+		copy = sp_repr_copy (repr);
+		sp_repr_css_set (copy, css, "style");
+		sp_repr_css_attr_unref (css);
+
+		clipboard = g_slist_append (clipboard, copy);
+	}
 }
 
 void
 sp_selection_paste (GtkWidget * widget)
 {
+	SPDesktop * desktop;
+	SPSelection * selection;
+	GSList * l;
+	SPRepr * repr, * copy;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	g_assert (SP_IS_DESKTOP (desktop));
+
+	selection = SP_DT_SELECTION (desktop);
+	g_assert (selection != NULL);
+	g_assert (SP_IS_SELECTION (selection));
+
+	sp_selection_empty (selection);
+
+	for (l = clipboard; l != NULL; l = l->next) {
+		repr = (SPRepr *) clipboard->data;
+		copy = sp_repr_copy (repr);
+		sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
+		sp_repr_unref (copy);
+		sp_selection_add_repr (selection, copy);
+	}
+
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 

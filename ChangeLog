@@ -1,3 +1,7 @@
+2000-04-24  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/selection-chemistry.c: Implemented Cut/Copy/Paste
+
 2000-04-23  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/document.h: added aspect and clip attributes
