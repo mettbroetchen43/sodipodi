@@ -1,3 +1,7 @@
+2001-12-28  Simos Xenitellis  <simos@hellug.gr>
+
+	* configure.in: Added "el" (Greek) to ALL_LINGUAS.
+
 2001-12-28  Lauris Kaplinski  <lauris@localhost.localdomain>
 
 	* src/sp-gradient.c: Lot of changes due to class member rearrangement
