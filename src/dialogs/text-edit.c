@@ -470,7 +470,15 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean dostyle, gboolean d
 			guchar *str;
 			str = sp_text_get_string_multiline (text);
 			if (str && *str) {
-				e_utf8_gtk_editable_set_text (GTK_EDITABLE (textw), str);
+				gchar *gtkstr;
+				int pos;
+				pos = 0;
+				gtk_text_freeze (GTK_TEXT (textw));
+				gtk_editable_delete_text (GTK_EDITABLE (textw), 0, -1);
+				gtkstr = e_utf8_to_gtk_string (textw, str);
+				gtk_editable_insert_text (GTK_EDITABLE (textw), gtkstr, strlen (gtkstr), &pos);
+				g_free (gtkstr);
+				gtk_text_thaw (GTK_TEXT (textw));
 				sp_font_preview_set_phrase (SP_FONT_PREVIEW (preview), str);
 				g_free (str);
 			} else {

@@ -1682,8 +1682,12 @@ sp_canvas_motion (GtkWidget *widget, GdkEventMotion *event)
 
 	canvas = SP_CANVAS (widget);
 
-	if (event->window != canvas->layout.bin_window)
-		return FALSE;
+	if (event->window != canvas->layout.bin_window) return FALSE;
+
+	if (canvas->grabbed_event_mask & GDK_POINTER_MOTION_HINT_MASK) {
+		gint x, y;
+		gdk_window_get_pointer (widget->window, &x, &y, 0);
+	}
 
 	canvas->state = event->state;
 	pick_current_item (canvas, (GdkEvent *) event);

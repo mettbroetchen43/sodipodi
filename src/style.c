@@ -41,9 +41,6 @@ static void sp_style_read_dash (ArtVpathDash *dash, const guchar *str);
 
 static SPTextStyle *sp_text_style_new (void);
 static void sp_text_style_clear (SPTextStyle *ts);
-#if 0
-static SPTextStyle *sp_text_style_ref (SPTextStyle *st);
-#endif
 static SPTextStyle *sp_text_style_unref (SPTextStyle *st);
 static SPTextStyle *sp_text_style_duplicate_unset (SPTextStyle *st);
 static guint sp_text_style_write (guchar *p, guint len, SPTextStyle *st);
@@ -1196,16 +1193,6 @@ sp_text_style_clear (SPTextStyle *ts)
 	ts->unicode_bidi_set = FALSE;
 }
 
-#if 0
-static SPTextStyle *
-sp_text_style_ref (SPTextStyle *st)
-{
-	st->refcount += 1;
-
-	return st;
-}
-#endif
-
 static SPTextStyle *
 sp_text_style_unref (SPTextStyle *st)
 {
@@ -1234,27 +1221,6 @@ sp_text_style_duplicate_unset (SPTextStyle *st)
 
 	return nt;
 }
-
-#if 0
-static guint
-sp_text_style_write_property (guchar *p, guint len, const guchar *key, const guchar *value)
-{
-	guint klen, vlen;
-
-	klen = strlen (key);
-	vlen = strlen (value);
-
-	if ((klen + vlen + 2) <= len) {
-		memcpy (p, key, klen);
-		*(p + klen) = ':';
-		memcpy (p + klen + 1, value, vlen);
-		*(p + klen + vlen + 1) = ';';
-		return klen + vlen + 2;
-	}
-
-	return 0;
-}
-#endif
 
 static guint
 sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
@@ -1395,6 +1361,7 @@ sp_style_read_iscale24 (SPIScale24 *val, const guchar *str)
 			val->set = TRUE;
 			val->inherit = FALSE;
 			val->value = SP_SCALE24_FROM_FLOAT (value);
+			val->value = CLAMP (val->value, 0, SP_SCALE24_MAX);
 		}
 	}
 }

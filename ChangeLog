@@ -1,5 +1,15 @@
 2002-11-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/helper/sp-canvas.c (sp_canvas_motion): Get pointer if motion hints are requested
+
+	* src/select-context.c (sp_select_context_item_handler): Use motion hints
+
+	* src/dialogs/text-edit.c (sp_text_edit_dialog_read_selection): Kill annoying
+	warning about position > length
+
+	* src/style.h (SP_SCALE24_FROM_FLOAT): Use temporary (double) cast
+	(SP_SCALE24_TO_FLOAT): Ditto
+
 	* src/dialogs/xml-tree.c (cmd_set_attr): Use gal unicode wrappers
 
 	* src/widgets/sp-xmlview-attr-list.c (event_attr_changed): Use gal unicode wrappers

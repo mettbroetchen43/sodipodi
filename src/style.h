@@ -43,8 +43,8 @@ struct _SPIFloat {
 };
 
 #define SP_SCALE24_MAX ((1 << 24) - 1)
-#define SP_SCALE24_TO_FLOAT(v) ((float) (v) / SP_SCALE24_MAX)
-#define SP_SCALE24_FROM_FLOAT(v) ((int) ((v) * (SP_SCALE24_MAX + 0.9999)))
+#define SP_SCALE24_TO_FLOAT(v) ((float) ((double) (v) / SP_SCALE24_MAX))
+#define SP_SCALE24_FROM_FLOAT(v) ((int) ((v) * ((double) SP_SCALE24_MAX + 0.9999)))
 
 struct _SPIScale24 {
 	guint set : 1;

@@ -669,7 +669,13 @@ nr_arena_glyphs_group_set_paintbox (NRArenaGlyphsGroup *gg, const ArtDRect *pbox
 	g_return_if_fail (pbox->x1 > pbox->x0);
 	g_return_if_fail (pbox->y1 > pbox->y0);
 
-	memcpy (&gg->paintbox, pbox, sizeof (ArtDRect));
+	if ((pbox->x0 < pbox->x1) && (pbox->y0 < pbox->y1)) {
+		memcpy (&gg->paintbox, pbox, sizeof (ArtDRect));
+	} else {
+		/* fixme: We kill warning, although not sure what to do here (Lauris) */
+		gg->paintbox.x0 = gg->paintbox.y0 = 0.0;
+		gg->paintbox.x1 = gg->paintbox.y1 = 256.0;
+	}
 
 	nr_arena_item_request_update (NR_ARENA_ITEM (gg), NR_ARENA_ITEM_STATE_ALL, FALSE);
 }
