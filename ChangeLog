@@ -1,3 +1,9 @@
+2003-01-28  gettextize  <bug-gnu-gettext@gnu.org>
+
+	* Makefile.am (SUBDIRS): Add intl, m4.
+	(EXTRA_DIST): Add config.rpath.
+	* configure.in (AC_OUTPUT): Add intl/Makefile, po/Makefile.in, m4/Makefile.
+
 2003-01-28  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnrtype/codepages.h: Win9x codepage declarations

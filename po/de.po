@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.24.x\n"
-"POT-Creation-Date: 2003-01-19 02:00+0200\n"
+"POT-Creation-Date: 2003-01-28 21:19+0200\n"
 "PO-Revision-Date: 2002-11-19 22:17+0100\n"
 "Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -20,53 +20,95 @@ msgstr ""
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Die sodipodi-svg-doc-Fabrik konnte nicht erstellt werden"
 
-#: src/desktop.c:669
+#: src/desktop.c:672
 msgid "Whether zoom follows window size"
 msgstr ""
 
-#: src/desktop.c:747
+#: src/desktop.c:751
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:850
+#: src/desktop.c:872
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s hat ungespeicherte Änderungen, diese speichern?"
 
-#: src/dialogs/align.c:122 src/toolbox.c:391
+#: src/dialogs/align.c:120 src/toolbox.c:407
 msgid "Align objects"
 msgstr "Objekte ausrichten"
 
-#: src/dialogs/align.c:180
+#: src/dialogs/align.c:138
+#, fuzzy
+msgid "Right side of aligned objects to left side of anchor"
+msgstr "Innerhalb des Objektes an der linken Kante ausrichten"
+
+#: src/dialogs/align.c:140
+msgid "Left side of aligned objects to left side of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:142
+#, fuzzy
+msgid "Center horizontally"
+msgstr "horizontal spiegeln"
+
+#: src/dialogs/align.c:144
+#, fuzzy
+msgid "Right side of aligned objects to right side of anchor"
+msgstr "Innerhalb des Objektes an der rechten Kante ausrichten"
+
+#: src/dialogs/align.c:146
+msgid "Left side of aligned objects to right side of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:149
+msgid "Bottom of aligned objects to top of anchor"
+msgstr ""
+
+#: src/dialogs/align.c:151 src/dialogs/align.c:157
+#, fuzzy
+msgid "Top of aligned objects to top of anchor"
+msgstr "Innerhalb des Objektes an der oberen Kante ausrichten"
+
+#: src/dialogs/align.c:153
+#, fuzzy
+msgid "Center vertically"
+msgstr "vertikal spiegeln"
+
+#: src/dialogs/align.c:155
+#, fuzzy
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr "Innerhalb des Objektes an der unteren Kante ausrichten"
+
+#: src/dialogs/align.c:189
 msgid "Last selected"
 msgstr "Zuletzt markiert"
 
-#: src/dialogs/align.c:181
+#: src/dialogs/align.c:190
 msgid "First selected"
 msgstr "Zuerst markiert"
 
-#: src/dialogs/align.c:182
+#: src/dialogs/align.c:191
 msgid "Biggest item"
 msgstr "Größtes Objekt"
 
-#: src/dialogs/align.c:183
+#: src/dialogs/align.c:192
 msgid "Smallest item"
 msgstr "Kleinstes Objekt"
 
-#: src/dialogs/align.c:184 src/dialogs/desktop-properties.c:429
-#: src/dialogs/document-properties.c:162 src/dialogs/export.c:126
-#: src/interface.c:311
+#: src/dialogs/align.c:193 src/dialogs/desktop-properties.c:423
+#: src/dialogs/document-properties.c:164 src/dialogs/export.c:126
+#: src/interface.c:361
 msgid "Page"
 msgstr "Seite"
 
 # not sure here -cm-
-#: src/dialogs/align.c:185 src/dialogs/export.c:131 src/interface.c:310
+#: src/dialogs/align.c:194 src/dialogs/export.c:131 src/interface.c:360
 msgid "Drawing"
 msgstr "Zeichnung"
 
-#: src/dialogs/align.c:186 src/dialogs/export.c:136 src/interface.c:309
-#: src/interface.c:444 src/toolbox.c:430
+#: src/dialogs/align.c:195 src/dialogs/export.c:136 src/interface.c:359
+#: src/interface.c:498 src/toolbox.c:446
 msgid "Selection"
 msgstr "Auswahl"
 
@@ -144,20 +186,20 @@ msgstr "Linien-Farbe:"
 msgid "Guideline color"
 msgstr "Linien-Farbe:"
 
-#: src/dialogs/desktop-properties.c:416
+#: src/dialogs/desktop-properties.c:413
 msgid "Highlight color:"
 msgstr "Hervorhebungsfarbe:"
 
-#: src/dialogs/desktop-properties.c:420
+#: src/dialogs/desktop-properties.c:417
 #, fuzzy
-msgid "Highlihted gudeline color"
+msgid "Highlighted guideline color"
 msgstr "Hervorhebungsfarbe:"
 
-#: src/dialogs/desktop-properties.c:438
+#: src/dialogs/desktop-properties.c:432
 msgid "Show border"
 msgstr "Kante anzeigen"
 
-#: src/dialogs/desktop-properties.c:676
+#: src/dialogs/desktop-properties.c:670
 #, fuzzy
 msgid "Close"
 msgstr "Nahansicht"
@@ -202,15 +244,15 @@ msgstr "Eingabe"
 msgid "Default cursor tolerance:"
 msgstr "Vorgegebene Cursor-Toleranz:"
 
-#: src/dialogs/document-properties.c:153
+#: src/dialogs/document-properties.c:155
 msgid "Document settings"
 msgstr "Dokument-Einstellungen"
 
-#: src/dialogs/document-properties.c:174
+#: src/dialogs/document-properties.c:176
 msgid "Paper size:"
 msgstr "Papiergröße:"
 
-#: src/dialogs/document-properties.c:196
+#: src/dialogs/document-properties.c:197
 msgid "Custom"
 msgstr "Selbst definieren"
 
@@ -219,15 +261,15 @@ msgid "Custom paper"
 msgstr "Benutzerdefiniertes Papier"
 
 #: src/dialogs/document-properties.c:215 src/dialogs/export.c:144
-#: src/dialogs/object-properties.c:304 src/dialogs/transformation.c:399
-#: src/dialogs/transformation.c:575
+#: src/dialogs/object-properties.c:304 src/dialogs/transformation.c:402
+#: src/dialogs/transformation.c:577
 msgid "Units:"
 msgstr "Einheiten:"
 
 #: src/dialogs/document-properties.c:224 src/dialogs/export.c:165
 #: src/dialogs/export.c:200 src/dialogs/object-attributes.c:67
 #: src/dialogs/object-attributes.c:75 src/dialogs/object-properties.c:346
-#: src/dialogs/stroke-style.c:540 src/dialogs/tool-attributes.c:119
+#: src/dialogs/stroke-style.c:540 src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1074
 msgid "Width:"
 msgstr "Breite:"
@@ -278,7 +320,7 @@ msgstr "dpi"
 msgid "Export png file"
 msgstr "PNG-Datei exportieren"
 
-#: src/dialogs/export.c:235 src/interface.c:215
+#: src/dialogs/export.c:235 src/interface.c:221
 msgid "Export"
 msgstr "Exportieren"
 
@@ -370,7 +412,7 @@ msgstr "Bogenrolle:"
 msgid "Title:"
 msgstr "Titel:"
 
-#: src/dialogs/object-attributes.c:36 src/dialogs/tool-attributes.c:109
+#: src/dialogs/object-attributes.c:36 src/dialogs/tool-attributes.c:110
 msgid "Show:"
 msgstr "Zeigen:"
 
@@ -410,7 +452,7 @@ msgstr "ARG2:"
 msgid "Expansion:"
 msgstr "Ausdehnung:"
 
-#: src/dialogs/object-attributes.c:56 src/dialogs/tool-attributes.c:89
+#: src/dialogs/object-attributes.c:56 src/dialogs/tool-attributes.c:90
 #: src/spiral-context.c:350
 msgid "Revolution:"
 msgstr "Umdrehung:"
@@ -506,7 +548,7 @@ msgstr "Freihändig und Stift"
 msgid "Calligraphic line"
 msgstr "Kalligraphische Linie"
 
-#: src/dialogs/object-properties.c:195 src/interface.c:337
+#: src/dialogs/object-properties.c:195 src/interface.c:391
 msgid "Text"
 msgstr "Text"
 
@@ -518,7 +560,7 @@ msgstr "Position und Größe des Objekts"
 msgid "Position and size"
 msgstr "Position und Größe"
 
-#: src/dialogs/stroke-style.c:527 src/toolbox.c:387
+#: src/dialogs/stroke-style.c:527 src/toolbox.c:403
 msgid "Stroke settings"
 msgstr "Linien-Einstellungen"
 
@@ -558,85 +600,85 @@ msgstr "Text und Schrift"
 msgid "Set as default"
 msgstr "Als Vorgabe verwenden"
 
-#: src/dialogs/tool-attributes.c:44
+#: src/dialogs/tool-attributes.c:45
 msgid "Tool attributes"
 msgstr "Werkzeug-Attribute"
 
-#: src/dialogs/tool-attributes.c:89
+#: src/dialogs/tool-attributes.c:90
 msgid "Expansion"
 msgstr "Ausdehnung"
 
-#: src/dialogs/tool-attributes.c:89
+#: src/dialogs/tool-attributes.c:90
 msgid "Inner radius"
 msgstr "Innerer Radius"
 
-#: src/dialogs/tool-attributes.c:93 src/dialogs/tool-attributes.c:103
-#: src/dialogs/tool-attributes.c:113 src/dialogs/tool-attributes.c:123
+#: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
+#: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
 msgid "Missing tool preferences"
 msgstr "Fehlende Werkzeug-Einstellungen"
 
-#: src/dialogs/tool-attributes.c:99 src/star-context.c:355
+#: src/dialogs/tool-attributes.c:100 src/star-context.c:355
 msgid "Corners:"
 msgstr "Ecken:"
 
-#: src/dialogs/tool-attributes.c:99
+#: src/dialogs/tool-attributes.c:100
 msgid "Proportion"
 msgstr "Verhältnis"
 
-#: src/dialogs/tool-attributes.c:109
+#: src/dialogs/tool-attributes.c:110
 msgid "Transform:"
 msgstr "Abbildung:"
 
-#: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1038
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1038
 msgid "Mass:"
 msgstr "Masse:"
 
-#: src/dialogs/tool-attributes.c:119 src/dyna-draw-context.c:1050
+#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1050
 msgid "Drag:"
 msgstr "Ziehen:"
 
-#: src/dialogs/tool-attributes.c:119
+#: src/dialogs/tool-attributes.c:120
 msgid "Angle"
 msgstr "Winkel"
 
-#: src/dialogs/tool-attributes.c:126
+#: src/dialogs/tool-attributes.c:127
 msgid "Tool has no attributes"
 msgstr "Werkzeug hat keine Attribute"
 
-#: src/dialogs/tool-attributes.c:129 src/dialogs/tool-options.c:91
+#: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:89
 msgid "No active tool"
 msgstr "Kein aktives Werkzeug"
 
-#: src/dialogs/tool-options.c:47
+#: src/dialogs/tool-options.c:45
 msgid "Tool options"
 msgstr "Werkzeug-Optionen"
 
-#: src/dialogs/tool-options.c:88
+#: src/dialogs/tool-options.c:86
 msgid "Tool has no options"
 msgstr "Werkzeug hat keine Optionen"
 
-#: src/dialogs/transformation.c:191
+#: src/dialogs/transformation.c:194
 msgid "Transform selection"
 msgstr "Auswahl abbilden"
 
-#: src/dialogs/transformation.c:363
+#: src/dialogs/transformation.c:366
 msgid "Move"
 msgstr "Verschieben"
 
-#: src/dialogs/transformation.c:405
+#: src/dialogs/transformation.c:408
 #, fuzzy
 msgid "Relative move"
 msgstr "Vertikale Bewegung"
 
-#: src/dialogs/transformation.c:538 src/interface.c:313
+#: src/dialogs/transformation.c:540 src/interface.c:363
 msgid "Scale"
 msgstr "Maßstab"
 
-#: src/dialogs/transformation.c:665
+#: src/dialogs/transformation.c:667
 msgid "Rotate"
 msgstr "Drehen"
 
-#: src/dialogs/transformation.c:683
+#: src/dialogs/transformation.c:685
 msgid "deg"
 msgstr "Grad"
 
@@ -733,17 +775,22 @@ msgstr "Winkel:"
 msgid "Defaults"
 msgstr "Vorgaben"
 
-#: src/print.c:340
+#: src/print.c:334
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (Dateiname %s): Druckvorschau"
 
-#: src/print.c:381 src/print.c:392
+#: src/print.c:357
+#, fuzzy
+msgid "Select printer"
+msgstr "Auswahl"
+
+#: src/print.c:397 src/print.c:408
 #, fuzzy
 msgid "Print destination"
 msgstr "Zeichnung drucken"
 
-#: src/print.c:399
+#: src/print.c:415
 msgid ""
 "Enter destination lpr queue.\n"
 "Use '> filename' to print to file.\n"
@@ -958,235 +1005,248 @@ msgstr "ex"
 msgid "Ex squares"
 msgstr "Ix-Quadrate"
 
-#: src/interface.c:209 src/interface.c:362
+#: src/interface.c:215 src/interface.c:416
 msgid "New"
 msgstr "Neu"
 
-#: src/interface.c:210 src/interface.c:363
+#: src/interface.c:216 src/interface.c:417
 msgid "Open"
 msgstr "Öffnen"
 
-#: src/interface.c:211
+#: src/interface.c:217
 msgid "Save"
 msgstr "Speichern"
 
-#: src/interface.c:212
+#: src/interface.c:218
 msgid "Save as"
 msgstr "Speichern unter"
 
-#: src/interface.c:214
+#: src/interface.c:220
 msgid "Import"
 msgstr "Importieren"
 
-#: src/interface.c:217
+#: src/interface.c:223
 msgid "Print"
 msgstr "Drucken"
 
-#: src/interface.c:218
+#: src/interface.c:224
 msgid "Print Preview"
 msgstr "Druckvorschau"
 
-#: src/interface.c:221
+#: src/interface.c:227
 msgid "Close View"
 msgstr "Nahansicht"
 
-#: src/interface.c:222 src/interface.c:368
+#: src/interface.c:228 src/interface.c:422
 msgid "Exit Program"
 msgstr "Programm beenden"
 
-#: src/interface.c:224 src/interface.c:366
+#: src/interface.c:230 src/interface.c:420
 msgid "About Sodipodi"
 msgstr "Info zu Sodipodi"
 
-#: src/interface.c:230
+#: src/interface.c:236
 msgid "Cut"
 msgstr "Ausschneiden"
 
-#: src/interface.c:231
+#: src/interface.c:237
 msgid "Copy"
 msgstr "Kopieren"
 
-#: src/interface.c:232
+#: src/interface.c:238
 msgid "Paste"
 msgstr "Einfügen"
 
-#: src/interface.c:234
+#: src/interface.c:240
 msgid "Duplicate"
 msgstr "Duplizieren"
 
-#: src/interface.c:235
+#: src/interface.c:241
 msgid "Delete"
 msgstr "Löschen"
 
-#: src/interface.c:237
+#: src/interface.c:243
 msgid "Clear all"
 msgstr "Alle löschen"
 
-#: src/interface.c:238
+#: src/interface.c:244
 msgid "Cleanup"
 msgstr "Säubern"
 
-#: src/interface.c:247 src/sp-item-group.c:515
+#: src/interface.c:253 src/sp-item-group.c:515
 msgid "Group"
 msgstr "Gruppieren"
 
-#: src/interface.c:252 src/sp-item-group.c:532
+#: src/interface.c:258 src/sp-item-group.c:532
 msgid "Ungroup"
 msgstr "Gruppierung aufheben"
 
-#: src/interface.c:261
+#: src/interface.c:267
 msgid "Combine"
 msgstr "Kombinieren"
 
-#: src/interface.c:266
+#: src/interface.c:272
 msgid "Break apart"
 msgstr "Zerlegen"
 
-#: src/interface.c:275
+#: src/interface.c:281
 msgid "Order"
 msgstr "Anordnung"
 
-#: src/interface.c:279
+#: src/interface.c:285
 msgid "Bring to Front"
 msgstr "Nach vorne bringen"
 
-#: src/interface.c:283
+#: src/interface.c:289
 msgid "Send to Back"
 msgstr "Nach hinten schicken"
 
-#: src/interface.c:287
+#: src/interface.c:293
 msgid "Raise"
 msgstr "Anheben"
 
-#: src/interface.c:291
+#: src/interface.c:297
 msgid "Lower"
 msgstr "Absenken"
 
-#: src/interface.c:305 src/interface.c:338 src/toolbox.c:549
+#: src/interface.c:355 src/interface.c:392 src/toolbox.c:565
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/interface.c:317
+#: src/interface.c:367
 msgid "1:2"
 msgstr "1:2"
 
-#: src/interface.c:318
+#: src/interface.c:368
 msgid "1:1"
 msgstr "1:1"
 
-#: src/interface.c:319
+#: src/interface.c:369
 msgid "2:1"
 msgstr "2:1"
 
-#: src/interface.c:321
+#: src/interface.c:371
 msgid "New View"
 msgstr "Neue Ansicht"
 
-#: src/interface.c:323
+#: src/interface.c:373
 msgid "New Preview"
 msgstr "Neue Vorschau"
 
-#: src/interface.c:329
+#: src/interface.c:375
+msgid "New Toplevel Toolbox"
+msgstr ""
+
+#: src/interface.c:376
+#, fuzzy
+msgid "New Docked Toolbox"
+msgstr "Werkzeugkasten anzeigen"
+
+#: src/interface.c:377
+msgid "Remove Docked Toolbox"
+msgstr ""
+
+#: src/interface.c:383
 msgid "Select"
 msgstr "Auswählen"
 
-#: src/interface.c:330
+#: src/interface.c:384
 msgid "Node"
 msgstr "Knoten"
 
-#: src/interface.c:331
+#: src/interface.c:385
 msgid "Rectangle"
 msgstr "Rechteck"
 
-#: src/interface.c:332
+#: src/interface.c:386
 msgid "Arc"
 msgstr "Bogen"
 
-#: src/interface.c:333 src/sp-star.c:481
+#: src/interface.c:387 src/sp-star.c:481
 msgid "Star"
 msgstr "Stern"
 
-#: src/interface.c:334 src/sp-spiral.c:610
+#: src/interface.c:388 src/sp-spiral.c:610
 msgid "Spiral"
 msgstr "Spirale"
 
-#: src/interface.c:335
+#: src/interface.c:389
 msgid "Freehand"
 msgstr "Freihändig"
 
-#: src/interface.c:336
+#: src/interface.c:390
 msgid "Dynahand"
 msgstr "Dynahand"
 
-#: src/interface.c:344
+#: src/interface.c:398
 msgid "Fill and Stroke"
 msgstr "Füllung und Durchgezogen"
 
-#: src/interface.c:345
+#: src/interface.c:399
 msgid "Size and Position"
 msgstr "Größe und Position"
 
-#: src/interface.c:346
+#: src/interface.c:400
 msgid "Align Objects"
 msgstr "Objekte ausrichten"
 
-#: src/interface.c:347
+#: src/interface.c:401
 msgid "Text Editing"
 msgstr "Text-Bearbeitung"
 
-#: src/interface.c:348
+#: src/interface.c:402
 msgid "Transformations"
 msgstr "Abbildungen"
 
-#: src/interface.c:349
+#: src/interface.c:403
 msgid "Tool Options"
 msgstr "Werkzeug-Optionen"
 
-#: src/interface.c:350
+#: src/interface.c:404
 msgid "Tool Attributes"
 msgstr "Werkzeug-Attribute"
 
-#: src/interface.c:351
+#: src/interface.c:405
 msgid "Document"
 msgstr "Dokument"
 
-#: src/interface.c:352
+#: src/interface.c:406
 msgid "Editing Window"
 msgstr "Bearbeitungsfenster"
 
-#: src/interface.c:353
+#: src/interface.c:407
 msgid "XML Editor"
 msgstr "XML-Editor"
 
-#: src/interface.c:354
+#: src/interface.c:408
 msgid "Display Properties"
 msgstr "Anzeige-Eigenschaften"
 
-#: src/interface.c:407
+#: src/interface.c:461
 msgid "Undo"
 msgstr "Rückgängig"
 
-#: src/interface.c:409
+#: src/interface.c:463
 msgid "Redo"
 msgstr "Wiederherstellen"
 
-#: src/interface.c:432 src/toolbox.c:312
+#: src/interface.c:486 src/toolbox.c:327
 msgid "File"
 msgstr "Datei"
 
-#: src/interface.c:438 src/toolbox.c:348 src/widgets/gradient-selector.c:135
+#: src/interface.c:492 src/toolbox.c:364 src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: src/interface.c:450
+#: src/interface.c:504
 msgid "View"
 msgstr "Ansicht"
 
-#: src/interface.c:456
+#: src/interface.c:510
 msgid "Drawing Mode"
 msgstr "Zeichenmodus"
 
-#: src/interface.c:462
+#: src/interface.c:516
 msgid "Dialogs"
 msgstr "Dialoge"
 
@@ -1511,7 +1571,7 @@ msgstr "Ein Pfad - was immer das heißt"
 msgid "Shape"
 msgstr "Form"
 
-#: src/sp-shape.c:360 src/toolbox.c:388
+#: src/sp-shape.c:360 src/toolbox.c:404
 msgid "Fill settings"
 msgstr "Füll-Einstellungen"
 
@@ -1527,257 +1587,257 @@ msgstr "Stern-Eigenschaften"
 msgid "Text object"
 msgstr "Textobjekt"
 
-#: src/toolbox.c:134 src/toolbox.c:147
+#: src/toolbox.c:137 src/toolbox.c:159
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
-#: src/toolbox.c:315
+#: src/toolbox.c:330
 msgid "Create new SVG document"
 msgstr "Ein neues SVG-Dokument erstellen"
 
-#: src/toolbox.c:316
+#: src/toolbox.c:331
 msgid "Open existing SVG document"
 msgstr "Ein vorhandenes SVG-Dokument öffnen"
 
-#: src/toolbox.c:317
+#: src/toolbox.c:332
 msgid "Save document"
 msgstr "Das Dokument speichern"
 
-#: src/toolbox.c:318
+#: src/toolbox.c:333
 msgid "Save document under new name"
 msgstr "Das Dokument unter einem neuen Dateinamen speichern"
 
-#: src/toolbox.c:319
+#: src/toolbox.c:334
 msgid "Print document"
 msgstr "Das Dokument drucken"
 
-#: src/toolbox.c:321
+#: src/toolbox.c:335
 msgid "Preview document printout"
 msgstr "Vorschau auf Ausdruck des Dokuments"
 
-#: src/toolbox.c:323
+#: src/toolbox.c:339
 msgid "Import bitmap or SVG image into document"
 msgstr "Ein Bitmap oder SVG-Bild in das Dokument importieren"
 
-#: src/toolbox.c:324
+#: src/toolbox.c:340
 msgid "Export document as PNG bitmap"
 msgstr "Das Dokument als PNG-Bitmap exportieren"
 
-#: src/toolbox.c:351
+#: src/toolbox.c:367
 msgid "Revert last action"
 msgstr "Die letzte Aktion rückgängig machen"
 
-#: src/toolbox.c:354
+#: src/toolbox.c:370
 msgid "Do again undone action"
 msgstr "Die rückgängig gemachte Aktion erneut durchführen"
 
-#: src/toolbox.c:356
+#: src/toolbox.c:372
 msgid "Delete selected objects"
 msgstr "Die markierten Objekte löschen"
 
-#: src/toolbox.c:357
+#: src/toolbox.c:373
 msgid "Cut selected objects to clipboard"
 msgstr "Die markierten Objekte in die Zwischenablage verschieben"
 
-#: src/toolbox.c:358
+#: src/toolbox.c:374
 msgid "Copy selected objects to clipboard"
 msgstr "Die markierten Objekte in die Zwischenablage kopieren"
 
-#: src/toolbox.c:359
+#: src/toolbox.c:375
 msgid "Paste objects from clipboard"
 msgstr "Die markierten Objekte aus der Zwischenablage einfügen"
 
-#: src/toolbox.c:360
+#: src/toolbox.c:376
 msgid "Duplicate selected objects"
 msgstr "Die markierten Objekte duplizieren"
 
-#: src/toolbox.c:384
+#: src/toolbox.c:400
 msgid "Object"
 msgstr "Objekt"
 
-#: src/toolbox.c:389
+#: src/toolbox.c:405
 msgid "Object size and position"
 msgstr "Objektgröße und -Position"
 
-#: src/toolbox.c:390
+#: src/toolbox.c:406
 msgid "Text and font settings"
 msgstr "Text- und Schrift-Einstellungen"
 
-#: src/toolbox.c:392
+#: src/toolbox.c:408
 msgid "Object transformations"
 msgstr "Objekt-Abbildungen"
 
-#: src/toolbox.c:399
+#: src/toolbox.c:415
 #, fuzzy
 msgid "Flip selected objects horizontally"
 msgstr "Markierte Objekte spiegeln"
 
-#: src/toolbox.c:400
+#: src/toolbox.c:416
 #, fuzzy
 msgid "Flip selected objects vertically"
 msgstr "Markierte Objekte spiegeln"
 
-#: src/toolbox.c:404
+#: src/toolbox.c:420
 msgid "Rotate object 90 deg clockwise"
 msgstr "Objekt um um 90 ° im Uhrzeigersinn drehen"
 
-#: src/toolbox.c:405
+#: src/toolbox.c:421
 msgid "Remove transformations"
 msgstr "Abbildungen entfernen"
 
-#: src/toolbox.c:406
+#: src/toolbox.c:422
 msgid "Convert object to curve"
 msgstr "Markierte Objekte in eine Kurve umwandeln"
 
-#: src/toolbox.c:433
+#: src/toolbox.c:449
 msgid "Raise selected objects to top"
 msgstr "Markierte Objekte nach oben holen"
 
-#: src/toolbox.c:434
+#: src/toolbox.c:450
 msgid "Raise selected objects one level"
 msgstr "Markierte Objekte eine Ebene nach oben holen"
 
-#: src/toolbox.c:435
+#: src/toolbox.c:451
 msgid "Combine multiple paths"
 msgstr "Mehrere Pfade kombinieren"
 
-#: src/toolbox.c:436
+#: src/toolbox.c:452
 msgid "Group selected objects"
 msgstr "Markierte Objekte gruppieren"
 
-#: src/toolbox.c:437
+#: src/toolbox.c:453
 msgid "Lower selected objects to bottom"
 msgstr "Markierte Objekte nach unten schicken"
 
-#: src/toolbox.c:438
+#: src/toolbox.c:454
 msgid "Lower selected objects one level"
 msgstr "Markierte Objekte eine Ebene nach unten schicken"
 
-#: src/toolbox.c:439
+#: src/toolbox.c:455
 msgid "Break selected path to subpaths"
 msgstr "Markierten Pfad in Unterpfade zerlegen"
 
-#: src/toolbox.c:440
+#: src/toolbox.c:456
 msgid "Ungroup selected group"
 msgstr "Gruppierung der markierten Gruppe aufheben"
 
-#: src/toolbox.c:463
+#: src/toolbox.c:479
 msgid "Draw"
 msgstr "Zeichnen"
 
-#: src/toolbox.c:468
+#: src/toolbox.c:484
 msgid "Select tool - select and transform objects"
 msgstr "Markierungswerkzeug - Objekte markieren und abbilden"
 
-#: src/toolbox.c:475
+#: src/toolbox.c:491
 msgid "Node tool - modify different aspects of existing objects"
 msgstr ""
 "Knoten-Werkzeug - verschiedene Aspekte existierender Objekte bearbeiten"
 
-#: src/toolbox.c:487
+#: src/toolbox.c:503
 msgid ""
 "Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr ""
 "Rechteck-Werkzeug - Rechtecke und Quadrate erstellen, auch abgerundete Ecken "
 "möglich"
 
-#: src/toolbox.c:488
+#: src/toolbox.c:504
 msgid "Arc tool - create circles, ellipses and arcs"
 msgstr "Bogen-Werkzeug - Kreise, Ellipsen und Bogen erstellen"
 
-#: src/toolbox.c:489
+#: src/toolbox.c:505
 msgid "Star tool - create stars and polygons"
 msgstr "Stern-Werkzeuge - Sterne und Polygone erstellen"
 
-#: src/toolbox.c:490
+#: src/toolbox.c:506
 msgid "Spiral tool - create spirals"
 msgstr "Spiralwerkzeug - Spiralen erstellen"
 
-#: src/toolbox.c:505
+#: src/toolbox.c:521
 msgid "Pencil tool - draw freehand lines and straight segments"
 msgstr "Bleistift-Werkzeug - Linien und gerade Abschnitte freihändig zeichnen"
 
-#: src/toolbox.c:506
+#: src/toolbox.c:522
 msgid "Pen tool - draw exactly positioned curved lines"
 msgstr "Füller-Werkzeug - exakt positionierte, geschwungene Linien zeichnen"
 
-#: src/toolbox.c:507
+#: src/toolbox.c:523
 msgid "Calligraphic tool - draw calligraphic lines"
 msgstr "Kalligraphisches Werkzeug - kalligraphische Linien erstellen"
 
-#: src/toolbox.c:516
+#: src/toolbox.c:532
 msgid "Text tool - create editable text objects"
 msgstr "Text-Werkzeug - editierbare Text-Objekte erstellen"
 
-#: src/toolbox.c:522
+#: src/toolbox.c:538
 msgid "Zoom tool - zoom into choosen area"
 msgstr "Zoom-Werkzeug - im markierten Bereich zoomen"
 
-#: src/toolbox.c:552
+#: src/toolbox.c:568
 msgid "Zoom in drawing"
 msgstr "Zeichnung einzoomen"
 
-#: src/toolbox.c:553
+#: src/toolbox.c:569
 msgid "Set zoom factor to 2:1"
 msgstr "Den Zoomfaktor auf 2:1 setzen"
 
-#: src/toolbox.c:554
+#: src/toolbox.c:570
 msgid "Set zoom factor to 1:1"
 msgstr "Den Zoomfaktor auf 1:1 setzen"
 
-#: src/toolbox.c:555
+#: src/toolbox.c:571
 msgid "Set zoom factor to 1:2"
 msgstr "Den Zoomfaktor auf 1:2 setzen"
 
-#: src/toolbox.c:556
+#: src/toolbox.c:572
 msgid "Zoom out drawing"
 msgstr "Zeichnung auszoomen"
 
-#: src/toolbox.c:557
+#: src/toolbox.c:573
 msgid "Fit the whole page into window"
 msgstr "Die gesamte Seite in das Fenster einpassen"
 
-#: src/toolbox.c:558
+#: src/toolbox.c:574
 msgid "Fit the whole drawing into window"
 msgstr "Die gesamte Zeichnung in das Fenster einpassen"
 
-#: src/toolbox.c:559
+#: src/toolbox.c:575
 msgid "Fit the whole selection into window"
 msgstr "Die gesamte Markierung in das Fenster einpassen"
 
-#: src/toolbox.c:583
+#: src/toolbox.c:599
 msgid "Nodes"
 msgstr "Knoten"
 
-#: src/toolbox.c:586
+#: src/toolbox.c:602
 msgid "Insert new nodes into selected segments"
 msgstr "Einen Knoten in den markierten Abschnitten einfügen"
 
-#: src/toolbox.c:587
+#: src/toolbox.c:603
 msgid "Break line at selected nodes"
 msgstr "Linie am markierten Knoten zerteilen"
 
-#: src/toolbox.c:588
+#: src/toolbox.c:604
 msgid "Make selected nodes corner"
 msgstr "Markierte Knote in Ecken umwandeln"
 
-#: src/toolbox.c:589
+#: src/toolbox.c:605
 msgid "Make selected segments lines"
 msgstr "Markierte Abschnitte in Linien umwandeln"
 
-#: src/toolbox.c:590
+#: src/toolbox.c:606
 msgid "Delete selected nodes"
 msgstr "Markierte Knoten löschen"
 
-#: src/toolbox.c:591
+#: src/toolbox.c:607
 msgid "Join lines at selected nodes"
 msgstr "Linien an den markierten Knoten verbinden"
 
-#: src/toolbox.c:592
+#: src/toolbox.c:608
 msgid "Make selected nodes smooth"
 msgstr "Markierte Knoten glatt machen"
 
-#: src/toolbox.c:593
+#: src/toolbox.c:609
 msgid "Make selected segments curves"
 msgstr "Markierte Abschnitte in Kurven umwandeln"
 
@@ -1946,18 +2006,6 @@ msgstr "Erzeugen einer Kurve. Drücken Sie »+«, um Anhängen/Neu auszulösen."
 
 #~ msgid "Align"
 #~ msgstr "Ausrichten"
-
-#~ msgid "Align inside object to bottom border"
-#~ msgstr "Innerhalb des Objektes an der unteren Kante ausrichten"
-
-#~ msgid "Align inside object to left border"
-#~ msgstr "Innerhalb des Objektes an der linken Kante ausrichten"
-
-#~ msgid "Align inside object to right border"
-#~ msgstr "Innerhalb des Objektes an der rechten Kante ausrichten"
-
-#~ msgid "Align inside object to top border"
-#~ msgstr "Innerhalb des Objektes an der oberen Kante ausrichten"
 
 #~ msgid "Align objects to horizontal mid"
 #~ msgstr "Horizontal/Mitte zentrieren"
@@ -2195,9 +2243,6 @@ msgstr "Erzeugen einer Kurve. Drücken Sie »+«, um Anhängen/Neu auszulösen."
 
 #~ msgid "Set dimensions"
 #~ msgstr "Größenverhältnisse einstellen"
-
-#~ msgid "Show Toolbox"
-#~ msgstr "Werkzeugkasten anzeigen"
 
 #~ msgid "Smooth line at selected nodes"
 #~ msgstr "Linie an denmarkierten Knoten weichzeichnen"
@@ -2539,12 +2584,6 @@ msgstr "Erzeugen einer Kurve. Drücken Sie »+«, um Anhängen/Neu auszulösen."
 
 #~ msgid "desktop"
 #~ msgstr "Desktop"
-
-#~ msgid "flip horizontal"
-#~ msgstr "horizontal spiegeln"
-
-#~ msgid "flip vertical"
-#~ msgstr "vertikal spiegeln"
 
 #~ msgid "horizontal move"
 #~ msgstr "Horizontale Bewegung"
