@@ -20,6 +20,7 @@
 #include "sp-namedview.h"
 #include "sp-guide.h"
 #include "sp-image.h"
+#include "sp-path.h" 
 #include "sp-rect.h" 
 #include "sp-ellipse.h"
 #include "sp-star.h" 
@@ -90,7 +91,7 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "line", GINT_TO_POINTER (SP_TYPE_LINE));
 		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
 		g_hash_table_insert (dtable, "mask", GINT_TO_POINTER (SP_TYPE_MASK));
-		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_SHAPE));
+		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_PATH));
 		g_hash_table_insert (dtable, "pattern", GINT_TO_POINTER (SP_TYPE_PATTERN));
 		g_hash_table_insert (dtable, "polygon", GINT_TO_POINTER (SP_TYPE_POLYGON));
 		g_hash_table_insert (dtable, "polyline", GINT_TO_POINTER (SP_TYPE_POLYLINE));

@@ -322,7 +322,7 @@ spdc_attach_selection (SPDrawContext *dc, SPSelection *sel)
 
 	item = sp_selection_item (dc->selection);
 
-	if (item && SP_IS_PATH (item) && SP_PATH (item)->independent) {
+	if (item && SP_IS_PATH (item)) {
 		SPCurve *norm;
 		NRMatrixF i2dt;
 		NRMatrixD i2dtd;
@@ -332,7 +332,7 @@ spdc_attach_selection (SPDrawContext *dc, SPSelection *sel)
 		dc->white_item = item;
 		/* Curve list */
 		/* We keep it in desktop coordinates to eliminate calculation errors */
-		norm = sp_path_normalized_bpath (SP_PATH (item));
+		norm = sp_shape_get_curve (SP_SHAPE (item));
 		sp_item_i2d_affine (dc->white_item, &i2dt);
 		nr_matrix_d_from_f (&i2dtd, &i2dt);
 		norm = sp_curve_transform (norm, NR_MATRIX_D_TO_DOUBLE (&i2dtd));

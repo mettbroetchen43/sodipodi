@@ -75,7 +75,7 @@ sp_polygon_class_init (SPPolygonClass *class)
 static void
 sp_polygon_init (SPPolygon * polygon)
 {
-	SP_PATH (polygon)->independent = FALSE;
+	/* Nothing here */
 }
 
 static void
@@ -127,28 +127,21 @@ sp_svg_write_polygon (const ArtBpath * bpath)
 static SPRepr *
 sp_polygon_write (SPObject *object, SPRepr *repr, guint flags)
 {
-        SPPath *path;
-        SPPathComp *pathcomp;
+        SPShape *shape;
         ArtBpath *abp;
         gchar *str;
 
-        path = SP_PATH (object);
+	shape = SP_SHAPE (object);
 
 	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
 		repr = sp_repr_new ("polygon");
 	}
 
 	if (flags & SP_POLYGON_WRITE_POINTS) {
-		if (path->comp) {
-			pathcomp = path->comp->data;
-			abp = sp_curve_first_bpath (pathcomp->curve);
-			str = sp_svg_write_polygon (abp);
-			sp_repr_set_attr (repr, "points", str);
-			g_free (str);
-		} else {
-			g_warning ("SPPolygon has NULL path");
-			sp_repr_set_attr (repr, "points", "0,0,1,0,1,1,0,1");
-		}
+		abp = sp_curve_first_bpath (shape->curve);
+		str = sp_svg_write_polygon (abp);
+		sp_repr_set_attr (repr, "points", str);
+		g_free (str);
 	}
 
 	if (((SPObjectClass *) (parent_class))->write)
@@ -171,7 +164,6 @@ sp_polygon_set (SPObject *object, unsigned int key, const unsigned char *value)
 		char * eptr;
 		gboolean hascpt;
 
-		sp_path_clear (SP_PATH (polygon));
 		if (!value) break;
 		curve = sp_curve_new ();
 		hascpt = FALSE;
@@ -199,7 +191,7 @@ sp_polygon_set (SPObject *object, unsigned int key, const unsigned char *value)
 		}
 		
 		sp_curve_closepath (curve);
-		sp_path_add_bpath (SP_PATH (polygon), curve, TRUE, NULL);
+		sp_shape_set_curve (SP_SHAPE (polygon), curve, TRUE);
 		sp_curve_unref (curve);
 		break;
 	}

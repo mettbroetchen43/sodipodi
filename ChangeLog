@@ -1,3 +1,10 @@
+2003-02-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-path.h: Turned SPPath/SPShape hierachy upside down, so they make sense
+	now, when we do not derive text and clippath from SPPath anymore
+
+	* src/sp-shape.h: Ditto
+
 2003-02-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/file.c (file_open_ok): Set directory if OK clicked on it (thanks to Aron Rubin)

@@ -110,8 +110,6 @@ sp_spiral_class_init (SPSpiralClass *class)
 static void
 sp_spiral_init (SPSpiral * spiral)
 {
-	SP_PATH (spiral)->independent = FALSE;
-	
 	spiral->cx         = 0.0;
 	spiral->cy         = 0.0;
 	spiral->exp        = 1.0;
@@ -323,8 +321,6 @@ sp_spiral_set_shape (SPShape *shape)
 
 	sp_object_request_modified (SP_OBJECT (spiral), SP_OBJECT_MODIFIED_FLAG);
 
-	sp_path_clear (SP_PATH (shape));
-	
 #if 0
 	if (spiral->rad < SP_EPSILON) return;
 #endif
@@ -372,7 +368,7 @@ sp_spiral_set_shape (SPShape *shape)
 		sp_spiral_fit_and_draw (spiral, c, (1.0 - t)/(SAMPLE_SIZE - 1.0),
 					darray, &hat1, &hat2, t);
   
-	sp_path_add_bpath (SP_PATH (spiral), c, TRUE, NULL);
+	sp_shape_set_curve (SP_SHAPE (spiral), c, TRUE);
 	sp_curve_unref (c);
 }
 

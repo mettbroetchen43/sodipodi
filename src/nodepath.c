@@ -117,8 +117,7 @@ sp_nodepath_new (SPDesktop * desktop, SPItem * item)
 
 	if (!SP_IS_PATH (item)) return NULL;
 	path = SP_PATH (item);
-	if (!path->independent) return NULL;
-	curve = sp_path_normalized_bpath (path);
+	curve = sp_shape_get_curve (SP_SHAPE (path));
 	g_return_val_if_fail (curve != NULL, NULL);
 
 	bpath = sp_curve_first_bpath (curve);
@@ -253,8 +252,7 @@ update_object (SPNodePath * np)
 
 	curve = create_curve (np);
 
-	sp_path_clear (np->path);
-	sp_path_add_bpath (np->path, curve, TRUE, NULL);
+	sp_shape_set_curve (SP_SHAPE (np->path), curve, TRUE);
 
 	sp_curve_unref (curve);
 }

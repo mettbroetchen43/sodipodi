@@ -115,8 +115,6 @@ sp_genericellipse_class_init (SPGenericEllipseClass *klass)
 static void
 sp_genericellipse_init (SPGenericEllipse *ellipse)
 {
-	ellipse->shape.path.independent = FALSE;
-
 	sp_svg_length_unset (&ellipse->cx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&ellipse->cy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&ellipse->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
@@ -177,7 +175,6 @@ sp_genericellipse_compute_values (SPGenericEllipse *ellipse)
 
 static void sp_genericellipse_set_shape (SPGenericEllipse *ellipse)
 {
-	SPPath * path;
 	SPCurve * c;
 	ArtBpath bpath[16], * abp;
 
@@ -187,10 +184,6 @@ static void sp_genericellipse_set_shape (SPGenericEllipse *ellipse)
 	double affine[6];
 	gint slice = FALSE;
 	gint i;
-
-	path = SP_PATH (ellipse);
-
-	sp_path_clear (SP_PATH (ellipse));
 
 	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
 	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
@@ -274,10 +267,8 @@ g_print ("step %d s %f e %f coords %f %f %f %f %f %f\n",
 	abp = art_bpath_affine_transform (bpath, affine);
 
 	c = sp_curve_new_from_bpath (abp);
-	sp_path_add_bpath (SP_PATH (ellipse), c, TRUE, NULL);
+	sp_shape_set_curve (SP_SHAPE (ellipse), c, TRUE);
 	sp_curve_unref (c);
-
-	sp_object_request_modified (SP_OBJECT (ellipse), SP_OBJECT_MODIFIED_FLAG);
 }
 
 static int

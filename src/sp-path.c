@@ -31,15 +31,11 @@ static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_path_release (SPObject *object);
 static void sp_path_set (SPObject *object, unsigned int key, const unsigned char *value);
 
-static void sp_path_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
+static SPRepr *sp_path_write (SPObject *object, SPRepr *repr, guint flags);
 
-static void sp_path_private_remove_comp (SPPath * path, SPPathComp * comp);
-static void sp_path_private_add_comp (SPPath * path, SPPathComp * comp);
-static void sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve);
+static SPShapeClass *parent_class;
 
-static SPItemClass * parent_class;
-
-GType
+unsigned int
 sp_path_get_type (void)
 {
 	static GType type = 0;
@@ -47,16 +43,14 @@ sp_path_get_type (void)
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPPathClass),
-			NULL,	/* base_init */
-			NULL,	/* base_finalize */
+			NULL, NULL,
 			(GClassInitFunc) sp_path_class_init,
-			NULL,	/* class_finalize */
-			NULL,	/* class_data */
+			NULL, NULL,
 			sizeof (SPPath),
-			16,	/* n_preallocs */
+			16,
 			(GInstanceInitFunc) sp_path_init,
 		};
-		type = g_type_register_static (SP_TYPE_ITEM, "SPPath", &info, 0);
+		type = g_type_register_static (SP_TYPE_SHAPE, "SPPath", &info, 0);
 	}
 	return type;
 }
@@ -64,32 +58,24 @@ sp_path_get_type (void)
 static void
 sp_path_class_init (SPPathClass * klass)
 {
-	GObjectClass * object_class;
-	SPObjectClass * sp_object_class;
-	SPItemClass * item_class;
+	SPObjectClass *sp_object_class;
+	SPItemClass *item_class;
 
-	object_class = (GObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
-	parent_class = g_type_class_ref (SP_TYPE_ITEM);
+	parent_class = g_type_class_peek_parent (klass);
 
 	sp_object_class->build = sp_path_build;
 	sp_object_class->release = sp_path_release;
 	sp_object_class->set = sp_path_set;
-
-	item_class->bbox = sp_path_bbox;
-
-	klass->remove_comp = sp_path_private_remove_comp;
-	klass->add_comp = sp_path_private_add_comp;
-	klass->change_bpath = sp_path_private_change_bpath;
+	sp_object_class->write = sp_path_write;
 }
 
 static void
 sp_path_init (SPPath *path)
 {
-	path->independent = TRUE;
-	path->comp = NULL;
+	/* Nothing here */
 }
 
 /* fixme: Better place (Lauris) */
@@ -126,26 +112,23 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	sp_object_read_attr (object, "d");
 
-	if (path->independent && (version > 0) && (version < 25)) {
+	if ((version > 0) && (version < 25)) {
+		SPShape *shape;
 		SPCSSAttr *css;
 		const guchar *val;
 		gboolean changed;
-		GSList *l;
 		gboolean open;
+		shape = SP_SHAPE (path);
 		css = sp_repr_css_attr (repr, "style");
 		/* We foce style rewrite at moment (Lauris) */
 		changed = TRUE;
 		open = FALSE;
-		for (l = path->comp; l != NULL; l = l->next) {
-			SPPathComp *comp;
-			comp = (SPPathComp *) l->data;
-			if (comp->curve && comp->curve->bpath) {
-				ArtBpath *bp;
-				for (bp = comp->curve->bpath; bp->code != ART_END; bp++) {
-					if (bp->code == ART_MOVETO_OPEN) {
-						open = TRUE;
-						break;
-					}
+		if (shape->curve && shape->curve->bpath) {
+			ArtBpath *bp;
+			for (bp = shape->curve->bpath; bp->code != ART_END; bp++) {
+				if (bp->code == ART_MOVETO_OPEN) {
+					open = TRUE;
+					break;
 				}
 			}
 		}
@@ -177,11 +160,6 @@ sp_path_release (SPObject *object)
 
 	path = SP_PATH (object);
 
-	while (path->comp) {
-		sp_path_comp_destroy ((SPPathComp *) path->comp->data);
-		path->comp = g_slist_remove (path->comp, path->comp->data);
-	}
-
 	if (((SPObjectClass *) parent_class)->release)
 		((SPObjectClass *) parent_class)->release (object);
 }
@@ -189,28 +167,22 @@ sp_path_release (SPObject *object)
 static void
 sp_path_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPPath * path;
-	ArtBpath * bpath;
-	SPCurve * curve;
-	SPPathComp * comp;
-	double affine[6];
+	SPPath *path;
+	ArtBpath *bpath;
+	SPCurve *curve;
 
 	path = SP_PATH (object);
 
-	nr_matrix_d_set_identity (NR_MATRIX_D_FROM_DOUBLE (affine));
-
 	switch (key) {
 	case SP_ATTR_D:
-		sp_path_clear (path);
 		if (value) {
-			/* fixme: */
 			bpath = sp_svg_read_path (value);
 			curve = sp_curve_new_from_bpath (bpath);
-			comp = sp_path_comp_new (curve, TRUE, affine);
+			sp_shape_set_curve (SP_SHAPE (path), curve, TRUE);
 			sp_curve_unref (curve);
-			sp_path_add_comp (path, comp);
+		} else {
+			sp_shape_set_curve (SP_SHAPE (path), NULL, TRUE);
 		}
-		sp_object_request_modified (SP_OBJECT (path), SP_OBJECT_MODIFIED_FLAG);
 		break;
 	default:
 		if (((SPObjectClass *) parent_class)->set)
@@ -219,196 +191,33 @@ sp_path_set (SPObject *object, unsigned int key, const unsigned char *value)
 	}
 }
 
-static void
-sp_path_private_remove_comp (SPPath * path, SPPathComp * comp)
+static SPRepr *
+sp_path_write (SPObject *object, SPRepr *repr, guint flags)
 {
-	SPPathComp * c;
-	GSList * l;
-
-	g_assert (SP_IS_PATH (path));
-
-	l = g_slist_find (path->comp, comp);
-	g_return_if_fail (l != NULL);
-
-	c = (SPPathComp *) l->data;
-	path->comp = g_slist_remove (path->comp, c);
-	sp_path_comp_destroy (c);
-}
-
-static void
-sp_path_private_add_comp (SPPath * path, SPPathComp * comp)
-{
-	g_assert (SP_IS_PATH (path));
-	g_assert (comp != NULL);
-
-	path->comp = g_slist_prepend (path->comp, comp);
-}
-
-static void
-sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
-{
-	SPPathComp * c;
-	GSList * l;
-
-	g_assert (SP_IS_PATH (path));
-
-	l = g_slist_find (path->comp, comp);
-	g_return_if_fail (l != NULL);
-
-	c = (SPPathComp *) l->data;
-
-	sp_curve_ref (curve);
-	sp_curve_unref (c->curve);
-	c->curve = curve;
-}
-
-static void
-sp_path_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags)
-{
+	SPShape *shape;
 	SPPath *path;
-	GSList *l;
+	ArtBpath *abp;
+	gchar *str;
 
-	path = SP_PATH (item);
+	shape = SP_SHAPE (object);
+	path = SP_PATH (object);
 
-	for (l = path->comp; l != NULL; l = l->next) {
-		SPPathComp *comp;
-		NRMatrixF a;
-		NRBPath bp;
-		comp = (SPPathComp *) l->data;
-		nr_matrix_multiply_fdd (&a, (NRMatrixD *) comp->affine, transform);
-		bp.path = SP_CURVE_BPATH (comp->curve);
-		nr_path_matrix_f_bbox_f_union (&bp, &a, bbox, 0.25);
-	}
-}
-
-void
-sp_path_remove_comp (SPPath * path, SPPathComp * comp)
-{
-	g_return_if_fail (path != NULL);
-	g_return_if_fail (SP_IS_PATH (path));
-	g_return_if_fail (comp != NULL);
-	g_return_if_fail (g_slist_find (path->comp, comp) != NULL);
-
-	(* SP_PATH_CLASS (G_OBJECT_GET_CLASS(path))->remove_comp) (path, comp);
-}
-
-void
-sp_path_add_comp (SPPath * path, SPPathComp * comp)
-{
-	g_return_if_fail (path != NULL);
-	g_return_if_fail (SP_IS_PATH (path));
-	g_return_if_fail (comp != NULL);
-	g_return_if_fail (g_slist_find (path->comp, comp) == NULL);
-
-	(* SP_PATH_CLASS (G_OBJECT_GET_CLASS(path))->add_comp) (path, comp);
-}
-
-void
-sp_path_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
-{
-	g_return_if_fail (path != NULL);
-	g_return_if_fail (SP_IS_PATH (path));
-	g_return_if_fail (comp != NULL);
-	g_return_if_fail (g_slist_find (path->comp, comp) != NULL);
-	g_return_if_fail (curve != NULL);
-
-	(* SP_PATH_CLASS (G_OBJECT_GET_CLASS(path))->change_bpath) (path, comp, curve);
-}
-
-void
-sp_path_clear (SPPath * path)
-{
-	g_return_if_fail (path != NULL);
-	g_return_if_fail (SP_IS_PATH (path));
-
-	while (path->comp) {
-		sp_path_remove_comp (path, (SPPathComp *) path->comp->data);
-	}
-}
-
-void
-sp_path_add_bpath (SPPath * path, SPCurve * curve, gboolean private, gdouble affine[])
-{
-	SPPathComp * comp;
-
-	g_return_if_fail (path != NULL);
-	g_return_if_fail (SP_IS_PATH (path));
-	g_return_if_fail (curve != NULL);
-
-	comp = sp_path_comp_new (curve, private, affine);
-
-	sp_path_add_comp (path, comp);
-}
-
-SPCurve *
-sp_path_normalized_bpath (SPPath * path)
-{
-	SPPathComp * comp;
-	ArtBpath * bp, * bpath;
-	gint n_nodes;
-	GSList * l;
-	gint i;
-
-	n_nodes = 0;
-
-	for (l = path->comp; l != NULL; l = l->next) {
-		comp = (SPPathComp *) l->data;
-		if (comp->curve != NULL) {
-			for (i = 0; (comp->curve->bpath + i)->code != ART_END; i++)
-				n_nodes++;
-		}
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("path");
 	}
 
-	if (n_nodes < 2)
-		return NULL;
+	abp = sp_curve_first_bpath (shape->curve);
+	str = sp_svg_write_path (abp);
+	sp_repr_set_attr (repr, "d", str);
+	g_free (str);
 
-	bpath = art_new (ArtBpath, n_nodes + 1);
+	if (((SPObjectClass *) (parent_class))->write)
+		((SPObjectClass *) (parent_class))->write (object, repr, flags);
 
-	n_nodes = 0;
-
-	for (l = path->comp; l != NULL; l = l->next) {
-		comp = (SPPathComp *) l->data;
-		if (comp->curve != NULL) {
-			for (i = 0; (comp->curve->bpath + i)->code != ART_END; i++) {
-				bp = comp->curve->bpath + i;
-				bpath[n_nodes].code = bp->code;
-				if (bp->code == ART_CURVETO) {
-					bpath[n_nodes].x1 = comp->affine[0] * bp->x1 + comp->affine[2] * bp->y1 + comp->affine[4];
-					bpath[n_nodes].y1 = comp->affine[1] * bp->x1 + comp->affine[3] * bp->y1 + comp->affine[5];
-					bpath[n_nodes].x2 = comp->affine[0] * bp->x2 + comp->affine[2] * bp->y2 + comp->affine[4];
-					bpath[n_nodes].y2 = comp->affine[1] * bp->x2 + comp->affine[3] * bp->y2 + comp->affine[5];
-				}
-				bpath[n_nodes].x3 = comp->affine[0] * bp->x3 + comp->affine[2] * bp->y3 + comp->affine[4];
-				bpath[n_nodes].y3 = comp->affine[1] * bp->x3 + comp->affine[3] * bp->y3 + comp->affine[5];
-				n_nodes++;
-			}
-		}
-	}
-
-	bpath[n_nodes].code = ART_END;
-
-	return sp_curve_new_from_bpath (bpath);
+	return repr;
 }
 
-SPCurve *
-sp_path_normalize (SPPath * path)
-{
-	SPPathComp * comp;
-	SPCurve * curve;
-
-	g_assert (path->independent);
-
-	curve = sp_path_normalized_bpath (path);
-
-	if (curve == NULL) return NULL;
-
-	sp_path_clear (path);
-	comp = sp_path_comp_new (curve, TRUE, NULL);
-	sp_path_add_comp (path, comp);
-
-	return curve;
-}
-
+#if 0
 void
 sp_path_bpath_modified (SPPath * path, SPCurve * curve)
 {
@@ -460,3 +269,4 @@ sp_path_comp_destroy (SPPathComp * comp)
 
 	g_free (comp);
 }
+#endif

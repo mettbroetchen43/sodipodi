@@ -64,7 +64,6 @@ sp_selected_path_combine (void)
 	for (l = il; l != NULL; l = l->next) {
 		item = (SPItem *) l->data;
 		if (!SP_IS_PATH (item)) return;
-		if (!((SPPath *) item)->independent) return;
 	}
 
 	il = g_slist_copy (il);
@@ -76,7 +75,7 @@ sp_selected_path_combine (void)
 		NRMatrixF i2root;
 		NRMatrixD i2rootd;
 		path = (SPPath *) l->data;
-		c = sp_path_normalized_bpath (path);
+		c = sp_shape_get_curve (SP_SHAPE (path));
 		sp_item_i2root_affine (SP_ITEM (path), &i2root);
 		nr_matrix_d_from_f (&i2rootd, &i2root);
 		abp = art_bpath_affine_transform (c->bpath, NR_MATRIX_D_TO_DOUBLE (&i2rootd));
@@ -128,9 +127,8 @@ sp_selected_path_break_apart (void)
 	if (!SP_IS_PATH (item)) return;
 
 	path = SP_PATH (item);
-	if (!sp_path_independent (path)) return;
 
-	curve = sp_path_normalized_bpath (path);
+	curve = sp_shape_get_curve (SP_SHAPE (path));
 	if (curve == NULL) return;
 
 	sp_item_i2root_affine (SP_ITEM (path), &i2root);
@@ -218,15 +216,15 @@ sp_selected_item_to_curved_repr(SPItem * item, guint32 text_grouping_policy)
 	if (!item)
 		return NULL;
 		
-	if (SP_IS_PATH (item) && !SP_PATH (item)->independent) 
-		curve = sp_path_normalized_bpath (SP_PATH (item));
-	else if (SP_IS_TEXT (item))
+	if (SP_IS_PATH (item)) {
+		curve = sp_shape_get_curve (SP_SHAPE (item));
+	} else if (SP_IS_TEXT (item)) {
 		curve = sp_text_normalized_bpath (SP_TEXT (item));
-	else
+	} else {
 		curve = NULL;
+	}
 	
-	if (!curve)
-		return NULL;
+	if (!curve) return NULL;
 	
 	repr = sp_repr_new ("path");
 	/* Transformation */
@@ -258,7 +256,7 @@ sp_path_cleanup (SPPath *path)
 	style = SP_OBJECT_STYLE (path);
 	if (style->fill.type == SP_PAINT_TYPE_NONE) return;
 
-	curve = sp_path_normalized_bpath (path);
+	curve = sp_shape_get_curve (SP_SHAPE (path));
 	if (!curve) return;
 	c = sp_curve_split (curve);
 	sp_curve_unref (curve);

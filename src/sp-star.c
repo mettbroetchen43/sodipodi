@@ -103,8 +103,6 @@ sp_star_class_init (SPStarClass *class)
 static void
 sp_star_init (SPStar * star)
 {
-	SP_PATH (star)->independent = FALSE;
-
 	star->sides = 5;
 	star->cx = 0.0;
 	star->cy = 0.0;
@@ -259,8 +257,6 @@ sp_star_set_shape (SPShape *shape)
 	
 	star = SP_STAR (shape);
 
-	sp_path_clear (SP_PATH (shape));
-	
 #if 0
 	if (star->r1 < 1e-12) || (star->r2 < 1e-12)) return;
 	if (star->sides < 3) return;
@@ -283,10 +279,8 @@ sp_star_set_shape (SPShape *shape)
 	}
 	
 	sp_curve_closepath (c);
-	sp_path_add_bpath (SP_PATH (star), c, TRUE, NULL);
+	sp_shape_set_curve (SP_SHAPE (star), c, TRUE);
 	sp_curve_unref (c);
-
-	sp_object_request_modified (SP_OBJECT (star), SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void

@@ -81,7 +81,6 @@ sp_line_class_init (SPLineClass *class)
 static void
 sp_line_init (SPLine * line)
 {
-	SP_PATH (line)->independent = FALSE;
 	sp_svg_length_unset (&line->x1, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&line->y1, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&line->x2, SP_SVG_UNIT_NONE, 0.0, 0.0);
@@ -206,8 +205,6 @@ sp_line_set_shape (SPLine * line)
 {
 	SPCurve * c;
 	
-	sp_path_clear (SP_PATH (line));
-
 	if (hypot (line->x2.computed - line->x1.computed, line->y2.computed - line->y1.computed) < 1e-12) return;
 
 	c = sp_curve_new ();
@@ -215,7 +212,7 @@ sp_line_set_shape (SPLine * line)
 	sp_curve_moveto (c, line->x1.computed, line->y1.computed);
 	sp_curve_lineto (c, line->x2.computed, line->y2.computed);
 
-	sp_path_add_bpath (SP_PATH (line), c, TRUE, NULL);
+	sp_shape_set_curve (SP_SHAPE (line), c, TRUE);
 	sp_curve_unref (c);
 }
 

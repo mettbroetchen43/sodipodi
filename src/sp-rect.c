@@ -108,7 +108,6 @@ sp_rect_class_init (SPRectClass *class)
 static void
 sp_rect_init (SPRect * rect)
 {
-	SP_PATH (rect) -> independent = FALSE;
 	rect->x.set = FALSE;
 	rect->x.computed = 0.0;
 	rect->y.set = FALSE;
@@ -338,8 +337,6 @@ sp_rect_set_shape (SPRect * rect)
 	double x, y, w, h, w2, h2, rx, ry;
 	SPCurve * c;
 	
-	sp_path_clear (SP_PATH (rect));
-
 	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
 	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
 	sp_rect_compute_values (rect);
@@ -388,7 +385,7 @@ sp_rect_set_shape (SPRect * rect)
 	}
 
 	sp_curve_closepath_current (c);
-	sp_path_add_bpath (SP_PATH (rect), c, TRUE, NULL);
+	sp_shape_set_curve_insync (SP_SHAPE (rect), c, TRUE);
 	sp_curve_unref (c);
 }
 
@@ -406,6 +403,8 @@ sp_rect_position_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdoubl
 	rect->height.computed = height;
 
 	sp_rect_set_shape (rect);
+	/* fixme: (Lauris) */
+	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }
 
 void
@@ -415,9 +414,10 @@ sp_rect_set_rx (SPRect * rect, gboolean set, gdouble value)
 	g_return_if_fail (SP_IS_RECT (rect));
 
 	rect->rx.set = set;
-	if (set)
-		rect->rx.computed = value;
+	if (set) rect->rx.computed = value;
 	sp_rect_set_shape (rect);
+	/* fixme: (Lauris) */
+	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }
 
 void
@@ -427,9 +427,10 @@ sp_rect_set_ry (SPRect * rect, gboolean set, gdouble value)
 	g_return_if_fail (SP_IS_RECT (rect));
 
 	rect->ry.set = set;
-	if (set)
-		rect->ry.computed = value;
+	if (set) rect->ry.computed = value;
 	sp_rect_set_shape (rect);
+	/* fixme: (Lauris) */
+	sp_object_request_update (SP_OBJECT (rect), SP_OBJECT_MODIFIED_FLAG);
 }
 
 static int

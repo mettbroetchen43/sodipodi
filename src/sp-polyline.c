@@ -74,7 +74,7 @@ sp_polyline_class_init (SPPolyLineClass *class)
 static void
 sp_polyline_init (SPPolyLine * polyline)
 {
-	SP_PATH (polyline)->independent = FALSE;
+	/* Nothing here */
 }
 
 static void
@@ -101,7 +101,6 @@ sp_polyline_set (SPObject *object, unsigned int key, const unsigned char *value)
 		char * eptr;
 		gboolean hascpt;
 
-		sp_path_clear (SP_PATH (polyline));
 		if (!value) break;
 		curve = sp_curve_new ();
 		hascpt = FALSE;
@@ -128,7 +127,7 @@ sp_polyline_set (SPObject *object, unsigned int key, const unsigned char *value)
 			}
 		}
 		
-		sp_path_add_bpath (SP_PATH (polyline), curve, TRUE, NULL);
+		sp_shape_set_curve (SP_SHAPE (polyline), curve, TRUE);
 		sp_curve_unref (curve);
 		break;
 	}

@@ -8,6 +8,7 @@ TODO for 0.31
 - Split ::Modified and ::Update flags in SPObject
 - Fix zooming into scaled text
 - Baseline-shift and spacing properties
+- Does export create namedview views that are not destroyed?
 
 TODO for 0.30
 =============
