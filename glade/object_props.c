@@ -5,77 +5,79 @@
  */
 
 gchar *s = N_("object properties");
-gchar *s = N_(" General ");
-gchar *s = N_("Is stroked");
 gchar *s = N_("Behind fill");
-gchar *s = N_("Stroke color : ");
-gchar *s = N_("Valige v\344rv");
-gchar *s = N_(" Width ");
-gchar *s = N_("pixels\n"
-              "millimeters\n"
-              "centimeter\n"
-              "points\n"
-              "inches\n"
-              "");
-gchar *s = N_("Scale with image");
-gchar *s = N_(" Line ");
-gchar *s = N_("full line");
-gchar *s = N_("dashed");
-gchar *s = N_("double");
-gchar *s = N_(" Join ");
-gchar *s = N_("bevel");
-gchar *s = N_("round");
-gchar *s = N_("miter");
-gchar *s = N_(" Cap ");
-gchar *s = N_("butt");
-gchar *s = N_("round");
-gchar *s = N_("sqare");
+gchar *s = N_("Is stroked");
+gchar *s = N_("Scale with object");
 gchar *s = N_("Stroke");
-gchar *s = N_("None");
-gchar *s = N_("Color");
-gchar *s = N_("Gradient");
-gchar *s = N_("Pattern");
-gchar *s = N_("Fractal");
+gchar *s = N_("Width:");
+gchar *s = N_("Color:");
+gchar *s = N_("Stroke width");
+gchar *s = N_("px");
+gchar *s = N_("mm");
+gchar *s = N_("cm");
+gchar *s = N_("in");
+gchar *s = N_("Join:");
+gchar *s = N_("Bevel join");
+gchar *s = N_("Round join");
+gchar *s = N_("Mitter join");
+gchar *s = N_("Butt endpoints");
+gchar *s = N_("Round endpoints");
+gchar *s = N_("Square endpoints");
+gchar *s = N_("Endpoints:");
+gchar *s = N_("Choose stroke color");
+gchar *s = N_("Pick stroke color");
+gchar *s = N_("Stroke");
+gchar *s = N_("No fill");
+gchar *s = N_("Color fill");
+gchar *s = N_("Gradient fill");
+gchar *s = N_("Pattern fill");
+gchar *s = N_("Fractal fill");
 gchar *s = N_(" Color fill ");
-gchar *s = N_("Fill Color : ");
-gchar *s = N_("Pick a color");
+gchar *s = N_("Choose fill color");
+gchar *s = N_("Pick fill color");
+gchar *s = N_("Red:");
+gchar *s = N_("Fill Color:");
+gchar *s = N_("Green:");
+gchar *s = N_("Blue:");
+gchar *s = N_("Alpha:");
 gchar *s = N_("Fill");
 gchar *s = N_("Position");
-gchar *s = N_("pixels\n"
-              "millimeters\n"
-              "centimeter\n"
-              "points\n"
-              "inches\n"
-              "");
-gchar *s = N_("x");
-gchar *s = N_("y");
+gchar *s = N_("X:");
+gchar *s = N_("Y:");
+gchar *s = N_("pt");
+gchar *s = N_("mm");
+gchar *s = N_("cm");
+gchar *s = N_("in");
 gchar *s = N_("Dimension");
-gchar *s = N_("pixels\n"
-              "millimeters\n"
-              "centimeter\n"
-              "points\n"
-              "inches\n"
-              "");
-gchar *s = N_("Width ");
-gchar *s = N_("Height ");
+gchar *s = N_("Width:");
+gchar *s = N_("Height:");
+gchar *s = N_("pt");
+gchar *s = N_("mm");
+gchar *s = N_("cm");
+gchar *s = N_("in");
 gchar *s = N_("Layout");
 gchar *s = N_("Reread");
 gchar *s = N_("Stroke");
 gchar *s = N_("Pick a color");
-gchar *s = N_("px\n"
-              "mm\n"
-              "cm\n"
-              "pt\n"
-              "in\n"
-              "");
+gchar *s = N_("px");
+gchar *s = N_("mm");
+gchar *s = N_("cm");
+gchar *s = N_("pt");
+gchar *s = N_("in");
 gchar *s = N_("Position");
-gchar *s = N_("pixels\n"
-              "millimeters\n"
-              "centimeter\n"
-              "points\n"
-              "inches\n"
-              "");
+gchar *s = N_("pixels");
+gchar *s = N_("millimeters");
+gchar *s = N_("centimeter");
+gchar *s = N_("points");
+gchar *s = N_("inches");
 gchar *s = N_("Fill");
 gchar *s = N_("Pick a color");
 gchar *s = N_("none");
 gchar *s = N_("color");
+gchar *s = N_("window1");
+gchar *s = N_(" General ");
+gchar *s = N_(" Style ");
+gchar *s = N_("window2");
+gchar *s = N_("Gradient fill");
+gchar *s = N_("Add new gradient");
+gchar *s = N_("Edit...");

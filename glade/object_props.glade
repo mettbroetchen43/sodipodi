@@ -11,7 +11,7 @@
   <gnome_support>True</gnome_support>
   <gettext_support>True</gettext_support>
   <output_translatable_strings>True</output_translatable_strings>
-  <translatable_strings_file>sodipodi-glade.c</translatable_strings_file>
+  <translatable_strings_file>object_props.c</translatable_strings_file>
 </project>
 
 <widget>
@@ -620,7 +620,7 @@ in
 		</signal>
 		<dither>True</dither>
 		<use_alpha>True</use_alpha>
-		<title>Valige värv</title>
+		<title>Pick stroke color</title>
 		<child>
 		  <padding>0</padding>
 		  <expand>True</expand>
@@ -908,7 +908,7 @@ in
 
 	<widget>
 	  <class>GtkFrame</class>
-	  <name>frame35</name>
+	  <name>frame_color_fill</name>
 	  <border_width>4</border_width>
 	  <label> Color fill </label>
 	  <label_xalign>0</label_xalign>
@@ -941,7 +941,7 @@ in
 	      </signal>
 	      <dither>True</dither>
 	      <use_alpha>True</use_alpha>
-	      <title>Pick a color</title>
+	      <title>Pick fill color</title>
 	      <child>
 		<left_attach>1</left_attach>
 		<right_attach>3</right_attach>
@@ -1941,6 +1941,7 @@ in
 	  <last_modification_time>Sun, 17 Sep 2000 23:06:45 GMT</last_modification_time>
 	</signal>
 	<stock_button>GNOME_STOCK_BUTTON_APPLY</stock_button>
+	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <padding>0</padding>
 	  <expand>True</expand>
@@ -1957,6 +1958,7 @@ in
 	  <handler>sp_object_properties_reread_page</handler>
 	  <last_modification_time>Mon, 18 Sep 2000 04:48:12 GMT</last_modification_time>
 	</signal>
+	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <padding>0</padding>
 	  <expand>True</expand>
@@ -2014,6 +2016,7 @@ in
 	  <last_modification_time>Sun, 17 Sep 2000 23:07:28 GMT</last_modification_time>
 	</signal>
 	<stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
+	<relief>GTK_RELIEF_NORMAL</relief>
 	<child>
 	  <padding>0</padding>
 	  <expand>True</expand>
@@ -2048,6 +2051,7 @@ in
       <class>GtkButton</class>
       <name>button6</name>
       <can_focus>True</can_focus>
+      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>2</left_attach>
 	<right_attach>3</right_attach>
@@ -2079,6 +2083,7 @@ in
       <class>GtkButton</class>
       <name>button5</name>
       <can_focus>True</can_focus>
+      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>2</left_attach>
 	<right_attach>3</right_attach>
@@ -2110,6 +2115,7 @@ in
       <class>GtkButton</class>
       <name>button4</name>
       <can_focus>True</can_focus>
+      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>2</left_attach>
 	<right_attach>3</right_attach>
@@ -2141,6 +2147,7 @@ in
       <class>GtkToggleButton</class>
       <name>togglebutton1</name>
       <can_focus>True</can_focus>
+      <relief>GTK_RELIEF_NORMAL</relief>
       <active>False</active>
       <child>
 	<left_attach>1</left_attach>
@@ -2172,6 +2179,7 @@ in
       <class>GtkToggleButton</class>
       <name>togglebutton2</name>
       <can_focus>True</can_focus>
+      <relief>GTK_RELIEF_NORMAL</relief>
       <active>False</active>
       <child>
 	<left_attach>1</left_attach>
@@ -2203,6 +2211,7 @@ in
       <class>GtkToggleButton</class>
       <name>togglebutton3</name>
       <can_focus>True</can_focus>
+      <relief>GTK_RELIEF_NORMAL</relief>
       <active>False</active>
       <child>
 	<left_attach>1</left_attach>
@@ -2832,6 +2841,119 @@ inches
 	  </widget>
 	</widget>
       </widget>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>window2</name>
+  <title>window2</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+
+  <widget>
+    <class>GtkHBox</class>
+    <name>hbox60</name>
+    <homogeneous>False</homogeneous>
+    <spacing>0</spacing>
+
+    <widget>
+      <class>Placeholder</class>
+    </widget>
+
+    <widget>
+      <class>Placeholder</class>
+    </widget>
+
+    <widget>
+      <class>GtkFrame</class>
+      <name>frame_gradient_fill</name>
+      <border_width>4</border_width>
+      <label>Gradient fill</label>
+      <label_xalign>0</label_xalign>
+      <shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkVBox</class>
+	<name>vbox32</name>
+	<homogeneous>False</homogeneous>
+	<spacing>0</spacing>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox61</name>
+	  <border_width>4</border_width>
+	  <homogeneous>False</homogeneous>
+	  <spacing>4</spacing>
+	  <child>
+	    <padding>0</padding>
+	    <expand>False</expand>
+	    <fill>False</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkOptionMenu</class>
+	    <name>gradient_menu</name>
+	    <can_focus>True</can_focus>
+	    <items>Add new gradient
+</items>
+	    <initial_choice>0</initial_choice>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkButton</class>
+	    <name>gradient_edit_button</name>
+	    <can_focus>True</can_focus>
+	    <label>Edit...</label>
+	    <relief>GTK_RELIEF_NORMAL</relief>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkViewport</class>
+	  <name>viewport1</name>
+	  <border_width>4</border_width>
+	  <shadow_type>GTK_SHADOW_IN</shadow_type>
+	  <child>
+	    <padding>0</padding>
+	    <expand>True</expand>
+	    <fill>True</fill>
+	  </child>
+
+	  <widget>
+	    <class>GtkDrawingArea</class>
+	    <name>gradient_drawingarea</name>
+	  </widget>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>Placeholder</class>
+    </widget>
+
+    <widget>
+      <class>Placeholder</class>
     </widget>
   </widget>
 </widget>
