@@ -419,6 +419,7 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], const SPSelTransHandle 
 			gtk_object_set (GTK_OBJECT (knot[i]),
 					"anchor", handle[i].anchor, 
 					"shape", handle[i].control,
+					"mode", SP_KNOT_MODE_COLOR,
 					"fill", 0x0000ffa0,
 					"fill_mouseover", 0xff0000a0,
 					"stroke", 0x000000ff,

@@ -27,6 +27,11 @@ typedef enum {
 } SPKnotShapeType;
 
 typedef enum {
+	SP_KNOT_MODE_COLOR,
+	SP_KNOT_MODE_XOR
+} SPKnotModeType;
+
+typedef enum {
 	SP_KNOT_STATE_NORMAL,
 	SP_KNOT_STATE_MOUSEOVER,
 	SP_KNOT_STATE_DRAGGING,
@@ -63,14 +68,15 @@ struct _SPKnot {
 	GtkAnchorType anchor;		/* Anchor */
 
 	SPKnotShapeType shape;		/* Shape type */
+	SPKnotModeType mode;
 
-	guint32 fill [SP_KNOT_VISIBLE_STATES];
-	guint32 stroke [SP_KNOT_VISIBLE_STATES];
-	guchar * image [SP_KNOT_VISIBLE_STATES];
+	guint32 fill[SP_KNOT_VISIBLE_STATES];
+	guint32 stroke[SP_KNOT_VISIBLE_STATES];
+	guchar *image[SP_KNOT_VISIBLE_STATES];
 
-	GdkCursor * cursor [SP_KNOT_VISIBLE_STATES];
+	GdkCursor *cursor[SP_KNOT_VISIBLE_STATES];
 
-	GdkCursor * saved_cursor;
+	GdkCursor *saved_cursor;
 };
 
 struct _SPKnotClass {

@@ -26,6 +26,7 @@ enum {
 	ARG_SIZE,
 	ARG_ANCHOR,
 	ARG_SHAPE,
+	ARG_MODE,
 	ARG_FILL, ARG_FILL_MOUSEOVER, ARG_FILL_DRAGGING,
 	ARG_STROKE, ARG_STROKE_MOUSEOVER, ARG_STROKE_DRAGGING,
 	ARG_IMAGE, ARG_IMAGE_MOUSEOVER, ARG_IMAGE_DRAGGING,
@@ -91,6 +92,7 @@ sp_knot_class_init (SPKnotClass * klass)
 	gtk_object_add_arg_type ("SPKnot::size", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_SIZE);
 	gtk_object_add_arg_type ("SPKnot::anchor", GTK_TYPE_ANCHOR_TYPE, GTK_ARG_WRITABLE, ARG_ANCHOR);
 	gtk_object_add_arg_type ("SPKnot::shape", GTK_TYPE_ENUM, GTK_ARG_WRITABLE, ARG_SHAPE);
+	gtk_object_add_arg_type ("SPKnot::mode", GTK_TYPE_ENUM, GTK_ARG_WRITABLE, ARG_MODE);
 	gtk_object_add_arg_type ("SPKnot::fill", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_FILL);
 	gtk_object_add_arg_type ("SPKnot::fill_mouseover", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_FILL_MOUSEOVER);
 	gtk_object_add_arg_type ("SPKnot::fill_dragging", GTK_TYPE_UINT, GTK_ARG_WRITABLE, ARG_FILL_DRAGGING);
@@ -166,6 +168,7 @@ sp_knot_init (SPKnot * knot)
 	knot->hx = knot->hy = 0.0;
 	knot->anchor = GTK_ANCHOR_CENTER;
 	knot->shape = SP_KNOT_SHAPE_SQUARE;
+	knot->mode = SP_KNOT_MODE_COLOR;
 
 	knot->fill [SP_KNOT_STATE_NORMAL] = 0x000000ff;
 	knot->fill [SP_KNOT_STATE_MOUSEOVER] = 0xff0000ff;
@@ -224,6 +227,9 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 	case ARG_SHAPE:
 		knot->shape = GTK_VALUE_ENUM (*arg);
 		break;
+	case ARG_MODE:
+		knot->mode = GTK_VALUE_ENUM (*arg);
+		break;
 	case ARG_FILL:
 		knot->fill[SP_KNOT_STATE_NORMAL] =
 		knot->fill[SP_KNOT_STATE_MOUSEOVER] =
@@ -238,17 +244,24 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 	case ARG_STROKE:
 		knot->stroke[SP_KNOT_STATE_NORMAL] =
 		knot->stroke[SP_KNOT_STATE_MOUSEOVER] =
-		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (* arg);
+		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (*arg);
 		break;
 	case ARG_STROKE_MOUSEOVER:
-		knot->stroke[SP_KNOT_STATE_MOUSEOVER] = GTK_VALUE_UINT (* arg);
+		knot->stroke[SP_KNOT_STATE_MOUSEOVER] = GTK_VALUE_UINT (*arg);
 		break;
 	case ARG_STROKE_DRAGGING:
-		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (* arg);
+		knot->stroke[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_UINT (*arg);
 		break;
 	case ARG_IMAGE:
+		knot->image[SP_KNOT_STATE_NORMAL] =
+		knot->image[SP_KNOT_STATE_MOUSEOVER] =
+		knot->image[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_POINTER (*arg);
+		break;
 	case ARG_IMAGE_MOUSEOVER:
+		knot->image[SP_KNOT_STATE_MOUSEOVER] = GTK_VALUE_POINTER (*arg);
+		break;
 	case ARG_IMAGE_DRAGGING:
+		knot->image[SP_KNOT_STATE_DRAGGING] = GTK_VALUE_POINTER (*arg);
 		break;
 	case ARG_CURSOR:
 		cursor = GTK_VALUE_BOXED (* arg);
@@ -545,6 +558,7 @@ sp_knot_update_ctrl (SPKnot * knot)
 	if (!knot->item) return;
 
 	gtk_object_set (GTK_OBJECT (knot->item), "shape", knot->shape, NULL);
+	gtk_object_set (GTK_OBJECT (knot->item), "mode", knot->mode, NULL);
 	gtk_object_set (GTK_OBJECT (knot->item), "size", (gdouble) knot->size, NULL);
 	gtk_object_set (GTK_OBJECT (knot->item), "anchor", knot->anchor, NULL);
 

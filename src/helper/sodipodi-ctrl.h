@@ -29,10 +29,16 @@ typedef enum {
 	SP_CTRL_SHAPE_IMAGE
 } SPCtrlShapeType;
 
+typedef enum {
+	SP_CTRL_MODE_COLOR,
+	SP_CTRL_MODE_XOR
+} SPCtrlModeType;
+
 struct _SPCtrl {
 	GnomeCanvasItem item;
 
 	SPCtrlShapeType shape;
+	SPCtrlModeType mode;
 	GtkAnchorType anchor;
 	gint span;
 	guint defined : 1;

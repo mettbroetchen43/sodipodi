@@ -1,5 +1,7 @@
 2001-06-07  Lauris Kaplinski  <lauris@ximian.com>
 
+	* configure.in: Version 0.24
+
 	* src/sp-item.c (sp_item_read_attr): Quick noscale hack
 	for style stroke widths
 
