@@ -17,9 +17,11 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtktable.h>
 #include <gtk/gtklabel.h>
-#include "../xml/repr.h"
-#include "../document.h"
-#include "../sp-object.h"
+#include "xml/repr.h"
+#include "macros.h"
+#include "document.h"
+#include "sp-object.h"
+
 #include "sp-attribute-widget.h"
 
 static void sp_attribute_widget_class_init (SPAttributeWidgetClass *klass);
@@ -29,7 +31,7 @@ static void sp_attribute_widget_destroy (GtkObject *object);
 static void sp_attribute_widget_changed (GtkEditable *editable);
 
 static void sp_attribute_widget_object_modified (SPObject *object, guint flags, SPAttributeWidget *spaw);
-static void sp_attribute_widget_object_destroy (GtkObject *object, SPAttributeWidget *spaw);
+static void sp_attribute_widget_object_release (SPObject *object, SPAttributeWidget *spaw);
 
 static GtkEntryClass *parent_class;
 
@@ -94,7 +96,7 @@ sp_attribute_widget_destroy (GtkObject *object)
 
 	if (spaw->hasobj) {
 		if (spaw->src.object) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (spaw->src.object), spaw);
+			sp_signal_disconnect_by_data (spaw->src.object, spaw);
 			spaw->src.object = NULL;
 		}
 	} else {
@@ -180,7 +182,7 @@ sp_attribute_widget_set_object (SPAttributeWidget *spaw, SPObject *object, const
 
 	if (spaw->hasobj) {
 		if (spaw->src.object) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (spaw->src.object), spaw);
+			sp_signal_disconnect_by_data (spaw->src.object, spaw);
 			spaw->src.object = NULL;
 		}
 	} else {
@@ -196,8 +198,8 @@ sp_attribute_widget_set_object (SPAttributeWidget *spaw, SPObject *object, const
 
 		spaw->blocked = TRUE;
 		spaw->src.object = object;
-		gtk_signal_connect (GTK_OBJECT (object), "modified", GTK_SIGNAL_FUNC (sp_attribute_widget_object_modified), spaw);
-		gtk_signal_connect (GTK_OBJECT (object), "destroy", GTK_SIGNAL_FUNC (sp_attribute_widget_object_destroy), spaw);
+		g_signal_connect (G_OBJECT (object), "modified", G_CALLBACK (sp_attribute_widget_object_modified), spaw);
+		g_signal_connect (G_OBJECT (object), "release", G_CALLBACK (sp_attribute_widget_object_release), spaw);
 
 		spaw->attribute = g_strdup (attribute);
 
@@ -223,7 +225,7 @@ sp_attribute_widget_set_repr (SPAttributeWidget *spaw, SPRepr *repr, const gucha
 
 	if (spaw->hasobj) {
 		if (spaw->src.object) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (spaw->src.object), spaw);
+			sp_signal_disconnect_by_data (spaw->src.object, spaw);
 			spaw->src.object = NULL;
 		}
 	} else {
@@ -268,7 +270,7 @@ sp_attribute_widget_object_modified (SPObject *object, guint flags, SPAttributeW
 }
 
 static void
-sp_attribute_widget_object_destroy (GtkObject *object, SPAttributeWidget *spaw)
+sp_attribute_widget_object_release (SPObject *object, SPAttributeWidget *spaw)
 {
 	sp_attribute_widget_set_object (spaw, NULL, NULL);
 }
@@ -280,7 +282,7 @@ static void sp_attribute_table_init (SPAttributeTable *widget);
 static void sp_attribute_table_destroy (GtkObject *object);
 
 static void sp_attribute_table_object_modified (SPObject *object, guint flags, SPAttributeTable *spaw);
-static void sp_attribute_table_object_destroy (GtkObject *object, SPAttributeTable *spaw);
+static void sp_attribute_table_object_release (SPObject *object, SPAttributeTable *spaw);
 static void sp_attribute_table_entry_changed (GtkEditable *editable, SPAttributeTable *spat);
 
 static GtkVBoxClass *table_parent_class;
@@ -347,7 +349,7 @@ sp_attribute_table_destroy (GtkObject *object)
 
 	if (spat->hasobj) {
 		if (spat->src.object) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (spat->src.object), spat);
+			sp_signal_disconnect_by_data (spat->src.object, spat);
 			spat->src.object = NULL;
 		}
 	} else {
@@ -430,7 +432,7 @@ sp_attribute_table_set_object (SPAttributeTable *spat, SPObject *object, gint nu
 
 	if (spat->hasobj) {
 		if (spat->src.object) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (spat->src.object), spat);
+			sp_signal_disconnect_by_data (spat->src.object, spat);
 			spat->src.object = NULL;
 		}
 	} else {
@@ -449,8 +451,8 @@ sp_attribute_table_set_object (SPAttributeTable *spat, SPObject *object, gint nu
 		/* Set up object */
 		spat->src.object = object;
 		spat->num_attr = num_attr;
-		gtk_signal_connect (GTK_OBJECT (object), "modified", GTK_SIGNAL_FUNC (sp_attribute_table_object_modified), spat);
-		gtk_signal_connect (GTK_OBJECT (object), "destroy", GTK_SIGNAL_FUNC (sp_attribute_table_object_destroy), spat);
+		g_signal_connect (G_OBJECT (object), "modified", G_CALLBACK (sp_attribute_table_object_modified), spat);
+		g_signal_connect (G_OBJECT (object), "release", G_CALLBACK (sp_attribute_table_object_release), spat);
 		/* Create table */
 		spat->table = gtk_table_new (num_attr, 2, FALSE);
 		gtk_container_add (GTK_CONTAINER (spat), spat->table);
@@ -473,8 +475,7 @@ sp_attribute_table_set_object (SPAttributeTable *spat, SPObject *object, gint nu
 			gtk_entry_set_text (GTK_ENTRY (w), val ? val : (const guchar *) "");
 			gtk_table_attach (GTK_TABLE (spat->table), w, 1, 2, i, i + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, XPAD, YPAD);
 			spat->entries[i] = w;
-			gtk_signal_connect (GTK_OBJECT (w), "changed",
-					    GTK_SIGNAL_FUNC (sp_attribute_table_entry_changed), spat);
+			g_signal_connect (G_OBJECT (w), "changed", G_CALLBACK (sp_attribute_table_entry_changed), spat);
 		}
 		/* Show table */
 		gtk_widget_show (spat->table);
@@ -513,7 +514,7 @@ sp_attribute_table_set_repr (SPAttributeTable *spat, SPRepr *repr, gint num_attr
 
 	if (spat->hasobj) {
 		if (spat->src.object) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (spat->src.object), spat);
+			sp_signal_disconnect_by_data (spat->src.object, spat);
 			spat->src.object = NULL;
 		}
 	} else {
@@ -554,7 +555,7 @@ sp_attribute_table_set_repr (SPAttributeTable *spat, SPRepr *repr, gint num_attr
 			gtk_entry_set_text (GTK_ENTRY (w), val ? val : (const guchar *) "");
 			gtk_table_attach (GTK_TABLE (spat->table), w, 1, 2, i, i + 1, GTK_EXPAND | GTK_FILL, GTK_EXPAND | GTK_FILL, XPAD, YPAD);
 			spat->entries[i] = w;
-			gtk_signal_connect (GTK_OBJECT (w), "changed", GTK_SIGNAL_FUNC (sp_attribute_table_entry_changed), spat);
+			g_signal_connect (G_OBJECT (w), "changed", G_CALLBACK (sp_attribute_table_entry_changed), spat);
 		}
 		/* Show table */
 		gtk_widget_show (spat->table);
@@ -587,7 +588,7 @@ sp_attribute_table_object_modified (SPObject *object, guint flags, SPAttributeTa
 }
 
 static void
-sp_attribute_table_object_destroy (GtkObject *object, SPAttributeTable *spat)
+sp_attribute_table_object_release (SPObject *object, SPAttributeTable *spat)
 {
 	sp_attribute_table_set_object (spat, NULL, 0, NULL, NULL);
 }

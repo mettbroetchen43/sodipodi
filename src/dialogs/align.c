@@ -23,12 +23,15 @@
 #include <gtk/gtkoptionmenu.h>
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkimage.h>
-#include "../helper/sp-intl.h"
-#include "../sodipodi.h"
-#include "../document.h"
-#include "../desktop-handles.h"
-#include "../sp-item-transform.h"
-#include "../selection.h"
+
+#include "helper/sp-intl.h"
+#include "widgets/button.h"
+#include "sodipodi.h"
+#include "document.h"
+#include "desktop-handles.h"
+#include "sp-item-transform.h"
+#include "selection.h"
+
 #include "align.h"
 
 /*
@@ -97,17 +100,12 @@ sp_quick_align_dialog_delete (void)
 }
 
 static void
-sp_align_add_button (GtkWidget *t, int col, int row, GCallback handler, gconstpointer data, const unsigned char *pxname)
+sp_align_add_button (GtkWidget *t, int col, int row, GCallback handler, gconstpointer data, const unsigned char *px, const unsigned char *tip)
 {
-	GtkWidget *pm, *b;
-	unsigned char c[1024];
+	GtkWidget *b;
 
-	g_snprintf (c, 1024, "%s/%s", SODIPODI_PIXMAPDIR, pxname);
-	pm = gtk_image_new_from_file (pxname);
-	gtk_widget_show (pm);
-	b = gtk_button_new ();
+	b = sp_button_new (24, px, tip);
 	gtk_widget_show (b);
-	gtk_container_add (GTK_CONTAINER (b), pm);
 	if (handler) g_signal_connect (G_OBJECT (b), "clicked", handler, (gpointer) data);
 	gtk_table_attach (GTK_TABLE (t), b, col, col + 1, row, row + 1, 0, 0, 0, 0);
 }
@@ -122,8 +120,9 @@ sp_quick_align_dialog (void)
 		gtk_window_set_title (GTK_WINDOW (dlg), _("Align objects"));
 		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_quick_align_dialog_delete), NULL);
 
-		vb = gtk_vbox_new (FALSE, 0);
+		vb = gtk_vbox_new (FALSE, 4);
 		gtk_widget_show (vb);
+		gtk_container_set_border_width (GTK_CONTAINER (vb), 4);
 		gtk_container_add (GTK_CONTAINER (dlg), vb);
 
 		om = gtk_option_menu_new ();
@@ -135,17 +134,27 @@ sp_quick_align_dialog (void)
 		gtk_widget_show (t);
 		gtk_box_pack_start (GTK_BOX (vb), t, FALSE, FALSE, 0);
 
-		sp_align_add_button (t, 0, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_OUT], "al_left_out.xpm");
-		sp_align_add_button (t, 1, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_IN], "al_left_in.xpm");
-		sp_align_add_button (t, 2, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_CENTER_HOR], "al_center_hor.xpm");
-		sp_align_add_button (t, 3, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_RIGHT_IN], "al_right_in.xpm");
-		sp_align_add_button (t, 4, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_RIGHT_OUT], "al_right_out.xpm");
+		sp_align_add_button (t, 0, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_OUT], "al_left_out",
+				     _("Right side of aligned objects to left side of anchor"));
+		sp_align_add_button (t, 1, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_LEFT_IN], "al_left_in",
+				     _("Left side of aligned objects to left side of anchor"));
+		sp_align_add_button (t, 2, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_CENTER_HOR], "al_center_hor",
+				     _("Center horizontally"));
+		sp_align_add_button (t, 3, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_RIGHT_IN], "al_right_in",
+				     _("Right side of aligned objects to right side of anchor"));
+		sp_align_add_button (t, 4, 0, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_RIGHT_OUT], "al_right_out",
+				     _("Left side of aligned objects to right side of anchor"));
 
-		sp_align_add_button (t, 0, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_TOP_OUT], "al_top_out.xpm");
-		sp_align_add_button (t, 1, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_TOP_IN], "al_top_in.xpm");
-		sp_align_add_button (t, 2, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_CENTER_VER], "al_center_ver.xpm");
-		sp_align_add_button (t, 3, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_IN], "al_bottom_in.xpm");
-		sp_align_add_button (t, 4, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_OUT], "al_bottom_out.xpm");
+		sp_align_add_button (t, 0, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_TOP_OUT], "al_top_out",
+				     _("Bottom of aligned objects to top of anchor"));
+		sp_align_add_button (t, 1, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_TOP_IN], "al_top_in",
+				     _("Top of aligned objects to top of anchor"));
+		sp_align_add_button (t, 2, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_CENTER_VER], "al_center_ver",
+				     _("Center vertically"));
+		sp_align_add_button (t, 3, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_IN], "al_bottom_in",
+				     _("Bottom of aligned objects to bottom of anchor"));
+		sp_align_add_button (t, 4, 1, G_CALLBACK (sp_align_arrange_clicked), aligns[SP_ALIGN_BOTTOM_OUT], "al_bottom_out",
+				     _("Top of aligned objects to top of anchor"));
 	}
 
 	if (!GTK_WIDGET_VISIBLE (dlg)) gtk_widget_show (dlg);

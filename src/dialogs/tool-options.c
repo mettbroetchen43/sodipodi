@@ -16,14 +16,12 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtklabel.h>
-#include "../forward.h"
-#include "../sodipodi.h"
-#include "../desktop-handles.h"
-#include "../event-context.h"
-#include "../helper/sp-intl.h"
-#if 0
-#include "sp-attribute-widget.h"
-#endif
+#include "macros.h"
+#include "forward.h"
+#include "sodipodi.h"
+#include "desktop-handles.h"
+#include "event-context.h"
+#include "helper/sp-intl.h"
 
 #include "tool-options.h"
 
@@ -45,11 +43,11 @@ sp_tool_options_dialog (gpointer object, gpointer data)
 	if (!dlg) {
 		dlg = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dlg), _("Tool options"));
-		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_tool_options_dialog_destroy), NULL);
+		g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_tool_options_dialog_destroy), NULL);
 
 		sp_tool_options_dialog_setup (ec);
 
-		gtk_signal_connect (GTK_OBJECT (SODIPODI), "set_eventcontext", GTK_SIGNAL_FUNC (sp_tool_options_dialog_set_eventcontext), dlg);
+		g_signal_connect (G_OBJECT (SODIPODI), "set_eventcontext", G_CALLBACK (sp_tool_options_dialog_set_eventcontext), dlg);
 
 		gtk_widget_show (dlg);
 	}
@@ -58,7 +56,7 @@ sp_tool_options_dialog (gpointer object, gpointer data)
 static void
 sp_tool_options_dialog_destroy (GtkObject *object, gpointer data)
 {
-	gtk_signal_disconnect_by_data (GTK_OBJECT (SODIPODI), dlg);
+	sp_signal_disconnect_by_data (SODIPODI, dlg);
 
 	dlg = NULL;
 	tbl = NULL;

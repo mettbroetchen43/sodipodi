@@ -514,7 +514,7 @@ sp_event_context_config_widget (SPEventContext *ec)
 	g_return_val_if_fail (SP_IS_EVENT_CONTEXT (ec), NULL);
 
 	if (((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->config_widget)
-		((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->config_widget (ec);
+		return ((SPEventContextClass *) G_OBJECT_GET_CLASS (ec))->config_widget (ec);
 
 	return NULL;
 }

@@ -19,6 +19,7 @@
 #include <string.h>
 #include <glib.h>
 
+#include "macros.h"
 #include "../helper/unit-menu.h"
 #include "../helper/sp-intl.h"
 #include "../sodipodi.h"
@@ -45,8 +46,10 @@ static void sp_doc_dialog_desactivate_desktop (Sodipodi *sodipodi, SPDesktop *de
 static void sp_doc_dialog_update (GtkWidget *dialog, SPDocument *doc);
 
 static void
-sp_doc_dialog_destroy (GtkObject *object, gpointer data)
+sp_doc_dialog_destroy (GObject *object, gpointer data)
 {
+	sp_signal_disconnect_by_data (SODIPODI, object);
+
 	dialog = NULL;
 }
 
@@ -55,8 +58,7 @@ sp_document_dialog (void)
 {
 	if (!dialog) {
 		dialog = sp_doc_dialog_new ();
-		gtk_signal_connect (GTK_OBJECT (dialog), "destroy",
-				    GTK_SIGNAL_FUNC (sp_doc_dialog_destroy), NULL);
+		g_signal_connect (G_OBJECT (dialog), "destroy", G_CALLBACK (sp_doc_dialog_destroy), NULL);
 	}
 
 	gtk_widget_show (dialog);
@@ -188,15 +190,13 @@ sp_doc_dialog_new (void)
 		const GnomePrintPaper * paper = (GnomePrintPaper *)ll->data;
 		i = gtk_menu_item_new_with_label (paper->name);
 		gtk_widget_show (i);
-		gtk_signal_connect (GTK_OBJECT (i), "activate",
-				    GTK_SIGNAL_FUNC (sp_doc_dialog_paper_selected), (gpointer) paper);
+		g_signal_connect (G_OBJECT (i), "activate", G_CALLBACK (sp_doc_dialog_paper_selected), (gpointer) paper);
 		gtk_menu_append (GTK_MENU (m), i);
 	}
 #endif
 	i = gtk_menu_item_new_with_label (_("Custom"));
 	gtk_widget_show (i);
-	gtk_signal_connect (GTK_OBJECT (i), "activate",
-			    GTK_SIGNAL_FUNC (sp_doc_dialog_paper_selected), NULL);
+	g_signal_connect (G_OBJECT (i), "activate", G_CALLBACK (sp_doc_dialog_paper_selected), NULL);
 	gtk_menu_prepend (GTK_MENU (m), i);
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (om), m);
 
@@ -234,7 +234,7 @@ sp_doc_dialog_new (void)
 	gtk_widget_show (sb);
 	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "widthsb", sb);
-	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_doc_dialog_whatever_changed), dialog);
+	g_signal_connect (G_OBJECT (a), "value_changed", G_CALLBACK (sp_doc_dialog_whatever_changed), dialog);
 
 	l = gtk_label_new (_("Height:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
@@ -249,13 +249,11 @@ sp_doc_dialog_new (void)
 	gtk_widget_show (sb);
 	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "heightsb", sb);
-	gtk_signal_connect (GTK_OBJECT (a), "value_changed", GTK_SIGNAL_FUNC (sp_doc_dialog_whatever_changed), dialog);
+	g_signal_connect (G_OBJECT (a), "value_changed", G_CALLBACK (sp_doc_dialog_whatever_changed), dialog);
 
 	/* fixme: We should listen namedview changes here as well */
-	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "activate_desktop",
-					GTK_SIGNAL_FUNC (sp_doc_dialog_activate_desktop), dialog, GTK_OBJECT (dialog));
-	gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "desactivate_desktop",
-					GTK_SIGNAL_FUNC (sp_doc_dialog_desactivate_desktop), dialog, GTK_OBJECT (dialog));
+	g_signal_connect (G_OBJECT (SODIPODI), "activate_desktop", G_CALLBACK (sp_doc_dialog_activate_desktop), dialog);
+	g_signal_connect (G_OBJECT (SODIPODI), "desactivate_desktop", G_CALLBACK (sp_doc_dialog_desactivate_desktop), dialog);
 	sp_doc_dialog_update (dialog, SP_ACTIVE_DOCUMENT);
 
 	return dialog;
@@ -305,6 +303,8 @@ sp_doc_dialog_update (GtkWidget *dialog, SPDocument *doc)
 			if ((fabs (docw - pw) < 1.0) && (fabs (doch - ph) < 1.0)) break;
 			pos += 1;
 		}
+#else
+		l = NULL;
 #endif
 
 		ww = gtk_object_get_data (GTK_OBJECT (dialog), "widthsb");
