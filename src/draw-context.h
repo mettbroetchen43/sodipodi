@@ -1,6 +1,19 @@
 #ifndef __SP_DRAW_CONTEXT_H__
 #define __SP_DRAW_CONTEXT_H__
 
+/*
+ * Generic drawing context
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL
+ */
+
 #include "helper/curve.h"
 #include "event-context.h"
 
@@ -14,8 +27,16 @@ typedef struct _SPDrawContext SPDrawContext;
 typedef struct _SPDrawContextClass SPDrawContextClass;
 typedef struct _SPDrawAnchor SPDrawAnchor;
 
+enum {
+	SP_DRAW_CONTEXT_IDLE,
+	SP_DRAW_CONTEXT_ADDLINE,
+	SP_DRAW_CONTEXT_FREEHAND
+};
+
 struct _SPDrawContext {
 	SPEventContext event_context;
+
+	guint state : 2;
 
 	guint addline : 1;
 
@@ -32,9 +53,9 @@ struct _SPDrawContext {
 	SPCurve *red_curve;
 
 	/* Blue bpath */
-	GnomeCanvasItem *bbp;
+	GnomeCanvasItem *blue_bpath;
 	/* Blue curve */
-	SPCurve *bc;
+	SPCurve *blue_curve;
 
 	/* Green list */
 	GSList *gl;

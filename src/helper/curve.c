@@ -1,5 +1,19 @@
-#define CURVE_C
+#define __CURVE_C__
 
+/*
+ * Wrapper around ArtBpath
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL
+ */
+
+#include <math.h>
 #include <string.h>
 #include <libart_lgpl/art_misc.h>
 #include "curve.h"
@@ -34,9 +48,10 @@ sp_curve_new_sized (gint length)
 
 	curve->refcount = 1;
 	curve->bpath = art_new (ArtBpath, length);
+	curve->bpath->code = ART_END;
 	curve->end = 0;
-	curve->bpath[curve->end].code = ART_END;
 	curve->length = length;
+	curve->substart = 0;
 	curve->sbpath = FALSE;
 	curve->hascpt = FALSE;
 	curve->posset = FALSE;
@@ -71,7 +86,8 @@ sp_curve_new_from_bpath (ArtBpath * bpath)
 SPCurve *
 sp_curve_new_from_static_bpath (ArtBpath * bpath)
 {
-	SPCurve * curve;
+	SPCurve *curve;
+	gint i;
 
 	g_return_val_if_fail (sp_bpath_good (bpath), NULL);
 
@@ -81,6 +97,8 @@ sp_curve_new_from_static_bpath (ArtBpath * bpath)
 	curve->bpath = bpath;
 	curve->length = sp_bpath_length (bpath);
 	curve->end = curve->length - 1;
+	for (i = curve->end; i > 0; i--) if ((curve->bpath[i].code == ART_MOVETO) || (curve->bpath[i].code == ART_MOVETO_OPEN)) break;
+	curve->substart = i;
 	curve->sbpath = TRUE;
 	curve->hascpt = FALSE;
 	curve->posset = FALSE;
@@ -95,6 +113,7 @@ sp_curve_new_from_foreign_bpath (ArtBpath * bpath)
 {
 	SPCurve * curve;
 	gint length;
+	gint i;
 
 	g_return_val_if_fail (sp_bpath_good (bpath), NULL);
 
@@ -103,6 +122,8 @@ sp_curve_new_from_foreign_bpath (ArtBpath * bpath)
 	curve = sp_curve_new_sized (length);
 	memcpy (curve->bpath, bpath, sizeof (ArtBpath) * length);
 	curve->end = length - 1;
+	for (i = curve->end; i > 0; i--) if ((curve->bpath[i].code == ART_MOVETO) || (curve->bpath[i].code == ART_MOVETO_OPEN)) break;
+	curve->substart = i;
 	curve->closed = sp_bpath_closed (bpath);
 
 	return curve;
@@ -193,6 +214,7 @@ sp_curve_concat (const GSList * list)
 	ArtBpath * bp;
 	const GSList * l;
 	gint length;
+	gint i;
 
 	g_return_val_if_fail (list != NULL, NULL);
 
@@ -216,6 +238,8 @@ sp_curve_concat (const GSList * list)
 	bp->code = ART_END;
 
 	new->end = length;
+	for (i = new->end; i > 0; i--) if ((new->bpath[i].code == ART_MOVETO) || (new->bpath[i].code == ART_MOVETO_OPEN)) break;
+	new->substart = i;
 
 	return new;
 }
@@ -239,12 +263,51 @@ sp_curve_split (SPCurve * curve)
 		memcpy (new->bpath, curve->bpath + p, i * sizeof (ArtBpath));
 		new->end = i;
 		new->bpath[i].code = ART_END;
+		new->substart = 0;
 		new->closed = (new->bpath->code == ART_MOVETO);
+		new->hascpt = (new->bpath->code == ART_MOVETO_OPEN);
 		l = g_slist_append (l, new);
 		p += i;
 	}
 
 	return l;
+}
+
+SPCurve *
+sp_curve_transform (SPCurve *curve, const gdouble t[])
+{
+	gint i;
+
+	g_return_val_if_fail (curve != NULL, NULL);
+	g_return_val_if_fail (!curve->sbpath, NULL);
+	g_return_val_if_fail (t != NULL, curve);
+
+	for (i = 0; i < curve->end; i++) {
+		ArtBpath *p;
+		p = curve->bpath + i;
+		switch (p->code) {
+		case ART_MOVETO:
+		case ART_MOVETO_OPEN:
+		case ART_LINETO:
+			p->x3 = t[0] * p->x3 + t[2] * p->y3 + t[4];
+			p->y3 = t[1] * p->x3 + t[3] * p->y3 + t[5];
+			break;
+		case ART_CURVETO:
+			p->x1 = t[0] * p->x1 + t[2] * p->y1 + t[4];
+			p->y1 = t[1] * p->x1 + t[3] * p->y1 + t[5];
+			p->x2 = t[0] * p->x2 + t[2] * p->y2 + t[4];
+			p->y2 = t[1] * p->x2 + t[3] * p->y2 + t[5];
+			p->x3 = t[0] * p->x3 + t[2] * p->y3 + t[4];
+			p->y3 = t[1] * p->x3 + t[3] * p->y3 + t[5];
+			break;
+		default:
+			g_warning ("Illegal pathcode %d", p->code);
+			return NULL;
+			break;
+		}
+	}
+
+	return curve;
 }
 
 /* Methods */
@@ -257,6 +320,7 @@ sp_curve_reset (SPCurve * curve)
 
 	curve->bpath->code = ART_END;
 	curve->end = 0;
+	curve->substart = 0;
 	curve->hascpt = FALSE;
 	curve->posset = FALSE;
 	curve->moving = FALSE;
@@ -599,7 +663,7 @@ sp_curve_append (SPCurve *curve,
 		closed = FALSE;
 	}
 
-	for (bp = bs+1; bp->code != ART_END; bp++) {
+	for (bp = bs + 1; bp->code != ART_END; bp++) {
 		switch (bp->code) {
 		case ART_MOVETO_OPEN:
 			if (closed) sp_curve_closepath (curve);
@@ -623,6 +687,58 @@ sp_curve_append (SPCurve *curve,
 	}
 
 	if (closed) sp_curve_closepath (curve);
+}
+
+SPCurve *
+sp_curve_append_continuous (SPCurve *c0, SPCurve *c1, gdouble tolerance)
+{
+	ArtBpath *e;
+
+	g_return_val_if_fail (c0 != NULL, NULL);
+	g_return_val_if_fail (c1 != NULL, NULL);
+	g_return_val_if_fail (!c0->closed, NULL);
+	g_return_val_if_fail (!c1->closed, NULL);
+
+	if (c1->end < 1) return c0;
+
+	e = sp_curve_last_bpath (c0);
+	if (e) {
+		ArtBpath *s;
+		s = sp_curve_first_bpath (c1);
+		if (s && (fabs (s->x3 - e->x3) <= tolerance) && (fabs (s->y3 - e->y3) <= tolerance)) {
+			gboolean closed;
+			/* fixme: Strictly we mess in case of multisegment mixed open/close curves */
+			closed = FALSE;
+			for (s = s + 1; s->code != ART_END; s++) {
+				switch (s->code) {
+				case ART_MOVETO_OPEN:
+					if (closed) sp_curve_closepath (c0);
+					sp_curve_moveto (c0, s->x3, s->y3);
+					closed = FALSE;
+					break;
+				case ART_MOVETO:
+					if (closed) sp_curve_closepath (c0);
+					sp_curve_moveto (c0, s->x3, s->y3);
+					closed = TRUE;
+					break;
+				case ART_LINETO:
+					sp_curve_lineto (c0, s->x3, s->y3);
+					break;
+				case ART_CURVETO:
+					sp_curve_curveto (c0, s->x1, s->y1, s->x2, s->y2, s->x3, s->y3);
+					break;
+				case ART_END:
+					g_assert_not_reached ();
+				}
+			}
+		} else {
+			sp_curve_append (c0, c1, TRUE);
+		}
+	} else {
+		sp_curve_append (c0, c1, TRUE);
+	}
+
+	return c0;
 }
 
 /* Private methods */

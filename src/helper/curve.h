@@ -1,10 +1,17 @@
-#ifndef SP_CURVE_H
-#define SP_CURVE_H
+#ifndef __SP_CURVE_H__
+#define __SP_CURVE_H__
 
 /*
- * This is mostly like GnomeCanvasBpathDef, but with added functionality
- * and shorter name
+ * Wrapper around ArtBpath
  *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL
  */
 
 #include <glib.h>
@@ -45,6 +52,7 @@ void sp_curve_ensure_space (SPCurve * curve, gint space);
 SPCurve * sp_curve_copy (SPCurve * curve);
 SPCurve * sp_curve_concat (const GSList * list);
 GSList * sp_curve_split (SPCurve * curve);
+SPCurve *sp_curve_transform (SPCurve *curve, const gdouble transform[]);
 
 /* Methods */
 
@@ -56,6 +64,8 @@ void sp_curve_lineto_moving (SPCurve * curve, gdouble x, gdouble y);
 void sp_curve_curveto (SPCurve * curve, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gdouble x2, gdouble y2);
 void sp_curve_closepath (SPCurve * curve);
 void sp_curve_closepath_current (SPCurve * curve);
+
+SPCurve *sp_curve_append_continuous (SPCurve *c0, SPCurve *c1, gdouble tolerance);
 
 gboolean sp_curve_empty (SPCurve * curve);
 ArtBpath * sp_curve_last_bpath (SPCurve * curve);
