@@ -1,3 +1,9 @@
+2002-09-22  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Version 0.26
+
+	* src/main.c: #include <locale.h>, thanks to Masatake
+
 Sun Sep 22 22:21:14 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-ruler.c: Bug fixed that

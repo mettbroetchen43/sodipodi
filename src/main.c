@@ -28,6 +28,7 @@
 #include <floatingpoint.h>
 #endif
 #include <string.h>
+#include <locale.h>
 
 #include <popt.h>
 #include <tree.h>
