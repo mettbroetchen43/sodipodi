@@ -20,20 +20,28 @@ typedef struct _NRCanvasClass NRCanvasClass;
 #define NR_IS_CANVAS(o) (GTK_CHECK_TYPE ((o), NR_TYPE_CANVAS))
 #define NR_IS_CANVAS_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), NR_TYPE_CANVAS))
 
-#define SP_OBJECT_CLONED_FLAG (1 << 4)
-#define SP_OBJECT_IS_CLONED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CLONED_FLAG)
-
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
+#include "nr-canvas-item.h"
 
 struct _NRCanvas {
 	GtkObject object;
+	NRCanvasItem * root;
 };
 
 struct _NRCanvasClass {
 	GtkObjectClass parent_class;
+	NRCanvasItem * (* create_item) (NRCanvas * canvas, NRCanvasItem * parent, GtkType type);
 };
 
 GtkType nr_canvas_get_type (void);
+
+/* Methods */
+
+NRCanvasItem * nr_canvas_get_root (NRCanvas * canvas);
+
+/* This is here because we use class method internally */
+
+NRCanvasItem * nr_canvas_item_new (NRCanvasItem * parent, GtkType type);
 
 #endif

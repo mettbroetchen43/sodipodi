@@ -1,7 +1,7 @@
 2000-12-15  Lauris Kaplinski  <lauris@helixcode.com>
 
-	* src/display/nr-canvas.*: Experimental new rendering stuff
-	(Not working yet)
+	* src/display/nr-canvas.*: Experimental new rendering stuff (not working)
+	* src/display/nr-canvas-item.*: Ditto (not working)
 	* src/display/nr-svp.*: Ditto (works)
 	* src/display/nr-svp-uncross.*: Ditto (works)
 	* src/display/nr-svp-render.*: Not working yet

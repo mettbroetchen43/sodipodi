@@ -8,6 +8,7 @@
 if WITH_NEW_RENDER
 nr_sources = \
 	nr-canvas.c nr-canvas.h \
+	nr-canvas-item.c nr-canvas-item.h \
 	nr-svp.c nr-svp.h \
 	nr-svp-uncross.c nr-svp-uncross.h \
 	nr-svp-render.c nr-svp-render.h
