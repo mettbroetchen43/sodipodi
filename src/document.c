@@ -28,7 +28,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
-#define SP_NAMESPACE_SVG "http://www.w3.org/2000.svg"
+#define SP_NAMESPACE_SVG "http://www.w3.org/2000/svg"
 #define SP_NAMESPACE_SODIPODI "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
 #define SP_NAMESPACE_XLINK "http://www.w3.org/1999/xlink"
 
