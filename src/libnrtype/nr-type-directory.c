@@ -61,10 +61,8 @@ struct _NRTypePosDef {
 };
 
 static void nr_type_directory_build (void);
-static void
-nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name,
-                            NRTypeFaceWeight weight,
-                            NRTypeFaceSlant slant);
+static void nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name,
+							unsigned int weight, unsigned int slant);
 static float nr_type_distance_family_better (const unsigned char *ask, const unsigned char *bid, float best);
 static float nr_type_distance_position_better (NRTypePosDef *ask, NRTypePosDef *bid, float best);
 
@@ -115,13 +113,17 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
 	float best, dist;
 	NRTypeFaceDef *tdef, *besttdef;
 	NRTypePosDef apos;
-	NRTypeFaceSlant slant;
-	NRTypeFaceWeight nrWeight;
+	unsigned int slant;
+	unsigned int nrWeight;
 
 
 	if (!typedict) nr_type_directory_build ();
 
-        switch (style) {
+#if 1
+	slant = style;
+	nrWeight = weight;
+#else
+	switch (style) {
 	case SP_CSS_FONT_STYLE_NORMAL:
                 slant=NR_TYPEFACE_SLANT_ROMAN;
                 break;
@@ -168,6 +170,7 @@ nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char
                 nrWeight=NR_TYPEFACE_WEIGHT_UNKNOWN;
 		break;
 	}
+#endif
 
 #if 0
         fprintf(stderr,"nr_type_directory_lookup_fuzzy(%s,%s,%d => %s,%d => %s)\n",
@@ -273,15 +276,20 @@ nr_type_directory_family_list_get (NRNameList *flist)
 	return flist;
 }
 
+/* fixme: Chaging the name of typeface is not allowed */
+/* fixme: Think some other solution (Lauris) */
+
 unsigned int
 nr_type_register (NRTypeFaceDef *def)
 {
 	NRFamilyDef *fdef;
-        const unsigned char* nameBefore=def->name;
-        int newLen;
-        unsigned char* newName;
-        const unsigned char* slantStr;
-        const unsigned char* weightStr;
+#if 0
+	const unsigned char* nameBefore=def->name;
+	int newLen;
+	unsigned char* newName;
+	const unsigned char* slantStr;
+	const unsigned char* weightStr;
+#endif
 
 	if (nr_type_dict_lookup (typedict, def->name)) return 0;
 
@@ -298,15 +306,17 @@ nr_type_register (NRTypeFaceDef *def)
 	def->next = fdef->faces;
 	fdef->faces = def;
 
-        slantStr=nrTypefaceSlantToStr(def->slant);
-        weightStr=nrTypefaceWeightToStr(def->weight);
+#if 0
+	slantStr=nrTypefaceSlantToStr(def->slant);
+	weightStr=nrTypefaceWeightToStr(def->weight);
 
-        newLen=strlen(fdef->name)+strlen(slantStr)+strlen(weightStr)+2;
-        newName=(unsigned char*)(malloc(newLen+1));
-        sprintf(newName,"%s %s %s",fdef->name,weightStr,slantStr);
+	newLen=strlen(fdef->name)+strlen(slantStr)+strlen(weightStr)+2;
+	newName=(unsigned char*)(malloc(newLen+1));
+	sprintf(newName,"%s %s %s",fdef->name,weightStr,slantStr);
 
-        def->name=newName;
-        /*fprintf(stderr,"%s ==> %s\n",nameBefore,def->name);*/
+	def->name=newName;
+	/*fprintf(stderr,"%s ==> %s\n",nameBefore,def->name);*/
+#endif
 
 	nr_type_dict_insert (typedict, def->name, def);
 
@@ -439,8 +449,7 @@ nr_type_directory_build (void)
 
 static void
 nr_type_calculate_position (NRTypePosDef *pdef, const unsigned char *name,
-                            NRTypeFaceWeight weight,
-                            NRTypeFaceSlant slant)
+							unsigned int weight, unsigned int slant)
 {
 	unsigned char c[256];
 	unsigned char *p;
@@ -607,11 +616,11 @@ nr_type_read_private_list (void)
 				if (ntokens >= 3) {
 					ArikkeiToken fnt[2];
 					ArikkeiToken filet, namet, familyt;
-					NRTypeFaceSlant slant;
-					NRTypeFaceWeight weight;
+					unsigned int slant;
+					unsigned int weight;
 					int nfnt, face;
-					slant = NR_TYPEFACE_SLANT_UNKNOWN;
-					weight = NR_TYPEFACE_WEIGHT_UNKNOWN;
+					slant = NR_TYPEFACE_SLANT_ROMAN;
+					weight = NR_TYPEFACE_WEIGHT_NORMAL;
 
 					if (ntokens >= 5) {
 						ArikkeiToken slantt, weightt;
@@ -620,12 +629,12 @@ nr_type_read_private_list (void)
 						if (!arikkei_token_is_empty (&slantt)) {
 							unsigned char s[1024];
 							arikkei_token_strncpy (&slantt, s, 1024);
-							slant = nrTypefaceStrToSlant(s);
+							slant = nr_type_string_to_slant (s);
 						}
 						if (!arikkei_token_is_empty (&weightt)) {
 							unsigned char s[1024];
 							arikkei_token_strncpy (&weightt, s, 1024);
-							weight=nrTypefaceStrToWeight(s);
+							weight = nr_type_string_to_slant (s);
 						}
 					}
 
@@ -666,8 +675,7 @@ nr_type_read_private_list (void)
 NRTypeFace *
 nr_type_build (const unsigned char *name, const unsigned char *family,
 	       const unsigned char *data, unsigned int size, unsigned int face,
-               NRTypeFaceSlant slant,
-               NRTypeFaceWeight weight)
+		   unsigned int slant, unsigned int weight)
 {
 	NRTypeFaceDefFT2 *dft2;
 

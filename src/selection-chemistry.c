@@ -112,12 +112,15 @@ sp_selection_action_perform (SPAction *action, void *config, void *data)
 static void
 sp_selection_perform_transform (SPDesktop *dt, SPRepr *config)
 {
+	SPSelection *sel;
 	unsigned int duplicate;
 	const unsigned char *tstr;
 	NRMatrixF transform;
 	const GSList *l;
 
 	if (!config) return;
+
+	sel = SP_DT_SELECTION (dt);
 
 	/* Duplication (new objects get selected) */
 	sp_repr_get_boolean (config, "duplicate", &duplicate);
@@ -128,7 +131,7 @@ sp_selection_perform_transform (SPDesktop *dt, SPRepr *config)
 	nr_matrix_f_set_identity (&transform);
 	sp_svg_transform_read (tstr, &transform);
 
-	for (l = sp_selection_item_list (SP_DT_SELECTION (dt)); l != NULL; l = l->next) {
+	for (l = sp_selection_item_list (sel); l != NULL; l = l->next) {
 		NRMatrixF curaff, newaff;
 		SPItem *item;
 		item = (SPItem *) l->data;
@@ -328,40 +331,42 @@ sp_selection_lower_to_bottom (SPDesktop *dt)
 static void
 sp_selection_group (SPDesktop *dt)
 {
-	SPSelection * selection;
-	SPRepr * current;
-	SPRepr * group;
-	SPItem * new;
-	const GSList * l;
-	GSList * p;
+	SPSelection *sel;
+	SPGroup *pgroup;
+	SPRepr *ngroup;
+	const GSList *items, *reprs;
+	GSList *p;
 
-	selection = SP_DT_SELECTION (dt);
-	if (sp_selection_is_empty (selection)) return;
-	l = sp_selection_repr_list (selection);
-	if (l->next == NULL) return;
+	sel = SP_DT_SELECTION (dt);
+	if (sp_selection_is_empty (sel)) return;
+	reprs = sp_selection_repr_list (sel);
+	if (!reprs->next) return;
+	items = sp_selection_item_list (sel);
+	pgroup = sp_item_list_common_parent_group (items);
+	if (!pgroup) return;
 
-	p = g_slist_copy ((GSList *) l);
+	p = g_slist_copy ((GSList *) reprs);
 
 	sp_selection_empty (SP_DT_SELECTION (dt));
 	p = g_slist_sort (p, (GCompareFunc) sp_repr_compare_position);
 
-	group = sp_repr_new ("g");
+	ngroup = sp_repr_new ("g");
 
 	while (p) {
-		SPRepr *new;
-		current = (SPRepr *) p->data;
-		new = sp_repr_duplicate (current);
-		sp_repr_unparent (current);
-		sp_repr_append_child (group, new);
-		sp_repr_unref (new);
-		p = g_slist_remove (p, current);
+		SPRepr *crepr, *nrepr;
+		crepr = (SPRepr *) p->data;
+		nrepr = sp_repr_duplicate (crepr);
+		sp_repr_unparent (crepr);
+		sp_repr_append_child (ngroup, nrepr);
+		sp_repr_unref (nrepr);
+		p = g_slist_remove (p, crepr);
 	}
 
-	new = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (dt), group);
+	sp_repr_append_child (SP_OBJECT_REPR (pgroup), ngroup);
 	sp_document_done (SP_DT_DOCUMENT (dt));
 
-	sp_selection_set_repr (selection, group);
-	sp_repr_unref (group);
+	sp_selection_set_repr (sel, ngroup);
+	sp_repr_unref (ngroup);
 }
 
 static void
@@ -415,23 +420,27 @@ sp_selection_delete (gpointer object, gpointer data)
 }
 
 /* fixme: sequencing */
-void sp_selection_duplicate (gpointer object, gpointer data)
+void
+sp_selection_duplicate (gpointer object, gpointer data)
 {
 	SPDesktop * desktop;
-	SPSelection * selection;
+	SPSelection *sel;
+	SPGroup *pgroup;
+	const GSList *items;
 	GSList * selected, * newsel;
 	SPRepr * copy;
-	SPItem * item;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
 
-	selection = SP_DT_SELECTION (desktop);
+	sel = SP_DT_SELECTION (desktop);
+	items = sp_selection_item_list (sel);
+	if (!items) return;
+	pgroup = sp_item_list_common_parent_group (items);
+	if (!pgroup) return;
 
-	if (sp_selection_is_empty (selection)) return;
-
-	selected = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
-	sp_selection_empty (selection);
+	selected = g_slist_copy ((GSList *) sp_selection_repr_list (sel));
+	sp_selection_empty (sel);
 
 	selected = g_slist_sort (selected, (GCompareFunc) sp_repr_compare_position);
 
@@ -439,8 +448,7 @@ void sp_selection_duplicate (gpointer object, gpointer data)
 
 	while (selected) {
 		copy = sp_repr_duplicate ((SPRepr *) selected->data);
-		item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
-		g_assert (item != NULL);
+		sp_repr_append_child (SP_OBJECT_REPR (pgroup), copy);
 		newsel = g_slist_prepend (newsel, copy);
 		selected = g_slist_remove (selected, selected->data);
 		sp_repr_unref (copy);
@@ -448,7 +456,7 @@ void sp_selection_duplicate (gpointer object, gpointer data)
 
 	sp_document_done (SP_DT_DOCUMENT (desktop));
 
-	sp_selection_set_repr_list (SP_DT_SELECTION (desktop), newsel);
+	sp_selection_set_repr_list (sel, newsel);
 
 	g_slist_free (newsel);
 }
@@ -465,7 +473,7 @@ sp_edit_clear_all (gpointer object, gpointer data)
 	doc = SP_DT_DOCUMENT (dt);
 	sp_selection_set_empty (SP_DT_SELECTION (dt));
 
-	items = sp_item_group_item_list (SP_GROUP (sp_document_root (doc)));
+	items = sp_item_group_item_list (SP_GROUP (dt->base));
 
 	while (items) {
 		sp_repr_unparent (SP_OBJECT_REPR (items->data));
@@ -488,7 +496,7 @@ sp_edit_select_all (gpointer object, gpointer data)
 	if (!dt) return ;
 	doc 	  = SP_DT_DOCUMENT (dt);
 	selection = SP_DT_SELECTION (dt);
-	items = sp_item_group_item_list (SP_GROUP (sp_document_root (doc)));
+	items = sp_item_group_item_list (SP_GROUP (dt->base));
 	
 	while (items) {
 		repr  = SP_OBJECT_REPR (items->data);
@@ -569,30 +577,6 @@ sp_item_list_common_parent_group (const GSList *items)
 	return SP_GROUP (parent);
 }
 
-#if 0
-void
-sp_undo (GtkWidget * widget)
-{
-	SPDesktop * desktop;
-
-	desktop = SP_ACTIVE_DESKTOP;
-	if (SP_IS_DESKTOP(desktop)) {
-		sp_document_undo (SP_DT_DOCUMENT (desktop));
-	}
-}
-
-void
-sp_redo (GtkWidget * widget)
-{
-	SPDesktop * desktop;
-
-	desktop = SP_ACTIVE_DESKTOP;
-	if (SP_IS_DESKTOP(desktop)) {
-		sp_document_redo (SP_DT_DOCUMENT (desktop));
-	}
-}
-#endif
-
 void
 sp_selection_cut (GtkWidget * widget)
 {
@@ -660,7 +644,7 @@ sp_selection_paste (GtkWidget * widget)
 	for (l = clipboard; l != NULL; l = l->next) {
 		repr = (SPRepr *) l->data;
 		copy = sp_repr_duplicate (repr);
-		sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
+		sp_repr_append_child (SP_OBJECT_REPR (desktop->base), copy);
 		sp_selection_add_repr (selection, copy);
 		sp_repr_unref (copy);
 	}
@@ -901,7 +885,7 @@ sp_selection_item_next (void)
   
 	/* Cycling type */
 	if (sp_cycle_is_global ()) {
-		children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
+		children = sp_item_group_item_list (SP_GROUP (desktop->base));
 	} else {
 		NRRectD d;
 		sp_desktop_get_display_area (desktop, &dbox);
@@ -964,7 +948,7 @@ sp_selection_item_prev (void)
   
 	/* Cycling type */
 	if (sp_cycle_is_global ()) {
-		children = sp_item_group_item_list (SP_GROUP(sp_document_root(document)));
+		children = sp_item_group_item_list (SP_GROUP (desktop->base));
 	} else {
 		NRRectD d;
 		sp_desktop_get_display_area (desktop, &dbox);

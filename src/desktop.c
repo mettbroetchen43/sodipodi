@@ -20,6 +20,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <assert.h>
 
 #include <glib.h>
 
@@ -76,24 +77,15 @@ static void sp_desktop_prepare_shutdown (SPDesktop *dt);
 static void sp_dt_namedview_modified (SPNamedView *nv, guint flags, SPDesktop *desktop);
 static void sp_desktop_selection_modified (SPSelection *selection, guint flags, SPDesktop *desktop);
 
+static void sp_desktop_private_detach_base (SPDesktop *dt);
+static void sp_desktop_private_detach_namedview (SPDesktop *dt);
+static void sp_desktop_private_detach_root (SPDesktop *dt);
+
 static void sp_dt_update_snap_distances (SPDesktop *desktop);
 
-static gint sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
-
-static gint sp_dtw_zoom_input (GtkSpinButton *spin, gdouble *new_val, gpointer data);
-static gboolean sp_dtw_zoom_output (GtkSpinButton *spin, gpointer data);
-static void sp_dtw_zoom_value_changed (GtkSpinButton *spin, gpointer data);
-static void sp_dtw_zoom_populate_popup (GtkEntry *entry, GtkMenu *menu, gpointer data);
-static void sp_dtw_zoom_50 (GtkMenuItem *item, gpointer data);
-static void sp_dtw_zoom_100 (GtkMenuItem *item, gpointer data);
-static void sp_dtw_zoom_200 (GtkMenuItem *item, gpointer data);
-static void sp_dtw_zoom_page (GtkMenuItem *item, gpointer data);
-static void sp_dtw_zoom_drawing (GtkMenuItem *item, gpointer data);
-static void sp_dtw_zoom_selection (GtkMenuItem *item, gpointer data);
-
-/* fixme: This is here, but shouldn't in theory (Lauris) */
-static void sp_desktop_widget_update_rulers (SPDesktopWidget *dtw);
 static void sp_desktop_update_scrollbars (SPDesktop *desktop);
+
+static gint sp_desktop_menu_popup (GtkWidget * widget, GdkEventButton * event, gpointer data);
 
 SPViewClass *parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -191,7 +183,7 @@ sp_desktop_dispose (GObject *object)
 	dt = (SPDesktop *) object;
 	view = (SPView *) object;
 
-	sp_view_set_root (view, NULL, NULL);
+	sp_desktop_private_detach_root (dt);
 
 	if (dt->sodipodi) {
 		sodipodi_remove_desktop (dt);
@@ -261,7 +253,6 @@ sp_desktop_root_modified (SPObject *root, unsigned int flags, SPDesktop *desktop
 	/* mask = SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG; */
 	mask = SP_OBJECT_VIEWPORT_MODIFIED_FLAG;
 	if (flags & mask) {
-#if 1
 		SPView *view;
 		SPItem *vpitem;
 		NRRectF vbox;
@@ -269,7 +260,7 @@ sp_desktop_root_modified (SPObject *root, unsigned int flags, SPDesktop *desktop
 		view = (SPView *) desktop;
 		/* We should use i2vp to set up drawing group transformation */
 		/* Only have to think, how to handle vpitem == root case */
-		vpitem = sp_item_get_viewport (view->root, &vbox, &i2vp);
+		vpitem = sp_item_get_viewport (desktop->root, &vbox, &i2vp);
 		if (vpitem) {
 			desktop->doc2dt[5] = (vbox.y1 - vbox.y0) * 0.8;
 			sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing),
@@ -281,15 +272,6 @@ sp_desktop_root_modified (SPObject *root, unsigned int flags, SPDesktop *desktop
 		} else {
 			/* fixme: Implement (Lauris) */
 		}
-#else
-		SPView *view;
-		/* fixme: Implement (Lauris) */
-		view = (SPView *) desktop;
-		desktop->doc2dt[5] = sp_document_height (view->doc);
-		sp_canvas_item_affine_absolute (SP_CANVAS_ITEM (desktop->drawing), NR_MATRIX_D_FROM_DOUBLE (desktop->doc2dt));
-		sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0,
-				      sp_document_width (view->doc), sp_document_height (view->doc));
-#endif
 	}
 }
 
@@ -339,9 +321,6 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 
 	/* Connect document */
 	sp_view_set_root (view, (SPItem *) document->root, (SPObject *) namedview);
-	/* Listen to root ::modified signal */
-	/* Fixme: maybe implement as view virtual instead (Lauris) */
-	g_signal_connect ((GObject *) view->root, "modified", (GCallback) sp_desktop_root_modified, desktop);
 
 	/* Set up selection */
 	desktop->selection = sp_selection_new (desktop);
@@ -383,6 +362,7 @@ sp_desktop_new (SPNamedView *namedview, SPCanvas *canvas)
 	return SP_VIEW (desktop);
 }
 
+/* fixme: This method is mostly useless (Lauris) */
 static void
 sp_desktop_prepare_shutdown (SPDesktop *dt)
 {
@@ -398,6 +378,7 @@ sp_desktop_prepare_shutdown (SPDesktop *dt)
 		dt->selection = NULL;
 	}
 
+#if 0
 	if (dt->namedview) {
 		sp_signal_disconnect_by_data (dt->namedview, dt);
 		sp_namedview_hide (dt->namedview, dt);
@@ -408,6 +389,7 @@ sp_desktop_prepare_shutdown (SPDesktop *dt)
 		sp_item_invoke_hide (SP_ITEM (sp_document_root (SP_VIEW_DOCUMENT (dt))), dt->dkey);
 		dt->drawing = NULL;
 	}
+#endif
 
 	if (dt->sodipodi) {
 		sodipodi_remove_desktop (dt);
@@ -477,49 +459,94 @@ sp_desktop_activate_guides (SPDesktop * desktop, gboolean activate)
 }
 
 static void
+sp_desktop_private_detach_base (SPDesktop *dt)
+{
+	assert (dt->base);
+	sp_signal_disconnect_by_data ((GObject *) dt->base, dt);
+	if (dt->base != (SPGroup *) ((SPView *) dt)->root) {
+		/* fixme: I really do not like the logic here (Lauris) */
+		sp_group_set_transparent (dt->base, FALSE);
+	}
+	dt->base = NULL;
+}
+
+static void
+sp_desktop_private_detach_namedview (SPDesktop *dt)
+{
+	assert (dt->namedview);
+	sp_signal_disconnect_by_data ((GObject *) dt->namedview, dt);
+	sp_namedview_hide (dt->namedview, dt);
+	dt->namedview = NULL;
+}
+
+static void
+sp_desktop_private_detach_root (SPDesktop *dt)
+{
+	assert (dt->root);
+	sp_desktop_private_detach_base (dt);
+	sp_desktop_private_detach_namedview (dt);
+	sp_item_invoke_hide (dt->root, dt->dkey);
+	dt->root = NULL;
+}
+
+static void
 sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 {
 	SPDesktop *desktop;
-	SPDocument *newdoc;
-	SPNamedView *newnv;
-	NRArenaItem *aitem;
 
 	desktop = (SPDesktop *) view;
 
-	newdoc = (root) ? SP_OBJECT_DOCUMENT (root) : NULL;
-	newnv = (SPNamedView *) layout;
-
-	/* Detach root */
-	sp_desktop_set_base (desktop, NULL);
-	/* Detach existing namedview if needed */
-	if (desktop->namedview && (desktop->namedview != newnv)) {
-		sp_signal_disconnect_by_data ((GObject *) desktop->namedview, desktop);
-		sp_namedview_hide (desktop->namedview, desktop);
-		desktop->namedview = NULL;
+	if ((SPNamedView *) layout == desktop->namedview) {
+		/* NOP */
+		assert (root == desktop->root);
+		return;
 	}
 
-	/* Hide existing root if needed */
-	if (view->root && (view->root != root)) {
-		sp_item_invoke_hide (view->root, desktop->dkey);
-		/* Root and document are detached in base caller */
-	}
-
-	if (newnv && !desktop->namedview) {
+	if (root == desktop->root) {
+		assert (layout != NULL);
+		/* Detach old namedview */
+		if (desktop->namedview) {
+			sp_desktop_private_detach_namedview (desktop);
+		}
+		/* Attach new namedview */
 		/* fixme: */
-		desktop->namedview = newnv;
+		desktop->namedview = (SPNamedView *) layout;
 		g_signal_connect (G_OBJECT (desktop->namedview), "modified", (GCallback) sp_dt_namedview_modified, desktop);
 		desktop->number = sp_namedview_viewcount (desktop->namedview);
+		/* Update namedview an such */
+		sp_namedview_show (desktop->namedview, desktop);
+		/* Ugly hack */
+		sp_desktop_activate_guides (desktop, TRUE);
+		/* Ugly hack */
+		sp_dt_namedview_modified (desktop->namedview, SP_OBJECT_MODIFIED_FLAG, desktop);
+		return;
 	}
 
+	/* Detach old root */
+	if (desktop->root) {
+		sp_desktop_private_detach_root (desktop);
+	}
 	if (root) {
+		NRArenaItem *aitem;
+		assert (layout != NULL);
+		/* Keep local copy */
+		desktop->root = root;
+		/* Listen to root ::modified signal */
+		/* Fixme: maybe implement as view virtual instead (Lauris) */
+		g_signal_connect ((GObject *) desktop->root, "modified", (GCallback) sp_desktop_root_modified, desktop);
+		/* Attach new namedview */
+		/* fixme: */
+		desktop->namedview = (SPNamedView *) layout;
+		g_signal_connect (G_OBJECT (desktop->namedview), "modified", (GCallback) sp_dt_namedview_modified, desktop);
+		desktop->number = sp_namedview_viewcount (desktop->namedview);
+		/* Update namedview an such */
+		sp_namedview_show (desktop->namedview, desktop);
 		/* Set up drawing */
-		aitem = sp_item_invoke_show (root, SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey, SP_ITEM_SHOW_DISPLAY);
+		aitem = sp_item_invoke_show (desktop->root, SP_CANVAS_ARENA (desktop->drawing)->arena, desktop->dkey, SP_ITEM_SHOW_DISPLAY);
 		if (aitem) {
 			nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, aitem, NULL);
 			nr_arena_item_unref (aitem);
 		}
-		/* Update namedview an such */
-		sp_namedview_show (desktop->namedview, desktop);
 		/* Ugly hack */
 		sp_desktop_activate_guides (desktop, TRUE);
 		/* Ugly hack */
@@ -527,20 +554,20 @@ sp_desktop_set_root (SPView *view, SPItem *root, SPObject *layout)
 		/* Attach root */
 		/* fixme: view->root should really be set before this */
 		/* fixme: What to do if root is not group? */
-		sp_desktop_set_base (desktop, (SPGroup *) (SPGroup *) root);
+		sp_desktop_set_base (desktop, (SPGroup *) (SPGroup *) desktop->root);
 	}
 }
 
 /* Set base group */
 
 static void
-sp_desktop_root_release (SPObject *object, SPDesktop *dt)
+sp_desktop_base_release (SPObject *object, SPDesktop *dt)
 {
-	if (((SPView *) dt)->root) {
+	assert (dt->base);
+	sp_desktop_private_detach_base (dt);
+	if (dt->root) {
 		dt->base = (SPGroup *) ((SPView *) dt)->root;
-	}
-	if (dt->base) {
-		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_root_release, dt);
+		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_base_release, dt);
 	}
 }
 
@@ -548,17 +575,11 @@ void
 sp_desktop_set_base (SPDesktop *dt, SPGroup *base)
 {
 	if (base == dt->base) return;
-	if (dt->base) {
-		if (dt->base != (SPGroup *) ((SPView *) dt)->root) {
-			/* fixme: I really do not like the logic here (Lauris) */
-			sp_group_set_transparent (dt->base, FALSE);
-		}
-		sp_signal_disconnect_by_data ((GObject *) dt->base, dt);
-	}
+	if (dt->base) sp_desktop_private_detach_base (dt);
 	dt->base = base;
 	if (dt->base) {
 		sp_group_set_transparent (dt->base, TRUE);
-		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_root_release, dt);
+		g_signal_connect ((GObject *) dt->base, "release", (GCallback) sp_desktop_base_release, dt);
 	}
 }
 
@@ -742,7 +763,7 @@ sp_desktop_get_items_in_bbox (SPDesktop *dt, NRRectD *box, unsigned int complete
 
 	s = NULL;
 
-	root = (SPObject *) ((SPView *) dt)->root;
+	root = (SPObject *) dt->base;
 	for (cho = root->children; cho != NULL; cho = cho->next) {
 		if (SP_IS_ITEM (cho)) {
 			NRRectF b;
@@ -794,6 +815,20 @@ static void sp_desktop_widget_adjustment_value_changed (GtkAdjustment *adj, SPDe
 static void sp_desktop_widget_namedview_modified (SPNamedView *nv, guint flags, SPDesktopWidget *dtw);
 
 static void sp_desktop_widget_update_zoom (SPDesktopWidget *dtw);
+
+static gint sp_dtw_zoom_input (GtkSpinButton *spin, gdouble *new_val, gpointer data);
+static gboolean sp_dtw_zoom_output (GtkSpinButton *spin, gpointer data);
+static void sp_dtw_zoom_value_changed (GtkSpinButton *spin, gpointer data);
+static void sp_dtw_zoom_populate_popup (GtkEntry *entry, GtkMenu *menu, gpointer data);
+static void sp_dtw_zoom_50 (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_100 (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_200 (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_page (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_drawing (GtkMenuItem *item, gpointer data);
+static void sp_dtw_zoom_selection (GtkMenuItem *item, gpointer data);
+
+/* fixme: This is here, but shouldn't in theory (Lauris) */
+static void sp_desktop_widget_update_rulers (SPDesktopWidget *dtw);
 
 SPViewWidgetClass *dtw_parent_class;
 

@@ -25,8 +25,7 @@ NRNameList *nr_type_directory_style_list_get (const unsigned char *family, NRNam
 unsigned int nr_type_register (NRTypeFaceDef *def);
 NRTypeFace *nr_type_build (const unsigned char *name, const unsigned char *family,
 			   const unsigned char *data, unsigned int size, unsigned int face,
-                           NRTypeFaceSlant slant,
-                           NRTypeFaceWeight weight);
+			   unsigned int slant, unsigned int weight);
 
 void nr_type_directory_forget_face (NRTypeFace *tf);
 

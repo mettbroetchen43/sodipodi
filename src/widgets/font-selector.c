@@ -290,16 +290,14 @@ sp_font_selector_family_select_row (GtkCList *clist, gint row, gint column, GdkE
                         fsel->styledef=fdef->faces;
 			for (face = fdef->faces; face; face=face->next) {
 				unsigned char* p;
-                                const unsigned char* w
-                                  =nrTypefaceWeightToStr(face->weight);
-                                const unsigned char* s
-                                  =nrTypefaceSlantToStr(face->slant);
-                                int len=strlen(w)+strlen(s)+1;
-                                p=(unsigned char*)(malloc(len+1));
-				sprintf(p,"%s %s",
-                                        nrTypefaceWeightToStr(face->weight),
-                                        nrTypefaceSlantToStr(face->slant)
-                                        );
+				const unsigned char* w;
+				const unsigned char* s;
+				int len;
+				w = nr_type_weight_to_string (face->weight);
+				s = nr_type_slant_to_string (face->slant);
+				len = strlen (w) + strlen (s) + 1;
+				p = (unsigned char *) (malloc (len + 1));
+				sprintf(p,"%s %s", w, s);
 
 				gtk_clist_append (GTK_CLIST (fsel->style), (gchar **) &p);
 				gtk_clist_set_row_data (GTK_CLIST (fsel->style), i, (gpointer)face);

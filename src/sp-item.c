@@ -22,6 +22,7 @@
 #include <math.h>
 
 #include <string.h>
+#include <assert.h>
 
 #include <libnr/nr-rect.h>
 
@@ -626,8 +627,8 @@ sp_item_invoke_hide (SPItem *item, unsigned int key)
 {
 	SPItemView *v, *ref, *next;
 
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
+	assert (item != NULL);
+	assert (SP_IS_ITEM (item));
 
 	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide)
 		((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide (item, key);

@@ -58,8 +58,8 @@ static unsigned char *nr_multibyte_utf8_strdup (const char *mbs);
 
 static NRTypeFaceClass *parent_class;
 
-static NRTypeFaceWeight w32_to_nr_weight (int lfWeight);
-static NRTypeFaceSlant w32_to_nr_slant (int lfItalic);
+static unsigned int w32_to_nr_weight (int lfWeight);
+static unsigned int w32_to_nr_slant (int lfItalic);
 
 unsigned int
 nr_typeface_w32_get_type (void)
@@ -149,6 +149,7 @@ nr_type_w32_families_get (NRNameList *names)
     *names = NRW32Families;
 }
 
+/*
 void
 nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family)
 {
@@ -156,6 +157,45 @@ nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsi
     def->name = strdup (name);
     def->family = strdup (family);
     def->typeface = NULL;
+}
+*/
+
+static unsigned int
+w32_to_nr_weight (int lfWeight)
+{
+	switch (lfWeight) {
+	case FW_THIN:
+		return NR_TYPEFACE_WEIGHT_THIN;
+	case FW_ULTRALIGHT:
+		return NR_TYPEFACE_WEIGHT_ULTRALIGHT;
+	case FW_LIGHT:
+		return NR_TYPEFACE_WEIGHT_LIGHT;
+	case FW_NORMAL:
+		return NR_TYPEFACE_WEIGHT_NORMAL;
+	case FW_MEDIUM:
+		return NR_TYPEFACE_WEIGHT_MEDIUM;
+	case FW_DEMIBOLD:
+		return NR_TYPEFACE_WEIGHT_DEMIBOLD;
+	case FW_BOLD:
+		return NR_TYPEFACE_WEIGHT_BOLD;
+	case FW_ULTRABOLD:
+		return NR_TYPEFACE_WEIGHT_ULTRABOLD;
+	case FW_BLACK:
+		return NR_TYPEFACE_WEIGHT_BLACK;
+	default:
+		break;
+	}
+	return NR_TYPEFACE_WEIGHT_NORMAL;
+}
+
+static unsigned int
+w32_to_nr_slant (int lfItalic)
+{
+	if (lfItalic) {
+		return NR_TYPEFACE_SLANT_ITALIC;
+	} else {
+		return NR_TYPEFACE_SLANT_ROMAN;
+	}
 }
 
 void
@@ -180,53 +220,27 @@ nr_type_read_w32_list (void)
 			}
 		}
 		if (family) {
-			tdef = nr_new (NRTypeFaceDef, 1);
-			tdef->next = NULL;
-			tdef->pdef = NULL;
-			nr_type_w32_build_def (tdef, wnames.names[i], family);
-			nr_type_register (tdef);
+			LOGFONT *logfont;
+			logfont = arikkei_dict_lookup (&namedict, wnames.names[i]);
+			if (logfont) {
+				tdef = nr_new (NRTypeFaceDef, 1);
+				tdef->next = NULL;
+				tdef->pdef = NULL;
+				/* Win32 stuff */
+				tdef->type = NR_TYPE_TYPEFACE_W32;
+				tdef->name = strdup (wnames.names[i]);
+				tdef->family = strdup (family);
+				tdef->weight = w32_to_nr_weight (logfont->lfWeight);
+				tdef->slant = w32_to_nr_slant (logfont->lfItalic);
+				tdef->typeface = NULL;
+				/* nr_type_w32_build_def (tdef, wnames.names[i], family); */
+				nr_type_register (tdef);
+			}
 		}
 	}
 
 	nr_name_list_release (&wfamilies);
 	nr_name_list_release (&wnames);
-}
-
-static NRTypeFaceWeight
-w32_to_nr_weight (int lfWeight)
-{
-        switch (lfWeight) {
-        case FW_THIN:
-                return NR_TYPEFACE_WEIGHT_THIN;
-        case FW_ULTRALIGHT:
-                return NR_TYPEFACE_WEIGHT_ULTRALIGHT;
-        case FW_LIGHT:
-                return NR_TYPEFACE_WEIGHT_LIGHT;
-        case FW_NORMAL:
-                return NR_TYPEFACE_WEIGHT_NORMAL;
-        case FW_MEDIUM:
-                return NR_TYPEFACE_WEIGHT_MEDIUM;
-        case FW_DEMIBOLD:
-                return NR_TYPEFACE_WEIGHT_DEMIBOLD;
-        case FW_BOLD:
-                return NR_TYPEFACE_WEIGHT_BOLD;
-        case FW_ULTRABOLD:
-                return NR_TYPEFACE_WEIGHT_ULTRABOLD;
-        case FW_BLACK:
-                return NR_TYPEFACE_WEIGHT_BLACK;
-        default:
-                return NR_TYPEFACE_WEIGHT_UNKNOWN;
-        }
-}
-
-static NRTypeFaceSlant
-w32_to_nr_slant (int lfItalic)
-{
-        if (lfItalic) {
-          return NR_TYPEFACE_SLANT_ITALIC;
-        } else {
-          return NR_TYPEFACE_SLANT_ROMAN;
-        }
 }
 
 static void
@@ -245,8 +259,8 @@ nr_typeface_w32_setup (NRTypeFace *tface, NRTypeFaceDef *def)
 
 	tfw32->fonts = NULL;
 	tfw32->logfont = arikkei_dict_lookup (&namedict, def->name);
-	tfw32->weight=w32_to_nr_weight(tfw32->logfont->lfWeight);
-	tfw32->slant=w32_to_nr_slant(tfw32->logfont->lfItalic);
+	/* tfw32->weight=w32_to_nr_weight(tfw32->logfont->lfWeight); */
+	/* tfw32->slant=w32_to_nr_slant(tfw32->logfont->lfItalic); */
 	tfw32->logfont->lfHeight = -1000;
 	tfw32->logfont->lfWidth = 0;
 	tfw32->hfont = CreateFontIndirect (tfw32->logfont);
@@ -666,7 +680,7 @@ nr_type_w32_inner_enum_proc (ENUMLOGFONTEX *elfex, NEWTEXTMETRICEX *tmex, DWORD 
 		}
 		names[names_len++] = name;
 		arikkei_dict_insert (&namedict, name, plf);
-        g_print ("%s | ", name);
+        /* g_print ("%s | ", name); */
 		/* g_print ("Registered '%s' %d\n", name, elfex->elfLogFont.lfCharSet); */
     } else {
         nr_free (name);

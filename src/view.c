@@ -159,6 +159,9 @@ sp_view_request_redraw (SPView *view)
 static void
 sp_view_root_release (SPObject *object, SPView *view)
 {
+	/* Detach signals */
+	sp_signal_disconnect_by_data (view->root, view);
+	sp_signal_disconnect_by_data (view->doc, view);
 	/* Drop links */
 	view->root = NULL;
 	sp_signal_disconnect_by_data (view->doc, view);
@@ -181,9 +184,6 @@ sp_view_set_root (SPView *view, SPItem *root, SPObject *layout)
 	/* Reference root document so it will not be lost */
 	if (doc) sp_document_ref (doc);
 
-	if (((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_root)
-		((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_root (view, root, layout);
-
 	if (view->root && (view->root != root)) {
 		sp_signal_disconnect_by_data (view->root, view);
 		view->root = NULL;
@@ -197,11 +197,17 @@ sp_view_set_root (SPView *view, SPItem *root, SPObject *layout)
 		view->root = root;
 		g_signal_connect ((GObject *) view->root, "release", (GCallback) sp_view_root_release, view);
 		if (!view->doc) {
-			view->doc = doc;
+			view->doc = sp_document_ref (doc);
 			g_signal_connect (G_OBJECT (view->doc), "uri_set", G_CALLBACK (sp_view_document_uri_set), view);
 			g_signal_connect (G_OBJECT (view->doc), "resized", G_CALLBACK (sp_view_document_resized), view);
 		}
 	}
+
+	/* Forget document for now */
+	if (doc) sp_document_unref (doc);
+
+	if (((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_root)
+		((SPViewClass *) G_OBJECT_GET_CLASS(view))->set_root (view, root, layout);
 
 	/* fixme: (Lauris) */
 	g_signal_emit (G_OBJECT (view), signals[URI_SET], 0, (view->doc) ? SP_DOCUMENT_URI (view->doc) : NULL);

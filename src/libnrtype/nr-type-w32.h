@@ -63,8 +63,8 @@ struct _NRTypeFaceW32 {
 	unsigned int slots_size;
 
 	/* fixme: Lauris */
-	NRTypeFaceWeight weight;
-	NRTypeFaceSlant slant;
+	/* NRTypeFaceWeight weight; */
+	/* NRTypeFaceSlant slant; */
 
 	LOGFONT *logfont;
 	HFONT hfont;
@@ -78,7 +78,9 @@ struct _NRTypeFaceW32Class {
 void nr_type_w32_typefaces_get (NRNameList *names);
 void nr_type_w32_families_get (NRNameList *names);
 
+#if 0
 void nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const unsigned char *family);
+#endif
 
 void nr_type_read_w32_list (void);
 

@@ -247,6 +247,7 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 		sp_repr_append_child (SP_OBJECT_REPR (desktop->base), repr);
 		rc->item = (SPItem *) sp_document_lookup_id (SP_DT_DOCUMENT (desktop), sp_repr_get_attr (repr, "id"));
 		sp_repr_unref (repr);
+		/* Set item coordinate system identical to root, regardless of base */
 		sp_item_i2root_affine (rc->item, &i2root);
 		nr_matrix_f_invert (&root2i, &i2root);
 		sp_item_set_item_transform (rc->item, &root2i);

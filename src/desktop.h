@@ -35,6 +35,8 @@ struct _SPDesktop {
 	/* fixme: Remove this and reimplement shutdown (Lauris) */
 	Sodipodi *sodipodi;
 
+	/* Local pointer to root */
+	SPItem *root;
 	/* Namedview defines guides grids and such */
 	SPNamedView *namedview;
 	/* Base group where items are created */
