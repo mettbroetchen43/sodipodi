@@ -38,7 +38,7 @@ static void sp_module_unregister (SPModule *module);
 
 static GObjectClass *module_parent_class;
 
-unsigned int
+GType
 sp_module_get_type (void)
 {
 	static GType type = 0;
@@ -120,7 +120,7 @@ sp_module_private_build (SPModule *module, SPRepr *repr)
 }
 
 SPModule *
-sp_module_new (unsigned int type, SPRepr *repr)
+sp_module_new (GType type, SPRepr *repr)
 {
 	SPModule *module;
 
@@ -137,7 +137,7 @@ sp_module_new (unsigned int type, SPRepr *repr)
 }
 
 SPModule *
-sp_module_new_from_path (unsigned int type, const unsigned char *path)
+sp_module_new_from_path (GType type, const unsigned char *path)
 {
 	SPRepr *repr;
 
@@ -196,7 +196,7 @@ static void sp_module_input_build (SPModule *module, SPRepr *repr);
 
 static SPModuleClass *input_parent_class;
 
-unsigned int
+GType
 sp_module_input_get_type (void)
 {
 	static GType type = 0;
@@ -294,7 +294,7 @@ static void sp_module_output_build (SPModule *module, SPRepr *repr);
 
 static SPModuleClass *output_parent_class;
 
-unsigned int sp_module_output_get_type (void) {
+GType sp_module_output_get_type (void) {
 	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
@@ -426,7 +426,7 @@ static void sp_module_filter_finalize (GObject *object);
 
 static SPModuleClass *filter_parent_class;
 
-unsigned int
+GType
 sp_module_filter_get_type (void)
 {
 	static GType type = 0;
@@ -481,7 +481,7 @@ static void sp_module_print_finalize (GObject *object);
 
 static SPModuleClass *print_parent_class;
 
-unsigned int
+GType
 sp_module_print_get_type (void)
 {
 	static GType type = 0;

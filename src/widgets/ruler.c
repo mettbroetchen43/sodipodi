@@ -35,7 +35,7 @@ static void sp_hruler_draw_ticks    (GtkRuler       *ruler);
 static void sp_hruler_draw_pos      (GtkRuler       *ruler);
 
 
-guint
+GtkType
 sp_hruler_get_type (void)
 {
   static GtkType hruler_type = 0;
@@ -316,7 +316,7 @@ static void sp_vruler_draw_ticks    (GtkRuler       *ruler);
 static void sp_vruler_draw_pos      (GtkRuler       *ruler);
 
 
-guint
+GtkType
 sp_vruler_get_type (void)
 {
   static GtkType vruler_type = 0;

@@ -43,7 +43,7 @@ static gint sp_selection_idle_handler (gpointer data);
 static GObjectClass *parent_class;
 static guint selection_signals[LAST_SIGNAL] = { 0 };
 
-unsigned int
+GType
 sp_selection_get_type (void)
 {
 	static GType type = 0;

@@ -25,10 +25,10 @@ static SPModuleExecClass * builtin_parent_class;
 
 /* Module Exec functions */
 
-unsigned int
+GType
 sp_module_handler_get_type (void)
 {
-	static unsigned int type = 0;
+	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPModuleHandlerClass),
@@ -115,10 +115,10 @@ static void sp_module_exec_exec (SPModule * object, SPModuleDoc * doc) {
 
 /* Module Exec Builtin functions */
 
-unsigned int
+GType
 sp_module_exec_builtin_get_type (void)
 {
-	static unsigned int type = 0;
+	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPModuleExecBuiltinClass),

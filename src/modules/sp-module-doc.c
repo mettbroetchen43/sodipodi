@@ -10,10 +10,10 @@ static void sp_module_doc_finalize     (GObject           * object);
 /* Global variables */
 static GObjectClass * base_parent_class;
 
-unsigned int
+GType
 sp_module_doc_get_type (void)
 {
-	static unsigned int type = 0;
+	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPModuleDocClass),

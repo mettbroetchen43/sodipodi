@@ -54,7 +54,7 @@ static SPItemView *sp_item_view_list_remove (SPItemView *list, SPItemView *view)
 
 static SPObjectClass *parent_class;
 
-unsigned int
+GType
 sp_item_get_type (void)
 {
 	static GType type = 0;

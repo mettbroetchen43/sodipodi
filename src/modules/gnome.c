@@ -59,7 +59,7 @@ static unsigned int sp_module_print_gnome_image (SPModulePrint *mod, unsigned ch
 
 static SPModulePrintClass *print_gnome_parent_class;
 
-unsigned int
+GType
 sp_module_print_gnome_get_type (void)
 {
 	static GType type = 0;

@@ -43,10 +43,10 @@ static FT_Library ft_library = NULL;
 
 static NRTypeFaceClass *parent_class;
 
-unsigned int
+NRType
 nr_typeface_ft2_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_TYPEFACE,
 						"NRTypeFaceFT2",

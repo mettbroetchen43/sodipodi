@@ -21,7 +21,7 @@
 
 #include "sodipodi.h"
 
-unsigned int sodipodi_get_type (void);
+GType sodipodi_get_type (void);
 
 Sodipodi *sodipodi_new ();
 

@@ -34,6 +34,6 @@ struct _SPModulePrintPlainClass {
 	SPModulePrintClass module_print_class;
 };
 
-unsigned int sp_module_print_plain_get_type (void);
+GType sp_module_print_plain_get_type (void);
 
 #endif

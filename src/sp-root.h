@@ -61,6 +61,6 @@ struct _SPRootClass {
 	SPGroupClass parent_class;
 };
 
-unsigned int sp_root_get_type (void);
+GType sp_root_get_type (void);
 
 #endif

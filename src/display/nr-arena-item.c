@@ -32,10 +32,10 @@ static void nr_arena_item_private_finalize (NRObject *object);
 
 static NRObjectClass *parent_class;
 
-unsigned int
+NRType
 nr_arena_item_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_OBJECT,
 						"NRArenaItem",

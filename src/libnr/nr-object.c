@@ -30,7 +30,7 @@ static unsigned int classes_len = 0;
 static unsigned int classes_size = 0;
 
 unsigned int
-nr_type_is_a (unsigned int type, unsigned int test)
+nr_type_is_a (NRType type, NRType test)
 {
 	NRObjectClass *klass;
 
@@ -56,21 +56,21 @@ nr_object_check_instance_cast (void *ip, unsigned int tc)
 }
 
 unsigned int
-nr_object_check_instance_type (void *ip, unsigned int tc)
+nr_object_check_instance_type (void *ip, NRType tc)
 {
 	if (ip == NULL) return FALSE;
 	return nr_type_is_a (((NRObject *) ip)->klass->type, tc);
 }
 
-unsigned int
-nr_object_register_type (unsigned int parent,
+NRType
+nr_object_register_type (NRType parent,
 			 unsigned char *name,
 			 unsigned int csize,
 			 unsigned int isize,
 			 void (* cinit) (NRObjectClass *),
 			 void (* iinit) (NRObject *))
 {
-	unsigned int type;
+	NRType type;
 	NRObjectClass *klass;
 
 	if (classes_len >= classes_size) {
@@ -110,10 +110,10 @@ static void nr_object_class_init (NRObjectClass *klass);
 static void nr_object_init (NRObject *object);
 static void nr_object_finalize (NRObject *object);
 
-unsigned int
+NRType
 nr_object_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (0,
 						"NRObject",
@@ -142,7 +142,7 @@ static void nr_object_finalize (NRObject *object)
 /* Dynamic lifecycle */
 
 NRObject *
-nr_object_new (unsigned int type)
+nr_object_new (NRType type)
 {
 	NRObjectClass *klass;
 	NRObject *object;
@@ -193,7 +193,7 @@ nr_class_tree_object_invoke_init (NRObjectClass *klass, NRObject *object)
 }
 
 NRObject *
-nr_object_setup (NRObject *object, unsigned int type)
+nr_object_setup (NRObject *object, NRType type)
 {
 	NRObjectClass *klass;
 
@@ -225,10 +225,10 @@ static void nr_active_object_finalize (NRObject *object);
 
 static NRObjectClass *parent_class;
 
-unsigned int
+NRType
 nr_active_object_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_OBJECT,
 						"NRActiveObject",

@@ -55,7 +55,7 @@ static void sp_shape_update_marker_view (SPShape *shape, NRArenaItem *ai);
 
 static SPItemClass *parent_class;
 
-unsigned int
+GType
 sp_shape_get_type (void)
 {
 	static GType type = 0;

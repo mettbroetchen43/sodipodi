@@ -61,7 +61,7 @@ static GObjectClass * parent_class;
 static guint signals[LAST_SIGNAL] = {0};
 static gint doc_count = 0;
 
-unsigned int
+GType
 sp_document_get_type (void)
 {
 	static GType type = 0;

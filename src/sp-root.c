@@ -41,10 +41,10 @@ static void sp_root_print (SPItem *item, SPPrintContext *ctx);
 
 static SPGroupClass *parent_class;
 
-unsigned int
+GType
 sp_root_get_type (void)
 {
-	static unsigned int type = 0;
+	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPRootClass),

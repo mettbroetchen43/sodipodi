@@ -91,7 +91,7 @@ static unsigned int sp_module_print_win32_finish (SPModulePrint *mod);
 
 static SPModulePrintClass *print_win32_parent_class;
 
-unsigned int
+GType
 sp_module_print_win32_get_type (void)
 {
 	static GType type = 0;

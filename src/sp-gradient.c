@@ -45,10 +45,10 @@ static SPRepr *sp_stop_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObjectClass * stop_parent_class;
 
-unsigned int
+GType
 sp_stop_get_type (void)
 {
-	static unsigned int type = 0;
+	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPStopClass),
@@ -192,10 +192,10 @@ static void sp_gradient_rebuild_vector (SPGradient *gr);
 
 static SPPaintServerClass * gradient_parent_class;
 
-unsigned int
+GType
 sp_gradient_get_type (void)
 {
-	static unsigned int gradient_type = 0;
+	static GType gradient_type = 0;
 	if (!gradient_type) {
 		GTypeInfo gradient_info = {
 			sizeof (SPGradientClass),
@@ -1233,10 +1233,10 @@ static void sp_lg_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPGradientClass *lg_parent_class;
 
-unsigned int
+GType
 sp_lineargradient_get_type (void)
 {
-	static unsigned int type = 0;
+	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPLinearGradientClass),
@@ -1575,10 +1575,10 @@ static void sp_rg_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPGradientClass *rg_parent_class;
 
-unsigned int
+GType
 sp_radialgradient_get_type (void)
 {
-	static unsigned int type = 0;
+	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPRadialGradientClass),

@@ -32,6 +32,6 @@ struct _SPModulePrintGnomeClass {
 	SPModulePrintClass module_print_class;
 };
 
-unsigned int sp_module_print_gnome_get_type (void);
+GType sp_module_print_gnome_get_type (void);
 
 #endif

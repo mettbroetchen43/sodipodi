@@ -68,7 +68,7 @@ SPReprEventVector object_event_vector = {
 static GObjectClass *parent_class;
 static guint object_signals[LAST_SIGNAL] = {0};
 
-unsigned int
+GType
 sp_object_get_type (void)
 {
 	static GType type = 0;

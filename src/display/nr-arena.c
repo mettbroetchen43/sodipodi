@@ -22,10 +22,10 @@ static void nr_arena_finalize (NRObject *object);
 
 static NRActiveObjectClass *parent_class;
 
-unsigned int
+NRType
 nr_arena_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_ACTIVE_OBJECT,
 						"NRArena",

@@ -37,6 +37,6 @@ struct _SPDropperContextClass {
 	SPEventContextClass parent_class;
 };
 
-unsigned int sp_dropper_context_get_type (void);
+GType sp_dropper_context_get_type (void);
 
 #endif

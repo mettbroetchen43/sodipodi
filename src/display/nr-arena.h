@@ -46,7 +46,7 @@ struct _NRArenaClass {
 #endif
 };
 
-unsigned int nr_arena_get_type (void);
+NRType nr_arena_get_type (void);
 
 /* Following are meant stricktly for subclass/item implementations */
 /* void nr_arena_item_added (NRArena *arena, NRArenaItem *item); */

@@ -38,7 +38,7 @@ struct _SPHRulerClass
 };
 
 
-guint      sp_hruler_get_type (void);
+GtkType    sp_hruler_get_type (void);
 GtkWidget* sp_hruler_new      (void);
 
 
@@ -66,7 +66,7 @@ struct _SPVRulerClass
 };
 
 
-guint      sp_vruler_get_type (void);
+GtkType    sp_vruler_get_type (void);
 GtkWidget* sp_vruler_new      (void);
 
 

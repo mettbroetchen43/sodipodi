@@ -43,10 +43,10 @@ static void nr_typeface_w32_font_free (NRFont *font);
 
 static NRTypeFaceClass *parent_class;
 
-unsigned int
+NRType
 nr_typeface_w32_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_TYPEFACE,
 						"NRTypeFaceW32",

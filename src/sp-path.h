@@ -27,6 +27,6 @@ struct _SPPathClass {
 	SPShapeClass shape_class;
 };
 
-unsigned int sp_path_get_type (void);
+GType sp_path_get_type (void);
 
 #endif

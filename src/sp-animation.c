@@ -25,7 +25,7 @@ static void sp_animation_set (SPObject *object, unsigned int key, const unsigned
 
 static SPObjectClass *animation_parent_class;
 
-unsigned int
+GType
 sp_animation_get_type (void)
 {
 	static GType animation_type = 0;
@@ -116,7 +116,7 @@ static void sp_ianimation_set (SPObject *object, unsigned int key, const unsigne
 
 static SPObjectClass *ianimation_parent_class;
 
-unsigned int
+GType
 sp_ianimation_get_type (void)
 {
 	static GType type = 0;
@@ -204,7 +204,7 @@ static void sp_animate_set (SPObject *object, unsigned int key, const unsigned c
 
 static SPIAnimationClass *animate_parent_class;
 
-unsigned int
+GType
 sp_animate_get_type (void)
 {
 	static GType type = 0;

@@ -37,7 +37,7 @@ typedef struct _SPFontPreviewClass SPFontPreviewClass;
 
 /* SPFontSelector */
 
-guint sp_font_selector_get_type (void);
+GtkType sp_font_selector_get_type (void);
 
 GtkWidget *sp_font_selector_new (void);
 
@@ -48,7 +48,7 @@ NRFont *sp_font_selector_get_font (SPFontSelector *fsel);
 
 /* SPFontPreview */
 
-guint sp_font_preview_get_type (void);
+GtkType sp_font_preview_get_type (void);
 
 GtkWidget *sp_font_preview_new (void);
 

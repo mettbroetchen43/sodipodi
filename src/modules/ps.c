@@ -71,7 +71,7 @@ static unsigned int sp_ps_print_image (FILE *ofp, unsigned char *px, unsigned in
 
 static SPModulePrintClass *print_plain_parent_class;
 
-unsigned int
+GType
 sp_module_print_plain_get_type (void)
 {
 	static GType type = 0;

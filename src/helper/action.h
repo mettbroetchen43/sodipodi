@@ -46,7 +46,7 @@ struct _SPActionClass {
 	NRActiveObjectClass parent_class;
 };
 
-unsigned int sp_action_get_type (void);
+NRType sp_action_get_type (void);
 
 SPAction *sp_action_setup (SPAction *action,
 			   const unsigned char *id,

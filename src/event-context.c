@@ -51,7 +51,7 @@ static void set_event_location (SPDesktop * desktop, GdkEvent * event);
 
 static GObjectClass *parent_class;
 
-unsigned int
+GType
 sp_event_context_get_type (void)
 {
 	static GType type = 0;

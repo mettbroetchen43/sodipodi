@@ -30,6 +30,6 @@ struct _SPPolygonClass {
 	SPShapeClass parent_class;
 };
 
-unsigned int sp_polygon_get_type (void);
+GType sp_polygon_get_type (void);
 
 #endif

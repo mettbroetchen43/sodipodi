@@ -30,6 +30,6 @@ struct _SPZoomContextClass {
 	SPEventContextClass parent_class;
 };
 
-unsigned int sp_zoom_context_get_type (void);
+GType sp_zoom_context_get_type (void);
 
 #endif

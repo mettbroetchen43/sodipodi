@@ -45,7 +45,7 @@ static gint sp_dropper_context_root_handler (SPEventContext *ec, GdkEvent * even
 
 static SPEventContextClass *parent_class;
 
-unsigned int
+GType
 sp_dropper_context_get_type (void)
 {
 	static GType type = 0;

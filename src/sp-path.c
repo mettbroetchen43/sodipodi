@@ -36,7 +36,7 @@ static void sp_path_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *tran
 
 static SPShapeClass *parent_class;
 
-unsigned int
+GType
 sp_path_get_type (void)
 {
 	static GType type = 0;

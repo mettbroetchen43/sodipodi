@@ -13,6 +13,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <glib-object.h>
+
 /* Generic containers */
 
 typedef struct _Sodipodi Sodipodi;
@@ -27,7 +29,7 @@ typedef struct _SPDesktopClass SPDesktopClass;
 #define SP_DESKTOP(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_DESKTOP, SPDesktop))
 #define SP_IS_DESKTOP(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_DESKTOP))
 
-unsigned int sp_desktop_get_type (void);
+GType sp_desktop_get_type (void);
 
 typedef struct _SPSelection SPSelection;
 typedef struct _SPSelectionClass SPSelectionClass;
@@ -36,7 +38,7 @@ typedef struct _SPSelectionClass SPSelectionClass;
 #define SP_SELECTION(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_SELECTION, SPSelection))
 #define SP_IS_SELECTION(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_SELECTION))
 
-unsigned int sp_selection_get_type (void);
+GType sp_selection_get_type (void);
 
 typedef struct _SPEventContext SPEventContext;
 typedef struct _SPEventContextClass SPEventContextClass;
@@ -45,7 +47,7 @@ typedef struct _SPEventContextClass SPEventContextClass;
 #define SP_EVENT_CONTEXT(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_EVENT_CONTEXT, SPEventContext))
 #define SP_IS_EVENT_CONTEXT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_EVENT_CONTEXT))
 
-unsigned int sp_event_context_get_type (void);
+GType sp_event_context_get_type (void);
 
 /* Document tree */
 
@@ -56,7 +58,7 @@ typedef struct _SPDocumentClass SPDocumentClass;
 #define SP_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_DOCUMENT, SPDocument))
 #define SP_IS_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_DOCUMENT))
 
-unsigned int sp_document_get_type (void);
+GType sp_document_get_type (void);
 
 /* Objects */
 
@@ -67,7 +69,7 @@ typedef struct _SPObjectClass SPObjectClass;
 #define SP_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_OBJECT, SPObject))
 #define SP_IS_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_OBJECT))
 
-unsigned int sp_object_get_type (void);
+GType sp_object_get_type (void);
 
 typedef struct _SPItem SPItem;
 typedef struct _SPItemClass SPItemClass;
@@ -76,7 +78,7 @@ typedef struct _SPItemClass SPItemClass;
 #define SP_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), SP_TYPE_ITEM, SPItem))
 #define SP_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), SP_TYPE_ITEM))
 
-unsigned int sp_item_get_type (void);
+GType sp_item_get_type (void);
 
 typedef struct _SPGroup SPGroup;
 typedef struct _SPGroupClass SPGroupClass;

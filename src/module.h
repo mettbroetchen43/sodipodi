@@ -92,12 +92,12 @@ struct _SPModuleClass {
 	void (*build) (SPModule *module, SPRepr *repr);
 };
 
-unsigned int sp_module_get_type (void);
+GType sp_module_get_type (void);
 
 #define SP_MODULE_ID(m) (((SPModule *) (m))->id)
 
-SPModule *sp_module_new (unsigned int type, SPRepr *repr);
-SPModule *sp_module_new_from_path (unsigned int type, const unsigned char *path);
+SPModule *sp_module_new (GType type, SPRepr *repr);
+SPModule *sp_module_new_from_path (GType type, const unsigned char *path);
 
 SPModule *sp_module_ref (SPModule *mod);
 SPModule *sp_module_unref (SPModule *mod);
@@ -114,7 +114,7 @@ struct _SPModuleInputClass {
 	SPModuleClass module_class;
 };
 
-unsigned int sp_module_input_get_type (void);
+GType sp_module_input_get_type (void);
 
 SPDocument *sp_module_input_document_open (SPModuleInput *mod, const unsigned char *uri, unsigned int advertize, unsigned int keepalive);
 
@@ -130,7 +130,7 @@ struct _SPModuleOutputClass {
 	SPModuleClass module_class;
 };
 
-unsigned int sp_module_output_get_type (void);
+GType sp_module_output_get_type (void);
 
 void sp_module_output_document_save (SPModuleOutput *mod, SPDocument *doc, const unsigned char *uri);
 
@@ -144,7 +144,7 @@ struct _SPModuleFilterClass {
 	SPModuleClass module_class;
 };
 
-unsigned int sp_module_filter_get_type (void);
+GType sp_module_filter_get_type (void);
 
 /* ModulePrint */
 
@@ -182,7 +182,7 @@ struct _SPModulePrintClass {
 				const NRMatrixF *transform, const SPStyle *style);
 };
 
-unsigned int sp_module_print_get_type (void);
+GType sp_module_print_get_type (void);
 
 /* Global methods */
 

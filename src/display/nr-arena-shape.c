@@ -52,10 +52,10 @@ static NRArenaItem *nr_arena_shape_pick (NRArenaItem *item, double x, double y, 
 
 static NRArenaItemClass *shape_parent_class;
 
-unsigned int
+NRType
 nr_arena_shape_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_ARENA_ITEM,
 						"NRArenaShape",

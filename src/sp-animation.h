@@ -33,7 +33,7 @@ struct _SPAnimationClass {
 	SPObjectClass parent_class;
 };
 
-unsigned int sp_animation_get_type (void);
+GType sp_animation_get_type (void);
 
 /* Interpolated animation base class */
 
@@ -52,7 +52,7 @@ struct _SPIAnimationClass {
 	SPAnimationClass parent_class;
 };
 
-unsigned int sp_ianimation_get_type (void);
+GType sp_ianimation_get_type (void);
 
 /* SVG <animate> */
 
@@ -71,7 +71,7 @@ struct _SPAnimateClass {
 	SPIAnimationClass parent_class;
 };
 
-unsigned int sp_animate_get_type (void);
+GType sp_animate_get_type (void);
 
 G_END_DECLS
 

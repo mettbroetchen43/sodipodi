@@ -53,7 +53,7 @@ struct _SPModulePrintWin32Class {
 	SPModulePrintClass module_print_class;
 };
 
-unsigned int sp_module_print_win32_get_type (void);
+GType sp_module_print_win32_get_type (void);
 
 /* File dialogs */
 

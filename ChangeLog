@@ -1,3 +1,13 @@
+2003-09-18  Mitsuru Oka <oka@mediasite.co.jp>
+
+	* Initial IA-64 Linux support.
+
+	* libnr/nr-object.h defined new type NRType.
+
+	* src/desktop.c ... src/modules/win32.h ... many files:
+	modified all of the unsigned int GObject type by GType and
+	unsigned int NRObject type by NRType.
+
 2003-08-17  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnrtype/nr-type-ft2.c (nr_typeface_ft2_setup): Check whether font

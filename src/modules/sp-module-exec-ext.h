@@ -21,7 +21,7 @@ struct _SPModuleExecExtClass {
 #define SP_IS_MODULE_EXEC_EXT(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_EXEC_EXT))
 
 
-unsigned int               sp_module_exec_ext_get_type    (void);
+GType               sp_module_exec_ext_get_type    (void);
 SPModuleExecExt *     sp_module_exec_ext_new         (void);
 gchar *               sp_module_exec_ext_set_command (SPModuleExecExt * object,
                                                       gchar *           command);

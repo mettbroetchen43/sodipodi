@@ -17,11 +17,11 @@
 
 SPObject *sp_object_repr_build_tree (SPDocument *document, SPRepr *repr);
 
-unsigned int sp_repr_type_lookup (SPRepr *repr);
-unsigned int sp_object_type_lookup (const unsigned char *name);
+GType sp_repr_type_lookup (SPRepr *repr);
+GType sp_object_type_lookup (const unsigned char *name);
 
 /* Return TRUE on success */
 
-unsigned int sp_object_type_register (const unsigned char *name, unsigned int type);
+GType sp_object_type_register (const unsigned char *name, GType type);
 
 #endif

@@ -22,7 +22,7 @@ struct _SPModuleDocClass {
 #define SP_MODULE_DOC(o)  (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_DOC, SPModuleDoc))
 #define SP_IS_MODULE_DOC(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_DOC))
 
-unsigned int         sp_module_doc_get_type     (void);
+GType           sp_module_doc_get_type     (void);
 SPModuleDoc *   sp_module_doc_new          (void);
 gchar *         sp_module_doc_set_filename (SPModuleDoc * doc,
                                             const gchar * filename);

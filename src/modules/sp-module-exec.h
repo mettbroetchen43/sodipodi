@@ -34,7 +34,7 @@ struct _SPModuleHandlerClass {
 #define SP_MODULE_EXEC SP_MODULE_HANDLER
 #define SP_IS_MODULE_EXEC SP_IS_MODULE_HANDLER
 
-unsigned int        sp_module_handler_get_type  (void);
+GType        sp_module_handler_get_type  (void);
 
 /* Module Exec Builtin */
 typedef struct _SPModuleExecBuiltin      SPModuleExecBuiltin;
@@ -60,7 +60,7 @@ struct _SPModuleExecBuiltinClass {
 #define SP_MODULE_EXEC_BUILTIN(o)  (G_TYPE_CHECK_INSTANCE_CAST ((o), SP_TYPE_MODULE_EXEC_BUILTIN, SPModuleExecBuiltin))
 #define SP_IS_MODULE_EXEC_BUILTIN(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), SP_TYPE_MODULE_EXEC_BUILTIN))
 
-unsigned int               sp_module_exec_builtin_get_type   (void);
+GType                 sp_module_exec_builtin_get_type   (void);
 SPModuleExecBuiltin * sp_module_exec_builtin_new        (void);
 void                  sp_module_exec_builtin_set_load   (SPModuleExecBuiltin * object,
                                                          void (*in_func)(SPModule *, gpointer data),

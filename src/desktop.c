@@ -96,7 +96,7 @@ static void sp_desktop_update_scrollbars (SPDesktop *desktop);
 SPViewClass * parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
 
-unsigned int
+GType
 sp_desktop_get_type (void)
 {
 	static GType type = 0;

@@ -42,7 +42,7 @@ struct _SPShapeClass {
 	void (* set_shape) (SPShape *shape);
 };
 
-unsigned int sp_shape_get_type (void);
+GType sp_shape_get_type (void);
 
 void sp_shape_set_shape (SPShape *shape);
 

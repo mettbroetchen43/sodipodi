@@ -114,7 +114,7 @@ struct _NRArenaItemClass {
 
 #define NR_ARENA_ITEM_ARENA(ai) (((NRArenaItem *) (ai))->arena)
 
-unsigned int nr_arena_item_get_type (void);
+NRType nr_arena_item_get_type (void);
 
 NRArenaItem *nr_arena_item_ref (NRArenaItem *item);
 NRArenaItem *nr_arena_item_unref (NRArenaItem *item);

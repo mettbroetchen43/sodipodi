@@ -92,10 +92,10 @@ static const guchar *sizes[] = {
 static GtkHBoxClass *fs_parent_class = NULL;
 static guint fs_signals[LAST_SIGNAL] = {0};
 
-guint
+GtkType
 sp_font_selector_get_type ()
 {
-	static guint type = 0;
+	static GtkType type = 0;
 	if (!type) {
 		static const GtkTypeInfo info = {
 			"SPFontSelector",
@@ -418,10 +418,10 @@ static gint sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event);
 
 static GtkDrawingAreaClass *fp_parent_class = NULL;
 
-guint
+GtkType
 sp_font_preview_get_type ()
 {
-	static guint type = 0;
+	static GtkType type = 0;
 	if (!type) {
 		static const GtkTypeInfo info = {
 			"SPFontPreview",

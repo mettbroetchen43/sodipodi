@@ -43,10 +43,10 @@ static NRArenaItem *nr_arena_glyphs_pick (NRArenaItem *item, double x, double y,
 
 static NRArenaItemClass *glyphs_parent_class;
 
-unsigned int
+NRType
 nr_arena_glyphs_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_ARENA_ITEM,
 						"NRArenaGlyphs",
@@ -351,10 +351,10 @@ static NRArenaItem *nr_arena_glyphs_group_pick (NRArenaItem *item, gdouble x, gd
 
 static NRArenaGroupClass *group_parent_class;
 
-unsigned int
+NRType
 nr_arena_glyphs_group_get_type (void)
 {
-	static unsigned int type = 0;
+	static NRType type = 0;
 	if (!type) {
 		type = nr_object_register_type (NR_TYPE_ARENA_GROUP,
 						"NRArenaGlyphsGroup",

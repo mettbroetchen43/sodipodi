@@ -13,7 +13,7 @@
 
 #include "object-ui.h"
 
-static void sp_object_type_menu (unsigned int type, SPObject *object, SPDesktop *desktop, GtkMenu *menu);
+static void sp_object_type_menu (GType type, SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 
 /* Append object-specific part to context menu */
 
@@ -23,7 +23,7 @@ sp_object_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu)
 	GObjectClass *klass;
 	klass = G_OBJECT_GET_CLASS (object);
 	while (G_TYPE_CHECK_CLASS_TYPE ((klass), SP_TYPE_OBJECT)) {
-		unsigned int type;
+		GType type;
 		type = G_TYPE_FROM_CLASS (klass);
 		sp_object_type_menu (type, object, desktop, menu);
 		klass = g_type_class_peek_parent (klass);
@@ -63,7 +63,7 @@ static void sp_star_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 static void sp_spiral_menu (SPObject *object, SPDesktop *desktop, GtkMenu *menu);
 
 static void
-sp_object_type_menu (unsigned int type, SPObject *object, SPDesktop *desktop, GtkMenu *menu)
+sp_object_type_menu (GType type, SPObject *object, SPDesktop *desktop, GtkMenu *menu)
 {
 	static GHashTable *t2m = NULL;
 	void (* handler) (SPObject *object, SPDesktop *desktop, GtkMenu *menu);

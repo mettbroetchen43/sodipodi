@@ -82,10 +82,10 @@ static guint item_signals[ITEM_LAST_SIGNAL] = { 0 };
 
 static GtkObjectClass *item_parent_class;
 
-unsigned int
+GType
 sp_canvas_item_get_type (void)
 {
-	static GType type;
+	static GType type = 0;
 	if (!type) {
 		static const GTypeInfo info = {
 			sizeof (SPCanvasItemClass),
@@ -661,7 +661,7 @@ static void sp_canvas_group_render (SPCanvasItem *item, SPCanvasBuf *buf);
 
 static SPCanvasItemClass *group_parent_class;
 
-unsigned int
+GtkType
 sp_canvas_group_get_type (void)
 {
 	static GtkType group_type = 0;
@@ -908,7 +908,7 @@ static GtkWidgetClass *canvas_parent_class;
  *
  * Return value:  The type ID of the &SPCanvas class.
  **/
-unsigned int
+GtkType
 sp_canvas_get_type (void)
 {
 	static GtkType canvas_type = 0;

@@ -117,7 +117,7 @@ Sodipodi *sodipodi = NULL;
 
 static void (* segv_handler) (int) = NULL;
 
-unsigned int
+GType
 sodipodi_get_type (void)
 {
 	static GType type = 0;

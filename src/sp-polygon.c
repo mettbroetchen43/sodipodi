@@ -30,7 +30,7 @@ static gchar *sp_polygon_description (SPItem *item);
 
 static SPShapeClass *parent_class;
 
-unsigned int
+GType
 sp_polygon_get_type (void)
 {
 	static GType polygon_type = 0;

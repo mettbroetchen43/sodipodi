@@ -43,10 +43,10 @@ static void sp_extension                  (SPModule *             in_plug,
                                            SPModuleDoc *          in_doc);
 
 
-unsigned int
+GType
 sp_module_exec_ext_get_type (void)
 {
-	static unsigned int type = 0;
+	static GType type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPModuleExecExtClass),

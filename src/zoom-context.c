@@ -40,7 +40,7 @@ void sp_zoom_string (const gchar * zoom_str);
 
 static SPEventContextClass * parent_class;
 
-unsigned int
+GType
 sp_zoom_context_get_type (void)
 {
 	static GType type = 0;

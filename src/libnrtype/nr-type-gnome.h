@@ -34,7 +34,7 @@ struct _NRTypeFaceGnomeClass {
 	NRTypeFaceClass typeface_class;
 };
 
-unsigned int nr_typeface_gnome_get_type (void);
+NRType nr_typeface_gnome_get_type (void);
 
 NRNameList *nr_type_gnome_typefaces_get (NRNameList *typefaces);
 NRNameList *nr_type_gnome_families_get (NRNameList *families);

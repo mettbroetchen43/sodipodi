@@ -60,7 +60,7 @@ sp_object_repr_build_tree (SPDocument *document, SPRepr *repr)
 	return object;
 }
 
-unsigned int
+GType
 sp_repr_type_lookup (SPRepr *repr)
 {
 	const guchar *name;
@@ -73,7 +73,7 @@ sp_repr_type_lookup (SPRepr *repr)
 
 static GHashTable *dtable = NULL;
 
-unsigned int
+GType
 sp_object_type_lookup (const guchar * name)
 {
 	gpointer data;
@@ -112,15 +112,15 @@ sp_object_type_lookup (const guchar * name)
 
 	if (data == NULL) return SP_TYPE_OBJECT;
 
-	return GPOINTER_TO_UINT (data);
+	return  (GType)data;
 }
 
 /* Return TRUE on success */
 
-unsigned int
-sp_object_type_register (const unsigned char *name, unsigned int type)
+GType
+sp_object_type_register (const unsigned char *name, GType type)
 {
-	unsigned int current;
+	GType current;
 	current = sp_object_type_lookup (name);
 	if (current != SP_TYPE_OBJECT) return FALSE;
 	g_hash_table_insert (dtable, (char *) name, GINT_TO_POINTER (type));
