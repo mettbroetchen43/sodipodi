@@ -28,6 +28,7 @@
 #include <gtk/gtkentry.h>
 #include <gtk/gtktooltips.h>
 #include <gtk/gtkimage.h>
+#include <gtk/gtkarrow.h>
 
 #include "helper/sp-intl.h"
 #include "helper/window.h"
@@ -232,7 +233,7 @@ sp_xml_tree_dialog (void)
 		gtk_toolbar_append_space (GTK_TOOLBAR (toolbar));
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "<", _("Unindent node"), NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/unindent_xml_node.xpm"),
+						  gtk_arrow_new (GTK_ARROW_LEFT, GTK_SHADOW_IN),
 						  G_CALLBACK (cmd_unindent_node), NULL);
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
 						G_CALLBACK (on_tree_select_row_enable_if_has_grandparent),
@@ -243,7 +244,7 @@ sp_xml_tree_dialog (void)
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), ">", _("Indent node"), NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/indent_xml_node.xpm"),
+						  gtk_arrow_new (GTK_ARROW_RIGHT, GTK_SHADOW_IN),
 						  G_CALLBACK (cmd_indent_node), NULL);
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
 						G_CALLBACK (on_tree_select_row_enable_if_indentable),
@@ -253,7 +254,7 @@ sp_xml_tree_dialog (void)
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "^", _("Raise node"), NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/raise_xml_node.xpm"),
+						  gtk_arrow_new (GTK_ARROW_UP, GTK_SHADOW_IN),
 						  G_CALLBACK (cmd_raise_node), NULL);
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
 						G_CALLBACK (on_tree_select_row_enable_if_not_first_child),
@@ -264,7 +265,7 @@ sp_xml_tree_dialog (void)
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), "v", _("Lower node"), NULL,
-						  gtk_image_new_from_file (SODIPODI_PIXMAPDIR "/lower_xml_node.xpm"),
+						  gtk_arrow_new (GTK_ARROW_DOWN, GTK_SHADOW_IN),
 						  G_CALLBACK (cmd_lower_node), NULL);
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row",
 						G_CALLBACK (on_tree_select_row_enable_if_not_last_child),
