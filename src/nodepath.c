@@ -9,11 +9,26 @@
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
+#include "desktop-snap.h"
 #include "node-context.h"
 #include "nodepath.h"
 
-GMemChunk * nodechunk = NULL;
+/* fixme: Implement these via preferences */
 
+#define NODE_FILL 0xbfbfbf7f
+#define NODE_STROKE 0x3f3f3f7f
+#define NODE_FILL_HI 0xff7f7f7f
+#define NODE_STROKE_HI 0xff3f3fbf
+#define NODE_FILL_SEL 0xbfbfbf7f
+#define NODE_STROKE_SEL 0x0000ffbf
+#define NODE_FILL_SEL_HI 0x7f7fffbf
+#define NODE_STROKE_SEL_HI 0x3f3fffff
+#define KNOT_FILL 0xbfbfbf7f
+#define KNOT_STROKE 0x3f3f3f7f
+#define KNOT_FILL_HI 0xff7f7f7f
+#define KNOT_STROKE_HI 0xff3f3fbf
+
+GMemChunk * nodechunk = NULL;
 
 /* Creation from object */
 
@@ -629,12 +644,35 @@ sp_node_moveto (SPPathNode * node, double x, double y)
 static void
 sp_nodepath_selected_nodes_move (SPNodePath * nodepath, gdouble dx, gdouble dy)
 {
-	SPPathNode * n;
+	gdouble dist, besth, bestv, bx, by;
 	GSList * l;
 
+	besth = bestv = 1e18;
+	bx = dx;
+	by = dy;
+
 	for (l = nodepath->selected; l != NULL; l = l->next) {
+		SPPathNode * n;
+		ArtPoint p;
 		n = (SPPathNode *) l->data;
-		sp_node_moveto (n, n->pos.x + dx, n->pos.y + dy);
+		p.x = n->pos.x + dx;
+		p.y = n->pos.y + dy;
+		dist = sp_desktop_horizontal_snap (nodepath->desktop, &p);
+		if (dist < besth) {
+			besth = dist;
+			bx = p.x - n->pos.x;
+		}
+		dist = sp_desktop_vertical_snap (nodepath->desktop, &p);
+		if (dist < bestv) {
+			bestv = dist;
+			by = p.y - n->pos.y;
+		}
+	}
+
+	for (l = nodepath->selected; l != NULL; l = l->next) {
+		SPPathNode * n;
+		n = (SPPathNode *) l->data;
+		sp_node_moveto (n, n->pos.x + bx, n->pos.y + by);
 	}
 
 	update_object (nodepath);
@@ -940,9 +978,21 @@ sp_node_set_selected (SPPathNode * node, gboolean selected)
 {
 	node->selected = selected;
 
-	gtk_object_set (GTK_OBJECT (node->knot),
-			"stroke", selected ? 0x0000ff7f : 0x7f7f7f7f,
+	if (selected) {
+		gtk_object_set (GTK_OBJECT (node->knot),
+			"fill", NODE_FILL_SEL,
+			"fill_mouseover", NODE_FILL_SEL_HI,
+			"stroke", NODE_STROKE_SEL,
+			"stroke_mouseover", NODE_STROKE_SEL_HI,
 			NULL);
+	} else {
+		gtk_object_set (GTK_OBJECT (node->knot),
+			"fill", NODE_FILL,
+			"fill_mouseover", NODE_FILL_HI,
+			"stroke", NODE_STROKE,
+			"stroke_mouseover", NODE_STROKE_HI,
+			NULL);
+	}
 
 	sp_node_ensure_ctrls (node);
 	if (node->n.other) sp_node_ensure_ctrls (node->n.other);
@@ -1285,6 +1335,9 @@ node_ctrl_request (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
 			p->x = n->pos.x + ndx / linelen * scal;
 			p->y = n->pos.y + ndy / linelen * scal;
 		}
+		sp_desktop_vector_snap (n->subpath->nodepath->desktop, p, ndx, ndy);
+	} else {
+		sp_desktop_free_snap (n->subpath->nodepath->desktop, p);
 	}
 
 	sp_node_adjust_knot (n, -which);
@@ -1448,9 +1501,10 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	gtk_object_set (GTK_OBJECT (n->knot),
 			"size", 8,
 			"anchor", GTK_ANCHOR_CENTER,
-			"fill", 0x00000000,
-			"fill_mouseover", 0xff00007f,
-			"stroke", 0x000000ff,
+			"fill", NODE_FILL,
+			"fill_mouseover", NODE_FILL_HI,
+			"stroke", NODE_STROKE,
+			"stroke_mouseover", NODE_STROKE_HI,
 			NULL);
 	gtk_signal_connect (GTK_OBJECT (n->knot), "clicked",
 			    GTK_SIGNAL_FUNC (node_clicked), n);
@@ -1467,9 +1521,10 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	gtk_object_set (GTK_OBJECT (n->p.knot),
 			"size", 5,
 			"anchor", GTK_ANCHOR_CENTER,
-			"fill", 0x00000000,
-			"fill_mouseover", 0xff0000ff,
-			"stroke", 0x000000ff,
+			"fill", KNOT_FILL,
+			"fill_mouseover", KNOT_FILL_HI,
+			"stroke", KNOT_STROKE,
+			"stroke_mouseover", KNOT_STROKE_HI,
 			NULL);
 	gtk_signal_connect (GTK_OBJECT (n->p.knot), "clicked",
 			    GTK_SIGNAL_FUNC (node_ctrl_clicked), n);
@@ -1491,9 +1546,10 @@ sp_nodepath_node_new (SPNodeSubPath * sp, SPPathNode * next, SPPathNodeType type
 	gtk_object_set (GTK_OBJECT (n->n.knot),
 			"size", 5,
 			"anchor", GTK_ANCHOR_CENTER,
-			"fill", 0x00000000,
-			"fill_mouseover", 0xff0000ff,
-			"stroke", 0x000000ff,
+			"fill", KNOT_FILL,
+			"fill_mouseover", KNOT_FILL_HI,
+			"stroke", KNOT_STROKE,
+			"stroke_mouseover", KNOT_STROKE_HI,
 			NULL);
 	gtk_signal_connect (GTK_OBJECT (n->n.knot), "clicked",
 			    GTK_SIGNAL_FUNC (node_ctrl_clicked), n);

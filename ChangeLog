@@ -1,3 +1,9 @@
+2000-10-04  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/nodepath.c: #define reasonable knot colors
+	(sp_nodepath_selected_nodes_move): Implement snapping
+	(node_ctrl_request): Implement snapping
+
 2000-10-03  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/nodepath.c (update_repr): Call sp_document_done ()
