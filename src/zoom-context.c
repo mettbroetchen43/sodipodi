@@ -1,7 +1,7 @@
 #define __SP_ZOOM_CONTEXT_C__
 
 /*
- * Base class for event processors
+ * Handy zooming tool
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
@@ -37,13 +37,10 @@ static gint sp_zoom_context_root_handler (SPEventContext * event_context, GdkEve
 static gint sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
 void sp_zoom_string (const gchar * zoom_str);
-void sp_zoom_any (void);
 
 static SPEventContextClass * parent_class;
 
-static GtkWidget *zoom_any = NULL;
-
-GtkType
+unsigned int
 sp_zoom_context_get_type (void)
 {
 	static GType type = 0;
@@ -180,10 +177,10 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	return ret;
 }
 
-/* Menu handlers */
+/* UI handlers */
 
 void
-sp_zoom_selection (GtkWidget * widget)
+sp_zoom_selection (gpointer object, gpointer data)
 {
 	SPSelection * selection;
 	NRRectF d;
@@ -202,7 +199,7 @@ sp_zoom_selection (GtkWidget * widget)
 }
 
 void
-sp_zoom_drawing (GtkWidget * widget)
+sp_zoom_drawing (gpointer object, gpointer data)
 {
 	SPItem * docitem;
 	NRRectF d;
@@ -223,7 +220,7 @@ sp_zoom_drawing (GtkWidget * widget)
 }
 
 void
-sp_zoom_page (GtkWidget * widget)
+sp_zoom_page (gpointer object, gpointer data)
 {
 	NRRectD d;
 	SPDesktop * desktop;
@@ -242,7 +239,7 @@ sp_zoom_page (GtkWidget * widget)
 }
 
 void
-sp_zoom_in (GtkWidget * widget) {
+sp_zoom_in (gpointer object, gpointer data) {
 	SPDesktop * desktop;
 	NRRectF d;
 
@@ -256,7 +253,7 @@ sp_zoom_in (GtkWidget * widget) {
 }
 
 void
-sp_zoom_out (GtkWidget * widget) {
+sp_zoom_out (gpointer object, gpointer data) {
 	SPDesktop * desktop;
 	NRRectF d;
 
@@ -270,7 +267,7 @@ sp_zoom_out (GtkWidget * widget) {
 }
 
 void
-sp_zoom_1_to_2 (GtkWidget * widget)
+sp_zoom_1_to_2 (gpointer object, gpointer data)
 {
 	SPDesktop * desktop;
 	NRRectF d;
@@ -285,7 +282,7 @@ sp_zoom_1_to_2 (GtkWidget * widget)
 }
 
 void
-sp_zoom_1_to_1 (GtkWidget * widget)
+sp_zoom_1_to_1 (gpointer object, gpointer data)
 {
 	SPDesktop * desktop;
 	NRRectF d;
@@ -299,7 +296,7 @@ sp_zoom_1_to_1 (GtkWidget * widget)
 }
 
 void
-sp_zoom_2_to_1 (GtkWidget * widget)
+sp_zoom_2_to_1 (gpointer object, gpointer data)
 {
 	SPDesktop * desktop;
 	NRRectF d;
@@ -330,16 +327,5 @@ sp_zoom_string (const gchar * zoom_str) {
 	
 	sp_desktop_get_display_area (SP_ACTIVE_DESKTOP, &d);
 	sp_desktop_zoom_absolute (SP_ACTIVE_DESKTOP, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2, any);
-}
-
-/*
- * zoom toolbox
- */
-
-void
-sp_zoom_any (void) {
-	gchar * zoom_str;
-	zoom_str = gtk_editable_get_chars ((GtkEditable *) zoom_any, 0, 4);
-	sp_zoom_string (zoom_str);
 }
 

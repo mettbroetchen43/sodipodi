@@ -32,6 +32,7 @@ src/helper/unit-menu.c
 src/helper/units.c
 src/interface.c
 src/main.c
+src/slideshow.c
 src/sodipodi.c
 src/sp-anchor.c
 src/sp-image.c

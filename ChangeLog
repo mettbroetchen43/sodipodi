@@ -1,3 +1,13 @@
+2003-02-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-group.c (nr_arena_group_set_child_transform): Do
+	not force full update if not needed
+
+	* src/display/nr-arena-item.c (nr_arena_item_set_clip): Do not force
+	full update if not needed
+	(nr_arena_item_set_mask): Ditto
+	(nr_arena_item_set_transform): Ditto
+
 2003-02-09  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-gradient.c (nr_lgradient_render_R8G8B8A8N_EMPTY): New shortcut

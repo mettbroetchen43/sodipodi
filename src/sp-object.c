@@ -25,6 +25,7 @@
 #include "sp-object.h"
 
 #define noSP_OBJECT_DEBUG
+#define noSP_OBJECT_DEBUG_CASCADE
 
 static void sp_object_class_init (SPObjectClass * klass);
 static void sp_object_init (SPObject * object);
@@ -608,6 +609,10 @@ sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags)
 	g_return_if_fail (SP_IS_OBJECT (object));
 	g_return_if_fail (!(flags & ~SP_OBJECT_MODIFIED_CASCADE));
 
+#ifdef SP_OBJECT_DEBUG_CASCADE
+	g_print("Update %s:%s %x %x\n", g_type_name_from_instance ((GTypeInstance *) object), SP_OBJECT_ID (object), flags, object->flags);
+#endif
+
 	flags |= (SP_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
 	g_return_if_fail (flags != 0);
 
@@ -662,6 +667,10 @@ sp_object_invoke_modified (SPObject *object, unsigned int flags)
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
 	g_return_if_fail (!(flags & ~SP_OBJECT_MODIFIED_CASCADE));
+
+#ifdef SP_OBJECT_DEBUG_CASCADE
+	g_print("Modified %s:%s %x %x\n", g_type_name_from_instance ((GTypeInstance *) object), SP_OBJECT_ID (object), flags, object->flags);
+#endif
 
 	flags |= (SP_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
 	g_return_if_fail (flags != 0);

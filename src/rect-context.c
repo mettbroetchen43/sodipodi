@@ -118,7 +118,6 @@ sp_rect_context_dispose (GObject *object)
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
 
-#if 1
 static void
 sp_rect_context_setup (SPEventContext *ec)
 {
@@ -148,7 +147,6 @@ sp_rect_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
 		rc->ry_ratio = CLAMP (rc->ry_ratio, 0.0, 1.0);
 	}
 }
-#endif
 
 static gint
 sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)

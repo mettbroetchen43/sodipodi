@@ -297,13 +297,13 @@ nr_arena_group_set_transparent (NRArenaGroup *group, gboolean transparent)
 void
 nr_arena_group_set_child_transform (NRArenaGroup *group, NRMatrixF *t)
 {
-	if (t != NULL) {
-		group->child_transform = *t;
-	} else {
-		nr_matrix_f_set_identity (&group->child_transform);
-	}
+	if (!t) t = &NR_MATRIX_F_IDENTITY;
 
-	nr_arena_item_request_update (NR_ARENA_ITEM (group), NR_ARENA_ITEM_STATE_ALL, TRUE);
+	if (!NR_MATRIX_DF_TEST_CLOSE (t, &group->child_transform, NR_EPSILON_F)) {
+		nr_arena_item_request_render (NR_ARENA_ITEM (group));
+		group->child_transform = *t;
+		nr_arena_item_request_update (NR_ARENA_ITEM (group), NR_ARENA_ITEM_STATE_ALL, TRUE);
+	}
 }
 
 

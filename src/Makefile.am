@@ -95,6 +95,8 @@ sodipodi_SOURCES = \
 	draw-context.c draw-context.h \
 	dyna-draw-context.c dyna-draw-context.h \
 	text-context.c text-context.h \
+	zoom-context.c zoom-context.h \
+	dropper-context.c dropper-context.h \
 	\
 	knot.c knot.h \
 	\
@@ -109,7 +111,6 @@ sodipodi_SOURCES = \
 	gradient-chemistry.c gradient-chemistry.h \
 	sp-item-transform.c sp-item-transform.h \
 	\
-	zoom-context.c zoom-context.h \
 	file.c file.h \
 	print.c print.h \
 	interface.c interface.h \

@@ -13,6 +13,7 @@
  */
 
 #define noNR_ARENA_ITEM_VERBOSE
+#define noNR_ARENA_ITEM_DEBUG_CASCADE
 
 #include <string.h>
 #include <libnr/nr-rect.h>
@@ -218,8 +219,8 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint s
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (!(state & NR_ARENA_ITEM_STATE_INVALID), NR_ARENA_ITEM_STATE_INVALID);
 
-#ifdef NR_ARENA_ITEM_VERBOSE
-	g_print ("Invoke update %p: %d %d\n", item, state, reset);
+#ifdef NR_ARENA_ITEM_DEBUG_CASCADE
+	g_print("Update %s:%p %x %x %x\n", g_type_name_from_instance ((GTypeInstance *) item), item, state, item->state, reset);
 #endif
 
 	/* Propagation means to clear children at least to our state */
@@ -563,21 +564,28 @@ nr_arena_item_append_child (NRArenaItem *parent, NRArenaItem *child)
 void
 nr_arena_item_set_transform (NRArenaItem *item, const NRMatrixF *transform)
 {
+	const NRMatrixF *ms, *md;
+
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 
-	nr_arena_item_request_render (item);
+	if (!transform && !item->transform) return;
 
-	if (nr_matrix_f_test_identity (transform, NR_EPSILON_F)) {
-		/* Set to identity affine */
-		if (item->transform) g_free (item->transform);
-		item->transform = NULL;
-	} else {
-		if (!item->transform) item->transform = nr_new (NRMatrixF, 1);
-		*item->transform = *transform;
+	md = (item->transform) ? item->transform : &NR_MATRIX_F_IDENTITY;
+	ms = (transform) ? transform : &NR_MATRIX_F_IDENTITY;
+
+	if (!NR_MATRIX_DF_TEST_CLOSE (md, ms, NR_EPSILON_F)) {
+		nr_arena_item_request_render (item);
+		if (!transform || nr_matrix_f_test_identity (transform, NR_EPSILON_F)) {
+			/* Set to identity affine */
+			if (item->transform) g_free (item->transform);
+			item->transform = NULL;
+		} else {
+			if (!item->transform) item->transform = nr_new (NRMatrixF, 1);
+			*item->transform = *transform;
+		}
+		nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);
 	}
-
-	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);
 }
 
 void
@@ -609,17 +617,12 @@ nr_arena_item_set_clip (NRArenaItem *item, NRArenaItem *clip)
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 	g_return_if_fail (!clip || NR_IS_ARENA_ITEM (clip));
 
-	nr_arena_item_request_render (item);
-
-	if (item->clip) {
-		item->clip = nr_arena_item_detach_unref (item, item->clip);
+	if (clip != item->clip) {
+		nr_arena_item_request_render (item);
+		if (item->clip) item->clip = nr_arena_item_detach_unref (item, item->clip);
+		if (clip) item->clip = nr_arena_item_attach_ref (item, clip, NULL, NULL);
+		nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);
 	}
-
-	if (clip) {
-		item->clip = nr_arena_item_attach_ref (item, clip, NULL, NULL);
-	}
-
-	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);
 }
 
 void
@@ -629,17 +632,12 @@ nr_arena_item_set_mask (NRArenaItem *item, NRArenaItem *mask)
 	g_return_if_fail (NR_IS_ARENA_ITEM (item));
 	g_return_if_fail (!mask || NR_IS_ARENA_ITEM (mask));
 
-	nr_arena_item_request_render (item);
-
-	if (item->mask) {
-		item->mask = nr_arena_item_detach_unref (item, item->mask);
+	if (mask != item->mask) {
+		nr_arena_item_request_render (item);
+		if (item->mask) item->mask = nr_arena_item_detach_unref (item, item->mask);
+		if (mask) item->mask = nr_arena_item_attach_ref (item, mask, NULL, NULL);
+		nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);
 	}
-
-	if (mask) {
-		item->mask = nr_arena_item_attach_ref (item, mask, NULL, NULL);
-	}
-
-	nr_arena_item_request_update (item, NR_ARENA_ITEM_STATE_ALL, TRUE);
 }
 
 void

@@ -242,21 +242,25 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			sp_event_context_set_text(NULL);	    
 			ret = TRUE;
 			break;
-		case GDK_equal: // = 
-		case GDK_plus: // + - zoom in
-			sp_zoom_in(NULL);
+		case GDK_equal:
+		case GDK_plus:
+			/* '+' & '=' Zoom in */
+			sp_zoom_in (NULL, NULL);
 			ret = TRUE;
 			break;
-		case GDK_minus: // - - zoom out
-			sp_zoom_out(NULL);
+		case GDK_minus:
+			/* '-' Zoom out */
+			sp_zoom_out (NULL, NULL);
 			ret = TRUE;
 			break;
-		case GDK_0: // 0 - zoom entire page
-			sp_zoom_page(NULL);
+		case GDK_0:
+			/* '0' Zoom to full page */
+			sp_zoom_page (NULL, NULL);
 			ret = TRUE;
 			break;
-		case GDK_1: // 1 - zoom 1 to 1
-			sp_zoom_1_to_1(NULL);
+		case GDK_1:
+			/* '1' Zoom to 1:1 */
+			sp_zoom_1_to_1 (NULL, NULL);
 			ret = TRUE;
 			break;
 		case GDK_z: // Ctrl z - undo
