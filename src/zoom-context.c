@@ -139,13 +139,13 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 		case 1:
 			if (sp_rubberband_rect (&b)) {
 				sp_rubberband_stop ();
-				sp_desktop_show_region (desktop, b.x0, b.y0, b.x1, b.y1);
+				sp_desktop_show_region (desktop, b.x0, b.y0, b.x1, b.y1, 10);
 			} else {
 				sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 				if (event->button.state & GDK_SHIFT_MASK) {
-					sp_desktop_zoom_relative (desktop, 0.5, p.x, p.y);
+					sp_desktop_zoom_relative (desktop, 1/SP_DESKTOP_ZOOM_INC, p.x, p.y);
 				} else {
-					sp_desktop_zoom_relative (desktop, 2, p.x, p.y);
+					sp_desktop_zoom_relative (desktop, SP_DESKTOP_ZOOM_INC, p.x, p.y);
 				}
 			}
 			ret = TRUE;
@@ -155,7 +155,7 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			p.x = event->button.x;
 			p.y = event->button.y;
 			sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-			sp_desktop_zoom_relative (desktop, 0.5, p.x, p.y);
+			sp_desktop_zoom_relative (desktop, 1/SP_DESKTOP_ZOOM_INC, p.x, p.y);
 			ret = TRUE;
 			break;
 #endif
@@ -193,7 +193,7 @@ sp_zoom_selection (GtkWidget * widget)
 
 	sp_selection_bbox (selection, &d);
 	if ((fabs (d.x1 - d.x0) < 0.1) || (fabs (d.y1 - d.y0) < 0.1)) return;
-	sp_desktop_show_region (desktop, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
+	sp_desktop_show_region (desktop, d.x0, d.y0, d.x1, d.y1, 10);
 }
 
 void
@@ -214,7 +214,7 @@ sp_zoom_drawing (GtkWidget * widget)
 
 	sp_item_bbox (docitem, &d);
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
-	sp_desktop_show_region (desktop, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
+	sp_desktop_show_region (desktop, d.x0, d.y0, d.x1, d.y1, 10);
 }
 
 void
@@ -235,7 +235,7 @@ sp_zoom_page (GtkWidget * widget)
 
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 
-	sp_desktop_show_region (desktop, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
+	sp_desktop_show_region (desktop, d.x0, d.y0, d.x1, d.y1, 10);
 }
 
 void
@@ -245,12 +245,12 @@ sp_zoom_in (GtkWidget * widget) {
 
   desktop = SP_ACTIVE_DESKTOP;
   if (desktop == NULL) return;
+  g_return_if_fail (SP_IS_DESKTOP (desktop));
+  
   sp_desktop_get_visible_area (desktop, &d);
-  sp_desktop_show_region (desktop, 
-			  d.x0 + (d.x1- d.x0)/6, 
-			  d.y0 + (d.y1- d.y0)/6, 
-			  d.x1 - (d.x1- d.x0)/6, 
-			  d.y1 - (d.y1- d.y0)/6);
+
+  sp_desktop_zoom_relative (desktop, SP_DESKTOP_ZOOM_INC, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+
 }
 
 void
@@ -260,12 +260,12 @@ sp_zoom_out (GtkWidget * widget) {
 
   desktop = SP_ACTIVE_DESKTOP;
   if (desktop == NULL) return;
+  g_return_if_fail (SP_IS_DESKTOP (desktop));
+  
   sp_desktop_get_visible_area (desktop, &d);
-  sp_desktop_show_region (desktop, 
-			  d.x0 - (d.x1- d.x0)/4, 
-			  d.y0 - (d.y1- d.y0)/4, 
-			  d.x1 + (d.x1- d.x0)/4, 
-			  d.y1 + (d.y1- d.y0)/4);
+
+  sp_desktop_zoom_relative (desktop, 1/SP_DESKTOP_ZOOM_INC, (d.x0 + d.x1) / 2, (d.y0 + d.y1) / 2);
+
 }
 
 void

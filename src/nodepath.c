@@ -1610,7 +1610,10 @@ sp_nodepath_node_destroy (SPPathNode * node)
 			node->p.other->n.other = node->n.other;
 			node->n.other->p.other = node->p.other;
 		} else {
-			if (sp->first == node) sp->first = node->n.other;
+			if (sp->first == node) {
+				sp->first = node->n.other;
+				sp->first->code = ART_MOVETO;
+			}
 			if (sp->last == node) sp->last = node->p.other;
 			if (node->p.other) node->p.other->n.other = node->n.other;
 			if (node->n.other) node->n.other->p.other = node->p.other;

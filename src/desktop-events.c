@@ -6,13 +6,48 @@
 #include "sp-guide.h"
 #include "desktop-affine.h"
 #include "desktop-events.h"
+#include "sp-metrics.h"
+
+static gchar coord_str[80];
 
 /* Root item handler */
 
-void
-sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
+
+gboolean
+sp_canvas_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * desktop)
 {
-	sp_event_context_root_handler (SP_DESKTOP (data)->event_context, event);
+  ArtPoint p0;
+
+  // realize canvas enter, motion & leave for mouse coordinate statusbar
+ 
+  switch (event->type) {
+  case GDK_MOTION_NOTIFY:
+    gtk_statusbar_pop (desktop->coord_status, desktop->coord_status_id);
+  case GDK_ENTER_NOTIFY:
+    p0.x = event->motion.x;
+    p0.y = event->motion.y;
+    art_affine_point (&p0, &p0, desktop->w2d);
+    //g_print ("%f %f\n",p0.x,p0.y);
+    sprintf (coord_str, " %s, %s",
+	     SP_PT_TO_STRING (p0.x,SP_DEFAULT_METRIC)->str,
+	     SP_PT_TO_STRING (p0.y,SP_DEFAULT_METRIC)->str
+	     );
+    gtk_statusbar_push (desktop->coord_status, desktop->coord_status_id, coord_str);
+    break;
+  case GDK_LEAVE_NOTIFY:
+    gtk_statusbar_pop (desktop->coord_status, desktop->coord_status_id);
+    break;
+  default:
+    break;
+  }
+  return FALSE;
+}
+
+void
+sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * desktop)
+{
+  sp_event_context_root_handler (desktop->event_context, event);
+
 }
 
 /*
@@ -39,7 +74,6 @@ gint
 sp_desktop_enter_notify (GtkWidget * widget, GdkEventCrossing * event)
 {
 	sodipodi_activate_desktop (SP_DESKTOP (widget));
-
 	return FALSE;
 }
 

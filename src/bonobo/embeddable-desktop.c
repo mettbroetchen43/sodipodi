@@ -146,7 +146,8 @@ sp_embeddable_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocat
 	
 	sp_desktop_show_region (desktop, 0.0, 0.0,
 		sp_document_width (desktop->document),
-		sp_document_height (desktop->document));
+		sp_document_height (desktop->document),
+				10);
 }
 
 

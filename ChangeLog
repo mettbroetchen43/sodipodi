@@ -1,3 +1,25 @@
+2000-10-17  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/nodepath.c (sp_nodepath_node_destroy): fixed YANC (Yet
+	Another Nodepath Crash)
+	
+2000-10-16  Frank Felfe  <innerspace@iname.com>
+
+	* glade/toolbox.glade: Updated zoom toolbox
+
+	* src/desktop-events.*: Added sp_canvas_root_handler
+
+	* src/desktop.c: Added statusbar, clean up zooming
+
+	* src/sp-metrics.* (sp_metric_to_metric_string): A way to
+	suppress metric identifier in strings
+
+	* src/sp-ruler.c: Copy GtkRuler object
+
+	* src/zoom-context.c: Use desktop region markup with border
+
+	* src/bonobo/embeddable-desktop.c: Ditto
+	
 2000-10-13  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/text-context.c (sp_text_context_item_handler): Return

@@ -49,7 +49,7 @@ sp_absolute_metric_to_metric (gdouble length_src, const SPMetric metric_src, con
 }
 
 GString *
-sp_metric_to_metric_string (gdouble length,  const SPMetric metric_src, const SPMetric metric_dst) {
+sp_metric_to_metric_string (gdouble length,  const SPMetric metric_src, const SPMetric metric_dst, gboolean m) {
   GString * str;
   gdouble len;
 
@@ -57,16 +57,16 @@ sp_metric_to_metric_string (gdouble length,  const SPMetric metric_src, const SP
   str = g_string_new ("");
   switch (metric_dst) {
   case SP_MM:
-    g_string_sprintf (str, "%0.2f mm", len);
+    g_string_sprintf (str, "%0.2f%s", len, m?" mm":"");
     break;
   case SP_CM:
-    g_string_sprintf (str, "%0.2f cm", len);
+    g_string_sprintf (str, "%0.2f%s", len, m?" cm":"");
     break;
   case SP_IN:
-    g_string_sprintf (str, "%0.2f \"", len);
+    g_string_sprintf (str, "%0.2f%s", len, m?" \"":"");
     break;
   case SP_PT:
-    g_string_sprintf (str, "%0.2f pt", len);
+    g_string_sprintf (str, "%0.2f%s", len, m?" pt":"");
     break;
   case NONE:
     g_string_sprintf (str, "%s", "ups!");

@@ -34,7 +34,7 @@ struct _SPDesktop {
 	GtkEventBox eventbox;
 	guint decorations : 1;
 	guint guides_active : 1;
-	GtkTable * table;
+	GtkBox * table;
 	GtkScrollbar * hscrollbar;
 	GtkScrollbar * vscrollbar;
 	GtkRuler * hruler;
@@ -42,6 +42,9 @@ struct _SPDesktop {
         GtkWidget * active;
         GtkWidget * inactive;
         GtkWidget * menubutton;   
+        GtkStatusbar * select_status, * coord_status;
+        gint coord_status_id, select_status_id;
+        GtkCombo * zoom;
 
 	SPDocument * document;
 	SPNamedView * namedview;
@@ -79,13 +82,19 @@ void sp_desktop_activate_guides (SPDesktop * desktop, gboolean activate);
 void sp_desktop_change_document (SPDesktop * desktop, SPDocument * document);
 
 /* Zooming, viewport, position & similar */
+#define SP_DESKTOP_SCROLL_LIMIT 10000.0
+#define SP_DESKTOP_ZOOM_INC     1.5
+#define SP_DESKTOP_ZOOM_MAX     10.0
+#define SP_DESKTOP_ZOOM_MIN     0.01
 
+gdouble sp_desktop_zoom_factor (SPDesktop * desktop);
 void sp_desktop_set_position (SPDesktop * desktop, gdouble x, gdouble y);
 void sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy);
 ArtDRect * sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area);
-void sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
+void sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint border);
 void sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
 void sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
+
 /* Context */
 
 void sp_desktop_set_event_context (SPDesktop * desktop, GtkType type);
