@@ -38,7 +38,8 @@ libspwidgets_a_SOURCES = \
 	sp-xmlview-content.c sp-xmlview-content.h \
 	tree-store.c tree-store.h \
 	spw-utilities.c spw-utilities.h \
-	sp-widget.c sp-widget.h
+	sp-widget.c sp-widget.h \
+	cell-renderer-image.c cell-renderer-image.h
 
 #	$(spdock_headers) $(spdock_sources)
 

@@ -25,6 +25,7 @@
 #include "helper/sp-intl.h"
 #include "helper/window.h"
 #include "widgets/tree-store.h"
+#include "widgets/cell-renderer-image.h"
 #include "sodipodi.h"
 #include "document.h"
 #include "desktop.h"
@@ -89,9 +90,9 @@ sp_document_tree_selection_changed (GtkTreeSelection *sel, GtkTreeModel *model)
 #endif
 
 static void
-sp_document_tree_target_toggled (GtkCellRendererToggle *crt, const char *path, GtkTreeModel *model)
+sp_document_tree_target_toggled (SPCellRendererImage *cri, const char *path, GtkTreeModel *model)
 {
-	if (!gtk_cell_renderer_toggle_get_active (crt)) {
+	if (cri->value) {
 		SPObject *object;
 		GtkTreeIter iter;
 		gtk_tree_model_get_iter_from_string (model, &iter, path);
@@ -152,7 +153,7 @@ sp_document_tree_new (SPDesktop *desktop)
 	GtkWidget *sw, *tree;
 	SPTreeStore *store;
 	GtkTreeViewColumn *column;
-	GtkCellRenderer *rtext, *rtoggle;
+	GtkCellRenderer *rtext, *rimg, *rtoggle;
 	GtkTreeSelection *sel;
 	/* GtkTreeIter iter, piter; */
 	/* GValue val = {0}; */
@@ -175,13 +176,14 @@ sp_document_tree_new (SPDesktop *desktop)
 	gtk_tree_view_append_column ((GtkTreeView *) tree, column);
 
 	column = gtk_tree_view_column_new ();
-	rtoggle = gtk_cell_renderer_toggle_new ();
-	gtk_cell_renderer_toggle_set_radio ((GtkCellRendererToggle *) rtoggle, TRUE);
-	g_signal_connect ((GObject *) rtoggle, "toggled", (GCallback) sp_document_tree_target_toggled, store);
-	gtk_tree_view_column_pack_start (column, rtoggle, TRUE);
+	rimg = sp_cell_renderer_image_new (2, 16);
+	sp_cell_renderer_image_set_image ((SPCellRendererImage *) rimg, 0, "drawing-nontarget");
+	sp_cell_renderer_image_set_image ((SPCellRendererImage *) rimg, 1, "drawing-target");
+	g_signal_connect ((GObject *) rimg, "toggled", (GCallback) sp_document_tree_target_toggled, store);
+	gtk_tree_view_column_pack_start (column, rimg, TRUE);
 	gtk_tree_view_column_set_title (column, "Tgt");
-	gtk_tree_view_column_add_attribute (column, rtoggle, "activatable", SP_TREE_STORE_COLUMN_IS_GROUP);
-	gtk_tree_view_column_add_attribute (column, rtoggle, "active", SP_TREE_STORE_COLUMN_TARGET);
+	gtk_tree_view_column_add_attribute (column, rimg, "activatable", SP_TREE_STORE_COLUMN_IS_GROUP);
+	gtk_tree_view_column_add_attribute (column, rimg, "value", SP_TREE_STORE_COLUMN_TARGET);
 	gtk_tree_view_append_column ((GtkTreeView *) tree, column);
 
 	column = gtk_tree_view_column_new ();

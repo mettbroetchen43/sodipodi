@@ -23,6 +23,7 @@
 
 #include "helper/sp-canvas.h"
 #include "xml/repr-private.h"
+#include "svg/svg.h"
 #include "sp-cursor.h"
 
 #include "shortcuts.h"
@@ -515,6 +516,7 @@ sp_event_context_create_item (SPEventContext *ec, const unsigned char *name, con
 	SPCSSAttr *css;
 	SPItem *item;
 	NRMatrixF i2root, root2i;
+	char c[80];
 	/* Create object */
 	repr = sp_repr_new (name);
 	if (truename) sp_repr_set_attr (repr, "sodipodi:type", truename);
@@ -528,11 +530,15 @@ sp_event_context_create_item (SPEventContext *ec, const unsigned char *name, con
 	/* rc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr); */
 	sp_repr_append_child (SP_OBJECT_REPR (ec->desktop->base), repr);
 	item = (SPItem *) sp_document_lookup_id (SP_DT_DOCUMENT (ec->desktop), sp_repr_get_attr (repr, "id"));
-	sp_repr_unref (repr);
 	/* Set item coordinate system identical to root, regardless of base */
 	sp_item_i2root_affine (item, &i2root);
 	nr_matrix_f_invert (&root2i, &i2root);
-	sp_item_set_item_transform (item, &root2i);
+	if (sp_svg_transform_write (c, 80, &root2i)) {
+		sp_repr_set_attr (repr, "transform", c);
+	} else {
+		sp_repr_set_attr (repr, "transform", NULL);
+	}
+	sp_repr_unref (repr);
 	return item;
 }
 
