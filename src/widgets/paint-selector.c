@@ -145,7 +145,7 @@ sp_paint_selector_init (SPPaintSelector *psel)
 	psel->mode = -1;
 
 	/* Paint style button box */
-	psel->style = gtk_hbox_new (TRUE, 0);
+	psel->style = gtk_hbox_new (FALSE, 0);
 	gtk_widget_show (psel->style);
 	gtk_container_set_border_width (GTK_CONTAINER (psel->style), 4);
 	gtk_box_pack_start (GTK_BOX (psel), psel->style, FALSE, FALSE, 0);
@@ -196,7 +196,7 @@ sp_paint_selector_style_button_add (SPPaintSelector *psel, const guchar *pixmap,
 	g_free (path);
 	gtk_widget_show (w);
 	gtk_container_add (GTK_CONTAINER (b), w);
-	gtk_box_pack_start (GTK_BOX (psel->style), b, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (psel->style), b, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (b), "toggled",
 			    GTK_SIGNAL_FUNC (sp_paint_selector_style_button_toggled), psel);
 

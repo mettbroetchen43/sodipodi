@@ -1,5 +1,9 @@
 #define SP_SVG_FILL_C
 
+/* fixme: remove this */
+
+#if 0
+
 #include <string.h>
 #include <stdio.h>
 #include "svg.h"
@@ -32,3 +36,4 @@ sp_svg_write_fill_type (gchar * buf, gint buflen, SPFillType type, guint32 color
 	return 0;
 }
 
+#endif

@@ -32,10 +32,6 @@
 #include "sp-path-component.h"
 #include "sp-shape.h"
 
-#ifndef ENABLE_FRGBA
-#define ENABLE_FRGBA
-#endif
-
 #define noSHAPE_VERBOSE
 
 static void sp_shape_class_init (SPShapeClass *class);
@@ -205,59 +201,6 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 	object = SP_OBJECT (item);
 	path = SP_PATH (item);
 	shape = SP_SHAPE (item);
-
-#ifndef ENABLE_FRGBA
-
-	opacity = object->style->fill_opacity * object->style->real_opacity;
-
-	if ((object->style->fill.type == SP_FILL_COLOR) && (opacity != 1.0)) {
-		gdouble i2d[6], doc2d[6], doc2buf[6], d2buf[6], i2buf[6], d2i[6];
-		ArtDRect box, bbox, dbbox;
-		gint bx, by, bw, bh;
-		art_u8 * b;
-		ArtPixBuf * pb;
-
-		dbbox.x0 = 0.0;
-		dbbox.y0 = 0.0;
-		dbbox.x1 = sp_document_width (SP_OBJECT (item)->document);
-		dbbox.y1 = sp_document_height (SP_OBJECT (item)->document);
-		sp_item_bbox (item, &bbox);
-		art_drect_intersect (&box, &dbbox, &bbox);
-		if ((box.x1 - box.x0) < 1.0) return;
-		if ((box.y1 - box.y0) < 1.0) return;
-		art_affine_identity (d2buf);
-		d2buf[4] = -box.x0;
-		d2buf[5] = -box.y0;
-		bx = box.x0;
-		by = box.y0;
-		bw = (box.x1 + 1.0) - bx;
-		bh = (box.y1 + 1.0) - by;
-		b = art_new (art_u8, bw * bh * 3);
-		memset (b, 0xff, bw * bh * 3);
-		pb = art_pixbuf_new_rgb (b, bw, bh, bw * 3);
-		sp_item_i2d_affine (SP_ITEM (sp_document_root (SP_OBJECT (item)->document)), doc2d);
-		art_affine_multiply (doc2buf, doc2d, d2buf);
-		item->stop_paint = TRUE;
-		sp_item_paint (SP_ITEM (sp_document_root (SP_OBJECT (item)->document)), pb, doc2buf);
-		item->stop_paint = FALSE;
-		sp_item_i2d_affine (item, i2d);
-		art_affine_multiply (i2buf, i2d, d2buf);
-		sp_item_paint (item, pb, i2buf);
-
-		gnome_print_gsave (gpc);
-		art_affine_invert (d2i, i2d);
-		gnome_print_concat (gpc, d2i);
-		gnome_print_translate (gpc, bx, by + bh);
-		gnome_print_scale (gpc, bw, -bh);
-		gnome_print_rgbimage (gpc, b, bw, bh, bw * 3);
-		gnome_print_grestore (gpc);
-
-		art_pixbuf_free (pb);
-
-		return;
-	}
-
-#endif /* ENABLE_FRGBA */
 
 	gnome_print_gsave (gpc);
 

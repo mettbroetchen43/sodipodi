@@ -45,18 +45,16 @@ sp_document_set_undo_sensitive (SPDocument *doc, gboolean sensitive)
 	doc->private->sensitive = sensitive;
 }
 
-void
-sp_document_done (SPDocument *doc)
+static void
+sp_document_private_done (SPDocument *doc, const guchar *key)
 {
 	g_assert (doc != NULL);
 	g_assert (SP_IS_DOCUMENT (doc));
 	g_assert (doc->private != NULL);
 	g_assert (doc->private->sensitive);
 
-	/* Clear modal undo key */
-	doc->private->key = NULL;
-
-	if (doc->private->actions == NULL) return;
+	/* Set modal undo key */
+	doc->actionkey = key;
 
 	g_assert (doc->private->redo == NULL);
 
@@ -76,9 +74,68 @@ sp_document_done (SPDocument *doc)
 }
 
 void
+sp_document_done (SPDocument *doc)
+{
+	g_assert (doc != NULL);
+	g_assert (SP_IS_DOCUMENT (doc));
+	g_assert (doc->private != NULL);
+	g_assert (doc->private->sensitive);
+
+	if (!doc->private->actions) return;
+
+	sp_document_private_done (doc, NULL);
+}
+
+void
 sp_document_maybe_done (SPDocument *doc, const guchar *key)
 {
-	sp_document_done (doc);
+	if (!doc->private->actions) return;
+
+	if (key && doc->actionkey && !strcmp (key, doc->actionkey) && doc->private->undo) {
+		SPAction *last, *current;
+		current = doc->private->actions;
+		last = (SPAction *) doc->private->undo->data;
+		while (last && current) {
+			if (current->type != last->type) break;
+			if ((current->type != SP_ACTION_CHGATTR) && (current->type != SP_ACTION_CHGCONTENT)) break;
+			if (strcmp (current->id, last->id)) break;
+			current = current->next;
+			last = last->next;
+		}
+		if (!last && !current) {
+			/* Merge current into last */
+			current = doc->private->actions;
+			last = (SPAction *) doc->private->undo->data;
+			while (last && current) {
+				switch (current->type) {
+				case SP_ACTION_CHGATTR:
+					if (last->act.chgattr.newval) g_free (last->act.chgattr.newval);
+					last->act.chgattr.newval = current->act.chgattr.newval;
+					current->act.chgattr.newval = NULL;
+					break;
+				case SP_ACTION_CHGCONTENT:
+					if (last->act.chgcontent.newval) g_free (last->act.chgcontent.newval);
+					last->act.chgcontent.newval = current->act.chgcontent.newval;
+					current->act.chgcontent.newval = NULL;
+					break;
+				default:
+					g_warning ("file %s: line %d: Action %d should not be in merge list", __FILE__, __LINE__, current->type);
+					break;
+				}
+				current = current->next;
+				last = last->next;
+			}
+			/* fixme: IMHO NOP is handled by repr itself */
+			if (!sp_repr_attr (doc->private->rroot, "sodipodi:modified")) {
+				sp_repr_set_attr (doc->private->rroot, "sodipodi:modified", "true");
+			}
+			sp_action_free_list (doc->private->actions);
+			doc->private->actions = NULL;
+			return;
+		}
+	}
+
+	sp_document_private_done (doc, key);
 }
 
 void
@@ -90,6 +147,9 @@ sp_document_undo (SPDocument *doc)
 	g_assert (SP_IS_DOCUMENT (doc));
 	g_assert (doc->private != NULL);
 	g_assert (doc->private->sensitive);
+
+	/* Set modal undo key */
+	doc->actionkey = NULL;
 
 	if (doc->private->actions) {
 		g_warning ("Document Undo: Last operation did not flush cache");
@@ -127,6 +187,9 @@ sp_document_redo (SPDocument *doc)
 	g_assert (doc->private != NULL);
 	g_assert (doc->private->sensitive);
 	g_assert (doc->private->actions == NULL);
+
+	/* Set modal undo key */
+	doc->actionkey = NULL;
 
 	if (doc->private->redo == NULL) return;
 

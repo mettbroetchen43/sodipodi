@@ -20,6 +20,7 @@ src/dialogs/fill-style.c
 src/dialogs/item-properties.c
 src/dialogs/object-attributes.c
 src/dialogs/object-properties.c
+src/dialogs/stroke-style.c
 src/document.c
 src/event-context.c
 src/file.c

@@ -1,3 +1,16 @@
+2002-02-23  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/helper/units.c (sp_points_get_units): New method
+	(sp_units_get_points): Ditto
+
+	* src/dialogs/object-properties.c: Made layout dynamic
+
+	* src/document-undo.c (sp_document_private_done): New static method
+	(sp_document_done): Just a wrapper
+	(sp_document_maybe_done): Implement the real thing
+
+	* src/document-private.h: Moved document definition here
+
 2002-02-21  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/stroke-style.c (sp_stroke_style_any_toggled): Handle

@@ -265,3 +265,19 @@ sp_distance_get_points (SPDistance *distance)
 	return val;
 }
 
+gdouble
+sp_points_get_units (gdouble points, const SPUnit *unit)
+{
+	sp_convert_distance (&points, &sp_units[SP_UNIT_BASE_ABSOLUTE], unit);
+
+	return points;
+}
+
+gdouble
+sp_units_get_points (gdouble units, const SPUnit *unit)
+{
+	sp_convert_distance (&units, unit, &sp_units[SP_UNIT_BASE_ABSOLUTE]);
+
+	return units;
+}
+

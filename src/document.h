@@ -23,12 +23,10 @@ typedef enum {
 	SPXMaxYMax
 } SPAspect;
 
-typedef struct _SPDocumentPrivate SPDocumentPrivate;
-
-#define SP_TYPE_DOCUMENT            (sp_document_get_type ())
-#define SP_DOCUMENT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_DOCUMENT, SPDocument))
-#define SP_DOCUMENT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DOCUMENT, SPItemClass))
-#define SP_IS_DOCUMENT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_DOCUMENT))
+#define SP_TYPE_DOCUMENT (sp_document_get_type ())
+#define SP_DOCUMENT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_DOCUMENT, SPDocument))
+#define SP_DOCUMENT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DOCUMENT, SPItemClass))
+#define SP_IS_DOCUMENT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_DOCUMENT))
 #define SP_IS_DOCUMENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_DOCUMENT))
 
 #include <gtk/gtktypeutils.h>
@@ -36,21 +34,6 @@ typedef struct _SPDocumentPrivate SPDocumentPrivate;
 #include <libart_lgpl/art_rect.h>
 #include "xml/repr.h"
 #include "forward.h"
-
-struct _SPDocument {
-	GtkObject object;
-
-	SPDocumentPrivate * private;
-};
-
-struct _SPDocumentClass {
-	GtkObjectClass parent_class;
-
-	void (* modified) (SPDocument *document, guint flags);
-
-	void (* uri_set) (SPDocument *document, const guchar *uri);
-	void (* resized) (SPDocument *document, gdouble width, gdouble height);
-};
 
 GtkType sp_document_get_type (void);
 

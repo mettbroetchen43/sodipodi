@@ -155,7 +155,7 @@ sp_stroke_style_widget_new (void)
 	gtk_container_set_border_width (GTK_CONTAINER (f), 4);
 	gtk_box_pack_start (GTK_BOX (hb), f, FALSE, FALSE, 0);
 	
-	t = gtk_table_new (3, 4, FALSE);
+	t = gtk_table_new (3, 5, FALSE);
 	gtk_widget_show (t);
 	gtk_container_set_border_width (GTK_CONTAINER (t), 4);
 	gtk_table_set_row_spacings (GTK_TABLE (t), 4);
@@ -170,7 +170,7 @@ sp_stroke_style_widget_new (void)
 
 	hb = gtk_hbox_new (FALSE, 4);
 	gtk_widget_show (hb);
-	gtk_table_attach (GTK_TABLE (t), hb, 1, 4, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), hb, 1, 5, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
 	a = gtk_adjustment_new (1.0, 0.0, 100.0, 0.1, 10.0, 10.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "width", a);
@@ -193,7 +193,7 @@ sp_stroke_style_widget_new (void)
 
 	tb = gtk_toggle_button_new ();
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), tb, 1, 2, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "join-miter", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "miter");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
@@ -203,7 +203,7 @@ sp_stroke_style_widget_new (void)
 
 	tb = gtk_toggle_button_new ();
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 2, 3, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), tb, 2, 3, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "join-round", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "round");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
@@ -213,7 +213,7 @@ sp_stroke_style_widget_new (void)
 
 	tb = gtk_toggle_button_new ();
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 3, 4, 1, 2, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), tb, 3, 4, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "join-bevel", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "join", "bevel");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
@@ -229,7 +229,7 @@ sp_stroke_style_widget_new (void)
 
 	tb = gtk_toggle_button_new ();
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 1, 2, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), tb, 1, 2, 2, 3, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-butt", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "butt");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
@@ -239,7 +239,7 @@ sp_stroke_style_widget_new (void)
 
 	tb = gtk_toggle_button_new ();
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 2, 3, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), tb, 2, 3, 2, 3, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-round", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "round");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
@@ -249,7 +249,7 @@ sp_stroke_style_widget_new (void)
 
 	tb = gtk_toggle_button_new ();
 	gtk_widget_show (tb);
-	gtk_table_attach (GTK_TABLE (t), tb, 3, 4, 2, 3, GTK_FILL, 0, 0, 0);
+	gtk_table_attach (GTK_TABLE (t), tb, 3, 4, 2, 3, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "cap-square", tb);
 	gtk_object_set_data (GTK_OBJECT (tb), "cap", "square");
 	gtk_signal_connect (GTK_OBJECT (tb), "toggled", GTK_SIGNAL_FUNC (sp_stroke_style_any_toggled), spw);
@@ -370,7 +370,7 @@ sp_stroke_style_widget_update (SPWidget *spw, SPSelection *sel)
 
 	switch (captype) {
 	case ART_PATH_STROKE_CAP_BUTT:
-		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap_butt");
+		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-butt");
 		break;
 	case ART_PATH_STROKE_CAP_ROUND:
 		tb = gtk_object_get_data (GTK_OBJECT (spw), "cap-round");

@@ -107,6 +107,9 @@ gboolean sp_convert_distance_full (gdouble *distance, const SPUnit *from, const 
 gdouble sp_distance_get_units (SPDistance *distance, const SPUnit *unit);
 gdouble sp_distance_get_points (SPDistance *distance);
 
+gdouble sp_points_get_units (gdouble points, const SPUnit *unit);
+gdouble sp_units_get_points (gdouble units, const SPUnit *unit);
+
 END_GNOME_DECLS
 
 #endif 

@@ -5,6 +5,27 @@
 #include "sp-root.h"
 #include "document.h"
 
+typedef struct _SPDocumentPrivate SPDocumentPrivate;
+
+struct _SPDocument {
+	GtkObject object;
+
+	/* fixme: remove this */
+	SPDocumentPrivate * private;
+
+	/* Last action key */
+	const guchar *actionkey;
+};
+
+struct _SPDocumentClass {
+	GtkObjectClass parent_class;
+
+	void (* modified) (SPDocument *document, guint flags);
+
+	void (* uri_set) (SPDocument *document, const guchar *uri);
+	void (* resized) (SPDocument *document, gdouble width, gdouble height);
+};
+
 typedef struct _SPAction SPAction;
 typedef struct _SPActionAdd SPActionAdd;
 typedef struct _SPActionDel SPActionDel;
@@ -95,7 +116,9 @@ struct _SPDocumentPrivate {
 	GSList * undo; /* Undo stack of reprs */
 	GSList * redo; /* Redo stack of reprs */
 
+#if 0
 	const guchar *key; /* Last action key */
+#endif
 	SPAction *actions; /* List of current actions */
 
 	/* Handler ID */
