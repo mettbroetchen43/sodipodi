@@ -1,5 +1,7 @@
 #define SP_INTERFACE_C
 
+#include <libgnome/gnome-defs.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include "sodipodi.h"
 #include "interface.h"
 
@@ -45,6 +47,8 @@ sp_create_window (SPDesktop * desktop, gboolean editable)
 	b = gtk_toggle_button_new_with_label ("Snap to guides");
 	gtk_widget_show (b);
 	gtk_box_pack_start (GTK_BOX (hb), b, FALSE, FALSE, 0);
+
+	gnome_window_icon_set_from_default (GTK_WINDOW (w));
 
 	gtk_widget_show (w);
 }

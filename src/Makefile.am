@@ -10,11 +10,12 @@ SUBDIRS = xml svg helper dialogs display $(bonobo_subdirs)
 gladedir = $(datadir)/sodipodi
 
 INCLUDES = \
-	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 	\
-	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" \
-	-I$(srcdir/xml) 			\
-	-I$(srcdir/svg) 			\
-	-I$(top_srcdir)/intl 			\
+	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 		\
+	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" 	\
+	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 	\
+	-I$(srcdir/xml) 				\
+	-I$(srcdir/svg) 				\
+	-I$(top_srcdir)/intl 				\
 	$(GNOME_INCLUDEDIR)
 
 bin_PROGRAMS = sodipodi

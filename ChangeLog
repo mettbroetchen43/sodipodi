@@ -1,3 +1,13 @@
+2000-09-14  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/Makefile.am: Define GNOME_PIXMAPDIR
+
+	* src/main.c (main): Set default icon
+
+	* interface.c (sp_create_window): Set icon
+
+	* src/sp-text.c (sp_text_set_shape): Use helvetica for unknown font
+
 2000-09-13  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* desktop-snap.c, desktop-snap.h (sp_desktop_horizontal_snap):

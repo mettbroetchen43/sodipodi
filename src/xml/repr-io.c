@@ -104,7 +104,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 	}
 
 	if (node->content)
-		sp_repr_set_content (repr, g_strdup (node->content));
+		sp_repr_set_content (repr, node->content);
 
 	child = node->childs;
 	if ((child != NULL) &&
@@ -112,7 +112,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 		(child->properties == NULL) &&
 		(child->content != NULL)) {
 
-		sp_repr_set_content (repr, g_strdup (child->content));
+		sp_repr_set_content (repr, child->content);
 
 	} else {
 

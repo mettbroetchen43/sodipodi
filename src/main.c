@@ -12,6 +12,7 @@
 #include <locale.h>
 
 #include <gnome.h>
+#include <libgnomeui/gnome-window-icon.h>
 #include <glade/glade.h>
 
 #ifdef __FreeBSD__
@@ -182,6 +183,14 @@ main (int argc, char *argv[])
 		 */
 
 		setlocale (LC_NUMERIC, "C");
+
+		/* Set default icon */
+
+		if (g_file_exists (GNOME_ICONDIR "/sodipodi.png")) {
+			gnome_window_icon_set_default_from_file (GNOME_ICONDIR "/sodipodi.png");
+		} else {
+			g_warning ("Could not find %s", GNOME_ICONDIR "/sodipodi.png");
+		}
 
 #if 0
 		/* Session management stuff */
