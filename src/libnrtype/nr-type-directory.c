@@ -19,20 +19,31 @@
 #include "nr-type-gnome.h"
 #include "nr-type-directory.h"
 
-typedef struct _NRFamilyEntry NRFamilyEntry;
-typedef struct _NRFaceEntry NRFaceEntry;
+typedef struct _NRFamilyDef NRFamilyDef;
+typedef struct _NRPosDef NRPosDef;
 
-struct _NRFamilyEntry {
+struct _NRFamilyDef {
 	unsigned char *name;
-	NRFaceEntry *faces;
+	NRTypeFaceDef *faces;
 	int nfaces;
 };
 
-struct _NRFaceEntry {
-	unsigned char *name;
-	unsigned char *style;
-	NRTypeFace *typeface;
+struct _NRPosDef {
+	unsigned int italic : 1;
+	unsigned int oblique : 1;
+	unsigned int weight : 8;
 };
+
+static void nr_type_directory_build (void);
+static void nr_type_calculate_position (NRPosDef *pdef, const unsigned char *name);
+static float nr_type_distance_family_better (const unsigned char *ask, const unsigned char *bid, float best);
+static float nr_type_distance_position_better (NRPosDef *ask, NRPosDef *bid, float best);
+
+static NRTypeFaceDef *tdefs = NULL;
+static NRPosDef *pdefs = NULL;
+static NRFamilyDef *fdefs = NULL;
+static unsigned int ntdefs = 0;
+static unsigned int nfdefs = 0;
 
 void
 nr_name_list_release (NRNameList *list)
@@ -45,124 +56,234 @@ nr_name_list_release (NRNameList *list)
 NRTypeFace *
 nr_type_directory_lookup (const unsigned char *name)
 {
-	NRTypeFace *face;
-	GnomeFontFace *gff;
+	int i;
 
-	gff = gnome_font_face_new (name);
+	if (!tdefs) {
+		nr_type_directory_build ();
+	}
 
-	face = nr_typeface_gnome_new (gff);
+	for (i = 0; i < ntdefs; i++) {
+		if (!strcmp (name, tdefs[i].name)) {
+			if (!tdefs[i].typeface) {
+				tdefs[i].typeface = tdefs[i].vmv->new (tdefs + i);
+			} else {
+				nr_typeface_ref (tdefs[i].typeface);
+			}
+			return tdefs[i].typeface;
+		}
+	}
 
-	gnome_font_face_unref (gff);
-	return face;
+	return NULL;
 }
 
 NRTypeFace *
-nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char *style)
+nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char *description)
 {
-	NRTypeFace *face;
-	unsigned int weight;
-	unsigned int italic;
-	GnomeFontFace *gff;
+	float best, dist;
+	int bestfidx, i;
+	NRTypeFaceDef *besttdef;
+	NRPosDef apos;
 
-	italic = FALSE;
-	weight = GNOME_FONT_BOOK;
-	if (style) {
-		gchar *s;
-		s = g_strdup (style);
-		g_strdown (s);
-		if (strstr (s, "italic")) italic = TRUE;
-		if (strstr (s, "oblique")) italic = TRUE;
-		if (strstr (s, "bold")) weight = GNOME_FONT_BOLD;
-		g_free (s);
+	if (!tdefs) {
+		nr_type_directory_build ();
 	}
-	gff = gnome_font_unsized_closest (family, weight, italic);
 
-	face = nr_typeface_gnome_new (gff);
+	best = NR_HUGE_F;
+	bestfidx = -1;
 
-	gnome_font_face_unref (gff);
-	return face;
+	for (i = 0; i < nfdefs; i++) {
+		dist = nr_type_distance_family_better (family, fdefs[i].name, best);
+		if (dist < best) {
+			best = dist;
+			bestfidx = i;
+		}
+		if (best == 0.0) break;
+	}
+
+	if (bestfidx < 0) return NULL;
+
+	best = NR_HUGE_F;
+	besttdef = fdefs[bestfidx].faces;
+
+	/* fixme: In reality the latter method reqires full qualified name */
+	nr_type_calculate_position (&apos, description);
+
+	for (i = 0; i < fdefs[bestfidx].nfaces; i++) {
+		int idx;
+		idx = fdefs[bestfidx].faces - tdefs + i;
+		dist = nr_type_distance_position_better (&apos, pdefs + idx, best);
+		if (dist < best) {
+			best = dist;
+			besttdef = fdefs[bestfidx].faces + i;
+		}
+		if (best == 0.0) break;
+	}
+
+	if (!besttdef->typeface) {
+		besttdef->typeface = besttdef->vmv->new (besttdef);
+	} else {
+		nr_typeface_ref (besttdef->typeface);
+	}
+
+	return besttdef->typeface;
 }
 
-static void
-nr_type_directory_family_list_destructor (NRNameList *list)
+void
+nr_type_directory_forget_face (NRTypeFace *tf)
 {
-	nr_free (list->names);
+	int i;
+
+	for (i = 0; i < ntdefs; i++) {
+		if (tdefs[i].typeface == tf) {
+			tdefs[i].typeface = NULL;
+			break;
+		}
+	}
 }
 
 NRNameList *
 nr_type_directory_family_list_get (NRNameList *families)
 {
-	static GList *fl = NULL;
-
-	families->destructor = nr_type_directory_family_list_destructor;
-
-	if (!fl) fl = gnome_font_family_list ();
-
-	if (fl) {
-		GList *l;
-		int pos;
-		families->length = g_list_length (fl);
-		families->names = nr_new (unsigned char *, families->length);
-		pos = 0;
-		for (l = fl; l; l = l->next) {
-			families->names[pos++] = (unsigned char *) l->data;
-		}
-	} else {
-		families->length = 0;
-		families->names = NULL;
-	}
-
-	return families;
+	return nr_type_gnome_families_get (families);
 }
 
 static void
 nr_type_directory_style_list_destructor (NRNameList *list)
 {
-	nr_free (list->names);
+	if (list->names) nr_free (list->names);
 }
 
 NRNameList *
 nr_type_directory_style_list_get (const unsigned char *family, NRNameList *styles)
 {
-	static GList *fl = NULL;
-	GList *sl, *l;
+	int i;
 
 	styles->destructor = nr_type_directory_style_list_destructor;
 
-	if (!fl) fl = gnome_font_list ();
-
-	sl = NULL;
-	for (l = fl; l; l = l->next) {
-		if (!strncmp (family, (gchar *) l->data, strlen (family))) {
-			gchar *p;
-#if 0
-			p = (gchar *) l->data + strlen (family);
-			while (*p && isspace (*p)) p += 1;
-			if (!*p) p = "Normal";
-#else
-			p = (gchar *) l->data;
-#endif
-			sl = g_list_prepend (sl, p);
+	for (i = 0; i < nfdefs; i++) {
+		if (!strcmp (family, fdefs[i].name)) {
+			int j;
+			styles->length = fdefs[i].nfaces;
+			styles->names = nr_new (unsigned char *, styles->length);
+			for (j = 0; j < styles->length; j++) {
+				styles->names[j] = fdefs[i].faces[j].name;
+			}
+			return styles;
 		}
 	}
-	sl = g_list_reverse (sl);
 
-	if (sl) {
-		GList *l;
-		int pos;
-		styles->length = g_list_length (sl);
-		styles->names = nr_new (unsigned char *, styles->length);
-		pos = 0;
-		for (l = sl; l; l = l->next) {
-			styles->names[pos++] = (unsigned char *) l->data;
-		}
-		g_list_free (sl);
-	} else {
-		styles->length = 0;
-		styles->names = NULL;
-	}
+	styles->length = 0;
+	styles->names = NULL;
 
 	return styles;
+}
+
+static void
+nr_type_directory_build (void)
+{
+	NRNameList gnames, gfamilies;
+	int fpos, pos, i, j;
+
+	nr_type_gnome_typefaces_get (&gnames);
+	nr_type_gnome_families_get (&gfamilies);
+
+	tdefs = nr_new (NRTypeFaceDef, gnames.length);
+	pdefs = nr_new (NRPosDef, gnames.length);
+	fdefs = nr_new (NRFamilyDef, gfamilies.length);
+
+	for (i = 0; i < gnames.length; i++) {
+		nr_type_gnome_build_def (tdefs + i, gnames.names[i]);
+	}
+	ntdefs = gnames.length;
+
+	fpos = 0;
+	pos = 0;
+	for (i = 0; i < gfamilies.length; i++) {
+		int start, len;
+		start = pos;
+		len = strlen (gfamilies.names[i]);
+		for (j = pos; j < gnames.length; j++) {
+			if (!strncmp (gfamilies.names[i], tdefs[j].name, len)) {
+				NRTypeFaceDef t;
+				t = tdefs[pos];
+				tdefs[pos] = tdefs[j];
+				tdefs[j] = t;
+				pos += 1;
+			}
+		}
+		if (pos > start) {
+			fdefs[fpos].name = strdup (gfamilies.names[i]);
+			fdefs[fpos].faces = tdefs + start;
+			fdefs[fpos].nfaces = pos - start;
+			fpos += 1;
+		}
+	}
+	nfdefs = fpos;
+
+	/* Build posdefs */
+	for (i = 0; i < ntdefs; i++) {
+		nr_type_calculate_position (pdefs + i, tdefs[i].name);
+	}
+
+	nr_name_list_release (&gfamilies);
+	nr_name_list_release (&gnames);
+}
+
+static void
+nr_type_calculate_position (NRPosDef *pdef, const unsigned char *name)
+{
+	unsigned char c[256];
+	unsigned char *p;
+
+	strncpy (c, name, 255);
+	c[255] = 0;
+	for (p = c; *p; p++) *p = tolower (*p);
+
+	pdef->italic = (strstr (c, "italic") != NULL);
+	pdef->oblique = (strstr (c, "oblique") != NULL);
+	if (strstr (c, "bold")) {
+		pdef->weight = 192;
+	} else {
+		pdef->weight = 128;
+	}
+}
+
+static float
+nr_type_distance_family_better (const unsigned char *ask, const unsigned char *bid, float best)
+{
+	int alen, blen;
+
+	if (!strcasecmp (ask, bid)) return MIN (best, 0.0);
+
+	alen = strlen (ask);
+	blen = strlen (bid);
+
+	if ((blen < alen) && !strncasecmp (ask, bid, blen)) return MIN (best, 1.0);
+
+	if (!strcasecmp (bid, "bitstream cyberbit")) return MIN (best, 10.0);
+	if (!strcasecmp (bid, "arial")) return MIN (best, 100.0);
+	if (!strcasecmp (bid, "helvetica")) return MIN (best, 1000.0);
+
+	return 10000.0;
+}
+
+#define NR_TYPE_ITALIC_SCALE 10000.0
+#define NR_TYPE_OBLIQUE_SCALE 1000.0
+#define NR_TYPE_WEIGHT_SCALE 100.0
+
+static float
+nr_type_distance_position_better (NRPosDef *ask, NRPosDef *bid, float best)
+{
+	float ditalic, doblique, dweight;
+	float dist;
+
+	ditalic = NR_TYPE_ITALIC_SCALE * (ask->italic - bid->italic);
+	doblique = NR_TYPE_OBLIQUE_SCALE * (ask->oblique - bid->oblique);
+	dweight = NR_TYPE_WEIGHT_SCALE * (ask->weight - bid->weight);
+
+	dist = sqrt (ditalic * ditalic + doblique * doblique + dweight * dweight);
+
+	return MIN (dist, best);
 }
 
 

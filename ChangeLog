@@ -1,3 +1,7 @@
+2002-11-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-type-directory.c: Parsing works for normal fonts
+
 2002-11-02  Masatake YAMATO  <jet@gyve.org>
 
 	* README: removed GYVE.

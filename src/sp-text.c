@@ -1343,49 +1343,6 @@ sp_text_font_style_to_lookup (SPStyle *style)
 	return c;
 }
 
-#if 0
-gint
-sp_text_font_weight_to_gp (gint weight)
-{
-	switch (weight) {
-	case SP_CSS_FONT_WEIGHT_100:
-		return GNOME_FONT_EXTRA_LIGHT;
-		break;
-	case SP_CSS_FONT_WEIGHT_200:
-		return GNOME_FONT_THIN;
-		break;
-	case SP_CSS_FONT_WEIGHT_300:
-		return GNOME_FONT_LIGHT;
-		break;
-	case SP_CSS_FONT_WEIGHT_400:
-	case SP_CSS_FONT_WEIGHT_NORMAL:
-		return GNOME_FONT_BOOK;
-		break;
-	case SP_CSS_FONT_WEIGHT_500:
-		return GNOME_FONT_MEDIUM;
-		break;
-	case SP_CSS_FONT_WEIGHT_600:
-		return GNOME_FONT_SEMI;
-		break;
-	case SP_CSS_FONT_WEIGHT_700:
-	case SP_CSS_FONT_WEIGHT_BOLD:
-		return GNOME_FONT_BOLD;
-		break;
-	case SP_CSS_FONT_WEIGHT_800:
-		return GNOME_FONT_HEAVY;
-		break;
-	case SP_CSS_FONT_WEIGHT_900:
-		return GNOME_FONT_BLACK;
-		break;
-	default:
-		return GNOME_FONT_BOOK;
-		break;
-	}
-
-	return GNOME_FONT_BOOK;
-}
-#endif
-
 static void
 sp_text_update_length (SPSVGLength *length, gdouble em, gdouble ex, gdouble scale)
 {

@@ -83,9 +83,9 @@ void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
 
 /* Zooming, viewport, position & similar */
 #define SP_DESKTOP_SCROLL_LIMIT 10000.0
-#define SP_DESKTOP_ZOOM_INC     1.5
-#define SP_DESKTOP_ZOOM_MAX     10.0
-#define SP_DESKTOP_ZOOM_MIN     0.01
+#define SP_DESKTOP_ZOOM_INC 1.414213562
+#define SP_DESKTOP_ZOOM_MAX 16.0
+#define SP_DESKTOP_ZOOM_MIN 0.0625
 
 gdouble sp_desktop_zoom_factor (SPDesktop * desktop);
 

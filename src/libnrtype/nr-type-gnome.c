@@ -16,6 +16,7 @@
 #include <libnr/nr-matrix.h>
 #include "nr-type-gnome.h"
 
+static NRTypeFace *nr_typeface_gnome_new (NRTypeFaceDef *def);
 void nr_typeface_gnome_free (NRTypeFace *tf);
 
 unsigned int nr_typeface_gnome_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
@@ -28,6 +29,8 @@ NRFont *nr_typeface_gnome_font_new (NRTypeFace *tf, unsigned int metrics, NRMatr
 void nr_typeface_gnome_font_free (NRFont *font);
 
 static NRTypeFaceVMV nr_type_gnome_vmv = {
+	nr_typeface_gnome_new,
+
 	nr_typeface_gnome_free,
 	nr_typeface_gnome_attribute_get,
 	nr_typeface_gnome_glyph_outline_get,
@@ -50,33 +53,92 @@ static NRTypeFaceVMV nr_type_gnome_vmv = {
 	nr_rasterfont_generic_glyph_mask_render
 };
 
-static NRTypeFaceGnome *typefaces = NULL;
+static void
+nr_type_gnome_typefaces_destructor (NRNameList *list)
+{
+	nr_free (list->names);
+}
 
-NRTypeFace *
-nr_typeface_gnome_new (GnomeFontFace *gff)
+NRNameList *
+nr_type_gnome_typefaces_get (NRNameList *typefaces)
+{
+	static GList *fl = NULL;
+
+	typefaces->destructor = nr_type_gnome_typefaces_destructor;
+
+	if (!fl) fl = gnome_font_list ();
+
+	if (fl) {
+		GList *l;
+		int pos;
+		typefaces->length = g_list_length (fl);
+		typefaces->names = nr_new (unsigned char *, typefaces->length);
+		pos = 0;
+		for (l = fl; l; l = l->next) {
+			typefaces->names[pos++] = (unsigned char *) l->data;
+		}
+	} else {
+		typefaces->length = 0;
+		typefaces->names = NULL;
+	}
+
+	return typefaces;
+}
+
+static void
+nr_type_gnome_families_destructor (NRNameList *list)
+{
+	nr_free (list->names);
+}
+
+NRNameList *
+nr_type_gnome_families_get (NRNameList *families)
+{
+	static GList *fl = NULL;
+
+	families->destructor = nr_type_gnome_families_destructor;
+
+	if (!fl) fl = gnome_font_family_list ();
+
+	if (fl) {
+		GList *l;
+		int pos;
+		families->length = g_list_length (fl);
+		families->names = nr_new (unsigned char *, families->length);
+		pos = 0;
+		for (l = fl; l; l = l->next) {
+			families->names[pos++] = (unsigned char *) l->data;
+		}
+	} else {
+		families->length = 0;
+		families->names = NULL;
+	}
+
+	return families;
+}
+
+void
+nr_type_gnome_build_def (NRTypeFaceDef *def, const unsigned char *name)
+{
+	def->vmv = &nr_type_gnome_vmv;
+	def->name = g_strdup (name);
+	def->typeface = NULL;
+}
+
+static NRTypeFace *
+nr_typeface_gnome_new (NRTypeFaceDef *def)
 {
 	NRTypeFaceGnome *tfg;
-
-	for (tfg = typefaces; tfg != NULL; tfg = tfg->next) {
-		if (tfg->face == gff) {
-			return nr_typeface_ref ((NRTypeFace *) tfg);
-		}
-	}
 
 	tfg = nr_new (NRTypeFaceGnome, 1);
 
 	tfg->typeface.vmv = &nr_type_gnome_vmv;
 	tfg->typeface.refcount = 1;
-	tfg->typeface.nglyphs = gnome_font_face_get_num_glyphs (gff);
 
-	gnome_font_face_ref (gff);
-	tfg->face = gff;
+	tfg->face = gnome_font_face_new (def->name);
 	tfg->fonts = NULL;
 
-	tfg->prev = NULL;
-	tfg->next = typefaces;
-	if (tfg->next) tfg->next->prev = tfg;
-	typefaces = tfg;
+	tfg->typeface.nglyphs = gnome_font_face_get_num_glyphs (tfg->face);
 
 	return (NRTypeFace *) tfg;
 }
@@ -89,13 +151,6 @@ nr_typeface_gnome_free (NRTypeFace *tf)
 	tfg = (NRTypeFaceGnome *) tf;
 
 	gnome_font_face_unref (tfg->face);
-
-	if (tfg->prev) {
-		tfg->prev->next = tfg->next;
-	} else {
-		typefaces = tfg->next;
-	}
-	if (tfg->next) tfg->next->prev = tfg->prev;
 
 	nr_free (tfg);
 }
@@ -118,7 +173,17 @@ nr_typeface_gnome_attribute_get (NRTypeFace *tf, const unsigned char *key, unsig
 		wc = gnome_font_face_get_weight_code (tfg->face);
 		val = (wc >= GNOME_FONT_BOLD) ? "bold" : "normal";
 	} else if (!strcmp (key, "style")) {
-		val = gnome_font_face_is_italic (tfg->face) ? "italic" : "normal";
+		if (gnome_font_face_is_italic (tfg->face)) {
+			const unsigned char *name;
+			name = gnome_font_face_get_name (tfg->face);
+			if (strstr (name, "oblique") || strstr (name, "Oblique") || (strstr (name, "OBLIQUE"))) {
+				val = "oblique";
+			} else {
+				val = "italic";
+			}
+		} else {
+			val = "normal";
+		}
 	} else {
 		val = "";
 	}

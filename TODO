@@ -3,6 +3,7 @@
 TODO for 0.28
 =============
 
+- Menu exit does not ask for saving
 - Print open paths correctly (DONE)
 - Enable active desktop indicator for single new desktop (DONE)
 - Make page border togglable (DONE)

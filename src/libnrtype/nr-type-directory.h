@@ -32,4 +32,6 @@ NRTypeFace *nr_type_directory_lookup_fuzzy (const unsigned char *family, const u
 NRNameList *nr_type_directory_family_list_get (NRNameList *families);
 NRNameList *nr_type_directory_style_list_get (const unsigned char *family, NRNameList *styles);
 
+void nr_type_directory_forget_face (NRTypeFace *tf);
+
 #endif

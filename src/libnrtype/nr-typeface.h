@@ -13,6 +13,7 @@
  */
 
 typedef struct _NRTypeFace NRTypeFace;
+typedef struct _NRTypeFaceDef NRTypeFaceDef;
 typedef struct _NRTypeFaceVMV NRTypeFaceVMV;
 
 #include <libnr/nr-types.h>
@@ -30,7 +31,15 @@ enum {
 	NR_TYPEFACE_LOOKUP_RULE_DEFAULT
 };
 
+struct _NRTypeFaceDef {
+	NRTypeFaceVMV *vmv;
+	unsigned char *name;
+	NRTypeFace *typeface;
+};
+
 struct _NRTypeFaceVMV {
+	NRTypeFace *(* new) (NRTypeFaceDef *def);
+
 	void (* free) (NRTypeFace *tf);
 	unsigned int (* attribute_get) (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
 	NRBPath *(* glyph_outline_get) (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *path, unsigned int ref);

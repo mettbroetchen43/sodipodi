@@ -15,6 +15,7 @@
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>
 #include "nr-typeface.h"
+#include "nr-type-directory.h"
 
 NRTypeFace *
 nr_typeface_ref (NRTypeFace *tf)
@@ -30,6 +31,7 @@ nr_typeface_unref (NRTypeFace *tf)
 	tf->refcount -= 1;
 
 	if (tf->refcount < 1) {
+		nr_type_directory_forget_face (tf);
 		tf->vmv->free (tf);
 	}
 
