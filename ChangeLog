@@ -17,6 +17,9 @@
 	* glade/sodipodi.glade: Add document & xml tree to properties menu
 
 	* src/interface.c (sp_create_window): Remove ugly buttons
+
+	* src/mdi-ui.*: Removed
+	* src/dialogs/object-fill.*, object-stroke.*: Removed
 	
 2000-10-05  Lauris Kaplinski  <lauris@helixcode.com>
 

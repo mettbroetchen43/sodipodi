@@ -3,13 +3,12 @@
 #include "sodipodi.h"
 #include "interface.h"
 
-#include "dialogs/object-fill.h"
-#include "dialogs/object-stroke.h"
 #include "dialogs/text-edit.h"
 #include "dialogs/export.h"
 #include "dialogs/xml-tree.h"
 #include "dialogs/align.h"
 #include "dialogs/transformation.h"
+#include "dialogs/object-properties.h"
 #include "dialogs/desktop-properties.h"
 #include "dialogs/document-properties.h"
 
