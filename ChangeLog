@@ -1,3 +1,23 @@
+2003-12-23  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/event-context.c (menu_position_handler): New function
+	(sp_event_root_menu_popup): Make menu popup easy and usable
+	
+	* src/sp-text.c: Full support for SP_TEXT_NEW_CONTENT, we can handle
+	text object as UCS string/NRPGL glyph string
+	(sp_repr_set_content_ucs2): New function
+
+	* src/sp-text.h (SPStirng::pgl): New stuff
+
+	* src/libarikkei/arikkei-strlib.c (arikkei_ucs2_strncpy): New
+	function
+
+	* src/libarikkei/arikkei-strlib.h: Ditto
+
+	* src/libnrtype/nr-glyphs.c (nr_pgl_set_origin): New method
+
+	* src/libnrtype/nr-glyphs.h: Ditto
+
 2003-12-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/api.h: New file

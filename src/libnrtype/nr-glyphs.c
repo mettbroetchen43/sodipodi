@@ -64,3 +64,21 @@ nr_pgl_free (NRPGL *pgl)
 	return NULL;
 }
 
+/* thinkme: if we support fractional glyph placement */
+void
+nr_pgl_set_origin (NRPGL *pgl, float x, float y)
+{
+	float dx, dy;
+	unsigned int i;
+
+	dx = x - pgl->origin.x;
+	dy = y - pgl->origin.y;
+
+	for (i = 0; i <= pgl->length; i++) {
+		pgl->glyphs[i].x += dx;
+		pgl->glyphs[i].y += dy;
+	}
+
+	pgl->origin.x = x;
+	pgl->origin.y = y;
+}

@@ -33,6 +33,7 @@
 #include <libnrtype/nr-type-directory.h>
 #include <libnrtype/nr-font.h>
 #include <libnrtype/nr-glyphs.h>
+#include <libarikkei/arikkei-strlib.h>
 
 #include "helper/sp-intl.h"
 #include "xml/repr-private.h"
@@ -46,6 +47,22 @@
 #include "sp-root.h"
 
 #include "sp-text.h"
+
+/* fixme: */
+unsigned int
+sp_repr_set_content_ucs2 (SPRepr *repr, const NRUShort *newcontent)
+{
+	char *utf8;
+	unsigned int retval;
+
+	utf8 = g_utf16_to_utf8 (newcontent, -1, NULL, NULL, NULL);
+
+	retval = sp_repr_set_content (repr, utf8);
+
+	g_free (utf8);
+
+	return retval;
+}
 
 static guchar *sp_text_font_style_to_lookup (SPStyle *style);
 
@@ -129,11 +146,11 @@ sp_string_release (SPObject *object)
 
 	string = SP_STRING (object);
 
-	if (string->text) g_free (string->text);
-
 #ifdef SP_TEXT_NEW_CONTENT
 	if (string->uchars) nr_free (string->uchars);
+	if (string->pgl) nr_pgl_free (string->pgl);
 #else
+	if (string->text) g_free (string->text);
 	if (string->p) g_free (string->p);
 #endif
 
@@ -151,28 +168,31 @@ sp_string_read_content (SPObject *object)
 
 	string = SP_STRING (object);
 
-#ifndef SP_TEXT_NEW_CONTENT
+#ifdef SP_TEXT_NEW_CONTENT
+	t = sp_repr_content (object->repr);
+#else
 	if (string->p) g_free (string->p);
 	string->p = NULL;
-#endif
+
 	if (string->text) g_free (string->text);
 	t = sp_repr_content (object->repr);
 	string->text = (t) ? g_strdup (t) : NULL;
+#endif
 
 #ifdef SP_TEXT_NEW_CONTENT
 	/* New content stuff */
 	if (string->uchars) free (string->uchars);
 	string->uchars = NULL;
 	string->ulen = 0;
-	if (string->text) {
-		unsigned char *p;
+	if (t) {
+		const unsigned char *p;
 		unsigned int unival;
 		unsigned int preserve, inspace, intext;
 		int pos;
 		preserve = (((SPObject*)string)->xml_space.value == SP_XML_SPACE_PRESERVE);
 		inspace = FALSE;
 		intext = FALSE;
-		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
+		for (p = t; p && *p; p = g_utf8_next_char (p)) {
 			unival = g_utf8_get_char (p);
 			if (g_unichar_isspace (unival)) {
 				if (preserve) string->ulen += 1;
@@ -186,13 +206,13 @@ sp_string_read_content (SPObject *object)
 				intext = TRUE;
 			}
 		}
-		string->uchars = nr_new (NRUShort, string->ulen);
+		string->uchars = nr_new (NRUShort, string->ulen + 1);
 		string->spstart = FALSE;
 		string->spend = FALSE;
 		inspace = FALSE;
 		intext = FALSE;
 		pos = 0;
-		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
+		for (p = t; p && *p; p = g_utf8_next_char (p)) {
 			unival = g_utf8_get_char (p);
 			if (g_unichar_isspace (unival)) {
 				if (preserve) string->uchars[pos++] = unival;
@@ -207,6 +227,7 @@ sp_string_read_content (SPObject *object)
 				intext = TRUE;
 			}
 		}
+		string->uchars[pos] = 0;
 		string->spend = inspace;
 	}
 #endif
@@ -242,7 +263,6 @@ sp_string_calculate_dimensions (SPString *string)
 	gdouble size;
 	unsigned int metrics;
 #ifdef SP_TEXT_NEW_CONTENT
-	NRPGL *pgl;
 	NRMatrixF gtr;
 #else
 	gint spglyph;
@@ -268,11 +288,11 @@ sp_string_calculate_dimensions (SPString *string)
 #ifdef SP_TEXT_NEW_CONTENT
 	/* fixme: SPChars should do this upright instead */
 	nr_matrix_f_set_scale (&gtr, 1.0, -1.0);
-	pgl = nr_pgl_new_from_string (string->uchars, string->ulen, font, &gtr);
+	if (string->pgl) nr_pgl_free (string->pgl);
 
-	string->bbox = pgl->area;
-	string->advance = pgl->advance;
-	nr_pgl_free (pgl);
+	string->pgl = nr_pgl_new_from_string (string->uchars, string->ulen, font, &gtr);
+	string->bbox = string->pgl->area;
+	string->advance = string->pgl->advance;
 
 #else
 	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
@@ -350,24 +370,25 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 {
 	SPChars *chars;
 	SPStyle *style;
+	const guchar *p;
+	gint len;
+	NRMatrixF a;
+	gdouble x, y;
+#ifdef SP_TEXT_NEW_CONTENT
+	gint i;
+#else
 	NRTypeFace *face;
 	NRFont *font;
 	gdouble size;
-	gdouble x, y;
-	NRMatrixF a;
-	const guchar *p;
-	gboolean preserve;
-	gboolean inspace;
-	gboolean intext;
-	gint len, pos;
-	unsigned int metrics;
-#ifdef SP_TEXT_NEW_CONTENT
-	NRPGL *pgl;
-	NRMatrixF gtr;
-	gint i;
-#else
+	guint metrics;
+	gint pos;
+	ArtDRect bbox;
+	NRPointF adv;
 	gint spglyph;
 	NRPointF spadv;
+	gboolean preserve;
+	gboolean intext;
+	gboolean inspace;
 #endif
 
 	chars = SP_CHARS (string);
@@ -375,14 +396,43 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 
 	sp_chars_clear (chars);
 
+#ifdef SP_TEXT_NEW_CONTENT
+	if (!string->uchars || !*string->uchars) return;
+	len = arikkei_ucs2_strlen (string->uchars);
+	if (!len) return;
+#else
 	if (!string->text || !*string->text) return;
 	len = g_utf8_strlen (string->text, -1);
 	if (!len) return;
-#ifndef SP_TEXT_NEW_CONTENT
 	if (string->p) g_free (string->p);
 	string->p = g_new (NRPointF, len + 1);
 #endif
 
+#ifdef SP_TEXT_NEW_CONTENT
+	/* fixme: Find a way how to manipulate these */
+	x = cp->x;
+	y = cp->y;
+
+	/* fixme: SPChars should do this upright instead */
+	nr_matrix_f_set_scale (&a, 1.0, -1.0);
+
+	g_assert (string->pgl);
+	nr_pgl_set_origin (string->pgl, x, y);
+
+	for (i = 0; i < string->pgl->length; i++) {
+		NRFont *font;
+		NRPosGlyph *pglyph;
+
+		/* fixme: we should use rasterfont instead */
+		font = string->pgl->rfont->font;
+		pglyph = &string->pgl->glyphs[i];
+		a.c[4] = pglyph->x;
+		a.c[5] = pglyph->y;
+
+		sp_chars_add_element (chars, pglyph->glyph, font, &a);
+	}
+
+#else
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
 	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
@@ -393,33 +443,6 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	}
 	font = nr_font_new_default (face, metrics, size);
 
-#ifdef SP_TEXT_NEW_CONTENT
-	/* fixme: SPChars should do this upright instead */
-	nr_matrix_f_set_scale (&gtr, 1.0, -1.0);
-	pgl = nr_pgl_new_from_string (string->uchars, string->ulen, font, &gtr);
-
-	/* fixme: Find a way how to manipulate these */
-	x = cp->x;
-	y = cp->y;
-
-	/* fixme: SPChars should do this upright instead */
-	nr_matrix_f_set_scale (&a, 1.0, -1.0);
-
-	for (i = 0; i < string->ulen; i++) {
-		NRFont *font;
-		NRPosGlyph *pglyph;
-
-		/* fixme: we should use rasterfont instead */
-		font = pgl->rfont->font;
-		pglyph = &pgl->glyphs[i];
-		a.c[4] = x + pglyph->x;
-		a.c[5] = y + pglyph->y;
-
-		sp_chars_add_element (chars, pglyph->glyph, font, &a);
-	}
-
-	nr_pgl_free (pgl);
-#else
 	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		spadv.x = 0.0;
 		spadv.y = size;
@@ -496,9 +519,10 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	cp->y = y;
 
 	if (pinspace) *pinspace = inspace;
-#endif
+
 	nr_font_unref (font);
 	nr_typeface_unref (face);
+#endif
 }
 
 /* SPTSpan */
@@ -804,12 +828,24 @@ sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 
 	if (flags & SP_OBJECT_WRITE_BUILD) {
 		SPRepr *rstr;
+#ifdef SP_TEXT_NEW_CONTENT
+		char *text;
+		text = g_utf16_to_utf8 (SP_STRING_UCHARS (tspan->string), -1, NULL, NULL, NULL);
+		/* TEXT element */
+		rstr = sp_xml_document_createTextNode (sp_repr_get_doc (repr), text);
+		g_free (text);
+#else
 		/* TEXT element */
 		rstr = sp_xml_document_createTextNode (sp_repr_get_doc (repr), SP_STRING_TEXT (tspan->string));
+#endif
 		sp_repr_append_child (repr, rstr);
 		sp_repr_unref (rstr);
 	} else {
+#ifdef SP_TEXT_NEW_CONTENT
+		sp_repr_set_content_ucs2 (SP_OBJECT_REPR (tspan->string), SP_STRING_UCHARS (tspan->string));
+#else
 		sp_repr_set_content (SP_OBJECT_REPR (tspan->string), SP_STRING_TEXT (tspan->string));
+#endif
 	}
 
 	/* fixme: Strictly speaking, item class write 'transform' too */
@@ -1342,7 +1378,14 @@ sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 				crepr = sp_object_invoke_write (child, NULL, flags);
 				if (crepr) l = g_slist_prepend (l, crepr);
 			} else {
+#ifdef SP_TEXT_NEW_CONTENT
+				char *text;
+				text = g_utf16_to_utf8 (SP_STRING_UCHARS (child), -1, NULL, NULL, NULL);
+				crepr = sp_xml_document_createTextNode (sp_repr_get_doc (repr), text);
+				g_free (text);
+#else
 				crepr = sp_xml_document_createTextNode (sp_repr_get_doc (repr), SP_STRING_TEXT (child));
+#endif
 			}
 		}
 		while (l) {
@@ -1355,7 +1398,11 @@ sp_text_write (SPObject *object, SPRepr *repr, guint flags)
 			if (SP_IS_TSPAN (child)) {
 				sp_object_invoke_write (child, SP_OBJECT_REPR (child), flags);
 			} else {
+#ifdef SP_TEXT_NEW_CONTENT
+				sp_repr_set_content_ucs2 (SP_OBJECT_REPR (child), SP_STRING_UCHARS (child));
+#else
 				sp_repr_set_content (SP_OBJECT_REPR (child), SP_STRING_TEXT (child));
+#endif
 			}
 		}
 	}
@@ -1786,6 +1833,16 @@ sp_text_is_empty (SPText *text)
 
 	for (ch = ((SPObject *) text)->children; ch != NULL; ch = ch->next) {
 		SPString *str;
+#ifdef SP_TEXT_NEW_CONTENT
+		NRUShort *p;
+		str = SP_TEXT_CHILD_STRING (ch);
+		for (p = str->uchars; p && *p; p++) {
+			gunichar unival;
+			unival = (gunichar)*p;
+			if ((unival > 0xe000) && (unival <= 0xf8ff)) return FALSE;
+			if (g_unichar_isgraph (unival)) return FALSE;
+		}
+#else
 		unsigned char *p;
 		str = SP_TEXT_CHILD_STRING (ch);
 		for (p = str->text; p && *p; p = g_utf8_next_char (p)) {
@@ -1794,6 +1851,7 @@ sp_text_is_empty (SPText *text)
 			if ((unival > 0xe000) && (unival <= 0xf8ff)) return FALSE;
 			if (g_unichar_isgraph (unival)) return FALSE;
 		}
+#endif
 	}
 
 	return TRUE;
@@ -1812,11 +1870,24 @@ sp_text_get_string_multiline (SPText *text)
 		if (SP_IS_TSPAN (ch)) {
 			SPTSpan *tspan;
 			tspan = SP_TSPAN (ch);
+#ifdef SP_TEXT_NEW_CONTENT
+			if (tspan->string && SP_STRING_UCHARS (tspan->string)) {
+				char *text;
+				/* Memory allocated, it should be freed later */
+				text = g_utf16_to_utf8 (SP_STRING_UCHARS (tspan->string), -1, NULL, NULL, NULL);
+				strs = g_slist_prepend (strs, text);
+			}
+		} else if (SP_IS_STRING (ch) && SP_STRING_UCHARS (ch)) {
+			char *text;
+			text = g_utf16_to_utf8 (SP_STRING_UCHARS (ch), -1, NULL, NULL, NULL);
+			strs = g_slist_prepend (strs, text);
+#else
 			if (tspan->string && SP_STRING (tspan->string)->text) {
 				strs = g_slist_prepend (strs, SP_STRING (tspan->string)->text);
 			}
 		} else if (SP_IS_STRING (ch) && SP_STRING (ch)->text) {
 			strs = g_slist_prepend (strs, SP_STRING (ch)->text);
+#endif
 		} else {
 			continue;
 		}
@@ -1837,6 +1908,10 @@ sp_text_get_string_multiline (SPText *text)
 	while (strs) {
 		memcpy (p, strs->data, strlen (strs->data));
 		p += strlen (strs->data);
+#ifdef SP_TEXT_NEW_CONTENT
+		/* Free utf8 string */
+		g_free (strs->data);
+#endif
 		strs = g_slist_remove (strs, strs->data);
 		if (strs) *p++ = '\n';
 	}
@@ -1955,8 +2030,13 @@ sp_text_update_immediate_state (SPText *text)
 			string = SP_STRING (child);
 		}
 		string->start = start;
+#ifdef SP_TEXT_NEW_CONTENT
+		string->ulen = (string->uchars) ? arikkei_ucs2_strlen (string->uchars) : 0;
+		start += string->ulen;
+#else
 		string->length = (string->text) ? g_utf8_strlen (string->text, -1) : 0;
 		start += string->length;
+#endif
 		/* Count newlines as well */
 		if (child->next) start += 1;
 	}
@@ -1992,7 +2072,11 @@ sp_text_get_length (SPText *text)
 		string = SP_TSPAN_STRING (child);
 	}
 
+#ifdef SP_TEXT_NEW_CONTENT
+	return string->start + string->ulen;
+#else
 	return string->start + string->length;
+#endif
 }
 
 SPTSpan *
@@ -2052,7 +2136,6 @@ sp_text_insert_line (SPText *text, gint pos)
 	SPObject *child;
 	SPString *string;
 	SPRepr *rtspan, *rstring;
-	guchar *ip;
 
 	g_return_val_if_fail (text != NULL, NULL);
 	g_return_val_if_fail (SP_IS_TEXT (text), NULL);
@@ -2072,12 +2155,23 @@ sp_text_insert_line (SPText *text, gint pos)
 	sp_repr_add_child (SP_OBJECT_REPR (text), rtspan, SP_OBJECT_REPR (child));
 	sp_repr_unref (rtspan);
 
+#ifdef SP_TEXT_NEW_CONTENT
+	if (string->uchars) {
+		NRUShort *ip;
+		ip = string->uchars + (pos - string->start);
+		sp_repr_set_content_ucs2 (rstring, ip);
+		*ip = '\0';
+		sp_repr_set_content_ucs2 (SP_OBJECT_REPR (string), string->uchars);
+	}
+#else
 	if (string->text) {
+		guchar *ip;
 		ip = g_utf8_offset_to_pointer (string->text, pos - string->start);
 		sp_repr_set_content (rstring, ip);
 		*ip = '\0';
 		sp_repr_set_content (SP_OBJECT_REPR (string), string->text);
 	}
+#endif
 
 	return (SPTSpan *) sp_document_lookup_id (SP_OBJECT_DOCUMENT (text), sp_repr_attr (rtspan, "id"));
 }
@@ -2151,7 +2245,11 @@ sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 {
 	SPObject *child;
 	SPString *string;
+#ifdef SP_TEXT_NEW_CONTENT
+	NRUShort *ucs2, *new, *ip;
+#else
 	guchar *new, *ip;
+#endif
 	int slen, ulen, i;
 
 	g_return_val_if_fail (text != NULL, -1);
@@ -2165,6 +2263,34 @@ sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 	if (!child) return sp_text_append (text, utf8);
 	string = SP_TEXT_CHILD_STRING (child);
 
+#ifdef SP_TEXT_NEW_CONTENT
+	ip = string->uchars + (pos - string->start);
+	/* fixme: Do it the right way (Lauris) */
+	if (!preservews && !strcmp (utf8, " ") && (ip > string->uchars) && *(ip - 1) == (NRUShort)' ') {
+		return pos;
+	}
+
+	slen = ip - string->uchars;
+	ulen = g_utf8_strlen (utf8, -1);
+	ucs2 = g_utf8_to_utf16 (utf8, -1, NULL, NULL, NULL);
+	new = g_new (NRUShort, arikkei_ucs2_strlen (string->uchars) + ulen + 1);
+
+	/* Copy start */
+	arikkei_ucs2_strncpy (string->uchars, new, slen);
+	/* Copy string */
+	arikkei_ucs2_strncpy (ucs2, new + slen, ulen);
+	for (i = slen; i < slen + ulen; i++) {
+		if ((new[i] < 32) && ((new[i] != 9) && (new[i] != 10) && (new[i] != 13))) new[i] = 32;
+	}
+	/* Copy end */
+	arikkei_ucs2_strncpy (ip, new + slen + ulen, -1);
+
+	sp_repr_set_content_ucs2 (SP_OBJECT_REPR (string), new);
+	g_free (new);
+	g_free (ucs2);
+
+	return pos + ulen;
+#else
 	ip = g_utf8_offset_to_pointer (string->text, pos - string->start);
 	/* fixme: Do it the right way (Lauris) */
 	if (!preservews && !strcmp (utf8, " ") && (ip > string->text) && *(ip - 1) == ' ') {
@@ -2174,6 +2300,7 @@ sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 	slen = ip - string->text;
 	ulen = strlen (utf8);
 	new = g_new (guchar, strlen (string->text) + ulen + 1);
+
 	/* Copy start */
 	memcpy (new, string->text, slen);
 	/* Copy string */
@@ -2187,6 +2314,7 @@ sp_text_insert (SPText *text, gint pos, const guchar *utf8, gboolean preservews)
 	g_free (new);
 
 	return pos + g_utf8_strlen (utf8, -1);
+#endif
 }
 
 /* Returns start position */
@@ -2210,11 +2338,24 @@ sp_text_delete (SPText *text, gint start, gint end)
 	if (schild != echild) {
 		SPString *sstring, *estring;
 		SPObject *child;
+#ifdef SP_TEXT_NEW_CONTENT
+		NRUShort *ucs2, *sp, *ep;
+#else
 		guchar *utf8, *sp, *ep;
+#endif
 		GSList *cl;
 		/* Easy case */
 		sstring = SP_TEXT_CHILD_STRING (schild);
 		estring = SP_TEXT_CHILD_STRING (echild);
+#ifdef SP_TEXT_NEW_CONTENT
+		sp = sstring->uchars + (start - sstring->start);
+		ep = estring->uchars + (end - estring->start);
+		ucs2 = g_new (NRUShort, (sp - sstring->uchars) + arikkei_ucs2_strlen (ep) + 1);
+		if (sp > sstring->uchars) arikkei_ucs2_strncpy (sstring->uchars, ucs2, sp - sstring->uchars);
+		arikkei_ucs2_strncpy (ep, ucs2 + (sp - sstring->uchars), arikkei_ucs2_strlen (ep) + 1);
+		sp_repr_set_content_ucs2 (SP_OBJECT_REPR (sstring), ucs2);
+		g_free (ucs2);
+#else
 		sp = g_utf8_offset_to_pointer (sstring->text, start - sstring->start);
 		ep = g_utf8_offset_to_pointer (estring->text, end - estring->start);
 		utf8 = g_new (guchar, (sp - sstring->text) + strlen (ep) + 1);
@@ -2222,6 +2363,7 @@ sp_text_delete (SPText *text, gint start, gint end)
 		memcpy (utf8 + (sp - sstring->text), ep, strlen (ep) + 1);
 		sp_repr_set_content (SP_OBJECT_REPR (sstring), utf8);
 		g_free (utf8);
+#endif
 		/* Delete nodes */
 		cl = NULL;
 		for (child = schild->next; child != echild; child = child->next) {
@@ -2234,13 +2376,24 @@ sp_text_delete (SPText *text, gint start, gint end)
 		}
 	} else {
 		SPString *string;
+#ifdef SP_TEXT_NEW_CONTENT
+		NRUShort *sp, *ep;
+#else
 		gchar *sp, *ep;
+#endif
 		/* Easy case */
 		string = SP_TEXT_CHILD_STRING (schild);
+#ifdef SP_TEXT_NEW_CONTENT
+		sp = string->uchars + (start - string->start);
+		ep = string->uchars + (end - string->start);
+		memmove (sp, ep, sizeof(NRUShort) * (arikkei_ucs2_strlen (ep) + 1));
+		sp_repr_set_content_ucs2 (SP_OBJECT_REPR (string), string->uchars);
+#else
 		sp = g_utf8_offset_to_pointer (string->text, start - string->start);
 		ep = g_utf8_offset_to_pointer (string->text, end - string->start);
 		memmove (sp, ep, strlen (ep) + 1);
 		sp_repr_set_content (SP_OBJECT_REPR (string), string->text);
+#endif
 	}
 
 	return start;
@@ -2263,7 +2416,11 @@ sp_text_up (SPText *text, gint pos)
 	up = ((SPObject *) text)->children;
 	while (up->next != child) up = up->next;
 	string = SP_TEXT_CHILD_STRING (up);
+#ifdef SP_TEXT_NEW_CONTENT
+	col = MIN (col, string->ulen);
+#else
 	col = MIN (col, string->length);
+#endif
 
 	return string->start + col;
 }
@@ -2282,7 +2439,11 @@ sp_text_down (SPText *text, gint pos)
 
 	child = child->next;
 	string = SP_TEXT_CHILD_STRING (child);
+#ifdef SP_TEXT_NEW_CONTENT
+	col = MIN (col, string->ulen);
+#else
 	col = MIN (col, string->length);
+#endif
 
 	return string->start + col;
 }
@@ -2310,60 +2471,32 @@ sp_text_end_of_line (SPText *text, gint pos)
 	if (!child) return sp_text_get_length (text);
 	string = SP_TEXT_CHILD_STRING (child);
 
+#ifdef SP_TEXT_NEW_CONTENT
+	return string->start + string->ulen;
+#else
 	return string->start + string->length;
+#endif
 }
 
 void
 sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *p1)
 {
+#ifdef SP_TEXT_NEW_CONTENT
 	SPObject *child;
 	SPString *string;
 	gfloat x, y;
-#ifdef SP_TEXT_NEW_CONTENT
-	NRPGL *pgl;
-	NRMatrixF gtr;
-	SPStyle *style;
-	NRTypeFace *face;
-	NRFont     *font;
-	gdouble     size;
-	guint       metrics;
-#endif
+	NRRasterFont *rfont;
+	NRPosGlyph *pglyph;
+	NRRectF area;
+	NRPointF adv;
 
 	child = sp_text_get_child_by_position (text, position);
 	string = SP_TEXT_CHILD_STRING (child);
 
-#ifdef SP_TEXT_NEW_CONTENT
-	/* fixme: */
-	style = SP_OBJECT_STYLE (SP_OBJECT_PARENT (string));
-	size = style->font_size.computed;
-	face = nr_type_directory_lookup_fuzzy (style->text->font_family.value, sp_text_font_style_to_lookup (style));
-	if (style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
-		metrics = NR_TYPEFACE_METRICS_VERTICAL;
-	} else {
-		metrics = NR_TYPEFACE_METRICS_HORIZONTAL;
-	}
-	font = nr_font_new_default (face, metrics, size);
-
-	nr_matrix_f_set_scale (&gtr, 1.0, -1.0);
-	gtr.c[4] = string->ly->x.computed;
-	gtr.c[5] = string->ly->y.computed;
-
-	pgl = nr_pgl_new_from_string (string->uchars, string->ulen, font, &gtr);
-	x = pgl->glyphs[position - string->start].x;
-	y = pgl->glyphs[position - string->start].y;
-
-	nr_pgl_free (pgl);
-	nr_font_unref (font);
-	nr_typeface_unref (face);
-#else
-	if (!string->p) {
-		x = string->ly->x.computed;
-		y = string->ly->y.computed;
-	} else {
-		x = string->p[position - string->start].x;
-		y = string->p[position - string->start].y;
-	}
-#endif
+	rfont = string->pgl->rfont;
+	pglyph = &string->pgl->glyphs[position - string->start];
+	x = pglyph->x;
+	y = pglyph->y;
 
 	if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		p0->x = x - child->style->font_size.computed / 2.0;
@@ -2376,6 +2509,37 @@ sp_text_get_cursor_coords (SPText *text, gint position, ArtPoint *p0, ArtPoint *
 		p1->x = x;
 		p1->y = y;
 	}
+
+#else  /* !SP_TEXT_NEW_CONTENT */
+	SPObject *child;
+	SPString *string;
+	gfloat x, y;
+	guint pos;
+
+	child = sp_text_get_child_by_position (text, position);
+	string = SP_TEXT_CHILD_STRING (child);
+	pos = position - string->start;
+
+	if (!string->p) {
+		x = string->ly->x.computed;
+		y = string->ly->y.computed;
+	} else {
+		x = string->p[pos].x;
+		y = string->p[pos].y;
+	}
+
+	if (child->style->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		p0->x = x - child->style->font_size.computed / 2.0;
+		p0->y = y;
+		p1->x = x + child->style->font_size.computed / 2.0;
+		p1->y = y;
+	} else {
+		p0->x = x;
+		p0->y = y - child->style->font_size.computed;
+		p1->x = x;
+		p1->y = y;
+	}
+#endif /* ! SP_TEXT_NEW_CONTENT */
 }
 
 static SPObject *
@@ -2390,7 +2554,11 @@ sp_text_get_child_by_position (SPText *text, gint pos)
 		} else {
 			string = SP_TSPAN_STRING (child);
 		}
+#ifdef SP_TEXT_NEW_CONTENT
+		if (pos <= (string->start + string->ulen)) return child;
+#else
 		if (pos <= (string->start + string->length)) return child;
+#endif
 	}
 
 	return child;

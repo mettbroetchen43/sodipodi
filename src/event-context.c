@@ -536,6 +536,13 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 	sp_desktop_set_coordinate_status (desktop, p.x, p.y, 0);
 }
 
+static void
+menu_position_handler (GtkMenu *menu, gint *x, gint *y, gboolean *push_in, gpointer user_data)
+{
+	*x += 1;
+	*y += 1;
+}
+
 void
 sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 {
@@ -550,7 +557,7 @@ sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event)
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-		gtk_menu_popup (GTK_MENU (menu), NULL, NULL, 0, NULL, event->button.button, event->button.time);
+		gtk_menu_popup (GTK_MENU (menu), NULL, NULL, menu_position_handler, NULL, event->button.button, event->button.time);
 		break;
 	case GDK_KEY_PRESS:
 		gtk_menu_popup (GTK_MENU (menu), NULL, NULL, 0, NULL, 0, event->key.time);

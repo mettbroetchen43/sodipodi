@@ -44,6 +44,7 @@ G_BEGIN_DECLS
 #define SP_TSPAN_STRING(t) ((SPString *) SP_TSPAN (t)->string)
 
 #include <libnr/nr-types.h>
+#include <libnrtype/nr-glyphs.h>
 #include "svg/svg-types.h"
 #include "sp-chars.h"
 
@@ -72,22 +73,23 @@ struct _SPString {
 	SPChars chars;
 	/* Link to parent layout */
 	SPLayoutData *ly;
-	/* Content */
-	guchar *text;
 
 #ifdef SP_TEXT_NEW_CONTENT
 	/* New content stuff */
 	NRUShort *uchars;
 	unsigned int ulen;
+	NRPGL *pgl;
 	unsigned int spstart : 1;
 	unsigned int spend : 1;
 #else
+	/* Content */
+	guchar *text;
+	guint length;
 	NRPointF *p;
 #endif
 
 	/* Bookkeeping */
 	guint start;
-	guint length;
 	/* Using current direction and style */
 	NRRectF bbox;
 	NRPointF advance;
@@ -98,6 +100,7 @@ struct _SPStringClass {
 };
 
 #define SP_STRING_TEXT(s) (SP_STRING (s)->text)
+#define SP_STRING_UCHARS(s) (SP_STRING (s)->uchars)
 
 GType sp_string_get_type (void);
 
