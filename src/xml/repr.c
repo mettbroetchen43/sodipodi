@@ -506,8 +506,10 @@ sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr)
 SPReprDoc *
 sp_repr_document (SPRepr * repr)
 {
-	g_warning ("sp_repr_document not implemented");
-	return NULL;
+	/* fixme: */
+	while (repr->parent) repr = repr->parent;
+
+	return (SPReprDoc *) repr;
 }
 
 SPRepr *

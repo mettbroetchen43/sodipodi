@@ -5,6 +5,10 @@
 #include "sp-item.h"
 #include "document-private.h"
 
+/* fixme: Implement in preferences */
+
+#define MAX_UNDO 128
+
 /*
  * Undo & redo
  */
@@ -30,6 +34,12 @@ sp_document_done (SPDocument * document)
 	if (document->private->actions == NULL) return;
 
 	g_assert (document->private->redo == NULL);
+
+	if (g_slist_length (document->private->undo) >= MAX_UNDO) {
+		GSList * last;
+		last = g_slist_last (document->private->undo);
+		document->private->undo = g_slist_remove (document->private->undo, last);
+	}
 
 	document->private->undo = g_slist_prepend (document->private->undo, document->private->actions);
 	document->private->actions = NULL;

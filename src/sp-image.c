@@ -295,7 +295,7 @@ sp_image_repr_read_image (SPRepr * repr)
 	if (filename != NULL) {
 		if (!g_path_is_absolute (filename)) {
 			/* try to load from relative pos */
-			docbase = sp_repr_doc_attr (repr, "sodipodi:docbase");
+			docbase = sp_repr_attr (sp_repr_document_root (sp_repr_document (repr)), "sodipodi:docbase");
 			if (docbase != NULL) {
 				fullname = g_strconcat (docbase, filename, NULL);
 				pixbuf = gdk_pixbuf_new_from_file (fullname);

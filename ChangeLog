@@ -1,3 +1,23 @@
+2000-10-07  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/desktop.c (sp_desktop_realize): Zoom to page on first display
+
+	* src/document-undo.c (sp_document_done): Limit undo to 128 levels
+
+	* src/document.c (sp_document_new): Set docbase & docname before
+	creating object tree
+
+	* src/sp-image.c (sp_image_repr_read_image): Find right root repr
+
+	* src/sp-shape.c (sp_shape_paint): Use right stroke width
+
+	* src/dialogs/export.c (sp_export_do_export): use ::paint() method
+
+	* src/xml/repr-io.c (sp_repr_svg_read_node): Return on comment and text
+	nodes
+
+	* src/xml/repr.c (sp_repr_document): Implement
+
 2000-10-06  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* glade/document.glade: Page setup dialog

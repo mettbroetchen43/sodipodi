@@ -1,6 +1,7 @@
 #define SP_SHAPE_C
 
 #include <config.h>
+#include <math.h>
 #include <gnome.h>
 
 #include <libart_lgpl/art_misc.h>
@@ -352,10 +353,17 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 			}
 
 			if (shape->stroke->type == SP_STROKE_COLOR) {
+				gdouble width, wx, wy;
+				width = shape->stroke->width;
+				if (shape->stroke->scaled) {
+					wx = affine[0] + affine[1];
+					wy = affine[2] + affine[3];
+					width *= hypot (wx, wy) / 1.414213562;
+				}
 				svp = art_svp_vpath_stroke (vp,
 					shape->stroke->join,
 					shape->stroke->cap,
-					shape->stroke->width,
+					width,
 					4, 0.25);
 				if (buf->n_channels == 3) {
 					art_rgb_svp_alpha (svp,

@@ -11,6 +11,10 @@
 #include "export.h"
 
 #ifdef ENABLE_RBUF
+#undef ENABLE_RBUF
+#endif
+
+#ifdef ENABLE_RBUF
 #include <libgnomeprint/gnome-print-pixbuf.h>
 #endif
 

@@ -162,12 +162,6 @@ sp_document_new (const gchar * uri)
 	document->private->rdoc = rdoc;
 	document->private->rroot = rroot;
 
-	object = sp_object_repr_build_tree (document, rroot);
-	g_return_val_if_fail (object != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ROOT (object), NULL);
-
-	document->private->root = SP_ROOT (object);
-
 	if (uri != NULL) {
 		b = g_strdup (uri);
 		g_return_val_if_fail (b != NULL, NULL);
@@ -181,6 +175,12 @@ sp_document_new (const gchar * uri)
 		sp_repr_set_attr (rroot, "sodipodi:docname", uri);
 		sp_repr_set_attr (rroot, "sodipodi:docbase", document->private->base);
 	}
+
+	object = sp_object_repr_build_tree (document, rroot);
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ROOT (object), NULL);
+
+	document->private->root = SP_ROOT (object);
 
 	/* Namedviews */
 

@@ -30,6 +30,8 @@ static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_destroy (GtkObject * object);
 
+static void sp_desktop_realize (GtkWidget * widget);
+
 static void sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop);
 static void sp_desktop_set_viewport (SPDesktop * desktop, double x, double y);
 
@@ -80,6 +82,8 @@ sp_desktop_class_init (SPDesktopClass * klass)
 	widget_class = (GtkWidgetClass *) klass;
 
 	object_class->destroy = sp_desktop_destroy;
+
+	widget_class->realize = sp_desktop_realize;
 
 	widget_class->enter_notify_event = sp_desktop_enter_notify;
 #if 0
@@ -255,6 +259,27 @@ sp_desktop_destroy (GtkObject * object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_desktop_realize (GtkWidget * widget)
+{
+	SPDesktop * dt;
+	ArtDRect d;
+
+	dt = SP_DESKTOP (widget);
+
+	if (GTK_WIDGET_CLASS (parent_class)->realize)
+		(* GTK_WIDGET_CLASS (parent_class)->realize) (widget);
+
+	d.x0 = 0.0;
+	d.y0 = 0.0;
+	d.x1 = sp_document_width (dt->document);
+	d.y1 = sp_document_height (dt->document);
+
+	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
+
+	sp_desktop_show_region (dt, d.x0 - 20.0, d.y0 - 20.0, d.x1 + 20.0, d.y1 + 20.0);
 }
 
 /* Constructor */

@@ -78,6 +78,9 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 
 	g_return_val_if_fail (node != NULL, NULL);
 
+	if (node->type == XML_TEXT_NODE) return NULL;
+	if (node->type == XML_COMMENT_NODE) return NULL;
+
 	g_snprintf (c, 256, node->name);
 	if (node->ns != NULL) {
 	if (node->ns->prefix != NULL) {
@@ -107,6 +110,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 		sp_repr_set_content (repr, node->content);
 
 	child = node->childs;
+#if 1
 	if ((child != NULL) &&
 		(strcmp (child->name, node->name) == 0) &&
 		(child->properties == NULL) &&
@@ -115,14 +119,14 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 		sp_repr_set_content (repr, child->content);
 
 	} else {
-
+#endif
 	for (child = node->childs; child != NULL; child = child->next) {
 		crepr = sp_repr_svg_read_node (child);
-		sp_repr_append_child (repr, crepr);
+		if (crepr) sp_repr_append_child (repr, crepr);
 	}
-
+#if 1
 	}
-
+#endif
 	return repr;
 }
 

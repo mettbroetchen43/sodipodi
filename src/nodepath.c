@@ -1075,7 +1075,9 @@ sp_node_adjust_knot (SPPathNode * node, gint which_adjust)
 	me = sp_node_get_side (node, which_adjust);
 	other = sp_node_opposite_side (node, me);
 
+	/* fixme: */
 	if (me->other == NULL) return;
+	if (other->other == NULL) return;
 
 	/* I have line */
 
