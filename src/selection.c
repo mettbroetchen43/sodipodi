@@ -598,7 +598,7 @@ sp_selection_bbox (SPSelection * selection, ArtDRect * bbox)
 
 	for (l = selection->items; l != NULL; l = l-> next) {
 		item = SP_ITEM (l->data);
-		sp_item_bbox (item, &b);
+		sp_item_bbox_desktop (item, &b);
 		if (b.x0 < bbox->x0) bbox->x0 = b.x0;
 		if (b.y0 < bbox->y0) bbox->y0 = b.y0;
 		if (b.x1 > bbox->x1) bbox->x1 = b.x1;

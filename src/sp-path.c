@@ -16,7 +16,7 @@ static void sp_path_destroy (GtkObject *object);
 static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_path_read_attr (SPObject * object, const gchar * key);
 
-static void sp_path_bbox (SPItem * item, ArtDRect * bbox);
+static void sp_path_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 
 static void sp_path_private_remove_comp (SPPath * path, SPPathComp * comp);
 static void sp_path_private_add_comp (SPPath * path, SPPathComp * comp);
@@ -184,11 +184,11 @@ sp_path_private_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 }
 
 static void
-sp_path_bbox (SPItem * item, ArtDRect * bbox)
+sp_path_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
 	SPPath * path;
 	SPPathComp * comp;
-	double affine[6], a[6];
+	double a[6];
 	GSList * l;
 	ArtBpath * abp;
 	ArtVpath * vpath, * vp;
@@ -196,17 +196,13 @@ sp_path_bbox (SPItem * item, ArtDRect * bbox)
 
 	path = SP_PATH (item);
 
-	sp_item_i2d_affine (item, affine);
-
-	bbox->x0 = 1e24;
-	bbox->y0 = 1e24;
-	bbox->x1 = -1e24;
-	bbox->y1 = -1e24;
+	bbox->x0 = bbox->y0 = 1e18;
+	bbox->x1 = bbox->y1 = -1e18;
 	has_bbox = FALSE;
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
-		art_affine_multiply (a, comp->affine, affine);
+		art_affine_multiply (a, comp->affine, transform);
 		abp = art_bpath_affine_transform (comp->curve->bpath, a);
 		vpath = art_bez_path_to_vec (abp, 1);
 		art_free (abp);
@@ -221,10 +217,10 @@ sp_path_bbox (SPItem * item, ArtDRect * bbox)
 	}
 
 	if (!has_bbox) {
-		bbox->x0 = affine[4];
-		bbox->y0 = affine[5];
-		bbox->x1 = affine[4];
-		bbox->y1 = affine[5];
+		bbox->x0 = transform[4];
+		bbox->y0 = transform[5];
+		bbox->x1 = transform[4];
+		bbox->y1 = transform[5];
 	}
 }
 

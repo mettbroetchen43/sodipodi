@@ -17,6 +17,55 @@
 #include <stdio.h>
 #include "repr-private.h"
 
+/* SPXMLDocument */
+
+SPXMLText *
+sp_xml_document_createTextNode (SPXMLDocument *doc, const guchar *data)
+{
+	SPXMLText *text;
+
+	text = sp_repr_new ("text");
+	text->type = SP_XML_TEXT_NODE;
+	sp_repr_set_content (text, data);
+
+	return text;
+}
+
+SPXMLElement *
+sp_xml_document_createElement (SPXMLDocument *doc, const guchar *name)
+{
+	return sp_repr_new (name);
+}
+
+SPXMLElement *
+sp_xml_document_createElementNS (SPXMLDocument *doc, const guchar *ns, const guchar *qname)
+{
+	if (!strncmp (qname, "svg:", 4)) qname += 4;
+
+	return sp_repr_new (qname);
+}
+
+/* SPXMLNode */
+
+SPXMLDocument *
+sp_xml_node_get_Document (SPXMLNode *node)
+{
+	g_warning ("sp_xml_node_get_Document: unimplemented");
+
+	return NULL;
+}
+
+/* SPXMLElement */
+
+void
+sp_xml_element_setAttributeNS (SPXMLElement *element, const guchar *nr, const guchar *qname, const guchar *val)
+{
+	if (!strncmp (qname, "svg:", 4)) qname += 4;
+
+	/* fixme: return value (Exception?) */
+	sp_repr_set_attr (element, qname, val);
+}
+
 gint sp_repr_attr_is_set (SPRepr * repr, const gchar * key)
 {
 	gchar * result;

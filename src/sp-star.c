@@ -37,7 +37,6 @@ static void sp_star_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_star_write_repr (SPObject * object, SPRepr * repr);
 static void sp_star_read_attr (SPObject * object, const gchar * attr);
 
-static void sp_star_bbox (SPItem * item, ArtDRect * bbox);
 static SPKnotHolder *sp_star_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_star_description (SPItem * item);
 static GSList * sp_star_snappoints (SPItem * item, GSList * points);
@@ -93,7 +92,6 @@ sp_star_class_init (SPStarClass *class)
 	sp_object_class->write_repr = sp_star_write_repr;
 	sp_object_class->read_attr = sp_star_read_attr;
 
-	item_class->bbox = sp_star_bbox;
 	item_class->knot_holder = sp_star_knot_holder;
 	item_class->description = sp_star_description;
 	item_class->snappoints = sp_star_snappoints;
@@ -268,13 +266,6 @@ sp_star_set_shape (SPShape *shape)
 	sp_curve_closepath (c);
 	sp_path_add_bpath (SP_PATH (star), c, TRUE, NULL);
 	sp_curve_unref (c);
-}
-
-static void
-sp_star_bbox (SPItem * item, ArtDRect * bbox)
-{
-	if (SP_ITEM_CLASS(parent_class)->bbox)
-		(* SP_ITEM_CLASS(parent_class)->bbox) (item, bbox);
 }
 
 static void

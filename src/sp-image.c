@@ -39,7 +39,7 @@ static void sp_image_destroy (GtkObject * object);
 static void sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_image_read_attr (SPObject * object, const gchar * key);
 
-static void sp_image_bbox (SPItem * item, ArtDRect * bbox);
+static void sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_image_description (SPItem * item);
 static GSList * sp_image_snappoints (SPItem * item, GSList * points);
@@ -215,23 +215,21 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 }
 
 static void
-sp_image_bbox (SPItem *item, ArtDRect *bbox)
+sp_image_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
 	SPImage *image;
 
 	image = SP_IMAGE (item);
 
 	if ((image->width > 0.0) && (image->height > 0.0)) {
-		gdouble a[6];
 		ArtDRect dim;
 
-		sp_item_i2d_affine (item, a);
 		dim.x0 = image->x;
 		dim.y0 = image->y;
 		dim.x1 = image->x + image->width;
 		dim.y1 = image->y + image->height;
 
-		art_drect_affine_transform (bbox, &dim, a);
+		art_drect_affine_transform (bbox, &dim, transform);
 	}
 }
 

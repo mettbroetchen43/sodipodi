@@ -15,7 +15,6 @@ static void sp_polygon_build (SPObject * object, SPDocument * document, SPRepr *
 static void sp_polygon_write_repr (SPObject * object, SPRepr * repr);
 static void sp_polygon_read_attr (SPObject * object, const gchar * attr);
 
-static void sp_polygon_bbox (SPItem * item, ArtDRect * bbox);
 static gchar * sp_polygon_description (SPItem * item);
 
 static SPShapeClass *parent_class;
@@ -62,7 +61,6 @@ sp_polygon_class_init (SPPolygonClass *class)
 	sp_object_class->write_repr = sp_polygon_write_repr;
 	sp_object_class->read_attr = sp_polygon_read_attr;
 
-	item_class->bbox = sp_polygon_bbox;
 	item_class->description = sp_polygon_description;
 }
 
@@ -229,12 +227,3 @@ sp_polygon_description (SPItem * item)
 {
 	return g_strdup ("Polygon");
 }
-
-static void
-sp_polygon_bbox (SPItem * item, ArtDRect * bbox)
-{
-	if (SP_ITEM_CLASS(parent_class)->bbox)
-		(* SP_ITEM_CLASS(parent_class)->bbox) (item, bbox);
-}
-
-

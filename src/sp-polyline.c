@@ -14,7 +14,6 @@ static void sp_polyline_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
 static void sp_polyline_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_polyline_read_attr (SPObject * object, const gchar * attr);
 
-static void sp_polyline_bbox (SPItem * item, ArtDRect * bbox);
 static gchar * sp_polyline_description (SPItem * item);
 
 static SPShapeClass *parent_class;
@@ -60,7 +59,6 @@ sp_polyline_class_init (SPPolyLineClass *class)
 	sp_object_class->build = sp_polyline_build;
 	sp_object_class->read_attr = sp_polyline_read_attr;
 
-	item_class->bbox = sp_polyline_bbox;
 	item_class->description = sp_polyline_description;
 }
 
@@ -163,12 +161,4 @@ sp_polyline_description (SPItem * item)
 {
 	return g_strdup ("PolyLine");
 }
-
-static void
-sp_polyline_bbox (SPItem * item, ArtDRect * bbox)
-{
-	if (SP_ITEM_CLASS(parent_class)->bbox)
-		(* SP_ITEM_CLASS(parent_class)->bbox) (item, bbox);
-}
-
 

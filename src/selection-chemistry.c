@@ -683,7 +683,7 @@ sp_selection_item_next (void)
   // adjust visible area to see whole new selection
   if (SP_CYCLING == SP_CYCLE_FOCUS) {
     sp_desktop_get_visible_area (desktop, &dbox);
-    sp_item_bbox (item, &sbox);
+    sp_item_bbox_desktop (item, &sbox);
     if (dbox.x0>sbox.x0 || dbox.y0>sbox.y0 || dbox.x1<sbox.x1 || dbox.y1<sbox.y1 ) {
       s.x = (sbox.x0+sbox.x1)/2;
       s.y = (sbox.y0+sbox.y1)/2;
@@ -748,7 +748,7 @@ sp_selection_item_prev (void)
   // adjust visible area to see whole new selection
   if (SP_CYCLING == SP_CYCLE_FOCUS) {
     sp_desktop_get_visible_area (desktop, &dbox);
-    sp_item_bbox (item, &sbox);
+    sp_item_bbox_desktop (item, &sbox);
     if (dbox.x0>sbox.x0 || dbox.y0>sbox.y0 || dbox.x1<sbox.x1 || dbox.y1<sbox.y1 ) {
       s.x = (sbox.x0+sbox.x1)/2;
       s.y = (sbox.y0+sbox.y1)/2;

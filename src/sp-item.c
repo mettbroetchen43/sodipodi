@@ -274,22 +274,36 @@ sp_item_update (SPItem * item, gdouble affine[])
 		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->update) (item, affine);
 }
 
-void sp_item_bbox (SPItem * item, ArtDRect * bbox)
+void
+sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 	g_assert (bbox != NULL);
+	g_assert (transform != NULL);
 
-	bbox->x0 = bbox->y0 = 1.0;
+	bbox->x0 = bbox->y0 = 0.0;
 	bbox->x1 = bbox->y1 = 0.0;
 
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox)
-		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox) (item, bbox);
+		SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox (item, bbox, transform);
+}
+
+void sp_item_bbox_desktop (SPItem *item, ArtDRect *bbox)
+{
+	gdouble i2d[6];
+
+	g_assert (item != NULL);
+	g_assert (SP_IS_ITEM (item));
+	g_assert (bbox != NULL);
+
+	sp_item_i2d_affine (item, i2d);
+
+	sp_item_invoke_bbox (item, bbox, i2d);
 }
 
 SPKnotHolder *
-sp_item_knot_holder (SPItem    *item,
-	       SPDesktop *desktop)
+sp_item_knot_holder (SPItem *item, SPDesktop *desktop)
 {
 	SPKnotHolder *knot_holder = NULL;
 
@@ -307,11 +321,13 @@ sp_item_private_snappoints (SPItem * item, GSList * points)
 {
         ArtDRect bbox;
 	ArtPoint * p;
+	gdouble i2d[6];
 
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
 
-	sp_item_bbox (item, &bbox);
+	sp_item_i2d_affine (item, i2d);
+	sp_item_invoke_bbox (item, &bbox, i2d);
 
 	p = g_new (ArtPoint,1);
 	p->x = bbox.x0;

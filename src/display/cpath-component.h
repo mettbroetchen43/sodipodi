@@ -53,21 +53,4 @@ void sp_cpath_comp_unref (SPCPathComp * comp);
 
 void sp_cpath_comp_update (SPCPathComp * comp, double affine[]);
 
-/*
- * Changes current comp parameters
- * This is simple utility functions, which ensures, that private bpath
- * will be freed if necessary
- * Afterwards you have to call update (probably from canvas object update)
- * NB! This frees bpath & forces at bpath to null
- */
-
-void sp_cpath_comp_change (SPCPathComp * comp,
-			   SPCurve * curve,
-			   gboolean private,
-			   double affine[],
-			   gint rule,
-			   double stroke_width,
-			   ArtPathStrokeJoinType join,
-			   ArtPathStrokeCapType cap);
-
 #endif

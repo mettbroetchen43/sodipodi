@@ -12,7 +12,7 @@ sp_item_rotate_rel (SPItem * item, double angle)
   double x,y;
   char tstr[80];
 
-  sp_item_bbox(item,&b);
+  sp_item_bbox_desktop (item,&b);
   x = b.x0 + (b.x1 - b.x0)/2;
   y = b.y0 + (b.y1 - b.y0)/2;
   art_affine_rotate (rotate,angle);
@@ -41,7 +41,7 @@ sp_item_scale_rel (SPItem * item, double dx, double dy) {
   double x,y;
   ArtDRect b;
 
-  sp_item_bbox(item,&b);
+  sp_item_bbox_desktop (item,&b);
   x = b.x0 + (b.x1 - b.x0)/2;
   y = b.y0 + (b.y1 - b.y0)/2;
   art_affine_scale (scale,dx,dy);
@@ -79,7 +79,7 @@ sp_item_skew_rel (SPItem * item, double dx, double dy) {
   double x,y;
   ArtDRect b;
 
-  sp_item_bbox(item,&b);
+  sp_item_bbox_desktop (item,&b);
   x = b.x0 + (b.x1 - b.x0)/2;
   y = b.y0 + (b.y1 - b.y0)/2;
   art_affine_skew (skew,dx,dy);

@@ -5,10 +5,11 @@
  * SPShape
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
  * Copyright (C) 1999-2000 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
  *
  * Released under GNU GPL
  */
@@ -39,17 +40,5 @@ GtkType sp_shape_get_type (void);
 
 /* Method */
 void	sp_shape_set_shape (SPShape *shape);
-
-/* Utility */
-
-#if 0
-void sp_shape_clear (SPShape * shape);
-
-void sp_shape_add_bpath (SPShape * shape, ArtBpath * bpath, double affine[]);
-void sp_shape_add_bpath_identity (SPShape * shape, ArtBpath * bpath);
-
-void sp_shape_set_bpath (SPShape * shape, ArtBpath * bpath, double affine[]);
-void sp_shape_set_bpath_identity (SPShape * shape, ArtBpath * bpath);
-#endif
 
 #endif

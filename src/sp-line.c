@@ -16,7 +16,6 @@ static void sp_line_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
 static void sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_line_read_attr (SPObject * object, const gchar * attr);
 
-static void sp_line_bbox (SPItem * item, ArtDRect * bbox);
 static gchar * sp_line_description (SPItem * item);
 
 static void sp_line_set_shape (SPLine * line);
@@ -67,7 +66,6 @@ sp_line_class_init (SPLineClass *class)
 	sp_object_class->build = sp_line_build;
 	sp_object_class->read_attr = sp_line_read_attr;
 
-	item_class->bbox = sp_line_bbox;
 	item_class->description = sp_line_description;
 }
 
@@ -192,12 +190,4 @@ sp_line_set_shape (SPLine * line)
 	sp_path_add_bpath (SP_PATH (line), c, TRUE, NULL);
 	sp_curve_unref (c);
 }
-
-static void
-sp_line_bbox (SPItem * item, ArtDRect * bbox)
-{
-	if (SP_ITEM_CLASS(parent_class)->bbox)
-		(* SP_ITEM_CLASS(parent_class)->bbox) (item, bbox);
-}
-
 

@@ -5,10 +5,11 @@
  * SPChars - parent class for text objects
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
  * Copyright (C) 1999-2000 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
  *
  * Released under GNU GPL
  */
@@ -25,18 +26,19 @@
 typedef struct _SPCharElement SPCharElement;
 
 struct _SPCharElement {
+	SPCharElement *next;
 	guint glyph;
 	GnomeFontFace *face;
 	gfloat affine[6];
 };
 
 struct _SPChars {
-	SPShape shape;
-	GList *element;
+	SPItem item;
+	SPCharElement *elements;
 };
 
 struct _SPCharsClass {
-	SPShapeClass parent_class;
+	SPItemClass parent_class;
 };
 
 GtkType sp_chars_get_type (void);

@@ -1,20 +1,22 @@
-#define SP_REPR_C
+#define __SP_REPR_C__
 
 #include <string.h>
 #include "repr-private.h"
 
+typedef struct _SPReprListener SPListener;
+
 static SPRepr * sp_repr_new_from_code (gint code);
 static void sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr);
-static void sp_node_remove_listener (SPNode *node, SPListener *listener);
+static void sp_node_remove_listener (SPXMLNode *node, SPListener *listener);
 
-static SPAttribute *sp_attribute_duplicate (const SPAttribute *attr);
-static SPAttribute *sp_attribute_new_from_quark (gint key, const guchar *value);
+static SPXMLAttribute *sp_attribute_duplicate (const SPXMLAttribute *attr);
+static SPXMLAttribute *sp_attribute_new_from_quark (gint key, const guchar *value);
 
 /* Helpers */
-static SPNode * sp_node_alloc (void);
-static void sp_node_free (SPNode *node);
-static SPAttribute * sp_attribute_alloc (void);
-static void sp_attribute_free (SPAttribute *attribute);
+static SPXMLNode * sp_node_alloc (void);
+static void sp_node_free (SPXMLNode *node);
+static SPXMLAttribute * sp_attribute_alloc (void);
+static void sp_attribute_free (SPXMLAttribute *attribute);
 static SPListener *sp_listener_alloc (void);
 static void sp_listener_free (SPListener *listener);
 
@@ -27,6 +29,7 @@ sp_repr_new_from_code (gint code)
 
 	repr->refcount = 1;
 	repr->name = code;
+	repr->type = SP_XML_ELEMENT_NODE;
 	repr->parent = repr->next = repr->children = NULL;
 	repr->attributes = NULL;
 	repr->listeners = NULL;
@@ -99,6 +102,7 @@ sp_repr_duplicate (const SPRepr *repr)
 	g_return_val_if_fail (repr != NULL, NULL);
 
 	new = sp_repr_new_from_code (repr->name);
+	new->type = repr->type;
 
 	if (repr->content != NULL) new->content = g_strdup (repr->content);
 
@@ -484,7 +488,7 @@ sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, gpointer da
 }
 
 static void
-sp_node_remove_listener (SPNode *node, SPListener *listener)
+sp_node_remove_listener (SPXMLNode *node, SPListener *listener)
 {
 	if (listener == node->listeners) {
 		node->listeners = listener->next;
@@ -682,10 +686,10 @@ sp_repr_overwrite (SPRepr       *repr,
 	return TRUE;
 }
 
-static SPAttribute *
-sp_attribute_duplicate (const SPAttribute *attr)
+static SPXMLAttribute *
+sp_attribute_duplicate (const SPXMLAttribute *attr)
 {
-	SPAttribute *new;
+	SPXMLAttribute *new;
 
 	new = sp_attribute_alloc ();
 
@@ -696,10 +700,10 @@ sp_attribute_duplicate (const SPAttribute *attr)
 	return new;
 }
 
-static SPAttribute *
+static SPXMLAttribute *
 sp_attribute_new_from_quark (gint key, const guchar *value)
 {
-	SPAttribute *new;
+	SPXMLAttribute *new;
 
 	new = sp_attribute_alloc ();
 
@@ -712,19 +716,19 @@ sp_attribute_new_from_quark (gint key, const guchar *value)
 
 /* Helpers */
 #define SP_NODE_ALLOC_SIZE 32
-static SPNode *free_node = NULL;
+static SPXMLNode *free_node = NULL;
 
-static SPNode *
+static SPXMLNode *
 sp_node_alloc (void)
 {
-	SPNode *node;
+	SPXMLNode *node;
 	gint i;
 
 	if (free_node) {
 		node = free_node;
 		free_node = free_node->next;
 	} else {
-		node = g_new (SPNode, SP_NODE_ALLOC_SIZE);
+		node = g_new (SPXMLNode, SP_NODE_ALLOC_SIZE);
 		for (i = 1; i < SP_NODE_ALLOC_SIZE - 1; i++) node[i].next = node + i + 1;
 		node[SP_NODE_ALLOC_SIZE - 1].next = NULL;
 		free_node = node + 1;
@@ -734,26 +738,26 @@ sp_node_alloc (void)
 }
 
 static void
-sp_node_free (SPNode *node)
+sp_node_free (SPXMLNode *node)
 {
 	node->next = free_node;
 	free_node = node;
 }
 
 #define SP_ATTRIBUTE_ALLOC_SIZE 32
-static SPAttribute *free_attribute = NULL;
+static SPXMLAttribute *free_attribute = NULL;
 
-static SPAttribute *
+static SPXMLAttribute *
 sp_attribute_alloc (void)
 {
-	SPAttribute *attribute;
+	SPXMLAttribute *attribute;
 	gint i;
 
 	if (free_attribute) {
 		attribute = free_attribute;
 		free_attribute = free_attribute->next;
 	} else {
-		attribute = g_new (SPAttribute, SP_ATTRIBUTE_ALLOC_SIZE);
+		attribute = g_new (SPXMLAttribute, SP_ATTRIBUTE_ALLOC_SIZE);
 		for (i = 1; i < SP_ATTRIBUTE_ALLOC_SIZE - 1; i++) attribute[i].next = attribute + i + 1;
 		attribute[SP_ATTRIBUTE_ALLOC_SIZE - 1].next = NULL;
 		free_attribute = attribute + 1;
@@ -763,7 +767,7 @@ sp_attribute_alloc (void)
 }
 
 static void
-sp_attribute_free (SPAttribute *attribute)
+sp_attribute_free (SPXMLAttribute *attribute)
 {
 	attribute->next = free_attribute;
 	free_attribute = attribute;

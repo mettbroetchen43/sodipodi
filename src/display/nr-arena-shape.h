@@ -26,10 +26,14 @@
 
 struct _NRArenaShape {
 	NRArenaItem item;
+	/* Shape data */
+	SPCurve *curve;
 	SPStyle *style;
-	SPCPathComp *comp;
+	/* State data */
 	SPPainter *fill_painter;
 	SPPainter *stroke_painter;
+	ArtSVP *fill_svp;
+	ArtSVP *stroke_svp;
 };
 
 struct _NRArenaShapeClass {
@@ -69,14 +73,5 @@ void nr_arena_shape_group_set_style (NRArenaShapeGroup *group, SPStyle *style);
 void nr_arena_shape_group_clear (NRArenaShapeGroup *group);
 void nr_arena_shape_group_add_component (NRArenaShapeGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
 void nr_arena_shape_group_set_component (NRArenaShapeGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
-
-#if 0
-/* NB! This works only for single component private shapes */
-void nr_arena_shape_change_bpath (NRArenaShape * arena_shape, NRCurve * curve);
-
-void nr_arena_shape_set_style (NRArenaShape *shape, NRStyle *style);
-
-void nr_arena_shape_set_sensitive (NRArenaShape * shape, gboolean sensitive);
-#endif
 
 #endif

@@ -508,7 +508,7 @@ void sp_desktop_update_scrollbars (Sodipodi * sodipodi, SPSelection * selection)
   cw = GTK_WIDGET (desktop->owner->canvas)->allocation.width;
   ch = GTK_WIDGET (desktop->owner->canvas)->allocation.height;
   // drawing / document coordinates
-  sp_item_bbox (docitem, &d);
+  sp_item_bbox_desktop (docitem, &d);
   // add document area / document coordinates
   if (d.x0 > 0) d.x0 = 0;
   if (d.y0 > 0) d.y0 = 0;

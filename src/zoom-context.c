@@ -214,7 +214,7 @@ sp_zoom_drawing (GtkWidget * widget)
 
 	g_return_if_fail (docitem != NULL);
 
-	sp_item_bbox (docitem, &d);
+	sp_item_bbox_desktop (docitem, &d);
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 	sp_desktop_show_region (desktop, d.x0, d.y0, d.x1, d.y1, 10);
 }

@@ -186,8 +186,8 @@ sp_quick_align_center_ver (void) {
 
 static void
 sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
-			gdouble sx0, gdouble sx1, gdouble sy0, gdouble sy1) {
-
+			gdouble sx0, gdouble sx1, gdouble sy0, gdouble sy1)
+{
 	SPDesktop * desktop;
 	SPSelection * selection;
 	GSList * slist;
@@ -213,7 +213,7 @@ sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
 		slist = g_slist_copy (slist);
 		master = sp_quick_align_find_master (slist, (mx0 != 0.0) || (mx1 != 0.0));
 		slist = g_slist_remove (slist, master);
-		sp_item_bbox (master, &b);
+		sp_item_bbox_desktop (master, &b);
 		mp.x = mx0 * b.x0 + mx1 * b.x1;
 		mp.y = my0 * b.y0 + my1 * b.y1;
 		break;
@@ -224,7 +224,7 @@ sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
 		break;
 	case SP_ALIGN_DRAWING:
 		slist = g_slist_copy (slist);
-		sp_item_bbox ((SPItem *) sp_document_root (SP_DT_DOCUMENT (desktop)), &b);
+		sp_item_bbox_desktop ((SPItem *) sp_document_root (SP_DT_DOCUMENT (desktop)), &b);
 		mp.x = mx0 * b.x0 + mx1 * b.x1;
 		mp.y = my0 * b.y0 + my1 * b.y1;
 		break;
@@ -243,7 +243,7 @@ sp_quick_align_arrange (gdouble mx0, gdouble mx1, gdouble my0, gdouble my1,
 
 	for (l = slist; l != NULL; l = l->next) {
 		item = (SPItem *) l->data;
-		sp_item_bbox (item, &b);
+		sp_item_bbox_desktop (item, &b);
 		sp.x = sx0 * b.x0 + sx1 * b.x1;
 		sp.y = sy0 * b.y0 + sy1 * b.y1;
 
@@ -282,7 +282,7 @@ sp_quick_align_find_master (const GSList * slist, gboolean horizontal)
 		max = -1e18;
 		for (l = slist; l != NULL; l = l->next) {
 			item = (SPItem *) l->data;
-			sp_item_bbox (item, &b);
+			sp_item_bbox_desktop (item, &b);
 			if (horizontal) {
 				dim = b.x1 - b.x0; 
 			} else {
@@ -299,7 +299,7 @@ sp_quick_align_find_master (const GSList * slist, gboolean horizontal)
 		max = 1e18;
 		for (l = slist; l != NULL; l = l->next) {
 			item = (SPItem *) l->data;
-			sp_item_bbox (item, &b);
+			sp_item_bbox_desktop (item, &b);
 			if (horizontal) {
 				dim = b.x1 - b.x0;
 			} else {

@@ -1,8 +1,7 @@
-#ifndef SP_DRAW_CONTEXT_H
-#define SP_DRAW_CONTEXT_H
+#ifndef __SP_DRAW_CONTEXT_H__
+#define __SP_DRAW_CONTEXT_H__
 
 #include "helper/curve.h"
-#include "display/canvas-shape.h"
 #include "event-context.h"
 
 #define SP_TYPE_DRAW_CONTEXT (sp_draw_context_get_type ())

@@ -414,7 +414,7 @@ sp_export_drawing (GtkToggleButton * tb)
 
 	doc = SP_DT_DOCUMENT (desktop);
 
-	sp_item_bbox (SP_ITEM (sp_document_root (doc)), &bbox);
+	sp_item_bbox_desktop (SP_ITEM (sp_document_root (doc)), &bbox);
 
 	sp_export_set_area (xml, &bbox);
 }

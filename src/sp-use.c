@@ -19,7 +19,7 @@ static void sp_use_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
 static void sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_use_read_attr (SPObject * object, const gchar * attr);
 
-static void sp_use_bbox (SPItem * item, ArtDRect * bbox);
+static void sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static void sp_use_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_use_description (SPItem * item);
 static NRArenaItem *sp_use_show (SPItem *item, NRArena *arena);
@@ -249,14 +249,14 @@ sp_use_read_attr (SPObject * object, const gchar * attr)
 }
 
 static void
-sp_use_bbox (SPItem * item, ArtDRect * bbox)
+sp_use_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
 	SPUse * use;
 
 	use = SP_USE (item);
 
 	if (use->child) {
-		sp_item_bbox (use->child, bbox);
+		sp_item_invoke_bbox (use->child, bbox, transform);
 	} else {
 		bbox->x0 = bbox->y0 = 0.0;
 		bbox->x1 = bbox->y1 = 0.0;

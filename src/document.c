@@ -618,7 +618,7 @@ sp_document_items_in_box (SPDocument * document, ArtDRect * box)
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			sp_item_bbox (child, &b);
+			sp_item_bbox_desktop (child, &b);
 			if ((b.x0 > box->x0) && (b.x1 < box->x1) &&
 			    (b.y0 > box->y0) && (b.y1 < box->y1)) {
 				s = g_slist_append (s, child);
@@ -657,7 +657,7 @@ sp_document_partial_items_in_box (SPDocument * document, ArtDRect * box)
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
 			child = SP_ITEM (o);
-			sp_item_bbox (child, &b);
+			sp_item_bbox_desktop (child, &b);
 			if ((((b.x0 > box->x0) && (b.x0 < box->x1)) ||
 			     ((b.x1 > box->x0) && (b.x1 < box->x1)))
 			    &&

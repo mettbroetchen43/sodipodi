@@ -41,7 +41,7 @@ static void sp_group_modified (SPObject *object, guint flags);
 static gint sp_group_sequence (SPObject *object, gint seq);
 
 static void sp_group_update (SPItem *item, gdouble affine[]);
-static void sp_group_bbox (SPItem * item, ArtDRect * bbox);
+static void sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_group_description (SPItem * item);
 static NRArenaItem *sp_group_show (SPItem *item, NRArena *arena);
@@ -361,7 +361,7 @@ sp_group_update (SPItem *item, gdouble affine[])
 }
 
 static void
-sp_group_bbox (SPItem * item, ArtDRect *bbox)
+sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
 	SPGroup * group;
 	SPItem * child;
@@ -374,8 +374,10 @@ sp_group_bbox (SPItem * item, ArtDRect *bbox)
 
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_ITEM (o)) {
+			gdouble a[6];
 			child = SP_ITEM (o);
-			sp_item_bbox (child, &child_bbox);
+			art_affine_multiply (a, item->affine, transform);
+			sp_item_invoke_bbox (child, &child_bbox, a);
 			art_drect_union (bbox, bbox, &child_bbox);
 		}
 	}

@@ -41,11 +41,12 @@ libspdisplay_a_SOURCES = \
 	nr-arena-group.c nr-arena-group.h \
 	nr-arena-image.c nr-arena-image.h \
 	nr-arena-shape.c nr-arena-shape.h \
+	nr-arena-glyphs.c nr-arena-glyphs.h \
 	canvas-arena.c canvas-arena.h \
 	cpath-component.c cpath-component.h \
 	path-archetype.c path-archetype.h \
-	canvas-shape.c canvas-shape.h \
 	fill.c fill.h \
 	stroke.c stroke.h \
 	$(nr_sources)
 
+#	canvas-shape.c canvas-shape.h

@@ -1,9 +1,10 @@
-09/02/2002
+06/04/2002
 
 TODO for 0.25
 
-- Dynamic stroke dialog (1 day)
-- Replace static fill dialog with dynamic one (1 day)
+- SVG spec conforming text object
+- Dynamic stroke dialog (Mostly done - needs unit cleanup)
+- Replace static fill dialog with dynamic one (Mostly done)
 - Fix stack order undo (1 day)
 - Pen tool (3 days)
 - Tool options (2 days)

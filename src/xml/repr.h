@@ -17,6 +17,30 @@
 #include <stdio.h>
 
 /*
+ * NB! Unless explicitly stated all methods are noref/nostrcpy
+ */
+
+typedef struct _SPRepr SPXMLNode;
+typedef struct _SPRepr SPXMLText;
+typedef struct _SPRepr SPXMLElement;
+typedef struct _SPReprAttr SPXMLAttribute;
+typedef struct _SPReprDoc SPXMLDocument;
+
+/* SPXMLDocument */
+
+SPXMLText *sp_xml_document_createTextNode (SPXMLDocument *doc, const guchar *data);
+SPXMLElement *sp_xml_document_createElement (SPXMLDocument *doc, const guchar *name);
+SPXMLElement *sp_xml_document_createElementNS (SPXMLDocument *doc, const guchar *ns, const guchar *qname);
+
+/* SPXMLNode */
+
+SPXMLDocument *sp_xml_node_get_Document (SPXMLNode *node);
+
+/* SPXMLElement */
+
+void sp_xml_element_setAttributeNS (SPXMLElement *element, const guchar *nr, const guchar *qname, const guchar *val);
+
+/*
  * SPRepr is opaque
  */
 

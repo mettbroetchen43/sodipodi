@@ -355,7 +355,7 @@ file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 	doc = SP_ACTIVE_DOCUMENT;
 	g_return_if_fail (doc != NULL);
 
-	sp_item_bbox (SP_ITEM (sp_document_root (doc)), &bbox);
+	sp_item_bbox_desktop (SP_ITEM (sp_document_root (doc)), &bbox);
 
 	width = bbox.x1 - bbox.x0 + 2;
 	height = bbox.y1 - bbox.y0 + 2;

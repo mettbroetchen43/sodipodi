@@ -9,7 +9,7 @@
 #include <parser.h>
 #include <tree.h>
 
-static SPRepr * sp_repr_svg_read_node (xmlNodePtr node);
+static SPRepr * sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node);
 static void repr_write (SPRepr * repr, FILE * file, gint level);
 
 #ifdef HAVE_LIBWMF
@@ -49,12 +49,12 @@ SPReprDoc * sp_repr_read_file (const gchar * filename)
 	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
 #if 0
 		if (node->name && (strcmp (node->name, "svg") == 0)) {
-			repr = sp_repr_svg_read_node (node);
+			repr = sp_repr_svg_read_node (rdoc, node);
 			break;
 		}
 #else
 		if (node->type == XML_ELEMENT_NODE) {
-			repr = sp_repr_svg_read_node (node);
+			repr = sp_repr_svg_read_node (rdoc, node);
 			break;
 		}
 #endif
@@ -86,12 +86,12 @@ SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length)
 	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
 #if 0
 		if (node->name && (strcmp (node->name, "svg") == 0)) {
-			repr = sp_repr_svg_read_node (node);
+			repr = sp_repr_svg_read_node (rdoc, node);
 			break;
 		}
 #else
 		if (node->type == XML_ELEMENT_NODE) {
-			repr = sp_repr_svg_read_node (node);
+			repr = sp_repr_svg_read_node (rdoc, node);
 			break;
 		}
 #endif
@@ -104,36 +104,40 @@ SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length)
 	return rdoc;
 }
 
-static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
+static gint
+sp_repr_qualified_name (guchar *p, gint len, xmlNsPtr ns, const xmlChar *name)
 {
-	SPRepr * repr, * crepr;
-	xmlAttr * prop;
+	if (ns && ns->prefix && strcmp (ns->prefix, "svg")) {
+		return g_snprintf (p, len, "%s:%s", ns->prefix, name);
+	}
+
+	return g_snprintf (p, len, "%s", name);
+}
+
+static SPRepr *sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
+{
+	SPRepr *repr, *crepr;
+	xmlAttrPtr prop;
 	xmlNodePtr child;
 	gchar c[256];
 
-	g_return_val_if_fail (node != NULL, NULL);
+#ifdef SP_REPR_IO_VERBOSE
+	g_print ("Node %d %s contains %s\n", node->type, node->name, node->content);
+#endif
 
-	if (node->type == XML_TEXT_NODE) return NULL;
-	if (node->type == XML_COMMENT_NODE) return NULL;
-
-	if (node->ns && node->ns->prefix && strcmp (node->ns->prefix, "svg")) {
-		g_snprintf (c, 256, "%s:%s", node->ns->prefix, node->name);
-	} else {
-		g_snprintf (c, 256, node->name);
+	if (node->type == XML_TEXT_NODE) {
+		return sp_xml_document_createTextNode (doc, node->content);
 	}
 
+	if (node->type == XML_COMMENT_NODE) return NULL;
+
+	sp_repr_qualified_name (c, 256, node->ns, node->name);
 	repr = sp_repr_new (c);
 
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
-        xmlChar *value = xmlGetProp(node,prop->name);
-		if (value != NULL) {
-			if (prop->ns && prop->ns->prefix && strcmp (prop->ns->prefix, "svg")) {
-				g_snprintf (c, 256, "%s:%s", prop->ns->prefix, prop->name);
-			} else {
-				g_snprintf (c, 256, prop->name);
-			}
-			sp_repr_set_attr (repr, c, value);
-            xmlFree (value);
+		if (prop->val) {
+			sp_repr_qualified_name (c, 256, prop->ns, prop->name);
+			sp_repr_set_attr (repr, c, prop->val->content);
 		}
 	}
 
@@ -141,7 +145,7 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 		sp_repr_set_content (repr, node->content);
 
 	child = node->xmlChildrenNode;
-#if 1
+#if 0
 	if ((child != NULL) &&
         (child->name != NULL) &&
 		(strcmp (child->name, node->name) == 0) &&
@@ -153,10 +157,10 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 	} else {
 #endif
 	for (child = node->xmlChildrenNode; child != NULL; child = child->next) {
-		crepr = sp_repr_svg_read_node (child);
+		crepr = sp_repr_svg_read_node (doc, child);
 		if (crepr) sp_repr_append_child (repr, crepr);
 	}
-#if 1
+#if 0
 	}
 #endif
 	return repr;

@@ -242,7 +242,7 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 					SPPainter *painter;
 					ArtDRect bbox;
 					gdouble id[6] = {1,0,0,1,0,0};
-					sp_item_bbox (item, &bbox);
+					sp_item_bbox_desktop (item, &bbox);
 					/* fixme: */
 					painter = sp_paint_server_painter_new (object->style->fill.server, id, object->style->opacity, &bbox);
 					if (painter) {

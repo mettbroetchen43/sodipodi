@@ -1,19 +1,17 @@
-#ifndef SP_REPR_PRIVATE_H
-#define SP_REPR_PRIVATE_H
-
-/*
- * TODO: Hash tables are overkill for attributes
- */
+#ifndef __SP_REPR_PRIVATE_H__
+#define __SP_REPR_PRIVATE_H__
 
 #include "repr.h"
-
-typedef struct _SPRepr SPNode;
-typedef struct _SPReprAttr SPAttribute;
-typedef struct _SPReprListener SPListener;
 
 typedef struct _SPReprAttr SPReprAttr;
 typedef struct _SPReprListener SPReprListener;
 typedef struct _SPReprEventVector SPReprEventVector;
+
+typedef enum {
+	SP_XML_INVALID_NODE,
+	SP_XML_ELEMENT_NODE,
+	SP_XML_TEXT_NODE
+} SPXMLNodeType;
 
 struct _SPReprAttr {
 	SPReprAttr *next;
@@ -44,6 +42,7 @@ struct _SPReprEventVector {
 struct _SPRepr {
 	gint refcount;
 	gint name;
+	gint type;
 	SPRepr *parent;
 	SPRepr *next;
 	SPRepr *children;
@@ -57,7 +56,7 @@ struct _SPRepr {
 #define SP_REPR_ATTRIBUTE_KEY(a) g_quark_to_string ((a)->key)
 #define SP_REPR_ATTRIBUTE_VALUE(a) ((a)->value)
 
-SPRepr * sp_repr_nth_child (const SPRepr *repr, gint n);
+SPRepr *sp_repr_nth_child (const SPRepr *repr, gint n);
 
 gboolean sp_repr_change_order (SPRepr *repr, SPRepr *child, SPRepr *ref);
 

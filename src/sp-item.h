@@ -83,8 +83,8 @@ struct _SPItemClass {
 	/* Update indicates that affine is changed */
 	void (* update) (SPItem * item, gdouble affine[]);
 
-	/* BBox in desktop coordinates */
-	void (* bbox) (SPItem * item, ArtDRect * bbox);
+	/* BBox in given coordinate system */
+	void (* bbox) (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 
 	/* Give list of points for item to be controled */
 	SPKnotHolder *(* knot_holder) (SPItem *item, SPDesktop *desktop);
@@ -122,7 +122,7 @@ GtkType sp_item_get_type (void);
 /* Methods */
 
 void sp_item_update (SPItem * item, gdouble affine[]);
-void sp_item_bbox (SPItem * item, ArtDRect * bbox);
+void sp_item_invoke_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform);
 SPKnotHolder *sp_item_knot_holder (SPItem *item, SPDesktop *desktop);
 gchar * sp_item_description (SPItem * item);
 void sp_item_print (SPItem * item, GnomePrintContext * gpc);
@@ -143,6 +143,7 @@ void sp_item_set_item_transform (SPItem *item, const gdouble *transform);
 
 /* Utility */
 
+void sp_item_bbox_desktop (SPItem *item, ArtDRect *bbox);
 gdouble *sp_item_i2doc_affine (SPItem *item, gdouble affine[]);
 
 /* fixme: - these are evil, but OK */

@@ -1,3 +1,30 @@
+2002-04-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-item.h: Changed ::bbox signature
+
+	* src/sp-item.c (sp_item_invoke_bbox): New generic method
+	(sp_item_bbox_desktop): renamed old method
+
+	* src/display/nr-arena-glyphs.c: Ditto
+
+	* src/display/nr-arena-glyphs.h: New file
+
+	* src/sp-chars.c (sp_chars_get_type): Change parent class
+	(sp_chars_class_init): Ditto
+	(sp_chars_destroy): New elements structure
+	(sp_chars_style_modified): New virtual method
+	(sp_chars_bbox): Ditto
+	(sp_chars_show): Ditto
+	(sp_chars_print): Ditto (not implemented)
+	(sp_chars_clear): New structure
+	(sp_chars_add_element): Ditto
+
+	* src/sp-chars.h: Derive directly from item instead of shape
+
+	* src/dialogs/align.c (sp_quick_align_arrange): New bbox logic
+
+	* src/dialogs/export.c (sp_export_drawing): New bbox logic
+
 Sun Apr  7 01:37:29 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/style.c: (sp_style_read_from_object): Fixed to work stroke-cmyk.
@@ -5,6 +32,19 @@ Sun Apr  7 01:37:29 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 	* src/sp-item.c: (sp_item_read_attr): Ditto
 
 2002-04-06  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/xml/repr-io.c (sp_repr_read_file): Use new signature
+	(sp_repr_read_mem): Ditto
+	(sp_repr_qualified_name): New method
+	(sp_repr_svg_read_node): Signature change, create text nodes
+
+	* src/xml/repr-util.c (sp_xml_document_createTextNode): New method
+	(sp_xml_document_createElement): Ditto
+	(sp_xml_document_createElementNS): Ditto
+	(sp_xml_node_get_Document): Ditto
+	(sp_xml_element_setAttributeNS): Ditto
+
+	* src/xml/repr.c (sp_repr_new_from_code): Set type
 
 	* src/svg/svg-length.c (sp_svg_read_number_f): New method with right signature
 	(sp_svg_read_number_d): Ditto

@@ -31,4 +31,7 @@ typedef struct _NRArenaShapeGroupClass NRArenaShapeGroupClass;
 typedef struct _NRArenaImage NRArenaImage;
 typedef struct _NRArenaImageClass NRArenaImageClass;
 
+typedef struct _NRArenaGlyphs NRArenaGlyphs;
+typedef struct _NRArenaGlyphsClass NRArenaGlyphsClass;
+
 #endif
