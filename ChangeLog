@@ -1,4 +1,19 @@
+2002-08-16  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/draw-context.c (sp_draw_context_finalize): Destroy pen controls
+	(sp_draw_context_setup): Setup pen controls
+	(sp_draw_context_root_handler): Do pen stuff
+	(spdc_pen_set_point): New helper
+	(spdc_pen_set_ctrl): Ditto
+	(spdc_pen_finish_segment): Ditto
+
+	* src/helper/sp-ctrlline.c (sp_ctrlline_set_rgba32): New method
+
 2002-08-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/toolbox.c (sp_update_draw_toolbox): Freehand keeps undo/redo sensitive now
+
+	* src/document.c (sp_document_ensure_up_to_date): New method
 
 	* src/draw-context.c (sp_draw_context_setup): Read selection data
 	(sp_draw_context_root_handler): Use colors for freehand, place green anchor

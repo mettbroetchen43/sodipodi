@@ -1,13 +1,15 @@
-#define SP_TOOLBOX_C
+#define __SP_TOOLBOX_C__
 
 /*
  * Toolbox
  *
  * Authors:
  *   Frank Felfe  <innerspace@iname.com>
- *   Lauris Kaplinski  <lauris@helixcode.com>
+ *   Lauris Kaplinski  <lauris@kaplinski.com>
  *
- * Copyright (C) 2000-2001 Helix Code, Inc. and authors
+ * Copyright (C) 2000-2001 Frank Felfe
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
  */
 
 #include <config.h>
@@ -29,11 +31,7 @@
 #include "desktop-handles.h"
 #include "interface.h"
 
-GtkWidget * sp_toolbox_create (GladeXML * xml,
-			       const gchar * widgetname,
-			       const gchar * name,
-			       const gchar * internalname,
-			       const gchar * pxname);
+GtkWidget * sp_toolbox_create (GladeXML *xml, const gchar *widgetname, const gchar *name, const gchar *internalname, const gchar *pxname);
 
 static gint sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data);
 static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
@@ -54,13 +52,16 @@ SPObjectFlipMode object_flip_mode = FLIP_HOR;
 
 /* Drag and Drop */
 typedef enum {
-  URI_LIST
+	URI_LIST
 } toolbox_drop_target_info;
+
 static GtkTargetEntry toolbox_drop_target_entries [] = {
-  {"text/uri-list", 0, URI_LIST},
+	{"text/uri-list", 0, URI_LIST},
 };
+
 #define ENTRIES_SIZE(n) sizeof(n)/sizeof(n[0]) 
 static guint ntoolbox_drop_target_entries = ENTRIES_SIZE(toolbox_drop_target_entries);
+
 static void sp_maintoolbox_open_files(gchar * buffer);
 static void sp_maintoolbox_open_one_file_with_check(gpointer filename, gpointer unused);
 static void sp_maintoolbox_open_one_file(gchar * svg_path);
@@ -90,6 +91,7 @@ sp_maintoolbox_create (void)
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "edit_table");
 		t = sp_toolbox_create (xml, "edit_table", _("Edit"), "edit", "toolbox_edit.xpm");
 		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+		/* fixme: Freehand does not need this anymore, remove if node editing is fixed (Lauris) */
 		w = glade_xml_get_widget (xml, "undo");
 		gtk_object_set_data (GTK_OBJECT (t), "undo", w);
 		w = glade_xml_get_widget (xml, "redo");
@@ -335,7 +337,7 @@ sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpoi
 		if (active) gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active), FALSE);
 		if (new) gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new), TRUE);
 		gtk_object_set_data (GTK_OBJECT (data), "active", new);
-		if ((tname) && ((!strcmp (tname, "SPNodeContext")) || (!strcmp (tname, "SPDrawContext")) || (!strcmp (tname, "SPDynaDrawContext")))) {
+		if ((tname) && ((!strcmp (tname, "SPNodeContext")) || (!strcmp (tname, "SPDynaDrawContext")))) {
 			e = gtk_object_get_data (GTK_OBJECT (toolbox), "edit");
 			w = gtk_object_get_data (GTK_OBJECT (e), "undo");
 			gtk_widget_set_sensitive (GTK_WIDGET (w), FALSE);

@@ -21,6 +21,7 @@
 #include "helper/curve.h"
 #include "helper/bezier-utils.h"
 #include "helper/sodipodi-ctrl.h"
+#include "helper/sp-ctrlline.h"
 #include "helper/canvas-bpath.h"
 
 #include "sodipodi.h"
@@ -61,13 +62,15 @@ static void spdc_set_startpoint (SPDrawContext *dc, ArtPoint *p, guint state);
 static void spdc_set_endpoint (SPDrawContext *dc, ArtPoint *p, guint state);
 static void spdc_finish_endpoint (SPDrawContext *dc, ArtPoint *p, gboolean snap, guint state);
 static void spdc_add_freehand_point (SPDrawContext *dc, ArtPoint *p, guint state);
+static void spdc_pen_set_point (SPDrawContext *dc, ArtPoint *p, guint state);
+static void spdc_pen_set_ctrl (SPDrawContext *dc, ArtPoint *p, guint state);
+static void spdc_pen_finish_segment (SPDrawContext *dc, ArtPoint *p, guint state);
 
 static void spdc_concat_colors_and_flush (SPDrawContext *dc);
 static void spdc_flush_white (SPDrawContext *dc, SPCurve *gc);
 
-static void spdc_clear_white_data (SPDrawContext *dc);
-static void spdc_clear_red_data (SPDrawContext *dc);
-static void spdc_clear_blue_data (SPDrawContext *dc);
+static void spdc_reset_colors (SPDrawContext *dc);
+static void spdc_free_colors (SPDrawContext *dc);
 
 static SPDrawAnchor *test_inside (SPDrawContext * dc, gdouble wx, gdouble wy);
 static SPDrawAnchor *sp_draw_anchor_test (SPDrawAnchor *anchor, gdouble wx, gdouble wy, gboolean activate);
@@ -133,25 +136,12 @@ sp_draw_context_finalize (GtkObject *object)
 
 	gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (SP_EVENT_CONTEXT_DESKTOP (dc))), dc);
 
-	spdc_clear_white_data (dc);
-	spdc_clear_red_data (dc);
-	spdc_clear_blue_data (dc);
+	spdc_free_colors (dc);
 
-	while (dc->green_bpaths) {
-		/* Destroy green list */
-		gtk_object_destroy (GTK_OBJECT (dc->green_bpaths->data));
-		dc->green_bpaths = g_slist_remove (dc->green_bpaths, dc->green_bpaths->data);
-	}
-
-	if (dc->green_curve) {
-		/* Destroy green curve */
-		dc->green_curve = sp_curve_unref (dc->green_curve);
-	}
-
-	if (dc->green_anchor) {
-		/* Destroy green anchor */
-		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
-	}
+	gtk_object_destroy (GTK_OBJECT (dc->c0));
+	gtk_object_destroy (GTK_OBJECT (dc->c1));
+	gtk_object_destroy (GTK_OBJECT (dc->cl0));
+	gtk_object_destroy (GTK_OBJECT (dc->cl1));
 
 	GTK_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -187,6 +177,33 @@ sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
 	/* No green anchor by default */
 	dc->green_anchor = NULL;
 
+	/* Pen indicators */
+	dc->c0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRL,
+					"shape", SP_CTRL_SHAPE_CIRCLE,
+					"size", 4.0,
+					"filled", 0,
+					"fill_color", 0xff00007f,
+					"stroked", 1,
+					"stroke_color", 0x0000ff7f,
+					NULL);
+	dc->c1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRL,
+					"shape", SP_CTRL_SHAPE_CIRCLE,
+					"size", 4.0,
+					"filled", 0,
+					"fill_color", 0xff00007f,
+					"stroked", 1,
+					"stroke_color", 0x0000ff7f,
+					NULL);
+	dc->cl0 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRLLINE, NULL);
+	sp_ctrlline_set_rgba32 (SP_CTRLLINE (dc->cl0), 0x0000007f);
+	dc->cl1 = gnome_canvas_item_new (SP_DT_CONTROLS (SP_EVENT_CONTEXT_DESKTOP (dc)), SP_TYPE_CTRLLINE, NULL);
+	sp_ctrlline_set_rgba32 (SP_CTRLLINE (dc->cl1), 0x0000007f);
+
+	gnome_canvas_item_hide (dc->c0);
+	gnome_canvas_item_hide (dc->c1);
+	gnome_canvas_item_hide (dc->cl0);
+	gnome_canvas_item_hide (dc->cl1);
+
 	spdc_read_selection (dc, SP_DT_SELECTION (dt));
 }
 
@@ -221,13 +238,23 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				/* Current segment will be finished with release */
 				ret = TRUE;
 				break;
+			case SP_DRAW_CONTEXT_PEN_POINT:
+			case SP_DRAW_CONTEXT_PEN_CONTROL:
+				break;
+#if 0
+				/* fixme: Anchor and close if needed */
+				/* fixme: Snapping */
+				spdc_pen_set_point (dc, &p, event->button.state);
+				ret = TRUE;
+				break;
+#endif
 			default:
 				/* Set first point of sequence */
 				if (anchor) {
 					p = anchor->dp;
 				}
 				dc->sa = anchor;
-				spdc_set_startpoint (dc, &p, event->motion.state);
+				spdc_set_startpoint (dc, &p, event->button.state);
 				ret = TRUE;
 				break;
 			}
@@ -246,6 +273,19 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				p = anchor->dp;
 			}
 			spdc_set_endpoint (dc, &p, event->motion.state);
+			ret = TRUE;
+			break;
+		case SP_DRAW_CONTEXT_PEN_POINT:
+			if (dc->npoints != 0) {
+				/* Only set point, if we are already appending */
+				/* fixme: Snapping */
+				spdc_pen_set_point (dc, &p, event->motion.state);
+				ret = TRUE;
+			}
+			break;
+		case SP_DRAW_CONTEXT_PEN_CONTROL:
+			/* fixme: Snapping */
+			spdc_pen_set_ctrl (dc, &p, event->motion.state);
 			ret = TRUE;
 			break;
 		default:
@@ -292,6 +332,20 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				dc->state = SP_DRAW_CONTEXT_IDLE;
 				ret = TRUE;
 				break;
+			case SP_DRAW_CONTEXT_PEN_POINT:
+				/* fixme: (Lauris) */
+				if (dc->npoints == 0) {
+					spdc_pen_set_point (dc, &p, event->motion.state);
+				}
+				dc->state = SP_DRAW_CONTEXT_PEN_CONTROL;
+				ret = TRUE;
+				break;
+			case SP_DRAW_CONTEXT_PEN_CONTROL:
+				/* End current segment */
+				spdc_pen_finish_segment (dc, &p, event->button.state);
+				dc->state = SP_DRAW_CONTEXT_PEN_POINT;
+				ret = TRUE;
+				break;
 			case SP_DRAW_CONTEXT_FREEHAND:
 				/* Finish segment now */
 				/* fixme: Clean up what follows (Lauris) */
@@ -311,6 +365,32 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			/* Release grab now */
 			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
 			ret = TRUE;
+		}
+		break;
+	case GDK_KEY_PRESS:
+		/* fixme: */
+		switch (event->key.keyval) {
+		case GDK_p:
+			if (dc->state == SP_DRAW_CONTEXT_IDLE) {
+				dc->state = SP_DRAW_CONTEXT_PEN_POINT;
+				dc->npoints = 0;
+				gnome_canvas_item_show (dc->c1);
+				gnome_canvas_item_show (dc->cl1);
+				ret = TRUE;
+			}
+			break;
+		case GDK_f:
+			g_print ("Finishing pen\n");
+			spdc_concat_colors_and_flush (dc);
+			dc->state = SP_DRAW_CONTEXT_IDLE;
+			gnome_canvas_item_hide (dc->c0);
+			gnome_canvas_item_hide (dc->c1);
+			gnome_canvas_item_hide (dc->cl0);
+			gnome_canvas_item_hide (dc->cl1);
+			ret = TRUE;
+			break;
+		default:
+			break;
 		}
 		break;
 	default:
@@ -350,26 +430,7 @@ spdc_read_selection (SPDrawContext *dc, SPSelection *sel)
 {
 	SPItem *item;
 
-	/* Reset red data */
-	sp_curve_reset (dc->red_curve);
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
-	/* Reset blue data */
-	sp_curve_reset (dc->blue_curve);
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->blue_bpath), NULL);
-	/* Reset green data */
-	while (dc->green_bpaths) {
-		gtk_object_destroy (GTK_OBJECT (dc->green_bpaths->data));
-		dc->green_bpaths = g_slist_remove (dc->green_bpaths, dc->green_bpaths->data);
-	}
-	sp_curve_reset (dc->green_curve);
-	/* fixme: green anchor */
-	/* fixme: Think (Lauris) */
-	if (dc->green_anchor) {
-		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
-	}
-
-	/* Clear white data */
-	spdc_clear_white_data (dc);
+	spdc_reset_colors (dc);
 
 	/* fixme: Think (Lauris) */
 	dc->sa = NULL;
@@ -390,10 +451,10 @@ spdc_read_selection (SPDrawContext *dc, SPSelection *sel)
 		sp_item_i2d_affine (dc->white_item, i2dt);
 		norm = sp_curve_transform (norm, i2dt);
 		g_return_if_fail (norm != NULL);
-		dc->white_cl = sp_curve_split (norm);
+		dc->white_curves = sp_curve_split (norm);
 		sp_curve_unref (norm);
 		/* Anchor list */
-		for (l = dc->white_cl; l != NULL; l = l->next) {
+		for (l = dc->white_curves; l != NULL; l = l->next) {
 			SPCurve *c;
 			c = l->data;
 			g_return_if_fail (c->end > 1);
@@ -403,9 +464,9 @@ spdc_read_selection (SPDrawContext *dc, SPSelection *sel)
 				s = sp_curve_first_bpath (c);
 				e = sp_curve_last_bpath (c);
 				a = sp_draw_anchor_new (dc, c, TRUE, s->x3, s->y3);
-				dc->white_al = g_slist_prepend (dc->white_al, a);
+				dc->white_anchors = g_slist_prepend (dc->white_anchors, a);
 				a = sp_draw_anchor_new (dc, c, FALSE, e->x3, e->y3);
-				dc->white_al = g_slist_prepend (dc->white_al, a);
+				dc->white_anchors = g_slist_prepend (dc->white_anchors, a);
 			}
 		}
 		/* fixme: recalculate active anchor, reset red (DONE), green (DONE) and blue (DONE) , release drags */
@@ -522,6 +583,99 @@ spdc_add_freehand_point (SPDrawContext *dc, ArtPoint *p, guint state)
 	}
 }
 
+static void
+spdc_pen_set_point (SPDrawContext *dc, ArtPoint *p, guint state)
+{
+	g_print ("Set pen position %g %g\n", p->x, p->y);
+
+	if (dc->npoints == 0) {
+		/* Just set initial point */
+		dc->p[0] = *p;
+		dc->p[1] = *p;
+		dc->npoints = 2;
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+	} else {
+#if 0
+		gdouble dx3, dy3;
+		dx3 = (p->x - dc->p[0].x) / 3.0;
+		dy3 = (p->y - dc->p[0].y) / 3.0;
+		dc->p[2].x = p->x - dx3;
+		dc->p[2].y = p->y - dy3;
+#else
+		dc->p[2] = *p;
+#endif
+		dc->p[3] = *p;
+#if 0
+		dc->p[4].x = p->x + dx3;
+		dc->p[4].y = p->y + dy3;
+#else
+		dc->p[4] = *p;
+#endif
+		dc->npoints = 5;
+		sp_curve_reset (dc->red_curve);
+		sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
+		sp_curve_curveto (dc->red_curve, dc->p[1].x, dc->p[1].y, dc->p[2].x, dc->p[2].y, dc->p[3].x, dc->p[3].y);
+		sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
+	}
+}
+
+static void
+spdc_pen_set_ctrl (SPDrawContext *dc, ArtPoint *p, guint state)
+{
+	g_print ("Set pen control %g %g\n", p->x, p->y);
+
+	if (dc->npoints == 2) {
+		dc->p[1] = *p;
+		gnome_canvas_item_hide (dc->c0);
+		gnome_canvas_item_hide (dc->cl0);
+		sp_ctrl_moveto (SP_CTRL (dc->c1), dc->p[1].x, dc->p[1].y);
+		sp_ctrlline_set_coords (SP_CTRLLINE (dc->cl1), dc->p[0].x, dc->p[0].y, dc->p[1].x, dc->p[1].y);
+	} else if (dc->npoints == 5) {
+		dc->p[4] = *p;
+		gnome_canvas_item_show (dc->c0);
+		gnome_canvas_item_show (dc->cl0);
+		if (state & GDK_CONTROL_MASK) {
+			gdouble dx, dy;
+			dx = p->x - dc->p[3].x;
+			dy = p->y - dc->p[3].y;
+			dc->p[2].x = dc->p[3].x - dx;
+			dc->p[2].y = dc->p[3].y - dy;
+			sp_curve_reset (dc->red_curve);
+			sp_curve_moveto (dc->red_curve, dc->p[0].x, dc->p[0].y);
+			sp_curve_curveto (dc->red_curve, dc->p[1].x, dc->p[1].y, dc->p[2].x, dc->p[2].y, dc->p[3].x, dc->p[3].y);
+			sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), dc->red_curve);
+		}
+		sp_ctrl_moveto (SP_CTRL (dc->c0), dc->p[2].x, dc->p[2].y);
+		sp_ctrlline_set_coords (SP_CTRLLINE (dc->cl0), dc->p[3].x, dc->p[3].y, dc->p[2].x, dc->p[2].y);
+		sp_ctrl_moveto (SP_CTRL (dc->c1), dc->p[4].x, dc->p[4].y);
+		sp_ctrlline_set_coords (SP_CTRLLINE (dc->cl1), dc->p[3].x, dc->p[3].y, dc->p[4].x, dc->p[4].y);
+	} else {
+		g_warning ("Something bad happened - npoints is %d", dc->npoints);
+	}
+}
+
+static void
+spdc_pen_finish_segment (SPDrawContext *dc, ArtPoint *p, guint state)
+{
+	if (!sp_curve_empty (dc->red_curve)) {
+		SPCurve *curve;
+		GnomeCanvasItem *cshape;
+
+		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 1e-9);
+		curve = sp_curve_copy (dc->red_curve);
+		/* fixme: */
+		cshape = sp_canvas_bpath_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop), curve);
+		sp_curve_unref (curve);
+		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), 0x00bf00ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
+
+		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
+
+		dc->p[0] = dc->p[3];
+		dc->p[1] = dc->p[4];
+		dc->npoints = 2;
+	}
+}
+
 /*
  * Concats red, blue and green
  * If any anchors are defined, process these, optionally removing curves from white list
@@ -584,7 +738,7 @@ spdc_concat_colors_and_flush (SPDrawContext *dc)
 		SPCurve *s;
 		g_print ("Curve start hit anchor\n");
 		s = dc->sa->curve;
-		dc->white_cl = g_slist_remove (dc->white_cl, s);
+		dc->white_curves = g_slist_remove (dc->white_curves, s);
 		if (dc->sa->start) {
 			SPCurve *r;
 			g_print ("Reversing curve\n");
@@ -602,7 +756,7 @@ spdc_concat_colors_and_flush (SPDrawContext *dc)
 		SPCurve *e;
 		g_print ("Curve end hit anchor\n");
 		e = dc->ea->curve;
-		dc->white_cl = g_slist_remove (dc->white_cl, e);
+		dc->white_curves = g_slist_remove (dc->white_curves, e);
 		if (!dc->ea->start) {
 			SPCurve *r;
 			g_print ("Reversing curve\n");
@@ -632,11 +786,11 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 {
 	SPCurve *c;
 
-	if (dc->white_cl) {
+	if (dc->white_curves) {
 		g_assert (dc->white_item);
-		c = sp_curve_concat (dc->white_cl);
-		g_slist_free (dc->white_cl);
-		dc->white_cl = NULL;
+		c = sp_curve_concat (dc->white_curves);
+		g_slist_free (dc->white_curves);
+		dc->white_curves = NULL;
 		if (gc) {
 			sp_curve_append (c, gc, FALSE);
 		}
@@ -659,10 +813,15 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 	}
 
 	if (c && !sp_curve_empty (c)) {
+		SPDesktop *dt;
+		SPDocument *doc;
 		SPRepr *repr;
 		gchar *str;
 
 		/* We actually have something to write */
+
+		dt = SP_EVENT_CONTEXT_DESKTOP (dc);
+		doc = SP_DT_DOCUMENT (dt);
 
 		if (dc->white_item) {
 			repr = SP_OBJECT_REPR (dc->white_item);
@@ -684,16 +843,19 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 		g_free (str);
 
 		if (!dc->white_item) {
-			SPDesktop *dt;
-			dt = SP_EVENT_CONTEXT_DESKTOP (dc);
 			/* Attach repr */
 			sp_document_add_repr (SP_DT_DOCUMENT (dt), repr);
 			sp_selection_set_repr (SP_DT_SELECTION (dt), repr);
 			sp_repr_unref (repr);
 		}
+
+		sp_document_done (doc);
 	}
 
 	sp_curve_unref (c);
+
+	/* Flush pending updates */
+	sp_document_ensure_up_to_date (SP_DT_DOCUMENT (SP_EVENT_CONTEXT_DESKTOP (dc)));
 }
 
 /*
@@ -713,7 +875,7 @@ test_inside (SPDrawContext *dc, gdouble wx, gdouble wy)
 		active = sp_draw_anchor_test (dc->green_anchor, wx, wy, TRUE);
 	}
 
-	for (l = dc->white_al; l != NULL; l = l->next) {
+	for (l = dc->white_anchors; l != NULL; l = l->next) {
 		SPDrawAnchor *na;
 		na = sp_draw_anchor_test ((SPDrawAnchor *) l->data, wx, wy, !active);
 		if (!active && na) active = na;
@@ -760,69 +922,81 @@ fit_and_split (SPDrawContext * dc)
 	}
 }
 
-/*
- * - White item
- * - White curve list
- * - White anchor list
- */
-
 static void
-spdc_clear_white_data (SPDrawContext *dc)
+spdc_reset_colors (SPDrawContext *dc)
 {
+	/* Red */
+	sp_curve_reset (dc->red_curve);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+	/* Blue */
+	sp_curve_reset (dc->blue_curve);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->blue_bpath), NULL);
+	/* Green */
+	while (dc->green_bpaths) {
+		gtk_object_destroy (GTK_OBJECT (dc->green_bpaths->data));
+		dc->green_bpaths = g_slist_remove (dc->green_bpaths, dc->green_bpaths->data);
+	}
+	sp_curve_reset (dc->green_curve);
+	if (dc->green_anchor) {
+		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
+	}
+	/* White */
 	if (dc->white_item) {
-		/* We do not reference item */
+		/* We do not hold refcount */
 		dc->white_item = NULL;
 	}
-
-	while (dc->white_cl) {
-		/* Clear white curve list */
-		sp_curve_unref ((SPCurve *) dc->white_cl->data);
-		dc->white_cl = g_slist_remove (dc->white_cl, dc->white_cl->data);
+	while (dc->white_curves) {
+		sp_curve_unref ((SPCurve *) dc->white_curves->data);
+		dc->white_curves = g_slist_remove (dc->white_curves, dc->white_curves->data);
 	}
-
-	while (dc->white_al) {
-		sp_draw_anchor_destroy ((SPDrawAnchor *) dc->white_al->data);
-		dc->white_al = g_slist_remove (dc->white_al, dc->white_al->data);
+	while (dc->white_anchors) {
+		sp_draw_anchor_destroy ((SPDrawAnchor *) dc->white_anchors->data);
+		dc->white_anchors = g_slist_remove (dc->white_anchors, dc->white_anchors->data);
 	}
 }
 
-/*
- * - Red bpath
- * - Red curve
- */
-
 static void
-spdc_clear_red_data (SPDrawContext *dc)
+spdc_free_colors (SPDrawContext *dc)
 {
+	/* Red */
 	if (dc->red_bpath) {
-		/* Destroy red bpath */
 		gtk_object_destroy (GTK_OBJECT (dc->red_bpath));
 		dc->red_bpath = NULL;
 	}
-
 	if (dc->red_curve) {
-		/* Destroy red curve */
 		dc->red_curve = sp_curve_unref (dc->red_curve);
 	}
-}
-
-/*
- * - Blue bpath
- * - Blue curve
- */
-
-static void
-spdc_clear_blue_data (SPDrawContext *dc)
-{
+	/* Blue */
 	if (dc->blue_bpath) {
-		/* Destroy blue bpath */
 		gtk_object_destroy (GTK_OBJECT (dc->blue_bpath));
 		dc->blue_bpath = NULL;
 	}
-
 	if (dc->blue_curve) {
-		/* Destroy blue curve */
 		dc->blue_curve = sp_curve_unref (dc->blue_curve);
+	}
+	/* Green */
+	while (dc->green_bpaths) {
+		gtk_object_destroy (GTK_OBJECT (dc->green_bpaths->data));
+		dc->green_bpaths = g_slist_remove (dc->green_bpaths, dc->green_bpaths->data);
+	}
+	if (dc->green_curve) {
+		dc->green_curve = sp_curve_unref (dc->green_curve);
+	}
+	if (dc->green_anchor) {
+		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
+	}
+	/* White */
+	if (dc->white_item) {
+		/* We do not hold refcount */
+		dc->white_item = NULL;
+	}
+	while (dc->white_curves) {
+		sp_curve_unref ((SPCurve *) dc->white_curves->data);
+		dc->white_curves = g_slist_remove (dc->white_curves, dc->white_curves->data);
+	}
+	while (dc->white_anchors) {
+		sp_draw_anchor_destroy ((SPDrawAnchor *) dc->white_anchors->data);
+		dc->white_anchors = g_slist_remove (dc->white_anchors, dc->white_anchors->data);
 	}
 }
 

@@ -290,7 +290,7 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	// status text
 	xs = SP_PT_TO_METRIC_STRING (fabs(x1-x0), SP_DEFAULT_METRIC);
 	ys = SP_PT_TO_METRIC_STRING (fabs(y1-y0), SP_DEFAULT_METRIC);
-	sprintf (status, "Draw rectangle  %s x %s", xs->str, ys->str);
+	g_snprintf (status, 80, "Draw rectangle  %s x %s", xs->str, ys->str);
 	sp_desktop_set_status (desktop, status);
 	g_string_free (xs, FALSE);
 	g_string_free (ys, FALSE);

@@ -32,41 +32,33 @@ typedef struct _SPDrawAnchor SPDrawAnchor;
 enum {
 	SP_DRAW_CONTEXT_IDLE,
 	SP_DRAW_CONTEXT_ADDLINE,
+	SP_DRAW_CONTEXT_PEN_POINT,
+	SP_DRAW_CONTEXT_PEN_CONTROL,
 	SP_DRAW_CONTEXT_FREEHAND
 };
 
 struct _SPDrawContext {
 	SPEventContext event_context;
 
-	guint state : 2;
+	guint state : 3;
 
-#if 0
-	guint addline : 1;
-#endif
-
-	/* Current item */
-	SPItem *white_item;
-	/* White curve list */
-	GSList *white_cl;
-	/* White anchor list */
-	GSList *white_al;
-
-	/* Red bpath */
+	/* Red */
 	GnomeCanvasItem *red_bpath;
-	/* Red curve */
 	SPCurve *red_curve;
 
-	/* Blue bpath */
+	/* Blue */
 	GnomeCanvasItem *blue_bpath;
-	/* Blue curve */
 	SPCurve *blue_curve;
 
-	/* Green list */
+	/* Green */
 	GSList *green_bpaths;
-	/* Green curve */
 	SPCurve *green_curve;
-	/* Green anchor */
 	SPDrawAnchor *green_anchor;
+
+	/* White */
+	SPItem *white_item;
+	GSList *white_curves;
+	GSList *white_anchors;
 
 	/* Start anchor */
 	SPDrawAnchor *sa;
@@ -75,6 +67,8 @@ struct _SPDrawContext {
 
 	ArtPoint p[SP_DRAW_POINTS_MAX];
 	gint npoints;
+
+	GnomeCanvasItem *c0, *c1, *cl0, *cl1;
 };
 
 struct _SPDrawContextClass {

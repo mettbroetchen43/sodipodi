@@ -67,6 +67,7 @@ void sp_curve_closepath_current (SPCurve * curve);
 
 SPCurve *sp_curve_append_continuous (SPCurve *c0, SPCurve *c1, gdouble tolerance);
 
+#define sp_curve_is_empty sp_curve_empty
 gboolean sp_curve_empty (SPCurve * curve);
 ArtBpath * sp_curve_last_bpath (SPCurve * curve);
 ArtBpath * sp_curve_first_bpath (SPCurve * curve);

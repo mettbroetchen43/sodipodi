@@ -90,8 +90,8 @@ void sp_document_content_changed (SPDocument *doc, SPObject *object, const gucha
 void sp_document_order_changed (SPDocument *doc, SPObject *object, SPRepr *child, SPRepr *oldref, SPRepr *newref);
 
 /* Object modification root handler */
-
-void sp_document_request_modified (SPDocument *document);
+void sp_document_request_modified (SPDocument *doc);
+gint sp_document_ensure_up_to_date (SPDocument *doc);
 
 /* Save all previous actions to stack, as one undo step */
 void sp_document_done (SPDocument *document);

@@ -537,11 +537,29 @@ sp_document_lookup_id (SPDocument *doc, const gchar *id)
 /* Object modification root handler */
 
 void
-sp_document_request_modified (SPDocument *document)
+sp_document_request_modified (SPDocument *doc)
 {
-	if (!document->modified_id) {
-		document->modified_id = gtk_idle_add (sp_document_idle_handler, document);
+	if (!doc->modified_id) {
+		doc->modified_id = gtk_idle_add (sp_document_idle_handler, doc);
 	}
+}
+
+gint
+sp_document_ensure_up_to_date (SPDocument *doc)
+{
+	if (doc->modified_id) {
+		/* Remove handler */
+		gtk_idle_remove (doc->modified_id);
+		doc->modified_id = 0;
+		/* Emit "modified" signal on objects */
+		sp_object_modified (SP_OBJECT (doc->private->root), 0);
+		/* Emit our own "modified" signal */
+		gtk_signal_emit (GTK_OBJECT (doc), signals [MODIFIED],
+				 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
+		return TRUE;
+	}
+
+	return FALSE;
 }
 
 static gint
@@ -563,10 +581,8 @@ sp_document_idle_handler (gpointer data)
 	}
 	/* ------------------------- */
 #endif
-
 	/* Emit "modified" signal on objects */
 	sp_object_modified (SP_OBJECT (doc->private->root), 0);
-
 	/* Emit our own "modified" signal */
 	gtk_signal_emit (GTK_OBJECT (doc), signals [MODIFIED],
 			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
