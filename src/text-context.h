@@ -1,5 +1,17 @@
-#ifndef SP_TEXT_CONTEXT_H
-#define SP_TEXT_CONTEXT_H
+#ifndef __SP_TEXT_CONTEXT_H__
+#define __SP_TEXT_CONTEXT_H__
+
+/*
+ * SPTextContext
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * Licensed under GNU GPL
+ */
 
 #include "event-context.h"
 
@@ -14,6 +26,7 @@ typedef struct _SPTextContextClass SPTextContextClass;
 
 struct _SPTextContext {
 	SPEventContext event_context;
+
 	SPItem *item;
 	ArtPoint pdoc;
 };

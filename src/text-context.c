@@ -1,4 +1,16 @@
-#define SP_TEXT_CONTEXT_C
+#define __SP_TEXT_CONTEXT_C__
+
+/*
+ * SPTextContext
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2001 Ximian, Inc.
+ *
+ * Licensed under GNU GPL
+ */
 
 #include <math.h>
 #include <gdk/gdkkeysyms.h>
@@ -18,10 +30,6 @@ static void sp_text_context_destroy (GtkObject * object);
 static void sp_text_context_setup (SPEventContext * event_context, SPDesktop * desktop);
 static gint sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
-
-#if 0
-static void sp_text_complete (SPTextContext * text_context);
-#endif
 
 static void sp_text_context_selection_changed (SPSelection *selection, SPTextContext *tc);
 

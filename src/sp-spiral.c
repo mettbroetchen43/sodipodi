@@ -1,7 +1,7 @@
 #define __SP_SPIRAL_C__
 
 /*
- * SPStar
+ * SPSpiral
  *
  * Authors:
  *   Mitsuru Oka <oka326@parkcity.ne.jp>

@@ -479,9 +479,20 @@ sp_color_slider_paint (SPColorSlider *slider, GdkRectangle *area)
 	carea.height = widget->allocation.height - 2 * carea.y;
 
 	aarea.x = slider->value * carea.width - ARROW_SIZE / 2 + carea.x;
-	aarea.y = carea.height - ARROW_SIZE + carea.y * 2;
 	aarea.width = ARROW_SIZE;
-	aarea.height = ARROW_SIZE;
+#if 0
+	if (warea.height > (2 * ARROW_SIZE + 2)) {
+		/* Double arrows */
+		aarea.y = 0;
+		aarea.height = warea.height;
+	} else {
+#endif
+		/* Single arrow */
+		aarea.y = carea.height - ARROW_SIZE + carea.y * 2;
+		aarea.height = ARROW_SIZE;
+#if 0
+	}
+#endif
 
 	if (!gdk_rectangle_intersect (area, &warea, &wpaint)) return;
 
@@ -539,10 +550,21 @@ sp_color_slider_paint (SPColorSlider *slider, GdkRectangle *area)
 
 	if (gdk_rectangle_intersect (area, &aarea, &apaint)) {
 		/* Draw arrow */
+#if 0
+		if (warea.height > (2 * ARROW_SIZE + 2)) {
+			/* Top arrow */
+			gtk_draw_arrow (widget->style, px,
+					widget->state, GTK_SHADOW_OUT,
+					GTK_ARROW_DOWN, TRUE,
+					aarea.x - wpaint.x, 0 - wpaint.y,
+					ARROW_SIZE, ARROW_SIZE);
+		}
+#endif
+		/* Bottom arrow */
 		gtk_draw_arrow (widget->style, px,
 				widget->state, GTK_SHADOW_OUT,
 				GTK_ARROW_UP, TRUE,
-				aarea.x - wpaint.x, aarea.y - wpaint.y,
+				aarea.x - wpaint.x, warea.height - ARROW_SIZE,
 				ARROW_SIZE, ARROW_SIZE);
 	}
 

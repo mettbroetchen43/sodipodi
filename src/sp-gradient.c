@@ -616,29 +616,31 @@ sp_gradient_write_colors (SPGradient *gr)
 		a1 = color & 0xff;
 		o0 = (gint) floor (gr->vector->stops[i].offset * (NCOLORS + 0.9999));
 		o1 = (gint) floor (gr->vector->stops[i + 1].offset * (NCOLORS + 0.9999));
-		dr = ((r1 - r0) << 16) / (o1 - o0);
-		dg = ((g1 - g0) << 16) / (o1 - o0);
-		db = ((b1 - b0) << 16) / (o1 - o0);
-		da = ((a1 - a0) << 16) / (o1 - o0);
-		r = r0 << 16;
-		g = g0 << 16;
-		b = b0 << 16;
-		a = a0 << 16;
+		if (o1 > o0) {
+			dr = ((r1 - r0) << 16) / (o1 - o0);
+			dg = ((g1 - g0) << 16) / (o1 - o0);
+			db = ((b1 - b0) << 16) / (o1 - o0);
+			da = ((a1 - a0) << 16) / (o1 - o0);
+			r = r0 << 16;
+			g = g0 << 16;
+			b = b0 << 16;
+			a = a0 << 16;
 #if 0
-		g_print ("from %d to %d: %x %x %x %x\n", o0, o1, dr, dg, db, da);
+			g_print ("from %d to %d: %x %x %x %x\n", o0, o1, dr, dg, db, da);
 #endif
-		for (j = o0; j < o1 + 1; j++) {
-			gr->color[4 * j] = r >> 16;
-			gr->color[4 * j + 1] = g >> 16;
-			gr->color[4 * j + 2] = b >> 16;
-			gr->color[4 * j + 3] = a >> 16;
+			for (j = o0; j < o1 + 1; j++) {
+				gr->color[4 * j] = r >> 16;
+				gr->color[4 * j + 1] = g >> 16;
+				gr->color[4 * j + 2] = b >> 16;
+				gr->color[4 * j + 3] = a >> 16;
 #if 0
-			g_print ("%x\n", gr->color[j]);
+				g_print ("%x\n", gr->color[j]);
 #endif
-			r += dr;
-			g += dg;
-			b += db;
-			a += da;
+				r += dr;
+				g += dg;
+				b += db;
+				a += da;
+			}
 		}
 	}
 

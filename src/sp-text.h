@@ -29,8 +29,9 @@ struct _SPText {
 
 	gdouble x, y;
 
-	gchar * text;
-	gchar * fontname;
+	guchar *text;
+
+	gchar *fontname;
 	GnomeFontWeight weight;
 	gboolean italic;
 	GnomeFontFace * face;

@@ -39,22 +39,19 @@ static SPCharsClass *parent_class;
 GtkType
 sp_text_get_type (void)
 {
-	static GtkType text_type = 0;
-
-	if (!text_type) {
-		GtkTypeInfo text_info = {
+	static GtkType type = 0;
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPText",
 			sizeof (SPText),
 			sizeof (SPTextClass),
 			(GtkClassInitFunc) sp_text_class_init,
 			(GtkObjectInitFunc) sp_text_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		text_type = gtk_type_unique (sp_chars_get_type (), &text_info);
+		type = gtk_type_unique (SP_TYPE_CHARS, &info);
 	}
-	return text_type;
+	return type;
 }
 
 static void
@@ -98,17 +95,22 @@ sp_text_destroy (GtkObject *object)
 {
 	SPText *text;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_TEXT (object));
-
 	text = SP_TEXT (object);
 
-	if (text->text)
+	if (text->text) {
 		g_free (text->text);
-	if (text->fontname)
+		text->text = NULL;
+	}
+
+	if (text->fontname) {
 		g_free (text->fontname);
-	if (text->face)
+		text->fontname = NULL;
+	}
+
+	if (text->face) {
 		gnome_font_face_unref (text->face);
+		text->face = NULL;
+	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -193,6 +195,7 @@ sp_text_read_content (SPObject * object)
 	text = SP_TEXT (object);
 
 	if (text->text) g_free (text->text);
+
 	t = sp_repr_content (object->repr);
 	if (t != NULL) {
 		text->text = g_strdup (t);
@@ -206,7 +209,7 @@ sp_text_read_content (SPObject * object)
 static char *
 sp_text_description (SPItem * item)
 {
-	SPText * text;
+	SPText *text;
 
 	text = (SPText *) item;
 
@@ -220,12 +223,13 @@ sp_text_description (SPItem * item)
 static void
 sp_text_set_shape (SPText * text)
 {
-	SPChars * chars;
+	SPChars *chars;
 	GnomeFontFace * face;
 	guint glyph;
 	gdouble x, y;
 	gdouble a[6];
 	gdouble w;
+	const guchar *p;
 
 	chars = SP_CHARS (text);
 
@@ -241,7 +245,6 @@ sp_text_set_shape (SPText * text)
 
 	art_affine_scale (a, text->size * 0.001, text->size * -0.001);
 	if (text->text) {
-		guchar *p;
 		for (p = text->text; p && *p; p = g_utf8_next_char (p)) {
 			gunichar u;
 			u = g_utf8_get_char (p);

@@ -1,4 +1,16 @@
-#define SP_CHARS_C
+#define __SP_CHARS_C__
+
+/*
+ * SPChars - parent class for text objects
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
 
 #include "sp-chars.h"
 
@@ -13,22 +25,19 @@ static SPShapeClass *parent_class;
 GtkType
 sp_chars_get_type (void)
 {
-	static GtkType chars_type = 0;
-
-	if (!chars_type) {
-		GtkTypeInfo chars_info = {
+	static GtkType type = 0;
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPChars",
 			sizeof (SPChars),
 			sizeof (SPCharsClass),
 			(GtkClassInitFunc) sp_chars_class_init,
 			(GtkObjectInitFunc) sp_chars_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		chars_type = gtk_type_unique (sp_shape_get_type (), &chars_info);
+		type = gtk_type_unique (SP_TYPE_SHAPE, &info);
 	}
-	return chars_type;
+	return type;
 }
 
 static void
@@ -40,7 +49,7 @@ sp_chars_class_init (SPCharsClass *class)
 	object_class = (GtkObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
-	parent_class = gtk_type_class (sp_shape_get_type ());
+	parent_class = gtk_type_class (SP_TYPE_SHAPE);
 
 	object_class->destroy = sp_chars_destroy;
 }
@@ -57,9 +66,6 @@ sp_chars_destroy (GtkObject *object)
 {
 	SPChars * chars;
 	SPCharElement * el;
-
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_CHARS (object));
 
 	chars = SP_CHARS (object);
 
@@ -92,7 +98,10 @@ sp_chars_set_shape (SPChars * chars)
 		bpath = gnome_font_face_get_glyph_stdoutline (el->face, el->glyph);
 		curve = sp_curve_new_from_static_bpath ((ArtBpath *) bpath);
 		if (curve != NULL) {
-			sp_path_add_bpath (SP_PATH (chars), curve, FALSE, el->affine);
+			gdouble a[6];
+			gint i;
+			for (i = 0; i < 6; i++) a[i] = el->affine[i];
+			sp_path_add_bpath (SP_PATH (chars), curve, FALSE, a);
 			sp_curve_unref (curve);
 		}
 	}
@@ -114,7 +123,7 @@ sp_chars_clear (SPChars * chars)
 }
 
 void
-sp_chars_add_element (SPChars * chars, guint glyph, GnomeFontFace * face, double affine[])
+sp_chars_add_element (SPChars *chars, guint glyph, GnomeFontFace *face, const gdouble *affine)
 {
 	SPCharElement * el;
 	gint i;
@@ -123,9 +132,9 @@ sp_chars_add_element (SPChars * chars, guint glyph, GnomeFontFace * face, double
 
 	el->glyph = glyph;
 	el->face = face;
-	for (i = 0; i < 6; i++) el->affine[i] = affine[i];
-
 	gnome_font_face_ref (face);
+
+	for (i = 0; i < 6; i++) el->affine[i] = affine[i];
 
 	chars->element = g_list_prepend (chars->element, el);
 	/* fixme: */
