@@ -42,6 +42,19 @@ static const char preferences_skeleton[] =
 "    <eventcontext id=\"zoom\"/>"
 "    <eventcontext id=\"select\"/>"
 "  </group>"
+"  <group id=\"palette\">"
+"    <group id=\"dashes\">"
+"      <dash id=\"solid\" style=\"stroke-dasharray:none;\"/>"
+"      <dash id=\"dash-1-1\" style=\"stroke-dasharray:1 1;\"/>"
+"      <dash id=\"dash-1-2\" style=\"stroke-dasharray:1 2;\"/>"
+"      <dash id=\"dash-1-4\" style=\"stroke-dasharray:1 4;\"/>"
+"      <dash id=\"dash-2-1\" style=\"stroke-dasharray:2 1;\"/>"
+"      <dash id=\"dash-4-1\" style=\"stroke-dasharray:4 1;\"/>"
+"      <dash id=\"dash-2-2\" style=\"stroke-dasharray:2 2;\"/>"
+"      <dash id=\"dash-4-4\" style=\"stroke-dasharray:4 4;\"/>"
+"      <dash id=\"dash-4-2-1-2\" style=\"stroke-dasharray:4 2 1 2;\"/>"
+"    </group>"
+"  </group>"
 "</sodipodi>";
 
 #define PREFERENCES_SKELETON_SIZE (sizeof (preferences_skeleton) - 1)

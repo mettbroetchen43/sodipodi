@@ -668,7 +668,7 @@ sp_stroke_style_line_widget_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 3, 4, GTK_FILL, 0, 4, 0);
 
-	ds = sp_dash_selector_new ();
+	ds = sp_dash_selector_new (sodipodi_get_repr (SODIPODI, "palette.dashes"));
 	gtk_widget_show (ds);
 	gtk_table_attach (GTK_TABLE (t), ds, 1, 4, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (spw), "dash", ds);

@@ -23,7 +23,8 @@
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkpixmap.h>
 #include <gtk/gtkspinbutton.h>
-
+#include "../xml/repr-private.h"
+#include "../style.h"
 #include "dash-selector.h"
 
 typedef struct _SPDashSelectorClass SPDashSelectorClass;
@@ -50,7 +51,9 @@ double dash_4_1[] = {4.0, 1.0, -1.0};
 double dash_1_2[] = {1.0, 2.0, -1.0};
 double dash_1_4[] = {1.0, 4.0, -1.0};
 
-double *dashes[] = {dash_0, dash_1_1, dash_2_1, dash_4_1, dash_1_2, dash_1_4, NULL};
+double *builtin_dashes[] = {dash_0, dash_1_1, dash_2_1, dash_4_1, dash_1_2, dash_1_4, NULL};
+
+static double **dashes = NULL;
 
 static void sp_dash_selector_class_init (SPDashSelectorClass *klass);
 static void sp_dash_selector_init (SPDashSelector *dsel);
@@ -128,9 +131,51 @@ sp_dash_selector_init (SPDashSelector *dsel)
 }
 
 GtkWidget *
-sp_dash_selector_new (void)
+sp_dash_selector_new (SPRepr *drepr)
 {
 	GtkWidget *dsel;
+
+	if (!dashes) {
+		SPRepr *dr;
+		int ndashes;
+
+		ndashes = 0;
+		if (drepr) {
+			for (dr = drepr->children; dr; dr = dr->next) {
+				if (!strcmp (sp_repr_name (dr), "dash")) ndashes += 1;
+			}
+		}
+
+		if (ndashes > 0) {
+			SPStyle *style;
+			int pos;
+			pos = 0;
+			style = sp_style_new ();
+			dashes = g_new (double *, ndashes + 1);
+			for (dr = drepr->children; dr; dr = dr->next) {
+				if (!strcmp (sp_repr_name (dr), "dash")) {
+					sp_style_read_from_repr (style, dr);
+					if (style->stroke_dash.n_dash > 0) {
+						double *d;
+						int i;
+						dashes[pos] = g_new (double, style->stroke_dash.n_dash + 1);
+						d = dashes[pos];
+						for (i = 0; i < style->stroke_dash.n_dash; i++) {
+							d[i] = style->stroke_dash.dash[i];
+						}
+						d[i] = -1;
+					} else {
+						dashes[pos] = dash_0;
+					}
+					pos += 1;
+				}
+			}
+			sp_style_unref (style);
+			dashes[pos] = NULL;
+		} else {
+			dashes = builtin_dashes;
+		}
+	}
 
 	dsel = gtk_type_new (SP_TYPE_DASH_SELECTOR);
 
