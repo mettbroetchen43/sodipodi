@@ -66,7 +66,7 @@ unsigned int nr_segment_find_intersections (NRPointF a0, NRPointF a1, NRPointF b
  * exact determines wheter exact match counts
  */
 
-int nr_segment_find_wind (NRPointF a, NRPointF b, NRPointF p, unsigned int exact);
+int nr_segment_find_wind (NRPointD a, NRPointD b, NRPointD p, unsigned int exact);
 
 /* Memory management */
 

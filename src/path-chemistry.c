@@ -372,6 +372,9 @@ sp_selected_path_uncross (void)
 	nnp = nr_node_path_uncross (np);
 	nr_node_path_free (np);
 	np = nnp;
+	nnp = nr_node_path_rewind (np);
+	nr_node_path_free (np);
+	np = nnp;
 
 	c = sp_curve_new ();
 	for (i = 0; i < np->nsegs; i++) {

@@ -706,58 +706,253 @@ nr_node_path_uncross (struct _NRNodePath *path)
 	return npath;
 }
 
+#if 0
+static void
+nr_node_vector (struct _NRNode *n0, struct _NRNode *n1, NRPointF *v)
+{
+	if (n1->isline) {
+		v->x = (n1->x3 - n0->x3);
+		v->y = (n1->y3 - n0->y3);
+	} else {
+		v->x = (n1->x1 - n0->x3);
+		v->y = (n1->y1 - n0->y3);
+		if ((v->x != 0.0) || (v->y != 0.0)) return;
+		v->x = (n1->x2 - n0->x3);
+		v->y = (n1->y2 - n0->y3);
+		if ((v->x != 0.0) || (v->y != 0.0)) return;
+		v->x = (n1->x3 - n0->x3);
+		v->y = (n1->y3 - n0->y3);
+	}
+}
+#endif
+
+static unsigned int
+nr_node_equal (struct _NRNode *n0, struct _NRNode *n1)
+{
+	if (n0->x3 != n1->x3) return 0;
+	if (n0->y3 != n1->y3) return 0;
+	if (n0->next->x3 != n1->next->x3) return 0;
+	if (n0->next->y3 != n1->next->y3) return 0;
+	if (n0->next->isline) {
+		if (n1->next->isline) return 1;
+		if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
+		if (!n1->flats->next->next) return 1;
+		return 0;
+	} else {
+		struct _NRFlatNode *f0, *f1;
+		if (!n0->flats) n0->flats = nr_node_flat_list_build (n0);
+		if (n1->next->isline) {
+			if (!n1->flats->next->next) return 1;
+			return 0;
+		} else {
+			if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
+			f0 = n0->flats;
+			f1 = n1->flats;
+			while (f0 && f1) {
+				if (f0->x != f1->x) return 0;
+				if (f0->y != f1->y) return 0;
+				f0 = f0->next;
+				f1 = f1->next;
+			}
+			if (!f0 && !f1) return 1;
+			return 0;
+		}
+	}
+}
+
 static int
 nr_node_path_seg_get_wind (struct _NRNodePath *path, int seg, int other)
 {
 	struct _NRNodeSeg *s0, *s1;
+	struct _NRNode *n0, *n1;
+	NRPointD a, b, p;
+	int wind;
+
 	s0 = path->segs + seg;
 	s1 = path->segs + other;
-	if ((s0->nodes->x3 == s1->nodes->x3) || (s0->nodes->y3 == s1->nodes->y3)) {
-		/* Initial points are coincident */
-		/* Whether initial point counts depends on directional order */
-		/* If they are coincident then of segment order */
-		/* Exact match should not happen because of uncross */
-	} else {
-		/* Determine normal winding count */
-		/* Exact match should not happen because of uncross */
+	n0 = s0->nodes;
+	n1 = s1->nodes;
+
+	if (nr_node_equal (n0, n1)) {
+		if (seg < other) return 0;
 	}
-#if 0
-	if (seg == other) {
-		struct _NRNode *n;
-		float y0;
-		/* Find initial direction */
-		n = s0->nodes;
-		y0 = n->y3;
-		for (n = n->next; n; n = n->next) {
-			if (n->isline) {
-				if (n->y3 > y0) return 1;
-				if (n->y3 < y0) return -1;
-			} else {
-				struct _NRFlatNode *f;
-				if (!n->flats) n->flats = nr_node_flat_list_build (n);
-				for (f = n->flats; f; f = f->next) {
-					if (f->y > y0) return 1;
-					if (f->y < y0) return -1;
+
+	wind = 0;
+	/* Because of rounding this is exact */
+	if (n0->next->isline) {
+		p.x = 0.5 * (n0->x3 + n0->next->x3);
+		p.y = 0.5 * (n0->y3 + n0->next->y3);
+	} else {
+		if (!n0->flats) n0->flats = nr_node_flat_list_build (n0);
+		p.x = 0.5 * (n0->flats->x + n0->flats->next->x);
+		p.y = 0.5 * (n0->flats->y + n0->flats->next->y);
+	}
+	if (p.y == n0->y3) {
+		if (p.x > n0->x3) {
+			double t;
+			t = p.x;
+			p.x = -p.y;
+			p.y = t;
+			/* Need vertical wind */
+			/* fixme: */
+			while (n1 && n1->next) {
+				if (n1->isline) {
+					a.x = -n1->y3;
+					a.y = n1->x3;
+					b.x = -n1->next->y3;
+					b.y = n1->next->x3;
+					wind += nr_segment_find_wind (a, b, p, 1);
+				} else {
+					struct _NRFlatNode *f;
+					if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
+					f = n1->flats;
+					while (f && f->next) {
+						a.x = -f->y;
+						a.y = f->x;
+						b.x = -f->next->y;
+						b.y = f->next->x;
+						wind += nr_segment_find_wind (a, b, p, 1);
+						f = f->next;
+					}
 				}
+				n1 = n1->next;
+			}
+		} else {
+			double t;
+			t = -p.x;
+			p.x = p.y;
+			p.y = t;
+			/* Need vertical wind */
+			/* fixme: */
+			while (n1 && n1->next) {
+				if (n1->isline) {
+					a.x = n1->y3;
+					a.y = -n1->x3;
+					b.x = n1->next->y3;
+					b.y = -n1->next->x3;
+					wind += nr_segment_find_wind (a, b, p, 1);
+				} else {
+					struct _NRFlatNode *f;
+					if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
+					f = n1->flats;
+					while (f && f->next) {
+						a.x = f->y;
+						a.y = -f->x;
+						b.x = f->next->y;
+						b.y = -f->next->x;
+						wind += nr_segment_find_wind (a, b, p, 1);
+						f = f->next;
+					}
+				}
+				n1 = n1->next;
 			}
 		}
-		return 0;
-#endif
-	return 0;
+	} else {
+		if (p.y > n0->y3) {
+			while (n1 && n1->next) {
+				if (n1->isline) {
+					a.x = n1->x3;
+					a.y = n1->y3;
+					b.x = n1->next->x3;
+					b.y = n1->next->y3;
+					wind += nr_segment_find_wind (a, b, p, 1);
+				} else {
+					struct _NRFlatNode *f;
+					if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
+					f = n1->flats;
+					while (f && f->next) {
+						a.x = f->x;
+						a.y = f->y;
+						b.x = f->next->x;
+						b.y = f->next->y;
+						wind += nr_segment_find_wind (a, b, p, 1);
+						f = f->next;
+					}
+				}
+				n1 = n1->next;
+			}
+		} else {
+			p.x = -p.x;
+			p.y = -p.y;
+			while (n1 && n1->next) {
+				if (n1->isline) {
+					a.x = -n1->x3;
+					a.y = -n1->y3;
+					b.x = -n1->next->x3;
+					b.y = -n1->next->y3;
+					wind += nr_segment_find_wind (a, b, p, 1);
+				} else {
+					struct _NRFlatNode *f;
+					if (!n1->flats) n1->flats = nr_node_flat_list_build (n1);
+					f = n1->flats;
+					while (f && f->next) {
+						a.x = -f->x;
+						a.y = -f->y;
+						b.x = -f->next->x;
+						b.y = -f->next->y;
+						wind += nr_segment_find_wind (a, b, p, 1);
+						f = f->next;
+					}
+				}
+				n1 = n1->next;
+			}
+		}
+	}
+	return wind;
 }
+
+#include <stdio.h>
 
 struct _NRNodePath *
 nr_node_path_rewind (struct _NRNodePath *path)
 {
+	struct _NRNodePath *npath;
 	int *winds;
-	int i, j;
-	winds = (int *) malloc (path->nsegs * path->nsegs);
+	int i, j, ss, sd;
+	int len;
+	winds = (int *) malloc (path->nsegs * path->nsegs * sizeof (int));
 	for (i = 0; i < path->nsegs; i++) {
 		for (j = 0; j < path->nsegs; j++) {
 			winds[i * path->nsegs + j] = nr_node_path_seg_get_wind (path, i, j);
 		}
 	}
-	return NULL;
+	len = 0;
+	for (ss = 0; ss < path->nsegs; ss++) {
+		int self, wind;
+		self = winds[ss * path->nsegs + ss];
+		wind = 0;
+		printf ("Seg %d: ", ss);
+		for (i = 0; i < path->nsegs; i++) {
+			wind += winds[ss * path->nsegs + i];
+			printf ("%d: ", winds[ss * path->nsegs + i]);
+		}
+		printf ("\n");
+		if (((self == 1) && (wind == 1)) || ((self == -1) && (wind == 0))) {
+			len += 1;
+		}
+	}
+	/* Dummy copy */
+	npath = (struct _NRNodePath *) malloc (sizeof (struct _NRNodePath) + (len - 1) * sizeof (struct _NRNodeSeg));
+	npath->nsegs = len;
+	sd = 0;
+	for (ss = 0; ss < path->nsegs; ss++) {
+		int self, wind;
+		self = winds[ss * path->nsegs + ss];
+		wind = 0;
+		for (i = 0; i < path->nsegs; i++) {
+			wind += winds[ss * path->nsegs + i];
+		}
+		if (((self == 1) && (wind == 1)) || ((self == -1) && (wind == 0))) {
+			npath->segs[sd].nodes = nr_node_list_copy (path->segs[ss].nodes);
+			npath->segs[sd].last = npath->segs[sd].nodes;
+			while (npath->segs[sd].last->next) npath->segs[sd].last = npath->segs[sd].last->next;
+			npath->segs[sd].closed = path->segs[ss].closed;
+			npath->segs[sd].value = path->segs[ss].value;
+			sd += 1;
+		}
+	}
+	free (winds);
+	return npath;
 }
 
 /*
@@ -915,20 +1110,22 @@ nr_segment_find_intersections (NRPointF a0, NRPointF a1, NRPointF b0, NRPointF b
  */
 
 int
-nr_segment_find_wind (NRPointF a, NRPointF b, NRPointF p, unsigned int exact)
+nr_segment_find_wind (NRPointD a, NRPointD b, NRPointD p, unsigned int exact)
 {
 	double dx, dy;
 	double qdy, pdy;
-	dx = b.x - a.x;
-	dy = b.y - a.y;
-	qdy = dx * p.x + dy * a.x - dx * a.y;
-	pdy = p.x * dy;
-	if (dy > 0.0) {
-		/* Raising slope */
-		if ((qdy < pdy) || (exact && (qdy <= pdy))) return 1;
-	} else if (dy < 0.0) {
-		/* Descending slope */
-		if ((qdy > pdy) || (exact && (qdy >= pdy))) return -1;
+	if (((a.y <= p.y) && (b.y > p.y)) || ((a.y >= p.y) && (b.y < p.y))) {
+		dx = b.x - a.x;
+		dy = b.y - a.y;
+		qdy = dx * p.y + dy * a.x - dx * a.y;
+		pdy = p.x * dy;
+		if (dy > 0.0) {
+			/* Raising slope */
+			if ((qdy < pdy) || (exact && (qdy <= pdy))) return 1;
+		} else if (dy < 0.0) {
+			/* Descending slope */
+			if ((qdy > pdy) || (exact && (qdy >= pdy))) return -1;
+		}
 	}
 	return 0;
 }
