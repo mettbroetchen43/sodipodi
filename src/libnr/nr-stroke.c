@@ -94,6 +94,8 @@ nr_svl_stroke_build_lineto (NRSVLStrokeBuild *svlb, float x, float y)
 			svlb->x[1] = x;
 			svlb->y[1] = y;
 			len = (float) hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
+			/* Extra check for WinME */
+			if (fabs (len) < NR_EPSILON_F) return;
 			dx = (float) (svlb->x[1] - svlb->x[0]) / len;
 			dy = (float) (svlb->y[1] - svlb->y[0]) / len;
 			dx *= svlb->width_2;
@@ -133,6 +135,8 @@ nr_svl_stroke_build_finish_subpath (NRSVLStrokeBuild *svlb)
 		nr_svl_stroke_build_draw_join (svlb, svlb->x[2], svlb->y[2], svlb->x[3], svlb->y[3], svlb->x[1], svlb->y[1]);
 		/* And finsih possibly open paths */
 		len = (float) hypot (svlb->x[1] - svlb->x[0], svlb->y[1] - svlb->y[0]);
+		/* Extra check for WinME */
+		if (fabs (len) < NR_EPSILON_F) return;
 		dx = (svlb->x[1] - svlb->x[0]) / len;
 		dy = (svlb->y[1] - svlb->y[0]) / len;
 		nr_svl_build_lineto (&svlb->left, svlb->x[0] - dy * svlb->width_2, svlb->y[0] + dx * svlb->width_2);
@@ -537,6 +541,8 @@ nr_svl_stroke_build_draw_cap (NRSVLStrokeBuild *svlb, float x0, float y0, float 
 {
 	float len, dx, dy;
 	len = hypot (x1 - x0, y1 - y0);
+	/* Extra check for WinME */
+	if (fabs (len) < NR_EPSILON_F) return;
 	dx = (x1 - x0) / len;
 	dy = (y1 - y0) / len;
 	if (svlb->cap == NR_STROKE_CAP_BUTT) {
@@ -601,11 +607,15 @@ nr_svl_stroke_build_draw_join (NRSVLStrokeBuild *svlb, float x0, float y0, float
 	float len1, dx1, dy1, px1, py1;
 	double costheta;
 	len0 = hypot (x1 - x0, y1 - y0);
+	/* Extra check for WinME */
+	if (fabs (len0) < NR_EPSILON_F) return;
 	dx0 = (x1 - x0) / len0;
 	dy0 = (y1 - y0) / len0;
 	px0 = dy0 * svlb->width_2;
 	py0 = -dx0 * svlb->width_2;
 	len1 = hypot (x2 - x1, y2 - y1);
+	/* Extra check for WinME */
+	if (fabs (len1) < NR_EPSILON_F) return;
 	dx1 = (x2 - x1) / len1;
 	dy1 = (y2 - y1) / len1;
 	px1 = dy1 * svlb->width_2;
@@ -621,6 +631,8 @@ nr_svl_stroke_build_draw_join (NRSVLStrokeBuild *svlb, float x0, float y0, float
 		dx = (px0 + px1) / 2.0;
 		dy = (py0 + py1) / 2.0;
 		d2 = dx * dx + dy * dy;
+		/* Extra check for WinME */
+		if (fabs (d2) < NR_EPSILON_F) return;
 		D_d = svlb->width_2 * svlb->width_2 / d2;
 		dx *= D_d;
 		dy *= D_d;

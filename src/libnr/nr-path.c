@@ -474,33 +474,45 @@ nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, 
 	 *         (                       3 * x011 - 3 * x111)
 	 */
 
+	/* a * s2 + b * s + c == 0 */
+
 	a = 3 * x000 - 9 * x001 + 9 * x011 - 3 * x111;
 	b = 6 * x001 - 12 * x011 + 6 * x111;
 	c = 3 * x011 - 3 * x111;
 
-	/*
-	 * s = (-b +/- sqrt (b * b - 4 * a * c)) / 2 * a;
-	 */
-
-	D = b * b - 4 * a * c;
-
-	if (D >= 0.0) {
-		double d, s, t, xttt;
-		/* Have solution */
-		d = sqrt (D);
-		s = (-b + d) / (2 * a);
-		if ((s > 0.0) && (s < 1.0)) {
-			t = 1.0 - s;
-			xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
-			bbox->x0 = (float) MIN (bbox->x0, xttt);
-			bbox->x1 = (float) MAX (bbox->x1, xttt);
+	if (fabs (a) < NR_EPSILON_F) {
+		/* s = -c / b */
+		if (fabs (b) > NR_EPSILON_F) {
+			double s, t, xttt;
+			s = -c / b;
+			if ((s > 0.0) && (s < 1.0)) {
+				t = 1.0 - s;
+				xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
+				bbox->x0 = (float) MIN (bbox->x0, xttt);
+				bbox->x1 = (float) MAX (bbox->x1, xttt);
+			}
 		}
-		s = (-b - d) / (2 * a);
-		if ((s > 0.0) && (s < 1.0)) {
-			t = 1.0 - s;
-			xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
-			bbox->x0 = (float) MIN (bbox->x0, xttt);
-			bbox->x1 = (float) MAX (bbox->x1, xttt);
+	} else {
+		/* s = (-b +/- sqrt (b * b - 4 * a * c)) / 2 * a; */
+		D = b * b - 4 * a * c;
+		if (D >= 0.0) {
+			double d, s, t, xttt;
+			/* Have solution */
+			d = sqrt (D);
+			s = (-b + d) / (2 * a);
+			if ((s > 0.0) && (s < 1.0)) {
+				t = 1.0 - s;
+				xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
+				bbox->x0 = (float) MIN (bbox->x0, xttt);
+				bbox->x1 = (float) MAX (bbox->x1, xttt);
+			}
+			s = (-b - d) / (2 * a);
+			if ((s > 0.0) && (s < 1.0)) {
+				t = 1.0 - s;
+				xttt = s * s * s * x000 + 3 * s * s * t * x001 + 3 * s * t * t * x011 + t * t * t * x111;
+				bbox->x0 = (float) MIN (bbox->x0, xttt);
+				bbox->x1 = (float) MAX (bbox->x1, xttt);
+			}
 		}
 	}
 
@@ -508,25 +520,39 @@ nr_curve_bbox (double x000, double y000, double x001, double y001, double x011, 
 	b = 6 * y001 - 12 * y011 + 6 * y111;
 	c = 3 * y011 - 3 * y111;
 
-	D = b * b - 4 * a * c;
-
-	if (D >= 0.0) {
-		double d, s, t, yttt;
-		/* Have solution */
-		d = sqrt (D);
-		s = (-b + d) / (2 * a);
-		if ((s > 0.0) && (s < 1.0)) {
-			t = 1.0 - s;
-			yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
-			bbox->y0 = (float) MIN (bbox->y0, yttt);
-			bbox->y1 = (float) MAX (bbox->y1, yttt);
+	if (fabs (a) < NR_EPSILON_F) {
+		/* s = -c / b */
+		if (fabs (b) > NR_EPSILON_F) {
+			double s, t, yttt;
+			s = -c / b;
+			if ((s > 0.0) && (s < 1.0)) {
+				t = 1.0 - s;
+				yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
+				bbox->y0 = (float) MIN (bbox->y0, yttt);
+				bbox->y1 = (float) MAX (bbox->y1, yttt);
+			}
 		}
-		s = (-b - d) / (2 * a);
-		if ((s > 0.0) && (s < 1.0)) {
-			t = 1.0 - s;
-			yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
-			bbox->y0 = (float) MIN (bbox->y0, yttt);
-			bbox->y1 = (float) MAX (bbox->y1, yttt);
+	} else {
+		/* s = (-b +/- sqrt (b * b - 4 * a * c)) / 2 * a; */
+		D = b * b - 4 * a * c;
+		if (D >= 0.0) {
+			double d, s, t, yttt;
+			/* Have solution */
+			d = sqrt (D);
+			s = (-b + d) / (2 * a);
+			if ((s > 0.0) && (s < 1.0)) {
+				t = 1.0 - s;
+				yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
+				bbox->y0 = (float) MIN (bbox->y0, yttt);
+				bbox->y1 = (float) MAX (bbox->y1, yttt);
+			}
+			s = (-b - d) / (2 * a);
+			if ((s > 0.0) && (s < 1.0)) {
+				t = 1.0 - s;
+				yttt = s * s * s * y000 + 3 * s * s * t * y001 + 3 * s * t * t * y011 + t * t * t * y111;
+				bbox->y0 = (float) MIN (bbox->y0, yttt);
+				bbox->y1 = (float) MAX (bbox->y1, yttt);
+			}
 		}
 	}
 }
