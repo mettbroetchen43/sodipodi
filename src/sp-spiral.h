@@ -57,7 +57,7 @@ struct _SPSpiralClass {
 GType sp_spiral_get_type  (void);
 
 /* Lowlevel interface */
-void    sp_spiral_set		(SPSpiral      *spiral,
+void    sp_spiral_position_set		(SPSpiral      *spiral,
 				 gdouble	cx,
 				 gdouble	cy,
 				 gdouble	exp,

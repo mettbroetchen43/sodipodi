@@ -19,12 +19,14 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 
+#include "macros.h"
 #include "helper/art-utils.h"
 #include "helper/nr-plain-stuff.h"
 #include "svg/svg.h"
 #include "print.h"
 #include "display/nr-arena.h"
 #include "display/nr-arena-item.h"
+#include "attributes.h"
 #include "document.h"
 #include "uri-references.h"
 #include "desktop.h"
@@ -48,7 +50,7 @@ static void sp_item_init (SPItem *item);
 
 static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_item_release (SPObject *object);
-static void sp_item_read_attr (SPObject *object, const gchar *key);
+static void sp_item_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_item_modified (SPObject *object, guint flags);
 static void sp_item_style_modified (SPObject *object, guint flags);
 static SPRepr *sp_item_write (SPObject *object, SPRepr *repr, guint flags);
@@ -100,7 +102,7 @@ sp_item_class_init (SPItemClass *klass)
 
 	sp_object_class->build = sp_item_build;
 	sp_object_class->release = sp_item_release;
-	sp_object_class->read_attr = sp_item_read_attr;
+	sp_object_class->set = sp_item_set;
 	sp_object_class->modified = sp_item_modified;
 	sp_object_class->style_modified = sp_item_style_modified;
 	sp_object_class->write = sp_item_write;
@@ -137,10 +139,10 @@ sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) (parent_class))->build)
 		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
-	sp_item_read_attr (object, "transform");
-	sp_item_read_attr (object, "style");
-	sp_item_read_attr (object, "clip-path");
-	sp_item_read_attr (object, "sodipodi:insensitive");
+	sp_object_read_attr (object, "transform");
+	sp_object_read_attr (object, "style");
+	sp_object_read_attr (object, "clip-path");
+	sp_object_read_attr (object, "sodipodi:insensitive");
 }
 
 static void
@@ -157,7 +159,7 @@ sp_item_release (SPObject * object)
 
 	if (item->clip) {
 		g_signal_handlers_disconnect_matched (G_OBJECT(item->clip), G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, (gpointer)item);
-		item->clip = (SPClipPath *) sp_object_hunref (SP_OBJECT (item->clip), object);
+		item->clip = sp_object_hunref (SP_OBJECT (item->clip), object);
 	}
 
 	if (((SPObjectClass *) (parent_class))->release)
@@ -177,68 +179,65 @@ sp_item_clip_modified (SPClipPath *cp, guint flags, SPItem *item)
 }
 
 static void
-sp_item_read_attr (SPObject * object, const gchar * key)
+sp_item_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPItem *item;
-	const gchar *astr;
 
 	item = SP_ITEM (object);
 
-	astr = sp_repr_attr (object->repr, key);
-
-	if (!strcmp (key, "transform")) {
+	switch (key) {
+	case SP_ATTR_TRANSFORM: {
 		NRMatrixF t;
-		if (astr && sp_svg_transform_read (astr, &t)) {
+		if (value && sp_svg_transform_read (value, &t)) {
 			sp_item_set_item_transform (item, &t);
 		} else {
 			sp_item_set_item_transform (item, NULL);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
 	}
-
-	if (!strcmp (key, "clip-path")) {
+	case SP_ATTR_CLIP_PATH: {
 		SPObject *cp;
-		cp = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), astr);
+		cp = sp_uri_reference_resolve (SP_OBJECT_DOCUMENT (object), value);
 		if (item->clip) {
-			g_signal_handlers_disconnect_matched (G_OBJECT(item->clip), G_SIGNAL_MATCH_DATA, 0, 0, 0, 0, (gpointer)item);
-/*  			gtk_signal_disconnect_by_data (GTK_OBJECT (item->clip), item); */
-			item->clip = (SPClipPath *) sp_object_hunref (SP_OBJECT (item->clip), object);
+  			sp_signal_disconnect_by_data (item->clip, item);
+			item->clip = sp_object_hunref (SP_OBJECT (item->clip), object);
 		}
 		if (SP_IS_CLIPPATH (cp)) {
 			SPItemView *v;
-			item->clip = (SPClipPath *) sp_object_href (cp, object);
+			item->clip = sp_object_href (cp, object);
 			g_signal_connect (G_OBJECT (item->clip), "release", G_CALLBACK (sp_item_clip_release), item);
 			g_signal_connect (G_OBJECT (item->clip), "modified", G_CALLBACK (sp_item_clip_modified), item);
 			for (v = item->display; v != NULL; v = v->next) {
 				NRArenaItem *ai;
-				ai = sp_clippath_show (item->clip, v->arena);
+				ai = sp_clippath_show (SP_CLIPPATH (item->clip), v->arena);
 				nr_arena_item_set_clip (v->arenaitem, ai);
 				nr_arena_item_unref (ai);
 			}
 		}
+		break;
 	}
-
-	if (!strcmp (key, "sodipodi:insensitive")) {
+	case SP_ATTR_SODIPODI_INSENSITIVE: {
 		SPItemView * v;
-		item->sensitive = (astr == NULL);
+		item->sensitive = (!value);
 		for (v = item->display; v != NULL; v = v->next) {
 			nr_arena_item_set_sensitive (v->arenaitem, item->sensitive);
 		}
+		break;
 	}
-
-	if (((SPObjectClass *) (parent_class))->read_attr)
-		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
-
-	/* fixme: */
-	if (!strcmp (key, "style") ||
-	    !strcmp (key, "font-size") ||
-	    !strcmp (key, "fill-cmyk") ||
-	    !strcmp (key, "fill") ||
-	    !strcmp (key, "stroke-cmyk") ||
-	    !strcmp (key, "stroke") ||
-	    !strcmp (key, "opacity")) {
+	case SP_ATTR_STYLE:
 		sp_style_read_from_object (object->style, object);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+		break;
+	default:
+		if (SP_ATTRIBUTE_IS_CSS (key)) {
+			sp_style_read_from_object (object->style, object);
+			sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+		} else {
+			if (((SPObjectClass *) (parent_class))->set)
+				(* ((SPObjectClass *) (parent_class))->set) (object, key, value);
+		}
+		break;
 	}
 }
 
@@ -486,7 +485,7 @@ sp_item_show (SPItem *item, NRArena *arena)
 		nr_arena_item_set_sensitive (ai, item->sensitive);
 		if (item->clip) {
 			NRArenaItem *ac;
-			ac = sp_clippath_show (item->clip, arena);
+			ac = sp_clippath_show (SP_CLIPPATH (item->clip), arena);
 			nr_arena_item_set_clip (ai, ac);
 			nr_arena_item_unref (ac);
 		}
@@ -523,52 +522,6 @@ sp_item_hide (SPItem *item, NRArena *arena)
 	if (((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide)
 		((SPItemClass *) G_OBJECT_GET_CLASS (item))->hide (item, arena);
 }
-
-#if 0
-gboolean
-sp_item_paint (SPItem *item, ArtPixBuf *buf, gdouble affine[])
-{
-	NRArena *arena;
-	NRArenaItem *root;
-	NRRectL bbox;
-	NRGC gc;
-	NRBuffer *b;
-
-	g_assert (item != NULL);
-	g_assert (SP_IS_ITEM (item));
-	g_assert (buf != NULL);
-	g_assert (affine != NULL);
-
-	sp_document_ensure_up_to_date (SP_OBJECT_DOCUMENT (item));
-
-	/* Create new arena */
-	arena = g_object_new (NR_TYPE_ARENA, 0);
-	/* Create ArenaItem and set transform */
-	root = sp_item_show (item, arena);
-	nr_arena_item_set_transform (root, affine);
-	/* Set area of interest */
-	bbox.x0 = 0;
-	bbox.y0 = 0;
-	bbox.x1 = buf->width;
-	bbox.y1 = buf->height;
-	/* Update to renderable state */
-	art_affine_identity (gc.affine);
-	nr_arena_item_invoke_update (root, &bbox, &gc, NR_ARENA_ITEM_STATE_ALL, NR_ARENA_ITEM_STATE_ALL);
-	/* Get RGBA buffer */
-	b = nr_buffer_get (NR_IMAGE_R8G8B8A8, buf->width, buf->height, TRUE, FALSE);
-	/* Render */
-	nr_arena_item_invoke_render (root, &bbox, b);
-	/* Free Arena and ArenaItem */
-	sp_item_hide (item, arena);
-	g_object_unref (G_OBJECT (arena));
-	/* Copy buffer to output */
-	nr_render_r8g8b8a8_r8g8b8a8_alpha (buf->pixels, buf->width, buf->height, buf->rowstride, b->px, b->rs, 255);
-	/* Release RGBA buffer */
-	nr_buffer_free (b);
-
-	return FALSE;
-}
-#endif
 
 void
 sp_item_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform)
@@ -948,8 +901,10 @@ sp_item_view_new_prepend (SPItemView * list, SPItem * item, NRArena *arena, NRAr
 	new = g_new (SPItemView, 1);
 
 	new->next = list;
+#if 0
 	new->prev = NULL;
 	if (list) list->prev = new;
+#endif
 	new->item = item;
 	new->arena = arena;
 	new->arenaitem = arenaitem;
@@ -958,8 +913,23 @@ sp_item_view_new_prepend (SPItemView * list, SPItem * item, NRArena *arena, NRAr
 }
 
 SPItemView *
-sp_item_view_list_remove (SPItemView * list, SPItemView * view)
+sp_item_view_list_remove (SPItemView *list, SPItemView *view)
 {
+#if 1
+	if (view == list) {
+		list = list->next;
+	} else {
+		SPItemView *prev;
+		prev = list;
+		while (prev->next != view) prev = prev->next;
+		prev->next = view->next;
+	}
+
+	g_free (view);
+
+	return list;
+
+#else
 	SPItemView * v;
 
 	g_assert (list != NULL);
@@ -979,7 +949,9 @@ sp_item_view_list_remove (SPItemView * list, SPItemView * view)
 	}
 
 	g_assert_not_reached ();
+
 	return NULL;
+#endif
 }
 
 /* Convert distances into SVG units */

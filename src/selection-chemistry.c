@@ -595,7 +595,7 @@ sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
 		/* update repr -  needed for undo */
 		sp_item_write_transform (item, SP_OBJECT_REPR (item), &item->transform);
 		/* fixme: Check, whether anything changed */
-		sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
+		sp_object_read_attr (SP_OBJECT (item), "transform");
 	}
 }
 

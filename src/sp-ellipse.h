@@ -63,7 +63,7 @@ struct _SPEllipseClass {
 
 GType sp_ellipse_get_type (void);
 
-void sp_ellipse_set (SPEllipse * ellipse, gdouble x, gdouble y, gdouble rx, gdouble ry);
+void sp_ellipse_position_set (SPEllipse * ellipse, gdouble x, gdouble y, gdouble rx, gdouble ry);
 
 /* SVG <circle> element */
 
@@ -100,7 +100,7 @@ struct _SPArcClass {
 };
 
 GType sp_arc_get_type (void);
-void sp_arc_set (SPArc * arc, gdouble x, gdouble y, gdouble rx, gdouble ry);
+void sp_arc_position_set (SPArc * arc, gdouble x, gdouble y, gdouble rx, gdouble ry);
 void sp_arc_get_xy (SPArc *ge, gdouble arg, ArtPoint *p);
 
 #endif

@@ -54,8 +54,7 @@ sp_knot_holder_new (SPDesktop *desktop, SPItem *item, SPKnotHolderReleasedFunc r
 	knot_holder->released = relhandler;
 
 #ifdef KNOT_HOLDER_DEBUG
-	gtk_signal_connect (GTK_OBJECT(desktop), "destroy",
-			    sp_knot_holder_debug, (gpointer)"SPKnotHolder::item");
+	g_signal_connect (G_OBJECT (desktop), "destroy", sp_knot_holder_debug, (gpointer)"SPKnotHolder::item");
 #endif
 
 	return knot_holder;
@@ -96,7 +95,6 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 	SPItem        *item;
 	ArtPoint sp, dp;
 	NRMatrixF i2d;
-	GtkObject     *ob;
 
 	g_return_if_fail (knot_holder != NULL);
 	g_return_if_fail (knot_set != NULL);
@@ -120,12 +118,11 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 	e->knot = sp_knot_new (knot_holder->desktop);
 	e->knot_set = knot_set;
 	e->knot_get = knot_get;
-	ob = GTK_OBJECT (e->knot->item);
-	gtk_object_set (ob, "shape", shape, NULL);
-	gtk_object_set (ob, "mode", mode, NULL);
+
+	g_object_set (G_OBJECT (e->knot->item), "shape", shape, NULL);
+	g_object_set (G_OBJECT (e->knot->item), "mode", mode, NULL);
 	knot_holder->entity = g_slist_append (knot_holder->entity, e);
 
-	ob = GTK_OBJECT (e->knot);
 	/* move to current point */
 	e->knot_get (item, &sp);
 	sp_item_i2d_affine(item, &i2d);
@@ -133,13 +130,12 @@ sp_knot_holder_add_full	(SPKnotHolder       *knot_holder,
 	dp.y = NR_MATRIX_DF_TRANSFORM_Y (&i2d, sp.x, sp.y);
 	sp_knot_set_position (e->knot, &dp, SP_KNOT_STATE_NORMAL);
 
-	e->handler_id = gtk_signal_connect (ob, "moved", GTK_SIGNAL_FUNC (knot_moved_handler), knot_holder);
+	e->handler_id = g_signal_connect (G_OBJECT (e->knot), "moved", G_CALLBACK (knot_moved_handler), knot_holder);
 
-	gtk_signal_connect (ob, "ungrabbed", GTK_SIGNAL_FUNC (knot_ungrabbed_handler), knot_holder);
+	g_signal_connect (G_OBJECT (e->knot), "ungrabbed", G_CALLBACK (knot_ungrabbed_handler), knot_holder);
 
 #ifdef KNOT_HOLDER_DEBUG
-	gtk_signal_connect (ob, "destroy",
-			    sp_knot_holder_debug, "SPKnotHolder::knot");
+	g_signal_connect (ob, "destroy", sp_knot_holder_debug, "SPKnotHolder::knot");
 #endif
 	sp_knot_show (e->knot);
 }

@@ -18,6 +18,7 @@
 
 #include "helper/art-utils.h"
 #include "svg/svg.h"
+#include "attributes.h"
 #include "style.h"
 /* For versioning */
 #include "sp-root.h"
@@ -55,9 +56,6 @@ static double sp_round (double x, double y)
 
 static void sp_genericellipse_class_init (SPGenericEllipseClass *klass);
 static void sp_genericellipse_init (SPGenericEllipse *ellipse);
-
-static void sp_genericellipse_build (SPObject *object, SPDocument *document, SPRepr *repr);
-static void sp_genericellipse_read_attr (SPObject * object, const gchar * attr);
 
 static GSList *sp_genericellipse_snappoints (SPItem *item, GSList *points);
 
@@ -103,9 +101,6 @@ sp_genericellipse_class_init (SPGenericEllipseClass *klass)
 
 	ge_parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
-	sp_object_class->build = sp_genericellipse_build;
-	sp_object_class->read_attr = sp_genericellipse_read_attr;
-
 	item_class->snappoints = sp_genericellipse_snappoints;
 
 	shape_class->set_shape = sp_genericellipse_glue_set_shape;
@@ -127,31 +122,7 @@ sp_genericellipse_init (SPGenericEllipse *ellipse)
 }
 
 static void
-sp_genericellipse_build (SPObject *object, SPDocument *document, SPRepr *repr)
-{
-	if (((SPObjectClass *) ge_parent_class)->build)
-		(* ((SPObjectClass *) ge_parent_class)->build) (object, document, repr);
-}
-
-static void
-sp_genericellipse_read_attr (SPObject * object, const gchar * attr)
-{
-	SPGenericEllipse *ellipse;
-	const gchar *str;
-
-	ellipse = SP_GENERICELLIPSE (object);
-
-#ifdef ELLIPSE_VERBOSE
-	g_print ("sp_ellipse_read_attr: attr %s\n", attr);
-#endif
-
-	str = sp_repr_attr (object->repr, attr);
-
-	if (((SPObjectClass *) ge_parent_class)->read_attr)
-		(* ((SPObjectClass *) ge_parent_class)->read_attr) (object, attr);
-}
-
-static void sp_genericellipse_glue_set_shape (SPShape *shape)
+sp_genericellipse_glue_set_shape (SPShape *shape)
 {
 	SPGenericEllipse *ge;
 
@@ -371,7 +342,7 @@ static void sp_ellipse_init (SPEllipse *ellipse);
 
 static void sp_ellipse_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_ellipse_write (SPObject *object, SPRepr *repr, guint flags);
-static void sp_ellipse_read_attr (SPObject * object, const gchar * attr);
+static void sp_ellipse_set (SPObject *object, unsigned int key, const unsigned char *value);
 static gchar * sp_ellipse_description (SPItem * item);
 
 static SPGenericEllipseClass *ellipse_parent_class;
@@ -412,7 +383,7 @@ sp_ellipse_class_init (SPEllipseClass *class)
 
 	sp_object_class->build = sp_ellipse_build;
 	sp_object_class->write = sp_ellipse_write;
-	sp_object_class->read_attr = sp_ellipse_read_attr;
+	sp_object_class->set = sp_ellipse_set;
 
 	item_class->description = sp_ellipse_description;
 }
@@ -429,10 +400,10 @@ sp_ellipse_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	if (((SPObjectClass *) ellipse_parent_class)->build)
 		(* ((SPObjectClass *) ellipse_parent_class)->build) (object, document, repr);
 
-	sp_ellipse_read_attr (object, "cx");
-	sp_ellipse_read_attr (object, "cy");
-	sp_ellipse_read_attr (object, "rx");
-	sp_ellipse_read_attr (object, "ry");
+	sp_object_read_attr (object, "cx");
+	sp_object_read_attr (object, "cy");
+	sp_object_read_attr (object, "rx");
+	sp_object_read_attr (object, "ry");
 }
 
 static SPRepr *
@@ -458,53 +429,41 @@ sp_ellipse_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_ellipse_read_attr (SPObject * object, const gchar * attr)
+sp_ellipse_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPGenericEllipse *ellipse;
-	const gchar *str;
-	gulong unit;
 
 	ellipse = SP_GENERICELLIPSE (object);
 
-#ifdef ELLIPSE_VERBOSE
-	g_print ("sp_ellipse_read_attr: attr %s\n", attr);
-#endif
-
-	str = sp_repr_attr (object->repr, attr);
-
-	if (!strcmp (attr, "cx")) {
-		if (!sp_svg_length_read (str, &ellipse->cx)) {
-			ellipse->cx.set = FALSE;
-			ellipse->cx.computed = 0.0;
+	switch (key) {
+	case SP_ATTR_CX:
+		if (!sp_svg_length_read (value, &ellipse->cx)) {
+			sp_svg_length_unset (&ellipse->cx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "cy")) {
-		if (!sp_svg_length_read (str, &ellipse->cy)) {
-			ellipse->cy.set = FALSE;
-			ellipse->cy.computed = 0.0;
+		break;
+	case SP_ATTR_CY:
+		if (!sp_svg_length_read (value, &ellipse->cy)) {
+			sp_svg_length_unset (&ellipse->cy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "rx")) {
-		if (sp_svg_length_read_lff (str, &unit, &ellipse->rx.value, &ellipse->rx.computed) && (ellipse->rx.value > 0.0)) {
-			ellipse->rx.set = TRUE;
-			ellipse->rx.unit = unit;
-		} else {
-			ellipse->rx.set = FALSE;
-			ellipse->rx.computed = 0.0;
+		break;
+	case SP_ATTR_RX:
+		if (!sp_svg_length_read (value, &ellipse->rx) || (ellipse->rx.value <= 0.0)) {
+			sp_svg_length_unset (&ellipse->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "ry")) {
-		if (sp_svg_length_read_lff (str, &unit, &ellipse->ry.value, &ellipse->ry.computed) && (ellipse->ry.value > 0.0)) {
-			ellipse->ry.set = TRUE;
-			ellipse->ry.unit = unit;
-		} else {
-			ellipse->ry.set = FALSE;
-			ellipse->ry.computed = 0.0;
+		break;
+	case SP_ATTR_RY:
+		if (!sp_svg_length_read (value, &ellipse->ry) || (ellipse->ry.value <= 0.0)) {
+			sp_svg_length_unset (&ellipse->ry, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_genericellipse_set_shape (ellipse);
-	} else {
-		if (((SPObjectClass *) ellipse_parent_class)->read_attr)
-			(* ((SPObjectClass *) ellipse_parent_class)->read_attr) (object, attr);
+		break;
+	default:
+		if (((SPObjectClass *) ellipse_parent_class)->set)
+			((SPObjectClass *) ellipse_parent_class)->set (object, key, value);
+		break;
 	}
 }
 
@@ -516,7 +475,7 @@ sp_ellipse_description (SPItem * item)
 
 
 void
-sp_ellipse_set (SPEllipse *ellipse, gdouble x, gdouble y, gdouble rx, gdouble ry)
+sp_ellipse_position_set (SPEllipse *ellipse, gdouble x, gdouble y, gdouble rx, gdouble ry)
 {
 	SPGenericEllipse *ge;
 
@@ -540,7 +499,7 @@ static void sp_circle_init (SPCircle *circle);
 
 static void sp_circle_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_circle_write (SPObject *object, SPRepr *repr, guint flags);
-static void sp_circle_read_attr (SPObject * object, const gchar * attr);
+static void sp_circle_set (SPObject *object, unsigned int key, const unsigned char *value);
 static gchar * sp_circle_description (SPItem * item);
 
 static SPGenericEllipseClass *circle_parent_class;
@@ -581,7 +540,7 @@ sp_circle_class_init (SPCircleClass *class)
 
 	sp_object_class->build = sp_circle_build;
 	sp_object_class->write = sp_circle_write;
-	sp_object_class->read_attr = sp_circle_read_attr;
+	sp_object_class->set = sp_circle_set;
 
 	item_class->description = sp_circle_description;
 }
@@ -598,9 +557,9 @@ sp_circle_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	if (((SPObjectClass *) circle_parent_class)->build)
 		(* ((SPObjectClass *) circle_parent_class)->build) (object, document, repr);
 
-	sp_circle_read_attr (object, "cx");
-	sp_circle_read_attr (object, "cy");
-	sp_circle_read_attr (object, "r");
+	sp_object_read_attr (object, "cx");
+	sp_object_read_attr (object, "cy");
+	sp_object_read_attr (object, "r");
 }
 
 static SPRepr *
@@ -625,45 +584,36 @@ sp_circle_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_circle_read_attr (SPObject *object, const gchar * attr)
+sp_circle_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPGenericEllipse *circle;
-	const gchar *str;
-	gulong unit;
+	SPGenericEllipse *ge;
 
-	circle = SP_GENERICELLIPSE (object);
+	ge = SP_GENERICELLIPSE (object);
 
-#ifdef CIRCLE_VERBOSE
-	g_print ("sp_circle_read_attr: attr %s\n", attr);
-#endif
-
-	str = sp_repr_attr (object->repr, attr);
-
-	if (!strcmp (attr, "cx")) {
-		if (!sp_svg_length_read (str, &circle->cx)) {
-			circle->cx.set = FALSE;
-			circle->cx.computed = 0.0;
+	switch (key) {
+	case SP_ATTR_CX:
+		if (!sp_svg_length_read (value, &ge->cx)) {
+			sp_svg_length_unset (&ge->cx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (circle);
-	} else if (!strcmp (attr, "cy")) {
-		if (!sp_svg_length_read (str, &circle->cy)) {
-			circle->cy.set = FALSE;
-			circle->cy.computed = 0.0;
+		sp_genericellipse_set_shape (ge);
+		break;
+	case SP_ATTR_CY:
+		if (!sp_svg_length_read (value, &ge->cy)) {
+			sp_svg_length_unset (&ge->cy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (circle);
-	} if (!strcmp (attr, "r")) {
-		if (sp_svg_length_read_lff (str, &unit, &circle->rx.value, &circle->rx.computed) && (circle->rx.value > 0.0)) {
-			circle->rx.set = TRUE;
-			circle->rx.unit = unit;
-		} else {
-			circle->rx.set = FALSE;
-			circle->rx.computed = 0.0;
+		sp_genericellipse_set_shape (ge);
+		break;
+	case SP_ATTR_R:
+		if (!sp_svg_length_read (value, &ge->rx) || (ge->rx.value <= 0.0)) {
+			sp_svg_length_unset (&ge->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		circle->ry.computed = circle->rx.computed;
-		sp_genericellipse_set_shape (circle);
-	} else {
-		if (((SPObjectClass *) circle_parent_class)->read_attr)
-			(* ((SPObjectClass *) circle_parent_class)->read_attr) (object, attr);
+		ge->ry = ge->rx;
+		sp_genericellipse_set_shape (ge);
+		break;
+	default:
+		if (((SPObjectClass *) circle_parent_class)->set)
+			((SPObjectClass *) circle_parent_class)->set (object, key, value);
+		break;
 	}
 }
 
@@ -680,7 +630,7 @@ static void sp_arc_init (SPArc *arc);
 
 static void sp_arc_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_arc_write (SPObject *object, SPRepr *repr, guint flags);
-static void sp_arc_read_attr (SPObject *object, const gchar *attr);
+static void sp_arc_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_arc_modified (SPObject *object, guint flags);
 
 static gchar * sp_arc_description (SPItem * item);
@@ -724,7 +674,7 @@ sp_arc_class_init (SPArcClass *class)
 
 	sp_object_class->build = sp_arc_build;
 	sp_object_class->write = sp_arc_write;
-	sp_object_class->read_attr = sp_arc_read_attr;
+	sp_object_class->set = sp_arc_set;
 	sp_object_class->modified = sp_arc_modified;
 
 	item_class->description = sp_arc_description;
@@ -765,21 +715,21 @@ sp_arc_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	if (version < 25) {
 		/* Old spec violating arc attributes */
-		sp_arc_read_attr (object, "cx");
-		sp_arc_read_attr (object, "cy");
-		sp_arc_read_attr (object, "rx");
-		sp_arc_read_attr (object, "ry");
+		sp_object_read_attr (object, "cx");
+		sp_object_read_attr (object, "cy");
+		sp_object_read_attr (object, "rx");
+		sp_object_read_attr (object, "ry");
 	} else {
 		/* New attributes */
-		sp_arc_read_attr (object, "sodipodi:cx");
-		sp_arc_read_attr (object, "sodipodi:cy");
-		sp_arc_read_attr (object, "sodipodi:rx");
-		sp_arc_read_attr (object, "sodipodi:ry");
+		sp_object_read_attr (object, "sodipodi:cx");
+		sp_object_read_attr (object, "sodipodi:cy");
+		sp_object_read_attr (object, "sodipodi:rx");
+		sp_object_read_attr (object, "sodipodi:ry");
 	}
 
-	sp_arc_read_attr (object, "sodipodi:start");
-	sp_arc_read_attr (object, "sodipodi:end");
-	sp_arc_read_attr (object, "sodipodi:open");
+	sp_object_read_attr (object, "sodipodi:start");
+	sp_object_read_attr (object, "sodipodi:end");
+	sp_object_read_attr (object, "sodipodi:open");
 
 	if (version < 25) {
 		/* fixme: I am 99.9% sure we can do this here safely, but check nevertheless (Lauris) */
@@ -901,71 +851,73 @@ sp_arc_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_arc_read_attr (SPObject *object, const gchar *attr)
+sp_arc_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPGenericEllipse *ellipse;
-	const gchar *str;
+	SPGenericEllipse *ge;
 	guint version;
-	gulong unit;
-	double n;
 
-	ellipse = SP_GENERICELLIPSE (object);
+	ge = SP_GENERICELLIPSE (object);
 	
-#ifdef ARC_VERBOSE
-	g_print ("sp_arc_read_attr: attr %s\n", attr);
-#endif
-
-	str = sp_repr_attr (object->repr, attr);
-
 	version = sp_arc_find_version (object);
 
-	if (((version < 25) && !strcmp (attr, "cx")) || ((version >= 25) && !strcmp (attr, "sodipodi:cx"))) {
-		if (!sp_svg_length_read (str, &ellipse->cx)) {
-			ellipse->cx.set = FALSE;
-			ellipse->cx.computed = 0.0;
+	if (version < 25) {
+		switch (key) {
+		case SP_ATTR_CX:
+			key = SP_ATTR_SODIPODI_CX;
+			break;
+		case SP_ATTR_CY:
+			key = SP_ATTR_SODIPODI_CY;
+			break;
+		case SP_ATTR_RX:
+			key = SP_ATTR_SODIPODI_RX;
+			break;
+		case SP_ATTR_RY:
+			key = SP_ATTR_SODIPODI_RY;
+			break;
 		}
-		sp_genericellipse_set_shape (ellipse);
-	} else if (((version < 25) && !strcmp (attr, "cy")) || ((version >= 25) && !strcmp (attr, "sodipodi:cy"))) {
-		if (!sp_svg_length_read (str, &ellipse->cy)) {
-			ellipse->cy.set = FALSE;
-			ellipse->cy.computed = 0.0;
+	}
+
+	switch (key) {
+	case SP_ATTR_SODIPODI_CX:
+		if (!sp_svg_length_read (value, &ge->cx)) {
+			sp_svg_length_unset (&ge->cx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ellipse);
-	} else if (((version < 25) && !strcmp (attr, "rx")) || ((version >= 25) && !strcmp (attr, "sodipodi:rx"))) {
-		if (sp_svg_length_read_lff (str, &unit, &ellipse->rx.value, &ellipse->rx.computed) && (ellipse->rx.value > 0.0)) {
-			ellipse->rx.set = TRUE;
-			ellipse->rx.unit = unit;
-		} else {
-			ellipse->rx.set = FALSE;
-			ellipse->rx.computed = 0.0;
+		sp_genericellipse_set_shape (ge);
+		break;
+	case SP_ATTR_SODIPODI_CY:
+		if (!sp_svg_length_read (value, &ge->cy)) {
+			sp_svg_length_unset (&ge->cy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ellipse);
-	} else if (((version < 25) && !strcmp (attr, "ry")) || ((version >= 25) && !strcmp (attr, "sodipodi:ry"))) {
-		if (sp_svg_length_read_lff (str, &unit, &ellipse->ry.value, &ellipse->ry.computed) && (ellipse->ry.value > 0.0)) {
-			ellipse->ry.set = TRUE;
-			ellipse->ry.unit = unit;
-		} else {
-			ellipse->ry.set = FALSE;
-			ellipse->ry.computed = 0.0;
+		sp_genericellipse_set_shape (ge);
+		break;
+	case SP_ATTR_SODIPODI_RX:
+		if (!sp_svg_length_read (value, &ge->rx) || (ge->rx.computed <= 0.0)) {
+			sp_svg_length_unset (&ge->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
-		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "sodipodi:start")) {
-		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->start);
-		ellipse->start = n;
-		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "sodipodi:end")) {
-		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->end);
-		ellipse->end = n;
-		sp_genericellipse_set_shape (ellipse);
-	} else if (!strcmp (attr, "sodipodi:open")) {
-		if (sp_repr_attr_is_set (object->repr, attr))
-			ellipse->closed = FALSE;
-		else
-			ellipse->closed = TRUE;
-		sp_genericellipse_set_shape (ellipse);
-	} else {
-		if (((SPObjectClass *) arc_parent_class)->read_attr)
-			((SPObjectClass *) arc_parent_class)->read_attr (object, attr);
+		sp_genericellipse_set_shape (ge);
+		break;
+	case SP_ATTR_SODIPODI_RY:
+		if (!sp_svg_length_read (value, &ge->ry) || (ge->ry.computed <= 0.0)) {
+			sp_svg_length_unset (&ge->ry, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_genericellipse_set_shape (ge);
+		break;
+	case SP_ATTR_SODIPODI_START:
+		sp_svg_number_read_d (value, &ge->start);
+		sp_genericellipse_set_shape (ge);
+		break;
+	case SP_ATTR_SODIPODI_END:
+		sp_svg_number_read_d (value, &ge->end);
+		sp_genericellipse_set_shape (ge);
+		break;
+	case SP_ATTR_SODIPODI_OPEN:
+		ge->closed = (!value);
+		sp_genericellipse_set_shape (ge);
+		break;
+	default:
+		if (((SPObjectClass *) arc_parent_class)->set)
+			((SPObjectClass *) arc_parent_class)->set (object, key, value);
+		break;
 	}
 }
 
@@ -987,7 +939,7 @@ sp_arc_description (SPItem * item)
 }
 
 void
-sp_arc_set (SPArc *arc, gdouble x, gdouble y, gdouble rx, gdouble ry)
+sp_arc_position_set (SPArc *arc, gdouble x, gdouble y, gdouble rx, gdouble ry)
 {
 	SPGenericEllipse *ge;
 

@@ -20,6 +20,7 @@
 #include <libart_lgpl/art_vpath_bpath.h>
 #include "helper/art-utils.h"
 #include "svg/svg.h"
+#include "attributes.h"
 #include "sp-root.h"
 #include "sp-path.h"
 
@@ -30,7 +31,7 @@ static void sp_path_init (SPPath *path);
 
 static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_path_release (SPObject *object);
-static void sp_path_read_attr (SPObject * object, const gchar * key);
+static void sp_path_set (SPObject *object, unsigned int key, const unsigned char *value);
 
 static void sp_path_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 
@@ -77,7 +78,7 @@ sp_path_class_init (SPPathClass * klass)
 
 	sp_object_class->build = sp_path_build;
 	sp_object_class->release = sp_path_release;
-	sp_object_class->read_attr = sp_path_read_attr;
+	sp_object_class->set = sp_path_set;
 
 	item_class->bbox = sp_path_bbox;
 
@@ -125,7 +126,7 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		sp_repr_set_attr (repr, "SODIPODI-PATH-NODE-TYPES", NULL);
 	}
 
-	sp_path_read_attr (object, "d");
+	sp_object_read_attr (object, "d");
 
 	if (path->independent && (version > 0) && (version < 25)) {
 		SPCSSAttr *css;
@@ -188,10 +189,9 @@ sp_path_release (SPObject *object)
 }
 
 static void
-sp_path_read_attr (SPObject * object, const gchar * attr)
+sp_path_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPPath * path;
-	gchar * astr;
 	ArtBpath * bpath;
 	SPCurve * curve;
 	SPPathComp * comp;
@@ -201,25 +201,24 @@ sp_path_read_attr (SPObject * object, const gchar * attr)
 
 	art_affine_identity (affine);
 
-	astr = (char *) sp_repr_attr (object->repr, attr);
-
-	if (strcmp (attr, "d") == 0) {
-		if (astr != NULL) {
+	switch (key) {
+	case SP_ATTR_D:
+		sp_path_clear (path);
+		if (value) {
 			/* fixme: */
-			sp_path_clear (path);
-			bpath = sp_svg_read_path (astr);
+			bpath = sp_svg_read_path (value);
 			curve = sp_curve_new_from_bpath (bpath);
 			comp = sp_path_comp_new (curve, TRUE, affine);
 			sp_curve_unref (curve);
 			sp_path_add_comp (path, comp);
 		}
 		sp_object_request_modified (SP_OBJECT (path), SP_OBJECT_MODIFIED_FLAG);
-		return;
+		break;
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
 	}
-
-	if (((SPObjectClass *) parent_class)->read_attr)
-		((SPObjectClass *) parent_class)->read_attr (object, attr);
-
 }
 
 static void

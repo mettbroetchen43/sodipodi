@@ -15,7 +15,9 @@
 #include <string.h>
 #include <glib-object.h>
 #include "helper/sp-intl.h"
+#include "svg/svg.h"
 #include "display/nr-arena-group.h"
+#include "attributes.h"
 #include "document.h"
 #include "sp-object-repr.h"
 #include "sp-use.h"
@@ -28,7 +30,7 @@ static void sp_use_init (SPUse *use);
 
 static void sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_use_release (SPObject *object);
-static void sp_use_read_attr (SPObject * object, const gchar * attr);
+static void sp_use_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_use_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_use_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
@@ -37,7 +39,6 @@ static gchar * sp_use_description (SPItem * item);
 static NRArenaItem *sp_use_show (SPItem *item, NRArena *arena);
 static void sp_use_hide (SPItem *item, NRArena *arena);
 
-static void sp_use_changed (SPUse * use);
 static void sp_use_href_changed (SPUse * use);
 
 static SPItemClass * parent_class;
@@ -78,7 +79,7 @@ sp_use_class_init (SPUseClass *class)
 
 	sp_object_class->build = sp_use_build;
 	sp_object_class->release = sp_use_release;
-	sp_object_class->read_attr = sp_use_read_attr;
+	sp_object_class->set = sp_use_set;
 	sp_object_class->write = sp_use_write;
 
 	item_class->bbox = sp_use_bbox;
@@ -91,8 +92,10 @@ sp_use_class_init (SPUseClass *class)
 static void
 sp_use_init (SPUse * use)
 {
-	use->x = use->y = 0.0;
-	use->width = use->height = 1.0;
+	sp_svg_length_unset (&use->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&use->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&use->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&use->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	use->href = NULL;
 }
 
@@ -106,11 +109,11 @@ sp_use_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) parent_class)->build)
 		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
 
-	sp_use_read_attr (object, "x");
-	sp_use_read_attr (object, "y");
-	sp_use_read_attr (object, "width");
-	sp_use_read_attr (object, "height");
-	sp_use_read_attr (object, "xlink:href");
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "width");
+	sp_object_read_attr (object, "height");
+	sp_object_read_attr (object, "xlink:href");
 
 	if (use->href) {
 		SPObject *refobj;
@@ -149,49 +152,45 @@ sp_use_release (SPObject *object)
 }
 
 static void
-sp_use_read_attr (SPObject * object, const gchar * attr)
+sp_use_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPUse * use;
-	double n;
+	SPUse *use;
 
 	use = SP_USE (object);
 
-	/* fixme: we should really collect updates */
-
-	if (strcmp (attr, "x") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, use->x);
-		use->x = n;
-		sp_use_changed (use);
-		return;
-	}
-	if (strcmp (attr, "y") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, use->y);
-		use->y = n;
-		sp_use_changed (use);
-		return;
-	}
-	if (strcmp (attr, "width") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, use->width);
-		use->width = n;
-		sp_use_changed (use);
-		return;
-	}
-	if (strcmp (attr, "height") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, use->height);
-		use->height = n;
-		sp_use_changed (use);
-		return;
-	}
-	if (strcmp (attr, "xlink:href") == 0) {
-		const gchar * newref;
-		newref = sp_repr_attr (object->repr, attr);
-		if (newref) {
+	switch (key) {
+	case SP_ATTR_X:
+		if (!sp_svg_length_read (value, &use->x)) {
+			sp_svg_length_unset (&use->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_Y:
+		if (!sp_svg_length_read (value, &use->y)) {
+			sp_svg_length_unset (&use->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_WIDTH:
+		if (!sp_svg_length_read (value, &use->width)) {
+			sp_svg_length_unset (&use->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_HEIGHT:
+		if (!sp_svg_length_read (value, &use->height)) {
+			sp_svg_length_unset (&use->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
+		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG);
+		break;
+	case SP_ATTR_XLINK_HREF: {
+		if (value) {
 			if (use->href) {
-				if (strcmp (newref, use->href) == 0) return;
+				if (strcmp (value, use->href) == 0) return;
 				g_free (use->href);
-				use->href = g_strdup (newref + 1);
+				use->href = g_strdup (value + 1);
 			} else {
-				use->href = g_strdup (newref + 1);
+				use->href = g_strdup (value + 1);
 			}
 		} else {
 			if (use->href) {
@@ -200,12 +199,13 @@ sp_use_read_attr (SPObject * object, const gchar * attr)
 			}
 		}
 		sp_use_href_changed (use);
-		return;
+		break;
 	}
-
-	if (((SPObjectClass *) parent_class)->read_attr)
-		((SPObjectClass *) parent_class)->read_attr (object, attr);
-
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
+	}
 }
 
 static SPRepr *
@@ -297,11 +297,6 @@ sp_use_hide (SPItem * item, NRArena *arena)
 
 	if (((SPItemClass *) parent_class)->hide)
 		((SPItemClass *) parent_class)->hide (item, arena);
-}
-
-static void
-sp_use_changed (SPUse * use)
-{
 }
 
 static void

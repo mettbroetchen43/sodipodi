@@ -23,6 +23,7 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 #include "svg/svg.h"
+#include "attributes.h"
 #include "sp-star.h"
 #include "desktop.h"
 #include "desktop-affine.h"
@@ -38,7 +39,7 @@ static void sp_star_init (SPStar *star);
 
 static void sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_star_write (SPObject *object, SPRepr *repr, guint flags);
-static void sp_star_read_attr (SPObject * object, const gchar * attr);
+static void sp_star_set (SPObject *object, unsigned int key, const unsigned char *value);
 
 static SPKnotHolder *sp_star_knot_holder (SPItem * item, SPDesktop *desktop);
 static gchar * sp_star_description (SPItem * item);
@@ -92,7 +93,7 @@ sp_star_class_init (SPStarClass *class)
 
 	sp_object_class->build = sp_star_build;
 	sp_object_class->write = sp_star_write;
-	sp_object_class->read_attr = sp_star_read_attr;
+	sp_object_class->set = sp_star_set;
 
 	item_class->knot_holder = sp_star_knot_holder;
 	item_class->description = sp_star_description;
@@ -122,13 +123,13 @@ sp_star_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
 
-	sp_star_read_attr (object, "sodipodi:cx");
-	sp_star_read_attr (object, "sodipodi:cy");
-	sp_star_read_attr (object, "sodipodi:sides");
-	sp_star_read_attr (object, "sodipodi:r1");
-	sp_star_read_attr (object, "sodipodi:r2");
-	sp_star_read_attr (object, "sodipodi:arg1");
-	sp_star_read_attr (object, "sodipodi:arg2");
+	sp_object_read_attr (object, "sodipodi:cx");
+	sp_object_read_attr (object, "sodipodi:cy");
+	sp_object_read_attr (object, "sodipodi:sides");
+	sp_object_read_attr (object, "sodipodi:r1");
+	sp_object_read_attr (object, "sodipodi:r2");
+	sp_object_read_attr (object, "sodipodi:arg1");
+	sp_object_read_attr (object, "sodipodi:arg2");
 }
 
 static SPRepr *
@@ -160,49 +161,46 @@ sp_star_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_star_read_attr (SPObject * object, const gchar * attr)
+sp_star_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPShape *shape;
 	SPStar *star;
-	const guchar *str;
 	gulong unit;
 
 	shape = SP_SHAPE (object);
 	star = SP_STAR (object);
 
-#ifdef STAR_VERBOSE
-	g_print ("sp_star_read_attr: attr %s\n", attr);
-#endif
-
-	str = sp_repr_attr (object->repr, attr);
-
 	/* fixme: we should really collect updates */
-	if (!strcmp (attr, "sodipodi:sides")) {
-		if (str) {
-			star->sides = atoi (str);
+	switch (key) {
+	case SP_ATTR_SODIPODI_SIDES:
+		if (value) {
+			star->sides = atoi (value);
 			star->sides = CLAMP (star->sides, 3, 16);
 		} else {
 			star->sides = 5;
 		}
 		sp_shape_set_shape (shape);
-	} else if (!strcmp (attr, "sodipodi:cx")) {
-		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->cx) ||
+		break;
+	case SP_ATTR_SODIPODI_CX:
+		if (!sp_svg_length_read_lff (value, &unit, NULL, &star->cx) ||
 		    (unit == SP_SVG_UNIT_EM) ||
 		    (unit == SP_SVG_UNIT_EX) ||
 		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->cx = 0.0;
 		}
 		sp_shape_set_shape (shape);
-	} else if (!strcmp (attr, "sodipodi:cy")) {
-		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->cy) ||
+		break;
+	case SP_ATTR_SODIPODI_CY:
+		if (!sp_svg_length_read_lff (value, &unit, NULL, &star->cy) ||
 		    (unit == SP_SVG_UNIT_EM) ||
 		    (unit == SP_SVG_UNIT_EX) ||
 		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->cy = 0.0;
 		}
 		sp_shape_set_shape (shape);
-	} else if (!strcmp (attr, "sodipodi:r1")) {
-		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->r1) ||
+		break;
+	case SP_ATTR_SODIPODI_R1:
+		if (!sp_svg_length_read_lff (value, &unit, NULL, &star->r1) ||
 		    (unit == SP_SVG_UNIT_EM) ||
 		    (unit == SP_SVG_UNIT_EX) ||
 		    (unit == SP_SVG_UNIT_PERCENT)) {
@@ -210,8 +208,9 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 		}
 		/* fixme: Need CLAMP (Lauris) */
 		sp_shape_set_shape (shape);
-	} else if (!strcmp (attr, "sodipodi:r2")) {
-		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->r2) ||
+		break;
+	case SP_ATTR_SODIPODI_R2:
+		if (!sp_svg_length_read_lff (value, &unit, NULL, &star->r2) ||
 		    (unit == SP_SVG_UNIT_EM) ||
 		    (unit == SP_SVG_UNIT_EX) ||
 		    (unit == SP_SVG_UNIT_PERCENT)) {
@@ -219,23 +218,26 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 		}
 		sp_shape_set_shape (shape);
 		return;
-	} else if (!strcmp (attr, "sodipodi:arg1")) {
-		if (str) {
-			star->arg1 = atof (str);
+	case SP_ATTR_SODIPODI_ARG1:
+		if (value) {
+			star->arg1 = atof (value);
 		} else {
 			star->arg1 = 0.0;
 		}
 		sp_shape_set_shape (shape);
-	} else if (!strcmp (attr, "sodipodi:arg2")) {
-		if (str) {
-			star->arg2 = atof (str);
+		break;
+	case SP_ATTR_SODIPODI_ARG2:
+		if (value) {
+			star->arg2 = atof (value);
 		} else {
 			star->arg2 = 0.0;
 		}
 		sp_shape_set_shape (shape);
-	} else {
-		if (((SPObjectClass *) parent_class)->read_attr)
-			((SPObjectClass *) parent_class)->read_attr (object, attr);
+		break;
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
 	}
 }
 
@@ -387,7 +389,7 @@ sp_star_knot_holder (SPItem *item, SPDesktop *desktop)
 }
 
 void
-sp_star_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble r1, gdouble r2, gdouble arg1, gdouble arg2)
+sp_star_position_set (SPStar *star, gint sides, gdouble cx, gdouble cy, gdouble r1, gdouble r2, gdouble arg1, gdouble arg2)
 {
 	g_return_if_fail (star != NULL);
 	g_return_if_fail (SP_IS_STAR (star));

@@ -13,6 +13,8 @@
 
 #include <math.h>
 #include <string.h>
+#include "svg/svg.h"
+#include "attributes.h"
 #include "style.h"
 #include "sp-line.h"
 #include "helper/sp-intl.h"
@@ -23,7 +25,7 @@ static void sp_line_class_init (SPLineClass *class);
 static void sp_line_init (SPLine *line);
 
 static void sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_line_read_attr (SPObject * object, const gchar * attr);
+static void sp_line_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_line_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar *sp_line_description (SPItem * item);
@@ -69,7 +71,7 @@ sp_line_class_init (SPLineClass *class)
 	parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
 	sp_object_class->build = sp_line_build;
-	sp_object_class->read_attr = sp_line_read_attr;
+	sp_object_class->set = sp_line_set;
 	sp_object_class->write = sp_line_write;
 
 	item_class->description = sp_line_description;
@@ -79,8 +81,11 @@ sp_line_class_init (SPLineClass *class)
 static void
 sp_line_init (SPLine * line)
 {
-	SP_PATH (line) -> independent = FALSE;
-	line->x1 = line->y1 = line->x2 = line->y2 = 0.0;
+	SP_PATH (line)->independent = FALSE;
+	sp_svg_length_unset (&line->x1, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&line->y1, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&line->x2, SP_SVG_UNIT_NONE, 0.0, 0.0);
+	sp_svg_length_unset (&line->y2, SP_SVG_UNIT_NONE, 0.0, 0.0);
 }
 
 
@@ -91,50 +96,51 @@ sp_line_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
 
-	sp_line_read_attr (object, "x1");
-	sp_line_read_attr (object, "y1");
-	sp_line_read_attr (object, "x2");
-	sp_line_read_attr (object, "y2");
+	sp_object_read_attr (object, "x1");
+	sp_object_read_attr (object, "y1");
+	sp_object_read_attr (object, "x2");
+	sp_object_read_attr (object, "y2");
 }
 
 static void
-sp_line_read_attr (SPObject * object, const gchar * attr)
+sp_line_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPLine * line;
-	double n;
 
 	line = SP_LINE (object);
 
 	/* fixme: we should really collect updates */
 
-	if (strcmp (attr, "x1") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, line->x1);
-		line->x1 = n;
+	switch (key) {
+	case SP_ATTR_X1:
+		if (!sp_svg_length_read (value, &line->x1)) {
+			sp_svg_length_unset (&line->x1, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
 		sp_line_set_shape (line);
-		return;
-	}
-	if (strcmp (attr, "y1") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, line->y1);
-		line->y1 = n;
+		break;
+	case SP_ATTR_Y1:
+		if (!sp_svg_length_read (value, &line->y1)) {
+			sp_svg_length_unset (&line->y1, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
 		sp_line_set_shape (line);
-		return;
-	}
-	if (strcmp (attr, "x2") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, line->x2);
-		line->x2 = n;
+		break;
+	case SP_ATTR_X2:
+		if (!sp_svg_length_read (value, &line->x2)) {
+			sp_svg_length_unset (&line->x2, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
 		sp_line_set_shape (line);
-		return;
-	}
-	if (strcmp (attr, "y2") == 0) {
-		n = sp_repr_get_double_attribute (object->repr, attr, line->y2);
-		line->y2 = n;
+		break;
+	case SP_ATTR_Y2:
+		if (!sp_svg_length_read (value, &line->y2)) {
+			sp_svg_length_unset (&line->y2, SP_SVG_UNIT_NONE, 0.0, 0.0);
+		}
 		sp_line_set_shape (line);
-		return;
+		break;
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
 	}
-
-	if (((SPObjectClass *) parent_class)->read_attr)
-		((SPObjectClass *) parent_class)->read_attr (object, attr);
-
 }
 
 static SPRepr *
@@ -173,10 +179,10 @@ sp_line_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *t)
 	line = SP_LINE (item);
 
 	/* fixme: Would be nice to preserve units here */
-	sp_repr_set_double (repr, "x1", t->c[0] * line->x1 + t->c[2] * line->y1 + t->c[4]);
-	sp_repr_set_double (repr, "y1", t->c[1] * line->x1 + t->c[3] * line->y1 + t->c[5]);
-	sp_repr_set_double (repr, "x2", t->c[0] * line->x2 + t->c[2] * line->y2 + t->c[4]);
-	sp_repr_set_double (repr, "y2", t->c[1] * line->x2 + t->c[3] * line->y2 + t->c[5]);
+	sp_repr_set_double (repr, "x1", t->c[0] * line->x1.computed + t->c[2] * line->y1.computed + t->c[4]);
+	sp_repr_set_double (repr, "y1", t->c[1] * line->x1.computed + t->c[3] * line->y1.computed + t->c[5]);
+	sp_repr_set_double (repr, "x2", t->c[0] * line->x2.computed + t->c[2] * line->y2.computed + t->c[4]);
+	sp_repr_set_double (repr, "y2", t->c[1] * line->x2.computed + t->c[3] * line->y2.computed + t->c[5]);
 
 	/* Scalers */
 	sw = sqrt (t->c[0] * t->c[0] + t->c[1] * t->c[1]);
@@ -202,12 +208,12 @@ sp_line_set_shape (SPLine * line)
 	
 	sp_path_clear (SP_PATH (line));
 
-	if (hypot (line->x2 - line->x1, line->y2 - line->y1) < 1e-12) return;
+	if (hypot (line->x2.computed - line->x1.computed, line->y2.computed - line->y1.computed) < 1e-12) return;
 
 	c = sp_curve_new ();
 
-	sp_curve_moveto (c, line->x1, line->y1);
-	sp_curve_lineto (c, line->x2, line->y2);
+	sp_curve_moveto (c, line->x1.computed, line->y1.computed);
+	sp_curve_lineto (c, line->x2.computed, line->y2.computed);
 
 	sp_path_add_bpath (SP_PATH (line), c, TRUE, NULL);
 	sp_curve_unref (c);

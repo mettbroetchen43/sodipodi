@@ -1,7 +1,18 @@
-#ifndef SP_LINE_H
-#define SP_LINE_H
+#ifndef __SP_LINE_H__
+#define __SP_LINE_H__
 
-#include <glib.h>
+/*
+ * SVG <line> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include "svg/svg-types.h"
 #include "sp-shape.h"
 
 G_BEGIN_DECLS
@@ -18,8 +29,10 @@ typedef struct _SPLineClass SPLineClass;
 struct _SPLine {
 	SPShape shape;
 
-	gdouble x1, y1;
-	gdouble x2, y2;
+	SPSVGLength x1;
+	SPSVGLength y1;
+	SPSVGLength x2;
+	SPSVGLength y2;
 };
 
 struct _SPLineClass {

@@ -13,6 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include "svg/svg-types.h"
 #include "sp-item.h"
 
 G_BEGIN_DECLS
@@ -29,7 +30,10 @@ typedef struct _SPUseClass SPUseClass;
 struct _SPUse {
 	SPItem item;
 	SPObject *child;
-	gdouble x, y, width, height;
+	SPSVGLength x;
+	SPSVGLength y;
+	SPSVGLength width;
+	SPSVGLength height;
 	guchar *href;
 };
 

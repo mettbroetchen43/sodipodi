@@ -260,7 +260,7 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 #if 0
 	sp_star_set (star, sc->magnitude, p0.x, p0.y, r1, r1 * (sides-2.0)/sides, arg1, arg1 + M_PI/sides);
 #else
-	sp_star_set (star, sc->magnitude, p0.x, p0.y, r1, r1 * sc->proportion, arg1, arg1 + M_PI / sides);
+	sp_star_position_set (star, sc->magnitude, p0.x, p0.y, r1, r1 * sc->proportion, arg1, arg1 + M_PI / sides);
 #endif
 
 	/* status text */

@@ -14,8 +14,10 @@
 #include <string.h>
 #include <glib-object.h>
 #include <gtk/gtksignal.h>
-#include "helper/sp-guide.h"
 #include "helper/sp-intl.h"
+#include "helper/sp-guide.h"
+#include "svg/svg.h"
+#include "attributes.h"
 #include "sp-guide.h"
 
 enum {
@@ -32,7 +34,7 @@ static void sp_guide_get_property (GObject * object, guint prop_id, GValue *valu
 
 static void sp_guide_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_guide_release (SPObject *object);
-static void sp_guide_read_attr (SPObject * object, const gchar * key);
+static void sp_guide_set (SPObject *object, unsigned int key, const unsigned char *value);
 
 static SPObjectClass * parent_class;
 
@@ -73,7 +75,7 @@ sp_guide_class_init (SPGuideClass * klass)
 
 	sp_object_class->build = sp_guide_build;
 	sp_object_class->release = sp_guide_release;
-	sp_object_class->read_attr = sp_guide_read_attr;
+	sp_object_class->set = sp_guide_set;
 
 	g_object_class_install_property (gobject_class,
 					 PROP_COLOR,
@@ -104,24 +106,6 @@ sp_guide_init (SPGuide * guide)
 	guide->hicolor = 0xff00007f;
 }
 
-#if 0
-static void
-sp_guide_finalize (GObject * object)
-{
-	SPGuide * guide;
-
-	guide = (SPGuide *) object;
-
-	while (guide->views) {
-		gtk_object_destroy (GTK_OBJECT (guide->views->data));
-		guide->views = g_slist_remove (guide->views, guide->views->data);
-	}
-
-	if (((GObjectClass *) (parent_class))->finalize)
-		(* ((GObjectClass *) (parent_class))->finalize) (object);
-}
-#endif
-
 static void
 sp_guide_set_property (GObject * object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
@@ -134,7 +118,7 @@ sp_guide_set_property (GObject * object, guint prop_id, const GValue *value, GPa
 	case PROP_COLOR:
 		guide->color = g_value_get_uint (value);
 		for (l = guide->views; l != NULL; l = l->next) {
-			gtk_object_set (GTK_OBJECT (l->data), "color", guide->color, NULL);
+			g_object_set (G_OBJECT (l->data), "color", guide->color, NULL);
 		}
 		break;
 	case PROP_HICOLOR:
@@ -166,8 +150,8 @@ sp_guide_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) (parent_class))->build)
 		(* ((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
-	sp_guide_read_attr (object, "orientation");
-	sp_guide_read_attr (object, "position");
+	sp_object_read_attr (object, "orientation");
+	sp_object_read_attr (object, "position");
 
 }
 
@@ -188,29 +172,28 @@ sp_guide_release (SPObject *object)
 }
 
 static void
-sp_guide_read_attr (SPObject * object, const gchar * key)
+sp_guide_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPGuide * guide;
-	const gchar * astr;
+	SPGuide *guide;
 
 	guide = SP_GUIDE (object);
 
-	if (strcmp (key, "orientation") == 0) {
-		astr = sp_repr_attr (object->repr, key);
-		if (strcmp (astr, "horizontal") == 0) {
+	switch (key) {
+	case SP_ATTR_ORIENTATION:
+		if (value && strcmp (value, "horizontal")) {
 			guide->orientation = SP_GUIDE_HORIZONTAL;
-		} else if (strcmp (astr, "vertical") == 0) {
+		} else {
 			guide->orientation = SP_GUIDE_VERTICAL;
 		}
-		return;
+		break;
+	case SP_ATTR_POSITION:
+		sp_svg_number_read_d (value, &guide->position);
+		break;
+	default:
+		if (((SPObjectClass *) (parent_class))->set)
+			((SPObjectClass *) (parent_class))->set (object, key, value);
+		break;
 	}
-	if (strcmp (key, "position") == 0) {
-		guide->position = sp_repr_get_double_attribute (object->repr, key, 0.0);
-		return;
-	}
-
-	if (((SPObjectClass *) (parent_class))->read_attr)
-		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
 }
 
 void
@@ -284,7 +267,7 @@ sp_guide_moveto (SPGuide * guide, gdouble x, gdouble y)
 }
 
 void
-sp_guide_set (SPGuide * guide, gdouble x, gdouble y)
+sp_guide_position_set (SPGuide * guide, gdouble x, gdouble y)
 {
 	g_assert (SP_IS_GUIDE (guide));
 

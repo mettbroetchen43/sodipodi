@@ -19,10 +19,11 @@
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 
+#include "helper/sp-intl.h"
 #include "helper/sp-canvas.h"
 #include "dialogs/object-attributes.h"
+#include "attributes.h"
 #include "sp-anchor.h"
-#include "helper/sp-intl.h"
 
 /* fixme: This is insane, and should be removed */
 #include "svg-view.h"
@@ -32,7 +33,7 @@ static void sp_anchor_init (SPAnchor *anchor);
 
 static void sp_anchor_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_anchor_release (SPObject *object);
-static void sp_anchor_read_attr (SPObject * object, const gchar * attr);
+static void sp_anchor_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_anchor_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar *sp_anchor_description (SPItem *item);
@@ -81,7 +82,7 @@ sp_anchor_class_init (SPAnchorClass *klass)
 
 	sp_object_class->build = sp_anchor_build;
 	sp_object_class->release = sp_anchor_release;
-	sp_object_class->read_attr = sp_anchor_read_attr;
+	sp_object_class->set = sp_anchor_set;
 	sp_object_class->write = sp_anchor_write;
 
 	item_class->description = sp_anchor_description;
@@ -104,14 +105,14 @@ static void sp_anchor_build (SPObject *object, SPDocument * document, SPRepr * r
 	if (((SPObjectClass *) (parent_class))->build)
 		((SPObjectClass *) (parent_class))->build (object, document, repr);
 
-	sp_anchor_read_attr (object, "xlink:type");
-	sp_anchor_read_attr (object, "xlink:role");
-	sp_anchor_read_attr (object, "xlink:arcrole");
-	sp_anchor_read_attr (object, "xlink:title");
-	sp_anchor_read_attr (object, "xlink:show");
-	sp_anchor_read_attr (object, "xlink:actuate");
-	sp_anchor_read_attr (object, "xlink:href");
-	sp_anchor_read_attr (object, "target");
+	sp_object_read_attr (object, "xlink:type");
+	sp_object_read_attr (object, "xlink:role");
+	sp_object_read_attr (object, "xlink:arcrole");
+	sp_object_read_attr (object, "xlink:title");
+	sp_object_read_attr (object, "xlink:show");
+	sp_object_read_attr (object, "xlink:actuate");
+	sp_object_read_attr (object, "xlink:href");
+	sp_object_read_attr (object, "target");
 }
 
 static void
@@ -131,27 +132,31 @@ sp_anchor_release (SPObject *object)
 }
 
 static void
-sp_anchor_read_attr (SPObject *object, const gchar *key)
+sp_anchor_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPAnchor * anchor;
+	SPAnchor *anchor;
 
 	anchor = SP_ANCHOR (object);
 
-	if (!strcmp (key, "xlink:href")) {
+	switch (key) {
+	case SP_ATTR_XLINK_HREF:
 		if (anchor->href) g_free (anchor->href);
-		anchor->href = g_strdup (sp_repr_attr (SP_OBJECT_REPR (object), key));
+		anchor->href = g_strdup (value);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "xlink:type") ||
-		   !strcmp (key, "xlink:role") ||
-		   !strcmp (key, "xlink:arcrole") ||
-		   !strcmp (key, "xlink:title") ||
-		   !strcmp (key, "xlink:show") ||
-		   !strcmp (key, "xlink:actuate") ||
-		   !strcmp (key, "target")) {
+		break;
+	case SP_ATTR_XLINK_TYPE:
+	case SP_ATTR_XLINK_ROLE:
+	case SP_ATTR_XLINK_ARCROLE:
+	case SP_ATTR_XLINK_TITLE:
+	case SP_ATTR_XLINK_SHOW:
+	case SP_ATTR_XLINK_ACTUATE:
+	case SP_ATTR_TARGET:
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else {
-		if (((SPObjectClass *) (parent_class))->read_attr)
-			((SPObjectClass *) (parent_class))->read_attr (object, key);
+		break;
+	default:
+		if (((SPObjectClass *) (parent_class))->set)
+			((SPObjectClass *) (parent_class))->set (object, key, value);
+		break;
 	}
 }
 

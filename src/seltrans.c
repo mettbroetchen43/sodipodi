@@ -359,7 +359,7 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 				/* because item/repr affines may be out of sync, invoke reread */
 				/* fixme: We should test equality to avoid unnecessary rereads */
 				/* fixme: This probably is not needed (Lauris) */
-				sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
+				sp_object_read_attr (SP_OBJECT (item), "transform");
 			} else {
 				if (sp_svg_transform_write (tstr, 79, &item->transform)) {
 					sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);

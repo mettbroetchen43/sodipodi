@@ -23,6 +23,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "display/nr-arena-image.h"
 #include "svg/svg.h"
+#include "attributes.h"
 #include "print.h"
 #include "style.h"
 #include "brokenimage.xpm"
@@ -40,7 +41,7 @@ static void sp_image_init (SPImage * image);
 
 static void sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_image_release (SPObject * object);
-static void sp_image_read_attr (SPObject * object, const gchar * key);
+static void sp_image_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_image_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_image_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
@@ -101,7 +102,7 @@ sp_image_class_init (SPImageClass * klass)
 
 	sp_object_class->build = sp_image_build;
 	sp_object_class->release = sp_image_release;
-	sp_object_class->read_attr = sp_image_read_attr;
+	sp_object_class->set = sp_image_set;
 	sp_object_class->write = sp_image_write;
 
 	item_class->bbox = sp_image_bbox;
@@ -132,11 +133,11 @@ sp_image_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
 
-	sp_image_read_attr (object, "xlink:href");
-	sp_image_read_attr (object, "x");
-	sp_image_read_attr (object, "y");
-	sp_image_read_attr (object, "width");
-	sp_image_read_attr (object, "height");
+	sp_object_read_attr (object, "xlink:href");
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "width");
+	sp_object_read_attr (object, "height");
 
 	/* Register */
 	sp_document_add_resource (document, "image", object);
@@ -169,17 +170,15 @@ sp_image_release (SPObject *object)
 }
 
 static void
-sp_image_read_attr (SPObject * object, const gchar *key)
+sp_image_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPImage *image;
-	const guchar *str;
 	gulong unit;
 
 	image = SP_IMAGE (object);
 
-	str = sp_repr_attr (SP_OBJECT_REPR (object), key);
-
-	if (!strcmp (key, "xlink:href")) {
+	switch (key) {
+	case SP_ATTR_XLINK_HREF:
 		if (image->href) {
 			g_free (image->href);
 			image->href = NULL;
@@ -188,9 +187,9 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 			gdk_pixbuf_unref (image->pixbuf);
 			image->pixbuf = NULL;
 		}
-		if (str) {
+		if (value) {
 			GdkPixbuf *pixbuf;
-			image->href = g_strdup (str);
+			image->href = g_strdup (value);
 			pixbuf = sp_image_repr_read_image (object->repr);
 			if (pixbuf) {
 				pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
@@ -198,8 +197,9 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 			}
 		}
 		sp_image_update_canvas_image (image);
-	} else if (!strcmp (key, "x")) {
-		if (sp_svg_length_read_lff (str, &unit, &image->x.value, &image->x.computed) &&
+		break;
+	case SP_ATTR_X:
+		if (sp_svg_length_read_lff (value, &unit, &image->x.value, &image->x.computed) &&
 		    /* fixme: These are probably valid, but require special treatment (Lauris) */
 		    (unit != SP_SVG_UNIT_EM) &&
 		    (unit != SP_SVG_UNIT_EX) &&
@@ -207,15 +207,14 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 			image->x.set = TRUE;
 			image->x.unit = unit;
 		} else {
-			image->x.set = FALSE;
-			image->x.unit = SP_SVG_UNIT_NONE;
-			image->x.computed = 0.0;
+			sp_svg_length_unset (&image->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		/* fixme: Do async (Lauris) */
 		sp_image_update_canvas_image (image);
-	} else if (!strcmp (key, "y")) {
-		if (sp_svg_length_read_lff (str, &unit, &image->y.value, &image->y.computed) &&
+		break;
+	case SP_ATTR_Y:
+		if (sp_svg_length_read_lff (value, &unit, &image->y.value, &image->y.computed) &&
 		    /* fixme: These are probably valid, but require special treatment (Lauris) */
 		    (unit != SP_SVG_UNIT_EM) &&
 		    (unit != SP_SVG_UNIT_EX) &&
@@ -223,15 +222,14 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 			image->y.set = TRUE;
 			image->y.unit = unit;
 		} else {
-			image->y.set = FALSE;
-			image->y.unit = SP_SVG_UNIT_NONE;
-			image->y.computed = 0.0;
+			sp_svg_length_unset (&image->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		/* fixme: Do async (Lauris) */
 		sp_image_update_canvas_image (image);
-	} else if (!strcmp (key, "width")) {
-		if (sp_svg_length_read_lff (str, &unit, &image->width.value, &image->width.computed) &&
+		break;
+	case SP_ATTR_WIDTH:
+		if (sp_svg_length_read_lff (value, &unit, &image->width.value, &image->width.computed) &&
 		    /* fixme: These are probably valid, but require special treatment (Lauris) */
 		    (unit != SP_SVG_UNIT_EM) &&
 		    (unit != SP_SVG_UNIT_EX) &&
@@ -239,15 +237,14 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 			image->width.set = TRUE;
 			image->width.unit = unit;
 		} else {
-			image->width.set = FALSE;
-			image->width.unit = SP_SVG_UNIT_NONE;
-			image->width.computed = 0.0;
+			sp_svg_length_unset (&image->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		/* fixme: Do async (Lauris) */
 		sp_image_update_canvas_image (image);
-	} else if (!strcmp (key, "height")) {
-		if (sp_svg_length_read_lff (str, &unit, &image->height.value, &image->height.computed) &&
+		break;
+	case SP_ATTR_HEIGHT:
+		if (sp_svg_length_read_lff (value, &unit, &image->height.value, &image->height.computed) &&
 		    /* fixme: These are probably valid, but require special treatment (Lauris) */
 		    (unit != SP_SVG_UNIT_EM) &&
 		    (unit != SP_SVG_UNIT_EX) &&
@@ -255,15 +252,16 @@ sp_image_read_attr (SPObject * object, const gchar *key)
 			image->height.set = TRUE;
 			image->height.unit = unit;
 		} else {
-			image->height.set = FALSE;
-			image->height.unit = SP_SVG_UNIT_NONE;
-			image->height.computed = 0.0;
+			sp_svg_length_unset (&image->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 		/* fixme: Do async (Lauris) */
 		sp_image_update_canvas_image (image);
-	} else if (((SPObjectClass *) (parent_class))->read_attr) {
-		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
+		break;
+	default:
+		if (((SPObjectClass *) (parent_class))->set)
+			((SPObjectClass *) (parent_class))->set (object, key, value);
+		break;
 	}
 }
 

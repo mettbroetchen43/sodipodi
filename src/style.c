@@ -19,6 +19,7 @@
 #include <libart_lgpl/art_svp_wind.h>
 #include <gtk/gtksignal.h>
 #include "svg/svg.h"
+#include "attributes.h"
 #include "document.h"
 #include "uri-references.h"
 #include "sp-paint-server.h"
@@ -45,8 +46,6 @@ static SPTextStyle *sp_text_style_unref (SPTextStyle *st);
 static SPTextStyle *sp_text_style_duplicate_unset (SPTextStyle *st);
 static guint sp_text_style_write (guchar *p, guint len, SPTextStyle *st);
 static void sp_style_privatize_text (SPStyle *style);
-
-static gint sp_style_property_index (const guchar *str);
 
 static void sp_style_read_ifloat (SPIFloat *val, const guchar *str);
 static void sp_style_read_iscale24 (SPIScale24 *val, const guchar *str);
@@ -639,7 +638,7 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 		}
 		memcpy (c, p, len);
 		c[len] = '\0';
-		idx = sp_style_property_index (c);
+		idx = sp_attribute_lookup (c);
 		if (idx > 0) {
 			len = MIN (e - s - 1, 4095);
 			if (len > 0) memcpy (c, s + 1, len);
@@ -1235,103 +1234,6 @@ sp_text_style_write (guchar *p, guint len, SPTextStyle *st)
 	}
 
 	return d;
-}
-
-typedef struct {
-	gint code;
-	guchar *name;
-} SPStyleProp;
-
-static const SPStyleProp props[] = {
-	/* CSS2 */
-	/* Font */
-	{SP_PROP_FONT, "font"},
-	{SP_PROP_FONT_FAMILY, "font-family"},
-	{SP_PROP_FONT_SIZE, "font-size"},
-	{SP_PROP_FONT_SIZE_ADJUST, "font-size-adjust"},
-	{SP_PROP_FONT_STRETCH, "font-stretch"},
-	{SP_PROP_FONT_STYLE, "font-style"},
-	{SP_PROP_FONT_VARIANT, "font-variant"},
-	{SP_PROP_FONT_WEIGHT, "font-weight"},
-	/* Text */
-	{SP_PROP_DIRECTION, "direction"},
-	{SP_PROP_LETTER_SPACING, "letter-spacing"},
-	{SP_PROP_TEXT_DECORATION, "text-decoration"},
-	{SP_PROP_UNICODE_BIDI, "unicode-bidi"},
-	{SP_PROP_WORD_SPACING, "word-spacing"},
-	/* Misc */
-	{SP_PROP_CLIP, "clip"},
-	{SP_PROP_COLOR, "color"},
-	{SP_PROP_CURSOR, "cursor"},
-	{SP_PROP_DISPLAY, "display"},
-	{SP_PROP_OVERFLOW, "overflow"},
-	{SP_PROP_VISIBILITY, "visibility"},
-	/* SVG */
-	/* Clip/Mask */
-	{SP_PROP_CLIP_PATH, "clip-path"},
-	{SP_PROP_CLIP_RULE, "clip-rule"},
-	{SP_PROP_MASK, "mask"},
-	{SP_PROP_OPACITY, "opacity"},
-	/* Filter */
-	{SP_PROP_ENABLE_BACKGROUND, "enable-background"},
-	{SP_PROP_FILTER, "filter"},
-	{SP_PROP_FLOOD_COLOR, "flood-color"},
-	{SP_PROP_FLOOD_OPACITY, "flood-opacity"},
-	{SP_PROP_LIGHTING_COLOR, "lighting-color"},
-	/* Gradient */
-	{SP_PROP_STOP_COLOR, "stop-color"},
-	{SP_PROP_STOP_OPACITY, "stop-opacity"},
-	/* Interactivity */
-	{SP_PROP_POINTER_EVENTS, "pointer-events"},
-	/* Paint */
-	{SP_PROP_COLOR_INTERPOLATION, "color-interpolation"},
-	{SP_PROP_COLOR_INTERPOLATION_FILTERS, "color-interpolation-filters"},
-	{SP_PROP_COLOR_PROFILE, "color-profile"},
-	{SP_PROP_COLOR_RENDERING, "color-rendering"},
-	{SP_PROP_FILL, "fill"},
-	{SP_PROP_FILL_OPACITY, "fill-opacity"},
-	{SP_PROP_FILL_RULE, "fill-rule"},
-	{SP_PROP_IMAGE_RENDERING, "image-rendering"},
-	{SP_PROP_MARKER, "marker"},
-	{SP_PROP_MARKER_END, "marker-end"},
-	{SP_PROP_MARKER_MID, "marker-mid"},
-	{SP_PROP_MARKER_START, "marker-start"},
-	{SP_PROP_SHAPE_RENDERING, "shape-rendering"},
-	{SP_PROP_STROKE, "stroke"},
-	{SP_PROP_STROKE_DASHARRAY, "stroke-dasharray"},
-	{SP_PROP_STROKE_DASHOFFSET, "stroke-dashoffset"},
-	{SP_PROP_STROKE_LINECAP, "stroke-linecap"},
-	{SP_PROP_STROKE_LINEJOIN, "stroke-linejoin"},
-	{SP_PROP_STROKE_MITERLIMIT, "stroke-miterlimit"},
-	{SP_PROP_STROKE_OPACITY, "stroke-opacity"},
-	{SP_PROP_STROKE_WIDTH, "stroke-width"},
-	{SP_PROP_TEXT_RENDERING, "text-rendering"},
-	/* Text */
-	{SP_PROP_ALIGNMENT_BASELINE, "alignment-baseline"},
-	{SP_PROP_BASELINE_SHIFT, "baseline-shift"},
-	{SP_PROP_DOMINANT_BASELINE, "dominant-baseline"},
-	{SP_PROP_GLYPH_ORIENTATION_HORIZONTAL, "glyph-orientation-horizontal"},
-	{SP_PROP_GLYPH_ORIENTATION_VERTICAL, "glyph-orientation-vertical"},
-	{SP_PROP_KERNING, "kerning"},
-	{SP_PROP_TEXT_ANCHOR, "text-anchor"},
-	{SP_PROP_WRITING_MODE, "writing-mode"},
-	{SP_PROP_INVALID, NULL}
-};
-
-static gint
-sp_style_property_index (const guchar *str)
-{
-	static GHashTable *propdict = NULL;
-
-	if (!propdict) {
-		const SPStyleProp *prop;
-		propdict = g_hash_table_new (g_str_hash, g_str_equal);
-		for (prop = props; prop->code != SP_PROP_INVALID; prop++) {
-			g_hash_table_insert (propdict, prop->name, GINT_TO_POINTER (prop->code));
-		}
-	}
-
-	return GPOINTER_TO_INT (g_hash_table_lookup (propdict, str));
 }
 
 static void

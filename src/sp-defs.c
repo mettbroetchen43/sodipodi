@@ -229,7 +229,7 @@ sp_defs_modified (SPObject *object, guint flags)
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
 		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
-			sp_object_modified (child, flags);
+			sp_object_invoke_modified (child, flags);
 		}
 		g_object_unref (G_OBJECT (child));
 	}

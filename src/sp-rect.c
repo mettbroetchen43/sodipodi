@@ -21,6 +21,7 @@
 #include <gtk/gtkmenuitem.h>
 #include "helper/art-utils.h"
 #include "svg/svg.h"
+#include "attributes.h"
 #include "style.h"
 #include "document.h"
 #include "dialogs/object-attributes.h"
@@ -33,7 +34,7 @@ static void sp_rect_class_init (SPRectClass *class);
 static void sp_rect_init (SPRect *rect);
 
 static void sp_rect_build (SPObject *object, SPDocument *document, SPRepr *repr);
-static void sp_rect_read_attr (SPObject *object, const gchar *attr);
+static void sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_rect_modified (SPObject *object, guint flags);
 static SPRepr *sp_rect_write (SPObject *object, SPRepr *repr, guint flags);
 
@@ -89,7 +90,7 @@ sp_rect_class_init (SPRectClass *class)
 
 	sp_object_class->build = sp_rect_build;
 	sp_object_class->write = sp_rect_write;
-	sp_object_class->read_attr = sp_rect_read_attr;
+	sp_object_class->set = sp_rect_set;
 	sp_object_class->modified = sp_rect_modified;
 
 	item_class->description = sp_rect_description;
@@ -126,91 +127,66 @@ sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
 
-	sp_rect_read_attr (object, "x");
-	sp_rect_read_attr (object, "y");
-	sp_rect_read_attr (object, "width");
-	sp_rect_read_attr (object, "height");
-	sp_rect_read_attr (object, "rx");
-	sp_rect_read_attr (object, "ry");
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "width");
+	sp_object_read_attr (object, "height");
+	sp_object_read_attr (object, "rx");
+	sp_object_read_attr (object, "ry");
 }
 
 static void
-sp_rect_read_attr (SPObject *object, const gchar *attr)
+sp_rect_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPRect *rect;
-	const gchar *str;
-	gulong unit;
 
 	rect = SP_RECT (object);
-
-#ifdef RECT_VERBOSE
-	g_print ("sp_rect_read_attr: attr %s\n", attr);
-#endif
-
-	str = sp_repr_attr (object->repr, attr);
 
 	/* fixme: We should really collect updates */
 	/* fixme: We need real error processing some time */
 
-	if (!strcmp (attr, "x")) {
-		if (sp_svg_length_read_lff (str, &unit, &rect->x.value, &rect->x.computed)) {
-			rect->x.set = TRUE;
-			rect->x.unit = unit;
-		} else {
-			rect->x.set = FALSE;
-			rect->x.computed = 0.0;
+	switch (key) {
+	case SP_ATTR_X:
+		if (!sp_svg_length_read (value, &rect->x)) {
+			sp_svg_length_unset (&rect->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_rect_set_shape (rect);
-	} else if (!strcmp (attr, "y")) {
-		if (sp_svg_length_read_lff (str, &unit, &rect->y.value, &rect->y.computed)) {
-			rect->y.set = TRUE;
-			rect->y.unit = unit;
-		} else {
-			rect->y.set = FALSE;
-			rect->y.computed = 0.0;
+		break;
+	case SP_ATTR_Y:
+		if (!sp_svg_length_read (value, &rect->y)) {
+			sp_svg_length_unset (&rect->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_rect_set_shape (rect);
-	} else if (!strcmp (attr, "width")) {
-		if (sp_svg_length_read_lff (str, &unit, &rect->width.value, &rect->width.computed) && (rect->width.value > 0.0)) {
-			rect->width.set = TRUE;
-			rect->width.unit = unit;
-		} else {
-			rect->width.set = FALSE;
-			rect->width.computed = 0.0;
+		break;
+	case SP_ATTR_WIDTH:
+		if (!sp_svg_length_read (value, &rect->width) || (rect->width.value <= 0.0)) {
+			sp_svg_length_unset (&rect->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_rect_set_shape (rect);
-	} else if (!strcmp (attr, "height")) {
-		if (sp_svg_length_read_lff (str, &unit, &rect->height.value, &rect->height.computed) && (rect->height.value > 0.0)) {
-			rect->height.set = TRUE;
-			rect->height.unit = unit;
-		} else {
-			rect->height.set = FALSE;
-			rect->height.computed = 0.0;
+		break;
+	case SP_ATTR_HEIGHT:
+		if (!sp_svg_length_read (value, &rect->height) || (rect->width.value <= 0.0)) {
+			sp_svg_length_unset (&rect->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_rect_set_shape (rect);
-	} else if (!strcmp (attr, "rx")) {
-		if (sp_svg_length_read_lff (str, &unit, &rect->rx.value, &rect->rx.computed) && (rect->rx.value > 0.0)) {
-			rect->rx.set = TRUE;
-			rect->rx.unit = unit;
-		} else {
-			rect->rx.set = FALSE;
-			rect->rx.computed = 0.0;
+		break;
+	case SP_ATTR_RX:
+		if (!sp_svg_length_read (value, &rect->rx) || (rect->rx.value <= 0.0)) {
+			sp_svg_length_unset (&rect->rx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_rect_set_shape (rect);
-	} else if (!strcmp (attr, "ry")) {
-		if (sp_svg_length_read_lff (str, &unit, &rect->ry.value, &rect->ry.computed) && rect->ry.value > 0.0) {
-			rect->ry.set = TRUE;
-			rect->ry.unit = unit;
-		} else {
-			rect->ry.set = FALSE;
-			rect->ry.computed = 0.0;
+		break;
+	case SP_ATTR_RY:
+		if (!sp_svg_length_read (value, &rect->ry) || (rect->ry.value <= 0.0)) {
+			sp_svg_length_unset (&rect->ry, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_rect_set_shape (rect);
+		break;
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
 	}
-
-	if (((SPObjectClass *) parent_class)->read_attr)
-		((SPObjectClass *) parent_class)->read_attr (object, attr);
-
 }
 
 static void
@@ -369,7 +345,7 @@ sp_rect_set_shape (SPRect * rect)
 /* fixme: Think (Lauris) */
 
 void
-sp_rect_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdouble height)
+sp_rect_position_set (SPRect * rect, gdouble x, gdouble y, gdouble width, gdouble height)
 {
 	g_return_if_fail (rect != NULL);
 	g_return_if_fail (SP_IS_RECT (rect));

@@ -36,7 +36,6 @@ static void sp_group_init (SPGroup *group);
 
 static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_group_release (SPObject *object);
-static void sp_group_read_attr (SPObject * object, const gchar * attr);
 static void sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_group_remove_child (SPObject * object, SPRepr * child);
 static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
@@ -91,7 +90,6 @@ sp_group_class_init (SPGroupClass *klass)
 
 	sp_object_class->build = sp_group_build;
 	sp_object_class->release = sp_group_release;
-	sp_object_class->read_attr = sp_group_read_attr;
 	sp_object_class->child_added = sp_group_child_added;
 	sp_object_class->remove_child = sp_group_remove_child;
 	sp_object_class->order_changed = sp_group_order_changed;
@@ -153,17 +151,6 @@ sp_group_release (SPObject *object)
 }
 
 static void
-sp_group_read_attr (SPObject * object, const gchar * attr)
-{
-	SPGroup * group;
-
-	group = SP_GROUP (object);
-
-	if (((SPObjectClass *) (parent_class))->read_attr)
-		((SPObjectClass *) (parent_class))->read_attr (object, attr);
-}
-
-static void
 sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
 	SPGroup *group;
@@ -212,6 +199,8 @@ sp_group_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 			}
 		}
 	}
+
+	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -232,15 +221,8 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 		ochild = ochild->next;
 	}
 
-	if (prev) {
-		prev->next = ochild->next;
-	} else {
-		group->children = ochild->next;
-	}
-
-	ochild->parent = NULL;
-	ochild->next = NULL;
-	g_object_unref (G_OBJECT (ochild));
+	(prev) ? prev->next : group->children = sp_object_detach_unref (object, ochild);
+	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
 static void
@@ -297,7 +279,48 @@ sp_group_order_changed (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *ne
 			nr_arena_item_set_order (v->arenaitem, newpos);
 		}
 	}
+
+	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
+
+#if 0
+static void
+sp_group_update (SPObject *object, SPCtx *ctx, unsigned int flags)
+{
+	SPGroup *group;
+	SPObject *child;
+	SPItemCtx *ictx;
+	GSList *l;
+
+	group = SP_GROUP (object);
+	ictx = (SPItemCtx *) ctx;
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	l = NULL;
+	for (child = group->children; child != NULL; child = child->next) {
+		g_object_ref (G_OBJECT (child));
+		l = g_slist_prepend (l, child);
+	}
+	l = g_slist_reverse (l);
+	while (l) {
+		child = SP_OBJECT (l->data);
+		l = g_slist_remove (l, child);
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			if (SP_IS_ITEM (child)) {
+				NRMatrixD ct;
+				child = SP_ITEM (o);
+				nr_matrix_multiply_dfd (&ct, &child->transform, transform);
+				sp_item_invoke_bbox_full (child, bbox, &ct, flags, FALSE);
+			} else {
+				sp_object_invoke_update (child, cctx, flags);
+			}
+		}
+		g_object_unref (G_OBJECT (child));
+	}
+}
+#endif
 
 static void
 sp_group_modified (SPObject *object, guint flags)
@@ -321,7 +344,7 @@ sp_group_modified (SPObject *object, guint flags)
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
 		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
-			sp_object_modified (child, flags);
+			sp_object_invoke_modified (child, flags);
 		}
 		g_object_unref (G_OBJECT (child));
 	}

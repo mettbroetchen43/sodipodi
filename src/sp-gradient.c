@@ -24,6 +24,7 @@
 #include "svg/svg.h"
 #include "xml/repr-private.h"
 #include "helper/nr-plain-stuff.h"
+#include "attributes.h"
 #include "document-private.h"
 #include "sp-object-repr.h"
 #include "sp-gradient.h"
@@ -38,7 +39,7 @@ static void sp_stop_class_init (SPStopClass * klass);
 static void sp_stop_init (SPStop * stop);
 
 static void sp_stop_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_stop_read_attr (SPObject * object, const gchar * key);
+static void sp_stop_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_stop_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPObjectClass * stop_parent_class;
@@ -74,7 +75,7 @@ sp_stop_class_init (SPStopClass * klass)
 	stop_parent_class = g_type_class_ref (SP_TYPE_OBJECT);
 
 	sp_object_class->build = sp_stop_build;
-	sp_object_class->read_attr = sp_stop_read_attr;
+	sp_object_class->set = sp_stop_set;
 	sp_object_class->write = sp_stop_write;
 }
 
@@ -91,23 +92,24 @@ sp_stop_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) stop_parent_class)->build)
 		(* ((SPObjectClass *) stop_parent_class)->build) (object, document, repr);
 
-	sp_stop_read_attr (object, "offset");
-	sp_stop_read_attr (object, "stop-color");
-	sp_stop_read_attr (object, "stop-opacity");
-	sp_stop_read_attr (object, "style");
+	sp_object_read_attr (object, "offset");
+	sp_object_read_attr (object, "stop-color");
+	sp_object_read_attr (object, "stop-opacity");
+	sp_object_read_attr (object, "style");
 }
 
 static void
-sp_stop_read_attr (SPObject * object, const gchar * key)
+sp_stop_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPStop * stop;
+	SPStop *stop;
 	guint32 color;
 	gdouble opacity;
+	const guchar *p;
 
 	stop = SP_STOP (object);
 
-	if (!strcmp (key, "style")) {
-		const guchar *p;
+	switch (key) {
+	case SP_ATTR_STYLE:
 		/* fixme: We are reading simple values 3 times during build (Lauris) */
 		/* fixme: We need presentation attributes etc. */
 		p = sp_object_get_style_property (object, "stop-color", "black");
@@ -117,28 +119,29 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 		opacity = sp_svg_read_percentage (p, stop->opacity);
 		stop->opacity = opacity;
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
-	} else if (!strcmp (key, "stop-color")) {
-		const guchar *p;
+		break;
+	case SP_PROP_STOP_COLOR:
 		/* fixme: We need presentation attributes etc. */
 		p = sp_object_get_style_property (object, "stop-color", "black");
 		color = sp_svg_read_color (p, sp_color_get_rgba32_ualpha (&stop->color, 0x00));
 		sp_color_set_rgb_rgba32 (&stop->color, color);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
-	} else if (!strcmp (key, "stop-opacity")) {
-		const guchar *p;
+		break;
+	case SP_PROP_STOP_OPACITY:
 		/* fixme: We need presentation attributes etc. */
 		p = sp_object_get_style_property (object, "stop-opacity", "1");
 		opacity = sp_svg_read_percentage (p, stop->opacity);
 		stop->opacity = opacity;
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
-	} else if (!strcmp (key, "offset")) {
-		const guchar *str;
-		str = sp_repr_attr (object->repr, key);
-		stop->offset = sp_svg_read_percentage (str, 0.0);
+		break;
+	case SP_ATTR_OFFSET:
+		stop->offset = sp_svg_read_percentage (value, 0.0);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else {
-		if (((SPObjectClass *) stop_parent_class)->read_attr)
-			(* ((SPObjectClass *) stop_parent_class)->read_attr) (object, key);
+		break;
+	default:
+		if (((SPObjectClass *) stop_parent_class)->set)
+			(* ((SPObjectClass *) stop_parent_class)->set) (object, key, value);
+		break;
 	}
 }
 
@@ -176,7 +179,7 @@ static void sp_gradient_init (SPGradient *gr);
 
 static void sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_gradient_release (SPObject *object);
-static void sp_gradient_read_attr (SPObject *object, const gchar *key);
+static void sp_gradient_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_gradient_remove_child (SPObject *object, SPRepr *child);
 static void sp_gradient_modified (SPObject *object, guint flags);
@@ -226,7 +229,7 @@ sp_gradient_class_init (SPGradientClass *klass)
 
 	sp_object_class->build = sp_gradient_build;
 	sp_object_class->release = sp_gradient_release;
-	sp_object_class->read_attr = sp_gradient_read_attr;
+	sp_object_class->set = sp_gradient_set;
 	sp_object_class->child_added = sp_gradient_child_added;
 	sp_object_class->remove_child = sp_gradient_remove_child;
 	sp_object_class->modified = sp_gradient_modified;
@@ -286,10 +289,10 @@ sp_gradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		}
 	}
 
-	sp_gradient_read_attr (object, "gradientUnits");
-	sp_gradient_read_attr (object, "gradientTransform");
-	sp_gradient_read_attr (object, "spreadMethod");
-	sp_gradient_read_attr (object, "xlink:href");
+	sp_object_read_attr (object, "gradientUnits");
+	sp_object_read_attr (object, "gradientTransform");
+	sp_object_read_attr (object, "spreadMethod");
+	sp_object_read_attr (object, "xlink:href");
 
 	/* Register ourselves */
 	sp_document_add_resource (document, "gradient", object);
@@ -331,19 +334,17 @@ sp_gradient_release (SPObject *object)
 }
 
 static void
-sp_gradient_read_attr (SPObject *object, const gchar *key)
+sp_gradient_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPGradient *gr;
-	const gchar *val;
 
 	gr = SP_GRADIENT (object);
 
-	val = sp_repr_attr (object->repr, key);
-
 	/* fixme: We should unset properties, if val == NULL */
-	if (!strcmp (key, "gradientUnits")) {
-		if (val) {
-			if (!strcmp (val, "userSpaceOnUse")) {
+	switch (key) {
+	case SP_ATTR_GRADIENTUNITS:
+		if (value) {
+			if (!strcmp (value, "userSpaceOnUse")) {
 				gr->units = SP_GRADIENT_UNITS_USERSPACEONUSE;
 			} else {
 				gr->units = SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX;
@@ -353,10 +354,10 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 			gr->units_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	} else if (!strcmp (key, "gradientTransform")) {
+		break;
+	case SP_ATTR_GRADIENTTRANSFORM: {
 		NRMatrixF t;
-		if (val && sp_svg_transform_read (val, &t)) {
+		if (value && sp_svg_transform_read (value, &t)) {
 			int i;
 			for (i = 0; i < 6; i++) gr->transform[i] = t.c[i];
 			gr->transform_set = TRUE;
@@ -365,12 +366,13 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 			gr->transform_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	} else if (!strcmp (key, "spreadMethod")) {
-		if (val) {
-			if (!strcmp (val, "reflect")) {
+		break;
+	}
+	case SP_ATTR_SPREADMETHOD:
+		if (value) {
+			if (!strcmp (value, "reflect")) {
 				gr->spread = SP_GRADIENT_SPREAD_REFLECT;
-			} else if (!strcmp (val, "repeat")) {
+			} else if (!strcmp (value, "repeat")) {
 				gr->spread = SP_GRADIENT_SPREAD_REPEAT;
 			} else {
 				gr->spread = SP_GRADIENT_SPREAD_PAD;
@@ -380,15 +382,15 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 			gr->spread_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	} else if (!strcmp (key, "xlink:href")) {
+		break;
+	case SP_ATTR_XLINK_HREF:
 		if (gr->href) {
  			sp_signal_disconnect_by_data (gr->href, gr);
 			gr->href = (SPGradient *) sp_object_hunref (SP_OBJECT (gr->href), object);
 		}
-		if (val && *val == '#') {
+		if (value && *value == '#') {
 			SPObject *href;
-			href = sp_document_lookup_id (object->document, val + 1);
+			href = sp_document_lookup_id (object->document, value + 1);
 			if (SP_IS_GRADIENT (href)) {
 				gr->href = (SPGradient *) sp_object_href (href, object);
 				g_signal_connect (G_OBJECT (href), "release", G_CALLBACK (sp_gradient_href_release), gr);
@@ -397,11 +399,12 @@ sp_gradient_read_attr (SPObject *object, const gchar *key)
 		}
 		sp_gradient_invalidate_vector (gr);
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
+		break;
+	default:
+		if (((SPObjectClass *) gradient_parent_class)->set)
+			((SPObjectClass *) gradient_parent_class)->set (object, key, value);
+		break;
 	}
-
-	if (((SPObjectClass *) gradient_parent_class)->read_attr)
-		(* ((SPObjectClass *) gradient_parent_class)->read_attr) (object, key);
 }
 
 static void
@@ -512,7 +515,7 @@ sp_gradient_modified (SPObject *object, guint flags)
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
 		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
-			sp_object_modified (child, flags);
+			sp_object_invoke_modified (child, flags);
 		}
 		g_object_unref (G_OBJECT (child));
 	}
@@ -1233,7 +1236,7 @@ static void sp_lineargradient_class_init (SPLinearGradientClass * klass);
 static void sp_lineargradient_init (SPLinearGradient * lg);
 
 static void sp_lineargradient_build (SPObject *object, SPDocument * document, SPRepr * repr);
-static void sp_lineargradient_read_attr (SPObject * object, const gchar * key);
+static void sp_lineargradient_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_lineargradient_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
@@ -1282,7 +1285,7 @@ sp_lineargradient_class_init (SPLinearGradientClass * klass)
 	lg_parent_class = g_type_class_ref (SP_TYPE_GRADIENT);
 
 	sp_object_class->build = sp_lineargradient_build;
-	sp_object_class->read_attr = sp_lineargradient_read_attr;
+	sp_object_class->set = sp_lineargradient_set;
 	sp_object_class->write = sp_lineargradient_write;
 
 	ps_class->painter_new = sp_lineargradient_painter_new;
@@ -1310,45 +1313,48 @@ sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr
 	if (((SPObjectClass *) lg_parent_class)->build)
 		(* ((SPObjectClass *) lg_parent_class)->build) (object, document, repr);
 
-	sp_lineargradient_read_attr (object, "x1");
-	sp_lineargradient_read_attr (object, "y1");
-	sp_lineargradient_read_attr (object, "x2");
-	sp_lineargradient_read_attr (object, "y2");
+	sp_object_read_attr (object, "x1");
+	sp_object_read_attr (object, "y1");
+	sp_object_read_attr (object, "x2");
+	sp_object_read_attr (object, "y2");
 }
 
 static void
-sp_lineargradient_read_attr (SPObject * object, const gchar * key)
+sp_lineargradient_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPLinearGradient * lg;
-	const guchar *str;
 
 	lg = SP_LINEARGRADIENT (object);
 
-	str = sp_repr_attr (object->repr, key);
-
-	if (!strcmp (key, "x1")) {
-		if (!sp_svg_length_read (str, &lg->x1)) {
+	switch (key) {
+	case SP_ATTR_X1:
+		if (!sp_svg_length_read (value, &lg->x1)) {
 			sp_svg_length_unset (&lg->x1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "y1")) {
-		if (!sp_svg_length_read (str, &lg->y1)) {
+		break;
+	case SP_ATTR_Y1:
+		if (!sp_svg_length_read (value, &lg->y1)) {
 			sp_svg_length_unset (&lg->y1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "x2")) {
-		if (!sp_svg_length_read (str, &lg->x2)) {
+		break;
+	case SP_ATTR_X2:
+		if (!sp_svg_length_read (value, &lg->x2)) {
 			sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "y2")) {
-		if (!sp_svg_length_read (str, &lg->y2)) {
+		break;
+	case SP_ATTR_Y2:
+		if (!sp_svg_length_read (value, &lg->y2)) {
 			sp_svg_length_unset (&lg->y2, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else {
-		if (((SPObjectClass *) lg_parent_class)->read_attr)
-			(* ((SPObjectClass *) lg_parent_class)->read_attr) (object, key);
+		break;
+	default:
+		if (((SPObjectClass *) lg_parent_class)->set)
+			(* ((SPObjectClass *) lg_parent_class)->set) (object, key, value);
+		break;
 	}
 }
 
@@ -1597,7 +1603,7 @@ static void sp_radialgradient_class_init (SPRadialGradientClass *klass);
 static void sp_radialgradient_init (SPRadialGradient *rg);
 
 static void sp_radialgradient_build (SPObject *object, SPDocument *document, SPRepr *repr);
-static void sp_radialgradient_read_attr (SPObject *object, const gchar *key);
+static void sp_radialgradient_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_radialgradient_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
@@ -1646,7 +1652,7 @@ sp_radialgradient_class_init (SPRadialGradientClass * klass)
 	rg_parent_class = g_type_class_ref (SP_TYPE_GRADIENT);
 
 	sp_object_class->build = sp_radialgradient_build;
-	sp_object_class->read_attr = sp_radialgradient_read_attr;
+	sp_object_class->set = sp_radialgradient_set;
 	sp_object_class->write = sp_radialgradient_write;
 
 	ps_class->painter_new = sp_radialgradient_painter_new;
@@ -1675,51 +1681,55 @@ sp_radialgradient_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	if (((SPObjectClass *) rg_parent_class)->build)
 		(* ((SPObjectClass *) rg_parent_class)->build) (object, document, repr);
 
-	sp_radialgradient_read_attr (object, "cx");
-	sp_radialgradient_read_attr (object, "cy");
-	sp_radialgradient_read_attr (object, "r");
-	sp_radialgradient_read_attr (object, "fx");
-	sp_radialgradient_read_attr (object, "fy");
+	sp_object_read_attr (object, "cx");
+	sp_object_read_attr (object, "cy");
+	sp_object_read_attr (object, "r");
+	sp_object_read_attr (object, "fx");
+	sp_object_read_attr (object, "fy");
 }
 
 static void
-sp_radialgradient_read_attr (SPObject *object, const gchar *key)
+sp_radialgradient_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPRadialGradient *rg;
-	const guchar *str;
 
 	rg = SP_RADIALGRADIENT (object);
 
-	str = sp_repr_attr (object->repr, key);
-
-	if (!strcmp (key, "cx")) {
-		if (!sp_svg_length_read (str, &rg->cx)) {
+	switch (key) {
+	case SP_ATTR_CX:
+		if (!sp_svg_length_read (value, &rg->cx)) {
 			sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "cy")) {
-		if (!sp_svg_length_read (str, &rg->cy)) {
+		break;
+	case SP_ATTR_CY:
+		if (!sp_svg_length_read (value, &rg->cy)) {
 			sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "r")) {
-		if (!sp_svg_length_read (str, &rg->r)) {
+		break;
+	case SP_ATTR_R:
+		if (!sp_svg_length_read (value, &rg->r)) {
 			sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "fx")) {
-		if (!sp_svg_length_read (str, &rg->fx)) {
+		break;
+	case SP_ATTR_FX:
+		if (!sp_svg_length_read (value, &rg->fx)) {
 			sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "fy")) {
-		if (!sp_svg_length_read (str, &rg->fy)) {
+		break;
+	case SP_ATTR_FY:
+		if (!sp_svg_length_read (value, &rg->fy)) {
 			sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, 0.5, 0.5);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else {
-		if (((SPObjectClass *) rg_parent_class)->read_attr)
-			(* ((SPObjectClass *) rg_parent_class)->read_attr) (object, key);
+		break;
+	default:
+		if (((SPObjectClass *) rg_parent_class)->set)
+			((SPObjectClass *) rg_parent_class)->set (object, key, value);
+		break;
 	}
 }
 

@@ -326,7 +326,7 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	w  = x1 - x0;
 	h  = y1 - y0;
 
-	sp_rect_set (SP_RECT (rc->item), x0, y0, w, h);
+	sp_rect_position_set (SP_RECT (rc->item), x0, y0, w, h);
 	if (rc->rx_ratio != 0.0)
 		sp_rect_set_rx(SP_RECT (rc->item), TRUE, 0.5 * rc->rx_ratio * w); 
 	if (rc->ry_ratio != 0.0)

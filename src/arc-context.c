@@ -293,7 +293,7 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 	x1 = MAX (p0.x, p1.x);
 	y1 = MAX (p0.y, p1.y);
 
-	sp_arc_set (SP_ARC (ac->item), (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2);
+	sp_arc_position_set (SP_ARC (ac->item), (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2);
 
 	// status text
 	xs = SP_PT_TO_METRIC_STRING (fabs(x1-x0), SP_DEFAULT_METRIC);

@@ -230,7 +230,7 @@ sp_repr_save_stream (SPReprDoc *doc, FILE *fp)
 
 	/* fixme: do this The Right Way */
 
-	fputs ("<?xml version=\"1.0\" standalone=\"no\"?>\n", fp);
+	fputs ("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n", fp);
 
 	str = sp_repr_attr ((SPRepr *) doc, "doctype");
 	if (str) fputs (str, fp);

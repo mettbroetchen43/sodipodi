@@ -1,3 +1,21 @@
+2002-12-06  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-object.h: Replaced ::read_attr with ::set, signature change.
+	This involves modification in all subclasses as well.
+
+	* src/attributes.h: New file. We enumerate/define all allowed attributes
+	and properties, to save few string compares later.
+
+	* src/attributes.c: New file
+
+2002-12-04  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-object.c (sp_object_request_update): New method. We implement
+	separate ::update cascade that precedes ::modified, and is meant to
+	be used for building item states (styles, paths and so on). In many
+	aspects it shares code path with ::modified.
+	(sp_object_invoke_update): Ditto
+
 Wed Dec  4 01:05:05 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/widget/sp-menu-button.c: Fixed to work well.

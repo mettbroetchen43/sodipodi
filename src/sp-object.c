@@ -18,6 +18,7 @@
 #include <gtk/gtksignal.h>
 #include "helper/sp-marshal.h"
 #include "xml/repr-private.h"
+#include "attributes.h"
 #include "document.h"
 #include "style.h"
 #include "sp-object-repr.h"
@@ -35,7 +36,7 @@ static void sp_object_build (SPObject * object, SPDocument * document, SPRepr * 
 static void sp_object_release (SPObject *object);
 #endif
 
-static void sp_object_read_attr (SPObject * object, const gchar * key);
+static void sp_object_private_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_object_private_write (SPObject *object, SPRepr *repr, guint flags);
 
 /* Real handlers of repr signals */
@@ -123,7 +124,7 @@ sp_object_class_init (SPObjectClass * klass)
 #if 0
 	klass->release = sp_object_release;
 #endif
-	klass->read_attr = sp_object_read_attr;
+	klass->set = sp_object_private_set;
 	klass->write = sp_object_private_write;
 }
 
@@ -153,6 +154,13 @@ sp_object_dispose (GObject * object)
 
 	spobject = (SPObject *) object;
 
+#if 1
+	/* We have to be released */
+	g_assert (!spobject->parent);
+	g_assert (!spobject->next);
+	g_assert (!spobject->document);
+	g_assert (!spobject->repr);
+
 #ifdef SP_OBJECT_DEBUG
 	g_print("sp_object_dispose: id=%x, typename=%s\n", object, g_type_name_from_instance((GTypeInstance*)object));
 #endif
@@ -170,6 +178,7 @@ sp_object_dispose (GObject * object)
 
 		SP_OBJECT_UNSET_FLAGS (spobject, SP_OBJECT_IN_DESTRUCTION_FLAG);
 	}
+#endif
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
 }
@@ -484,24 +493,21 @@ sp_object_repr_order_changed (SPRepr * repr, SPRepr * child, SPRepr * old, SPRep
 }
 
 static void
-sp_object_read_attr (SPObject * object, const gchar * key)
+sp_object_private_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	const gchar * id;
-
 	g_assert (SP_IS_DOCUMENT (object->document));
 	/* fixme: rething that cloning issue */
 	g_assert (SP_OBJECT_IS_CLONED (object) || object->id != NULL);
-	g_assert (key != NULL);
+	g_assert (key != SP_ATTR_INVALID);
 
-	if (strcmp (key, "id") == 0) {
+	if (key == SP_ATTR_ID) {
 		if (!SP_OBJECT_IS_CLONED (object)) {
-			id = sp_repr_attr (object->repr, "id");
-			g_assert (id != NULL);
-			if (strcmp (id, object->id) == 0) return;
-			g_assert (!sp_document_lookup_id (object->document, id));
+			g_assert (value != NULL);
+			g_assert (strcmp (value, object->id));
+			g_assert (!sp_document_lookup_id (object->document, value));
 			sp_document_undef_id (object->document, object->id);
 			g_free (object->id);
-			object->id = g_strdup (id);
+			object->id = g_strdup (value);
 			sp_document_def_id (object->document, object->id, object);
 		} else {
 			g_warning ("ID of cloned object changed, so document is out of sync");
@@ -510,8 +516,20 @@ sp_object_read_attr (SPObject * object, const gchar * key)
 }
 
 void
-sp_object_invoke_read_attr (SPObject * object, const gchar * key)
+sp_object_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
+	g_assert (object != NULL);
+	g_assert (SP_IS_OBJECT (object));
+
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS (object))->set)
+		((SPObjectClass *) G_OBJECT_GET_CLASS(object))->set (object, key, value);
+}
+
+void
+sp_object_read_attr (SPObject *object, const gchar *key)
+{
+	unsigned int keyid;
+
 	g_assert (object != NULL);
 	g_assert (SP_IS_OBJECT (object));
 	g_assert (key != NULL);
@@ -521,8 +539,12 @@ sp_object_invoke_read_attr (SPObject * object, const gchar * key)
 	/* fixme: rething that cloning issue */
 	g_assert (SP_OBJECT_IS_CLONED (object) || object->id != NULL);
 
-	if (((SPObjectClass *) G_OBJECT_GET_CLASS(object))->read_attr)
-		(*((SPObjectClass *) G_OBJECT_GET_CLASS(object))->read_attr) (object, key);
+	keyid = sp_attribute_lookup (key);
+	if (keyid != SP_ATTR_INVALID) {
+		const unsigned char *value;
+		value = sp_repr_attr (object->repr, key);
+		sp_object_set (object, keyid, value);
+	}
 }
 
 static gboolean
@@ -549,7 +571,7 @@ sp_object_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldv
 
 	object = SP_OBJECT (data);
 
-	sp_object_invoke_read_attr (object, key);
+	sp_object_read_attr (object, key);
 
 	sp_document_attr_changed (object->document, object, key, oldval, newval);
 }
@@ -634,7 +656,64 @@ sp_object_invoke_write (SPObject *object, SPRepr *repr, guint flags)
 /* Modification */
 
 void
-sp_object_request_modified (SPObject *object, guint flags)
+sp_object_request_update (SPObject *object, unsigned int flags)
+{
+	gboolean propagate;
+
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+	g_return_if_fail (!(flags & SP_OBJECT_PARENT_MODIFIED_FLAG));
+	g_return_if_fail ((flags & SP_OBJECT_MODIFIED_FLAG) || (flags & SP_OBJECT_CHILD_MODIFIED_FLAG));
+	g_return_if_fail (!((flags & SP_OBJECT_MODIFIED_FLAG) && (flags & SP_OBJECT_CHILD_MODIFIED_FLAG)));
+
+	/* Check for propagate before we set any flags */
+	/* Propagate means, that object is not passed through by modification request cascade yet */
+	propagate = (!(SP_OBJECT_FLAGS (object) & SP_OBJECT_UPDATE_FLAG));
+
+	/* Just set object flags safe even if some have been set before */
+	SP_OBJECT_SET_FLAGS (object, flags | SP_OBJECT_UPDATE_FLAG);
+
+	if (propagate) {
+		if (object->parent) {
+			sp_object_request_update (object->parent, SP_OBJECT_CHILD_MODIFIED_FLAG);
+		} else {
+			sp_document_request_modified (object->document);
+		}
+	}
+}
+
+void
+sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags)
+{
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+	g_return_if_fail (!(flags & ~SP_OBJECT_MODIFIED_CASCADE));
+
+	flags |= (SP_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
+	g_return_if_fail (flags != 0);
+
+	/* Merge style if we have good reasons to think that parent style is changed */
+	/* I am not sure, whether we should check only propagated flag */
+	/* We are currently assuming, that style parsing is done immediately */
+	/* I think this is correct (Lauris) */
+	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
+		if (object->style && object->parent) {
+			sp_style_merge_from_parent (object->style, object->parent->style);
+		}
+	}
+
+	if (((SPObjectClass *) G_OBJECT_GET_CLASS (object))->update)
+		((SPObjectClass *) G_OBJECT_GET_CLASS (object))->update (object, ctx, flags);
+
+	/*
+	 * fixme: I am not sure - it was before class method, but moved it here
+	 */
+
+	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_UPDATE_FLAG);
+}
+
+void
+sp_object_request_modified (SPObject *object, unsigned int flags)
 {
 	gboolean propagate;
 
@@ -661,25 +740,14 @@ sp_object_request_modified (SPObject *object, guint flags)
 }
 
 void
-sp_object_modified (SPObject *object, guint flags)
+sp_object_invoke_modified (SPObject *object, unsigned int flags)
 {
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
 	g_return_if_fail (!(flags & ~SP_OBJECT_MODIFIED_CASCADE));
 
 	flags |= (SP_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
-
 	g_return_if_fail (flags != 0);
-
-	/* Merge style if we have good reasons to think that parent style is changed */
-	/* I am not sure, whether we should check only propagated flag */
-	/* We are currently assuming, that style parsing is done immediately */
-	/* I think this is correct (Lauris) */
-	if (flags & SP_OBJECT_STYLE_MODIFIED_FLAG) {
-		if (object->style && object->parent) {
-			sp_style_merge_from_parent (object->style, object->parent->style);
-		}
-	}
 
 	g_object_ref (G_OBJECT (object));
 	g_signal_emit (G_OBJECT (object), object_signals[MODIFIED], 0, flags);

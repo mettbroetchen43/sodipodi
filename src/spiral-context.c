@@ -265,7 +265,7 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 	arg = atan2 (dy, dx) - 2.0*M_PI*spiral->revo;
 	
         /* Fixme: these parameters should be got from dialog box */
-	sp_spiral_set (spiral, p0.x, p0.y,
+	sp_spiral_position_set (spiral, p0.x, p0.y,
 		       /*expansion*/ sc->exp,
 		       /*revolution*/ sc->revo,
 		       rad, arg,

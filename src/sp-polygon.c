@@ -15,6 +15,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include "attributes.h"
 #include "sp-polygon.h"
 #include "helper/sp-intl.h"
 
@@ -23,7 +24,7 @@ static void sp_polygon_init (SPPolygon *polygon);
 
 static void sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static SPRepr *sp_polygon_write (SPObject *object, SPRepr *repr, guint flags);
-static void sp_polygon_read_attr (SPObject * object, const gchar * attr);
+static void sp_polygon_set (SPObject *object, unsigned int key, const unsigned char *value);
 
 static gchar *sp_polygon_description (SPItem *item);
 
@@ -66,7 +67,7 @@ sp_polygon_class_init (SPPolygonClass *class)
 
 	sp_object_class->build = sp_polygon_build;
 	sp_object_class->write = sp_polygon_write;
-	sp_object_class->read_attr = sp_polygon_read_attr;
+	sp_object_class->set = sp_polygon_set;
 
 	item_class->description = sp_polygon_description;
 }
@@ -84,7 +85,7 @@ sp_polygon_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
 
-	sp_polygon_read_attr (object, "points");
+	sp_object_read_attr (object, "points");
 }
 
 /*
@@ -157,27 +158,25 @@ sp_polygon_write (SPObject *object, SPRepr *repr, guint flags)
 }
 
 static void
-sp_polygon_read_attr (SPObject * object, const gchar * attr)
+sp_polygon_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPPolygon * polygon;
-	const gchar * astr;
+	SPPolygon *polygon;
 
 	polygon = SP_POLYGON (object);
 
-	astr = sp_repr_attr (object->repr, attr);
-
-	if (strcmp (attr, "points") == 0) {
+	switch (key) {
+	case SP_ATTR_POINTS: {
 		SPCurve * curve;
 		const gchar * cptr;
 		char * eptr;
 		gboolean hascpt;
 
 		sp_path_clear (SP_PATH (polygon));
-		if (!astr) return;
+		if (!value) break;
 		curve = sp_curve_new ();
 		hascpt = FALSE;
 
-		cptr = astr;
+		cptr = value;
 		eptr = NULL;
 
 		while (TRUE) {
@@ -202,12 +201,13 @@ sp_polygon_read_attr (SPObject * object, const gchar * attr)
 		sp_curve_closepath (curve);
 		sp_path_add_bpath (SP_PATH (polygon), curve, TRUE, NULL);
 		sp_curve_unref (curve);
-		return;
+		break;
 	}
-
-	if (((SPObjectClass *) parent_class)->read_attr)
-		((SPObjectClass *) parent_class)->read_attr (object, attr);
-
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
+	}
 }
 
 static gchar *

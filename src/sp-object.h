@@ -17,7 +17,7 @@
 enum {
 	/* Generic */
 	SP_OBJECT_IN_DESTRUCTION_FLAG = (1 << 0),
-	SP_OBJECT_CLONED_FLAG = (1 << 4),
+	SP_OBJECT_CLONED_FLAG = (1 << 1),
 
 	/* Async modification flags */
 	SP_OBJECT_MODIFIED_FLAG = (1 << 5),
@@ -31,6 +31,9 @@ enum {
 	SP_OBJECT_USER_MODIFIED_FLAG_D = (1 << 13),
 	SP_OBJECT_USER_MODIFIED_FLAG_E = (1 << 14),
 	SP_OBJECT_USER_MODIFIED_FLAG_F = (1 << 15),
+
+	/* Update */
+	SP_OBJECT_UPDATE_FLAG = (1 << 16)
 };
 
 /* Flags that mark object as modified */
@@ -99,6 +102,12 @@ struct _SPException {
 #define SP_EXCEPTION_INIT(ex) {(ex)->code = SP_NO_EXCEPTION;}
 #define SP_EXCEPTION_IS_OK(ex) (!(ex) || ((ex)->code == SP_NO_EXCEPTION))
 
+typedef struct _SPCtx SPCtx;
+
+struct _SPCtx {
+	unsigned int flags;
+};
+
 struct _SPObject {
 	GObject object;
 	guint hrefcount; /* number os xlink:href references */
@@ -120,14 +129,17 @@ struct _SPObjectClass {
 	void (* release) (SPObject *object);
 
 	/* Virtual handlers of repr signals */
-	void (* child_added) (SPObject * object, SPRepr * child, SPRepr * ref);
-	void (* remove_child) (SPObject * object, SPRepr * child);
+	void (* child_added) (SPObject *object, SPRepr *child, SPRepr *ref);
+	void (* remove_child) (SPObject *object, SPRepr *child);
 
-	void (* order_changed) (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
+	void (* order_changed) (SPObject *object, SPRepr *child, SPRepr *old, SPRepr *new);
 
-	void (* read_attr) (SPObject * object, const gchar * key);
-	void (* read_content) (SPObject * object);
+	void (* set) (SPObject *object, unsigned int key, const unsigned char *value);
 
+	void (* read_content) (SPObject *object);
+
+	/* Update handler */
+	void (* update) (SPObject *object, SPCtx *ctx, unsigned int flags);
 	/* Modification handler */
 	void (* modified) (SPObject *object, guint flags);
 	/* Style change notifier */
@@ -167,13 +179,17 @@ SPObject *sp_object_detach_unref (SPObject *parent, SPObject *object);
 void sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr, gboolean cloned);
 void sp_object_invoke_release (SPObject *object);
 
-void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
+void sp_object_set (SPObject *object, unsigned int key, const unsigned char *value);
+
+void sp_object_read_attr (SPObject *object, const gchar *key);
 
 /* Styling */
 
 /* Modification */
-void sp_object_request_modified (SPObject *object, guint flags);
-void sp_object_modified (SPObject *object, guint flags);
+void sp_object_request_update (SPObject *object, unsigned int flags);
+void sp_object_invoke_update (SPObject *object, SPCtx *ctx, unsigned int flags);
+void sp_object_request_modified (SPObject *object, unsigned int flags);
+void sp_object_invoke_modified (SPObject *object, unsigned int flags);
 
 /* Sequence */
 gint sp_object_sequence (SPObject *object, gint seq);

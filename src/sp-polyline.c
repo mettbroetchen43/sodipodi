@@ -14,6 +14,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include "attributes.h"
 #include "sp-polyline.h"
 #include "helper/sp-intl.h"
 
@@ -21,7 +22,7 @@ static void sp_polyline_class_init (SPPolyLineClass *class);
 static void sp_polyline_init (SPPolyLine *polyline);
 
 static void sp_polyline_build (SPObject * object, SPDocument * document, SPRepr * repr);
-static void sp_polyline_read_attr (SPObject * object, const gchar * attr);
+static void sp_polyline_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_polyline_write (SPObject *object, SPRepr *repr, guint flags);
 
 static gchar * sp_polyline_description (SPItem * item);
@@ -64,7 +65,7 @@ sp_polyline_class_init (SPPolyLineClass *class)
 	parent_class = g_type_class_ref (SP_TYPE_SHAPE);
 
 	sp_object_class->build = sp_polyline_build;
-	sp_object_class->read_attr = sp_polyline_read_attr;
+	sp_object_class->set = sp_polyline_set;
 	sp_object_class->write = sp_polyline_write;
 
 	item_class->description = sp_polyline_description;
@@ -83,31 +84,29 @@ sp_polyline_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (((SPObjectClass *) parent_class)->build)
 		((SPObjectClass *) parent_class)->build (object, document, repr);
 
-	sp_polyline_read_attr (object, "points");
+	sp_object_read_attr (object, "points");
 }
 
 static void
-sp_polyline_read_attr (SPObject * object, const gchar * attr)
+sp_polyline_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
-	SPPolyLine * polyline;
-	const gchar * astr;
+	SPPolyLine *polyline;
 
 	polyline = SP_POLYLINE (object);
 
-	astr = sp_repr_attr (object->repr, attr);
-
-	if (strcmp (attr, "points") == 0) {
+	switch (key) {
+	case SP_ATTR_POINTS: {
 		SPCurve * curve;
 		const gchar * cptr;
 		char * eptr;
 		gboolean hascpt;
 
 		sp_path_clear (SP_PATH (polyline));
-		if (!astr) return;
+		if (!value) break;
 		curve = sp_curve_new ();
 		hascpt = FALSE;
 
-		cptr = astr;
+		cptr = value;
 		eptr = NULL;
 
 		while (TRUE) {
@@ -131,12 +130,13 @@ sp_polyline_read_attr (SPObject * object, const gchar * attr)
 		
 		sp_path_add_bpath (SP_PATH (polyline), curve, TRUE, NULL);
 		sp_curve_unref (curve);
-		return;
+		break;
 	}
-
-	if (((SPObjectClass *) parent_class)->read_attr)
-		((SPObjectClass *) parent_class)->read_attr (object, attr);
-
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
+	}
 }
 
 static SPRepr *

@@ -15,11 +15,13 @@
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <gtk/gtksignal.h>
+#include "macros.h"
 #include "helper/nr-plain-stuff.h"
 #include "xml/repr-private.h"
 #include "svg/svg.h"
 #include "display/nr-arena.h"
 #include "display/nr-arena-group.h"
+#include "attributes.h"
 #include "document.h"
 #include "sp-object-repr.h"
 #include "sp-item.h"
@@ -48,7 +50,7 @@ static void sp_pattern_init (SPPattern *gr);
 
 static void sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_pattern_release (SPObject *object);
-static void sp_pattern_read_attr (SPObject *object, const gchar *key);
+static void sp_pattern_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_pattern_remove_child (SPObject *object, SPRepr *child);
 static void sp_pattern_modified (SPObject *object, guint flags);
@@ -95,7 +97,7 @@ sp_pattern_class_init (SPPatternClass *klass)
 
 	sp_object_class->build = sp_pattern_build;
 	sp_object_class->release = sp_pattern_release;
-	sp_object_class->read_attr = sp_pattern_read_attr;
+	sp_object_class->set = sp_pattern_set;
 	sp_object_class->child_added = sp_pattern_child_added;
 	sp_object_class->remove_child = sp_pattern_remove_child;
 	sp_object_class->modified = sp_pattern_modified;
@@ -132,24 +134,24 @@ sp_pattern_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
-		GtkType type;
+		GType type;
 		SPObject * child;
 		type = sp_repr_type_lookup (rchild);
-		child = gtk_type_new (type);
+		child = g_object_new (type, NULL);
 		last ? last->next : pat->children = sp_object_attach_reref (object, child, NULL);
 		sp_object_invoke_build (child, document, rchild, SP_OBJECT_IS_CLONED (object));
 		last = child;
 	}
 
-	sp_pattern_read_attr (object, "patternUnits");
-	sp_pattern_read_attr (object, "patternContentUnits");
-	sp_pattern_read_attr (object, "patternTransform");
-	sp_pattern_read_attr (object, "x");
-	sp_pattern_read_attr (object, "y");
-	sp_pattern_read_attr (object, "width");
-	sp_pattern_read_attr (object, "height");
-	sp_pattern_read_attr (object, "viewBox");
-	sp_pattern_read_attr (object, "xlink:href");
+	sp_object_read_attr (object, "patternUnits");
+	sp_object_read_attr (object, "patternContentUnits");
+	sp_object_read_attr (object, "patternTransform");
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "width");
+	sp_object_read_attr (object, "height");
+	sp_object_read_attr (object, "viewBox");
+	sp_object_read_attr (object, "xlink:href");
 
 	/* Register ourselves */
 	sp_document_add_resource (document, "pattern", object);
@@ -168,7 +170,7 @@ sp_pattern_release (SPObject *object)
 	}
 
 	if (pat->href) {
-		gtk_signal_disconnect_by_data (GTK_OBJECT (pat->href), pat);
+		sp_signal_disconnect_by_data (pat->href, pat);
 		sp_object_hunref (SP_OBJECT (pat->href), object);
 	}
 
@@ -177,19 +179,17 @@ sp_pattern_release (SPObject *object)
 }
 
 static void
-sp_pattern_read_attr (SPObject *object, const gchar *key)
+sp_pattern_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPPattern *pat;
-	const guchar *val;
 
 	pat = SP_PATTERN (object);
 
-	val = sp_repr_attr (object->repr, key);
-
 	/* fixme: We should unset properties, if val == NULL */
-	if (!strcmp (key, "patternUnits")) {
-		if (val) {
-			if (!strcmp (val, "userSpaceOnUse")) {
+	switch (key) {
+	case SP_ATTR_PATTERNUNITS:
+		if (value) {
+			if (!strcmp (value, "userSpaceOnUse")) {
 				pat->patternUnits = SP_PATTERN_UNITS_USERSPACEONUSE;
 			} else {
 				pat->patternUnits = SP_PATTERN_UNITS_OBJECTBOUNDINGBOX;
@@ -199,9 +199,10 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 			pat->patternUnits_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "patternContentUnits")) {
-		if (val) {
-			if (!strcmp (val, "userSpaceOnUse")) {
+		break;
+	case SP_ATTR_PATTERNCONTENTUNITS:
+		if (value) {
+			if (!strcmp (value, "userSpaceOnUse")) {
 				pat->patternContentUnits = SP_PATTERN_UNITS_USERSPACEONUSE;
 			} else {
 				pat->patternContentUnits = SP_PATTERN_UNITS_OBJECTBOUNDINGBOX;
@@ -211,9 +212,10 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 			pat->patternContentUnits_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "patternTransform")) {
+		break;
+	case SP_ATTR_PATTERNTRANSFORM: {
 		NRMatrixF t;
-		if (val && sp_svg_transform_read (val, &t)) {
+		if (value && sp_svg_transform_read (value, &t)) {
 			int i;
 			for (i = 0; i < 6; i++) pat->patternTransform.c[i] = t.c[i];
 			pat->patternTransform_set = TRUE;
@@ -222,33 +224,39 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 			pat->patternTransform_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "x")) {
-		if (!sp_svg_length_read (val, &pat->x)) {
+		break;
+	}
+	case SP_ATTR_X:
+		if (!sp_svg_length_read (value, &pat->x)) {
 			sp_svg_length_unset (&pat->x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "y")) {
-		if (!sp_svg_length_read (val, &pat->y)) {
+		break;
+	case SP_ATTR_Y:
+		if (!sp_svg_length_read (value, &pat->y)) {
 			sp_svg_length_unset (&pat->y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "width")) {
-		if (!sp_svg_length_read (val, &pat->width)) {
+		break;
+	case SP_ATTR_WIDTH:
+		if (!sp_svg_length_read (value, &pat->width)) {
 			sp_svg_length_unset (&pat->width, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "height")) {
-		if (!sp_svg_length_read (val, &pat->height)) {
+		break;
+	case SP_ATTR_HEIGHT:
+		if (!sp_svg_length_read (value, &pat->height)) {
 			sp_svg_length_unset (&pat->height, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "viewBox")) {
+		break;
+	case SP_ATTR_VIEWBOX: {
 		/* fixme: Think (Lauris) */
 		double x, y, width, height;
 		char *eptr;
 
-		if (val) {
-			eptr = (gchar *) val;
+		if (value) {
+			eptr = (gchar *) value;
 			x = strtod (eptr, &eptr);
 			while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
 			y = strtod (eptr, &eptr);
@@ -270,25 +278,28 @@ sp_pattern_read_attr (SPObject *object, const gchar *key)
 			pat->viewBox_set = FALSE;
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "xlink:href")) {
+		break;
+	}
+	case SP_ATTR_XLINK_HREF:
 		if (pat->href) {
-			gtk_signal_disconnect_by_data (GTK_OBJECT (pat->href), pat);
+			sp_signal_disconnect_by_data (pat->href, pat);
 			pat->href = (SPPattern *) sp_object_hunref (SP_OBJECT (pat->href), object);
 		}
-		if (val && *val == '#') {
+		if (value && *value == '#') {
 			SPObject *href;
-			href = sp_document_lookup_id (object->document, val + 1);
+			href = sp_document_lookup_id (object->document, value + 1);
 			if (SP_IS_PATTERN (href)) {
 				pat->href = (SPPattern *) sp_object_href (href, object);
-				gtk_signal_connect (GTK_OBJECT (href), "destroy", GTK_SIGNAL_FUNC (sp_pattern_href_destroy), pat);
-				gtk_signal_connect (GTK_OBJECT (href), "modified", GTK_SIGNAL_FUNC (sp_pattern_href_modified), pat);
+				g_signal_connect (G_OBJECT (href), "destroy", G_CALLBACK (sp_pattern_href_destroy), pat);
+				g_signal_connect (G_OBJECT (href), "modified", G_CALLBACK (sp_pattern_href_modified), pat);
 			}
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-		return;
-	} else {
-		if (((SPObjectClass *) pattern_parent_class)->read_attr)
-			(* ((SPObjectClass *) pattern_parent_class)->read_attr) (object, key);
+		break;
+	default:
+		if (((SPObjectClass *) pattern_parent_class)->set)
+			((SPObjectClass *) pattern_parent_class)->set (object, key, value);
+		break;
 	}
 }
 
@@ -296,7 +307,7 @@ static void
 sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
 	SPPattern *pat;
-	GtkType type;
+	GType type;
 	SPObject *ochild, *prev;
 	gint position;
 
@@ -318,7 +329,7 @@ sp_pattern_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	}
 
 	type = sp_repr_type_lookup (child);
-	ochild = gtk_type_new (type);
+	ochild = g_object_new (type, NULL);
 	if (prev) {
 		prev->next = sp_object_attach_reref (object, ochild, prev->next);
 	} else {
@@ -395,7 +406,7 @@ sp_pattern_modified (SPObject *object, guint flags)
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
 		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
-			sp_object_modified (child, flags);
+			sp_object_invoke_modified (child, flags);
 		}
 		g_object_unref (G_OBJECT (child));
 	}
@@ -524,7 +535,7 @@ sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const ArtDRect *b
 	/* fixme: Create arena */
 	/* fixme: Actually we need some kind of constructor function */
 	/* fixme: But to do that, we need actual arena implementaion */
-	pp->arena = gtk_type_new (NR_TYPE_ARENA);
+	pp->arena = g_object_new (NR_TYPE_ARENA, NULL);
 
 	/* fixme: Create group */
 	pp->root = nr_arena_item_new (pp->arena, NR_TYPE_ARENA_GROUP);

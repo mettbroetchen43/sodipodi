@@ -40,6 +40,7 @@
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
 #include "display/nr-arena-glyphs.h"
+#include "attributes.h"
 #include "document.h"
 #include "style.h"
 /* For versioning */
@@ -386,7 +387,7 @@ static void sp_tspan_init (SPTSpan *tspan);
 
 static void sp_tspan_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_tspan_release (SPObject *object);
-static void sp_tspan_read_attr (SPObject * object, const gchar * attr);
+static void sp_tspan_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_tspan_remove_child (SPObject *object, SPRepr *rch);
 static void sp_tspan_modified (SPObject *object, guint flags);
@@ -434,7 +435,7 @@ sp_tspan_class_init (SPTSpanClass *class)
 
 	sp_object_class->build = sp_tspan_build;
 	sp_object_class->release = sp_tspan_release;
-	sp_object_class->read_attr = sp_tspan_read_attr;
+	sp_object_class->set = sp_tspan_set;
 	sp_object_class->child_added = sp_tspan_child_added;
 	sp_object_class->remove_child = sp_tspan_remove_child;
 	sp_object_class->modified = sp_tspan_modified;
@@ -483,12 +484,12 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	string->ly = &tspan->ly;
 	sp_object_invoke_build (tspan->string, doc, rch, SP_OBJECT_IS_CLONED (object));
 
-	sp_tspan_read_attr (object, "x");
-	sp_tspan_read_attr (object, "y");
-	sp_tspan_read_attr (object, "dx");
-	sp_tspan_read_attr (object, "dy");
-	sp_tspan_read_attr (object, "rotate");
-	sp_tspan_read_attr (object, "sodipodi:role");
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "dx");
+	sp_object_read_attr (object, "dy");
+	sp_object_read_attr (object, "rotate");
+	sp_object_read_attr (object, "sodipodi:role");
 }
 
 static void
@@ -509,56 +510,57 @@ sp_tspan_release (SPObject *object)
 }
 
 static void
-sp_tspan_read_attr (SPObject *object, const gchar *attr)
+sp_tspan_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPTSpan *tspan;
-	const guchar *str;
 
 	tspan = SP_TSPAN (object);
 
-	str = sp_repr_attr (SP_OBJECT_REPR (object), attr);
-
 	/* fixme: Vectors */
-	if (!strcmp (attr, "x")) {
-		if (!sp_svg_length_read (str, &tspan->ly.x)) {
-			tspan->ly.x.set = FALSE;
-			tspan->ly.x.computed = 0.0;
+	switch (key) {
+	case SP_ATTR_X:
+		if (!sp_svg_length_read (value, &tspan->ly.x)) {
+			sp_svg_length_unset (&tspan->ly.x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
 		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (attr, "y")) {
-		if (!sp_svg_length_read (str, &tspan->ly.y)) {
-			tspan->ly.y.set = FALSE;
-			tspan->ly.y.computed = 0.0;
+		break;
+	case SP_ATTR_Y:
+		if (!sp_svg_length_read (value, &tspan->ly.y)) {
+			sp_svg_length_unset (&tspan->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
 		if (tspan->role != SP_TSPAN_ROLE_LINE) sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (!strcmp (attr, "dx")) {
-		if (!sp_svg_length_read (str, &tspan->ly.dx)) {
-			tspan->ly.dx.set = FALSE;
-			tspan->ly.dx.computed = 0.0;
+		break;
+	case SP_ATTR_DX:
+		if (!sp_svg_length_read (value, &tspan->ly.dx)) {
+			sp_svg_length_unset (&tspan->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
-	} else if (!strcmp (attr, "dy")) {
-		if (!sp_svg_length_read (str, &tspan->ly.dy)) {
-			tspan->ly.dy.set = FALSE;
-			tspan->ly.dy.computed = 0.0;
+		break;
+	case SP_ATTR_DY:
+		if (!sp_svg_length_read (value, &tspan->ly.dy)) {
+			sp_svg_length_unset (&tspan->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
-	} else if (strcmp (attr, "rotate") == 0) {
+		break;
+	case SP_ATTR_ROTATE:
 		/* fixme: Implement SVGNumber or something similar (Lauris) */
-		tspan->ly.rotate = (str) ? atof (str) : 0.0;
-		tspan->ly.rotate_set = (str != NULL);
+		tspan->ly.rotate = (value) ? atof (value) : 0.0;
+		tspan->ly.rotate_set = (value != NULL);
 		/* fixme: Re-layout it */
-	} else if (!strcmp (attr, "sodipodi:role")) {
-		if (str && (!strcmp (str, "line") || !strcmp (str, "paragraph"))) {
+		break;
+	case SP_ATTR_SODIPODI_ROLE:
+		if (value && (!strcmp (value, "line") || !strcmp (value, "paragraph"))) {
 			tspan->role = SP_TSPAN_ROLE_LINE;
 		} else {
 			tspan->role = SP_TSPAN_ROLE_UNSPECIFIED;
 		}
-	} else {
-		if (((SPObjectClass *) tspan_parent_class)->read_attr)
-			(((SPObjectClass *) tspan_parent_class)->read_attr) (object, attr);
+		break;
+	default:
+		if (((SPObjectClass *) tspan_parent_class)->set)
+			(((SPObjectClass *) tspan_parent_class)->set) (object, key, value);
+		break;
 	}
 }
 
@@ -608,7 +610,7 @@ sp_tspan_modified (SPObject *object, guint flags)
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	if (tspan->string) {
-		sp_object_modified (tspan->string, flags);
+		sp_object_invoke_modified (tspan->string, flags);
 	}
 }
 
@@ -714,7 +716,7 @@ static void sp_text_init (SPText *text);
 
 static void sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_text_release (SPObject *object);
-static void sp_text_read_attr (SPObject *object, const gchar * attr);
+static void sp_text_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref);
 static void sp_text_remove_child (SPObject *object, SPRepr *rch);
 static void sp_text_modified (SPObject *object, guint flags);
@@ -770,7 +772,7 @@ sp_text_class_init (SPTextClass *class)
 
 	sp_object_class->build = sp_text_build;
 	sp_object_class->release = sp_text_release;
-	sp_object_class->read_attr = sp_text_read_attr;
+	sp_object_class->set = sp_text_set;
 	sp_object_class->child_added = sp_text_child_added;
 	sp_object_class->remove_child = sp_text_remove_child;
 	sp_object_class->modified = sp_text_modified;
@@ -860,11 +862,11 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	}
 
 	/* We can safely set these after building tree, as modified is scheduled anyways (Lauris) */
-	sp_text_read_attr (object, "x");
-	sp_text_read_attr (object, "y");
-	sp_text_read_attr (object, "dx");
-	sp_text_read_attr (object, "dy");
-	sp_text_read_attr (object, "rotate");
+	sp_object_read_attr (object, "x");
+	sp_object_read_attr (object, "y");
+	sp_object_read_attr (object, "dx");
+	sp_object_read_attr (object, "dy");
+	sp_object_read_attr (object, "rotate");
 
 	sp_text_update_immediate_state (text);
 }
@@ -885,50 +887,50 @@ sp_text_release (SPObject *object)
 }
 
 static void
-sp_text_read_attr (SPObject *object, const gchar *attr)
+sp_text_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPText *text;
-	const guchar *str;
 
 	text = SP_TEXT (object);
 
-	str = sp_repr_attr (SP_OBJECT_REPR (object), attr);
-
 	/* fixme: Vectors (Lauris) */
-	if (!strcmp (attr, "x")) {
-		if (!sp_svg_length_read (str, &text->ly.x)) {
-			text->ly.x.set = FALSE;
-			text->ly.x.computed = 0.0;
+	switch (key) {
+	case SP_ATTR_X:
+		if (!sp_svg_length_read (value, &text->ly.x)) {
+			sp_svg_length_unset (&text->ly.x, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
-	} else if (!strcmp (attr, "y")) {
-		if (!sp_svg_length_read (str, &text->ly.y)) {
-			text->ly.y.set = FALSE;
-			text->ly.y.computed = 0.0;
+		break;
+	case SP_ATTR_Y:
+		if (!sp_svg_length_read (value, &text->ly.y)) {
+			sp_svg_length_unset (&text->ly.y, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_LAYOUT_MODIFIED_FLAG);
-	} else if (!strcmp (attr, "dx")) {
-		if (!sp_svg_length_read (str, &text->ly.dx)) {
-			text->ly.dx.set = FALSE;
-			text->ly.dx.computed = 0.0;
+		break;
+	case SP_ATTR_DX:
+		if (!sp_svg_length_read (value, &text->ly.dx)) {
+			sp_svg_length_unset (&text->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
-	} else if (!strcmp (attr, "dy")) {
-		if (!sp_svg_length_read (str, &text->ly.dy)) {
-			text->ly.dy.set = FALSE;
-			text->ly.dy.computed = 0.0;
+		break;
+	case SP_ATTR_DY:
+		if (!sp_svg_length_read (value, &text->ly.dy)) {
+			sp_svg_length_unset (&text->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 		}
 		/* fixme: Re-layout it */
-	} else if (strcmp (attr, "rotate") == 0) {
+		break;
+	case SP_ATTR_ROTATE:
 		/* fixme: Implement SVGNumber or something similar (Lauris) */
-		text->ly.rotate = (str) ? atof (str) : 0.0;
-		text->ly.rotate_set = (str != NULL);
+		text->ly.rotate = (value) ? atof (value) : 0.0;
+		text->ly.rotate_set = (value != NULL);
 		/* fixme: Re-layout it */
-	} else {
-		if (((SPObjectClass *) text_parent_class)->read_attr)
-			(((SPObjectClass *) text_parent_class)->read_attr) (object, attr);
+		break;
+	default:
+		if (((SPObjectClass *) text_parent_class)->set)
+			((SPObjectClass *) text_parent_class)->set (object, key, value);
+		break;
 	}
 }
 
@@ -1050,7 +1052,7 @@ sp_text_modified (SPObject *object, guint flags)
 		child = SP_OBJECT (l->data);
 		l = g_slist_remove (l, child);
 		if (cflags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
-			sp_object_modified (child, cflags);
+			sp_object_invoke_modified (child, cflags);
 		}
 		sp_object_unref (SP_OBJECT (child), object);
 	}

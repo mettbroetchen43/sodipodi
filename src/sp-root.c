@@ -16,6 +16,7 @@
 #include <libart_lgpl/art_affine.h>
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
+#include "attributes.h"
 #include "print.h"
 #include "document.h"
 #include "desktop.h"
@@ -31,7 +32,7 @@ static void sp_root_init (SPRoot *root);
 
 static void sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_root_release (SPObject *object);
-static void sp_root_read_attr (SPObject *object, const gchar *key);
+static void sp_root_set (SPObject *object, unsigned int key, const unsigned char *value);
 static void sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_root_remove_child (SPObject *object, SPRepr *child);
 static void sp_root_modified (SPObject *object, guint flags);
@@ -79,7 +80,7 @@ sp_root_class_init (SPRootClass *klass)
 
 	sp_object_class->build = sp_root_build;
 	sp_object_class->release = sp_root_release;
-	sp_object_class->read_attr = sp_root_read_attr;
+	sp_object_class->set = sp_root_set;
 	sp_object_class->child_added = sp_root_child_added;
 	sp_object_class->remove_child = sp_root_remove_child;
 	sp_object_class->modified = sp_root_modified;
@@ -122,11 +123,11 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		/* This is ugly, but works */
 		root->original = 1;
 	}
-	sp_root_read_attr (object, "sodipodi:version");
+	sp_object_read_attr (object, "sodipodi:version");
 	/* It is important to parse these here, so objects will have viewport build-time */
-	sp_root_read_attr (object, "width");
-	sp_root_read_attr (object, "height");
-	sp_root_read_attr (object, "viewBox");
+	sp_object_read_attr (object, "width");
+	sp_object_read_attr (object, "height");
+	sp_object_read_attr (object, "viewBox");
 
 	if (((SPObjectClass *) parent_class)->build)
 		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
@@ -164,27 +165,26 @@ sp_root_release (SPObject *object)
 }
 
 static void
-sp_root_read_attr (SPObject * object, const gchar * key)
+sp_root_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPItem *item;
 	SPRoot *root;
-	const guchar *str;
 	gulong unit;
 	SPItemView *v;
 
 	item = SP_ITEM (object);
 	root = SP_ROOT (object);
 
-	str = sp_repr_attr (object->repr, key);
-
-	if (!strcmp (key, "sodipodi:version")) {
-		if (str) {
-			root->sodipodi = (guint) (atof (str) * 100.0);
+	switch (key) {
+	case SP_ATTR_SODIPODI_VERSION:
+		if (value) {
+			root->sodipodi = (guint) (atof (value) * 100.0);
 		} else {
 			root->sodipodi = root->original;
 		}
-	} else if (!strcmp (key, "width")) {
-		if (sp_svg_length_read_lff (str, &unit, &root->width.value, &root->width.computed) &&
+		break;
+	case SP_ATTR_WIDTH:
+		if (sp_svg_length_read_lff (value, &unit, &root->width.value, &root->width.computed) &&
 		    /* fixme: These are probably valid, but require special treatment (Lauris) */
 		    (unit != SP_SVG_UNIT_EM) &&
 		    (unit != SP_SVG_UNIT_EX) &&
@@ -193,13 +193,12 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 			root->width.set = TRUE;
 			root->width.unit = unit;
 		} else {
-			root->width.set = FALSE;
-			root->width.unit = SP_SVG_UNIT_NONE;
-			root->width.computed = SP_SVG_DEFAULT_WIDTH_PX;
+			sp_svg_length_unset (&root->width, SP_SVG_UNIT_NONE, SP_SVG_DEFAULT_WIDTH_PX, SP_SVG_DEFAULT_WIDTH_PX);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "height")) {
-		if (sp_svg_length_read_lff (str, &unit, &root->height.value, &root->height.computed) &&
+		break;
+	case SP_ATTR_HEIGHT:
+		if (sp_svg_length_read_lff (value, &unit, &root->height.value, &root->height.computed) &&
 		    /* fixme: These are probably valid, but require special treatment (Lauris) */
 		    (unit != SP_SVG_UNIT_EM) &&
 		    (unit != SP_SVG_UNIT_EX) &&
@@ -208,19 +207,18 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 			root->height.set = TRUE;
 			root->height.unit = unit;
 		} else {
-			root->height.set = FALSE;
-			root->height.unit = SP_SVG_UNIT_NONE;
-			root->height.computed = SP_SVG_DEFAULT_WIDTH_PX;
+			sp_svg_length_unset (&root->height, SP_SVG_UNIT_NONE, SP_SVG_DEFAULT_HEIGHT_PX, SP_SVG_DEFAULT_HEIGHT_PX);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
-	} else if (!strcmp (key, "viewBox")) {
+		break;
+	case SP_ATTR_VIEWBOX: {
 		/* fixme: We have to take original item affine into account */
 		/* fixme: Think (Lauris) */
 		gdouble x, y, width, height;
 		gchar *eptr;
 
-		if (!str) return;
-		eptr = (gchar *) str;
+		if (!value) return;
+		eptr = (gchar *) value;
 		x = strtod (eptr, &eptr);
 		while (*eptr && ((*eptr == ',') || (*eptr == ' '))) eptr++;
 		y = strtod (eptr, &eptr);
@@ -241,8 +239,12 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 			}
 			sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_VIEWPORT_MODIFIED_FLAG);
 		}
-	} else if (((SPObjectClass *) parent_class)->read_attr) {
-		(* ((SPObjectClass *) parent_class)->read_attr) (object, key);
+		break;
+	}
+	default:
+		if (((SPObjectClass *) parent_class)->set)
+			((SPObjectClass *) parent_class)->set (object, key, value);
+		break;
 	}
 }
 

@@ -170,7 +170,11 @@ sp_document_dispose (GObject *object)
 		sp_document_clear_redo (doc);
 		sp_document_clear_undo (doc);
 
-		if (doc->root) g_object_unref (G_OBJECT (doc->root));
+		if (doc->root) {
+			sp_object_invoke_release (doc->root);
+			g_object_unref (G_OBJECT (doc->root));
+			doc->root = NULL;
+		}
 
 		if (private->iddef) g_hash_table_destroy (private->iddef);
 
@@ -579,8 +583,13 @@ sp_document_ensure_up_to_date (SPDocument *doc)
 		/* Remove handler */
 		gtk_idle_remove (doc->modified_id);
 		doc->modified_id = 0;
+		/* Process updates */
+		if (SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG) {
+			sp_object_invoke_update (doc->root, NULL, 0);
+			g_assert (!(SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG));
+		}
 		/* Emit "modified" signal on objects */
-		sp_object_modified (doc->root, 0);
+		sp_object_invoke_modified (doc->root, 0);
 		/* Emit our own "modified" signal */
 		g_signal_emit (G_OBJECT (doc), signals [MODIFIED], 0,
 			       SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
@@ -614,8 +623,13 @@ sp_document_idle_handler (gpointer data)
 	g_print ("->\n");
 #endif
 
+	/* Process updates */
+	if (SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG) {
+		sp_object_invoke_update (doc->root, NULL, 0);
+		g_assert (!(SP_OBJECT_FLAGS (doc->root) & SP_OBJECT_UPDATE_FLAG));
+	}
 	/* Emit "modified" signal on objects */
-	sp_object_modified (doc->root, 0);
+	sp_object_invoke_modified (doc->root, 0);
 
 #ifdef SP_DOCUMENT_DEBUG_IDLE
 	g_print ("\n->");

@@ -48,7 +48,9 @@ typedef struct _SPItemView SPItemView;
 
 struct _SPItemView {
 	SPItemView *next;
+#if 0
 	SPItemView *prev;
+#endif
 	SPItem *item;
 	NRArena *arena;
 	NRArenaItem *arenaitem;
@@ -67,8 +69,9 @@ struct _SPItem {
 
 	NRMatrixF transform;
 
+	SPObject *clip;
+
 	SPItemView *display;
-	SPClipPath *clip;
 };
 
 struct _SPItemClass {

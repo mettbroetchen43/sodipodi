@@ -30,6 +30,7 @@ sodipodi_SOURCES = \
 	\
 	macros.h \
 	forward.h \
+	attributes.c attributes.h \
 	sp-object.c sp-object.h \
 	sp-object-repr.c sp-object-repr.h \
 	sp-object-group.c sp-object-group.h \

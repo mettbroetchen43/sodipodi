@@ -179,24 +179,6 @@ sp_shape_build (SPObject *object, SPDocument *document, SPRepr *repr)
 
 	if (((SPObjectClass *) (parent_class))->build)
 		(*((SPObjectClass *) (parent_class))->build) (object, document, repr);
-
-#if 0
-	if ((version > 0) && (version < 25)) {
-		SPStyle *style;
-		/* Potential invalid gradient position */
-		style = object->style;
-		if (style->fill.type = SP_PAINT_TYPE_PAINTSERVER) {
-			if (SP_IS_LINEARGRADIENT (SP_STYLE_FILL_SERVER (style))) {
-				SPLinearGradient *lg;
-				lg = SP_LINEARGRADIENT (SP_STYLE_FILL_SERVER (style));
-				if (SP_GRADIENT (lg)->href && (SP_GRADIENT (lg)->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX)) {
-					/* Let's assume it is normalized private gradient */
-					/* Item is built, so bbox should qualify */
-				}
-			}
-		}
-	}
-#endif
 }
 
 static SPRepr *
@@ -207,6 +189,7 @@ sp_shape_write (SPObject *object, SPRepr *repr, guint flags)
 	path = SP_PATH (object);
 
 	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		if (!path->comp) return NULL;
 		repr = sp_repr_new ("path");
 	}
 
@@ -214,7 +197,9 @@ sp_shape_write (SPObject *object, SPRepr *repr, guint flags)
 		SPPathComp *pathcomp;
 		ArtBpath *abp;
 		gchar *str;
-		g_assert (path->comp);
+
+		/* fixme: Here used to be [g_assert (path->comp)] (Lauris) */
+
 		pathcomp = path->comp->data;
 		g_assert (pathcomp);
 		abp = sp_curve_first_bpath (pathcomp->curve);

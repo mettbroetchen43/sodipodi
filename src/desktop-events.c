@@ -235,7 +235,7 @@ sp_dt_guide_event (SPCanvasItem * item, GdkEvent * event, gpointer data)
 				if ((winx >= 0) && (winy >= 0) &&
 				    (winx < w->allocation.width) &&
 				    (winy < w->allocation.height)) {
-					sp_guide_set (guide, p.x, p.y);
+					sp_guide_position_set (guide, p.x, p.y);
 				} else {
 					sp_guide_remove(guide);
 				}
@@ -368,7 +368,7 @@ guide_dialog_apply (GtkWidget * widget, SPGuide ** g)
 	} else {
 		newpos = guide->position + distance;
 	}
-	sp_guide_set (guide, newpos, newpos);
+	sp_guide_position_set (guide, newpos, newpos);
 	sp_document_done (SP_OBJECT_DOCUMENT (guide));
 }
 
