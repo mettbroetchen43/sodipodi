@@ -1,3 +1,11 @@
+2004-02-02  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/module.c: GnomePrint support without print preview. Is this
+	meaningful? At least, we can use PDF printing and PS printing with
+	transparency
+
+	* src/Makefile.am: Ditto
+
 2004-02-01  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/xml/repr.c (sp_repr_get_inherited_attr): Removed duplicated

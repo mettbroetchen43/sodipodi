@@ -587,6 +587,9 @@ sp_module_print_finalize (GObject *object)
 
 #include <gmodule.h>
 
+#ifdef WITH_GNOME_PRINT
+#include "modules/gnome.h"
+#endif
 #ifdef WITH_KDE
 #include "modules/kde.h"
 #endif

@@ -192,10 +192,10 @@ spsvgview_LDADD = \
 	$(XFT_LIBS) \
 	$(FREETYPE_LIBS) \
 	$(kdeldadd) \
+	$(GNOME_PRINT_LIBS) \
 	${win32_ldflags}
 
 # $(module_libs)
-# $(GNOME_PRINT_LIBS)
 # widgets/libspwidgets.a
 # dialogs/libspdialogs.a
 
