@@ -17,6 +17,7 @@
 
 #include <config.h>
 #include <string.h>
+#include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
 #include <xml/repr.h>
 #include "marshal.h"
@@ -36,7 +37,7 @@
 #define A4_WIDTH_STR "210mm"
 #define A4_HEIGHT_STR "297mm"
 
-#define SP_DOCUMENT_UPDATE_PRIORITY -10
+#define SP_DOCUMENT_UPDATE_PRIORITY 10
 
 enum {
 	MODIFIED,

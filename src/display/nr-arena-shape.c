@@ -154,11 +154,20 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		memcpy (shape->ctm.c, gc->affine, 6 * sizeof (double));
 		if (state & NR_ARENA_ITEM_STATE_BBOX) {
 			if (shape->curve) {
-				ArtDRect bbox;
+				NRMatrixF ctm;
+				NRRectF bbox;
+				NRBPath bp;
 				/* fixme: */
-				bbox.x0 = bbox.y0 = NR_HUGE_D;
-				bbox.x1 = bbox.y1 = -NR_HUGE_D;
-				sp_bpath_matrix_d_bbox_d_union (shape->curve->bpath, gc->affine, &bbox, 1.0);
+				bbox.x0 = bbox.y0 = NR_HUGE_F;
+				bbox.x1 = bbox.y1 = -NR_HUGE_F;
+				ctm.c[0] = gc->affine[0];
+				ctm.c[1] = gc->affine[1];
+				ctm.c[2] = gc->affine[2];
+				ctm.c[3] = gc->affine[3];
+				ctm.c[4] = gc->affine[4];
+				ctm.c[5] = gc->affine[5];
+				bp.path = shape->curve->bpath;
+				nr_path_matrix_f_bbox_f_union (&bp, &ctm, &bbox, 1.0);
 				item->bbox.x0 = bbox.x0 - 1.0;
 				item->bbox.y0 = bbox.y0 - 1.0;
 				item->bbox.x1 = bbox.x1 + 1.9999;

@@ -26,6 +26,7 @@
 
 #include <string.h>
 
+#include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
 #include <libnrtype/nr-type-directory.h>
 #include <libnrtype/nr-font.h>
@@ -178,17 +179,20 @@ static ArtDRect *
 sp_font_get_glyph_bbox (NRFont *font, gint glyph, gint mode, ArtDRect *bbox)
 {
 	NRBPath bpath;
-	ArtDRect hbox;
+	NRRectF hbox;
 
 	/* Find correct bbox (gnome-print does it wrong) */
 	if (!nr_font_glyph_outline_get (font, glyph, &bpath, FALSE)) return NULL;
 	hbox.x0 = hbox.y0 = 1e18;
 	hbox.x1 = hbox.y1 = -1e18;
-	sp_bpath_matrix_d_bbox_d_union (bpath.path, NULL, &hbox, 0.25);
-	if (art_drect_empty (&hbox)) return NULL;
+	nr_path_matrix_f_bbox_f_union (&bpath, NULL, &hbox, 0.25);
+	if (nr_rect_f_test_empty (&hbox)) return NULL;
 
 	if (mode == SP_CSS_WRITING_MODE_LR) {
-		*bbox = hbox;
+		bbox->x0 = hbox.x0;
+		bbox->y0 = hbox.y0;
+		bbox->x1 = hbox.x1;
+		bbox->y1 = hbox.y1;
 		return bbox;
 	} else {
 		gdouble dy;

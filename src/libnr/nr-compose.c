@@ -20,6 +20,7 @@
 #ifdef USE_MMX
 /* fixme: */
 int nr_have_mmx (void);
+void nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned char *c);
 void nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned char *c);
 void nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha);
 #define NR_PIXOPS_MMX nr_have_mmx ()
@@ -684,6 +685,19 @@ nr_R8G8B8A8_P_EMPTY_A8_RGBA32 (unsigned char *px, int w, int h, int rs, const un
 	a = NR_RGBA32_A (rgba);
 
 	if (a == 0) return;
+
+#ifdef USE_MMX
+	if (NR_PIXOPS_MMX) {
+		unsigned char c[4];
+		c[0] = NR_PREMUL (r, a);
+		c[1] = NR_PREMUL (g, a);
+		c[2] = NR_PREMUL (b, a);
+		c[3] = a;
+		/* WARNING: MMX composer REQUIRES w > 0 and h > 0 */
+		nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP (px, w, h, rs, spx, srs, c);
+		return;
+	}
+#endif
 
 	for (y = 0; y < h; y++) {
 		unsigned char *d, *s;

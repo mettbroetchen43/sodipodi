@@ -271,3 +271,121 @@ nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, NRPoi
 	}
 }
 
+/* Fast bbox calculation */
+
+static void
+nr_curve_bbox (double x000, double y000,
+	       double x001, double y001,
+	       double x011, double y011,
+	       double x111, double y111,
+	       NRRectF *bbox,
+	       float tolerance)
+{
+	bbox->x0 = MIN (bbox->x0, x111);
+	bbox->y0 = MIN (bbox->y0, y111);
+	bbox->x1 = MAX (bbox->x1, x111);
+	bbox->y1 = MAX (bbox->y1, y111);
+
+	if (((bbox->x0 - tolerance) > x001) ||
+	    ((bbox->x0 - tolerance) > x011) ||
+	    ((bbox->x1 + tolerance) < x001) ||
+	    ((bbox->x1 + tolerance) < x011) ||
+	    ((bbox->y0 - tolerance) > y001) ||
+	    ((bbox->y0 - tolerance) > y011) ||
+	    ((bbox->y1 + tolerance) < y001) ||
+	    ((bbox->y1 + tolerance) < y011)) {
+		double x00t, x0tt, xttt, x1tt, x11t, x01t;
+		double y00t, y0tt, yttt, y1tt, y11t, y01t;
+
+		/*
+		 * t = 0.5;
+		 * s = 1 - t;
+
+		 * x00t = s * x000 + t * x001;
+		 * x01t = s * x001 + t * x011;
+		 * x11t = s * x011 + t * x111;
+		 * x0tt = s * x00t + t * x01t;
+		 * x1tt = s * x01t + t * x11t;
+		 * xttt = s * x0tt + t * x1tt;
+		 *
+		 * y00t = s * y000 + t * y001;
+		 * y01t = s * y001 + t * y011;
+		 * y11t = s * y011 + t * y111;
+		 * y0tt = s * y00t + t * y01t;
+		 * y1tt = s * y01t + t * y11t;
+		 * yttt = s * y0tt + t * y1tt;
+		 */
+
+		x00t = 0.5 * (x000 + x001);
+		x01t = 0.5 * (x001 + x011);
+		x11t = 0.5 * (x011 + x111);
+		x0tt = 0.5 * (x00t + x01t);
+		x1tt = 0.5 * (x01t + x11t);
+		xttt = 0.5 * (x0tt + x1tt);
+
+		y00t = 0.5 * (y000 + y001);
+		y01t = 0.5 * (y001 + y011);
+		y11t = 0.5 * (y011 + y111);
+		y0tt = 0.5 * (y00t + y01t);
+		y1tt = 0.5 * (y01t + y11t);
+		yttt = 0.5 * (y0tt + y1tt);
+
+		nr_curve_bbox (x000, y000, x00t, y00t, x0tt, y0tt, xttt, yttt, bbox, tolerance);
+		nr_curve_bbox (xttt, yttt, x1tt, y1tt, x11t, y11t, x111, y111, bbox, tolerance);
+	}
+}
+
+void
+nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m,
+			       NRRectF *bbox,
+			       float tolerance)
+{
+	double x0, y0, x3, y3;
+	const ArtBpath *p;
+
+	if (!m) m = &NR_MATRIX_F_IDENTITY;
+
+	x0 = y0 = 0.0;
+	x3 = y3 = 0.0;
+
+	for (p = bpath->path; p->code != ART_END; p+= 1) {
+		switch (p->code) {
+		case ART_MOVETO_OPEN:
+		case ART_MOVETO:
+			x0 = m->c[0] * p->x3 + m->c[2] * p->y3 + m->c[4];
+			y0 = m->c[1] * p->x3 + m->c[3] * p->y3 + m->c[5];
+			bbox->x0 = MIN (bbox->x0, x0);
+			bbox->y0 = MIN (bbox->y0, y0);
+			bbox->x1 = MAX (bbox->x1, x0);
+			bbox->y1 = MAX (bbox->y1, y0);
+			break;
+		case ART_LINETO:
+			x3 = m->c[0] * p->x3 + m->c[2] * p->y3 + m->c[4];
+			y3 = m->c[1] * p->x3 + m->c[3] * p->y3 + m->c[5];
+			bbox->x0 = MIN (bbox->x0, x3);
+			bbox->y0 = MIN (bbox->y0, y3);
+			bbox->x1 = MAX (bbox->x1, x3);
+			bbox->y1 = MAX (bbox->y1, y3);
+			x0 = x3;
+			y0 = y3;
+			break;
+		case ART_CURVETO:
+			x3 = m->c[0] * p->x3 + m->c[2] * p->y3 + m->c[4];
+			y3 = m->c[1] * p->x3 + m->c[3] * p->y3 + m->c[5];
+			nr_curve_bbox (x0, y0,
+				       m->c[0] * p->x1 + m->c[2] * p->y1 + m->c[4],
+				       m->c[1] * p->x1 + m->c[3] * p->y1 + m->c[5],
+				       m->c[0] * p->x2 + m->c[2] * p->y2 + m->c[4],
+				       m->c[1] * p->x2 + m->c[3] * p->y2 + m->c[5],
+				       x3, y3,
+				       bbox,
+				       tolerance);
+			x0 = x3;
+			y0 = y3;
+			break;
+		default:
+			break;
+		}
+	}
+}
+

@@ -8,6 +8,8 @@ TODO for 0.28
 - Autoconf test for popt.h
 - Faster move
 - Direct FreeType fonts
+- Toolboxes show arrows to right initially
+- localise and kill transparency 1.0 bug
 
 TODO for 0.27
 =============

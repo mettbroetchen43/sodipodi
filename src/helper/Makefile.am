@@ -7,7 +7,7 @@
 noinst_LIBRARIES = libspchelp.a
 
 INCLUDES = \
-	-I..
+	-I.. \
 	$(cflags) \
 	$(SODIPODI_CFLAGS)
 

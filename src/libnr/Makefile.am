@@ -11,6 +11,7 @@ INCLUDES = \
 if USE_MMX
 mmx_sources = \
 	have_mmx.S \
+	nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP.S \
 	nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP.S \
 	nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P.S
 endif

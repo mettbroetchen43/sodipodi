@@ -20,6 +20,7 @@
 #include <string.h>
 #include <glib.h>
 #include <gdk/gdkkeysyms.h>
+#include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "xml/repr.h"

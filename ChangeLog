@@ -1,4 +1,14 @@
+2002-10-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP.S: new file
+
+	* src/libnr/nr-path.c (nr_path_matrix_f_bbox_f_union): Moved bpath
+	bbox calculation here
+	(nr_curve_bbox): Rearrange comparisons
+
 2002-10-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas.c: Use idle priority lower than Gtk redraw
 
 	* src/display/nr-arena-shape.c (nr_arena_shape_pick): Use libnr
 	distance7wind calculation, if item is not at render state

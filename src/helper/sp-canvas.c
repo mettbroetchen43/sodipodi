@@ -3,7 +3,7 @@
 /*
  * Port of GnomeCanvas for sodiopodi needs
  *
- * Author:
+ * Authors:
  *   Federico Mena <federico@nuclecu.unam.mx>
  *   Raph Levien <raph@gimp.org>
  *   Lauris Kaplinski <lauris@kaplinski.com>
@@ -30,7 +30,7 @@
 #include <libnr/nr-pixblock.h>
 #include "sp-canvas.h"
 
-#define SP_CANVAS_UPDATE_PRIORITY 10
+#define SP_CANVAS_UPDATE_PRIORITY (GTK_PRIORITY_REDRAW + 10)
 
 enum {
 	SP_CANVAS_ITEM_VISIBLE = 1 << 7,

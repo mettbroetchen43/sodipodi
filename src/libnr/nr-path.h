@@ -35,4 +35,6 @@ void nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, 
 						  NRRectF *bbox, int *wind, float *dist,
 						  float tolerance);
 
+void nr_path_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m, NRRectF *bbox, float tolerance);
+
 #endif

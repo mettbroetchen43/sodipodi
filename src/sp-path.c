@@ -13,6 +13,7 @@
  */
 
 #include <string.h>
+#include <libnr/nr-path.h>
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
@@ -265,19 +266,27 @@ sp_path_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
 	SPPath *path;
 	GSList *l;
+	NRRectF bb;
 
 	path = SP_PATH (item);
 
-	bbox->x0 = bbox->y0 = 1e18;
-	bbox->x1 = bbox->y1 = -1e18;
+	bb.x0 = bb.y0 = 1e18;
+	bb.x1 = bb.y1 = -1e18;
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		SPPathComp *comp;
-		gdouble a[6];
+		NRMatrixF a;
+		NRBPath bp;
 		comp = (SPPathComp *) l->data;
-		art_affine_multiply (a, comp->affine, transform);
-		sp_bpath_matrix_d_bbox_d_union (SP_CURVE_BPATH (comp->curve), a, bbox, 0.25);
+		nr_matrix_multiply_fdd (&a, (NRMatrixD *) comp->affine, (NRMatrixD *) transform);
+		bp.path = SP_CURVE_BPATH (comp->curve);
+		nr_path_matrix_f_bbox_f_union (&bp, &a, &bb, 0.25);
 	}
+
+	bbox->x0 = MIN (bbox->x0, bb.x0);
+	bbox->y0 = MIN (bbox->y0, bb.y0);
+	bbox->x1 = MAX (bbox->x1, bb.x1);
+	bbox->y1 = MAX (bbox->y1, bb.y1);
 }
 
 void

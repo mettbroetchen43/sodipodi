@@ -121,19 +121,28 @@ sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 {
 	SPChars *chars;
 	SPCharElement *el;
+	NRRectF bb;
 
 	chars = SP_CHARS (item);
 
+	bb.x0 = bbox->x0;
+	bb.y0 = bbox->y0;
+	bb.x1 = bbox->x1;
+	bb.y1 = bbox->y1;
+
 	for (el = chars->elements; el != NULL; el = el->next) {
 		NRBPath bpath;
-		gdouble a[6], b[6];
-		gint i;
 		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
-			for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
-			art_affine_multiply (b, a, transform);
-			sp_bpath_matrix_d_bbox_d_union (bpath.path, b, bbox, 0.25);
+			NRMatrixF a;
+			nr_matrix_multiply_ffd (&a, &el->transform, (NRMatrixD *) transform);
+			nr_path_matrix_f_bbox_f_union (&bpath, &a, &bb, 0.25);
 		}
 	}
+
+	bbox->x0 = bb.x0;
+	bbox->y0 = bb.y0;
+	bbox->x1 = bb.x1;
+	bbox->y1 = bb.y1;
 }
 
 static NRArenaItem *

@@ -23,8 +23,8 @@
  * ca	-40(%ebp)
  *
  * mm0 Fg
- * mm1 FgA
- * mm2 FgPre
+ * mm1 MMMM
+ * mm2 FgM
  * mm3
  * mm4
  * mm5 255

@@ -20,6 +20,7 @@
 #include <glib.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
+#include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
 #include "helper/art-utils.h"
 #include "svg/svg.h"
