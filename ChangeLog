@@ -1,5 +1,9 @@
 2002-10-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-item-group.c (sp_item_group_ungroup): Rewrite it, so it moves
+	all non-items to main <defs> node, preserving logical order and building
+	objects in correct sequence
+
 	* src/desktop-affine.c: Methods for root coordinate system, fixes misplacement bug
 
 	* src/libnrtype/nr-rasterfont.c: Made working

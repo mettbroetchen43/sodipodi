@@ -1576,7 +1576,7 @@
 
       <widget>
 	<class>GtkPixmapMenuItem</class>
-	<name>trüki1</name>
+	<name>tryki1</name>
 	<signal>
 	  <name>activate</name>
 	  <handler>sp_file_print</handler>
@@ -1593,7 +1593,7 @@
 
       <widget>
 	<class>GtkPixmapMenuItem</class>
-	<name>lõpeta1</name>
+	<name>lopeta1</name>
 	<signal>
 	  <name>activate</name>
 	  <handler>sp_file_exit</handler>

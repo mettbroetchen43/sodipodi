@@ -3,20 +3,20 @@
 TODO for 0.27
 =============
 
-- Illustrator import/export
 - Stamping (Masatake)
 - Empty bbox of horizontal/vertical lines bug (DONE)
 - Toolbox scaling bug
 - Tooltips for tools
 - Update .spec.in file
 - Ungroup forgetting font family bug
-- Ungroup forgetting paintserver in group bug
+- Ungroup forgetting paintserver in group bug (DONE)
 - Fix places where bbox is not tested for emptyness
 - Fix misplaced draws if viewBox present (DONE)
 
 Other tasks
 ===========
 
+- Illustrator import/export
 - Patterns (Lauris) (90% DONE)
 - Radial gradients (Lauris) (95% DONE)
 - Interface for clipart collections (Lauris)

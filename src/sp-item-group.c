@@ -27,6 +27,7 @@
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "selection.h"
+#include "sp-root.h"
 #include "sp-item-group.h"
 
 static void sp_group_class_init (SPGroupClass *klass);
@@ -547,11 +548,15 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 	SPDocument *doc;
 	SPItem *gitem, *pitem;
 	SPRepr *grepr, *prepr, *lrepr;
+	SPObject *root, *defs, *child;
+	GSList *items, *objects;
 
 	g_return_if_fail (group != NULL);
 	g_return_if_fail (SP_IS_GROUP (group));
 
 	doc = SP_OBJECT_DOCUMENT (group);
+	root = SP_DOCUMENT_ROOT (doc);
+	defs = SP_OBJECT (SP_ROOT (root)->defs);
 
 	gitem = SP_ITEM (group);
 	grepr = SP_OBJECT_REPR (gitem);
@@ -560,23 +565,22 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 
 	g_return_if_fail (!strcmp (sp_repr_name (grepr), "g") || !strcmp (sp_repr_name (grepr), "a"));
 
-	lrepr = grepr;
-
-	while (group->children) {
-		if (SP_IS_ITEM (group->children)) {
-			SPRepr *crepr, *nrepr;
-			SPItem *citem, *nitem;
-			gdouble ctrans[6];
+	/* Step 1 - generate lists of children objects */
+	items = NULL;
+	objects = NULL;
+	for (child = group->children; child != NULL; child = child->next) {
+		SPRepr *nrepr;
+		nrepr = sp_repr_duplicate (SP_OBJECT_REPR (child));
+		if (SP_IS_ITEM (child)) {
+			SPItem *citem;
+			NRMatrixD ctrans;
 			gchar affinestr[80];
 			guchar *ss;
 
-			crepr = SP_OBJECT_REPR (group->children);
-			citem = SP_ITEM (group->children);
+			citem = SP_ITEM (child);
 
-			nrepr = sp_repr_duplicate (crepr);
-
-			art_affine_multiply (ctrans, citem->affine, gitem->affine);
-			if (sp_svg_write_affine (affinestr, 79, ctrans)) {
+			nr_matrix_multiply_ddd (&ctrans, (NRMatrixD *) citem->affine, (NRMatrixD *) gitem->affine);
+			if (sp_svg_write_affine (affinestr, 79, (double *) &ctrans)) {
 				sp_repr_set_attr (nrepr, "transform", affinestr);
 			} else {
 				sp_repr_set_attr (nrepr, "transform", NULL);
@@ -587,21 +591,39 @@ sp_item_group_ungroup (SPGroup *group, GSList **children)
 			ss = sp_style_write_difference (SP_OBJECT_STYLE (citem), SP_OBJECT_STYLE (pitem));
 			sp_repr_set_attr (nrepr, "style", ss);
 			g_free (ss);
-#if 0
-			/* fixme: Sort up that item/object stuff (lauris) */
-			nitem = (SPItem *) sp_document_add_repr (document, nrepr);
-			sp_repr_unref (nrepr);
-			if (children && SP_IS_ITEM (nitem)) *children = g_slist_prepend (*children, nitem);
-#else
-			/* Append new children after group */
-			sp_repr_add_child (prepr, nrepr, lrepr);
-			lrepr = nrepr;
-			nitem = (SPItem *) sp_document_lookup_id (doc, sp_repr_attr (nrepr, "id"));
-			sp_repr_unref (nrepr);
-			if (children && SP_IS_ITEM (nitem)) *children = g_slist_prepend (*children, nitem);
-#endif
+
+			items = g_slist_prepend (items, nrepr);
+		} else {
+			objects = g_slist_prepend (objects, nrepr);
 		}
+	}
+
+	items = g_slist_reverse (items);
+	objects = g_slist_reverse (objects);
+
+	/* Step 2 - clear group */
+	while (group->children) {
+		/* Now it is time to remove original */
 		sp_repr_remove_child (grepr, SP_OBJECT_REPR (group->children));
+	}
+
+	/* Step 3 - add nonitems */
+	while (objects) {
+		sp_repr_append_child (SP_OBJECT_REPR (defs), (SPRepr *) objects->data);
+		sp_repr_unref ((SPRepr *) objects->data);
+		objects = g_slist_remove (objects, objects->data);
+	}
+
+	/* Step 4 - add items */
+	lrepr = grepr;
+	while (items) {
+		SPItem *nitem;
+		sp_repr_add_child (prepr, (SPRepr *) items->data, lrepr);
+		lrepr = (SPRepr *) items->data;
+		nitem = (SPItem *) sp_document_lookup_id (doc, sp_repr_attr ((SPRepr *) items->data, "id"));
+		sp_repr_unref ((SPRepr *) items->data);
+		if (children && SP_IS_ITEM (nitem)) *children = g_slist_prepend (*children, nitem);
+		items = g_slist_remove (items, items->data);
 	}
 
 	sp_repr_unparent (grepr);
