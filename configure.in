@@ -35,6 +35,48 @@ AC_SUBST(PACKAGE_PIXMAPS_DIR)
 PACKAGE_GLADE_DIR="`gnome-config --datadir`/${PACKAGE}"
 AC_SUBST(PACKAGE_GLADE_DIR)
 
+dnl ******************************
+dnl Check for Bonobo
+dnl ******************************
+try_bonobo=true
+have_bonobo=false
+AC_ARG_WITH(bonobo,
+	[--{with,without}-bonobo Compile with Bonobo support or without it],
+	if test x$withval = xno; then
+		try_bonobo=false
+	fi
+)
+
+if $try_bonobo; then
+	AC_MSG_CHECKING(for Bonobo > 0.9)
+	if $GNOME_CONFIG --libs bonobo > /dev/null 2>&1; then
+		vers=`$GNOME_CONFIG --modversion bonobo`
+		case $vers
+		in
+			bonobo-0.[[012345678]]) bonobo_ok=false ;;
+			*) bonobo_ok=true ;;
+		esac
+	else
+		bonobo_ok=false
+	fi
+
+	if $bonobo_ok; then
+		AC_MSG_RESULT(found)
+		AC_DEFINE(ENABLE_BONOBO)
+		have_bonobo=true
+		EXTRA_BONOBO_GNOME_LIBS=`$GNOME_CONFIG --libs bonobo`
+		EXTRA_BONOBO_GNOME_CFLAGS=`$GNOME_CONFIG --cflags bonobo`
+	else    
+		AC_MSG_RESULT(not found)
+		EXTRA_BONOBO_GNOME_LIBS=
+		EXTRA_BONOBO_GNOME_CFLAGS=
+	fi
+fi
+
+AM_CONDITIONAL(BONOBO, $have_bonobo)
+AC_SUBST(EXTRA_BONOBO_GNOME_CFLAGS)
+AC_SUBST(EXTRA_BONOBO_GNOME_LIBS)
+
 AC_OUTPUT([
 Makefile
 macros/Makefile

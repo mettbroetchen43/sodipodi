@@ -1,5 +1,10 @@
 200-04-07  Lauris Kaplinski  <lauris@ariman.ee>
 
+	* sodipodi.gnorba: added this, embeddable document will follow soon
+	* configure.in: added bonobo check
+	
+200-04-07  Lauris Kaplinski  <lauris@ariman.ee>
+
 	* sp-shape.c: It prints now semitransparent shapes, rendering these
           to bitmaps. No clipping yet and resolution is hardcoded to 72dpi
 	

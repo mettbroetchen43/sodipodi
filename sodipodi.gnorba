@@ -1,0 +1,12 @@
+[embeddable-factory:sodipodi-svg-doc]
+type=exe
+repo_id=IDL:Bonobo/EmbeddableFactory:1.0 IDL:Bonobo/GenericFactory:1.0
+description=Sodipodi SVG Document factory
+location_info=sodipodi
+
+[embeddable:sodipodi-svg-doc]
+type=factory
+repo_id=IDL:BonoboObject/sodipodi-svg-doc:1.0 IDL:Bonobo/Embeddable:1.0 
+description=Sodipodi SVG Document
+location_info=embeddable-factory:sodipodi-svg-doc
+
