@@ -79,7 +79,7 @@ void nr_type_w32_build_def (NRTypeFaceDef *def, const unsigned char *name, const
 void nr_type_read_w32_list (void);
 
 /* Wrapper */
-char *nr_w32_mmap (const char *filename, int size, const char *name);
+char *nr_w32_mmap (const TCHAR *filename, int size, LPCTSTR name);
 void nr_w32_munmap (char *buffer, int size);
 
 #endif

@@ -26,7 +26,10 @@
 #endif
 #include <stdio.h>
 #include <ctype.h>
+
 #include <libarikkei/arikkei-token.h>
+#include <libarikkei/arikkei-strlib.h>
+
 #include <libnr/nr-macros.h>
 #include <libnr/nr-values.h>
 #include "nr-type-primitives.h"
@@ -460,7 +463,14 @@ nr_type_read_private_list (void)
 		unsigned char *cdata;
 		ArikkeiToken ft, lt;
 #ifdef WIN32
-		cdata = nr_w32_mmap (filename, st.st_size, "PrivateFonts");
+#ifdef _UNICODE
+		TCHAR *tfn;
+		tfn = arikkei_utf8_ucs2_strdup (filename);
+		cdata = nr_w32_mmap (tfn, st.st_size, TEXT ("PrivateFonts"));
+		free (tfn);
+#else
+		cdata = nr_w32_mmap (filename, st.st_size, TEXT ("PrivateFonts"));
+#endif
 #else
 		int fd;
 		fd = open (filename, O_RDONLY | O_BINARY);

@@ -16,6 +16,7 @@
 #include <config.h>
 #endif
 
+#include <libarikkei/arikkei-strlib.h>
 #include <libnr/nr-macros.h>
 #include <libnr/nr-matrix.h>
 
@@ -24,6 +25,14 @@
 #include "document.h"
 
 #include "win32.h"
+
+#ifdef _UNICODE
+#define sp_w32_utf8_strdup(T) arikkei_ucs2_utf8_strdup (T)
+#define sp_utf8_w32_strdup(s) arikkei_utf8_ucs2_strdup (s)
+#else
+#define sp_w32_utf8_strdup(T) strdup (T)
+#define sp_utf8_w32_strdup(s) strdup (s)
+#endif
 
 /* Initialization */
 
@@ -261,6 +270,7 @@ sp_module_print_win32_begin (SPModulePrint *mod, SPDocument *doc)
 		NULL, /* lpszDatatype */
 		0 /* DI_APPBANDING */ /* fwType */
 	};
+	TCHAR *docname;
 	int res;
 
 	w32mod = (SPModulePrintWin32 *) mod;
@@ -268,7 +278,8 @@ sp_module_print_win32_begin (SPModulePrint *mod, SPDocument *doc)
 	w32mod->PageWidth = sp_document_width (doc);
 	w32mod->PageHeight = sp_document_height (doc);
 
-	di.lpszDocName = SP_DOCUMENT_NAME (doc);
+	docname = sp_utf8_w32_strdup (SP_DOCUMENT_NAME (doc));
+	di.lpszDocName = docname;
 
 	SPWin32Modal = TRUE;
 
@@ -276,6 +287,8 @@ sp_module_print_win32_begin (SPModulePrint *mod, SPDocument *doc)
 	res = StartPage (w32mod->hDC);
 
 	SPWin32Modal = FALSE;
+
+	free (docname);
 
 	return 0;
 }
@@ -426,12 +439,12 @@ sp_module_print_win32_finish (SPModulePrint *mod)
 char *
 sp_win32_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned char *title)
 {
-	char fnbuf[4096] = {0};
+	TCHAR fnbuf[4096] = {0};
 	OPENFILENAME ofn = {
 		sizeof (OPENFILENAME),
 		NULL, /* hwndOwner */
 		NULL, /* hInstance */
-		filter, /* lpstrFilter */
+		NULL, /* lpstrFilter */
 		NULL, /* lpstrCustomFilter */
 		0, /* nMaxCustFilter  */
 		1, /* nFilterIndex */
@@ -439,8 +452,8 @@ sp_win32_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned 
 		sizeof (fnbuf), /* nMaxFile */
 		NULL, /* lpstrFileTitle */
 		0, /* nMaxFileTitle */
-		dir, /* lpstrInitialDir */
-		title, /* lpstrTitle */
+		NULL, /* lpstrInitialDir */
+		NULL, /* lpstrTitle */
 		OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY, /* Flags */
 		0, /* nFileOffset */
 		0, /* nFileExtension */
@@ -449,10 +462,22 @@ sp_win32_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned 
 		NULL, /* lpfnHook */
 		NULL /* lpTemplateName */
 	};
-	int retval;
+	int retval, i;
+	TCHAR *tdir;
+	TCHAR *tfilter;
+	TCHAR *ttitle;
 #ifdef USE_TIMER
 	UINT_PTR timer;
 #endif
+
+	tdir = sp_utf8_w32_strdup (dir);
+	tfilter = sp_utf8_w32_strdup (filter);
+	// Have to replace bars with zeroes
+	for (i = 0; tfilter[i]; i++) if (tfilter[i] == '|') tfilter[i] = 0;
+	ttitle = sp_utf8_w32_strdup (title);
+	ofn.lpstrInitialDir = tdir;
+	ofn.lpstrFilter = tfilter;
+	ofn.lpstrTitle = ttitle;
 
 	SPWin32Modal = TRUE;
 #ifdef USE_TIMER
@@ -466,12 +491,17 @@ sp_win32_get_open_filename (unsigned char *dir, unsigned char *filter, unsigned 
 #endif
 	SPWin32Modal = FALSE;
 
+	free (ttitle);
+	free (tfilter);
+	free (tdir);
+
 	if (!retval) {
 		int errcode;
 		errcode = CommDlgExtendedError();
 		return NULL;
     }
-	return g_strdup (fnbuf);
+
+	return sp_w32_utf8_strdup (fnbuf);
 }
 
 char *
@@ -483,12 +513,12 @@ sp_win32_get_write_filename (unsigned char *dir, unsigned char *filter, unsigned
 char *
 sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 {
-	char fnbuf[4096] = {0};
+	TCHAR fnbuf[4096] = {0};
 	OPENFILENAME ofn = {
 		sizeof (OPENFILENAME),
 		NULL, /* hwndOwner */
 		NULL, /* hInstance */
-		"SVG with sodipodi namespace\0*\0Standard SVG\0*\0", /* lpstrFilter */
+		TEXT ("SVG with sodipodi namespace\0*\0Standard SVG\0*\0"), /* lpstrFilter */
 		NULL, /* lpstrCustomFilter */
 		0, /* nMaxCustFilter  */
 		1, /* nFilterIndex */
@@ -496,8 +526,8 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 		sizeof (fnbuf), /* nMaxFile */
 		NULL, /* lpstrFileTitle */
 		0, /* nMaxFileTitle */
-		dir, /* lpstrInitialDir */
-		"Save document to file", /* lpstrTitle */
+		NULL, /* lpstrInitialDir */
+		TEXT ("Save document to file"), /* lpstrTitle */
 		OFN_HIDEREADONLY, /* Flags */
 		0, /* nFileOffset */
 		0, /* nFileExtension */
@@ -507,9 +537,13 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 		NULL /* lpTemplateName */
 	};
 	int retval;
+	TCHAR *tdir;
 #ifdef USE_TIMER
 	UINT_PTR timer;
 #endif
+
+	tdir = sp_utf8_w32_strdup (dir);
+	ofn.lpstrInitialDir = tdir;
 
 	SPWin32Modal = TRUE;
 #ifdef USE_TIMER
@@ -523,13 +557,36 @@ sp_win32_get_save_filename (unsigned char *dir, unsigned int *spns)
 #endif
 	SPWin32Modal = FALSE;
 
+	free (tdir);
+
 	if (!retval) {
 		int errcode;
 		errcode = CommDlgExtendedError();
 		return NULL;
     }
 	*spns = (ofn.nFilterIndex != 2);
-	return g_strdup (fnbuf);
+
+	return sp_w32_utf8_strdup (fnbuf);
+}
+
+/* Stuff */
+
+static unsigned char *
+nr_win32_utf8_strdup (TCHAR *w32str)
+{
+	char *d;
+	int slen, sp, dp;
+	if (!w32str) return NULL;
+	slen = 0;
+	while (w32str[slen]) slen+= 1;
+	d = malloc (6 * slen + 1);
+	dp = 0;
+	for (sp = 0; sp < slen; sp++) {
+		dp += g_unichar_to_utf8 (w32str[sp], d + dp);
+	}
+	d[dp++] = 0;
+	d = realloc (d, dp);
+	return d;
 }
 
 /*
@@ -541,7 +598,7 @@ static const char *
 sp_win32_ichigo (void)
 {
 	static char *ichigo = NULL;
-	TCHAR pathval [4096];
+	TCHAR pathval[4096];
     DWORD len = 4096;
     HKEY hKey;
     LONG ret;
@@ -563,7 +620,7 @@ sp_win32_ichigo (void)
 		return ichigo;
 	}
 
-	ichigo = strdup (pathval);
+	ichigo = nr_win32_utf8_strdup (pathval);
 
 	return ichigo;
 }
@@ -599,6 +656,7 @@ const char *
 sp_win32_get_appdata_dir (void)
 {
 	static char *path = NULL;
+	char *pathvalutf8;
 	TCHAR pathval [4096];
     DWORD len = 4096;
     HKEY hKey;
@@ -621,7 +679,9 @@ sp_win32_get_appdata_dir (void)
 		return path;
 	}
 
-	path = g_build_filename (pathval, "Sodipodi", NULL);
+	pathvalutf8 = nr_win32_utf8_strdup (pathval);
+	path = g_build_filename (pathvalutf8, "Sodipodi", NULL);
+	free (pathvalutf8);
 
 	return path;
 }

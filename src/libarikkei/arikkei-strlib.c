@@ -14,6 +14,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <malloc.h>
 #include <assert.h>
 
 #include "arikkei-strlib.h"
@@ -181,5 +182,162 @@ arikkei_dtoa_exp (unsigned char *buf, unsigned int len, double val,
 		p += arikkei_itoa (buf + p, len - p, (int) eval);
 		return p;
 	}
+}
+
+unsigned int
+arikkei_unicode_utf8_bytes (unsigned int uval)
+{
+	if (uval < 0x80) return 1;
+	if (uval < 0x800) return 2;
+	if (uval < 0x10000) return 3;
+	if (uval < 0x200000) return 4;
+	if (uval < 0x4000000) return 5;
+	return 6;
+}
+
+unsigned int
+arikkei_utf8_strlen (const unsigned char *str)
+{
+	const unsigned char *s;
+	unsigned int len;
+	s = str;
+	len = 0;
+	while (*s) {
+		if ((*s & 0x80) == 0x0) {
+			s += 1;
+		} else if ((*s & 0xe0) == 0xc0) {
+			s += 2;
+		} else if ((*s & 0xf0) == 0xe0) {
+			s += 3;
+		} else if ((*s & 0xf8) == 0xf0) {
+			s += 4;
+		} else if ((*s & 0xfc) == 0xf8) {
+			s += 5;
+		} else if ((*s & 0xfe) == 0xfc) {
+			s += 6;
+		}
+		len += 1;
+	}
+	return len;
+}
+
+unsigned int
+arikkei_utf8_ucs2_strcpy (const unsigned char *s, unsigned short *d)
+{
+	unsigned int dp;
+	dp = 0;
+	while (*s) {
+		if ((*s & 0x80) == 0x0) {
+			d[dp++] = s[0];
+			s += 1;
+		} else if ((*s & 0xe0) == 0xc0) {
+			d[dp++] = ((s[0] & 0x1f) << 6) | (s[1] & 0x3f);
+			s += 2;
+		} else if ((*s & 0xf0) == 0xe0) {
+			d[dp++] = ((s[0] & 0x0f) << 12) | ((s[1] & 0x3f) << 6) | (s[2] & 0x3f);
+			s += 3;
+		} else if ((*s & 0xf8) == 0xf0) {
+			d[dp++] = ((s[0] & 0x07) << 18) | ((s[1] & 0x3f) << 12) |
+					  ((s[2] & 0x3f) << 6) | (s[3] & 0x3f);
+			s += 4;
+		} else if ((*s & 0xfc) == 0xf8) {
+			d[dp++] = ((s[0] & 0x03) << 24) | ((s[1] & 0x3f) << 18) |
+					  ((s[2] & 0x3f) << 12) | ((s[3] & 0x3f) << 6) | (s[4] & 0x3f);
+			s += 5;
+		} else if ((*s & 0xfe) == 0xfc) {
+			d[dp++] = ((s[0] & 0x01) << 30) | ((s[1] & 0x3f) << 24) | ((s[2] & 0x3f) << 18) |
+					  ((s[3] & 0x3f) << 12) | ((s[4] & 0x3f) << 6) | (s[5] & 0x3f);
+			s += 6;
+		}
+	}
+	d[dp] = 0;
+	return dp;
+}
+
+#include <stdio.h>
+
+unsigned short *
+arikkei_utf8_ucs2_strdup (const unsigned char *s)
+{
+	unsigned short *d;
+	int len;
+	len = arikkei_utf8_strlen (s);
+	d = malloc ((len + 1) * sizeof (unsigned short));
+	arikkei_utf8_ucs2_strcpy (s, d);
+	return d;
+}
+
+unsigned int
+arikkei_ucs2_strlen (const unsigned short *str)
+{
+	const unsigned short *s;
+	s = str;
+	while (*s) s += 1;
+	return s - str;
+}
+
+unsigned int
+arikkei_ucs2_utf8_strcpy (const unsigned short *s, unsigned char *d)
+{
+	unsigned int dp;
+	dp = 0;
+	while (*s) {
+		if (*s < 0x80) {
+			d[dp++] = (unsigned char) *s;
+		} else if (*s < 0x800) {
+			d[dp++] = 0xc0 | (*s >> 6);
+			d[dp++] = 0x80 | (*s & 0x3f);
+		} else if (*s < 0x10000) {
+			d[dp++] = 0xe0 | (*s >> 12);
+			d[dp++] = 0x80 | ((*s >> 6) & 0x3f);
+			d[dp++] = 0x80 | (*s & 0x3f);
+		} else if (*s < 0x200000) {
+			d[dp++] = 0xf0 | (*s >> 18);
+			d[dp++] = 0x80 | ((*s >> 12) & 0x3f);
+			d[dp++] = 0x80 | ((*s >> 6) & 0x3f);
+			d[dp++] = 0x80 | (*s & 0x3f);
+		} else if (*s < 0x4000000) {
+			d[dp++] = 0xf8 | (*s >> 24);
+			d[dp++] = 0x80 | ((*s >> 18) & 0x3f);
+			d[dp++] = 0x80 | ((*s >> 12) & 0x3f);
+			d[dp++] = 0x80 | ((*s >> 6) & 0x3f);
+			d[dp++] = 0x80 | (*s & 0x3f);
+		} else {
+			d[dp++] = 0xfc | (*s >> 30);
+			d[dp++] = 0x80 | ((*s >> 24) & 0x3f);
+			d[dp++] = 0x80 | ((*s >> 18) & 0x3f);
+			d[dp++] = 0x80 | ((*s >> 12) & 0x3f);
+			d[dp++] = 0x80 | ((*s >> 6) & 0x3f);
+			d[dp++] = 0x80 | (*s & 0x3f);
+		}
+		s += 1;
+	}
+	d[dp] = 0;
+	return dp;
+}
+
+unsigned char *
+arikkei_ucs2_utf8_strdup (const unsigned short *s)
+{
+	unsigned char *d;
+	int len;
+	len = arikkei_ucs2_utf8_bytelen (s);
+	d = malloc (len * sizeof (unsigned char) + 1);
+	arikkei_ucs2_utf8_strcpy (s, d);
+	return d;
+}
+
+unsigned int
+arikkei_ucs2_utf8_bytelen (const unsigned short *str)
+{
+	const unsigned short *s;
+	unsigned int len;
+	s = str;
+	len = 0;
+	while (*s) {
+		len += arikkei_unicode_utf8_bytes (*s);
+		s += 1;
+	}
+	return len;
 }
 

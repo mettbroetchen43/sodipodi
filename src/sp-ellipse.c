@@ -754,7 +754,6 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 		pos += sp_svg_number_write_d (c + pos, ph.x, 6, 0, FALSE);
 		c[pos++] = ' ';
 		pos += sp_svg_number_write_d (c + pos, ph.y, 6, 0, FALSE);
-
 		c[pos++] = ' ';
 		c[pos++] = 'A';
 		c[pos++] = ' ';
@@ -773,12 +772,15 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 		c[pos++] = ' ';
 		pos += sp_svg_number_write_d (c + pos, p2.y, 6, 0, FALSE);
 
+#if 0
 		c[pos++] = ' ';
 		c[pos++] = 'L';
 		c[pos++] = ' ';
 		pos += sp_svg_number_write_d (c + pos, ge->cx.computed, 6, 0, FALSE);
 		c[pos++] = ' ';
 		pos += sp_svg_number_write_d (c + pos, ge->cy.computed, 6, 0, FALSE);
+#endif
+		c[pos++] = ' ';
 		c[pos++] = 'z';
 		c[pos++] = '\0';
 	} else {

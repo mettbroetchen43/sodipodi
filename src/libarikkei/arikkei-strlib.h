@@ -29,4 +29,14 @@ unsigned int arikkei_dtoa_simple (unsigned char *buf, unsigned int len, double v
 unsigned int arikkei_dtoa_exp (unsigned char *buf, unsigned int len, double val,
 			       unsigned int tprec, unsigned int padf);
 
+
+unsigned int arikkei_unicode_utf8_bytes (unsigned int uval);
+unsigned int arikkei_utf8_strlen (const unsigned char *str);
+unsigned int arikkei_utf8_ucs2_strcpy (const unsigned char *s, unsigned short *d);
+unsigned short *arikkei_utf8_ucs2_strdup (const unsigned char *s);
+unsigned int arikkei_ucs2_strlen (const unsigned short *str);
+unsigned int arikkei_ucs2_utf8_strcpy (const unsigned short *s, unsigned char *d);
+unsigned char *arikkei_ucs2_utf8_strdup (const unsigned short *s);
+unsigned int arikkei_ucs2_utf8_bytelen (const unsigned short *str);
+
 #endif

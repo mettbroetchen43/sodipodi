@@ -163,7 +163,7 @@ void sp_file_open_dialog (gpointer object, gpointer data)
 #ifdef WIN32
 	char *filename;
 	if (!open_path) open_path = g_strconcat (SODIPODI_DOCDIR, G_DIR_SEPARATOR_S, NULL);
-	filename = sp_win32_get_open_filename (open_path, "SVG files\0*.svg;*.svgz\0All files\0*\0", _("Select file to open"));
+	filename = sp_win32_get_open_filename (open_path, "SVG files|*.svg;*.svgz|All files|*|", _("Select file to open"));
 	if (filename) {
 		if (open_path) g_free (open_path);
 		open_path = g_dirname (filename);
@@ -445,9 +445,9 @@ void sp_file_import (GtkWidget * widget)
 #else
 #ifdef WIN32
 	filename = sp_win32_get_open_filename (import_path,
-					     "Image files\0*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff;*.xpm\0"
-					     "SVG files\0*.svg\0"
-					     "All files\0*\0", _("Select file to import"));
+					     "Image files|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.tiff;*.xpm|"
+					     "SVG files|*.svg|"
+					     "All files|*|", _("Select file to import"));
 	if (filename) {
 		sp_file_do_import (doc, filename);
 		g_free (filename);

@@ -15,7 +15,7 @@
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="4"
-			CharacterSet="0">
+			CharacterSet="1">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
@@ -25,7 +25,7 @@
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
 				UsePrecompiledHeader="0"
-				WarningLevel="3"
+				WarningLevel="1"
 				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="4"/>
 			<Tool
@@ -237,7 +237,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_e.obj"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_e.obj
+"
 						Outputs="$(InputDir)\mmx_e.obj"/>
 				</FileConfiguration>
 			</File>
@@ -247,7 +248,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_c.obj"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_c.obj
+"
 						Outputs="$(InputDir)\mmx_c.obj"/>
 				</FileConfiguration>
 			</File>
@@ -257,7 +259,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_d.obj"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_d.obj
+"
 						Outputs="$(InputDir)\mmx_d.obj"/>
 				</FileConfiguration>
 			</File>
@@ -267,7 +270,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_a.obj"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_a.obj
+"
 						Outputs="$(InputDir)\mmx_a.obj"/>
 				</FileConfiguration>
 			</File>
@@ -277,7 +281,8 @@
 					Name="Debug|Win32">
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_b.obj"
+						CommandLine="..\..\MinGW\bin\as $(InputPath) -o $(InputDir)\mmx_b.obj
+"
 						Outputs="$(InputDir)\mmx_b.obj"/>
 				</FileConfiguration>
 			</File>
