@@ -63,6 +63,11 @@ nr_canvas_destroy (GtkObject * object)
 
 	canvas = (NRCanvas *) object;
 
+	if (canvas->root) {
+		gtk_object_unref (GTK_OBJECT (canvas->root));
+		canvas->root = NULL;
+	}
+
 	if (((GtkObjectClass *) (parent_class))->destroy) (* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 

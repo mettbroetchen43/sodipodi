@@ -79,6 +79,7 @@ nr_canvas_group_destroy (GtkObject * object)
 	while (group->children) {
 		NRCanvasItem * child;
 		child = (NRCanvasItem *) group->children->data;
+		/* fixme: Should we use unparent here? */
 		child->parent = NULL;
 		group->children = g_slist_remove (group->children, child);
 		gtk_object_unref ((GtkObject *) child);

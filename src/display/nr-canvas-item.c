@@ -56,6 +56,7 @@ nr_canvas_item_init (NRCanvasItem * item)
 	item->canvas = NULL;
 	item->parent = NULL;
 	nr_irect_set_empty (&item->bbox);
+	item->ctx = NULL;
 	item->transform = NULL;
 }
 
@@ -80,6 +81,9 @@ nr_canvas_item_destroy (GtkObject * object)
 		g_free (item->transform);
 		item->transform = NULL;
 	}
+
+	/* If implementation uses ctx, it HAS TO free it */
+	g_assert (item->ctx == NULL);
 
 	if (((GtkObjectClass *) (parent_class))->destroy) (* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
@@ -113,9 +117,12 @@ nr_canvas_item_invoke_render (NRCanvasItem * item, NRDrawingArea * area)
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (NR_IS_CANVAS_ITEM (item));
 	g_return_if_fail (area != NULL);
+	g_return_if_fail (NR_CI_GET_STATE (item) < NR_CANVAS_ITEM_STATE_BBOX);
 	g_return_if_fail (((NRCanvasItemClass *) ((GtkObject *) item)->klass)->render);
 
-	(* ((NRCanvasItemClass *) ((GtkObject *) item)->klass)->render) (item, area);
+	if (nr_irect_do_intersect (&item->bbox, &area->rect)) {
+		(* ((NRCanvasItemClass *) ((GtkObject *) item)->klass)->render) (item, area);
+	}
 }
 
 NRCanvasItem *
@@ -124,9 +131,14 @@ nr_canvas_item_invoke_pick (NRCanvasItem * item, NRPoint * point)
 	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (NR_IS_CANVAS_ITEM (item), NULL);
 	g_return_val_if_fail (point != NULL, NULL);
+	g_return_val_if_fail (NR_CI_GET_STATE (item) < NR_CANVAS_ITEM_STATE_BBOX, NULL);
 	g_return_val_if_fail (((NRCanvasItemClass *) ((GtkObject *) item)->klass)->pick, NULL);
 
-	return (* ((NRCanvasItemClass *) ((GtkObject *) item)->klass)->pick) (item, point);
+	if ((point->x >= item->bbox.x0) && (point->x < item->bbox.x1) && (point->y >= item->bbox.y0) && (point->y < item->bbox.y1)) {
+		return (* ((NRCanvasItemClass *) ((GtkObject *) item)->klass)->pick) (item, point);
+	}
+
+	return NULL;
 }
 
 void

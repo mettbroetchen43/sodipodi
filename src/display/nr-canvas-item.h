@@ -58,6 +58,8 @@ struct _NRCanvasItem {
 	NRCanvas * canvas;
 	NRCanvasItem * parent;
 	NRIRect bbox;
+	/* If (ctx == NULL) item HAS TO update in single step */
+	NRGraphicCtx * ctx;
 	NRAffine * transform;
 };
 
