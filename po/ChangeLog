@@ -1,3 +1,7 @@
+2001-05-29  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* ja.po: Update to get rid of warnings in status script.
+	
 2001-05-23  Jesus Bravo Alvarez  <jba@pobox.com>
 
 	* gl.po: Updated Galician translation from
