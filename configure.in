@@ -16,6 +16,9 @@ AM_PROG_CC_STDC
 AM_PROG_AS
 AC_HEADER_STDC
 
+# Honor aclocal flags
+ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
+
 dnl AC_PROG_RANLIB
 
 dnl Set PACKAGE_LOCALE_DIR in config.h.
@@ -53,6 +56,7 @@ AC_MSG_CHECKING([for MinGW platform])
   AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
 if test x"$platform_win32" = xyes; then
   CFLAGS="$CFLAGS -mms-bitfields"
+  LDFLAGS="$LDFLAGS -mwindows"
 fi
 
 dnl ******************************
