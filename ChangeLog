@@ -1,3 +1,16 @@
+2002-10-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-compose-transform.c (nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM):
+	Use mmx subcomposers if needed
+
+	* src/libnr/nr_mmx_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM.S: New file
+
+2002-10-19  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-compose-transform.c (nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_0):
+	Split composer
+	(nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N_TRANSFORM_n): Ditto
+
 2002-10-18  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr_mmx_R8G8B8A8_P_EMPTY_A8_RGBAP.S: new file

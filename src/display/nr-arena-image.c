@@ -207,6 +207,8 @@ nr_arena_image_render (NRArenaItem *item, NRRectL *area, NRBuffer *buf)
 		nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N_TRANSFORM (dpx, dw, dh, drs, spx, sw, sh, srs, &d2s, Falpha, XSAMPLE, YSAMPLE);
 	}
 
+	buf->empty = FALSE;
+
 	return item->state;
 }
 

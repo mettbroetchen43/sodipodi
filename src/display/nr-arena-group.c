@@ -196,7 +196,9 @@ nr_arena_group_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 		NRGC cgc;
 		art_affine_multiply (cgc.affine, group->child_transform.c, gc->affine);
 		newstate = nr_arena_item_invoke_update (child, area, &cgc, state, reset);
+#if 0
 		g_return_val_if_fail (!(~newstate & state), newstate);
+#endif
 		beststate = beststate & newstate;
 	}
 
@@ -225,7 +227,9 @@ nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 		/* Just compose children into parent buffer */
 		for (child = group->children; child != NULL; child = child->next) {
 			ret = nr_arena_item_invoke_render (child, area, b);
+#if 0
 			if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) break;
+#endif
 		}
 	} else {
 		NRBuffer *nb;
@@ -236,9 +240,11 @@ nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 		nb->empty = FALSE;
 		for (child = group->children; child != NULL; child = child->next) {
 			ret = nr_arena_item_invoke_render (child, area, nb);
+#if 0
 			if (!(ret & NR_ARENA_ITEM_STATE_RENDER)) break;
+#endif
 		}
-		if (ret & NR_ARENA_ITEM_STATE_RENDER) {
+		if (1 && (ret & NR_ARENA_ITEM_STATE_RENDER)) {
 			/* Compose */
 			nr_render_buf_buf_alpha (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0,
 						 nb, 0, 0,
@@ -247,7 +253,9 @@ nr_arena_group_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 		nr_buffer_free (nb);
 	}
 
+#if 0
 	g_return_val_if_fail (ret & NR_ARENA_ITEM_STATE_RENDER, ret);
+#endif
 
 	return ret;
 }

@@ -244,7 +244,9 @@ nr_arena_item_invoke_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint s
 	if ((~item->state & state) && (!area || nr_rect_l_test_intersect (area, &item->bbox))) {
 		/* Need update to given state */
 		newstate = NR_ARENA_ITEM_VIRTUAL (item, update) (item, area, &newgc, state, reset);
+#if 0
 		g_return_val_if_fail (!(~newstate & state), newstate);
+#endif
 		item->state = newstate;
 	}
 
@@ -256,7 +258,10 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRBuffer *b)
 {
 	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
+	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_BBOX, item->state);
+#if 0
 	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_RENDER, item->state);
+#endif
 	g_return_val_if_fail (b->w >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (b->h >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
 

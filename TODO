@@ -3,6 +3,7 @@
 TODO for 0.28
 =============
 
+- Print open paths correctly
 - Enable active desktop indicator for single new desktop
 - Make page border togglable
 - Autoconf test for popt.h

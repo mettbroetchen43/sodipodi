@@ -22,7 +22,7 @@
  * y	-36(%ebp)
  * ca	-40(%ebp)
  *
- * mm0 Fg
+ * mm0 A
  * mm1 FgA
  * mm2 FgPre
  * mm3
@@ -87,7 +87,7 @@ nr_mmx_R8G8B8_R8G8B8_R8G8B8A8_P:
 
 /* [Fg * a] -> mm1 */
 	pmullw	%mm0, %mm1
-	paddw	%mm6, %mm2
+	paddw	%mm6, %mm1
 	movq	%mm1, %mm2
 	psrlw	$8, %mm2
 	paddw	%mm2, %mm1
