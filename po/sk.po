@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "POT-Creation-Date: 2002-11-28 15:27-0500\n"
-"PO-Revision-Date: 2002-12-08 12:42+0100\n"
+"PO-Revision-Date: 2002-12-20 21:06+0100\n"
 "Last-Translator: Zdenko Podobný <zdpo@mailbox.sk>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
 "MIME-Version: 1.0\n"
@@ -737,7 +737,7 @@ msgstr "Proporcia:"
 
 #: src/star-context.c:386
 msgid "Make sides flat"
-msgstr ""
+msgstr "Urobiť strany ostré"
 
 #: src/file.c:115
 msgid "Select file to open"
@@ -1121,7 +1121,7 @@ msgstr "Súbor"
 
 #: src/interface.c:420 src/toolbox.c:357 src/widgets/gradient-selector.c:135
 msgid "Edit"
-msgstr "Úpraviť"
+msgstr "Upraviť"
 
 #: src/interface.c:432
 msgid "View"
