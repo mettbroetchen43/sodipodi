@@ -15,9 +15,17 @@
 
 #include <math.h>
 #include <string.h>
+
 #include <libnr/nr-rect.h>
 #include <libnr/nr-matrix.h>
+#include <libnr/nr-svp.h>
+#include <libnr/nr-stroke.h>
 #include <libnr/nr-blit.h>
+#include <libnr/nr-svp-render.h>
+
+#include <libnr/nr-svp-private.h>
+
+#if 0
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath.h>
@@ -29,6 +37,8 @@
 #include <libart_lgpl/art_svp_wind.h>
 #include <libart_lgpl/art_svp_point.h>
 #include <libart_lgpl/art_gray_svp.h>
+#endif
+
 #include "../style.h"
 #include "nr-arena.h"
 #include "nr-arena-glyphs.h"
@@ -79,10 +89,7 @@ nr_arena_glyphs_class_init (NRArenaGlyphsClass *klass)
 static void
 nr_arena_glyphs_init (NRArenaGlyphs *glyphs)
 {
-	glyphs->curve = NULL;
-	glyphs->style = NULL;
-
-	glyphs->stroke_svp = NULL;
+	/* Nothing here */
 }
 
 static void
@@ -93,8 +100,7 @@ nr_arena_glyphs_finalize (NRObject *object)
 	glyphs = NR_ARENA_GLYPHS (object);
 
 	if (glyphs->stroke_svp) {
-		art_svp_free (glyphs->stroke_svp);
-		glyphs->stroke_svp = NULL;
+		nr_svp_free (glyphs->stroke_svp);
 	}
 
 	if (glyphs->rfont) {
@@ -123,9 +129,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 	NRArenaGlyphs *glyphs;
 	NRRasterFont *rfont;
 	NRMatrixF t;
-	ArtBpath *abp;
-	ArtVpath *vp, *pvp;
-	ArtDRect bbox;
+	NRRectF bbox;
 
 	glyphs = NR_ARENA_GLYPHS (item);
 
@@ -138,14 +142,15 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 
 	/* Release state data */
 	if (glyphs->stroke_svp) {
-		art_svp_free (glyphs->stroke_svp);
+		nr_svp_free (glyphs->stroke_svp);
 		glyphs->stroke_svp = NULL;
 	}
 
 	if (!glyphs->font || !glyphs->curve || !glyphs->style) return NR_ARENA_ITEM_STATE_ALL;
 	if ((glyphs->style->fill.type == SP_PAINT_TYPE_NONE) && (glyphs->style->stroke.type == SP_PAINT_TYPE_NONE)) return NR_ARENA_ITEM_STATE_ALL;
 
-	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
+	bbox.x0 = bbox.y0 = NR_HUGE_F;
+	bbox.x1 = bbox.y1 = -NR_HUGE_F;
 
 	if (glyphs->style->fill.type != SP_PAINT_TYPE_NONE) {
 		NRRectF area;
@@ -163,30 +168,25 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 	}
 
 	if (glyphs->style->stroke.type != SP_PAINT_TYPE_NONE) {
+		NRBPath bp;
+		NRMatrixF ctmf;
+		float width, scale;
+		NRSVL *svl;
 		/* Build state data */
-		abp = art_bpath_affine_transform (glyphs->curve->bpath, NR_MATRIX_D_TO_DOUBLE (&gc->transform));
-		vp = art_bez_path_to_vec (abp, 0.25);
-		art_free (abp);
-		pvp = art_vpath_perturb (vp);
-		art_free (vp);
-
-		if (glyphs->style->stroke.type != SP_PAINT_TYPE_NONE) {
-			gdouble width;
-			width = glyphs->style->stroke_width.computed * NR_MATRIX_DF_EXPANSION (&gc->transform);
-			width = MAX (0.125, width);
-			glyphs->stroke_svp = art_svp_vpath_stroke (pvp,
+		scale = NR_MATRIX_DF_EXPANSION (&gc->transform);
+		width = MAX (0.125, glyphs->style->stroke_width.computed * scale);
+		bp.path = glyphs->curve->bpath;
+		nr_matrix_f_from_d (&ctmf, &gc->transform);
+		svl = nr_bpath_stroke (&bp, &ctmf, width,
 								   glyphs->style->stroke_linejoin.value,
 								   glyphs->style->stroke_linecap.value,
-								   width,
 								   glyphs->style->stroke_miterlimit.value, 0.25);
-		}
-
-		art_free (pvp);
+		glyphs->stroke_svp = nr_svp_from_svl (svl, NULL);
+		nr_svl_free_list (svl);
 	}
 
-	if (glyphs->stroke_svp) art_drect_svp_union (&bbox, glyphs->stroke_svp);
-	if (art_drect_empty (&bbox)) return NR_ARENA_ITEM_STATE_ALL;
-
+	if (glyphs->stroke_svp) nr_svp_bbox (glyphs->stroke_svp, &bbox, FALSE);
+	if (nr_rect_f_test_empty (&bbox)) return NR_ARENA_ITEM_STATE_ALL;
 	item->bbox.x0 = bbox.x0 - 1.0;
 	item->bbox.y0 = bbox.y0 - 1.0;
 	item->bbox.x1 = bbox.x1 + 1.0;
@@ -230,11 +230,11 @@ nr_arena_glyphs_pick (NRArenaItem *item, gdouble x, gdouble y, gdouble delta, un
 	if ((x >= item->bbox.x0) && (y >= item->bbox.y0) && (x < item->bbox.x1) && (y < item->bbox.y1)) return item;
 
 	if (glyphs->stroke_svp && (glyphs->style->stroke.type != SP_PAINT_TYPE_NONE)) {
-		if (art_svp_point_wind (glyphs->stroke_svp, x, y)) return item;
+		if (nr_svp_point_wind (glyphs->stroke_svp, (float) x, (float) y)) return item;
 	}
 	if (delta > 1e-3) {
 		if (glyphs->stroke_svp && (glyphs->style->stroke.type != SP_PAINT_TYPE_NONE)) {
-			if (art_svp_point_dist (glyphs->stroke_svp, x, y) <= delta) return item;
+			if (nr_svp_point_distance (glyphs->stroke_svp, (float) x, (float) y) <= delta) return item;
 		}
 	}
 
@@ -319,21 +319,7 @@ nr_arena_glyphs_stroke_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRPixBlock *m
 	item = NR_ARENA_ITEM (glyphs);
 
 	if (glyphs->stroke_svp && nr_rect_l_test_intersect (area, &item->bbox)) {
-		NRPixBlock gb;
-		gint x, y;
-		nr_pixblock_setup_fast (&gb, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
-		art_gray_svp_aa (glyphs->stroke_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&gb), gb.rs);
-		for (y = area->y0; y < area->y1; y++) {
-			guchar *d, *s;
-			d = NR_PIXBLOCK_PX (m) + (y - area->y0) * m->rs;
-			s = NR_PIXBLOCK_PX (&gb) + (y - area->y0) * gb.rs;
-			for (x = area->x0; x < area->x1; x++) {
-				*d = (*d) + ((255 - *d) * (*s) / 255);
-				d += 1;
-				s += 1;
-			}
-		}
-		nr_pixblock_release (&gb);
+		nr_pixblock_render_svp_mask_or (m, glyphs->stroke_svp);
 		m->empty = FALSE;
 	}
 

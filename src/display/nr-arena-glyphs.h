@@ -17,9 +17,9 @@
 #define NR_ARENA_GLYPHS(obj) (NR_CHECK_INSTANCE_CAST ((obj), NR_TYPE_ARENA_GLYPHS, NRArenaGlyphs))
 #define NR_IS_ARENA_GLYPHS(obj) (NR_CHECK_INSTANCE_TYPE ((obj), NR_TYPE_ARENA_GLYPHS))
 
-#include <libnrtype/nr-rasterfont.h>
+#include <libnr/nr-svp.h>
 
-#include <libart_lgpl/art_svp.h>
+#include <libnrtype/nr-rasterfont.h>
 
 #include "helper/curve.h"
 #include "forward.h"
@@ -39,7 +39,7 @@ struct _NRArenaGlyphs {
 	NRRasterFont *rfont;
 	float x, y;
 
-	ArtSVP *stroke_svp;
+	NRSVP *stroke_svp;
 };
 
 struct _NRArenaGlyphsClass {

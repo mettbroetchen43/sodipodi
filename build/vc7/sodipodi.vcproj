@@ -1178,28 +1178,10 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 				RelativePath="..\..\src\libart_lgpl\art_affine.h">
 			</File>
 			<File
-				RelativePath="..\..\src\libart_lgpl\art_alphagamma.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_alphagamma.h">
-			</File>
-			<File
 				RelativePath="..\..\src\libart_lgpl\art_bpath.c">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_bpath.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_config.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_filterlevel.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_gray_svp.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_gray_svp.h">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_misc.c">
@@ -1208,28 +1190,10 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 				RelativePath="..\..\src\libart_lgpl\art_misc.h">
 			</File>
 			<File
-				RelativePath="..\..\src\libart_lgpl\art_pathcode.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_pixbuf.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_pixbuf.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_point.h">
-			</File>
-			<File
 				RelativePath="..\..\src\libart_lgpl\art_rect.c">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_rect.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rect_svp.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rect_svp.h">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_rect_uta.c">
@@ -1238,130 +1202,16 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 				RelativePath="..\..\src\libart_lgpl\art_rect_uta.h">
 			</File>
 			<File
-				RelativePath="..\..\src\libart_lgpl\art_render.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_render.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_render_gradient.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_render_gradient.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_render_svp.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_render_svp.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_affine.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_affine.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_affine_private.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_affine_private.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_bitmap_affine.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_bitmap_affine.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_pixbuf_affine.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_pixbuf_affine.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_rgba_affine.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_rgba_affine.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_svp.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgb_svp.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgba.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_rgba.h">
-			</File>
-			<File
 				RelativePath="..\..\src\libart_lgpl\art_svp.c">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_svp.h">
 			</File>
 			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_intersect.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_intersect.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_ops.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_ops.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_point.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_point.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_render_aa.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_render_aa.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_vpath.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_vpath.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_vpath_stroke.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_vpath_stroke.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_wind.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_svp_wind.h">
-			</File>
-			<File
 				RelativePath="..\..\src\libart_lgpl\art_uta.c">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_uta.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_uta_ops.c">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\art_uta_ops.h">
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\art_uta_rect.c">
@@ -1407,9 +1257,6 @@ secur32.lib oleacc.lib oledlg.lib sensapi.lib
 			</File>
 			<File
 				RelativePath="..\..\src\libart_lgpl\config.h">
-			</File>
-			<File
-				RelativePath="..\..\src\libart_lgpl\libart-features.h">
 			</File>
 		</Filter>
 		<Filter

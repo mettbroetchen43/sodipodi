@@ -32,8 +32,6 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 #include <libart_lgpl/art_vpath.h>
-#include <libart_lgpl/art_svp.h>
-#include <libart_lgpl/art_svp_vpath_stroke.h>
 
 #include "../style.h"
 #include "nr-arena.h"
@@ -351,7 +349,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 			double dlen;
 			int i;
 			ArtVpath *vp, *pvp;
-			ArtSVP *asvp;
+			/* ArtSVP *asvp; */
 			vp = art_bez_path_to_vec (bp.path, 0.25);
 			pvp = art_vpath_perturb (vp);
 			art_free (vp);
@@ -371,6 +369,7 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				pvp = vp;
 				g_free (dash.dash);
 			}
+#if 0
 			asvp = art_svp_vpath_stroke (pvp,
 						     shape->style->stroke_linejoin.value,
 						     shape->style->stroke_linecap.value,
@@ -379,6 +378,14 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 			art_free (pvp);
 			svl = nr_svl_from_art_svp (asvp);
 			art_svp_free (asvp);
+#else
+			svl = nr_vpath_stroke (pvp, NULL, width,
+					       shape->style->stroke_linecap.value,
+					       shape->style->stroke_linejoin.value,
+					       shape->style->stroke_miterlimit.value * M_PI / 180.0,
+					       0.25);
+			art_free (pvp);
+#endif
 		}
 		shape->stroke_svp = nr_svp_from_svl (svl, NULL);
 		nr_svl_free_list (svl);
@@ -537,24 +544,7 @@ nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 	if (!shape->curve) return item->state;
 
 	if (shape->fill_svp) {
-		NRPixBlock m;
-		int x, y;
-
-		/* fixme: We can OR in one step (Lauris) */
-		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
-		nr_pixblock_render_svp_mask_or (&m, shape->fill_svp);
-
-		for (y = area->y0; y < area->y1; y++) {
-			unsigned char *s, *d;
-			s = NR_PIXBLOCK_PX (&m) + (y - area->y0) * m.rs;
-			d = NR_PIXBLOCK_PX (pb) + (y - area->y0) * pb->rs;
-			for (x = area->x0; x < area->x1; x++) {
-				*d = (NR_A7 (*s, *d) + 127) / 255;
-				d += 1;
-				s += 1;
-			}
-		}
-		nr_pixblock_release (&m);
+		nr_pixblock_render_svp_mask_or (pb, shape->fill_svp);
 		pb->empty = FALSE;
 	}
 
