@@ -1,4 +1,11 @@
+2003-01-01  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/button.c (sp_button_paint_arrow): Draw something
+
 2002-12-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/event-context.c (sp_event_context_private_root_handler): Pan with
+	Shift+Button3 too (useful with windows and < 3 button mice)
 
 	* src/toolbox.c (sp_toolbox_file_create): Mek print buttons insensitive
 

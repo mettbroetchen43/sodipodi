@@ -137,10 +137,10 @@ sp_event_context_private_setup (SPEventContext *ec)
 }
 
 static gint
-sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent * event)
+sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *event)
 {
 	static ArtPoint s;
-	static gboolean panning = FALSE;
+	static unsigned int panning = 0;
 	gint ret;
 	SPDesktop * desktop;
 	ret = FALSE;
@@ -156,7 +156,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 		case 2:
 			s.x = event->button.x;
 			s.y = event->button.y;
-			panning = TRUE;
+			panning = 2;
 			sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
 					     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK,
 					     NULL, event->button.time);
@@ -164,22 +164,32 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 			ret = TRUE;
 			break;
 		case 3:
-			/* fixme: */
-			sp_event_root_menu_popup (desktop, NULL, event);
+			if (event->button.state & GDK_SHIFT_MASK) {
+				s.x = event->button.x;
+				s.y = event->button.y;
+				panning = 3;
+				sp_canvas_item_grab (SP_CANVAS_ITEM (desktop->acetate),
+						     GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK,
+						     NULL, event->button.time);
+				ret = TRUE;
+			} else {
+				/* fixme: */
+				sp_event_root_menu_popup (desktop, NULL, event);
+			}
 			break;
 		default:
 			break;
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
-		if (panning && (event->motion.state & GDK_BUTTON2_MASK)) {
+		if (panning) {
 			sp_desktop_scroll_world (event_context->desktop, event->motion.x - s.x, event->motion.y - s.y);
 			ret = TRUE;
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
-		if (event->button.button == 2) {
-			panning = FALSE;
+		if (panning == event->button.button) {
+			panning = 0;
 			sp_canvas_item_ungrab (SP_CANVAS_ITEM (desktop->acetate), event->button.time);
 			ret = TRUE;
 		}
@@ -358,21 +368,6 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 static gint
 sp_event_context_private_item_handler (SPEventContext *ctx, SPItem *item, GdkEvent *event)
 {
-	switch (event->type) {
-	case GDK_BUTTON_PRESS:
-		switch (event->button.button) {
-		case 3:
-			/* fixme: */
-			sp_event_root_menu_popup (ctx->desktop, item, event);
-			return TRUE;
-		default:
-			break;
-		}
-		break;
-	default:
-		break;
-	}
-
 	return FALSE;
 }
 

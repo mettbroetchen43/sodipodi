@@ -53,6 +53,7 @@ static int sp_button_button_release (GtkWidget *widget, GdkEventButton *event);
 static int sp_button_button_press (GtkWidget *widget, GdkEventButton *event);
 
 static void sp_button_paint (SPButton *button, GdkRectangle *area);
+static void sp_button_paint_arrow (NRRectL *iarea, int x0, int y0, int x1, int y1, unsigned char *px, unsigned int rs);
 
 static GtkWidgetClass *parent_class;
 static guint button_signals[LAST_SIGNAL];
@@ -596,27 +597,31 @@ static void
 sp_button_paint (SPButton *button, GdkRectangle *area)
 {
 	GtkWidget *widget;
-	NRRectL iarea;
+	NRRectL parea, iarea;
 	int padx, pady;
 	int x0, y0, x1, y1, x, y;
 
 	widget = GTK_WIDGET (button);
 
-	iarea.x0 = widget->allocation.x + widget->style->xthickness;
-	iarea.y0 = widget->allocation.y + widget->style->ythickness;
-	iarea.x1 = widget->allocation.x + widget->allocation.width - widget->style->xthickness;
-	iarea.y1 = widget->allocation.y + widget->allocation.height - widget->style->ythickness;
+	parea.x0 = widget->allocation.x + widget->style->xthickness;
+	parea.y0 = widget->allocation.y + widget->style->ythickness;
+	parea.x1 = widget->allocation.x + widget->allocation.width - widget->style->xthickness;
+	parea.y1 = widget->allocation.y + widget->allocation.height - widget->style->ythickness;
 
-	padx = (iarea.x1 - iarea.x0 - button->size) / 2;
-	pady = (iarea.y1 - iarea.y0 - button->size) / 2;
+	padx = (parea.x1 - parea.x0 - button->size) / 2;
+	pady = (parea.y1 - parea.y0 - button->size) / 2;
 
-	x0 = MAX (area->x, iarea.x0 + padx);
-	y0 = MAX (area->y, iarea.y0 + pady);
-	x1 = MIN (area->x + area->width, iarea.x0 + padx + button->size);
-	y1 = MIN (area->y + area->height, iarea.y0 + pady + button->size);
+	iarea.x0 = parea.x0 + padx;
+	iarea.y0 = parea.y0 + pady;
+	iarea.x1 = iarea.x0 + button->size;
+	iarea.y1 = iarea.y0 + button->size;
 
-	gtk_paint_box (widget->style, widget->window,
-		       widget->state,
+	x0 = MAX (area->x, iarea.x0);
+	y0 = MAX (area->y, iarea.y0);
+	x1 = MIN (area->x + area->width, iarea.x1);
+	y1 = MIN (area->y + area->height, iarea.y1);
+
+	gtk_paint_box (widget->style, widget->window, widget->state,
 		       (button->down) ? GTK_SHADOW_IN : GTK_SHADOW_OUT,
 		       area, widget, "button",
 		       widget->allocation.x,
@@ -651,7 +656,7 @@ sp_button_paint (SPButton *button, GdkRectangle *area)
 						const unsigned char *s;
 						unsigned char *d;
 						d = NR_PIXBLOCK_PX (&bpb) + (yy - y) * bpb.rs;
-						s = px + 4 * (yy - pady - iarea.y0) * button->size + 4 * (x - padx - iarea.x0);
+						s = px + 4 * (yy - iarea.y0) * button->size + 4 * (x - iarea.x0);
 						for (xx = x; xx < xe; xx++) {
 							d[0] = NR_COMPOSEN11 (s[0], s[3], br);
 							d[1] = NR_COMPOSEN11 (s[1], s[3], bg);
@@ -666,7 +671,7 @@ sp_button_paint (SPButton *button, GdkRectangle *area)
 						unsigned char *d;
 						unsigned int r, g, b;
 						d = NR_PIXBLOCK_PX (&bpb) + (yy - y) * bpb.rs;
-						s = px + 4 * (yy - pady - iarea.y0) * button->size + 4 * (x - padx - iarea.x0);
+						s = px + 4 * (yy - iarea.y0) * button->size + 4 * (x - iarea.x0);
 						for (xx = x; xx < xe; xx++) {
 							r = br + ((int) s[0] - (int) br) / 2;
 							g = bg + ((int) s[1] - (int) bg) / 2;
@@ -683,8 +688,9 @@ sp_button_paint (SPButton *button, GdkRectangle *area)
 				nr_pixblock_render_gray_noise (&bpb, NULL);
 			}
 
-			if (button->noptions > 0) {
+			if (button->noptions > 1) {
 				/* Render arrow */
+				sp_button_paint_arrow (&iarea, x, y, xe, ye, NR_PIXBLOCK_PX (&bpb), bpb.rs);
 			}
 
 			gdk_draw_rgb_image (widget->window, widget->style->black_gc,
@@ -697,4 +703,77 @@ sp_button_paint (SPButton *button, GdkRectangle *area)
 		}
 	}
 }
+
+#define ARROW_SIZE 7
+
+static void
+sp_button_paint_arrow (NRRectL *parea, int x0, int y0, int x1, int y1, unsigned char *px, unsigned int rs)
+{
+	int sx, sy, width, height, x, y;
+	unsigned char *d;
+
+	/* Upper left corner */
+	sx = parea->x1 - x0 - 1 - ARROW_SIZE;
+	sy = parea->y1 - y0 - 1 - ARROW_SIZE;
+	width = x1 - x0;
+	height = y1 - y0;
+
+	/* Draw top row */
+	y = 0;
+	if (((sy + y) >= 0) && ((sy + y) < height)) {
+		d = px + sy * rs + 3 * sx;
+		for (x = 0; x < ARROW_SIZE; x++) {
+			if (((sx + x) >= 0) && ((sx + x) < width)) {
+				/* Shade */
+				d[0] >>= 1;
+				d[1] >>= 1;
+				d[2] >>= 1;
+				d += 3;
+			}
+		}
+	}
+	/* Draw the rest */
+	for (y = 1; y < ARROW_SIZE; y++) {
+		if (((sy + y) >= 0) && ((sy + y) < height)) {
+			int xa, xb, xc, xd;
+			xa = y / 2;
+			xb = xa + 1;
+			xd = ARROW_SIZE - xa;
+			xc = xd - 1;
+			d = px + (sy + y) * rs + 3 * (sx + xa);
+			/* Draw XA */
+			if (((sx + xa) >= 0) && ((sx + xa) < width)) {
+				/* Shade */
+				d[0] >>= 1;
+				d[1] >>= 1;
+				d[2] >>= 1;
+				d += 3;
+			}
+#if 0
+			/* Draw XB-XC */
+			if (xc > xb) {
+				for (x = xb; x < xc; x++) {
+					if (((sx + x) >= 0) && ((sx + x) < width)) {
+						d[0] = 0x70;
+						d[1] = 0x70;
+						d[2] = 0x70;
+						d += 3;
+					}
+				}
+			}
+#else
+			d = px + (sy + y) * rs + 3 * (sx + xc);
+#endif
+			/* Draw XC */
+			if ((xc > xa) && ((sx + xc) >= 0) && ((sx + xc) < width)) {
+				/* Lighten */
+				d[0] = 255 - ((255 - d[0]) >> 2);
+				d[1] = 255 - ((255 - d[1]) >> 2);
+				d[2] = 255 - ((255 - d[2]) >> 2);
+				d += 3;
+			}
+		}
+	}
+}
+
 
