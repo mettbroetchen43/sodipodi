@@ -98,10 +98,14 @@ sp_object_destroy (GtkObject * object)
 	g_assert (!spobject->parent);
 	g_assert (spobject->document);
 	g_assert (spobject->repr);
-	g_assert (spobject->id);
 
-	sp_document_undef_id (spobject->document, spobject->id);
-	g_free (spobject->id);
+	if (!SP_OBJECT_IS_CLONED (object)) {
+		g_assert (spobject->id);
+		sp_document_undef_id (spobject->document, spobject->id);
+		g_free (spobject->id);
+	} else {
+		g_assert (!spobject->id);
+	}
 
 	/* Signals will be disconnected, if we are destroyed */
 	sp_repr_unref (spobject->repr);
@@ -160,16 +164,22 @@ sp_object_invoke_build (SPObject * object, SPDocument * document, SPRepr * repr,
 	object->document = document;
 	object->repr = repr;
 	sp_repr_ref (repr);
+	if (cloned) GTK_OBJECT_SET_FLAGS (object, SP_OBJECT_CLONED_FLAG);
 
-	id = sp_repr_attr (repr, "id");
-	realid = sp_object_get_unique_id (object, id);
-	g_assert (realid != NULL);
-	sp_document_def_id (document, realid, object);
-	object->id = realid;
-	/* Redefine ID, if required */
-	if ((id == NULL) || (strcmp (id, realid) != 0)) {
-		ret = sp_repr_set_attr (repr, "id", realid);
-		g_assert (ret);
+	/* If we are not cloned, force unique id */
+	if (!SP_OBJECT_IS_CLONED (object)) {
+		id = sp_repr_attr (repr, "id");
+		realid = sp_object_get_unique_id (object, id);
+		g_assert (realid != NULL);
+		sp_document_def_id (document, realid, object);
+		object->id = realid;
+		/* Redefine ID, if required */
+		if ((id == NULL) || (strcmp (id, realid) != 0)) {
+			ret = sp_repr_set_attr (repr, "id", realid);
+			g_assert (ret);
+		}
+	} else {
+		g_assert (object->id == NULL);
 	}
 
 	/* Invoke derived methods, if any */
@@ -200,17 +210,18 @@ sp_object_read_attr (SPObject * object, const gchar * key)
 	g_assert (key != NULL);
 
 	if (strcmp (key, "id") == 0) {
-
-		id = sp_repr_attr (object->repr, "id");
-		g_assert (id != NULL);
-		if (strcmp (id, object->id) == 0) return;
-
-		g_assert (!sp_document_lookup_id (object->document, id));
-		sp_document_undef_id (object->document, object->id);
-		g_free (object->id);
-		object->id = g_strdup (id);
-		sp_document_def_id (object->document, object->id, object);
-		return;
+		if (!SP_OBJECT_IS_CLONED (object)) {
+			id = sp_repr_attr (object->repr, "id");
+			g_assert (id != NULL);
+			if (strcmp (id, object->id) == 0) return;
+			g_assert (!sp_document_lookup_id (object->document, id));
+			sp_document_undef_id (object->document, object->id);
+			g_free (object->id);
+			object->id = g_strdup (id);
+			sp_document_def_id (object->document, object->id, object);
+		} else {
+			g_warning ("ID of cloned object changed, so document is out of sync");
+		}
 	}
 }
 
@@ -229,49 +240,6 @@ sp_object_invoke_read_attr (SPObject * object, const gchar * key)
 		(*((SPObjectClass *)(((GtkObject *) object)->klass))->read_attr) (object, key);
 }
 
-static gchar *
-sp_object_get_unique_id (SPObject * object, const gchar * id)
-{
-	static gint count = 0;
-	const gchar * name;
-	gchar * realid;
-	gchar * b;
-	gint len;
-
-	g_assert (SP_IS_OBJECT (object));
-	g_assert (SP_IS_DOCUMENT (object->document));
-
-	count++;
-
-	realid = NULL;
-
-	if (id != NULL) {
-		if (sp_document_lookup_id (object->document, id) == NULL) {
-			realid = g_strdup (id);
-			g_assert (realid != NULL);
-		}
-	}
-
-	if (realid == NULL) {
-		name = sp_repr_name (object->repr);
-		g_assert (name != NULL);
-		len = strlen (name) + 17;
-		b = alloca (len);
-		g_assert (b != NULL);
-	}
-
-	while (realid == NULL) {
-		g_snprintf (b, len, "%s%d", name, count);
-		if (sp_document_lookup_id (object->document, b) == NULL) {
-			realid = g_strdup (b);
-			g_assert (realid != NULL);
-		} else {
-			count++;
-		}
-	}
-
-	return realid;
-}
 
 /*
  * Repr cannot be destroyed while "destroy" connected, because we ref it
@@ -461,3 +429,46 @@ sp_object_set_description (SPObject * object, SPRepr * repr)
 	object->description = content;
 }
 
+static gchar *
+sp_object_get_unique_id (SPObject * object, const gchar * id)
+{
+	static gint count = 0;
+	const gchar * name;
+	gchar * realid;
+	gchar * b;
+	gint len;
+
+	g_assert (SP_IS_OBJECT (object));
+	g_assert (SP_IS_DOCUMENT (object->document));
+
+	count++;
+
+	realid = NULL;
+
+	if (id != NULL) {
+		if (sp_document_lookup_id (object->document, id) == NULL) {
+			realid = g_strdup (id);
+			g_assert (realid != NULL);
+		}
+	}
+
+	if (realid == NULL) {
+		name = sp_repr_name (object->repr);
+		g_assert (name != NULL);
+		len = strlen (name) + 17;
+		b = alloca (len);
+		g_assert (b != NULL);
+	}
+
+	while (realid == NULL) {
+		g_snprintf (b, len, "%s%d", name, count);
+		if (sp_document_lookup_id (object->document, b) == NULL) {
+			realid = g_strdup (b);
+			g_assert (realid != NULL);
+		} else {
+			count++;
+		}
+	}
+
+	return realid;
+}

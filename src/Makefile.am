@@ -27,6 +27,7 @@ sodipodi_SOURCES = \
 	sp-object-repr.c sp-object-repr.h \
 	sp-object-group.c sp-object-group.h \
 	sp-defs.c sp-defs.h \
+	sp-use.c sp-use.h \
 	sp-item.c sp-item.h \
 	sp-item-group.c \
 	sp-root.c sp-root.h \
@@ -61,8 +62,8 @@ sodipodi_SOURCES = \
 	seltrans-handles.c seltrans-handles.h \
 	seltrans.c seltrans.h \
 	select-context.c select-context.h \
-	nodepath.c nodepath.h \
 	node-context.c node-context.h \
+	nodepath.c nodepath.h \
 	rect-context.c rect-context.h \
 	ellipse-context.c ellipse-context.h \
 	draw-context.c draw-context.h \

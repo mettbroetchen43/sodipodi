@@ -97,14 +97,14 @@ sp_group_destroy (GtkObject *object)
 	while (group->children) {
 		spobject = SP_OBJECT (group->children->data);
 		spobject->parent = NULL;
-		gtk_object_unref ((GtkObject *) spobject);
+		gtk_object_destroy ((GtkObject *) spobject);
 		group->children = g_slist_remove_link (group->children, group->children);
 	}
 
 	while (group->other) {
 		spobject = SP_OBJECT (group->other->data);
 		spobject->parent = NULL;
-		gtk_object_unref ((GtkObject *) spobject);
+		gtk_object_destroy ((GtkObject *) spobject);
 		group->other = g_slist_remove_link (group->other, group->other);
 	}
 

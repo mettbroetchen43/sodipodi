@@ -444,8 +444,8 @@ sp_curve_closepath (SPCurve * curve)
 	g_return_if_fail (!curve->posset);
 	g_return_if_fail (!curve->moving);
 	g_return_if_fail (!curve->closed);
-	/* We need at last M + L + L + E */
-	g_return_if_fail (curve->end - curve->substart > 2);
+	/* We need at last M + C + E */
+	g_return_if_fail (curve->end - curve->substart > 1);
 
 	bs = curve->bpath + curve->substart;
 	be = curve->bpath + curve->end - 1;

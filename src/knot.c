@@ -17,6 +17,8 @@
 
 #include "sp-guide.h"
 
+#define noKNOT_NOGRAB
+
 enum {
 	ARG_NONE,
 	ARG_SIZE,
@@ -55,6 +57,7 @@ static void sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id);
 
 static void sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data);
 static void sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set);
+static void sp_knot_update_ctrl (SPKnot * knot);
 
 static GtkObjectClass * parent_class;
 static guint knot_signals[LAST_SIGNAL] = {0};
@@ -219,15 +222,9 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 	switch (id) {
 	case ARG_SIZE:
 		knot->size = GTK_VALUE_UINT (* arg);
-		if (knot->item) {
-			gtk_object_set (GTK_OBJECT (knot->item), "size", (gdouble) knot->size, NULL);
-		}
 		break;
 	case ARG_ANCHOR:
 		knot->anchor = GTK_VALUE_ENUM (* arg);
-		if (knot->item) {
-			gtk_object_set (GTK_OBJECT (knot->item), "anchor", knot->anchor, NULL);
-		}
 		break;
 	case ARG_SHAPE:
 		break;
@@ -284,9 +281,7 @@ sp_knot_set_arg (GtkObject * object, GtkArg * arg, guint id)
 		break;
 	}
 
-	if (knot->item) {
-		gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (knot->item));
-	}
+	sp_knot_update_ctrl (knot);
 }
 
 static void
@@ -320,10 +315,12 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				event->button.y);
 			knot->hx = p.x - knot->x;
 			knot->hy = p.y - knot->y;
+#ifndef KNOT_NOGRAB
 			gnome_canvas_item_grab (knot->item,
 				GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
 				knot->cursor[SP_KNOT_STATE_DRAGGING],
 				event->button.time);
+#endif
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, TRUE);
 			grabbed = TRUE;
 			consumed = TRUE;
@@ -332,7 +329,9 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 1) {
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, FALSE);
+#ifndef KNOT_NOGRAB
 			gnome_canvas_item_ungrab (knot->item, event->button.time);
+#endif
 			if (moved) {
 				sp_knot_set_flag (knot,
 					SP_KNOT_DRAGGING,
@@ -538,6 +537,10 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 				"fill_color",
 				knot->fill [set ? SP_KNOT_STATE_MOUSEOVER : SP_KNOT_STATE_NORMAL],
 				NULL);
+			gtk_object_set (GTK_OBJECT (knot->item),
+				"stroke_color",
+				knot->stroke [set ? SP_KNOT_STATE_MOUSEOVER : SP_KNOT_STATE_NORMAL],
+				NULL);
 		}
 		break;
 	case SP_KNOT_DRAGGING:
@@ -546,15 +549,27 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 				"fill_color",
 				knot->fill [SP_KNOT_STATE_DRAGGING],
 				NULL);
+			gtk_object_set (GTK_OBJECT (knot->item),
+				"stroke_color",
+				knot->stroke [SP_KNOT_STATE_DRAGGING],
+				NULL);
 		} else if (knot->flags & SP_KNOT_MOUSEOVER) {
 			gtk_object_set (GTK_OBJECT (knot->item),
 				"fill_color",
 				knot->fill [SP_KNOT_STATE_MOUSEOVER],
 				NULL);
+			gtk_object_set (GTK_OBJECT (knot->item),
+				"stroke_color",
+				knot->stroke [SP_KNOT_STATE_MOUSEOVER],
+				NULL);
 		} else {
 			gtk_object_set (GTK_OBJECT (knot->item),
 				"fill_color",
 				knot->fill [SP_KNOT_STATE_NORMAL],
+				NULL);
+			gtk_object_set (GTK_OBJECT (knot->item),
+				"stroke_color",
+				knot->stroke [SP_KNOT_STATE_NORMAL],
 				NULL);
 		}
 		break;
@@ -569,6 +584,44 @@ sp_knot_set_flag (SPKnot * knot, guint flag, gboolean set)
 		knot->flags |= flag;
 	} else {
 		knot->flags &= ~flag;
+	}
+}
+
+static void
+sp_knot_update_ctrl (SPKnot * knot)
+{
+	if (!knot->item) return;
+
+	gtk_object_set (GTK_OBJECT (knot->item), "size", (gdouble) knot->size, NULL);
+	gtk_object_set (GTK_OBJECT (knot->item), "anchor", knot->anchor, NULL);
+
+	if (knot->flags & SP_KNOT_DRAGGING) {
+		gtk_object_set (GTK_OBJECT (knot->item),
+				"fill_color",
+				knot->fill [SP_KNOT_STATE_DRAGGING],
+				NULL);
+		gtk_object_set (GTK_OBJECT (knot->item),
+				"stroke_color",
+				knot->stroke [SP_KNOT_STATE_DRAGGING],
+				NULL);
+	} else if (knot->flags & SP_KNOT_MOUSEOVER) {
+		gtk_object_set (GTK_OBJECT (knot->item),
+				"fill_color",
+				knot->fill [SP_KNOT_STATE_MOUSEOVER],
+				NULL);
+		gtk_object_set (GTK_OBJECT (knot->item),
+				"stroke_color",
+				knot->stroke [SP_KNOT_STATE_MOUSEOVER],
+				NULL);
+	} else {
+		gtk_object_set (GTK_OBJECT (knot->item),
+				"fill_color",
+				knot->fill [SP_KNOT_STATE_NORMAL],
+				NULL);
+		gtk_object_set (GTK_OBJECT (knot->item),
+				"stroke_color",
+				knot->stroke [SP_KNOT_STATE_NORMAL],
+				NULL);
 	}
 }
 

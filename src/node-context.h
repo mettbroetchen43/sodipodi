@@ -15,7 +15,7 @@ typedef struct _SPNodeContextClass SPNodeContextClass;
 
 struct _SPNodeContext {
 	SPEventContext event_context;
-	SPNodePath nodepath;
+	SPNodePath * nodepath;
 };
 
 struct _SPNodeContextClass {

@@ -80,5 +80,6 @@ sp_stroke_read (SPStroke * stroke, SPCSSAttr * css)
 		stroke->width = sp_svg_read_length (&unit, prop);
 		stroke->scaled = (unit != SP_SVG_UNIT_PIXELS);
 	}
+
 	return stroke;
 }

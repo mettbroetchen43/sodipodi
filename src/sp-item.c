@@ -145,13 +145,11 @@ void sp_item_bbox (SPItem * item, ArtDRect * bbox)
 	g_assert (SP_IS_ITEM (item));
 	g_assert (bbox != NULL);
 
+	bbox->x0 = bbox->y0 = 1.0;
+	bbox->x1 = bbox->y1 = 0.0;
+
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox)
 		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox) (item, bbox);
-
-	bbox->x0 -= 0.01;
-	bbox->y0 -= 0.01;
-	bbox->x1 += 0.01;
-	bbox->y1 += 0.01;
 }
 
 void sp_item_print (SPItem * item, GnomePrintContext * gpc)

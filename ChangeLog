@@ -1,3 +1,12 @@
+2000-10-02  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/knot.c (sp_knot_set_flag): Implement different outlines
+	(sp_knot_update_ctrl): New function to set SPCtrl colors
+
+	* src/nodepath.*: Mostly rewritten
+
+	* src/node-context.*: Use new SPNodePath
+
 2000-09-30  Yukihiro Nakai  <nakai@gnome.gr.jp>
 
 	* configure.in ALL_LINGUAS: Add Japanese 'ja'

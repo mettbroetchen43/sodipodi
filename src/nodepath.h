@@ -1,18 +1,14 @@
 #ifndef NODEPATH_H
 #define NODEPATH_H
 
-#include <libgnomeui/gnome-canvas-line.h>
 #include "xml/repr.h"
-#include "helper/sodipodi-ctrl.h"
-#include "helper/sp-ctrlline.h"
+#include "knot.h"
 #include "sp-path.h"
 #include "desktop-handles.h"
 
 typedef struct _SPNodePath SPNodePath;
 typedef struct _SPNodeSubPath SPNodeSubPath;
 typedef struct _SPPathNode SPPathNode;
-typedef struct _SPPathNodeSide SPPathNodeSide;
-typedef struct _SPPathLine SPPathLine;
 
 typedef enum {
 	SP_PATHNODE_NONE,
@@ -23,99 +19,42 @@ typedef enum {
 
 struct _SPNodePath {
 	SPDesktop * desktop;
-	SPRepr * repr;
 	SPPath * path;
+	GSList * subpaths;
+	GSList * selected;
 	double i2d[6], d2i[6];
-	gint n_bpaths;
-	gint max_bpaths;
-	GList * subpaths;
-	GList * sel;
-	SPCurve * curve;
-	guint sel_changed_id;
 };
 
 struct _SPNodeSubPath {
 	SPNodePath * nodepath;
-	gint path_pos;
-	gint n_bpaths;
 	gboolean closed;
-	GList * nodes;
-	GList * lines;
+	GSList * nodes;
+	SPPathNode * first;
+	SPPathNode * last;
 };
 
-struct _SPPathNodeSide {
-	SPPathLine * line;
-	ArtPoint cpoint;
-	SPCtrl * cknot;
-	SPCtrlLine * cline;
-};
+typedef struct {
+	SPPathNode * other;
+	ArtPoint pos;
+	SPKnot * knot;
+	GnomeCanvasItem * line;
+} SPPathNodeSide;
 
 struct _SPPathNode {
 	SPNodeSubPath * subpath;
-	SPPathNodeType type;
+	guint type : 4;
+	guint code : 4;
+	guint selected : 1;
 	ArtPoint pos;
-	gint subpath_pos, subpath_end;
-	SPPathNodeSide prev, next;
-	gboolean selected;
-	SPCtrl * ctrl;
+	SPKnot * knot;
+	SPPathNodeSide n;
+	SPPathNodeSide p;
 };
 
-struct _SPPathLine {
-	SPNodeSubPath * subpath;
-	ArtPathcode code;
-	SPPathNode * start;
-	SPPathNode * end;
-};
+SPNodePath * sp_nodepath_new (SPDesktop * desktop, SPItem * item);
+void sp_nodepath_destroy (SPNodePath * nodepath);
 
-/*
- * allocators
- *
- */
-
-SPNodeSubPath * sp_nodepath_subpath_new (void);
-SPPathNode * sp_nodepath_node_new (void);
-SPPathLine * sp_nodepath_line_new (void);
-
-void sp_nodepath_init (SPNodePath * nodepath, SPDesktop * desktop);
-void sp_nodepath_shutdown (SPNodePath * nodepath);
-
-/*
- * Destructors
- *
- * These DO NOT update bpath nor sppath
- *
- */
-
-void sp_nodepath_destroy (SPNodePath * nodepath, gboolean free_bpath, gboolean free_typestr);
-void sp_nodepath_subpath_destroy (SPNodeSubPath * subpath);
-
-/*
- * Node destructor
- *
- * this should be called ONLY if deleting entire subpath
- * it does not change node-next-start-line-end-prev-node links
- *
- */
-
-void sp_nodepath_node_destroy (SPPathNode * node);
-
-/*
- * Remove & destroy
- *
- * does not update bpath nor sppath
- *
- */
-
-void sp_nodepath_subpath_remove (SPNodeSubPath * subpath);
-void sp_nodepath_node_remove (SPPathNode * node);
-
-#if 0
-/* update nodepath's repr */
-void sp_nodepath_flush (SPNodePath * nodepath);
-#endif
-
-void sp_nodepath_node_select (SPPathNode * node, gboolean incremental); 
-void sp_nodepath_node_select_rect (SPNodePath * nodepath, ArtDRect * b, gboolean incremental);
+void sp_nodepath_select_rect (SPNodePath * nodepath, ArtDRect * b, gboolean incremental);
 
 /* possibly private functions */
 
@@ -125,8 +64,5 @@ void sp_node_selected_break (void);
 void sp_node_selected_join (void);
 void sp_node_selected_set_type (SPPathNodeType type);
 void sp_node_selected_set_line_type (ArtPathcode code);
-
-void sp_node_update_bpath (SPPathNode * pathnode);
-void sp_nodepath_update_bpath (SPNodePath * NodePath);
 
 #endif

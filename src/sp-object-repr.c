@@ -3,6 +3,7 @@
 #include "document.h"
 #include "sp-item.h"
 #include "sp-defs.h"
+#include "sp-use.h"
 #include "sp-root.h"
 #include "sp-namedview.h"
 #include "sp-guide.h"
@@ -48,6 +49,7 @@ sp_object_type_lookup (const gchar * name)
 		dtable = g_hash_table_new (g_str_hash, g_str_equal);
 		g_assert (dtable != NULL);
 		g_hash_table_insert (dtable, "defs", GINT_TO_POINTER (SP_TYPE_DEFS));
+		g_hash_table_insert (dtable, "use", GINT_TO_POINTER (SP_TYPE_USE));
 		g_hash_table_insert (dtable, "g", GINT_TO_POINTER (SP_TYPE_GROUP));
 		/* fixme: implement <a> */
 		g_hash_table_insert (dtable, "a", GINT_TO_POINTER (SP_TYPE_GROUP));
