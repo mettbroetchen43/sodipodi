@@ -9,8 +9,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.26\n"
-"POT-Creation-Date: 2002-09-23 16:07+0900\n"
-"PO-Revision-Date: 2002-09-23 19:11+0900\n"
+"POT-Creation-Date: 2002-09-23 19:42+0900\n"
+"PO-Revision-Date: 2002-09-23 20:02+0900\n"
 "Last-Translator: Mitsuru Oka <oka326@parkcity.ne.jp>\n"
 "Language-Team: Japan GNOME Users Group <translation@gnome.gr.jp>\n"
 "MIME-Version: 1.0\n"
@@ -664,7 +664,7 @@ msgid "Y1"
 msgstr "Y1"
 
 #. View:Zoom
-#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1066
+#: glade/sodipodi.glade.h:66 glade/toolbox.glade.h:66 src/desktop.c:1065
 #: src/interface.c:297 src/interface.c:330 src/toolbox.c:187
 msgid "Zoom"
 msgstr "ズーム"
@@ -1298,7 +1298,7 @@ msgstr "名前"
 
 #: sodipodi.desktop.in.h:2
 msgid "Vector illustrator"
-msgstr ""
+msgstr "ベクタイラストレータ"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
@@ -1306,25 +1306,25 @@ msgstr "sodipodi-svg-docファクトリを作成できません"
 
 #. desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 #. desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-#: src/desktop.c:1058
+#: src/desktop.c:1057
 msgid "Welcome !"
 msgstr "ようこそ！"
 
-#: src/desktop.c:1130
+#: src/desktop.c:1129
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:1206
+#: src/desktop.c:1205
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "ドキュメント %s は未保存の変更がありますが、保存しますか?"
 
-#: src/desktop.c:1207 src/interface.c:203
+#: src/desktop.c:1206 src/interface.c:203
 msgid "Save"
 msgstr "セーブ"
 
-#: src/desktop.c:1207
+#: src/desktop.c:1206
 msgid "Don't save"
 msgstr "セーブしない"
 
@@ -1795,32 +1795,37 @@ msgid "Angle:"
 msgstr "角度:"
 
 #. Reset
-#: src/dyna-draw-context.c:1081 src/spiral-context.c:379
-#: src/star-context.c:379
+#: src/dyna-draw-context.c:1081 src/rect-context.c:428
+#: src/spiral-context.c:379 src/star-context.c:379
 msgid "Defaults"
 msgstr "既定値"
 
-#: src/select-context.c:615
+#. rx_ratio
+#: src/rect-context.c:404 src/rect-context.c:416
+msgid "Roundness ratio for x:"
+msgstr "x の真円率"
+
+#: src/select-context.c:625
 msgid "Visual transformation"
 msgstr "ビジュアル変形"
 
-#: src/select-context.c:623
+#: src/select-context.c:633
 msgid "Show content"
 msgstr "内容を表示"
 
-#: src/select-context.c:630
+#: src/select-context.c:640
 msgid "Show outline"
 msgstr "アウトラインの表示"
 
-#: src/select-context.c:637
+#: src/select-context.c:647
 msgid "Object transformation"
 msgstr "オブジェクトの変形"
 
-#: src/select-context.c:645
+#: src/select-context.c:655
 msgid "Optimize"
 msgstr "最適化"
 
-#: src/select-context.c:652
+#: src/select-context.c:662
 msgid "Preserve"
 msgstr "保護"
 
@@ -2544,11 +2549,11 @@ msgstr "黄:"
 msgid "Black:"
 msgstr "黒:"
 
-#: src/draw-context.c:279
+#: src/draw-context.c:275
 msgid "Appending to selection. Press '+' to toggle Append/New."
 msgstr "選択に追加します。追加/新規の切り替えは '+' を押します。"
 
-#: src/draw-context.c:284
+#: src/draw-context.c:280
 msgid "Creating new curve. Press '+' to toggle Append/New."
 msgstr "新規に曲線を作成します。追加/新規の切替は '+\" を押します。"
 
