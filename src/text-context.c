@@ -56,6 +56,7 @@ static gint sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContex
 static gint sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc);
 static void sptc_commit (GtkIMContext *imc, gchar *string, SPTextContext *tc);
 static void sptc_preedit_changed (GtkIMContext *imc, SPTextContext *tc);
+static void sp_text_context_preedit_reset (SPTextContext *tc);
 
 static SPEventContextClass * parent_class;
 
@@ -332,6 +333,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 
 		if (!tc->text) sp_text_context_setup_text (tc);
+		else sp_text_context_preedit_reset (tc);
 		g_assert (tc->text != NULL);
 		style = SP_OBJECT_STYLE (tc->text);
 
@@ -537,11 +539,17 @@ static void
 sp_text_context_forget_text (SPTextContext *tc)
 {
 	SPItem *ti;
+
+	if (! tc->text) return;
+
+	if( tc->preedit_string ) sp_text_context_preedit_reset (tc);
+
 	ti = tc->text;
+
 	/* We have to set it to zero,
 	 * or selection changed signal messes everything up */
 	tc->text = NULL;
-	if (ti && sp_text_is_empty (SP_TEXT (ti))) {
+	if (sp_text_is_empty (SP_TEXT (ti))) {
 		sp_repr_unparent (SP_OBJECT_REPR (ti));
 	}
 }
@@ -565,6 +573,8 @@ sptc_commit (GtkIMContext *imc, gchar *string, SPTextContext *tc)
 {
 	if (!tc->text) sp_text_context_setup_text (tc);
 
+	if (!tc->preedit_string ) sp_text_context_preedit_reset (tc);
+
 	tc->ipos = sp_text_insert (SP_TEXT (tc->text), tc->ipos, string, TRUE);
 
 	sp_document_done (SP_OBJECT_DOCUMENT (tc->text));
@@ -575,18 +585,24 @@ sptc_preedit_changed (GtkIMContext *imc, SPTextContext *tc)
 {
 	gint cursor_pos;
 
+	sp_text_context_preedit_reset (tc);
+
+	gtk_im_context_get_preedit_string (tc->imc,
+					   &tc->preedit_string, NULL,
+					   &cursor_pos);
+	if( tc->preedit_string != NULL )
+		sp_text_insert (SP_TEXT (tc->text), tc->ipos, tc->preedit_string, FALSE);
+	sp_document_done (SP_OBJECT_DOCUMENT (tc->text));
+}
+
+static void
+sp_text_context_preedit_reset (SPTextContext *tc)
+{
 	if( tc->preedit_string != NULL ) {
 		sp_text_delete (SP_TEXT (tc->text), tc->ipos, tc->ipos + g_utf8_strlen(tc->preedit_string, -1));
 		
 		g_free(tc->preedit_string);
 		tc->preedit_string = NULL;
 	}
-
-	gtk_im_context_get_preedit_string (tc->imc,
-					   &tc->preedit_string, NULL,
-					   &cursor_pos);
-	if( tc->preedit_string != NULL ) {
-		sp_text_insert (SP_TEXT (tc->text), tc->ipos, tc->preedit_string, FALSE);
-	}
-	sp_document_done (SP_OBJECT_DOCUMENT (tc->text));
 }
+

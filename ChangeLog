@@ -1,5 +1,16 @@
 2003-11-15  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
+	* Fixed input method bug completely. The bug was (1)
+	preedit_string was leaked, so (2) tc->text length was broken.
+
+	* src/text-context.c: (sp_text_context_preedit_reset): New method
+	(sp_text_context_root_handler): Add sp_text_context_preedit_reset
+	(sp_text_context_foget_text): Ditto
+	(sptc_commit): Ditto
+	(sptc_preedit_changed): Replace by sp_text_context_preedit_reset
+
+2003-11-15  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
 	* src/text-context.c: Fixed a bug which caused segmentation fault
 	when using input method.
 
