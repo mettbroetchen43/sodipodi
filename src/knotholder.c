@@ -147,11 +147,14 @@ knot_moved_handler (SPKnot   *knot,
 	for (el = knot_holder->entity; el; el = el->next) {
 		SPKnotHolderEntity *e = (SPKnotHolderEntity *)el->data;
 		if (e->knot == knot) {
-			sp_item_i2d_affine(item, affine);
-			art_affine_invert (affine, affine);
-			art_affine_point (p, p, affine);
+			ArtPoint q;
+			double d2i[6];
 
-			e->knot_set (item, p, state);
+			sp_item_i2d_affine(item, affine);
+			art_affine_invert (d2i, affine);
+			art_affine_point (&q, p, d2i);
+
+			e->knot_set (item, &q, state);
 
 			break;
 		}
