@@ -1,3 +1,7 @@
+2004-02-04  Michael Schumacher <schumaml@cvs.gnome.org>
+
+	* src/Makefile.am: outdented variables in PLATFORM_WIN32 part
+
 2004-02-02  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/modules/ps.c: Use arikkei_strlib, fixes comma bug

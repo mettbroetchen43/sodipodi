@@ -9,8 +9,8 @@ kdeldflags = $(KDE_RPATH)
 endif
 
 if PLATFORM_WIN32
-	win32_sources = winmain.c
-	win32_ldflags = -lcomdlg32
+win32_sources = winmain.c
+win32_ldflags = -lcomdlg32
 endif	
 
 SUBDIRS = libarikkei libnr libnrtype xml svg helper widgets dialogs display modules
