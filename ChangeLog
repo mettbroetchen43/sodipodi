@@ -1,3 +1,8 @@
+2003-03-01  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/draw-context.c (sp_draw_context_root_handler): Use 'a' instead of '+'
+	as append/new toggle
+
 2003-02-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/main.c (main): Use bind_textdomain_codeset to force utf-8 encoding

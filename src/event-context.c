@@ -270,40 +270,60 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			sp_zoom_1_to_1 (NULL, NULL);
 			ret = TRUE;
 			break;
-		case GDK_z: // Ctrl z - undo
+		case GDK_Z:
+		case GDK_z:
+			/* Undo */
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_undo (NULL);
 				ret = TRUE;
 			}
 			break;
-		case GDK_r: // Ctrl r - redo
+		case GDK_R:
+		case GDK_r:
+			/* Redo */
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_redo (NULL);
 				ret = TRUE;
 			}
 			break;
-		case GDK_w: // Crtl w - close view
+		case GDK_W:
+		case GDK_w:
+			/* Close view */
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_ui_close_view (NULL);
 				ret = TRUE;
 			}
 			break;
-		case GDK_n: // Crtl n - new document
+		case GDK_N:
+		case GDK_n:
+			/* New */
 			if (event->key.state & GDK_CONTROL_MASK) {
 				ret = TRUE;
 				sp_file_new ();
 			}
 			break;
+#if 0
 		case GDK_N: // Ctrl N - new view
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_ui_new_view (NULL);
 				ret = TRUE;
 			}
 			break;
-		case GDK_o: // Ctrl o - open file
+#endif
+		case GDK_O:
+		case GDK_o:
+			/* Open */
 			if (event->key.state & GDK_CONTROL_MASK) {
 				sp_file_open_dialog (NULL, NULL);
 				ret = TRUE;
+			}
+			break;
+		case GDK_S:
+		case GDK_s:
+			/* Save */
+			if (event->key.state & GDK_CONTROL_MASK) {
+				ret = TRUE;
+				sp_file_save (NULL, NULL);
 			}
 			break;
 #if 0
@@ -332,18 +352,14 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 				sp_file_print_preview (NULL, NULL);
 			}
 			break;
-		case GDK_s: // Crtl s - save file
-			if (event->key.state & GDK_CONTROL_MASK) {
-				ret = TRUE;
-				sp_file_save (NULL, NULL);
-			}
-			break;
+#if 0
 		case GDK_S: // Crtl S - save file as
 			if (event->key.state & GDK_CONTROL_MASK) {
 				ret = TRUE;
 				sp_file_save_as (NULL, NULL);
 			}
 			break;
+#endif
 	  case GDK_q: // Ctrl q - quit
 	    if (event->key.state & GDK_CONTROL_MASK) {
 	      sp_file_exit ();

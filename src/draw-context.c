@@ -245,8 +245,8 @@ sp_draw_context_root_handler (SPEventContext *ec, GdkEvent *event)
 	case GDK_KEY_PRESS:
 		/* fixme: */
 		switch (event->key.keyval) {
-		case GDK_plus:
-		case GDK_KP_Add:
+		case GDK_A:
+		case GDK_a:
 			if (dc->attach) {
 				spdc_set_attach (dc, FALSE);
 			} else {
@@ -277,12 +277,12 @@ spdc_set_attach (SPDrawContext *dc, gboolean attach)
 		dc->attach = TRUE;
 		spdc_attach_selection (dc, dc->selection);
 		sp_view_set_status (SP_VIEW (SP_EVENT_CONTEXT_DESKTOP (dc)),
-				    _("Appending to selection. Press '+' to toggle Append/New."), FALSE);
+				    _("Appending to selection. Press 'a' to toggle Append/New."), FALSE);
 	} else {
 		dc->attach = FALSE;
 		spdc_detach_selection (dc, dc->selection);
 		sp_view_set_status (SP_VIEW (SP_EVENT_CONTEXT_DESKTOP (dc)),
-				    _("Creating new curve. Press '+' to toggle Append/New."), FALSE);
+				    _("Creating new curve. Press 'a' to toggle Append/New."), FALSE);
 	}
 }
 
