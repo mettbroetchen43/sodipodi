@@ -34,9 +34,14 @@ struct _SPView {
 struct _SPViewClass {
 	GtkObjectClass parent_class;
 
+	/* Virtual method to set/change/remove document link */
 	void (* set_document) (SPView *view, SPDocument *doc);
+	/* Virtual method about document size change */
+	void (* document_resized) (SPView *view, SPDocument *doc, gdouble width, gdouble height);
 
+	/* Signal of view uri change */
 	void (* uri_set) (SPView *view, const guchar *uri);
+	/* Signal of view size change */
 	void (* resized) (SPView *view, gdouble width, gdouble height);
 };
 
@@ -45,6 +50,8 @@ GtkType sp_view_get_type (void);
 #define SP_VIEW_DOCUMENT(v) (SP_VIEW (v)->doc)
 
 void sp_view_set_document (SPView *view, SPDocument *doc);
+
+void sp_view_emit_resized (SPView *view, gdouble width, gdouble height);
 
 /* SPViewWidget */
 
@@ -66,7 +73,11 @@ struct _SPViewWidget {
 struct _SPViewWidgetClass {
 	GtkEventBoxClass parent_class;
 
+	/* Vrtual method to set/change/remove view */
 	void (* set_view) (SPViewWidget *vw, SPView *view);
+	/* Virtual method about view size change */
+	void (* view_resized) (SPViewWidget *vw, SPView *view, gdouble width, gdouble height);
+
 	gboolean (* shutdown) (SPViewWidget *vw);
 };
 

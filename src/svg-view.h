@@ -22,10 +22,20 @@ typedef struct _SPSVGViewClass SPSVGViewClass;
 #define SP_IS_SVG_VIEW(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SVG_VIEW))
 #define SP_IS_SVG_VIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SVG_VIEW))
 
+#include <libgnomeui/gnome-canvas.h>
 #include "view.h"
 
 struct _SPSVGView {
 	SPView view;
+
+	GnomeCanvasGroup *parent;
+	GnomeCanvasItem *drawing;
+
+	/* Horizontal and vertical scale */
+	gdouble hscale, vscale;
+	/* Whether to rescale automatically */
+	gboolean rescale, keepaspect;
+	gdouble width, height;
 };
 
 struct _SPSVGViewClass {
@@ -33,6 +43,11 @@ struct _SPSVGViewClass {
 };
 
 GtkType sp_svg_view_get_type (void);
+
+SPView *sp_svg_view_new (GnomeCanvasGroup *parent);
+
+void sp_svg_view_set_scale (SPSVGView *view, gdouble hscale, gdouble vscale);
+void sp_svg_view_set_rescale (SPSVGView *view, gboolean rescale, gboolean keepaspect, gdouble width, gdouble height);
 
 /* SPSVGViewWidget */
 
@@ -47,6 +62,13 @@ typedef struct _SPSVGViewWidgetClass SPSVGViewWidgetClass;
 
 struct _SPSVGViewWidget {
 	SPViewWidget widget;
+
+	GtkWidget *sw;
+	GtkWidget *canvas;
+
+	/* Whether to resize automatically */
+	gboolean resize;
+	gdouble maxwidth, maxheight;
 };
 
 struct _SPSVGViewWidgetClass {
@@ -54,5 +76,9 @@ struct _SPSVGViewWidgetClass {
 };
 
 GtkType sp_svg_view_widget_get_type (void);
+
+GtkWidget *sp_svg_view_widget_new (SPDocument *doc);
+
+void sp_svg_view_widget_set_resize (SPSVGViewWidget *vw, gboolean resize, gdouble width, gdouble height);
 
 #endif

@@ -51,7 +51,7 @@ static void sp_desktop_class_init (SPDesktopClass * klass);
 static void sp_desktop_init (SPDesktop * desktop);
 static void sp_desktop_destroy (GtkObject * object);
 
-static void sp_desktop_resized (SPView *view, gdouble width, gdouble height);
+static void sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height);
 
 static void sp_desktop_update_rulers (GtkWidget * widget, SPDesktop * desktop);
 static void sp_desktop_size_allocate (GtkWidget * widget, GtkRequisition *requisition, SPDesktop * desktop);
@@ -114,7 +114,7 @@ sp_desktop_class_init (SPDesktopClass *klass)
 
 	object_class->destroy = sp_desktop_destroy;
 
-	view_class->resized = sp_desktop_resized;
+	view_class->document_resized = sp_desktop_document_resized;
 }
 
 static void
@@ -167,7 +167,7 @@ sp_desktop_destroy (GtkObject *object)
 }
 
 static void
-sp_desktop_resized (SPView *view, gdouble width, gdouble height)
+sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdouble height)
 {
 	SPDesktop *desktop;
 

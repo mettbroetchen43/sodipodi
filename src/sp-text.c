@@ -206,7 +206,6 @@ sp_text_set_shape (SPText * text)
 {
 	SPChars * chars;
 	GnomeFontFace * face;
-	guchar * c;
 	guint glyph;
 	gdouble x, y;
 	double a[6], trans[6], scale[6];

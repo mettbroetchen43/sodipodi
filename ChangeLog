@@ -1,3 +1,20 @@
+2001-11-08  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/xml/repr-io.c (repr_write): Avoid newlines in content
+
+	* src/view.c: Sorted out lot os signalling stuff
+
+	* src/svg-view.c: Lot of work, basically works
+
+	* src/sp-root.c (sp_root_modified): Call parent method as well
+
+	* src/interface.c (sp_ui_new_view_preview): New method
+	(sp_create_window): Sort out editable/non-editable views
+
+	* src/help.c (sp_help_about): Create about maunally (not much here yet)
+
+	* src/desktop.c: Use ::document_resized virtual method
+
 2001-10-31  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/text-edit.c (sp_text_read_selection): Use gal

@@ -196,7 +196,6 @@ static void
 sp_knot_destroy (GtkObject * object)
 {
 	SPKnot * knot;
-	gint i;
 
 	knot = (SPKnot *) object;
 

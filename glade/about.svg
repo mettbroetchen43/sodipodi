@@ -1,0 +1,64 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<svg
+   style="fill:#000000;fill-opacity:0.5;stroke:none"
+   width="480"
+   height="320"
+   id="svg9"
+   sodipodi:docbase="glade/"
+   sodipodi:docname="glade/about.svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink">  <defs
+     id="defs11">    <linearGradient
+       id="linearGradient17">      <stop
+         offset="0"
+         style="stop-color:#000;stop-opacity:1;"
+         id="stop18" />
+      <stop
+         offset="1"
+         style="stop-color:#fff;stop-opacity:1;"
+         id="stop19" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient13">      <stop
+         style="stop-color:#378fff;stop-opacity:1;"
+         offset="0.000000"
+         id="stop14" />
+      <stop
+         style="stop-color:#00ff77;stop-opacity:1;"
+         offset="1.000000"
+         id="stop15" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient13"
+       id="linearGradient16"
+       x1="0.286444"
+       y1="0.054688"
+       x2="0.364065"
+       y2="0.945312" />
+  </defs>
+  <sodipodi:namedview
+     id="base" />
+  <rect
+     style="stroke:none;stroke-opacity:100%;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill:url(#linearGradient16);"
+     id="rect12"
+     x="43.424359"
+     y="42.045808"
+     width="1207.610751"
+     height="845.741091"
+     transform="matrix(0.397357 0 0 0.379698 -17.255 -15.9647)" />
+  <text
+     style="fill:#ffffff; stroke:#000000; font-family:Book Antiqua; font-style:italic; font-weight:bold; font-size:56.000000; fill-opacity:1; fill-rule:evenodd; stroke-opacity:100%; stroke-width:2pt; stroke-linejoin:miter; stroke-linecap:butt; "
+     x="280.561156"
+     y="253.666405"
+     id="text12"
+     transform="matrix(1.71212 0 0 1.71212 -433.142 -270.701)">Sodipodi</text>
+  <text
+     style="fill:#ffffff; stroke:#000000; font-family:Book Antiqua; font-style:italic; font-weight:bold; font-size:14.000000; fill-opacity:1; fill-rule:evenodd; stroke-opacity:100%; stroke-width:0.5pt; stroke-linejoin:miter; stroke-linecap:butt; "
+     x="280.561156"
+     y="253.666405"
+     id="text13"
+     transform="matrix(1.71212 0 0 1.71212 -416.151 -213.853)">A drawing application with style...</text>
+</svg>

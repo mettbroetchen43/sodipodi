@@ -15,21 +15,6 @@
 </project>
 
 <widget>
-  <class>GnomeAbout</class>
-  <name>about</name>
-  <modal>True</modal>
-  <logo>orav.png</logo>
-  <copyright>Copyright Lauris Kaplinski 1999-2000.</copyright>
-  <authors>Lauris Kaplinski &lt;lauris@kaplinski.com&gt;
-Chema Celorio &lt;chema@celorio.com&gt;
-Michael Meeks &lt;michael@helixcode.com&gt;
-Frank Felfe &lt;iname@innerspace.com&gt;
-</authors>
-  <comments>A Vector Drawing Program.
-Released under GPL</comments>
-</widget>
-
-<widget>
   <class>GtkWindow</class>
   <name>window_node_path</name>
   <title>Node Edit</title>
@@ -1895,6 +1880,18 @@ Released under GPL</comments>
 	  <last_modification_time>Sat, 09 Sep 2000 04:31:11 GMT</last_modification_time>
 	</signal>
 	<label>New View</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>new_view_preview1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_ui_new_view_preview</handler>
+	  <last_modification_time>Sat, 09 Sep 2000 04:31:11 GMT</last_modification_time>
+	</signal>
+	<label>New Preview</label>
 	<right_justify>False</right_justify>
       </widget>
 

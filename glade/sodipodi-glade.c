@@ -4,9 +4,6 @@
  * DO NOT compile it as part of your application.
  */
 
-gchar *s = N_("Copyright Lauris Kaplinski 1999-2000.");
-gchar *s = N_("A Vector Drawing Program.\n"
-              "Released under GPL");
 gchar *s = N_("Node Edit");
 gchar *s = N_("Include one node into selected segments");
 gchar *s = N_("Break apart selected node");
@@ -64,6 +61,7 @@ gchar *s = N_("_Combine");
 gchar *s = N_("_Break Apart");
 gchar *s = N_("Convert to Cu_rves");
 gchar *s = N_("New View");
+gchar *s = N_("New Preview");
 gchar *s = N_("Zoom");
 gchar *s = N_("Scale");
 gchar *s = N_("1:2");

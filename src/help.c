@@ -1,18 +1,38 @@
-#define HELP_C
+#define __HELP_C__
 
-#include <gnome.h>
-#include <glade/glade.h>
+#include <gtk/gtkwindow.h>
+#include <gtk/gtksignal.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
+#include "document.h"
+#include "svg-view.h"
 #include "help.h"
+
+static gint
+sp_help_about_delete (GtkWidget *widget, GdkEvent *event, gpointer data)
+{
+	return FALSE;
+}
 
 void
 sp_help_about (void)
 {
-	GladeXML * xml;
-	GtkWidget * dialog;
+	SPDocument *doc;
+	GtkWidget *w, *v;
 
-	xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "about");
-	g_assert (xml != NULL);
-	dialog = glade_xml_get_widget (xml, "about");
+	doc = sp_document_new (SODIPODI_GLADEDIR "/about.svg");
+	g_return_if_fail (doc != NULL);
 
-	gnome_dialog_run ((GnomeDialog *) dialog);
+	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title (GTK_WINDOW (w), _("About sodipodi"));
+	gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, TRUE);
+	gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_help_about_delete), NULL);
+
+	v = sp_svg_view_widget_new (doc);
+	sp_document_unref (doc);
+	sp_svg_view_widget_set_resize (SP_SVG_VIEW_WIDGET (v), TRUE, 600.0, 400.0);
+	gtk_widget_show (v);
+	gtk_container_add (GTK_CONTAINER (w), v);
+
+	gtk_widget_show (w);
 }

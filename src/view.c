@@ -27,8 +27,8 @@ static void sp_view_class_init (SPViewClass *klass);
 static void sp_view_init (SPView *view);
 static void sp_view_destroy (GtkObject *object);
 
-static void sp_view_document_uri_set (SPDocument *document, const guchar *uri, SPView *view);
-static void sp_view_document_resized (SPDocument *document, gdouble width, gdouble height, SPView *view);
+static void sp_view_document_uri_set (SPDocument *doc, const guchar *uri, SPView *view);
+static void sp_view_document_resized (SPDocument *doc, gdouble width, gdouble height, SPView *view);
 
 static GtkObjectClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
@@ -122,16 +122,26 @@ sp_view_set_document (SPView *view, SPDocument *doc)
 	gtk_signal_emit (GTK_OBJECT (view), signals[URI_SET], (doc) ? SP_DOCUMENT_URI (doc) : NULL);
 }
 
+void
+sp_view_emit_resized (SPView *view, gdouble width, gdouble height)
+{
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (SP_IS_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[RESIZED], width, height);
+}
+
 static void
-sp_view_document_uri_set (SPDocument *document, const guchar *uri, SPView *view)
+sp_view_document_uri_set (SPDocument *doc, const guchar *uri, SPView *view)
 {
 	gtk_signal_emit (GTK_OBJECT (view), signals[URI_SET], uri);
 }
 
 static void
-sp_view_document_resized (SPDocument *document, gdouble width, gdouble height, SPView *view)
+sp_view_document_resized (SPDocument *doc, gdouble width, gdouble height, SPView *view)
 {
-	gtk_signal_emit (GTK_OBJECT (view), signals[RESIZED], width, height);
+	if (((SPViewClass *) ((GtkObject *) view)->klass)->document_resized)
+		((SPViewClass *) ((GtkObject *) view)->klass)->document_resized (view, doc, width, height);
 }
 
 /* SPViewWidget */
@@ -139,6 +149,8 @@ sp_view_document_resized (SPDocument *document, gdouble width, gdouble height, S
 static void sp_view_widget_class_init (SPViewWidgetClass *klass);
 static void sp_view_widget_init (SPViewWidget *widget);
 static void sp_view_widget_destroy (GtkObject *object);
+
+static void sp_view_widget_view_resized (SPView *view, gdouble width, gdouble height, SPViewWidget *vw);
 
 static GtkEventBoxClass *widget_parent_class;
 
@@ -186,6 +198,7 @@ sp_view_widget_destroy (GtkObject *object)
 	vw = SP_VIEW_WIDGET (object);
 
 	if (vw->view) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (vw->view), vw);
 		gtk_object_unref (GTK_OBJECT (vw->view));
 		vw->view = NULL;
 	}
@@ -204,8 +217,9 @@ sp_view_widget_set_view (SPViewWidget *vw, SPView *view)
 
 	g_return_if_fail (vw->view == NULL);
 
-	gtk_object_ref (GTK_OBJECT (view));
 	vw->view = view;
+	gtk_object_ref (GTK_OBJECT (view));
+	gtk_signal_connect (GTK_OBJECT (view), "resized", GTK_SIGNAL_FUNC (sp_view_widget_view_resized), vw);
 
 	if (((SPViewWidgetClass *) ((GtkObject *) vw)->klass)->set_view)
 		((SPViewWidgetClass *) ((GtkObject *) vw)->klass)->set_view (vw, view);
@@ -223,4 +237,10 @@ sp_view_widget_shutdown (SPViewWidget *vw)
 	return FALSE;
 }
 
+static void
+sp_view_widget_view_resized (SPView *view, gdouble width, gdouble height, SPViewWidget *vw)
+{
+	if (((SPViewWidgetClass *) ((GtkObject *) vw)->klass)->view_resized)
+		((SPViewWidgetClass *) ((GtkObject *) vw)->klass)->view_resized (vw, view, width, height);
+}
 

@@ -12,6 +12,7 @@
 #include "file.h"
 #include "interface.h"
 #include "desktop.h"
+#include "svg-view.h"
 
 #include "dialogs/text-edit.h"
 #include "dialogs/export.h"
@@ -30,32 +31,30 @@ static gint sp_ui_delete (GtkWidget *widget, GdkEvent *event, SPViewWidget *vw);
 void
 sp_create_window (SPViewWidget *vw, gboolean editable)
 {
-	GtkWidget * w, * vb, * hb;
+	GtkWidget *w;
 
 	g_return_if_fail (vw != NULL);
 	g_return_if_fail (SP_IS_VIEW_WIDGET (vw));
 
 	w = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
 	gtk_object_set_data (GTK_OBJECT (vw), "window", w);
-	gtk_object_set_data (GTK_OBJECT (w), "desktop", SP_DESKTOP_WIDGET (vw)->desktop);
-	gtk_object_set_data (GTK_OBJECT (w), "desktopwidget", vw);
-        gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), vw);
-        gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_set_focus), SP_DESKTOP_WIDGET (vw)->desktop);
+
+	/* fixme: */
+	if (editable) {
+		gtk_window_set_default_size ((GtkWindow *) w, 400, 400);
+		gtk_object_set_data (GTK_OBJECT (w), "desktop", SP_DESKTOP_WIDGET (vw)->desktop);
+		gtk_object_set_data (GTK_OBJECT (w), "desktopwidget", vw);
+		gtk_signal_connect (GTK_OBJECT (w), "delete_event", GTK_SIGNAL_FUNC (sp_ui_delete), vw);
+		gtk_signal_connect (GTK_OBJECT (w), "focus_in_event", GTK_SIGNAL_FUNC (sp_desktop_set_focus), SP_DESKTOP_WIDGET (vw)->desktop);
 #if 0
-	sp_desktop_set_title (desktop);
+		sp_desktop_set_title (desktop);
 #endif
+	} else {
+		gtk_window_set_policy (GTK_WINDOW (w), TRUE, TRUE, TRUE);
+	}
 
-	vb = gtk_vbox_new (FALSE, 0);
-	gtk_widget_show (vb);
-	gtk_container_add (GTK_CONTAINER (w), vb);
-
-	gtk_box_pack_start (GTK_BOX (vb), GTK_WIDGET (vw), TRUE, TRUE, 0);
+	gtk_container_add (GTK_CONTAINER (w), GTK_WIDGET (vw));
 	gtk_widget_show (GTK_WIDGET (vw));
-
-	hb = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hb);
-	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
 
 	gnome_window_icon_set_from_default (GTK_WINDOW (w));
 
@@ -75,6 +74,25 @@ sp_ui_new_view (GtkWidget * widget)
 	g_return_if_fail (dtw != NULL);
 
 	sp_create_window (dtw, TRUE);
+}
+
+/* fixme: */
+void
+sp_ui_new_view_preview (GtkWidget *widget)
+{
+	SPDocument *document;
+	SPViewWidget *dtw;
+
+	document = SP_ACTIVE_DOCUMENT;
+	if (!document) return;
+
+	dtw = (SPViewWidget *) sp_svg_view_widget_new (document);
+	g_return_if_fail (dtw != NULL);
+#if 1
+	sp_svg_view_widget_set_resize (SP_SVG_VIEW_WIDGET (dtw), TRUE, 400.0, 400.0);
+#endif
+
+	sp_create_window (dtw, FALSE);
 }
 
 void

@@ -262,7 +262,6 @@ sp_root_remove_child (SPObject * object, SPRepr * child)
 
 	if (((SPObjectClass *) (parent_class))->remove_child)
 		(* ((SPObjectClass *) (parent_class))->remove_child) (object, child);
-
 }
 
 static void
@@ -271,6 +270,9 @@ sp_root_modified (SPObject *object, guint flags)
 	SPRoot *root;
 
 	root = SP_ROOT (object);
+
+	if (((SPObjectClass *) (parent_class))->modified)
+		(* ((SPObjectClass *) (parent_class))->modified) (object, flags);
 
 	if (root->resized) {
 		sp_document_set_size (SP_OBJECT_DOCUMENT (root), root->width, root->height);
