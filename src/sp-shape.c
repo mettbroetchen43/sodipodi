@@ -228,7 +228,7 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 				if (object->style->fill.type == SP_PAINT_TYPE_COLOR) {
 					sp_color_get_rgb_floatv (&object->style->fill.color, rgb);
 					/* fixme: */
-					opacity = object->style->fill_opacity * object->style->opacity;
+					opacity = object->style->fill_opacity * SP_SCALE30_TO_FLOAT (object->style->opacity.value);
 					gnome_print_gsave (gpc);
 					gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 					gnome_print_setopacity (gpc, opacity);
@@ -244,7 +244,8 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 					gdouble id[6] = {1,0,0,1,0,0};
 					sp_item_bbox_desktop (item, &bbox);
 					/* fixme: */
-					painter = sp_paint_server_painter_new (object->style->fill.server, id, object->style->opacity, &bbox);
+					painter = sp_paint_server_painter_new (object->style->fill.server, id,
+									       SP_SCALE30_TO_FLOAT (object->style->opacity.value), &bbox);
 					if (painter) {
 						ArtDRect dbox, cbox;
 						ArtIRect ibox;
@@ -288,7 +289,7 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
 				sp_color_get_rgb_floatv (&object->style->stroke.color, rgb);
 				/* fixme: */
-				opacity = object->style->stroke_opacity * object->style->opacity;
+				opacity = object->style->stroke_opacity * SP_SCALE30_TO_FLOAT (object->style->opacity.value);
 				gnome_print_gsave (gpc);
 				gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 				gnome_print_setopacity (gpc, opacity);

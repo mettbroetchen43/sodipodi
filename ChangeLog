@@ -1,3 +1,18 @@
+2002-07-22  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/style.c (sp_style_new_from_object): Renamed sp_style_new
+	(sp_style_read_from_object): Use SP_SCALE30 for opacity
+	(sp_style_merge_property): Ditto
+	(sp_style_merge_from_object_parent): Renamed sp_style_merge_from_object,
+	read only from immediate parent (which should have merged from ancestors itself)
+	(sp_style_write_string): Use SP_SCALE30 for opacity
+	(sp_style_clear): Ditto
+	(sp_style_set_opacity): Ditto
+	(sp_style_read_inherited_scale30): New method
+	(sp_style_write_inherited_scale30): Ditto
+
+	* src/style.h: Created new 30-bit scaled value type, used for opacity
+
 Sat Jul 13 19:47:16 2002 Davide Puricelli <evo@debian.org>
 	
 	* po/ja.po: Updated, thanks Junichi Uekawa <dancer@netfort.gr.jp>

@@ -47,6 +47,7 @@ struct _SPPaint {
 
 typedef struct _SPInheritedString SPInheritedString;
 typedef struct _SPInheritedFloat SPInheritedFloat;
+typedef struct _SPInheritedScale30 SPInheritedScale30;
 typedef struct _SPInheritedInt SPInheritedInt;
 typedef struct _SPInheritedShort SPInheritedShort;
 
@@ -62,6 +63,16 @@ struct _SPInheritedFloat {
 	guint inherit : 1;
 	guint data : 30;
 	gfloat value;
+};
+
+#define SP_SCALE30_MAX ((1 << 30) - 1)
+#define SP_SCALE30_TO_FLOAT(v) ((float) (v) / SP_SCALE30_MAX)
+#define SP_SCALE30_FROM_FLOAT(v) ((gint) floor ((v) * (SP_SCALE30_MAX + 0.9999)))
+
+struct _SPInheritedScale30 {
+	guint set : 1;
+	guint inherit : 1;
+	guint value : 30;
 };
 
 struct _SPInheritedInt {
@@ -100,9 +111,10 @@ struct _SPStyle {
 	guint clip_path_set : 1;
 	guint clip_rule_set : 1;
 	guint mask_set : 1;
-	guint opacity_set : 1;
+
 	/* Global opacity */
-	gdouble opacity;
+	SPInheritedScale30 opacity;
+
 	/* display */
 	guint display : 1;
 	/* visibility */
@@ -144,13 +156,18 @@ struct _SPStyle {
 	guint stroke_opacity_set : 1;
 };
 
-SPStyle *sp_style_new (SPObject *object);
+SPStyle *sp_style_new_from_object (SPObject *object);
 
 SPStyle *sp_style_ref (SPStyle *style);
 SPStyle *sp_style_unref (SPStyle *style);
 
+/*
+ * 1. Reset existing object style
+ * 2. Load current effective object style
+ * 3. Load inherited attributes from immediate parent (which has to be up-to-date)
+ */
+
 void sp_style_read_from_object (SPStyle *style, SPObject *object);
-void sp_style_merge_from_object (SPStyle *style, SPObject *object);
 
 guchar *sp_style_write_string (SPStyle *style);
 

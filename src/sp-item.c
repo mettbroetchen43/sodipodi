@@ -105,7 +105,7 @@ sp_item_init (SPItem *item)
 
 	item->clip = NULL;
 
-	if (!object->style) object->style = sp_style_new (SP_OBJECT (item));
+	if (!object->style) object->style = sp_style_new_from_object (SP_OBJECT (item));
 }
 
 static void
@@ -257,7 +257,7 @@ sp_item_style_modified (SPObject *object, guint flags)
 	}
 
 	for (v = item->display; v != NULL; v = v->next) {
-		nr_arena_item_set_opacity (v->arenaitem, object->style->opacity);
+		nr_arena_item_set_opacity (v->arenaitem, SP_SCALE30_TO_FLOAT (object->style->opacity.value));
 	}
 }
 
@@ -402,7 +402,7 @@ sp_item_show (SPItem *item, NRArena *arena)
 	if (ai != NULL) {
 		item->display = sp_item_view_new_prepend (item->display, item, arena, ai);
 		nr_arena_item_set_transform (ai, item->affine);
-		nr_arena_item_set_opacity (ai, SP_OBJECT_STYLE (item)->opacity);
+		nr_arena_item_set_opacity (ai, SP_SCALE30_TO_FLOAT (SP_OBJECT_STYLE (item)->opacity.value));
 		nr_arena_item_set_sensitive (ai, item->sensitive);
 		if (item->clip) {
 			NRArenaItem *ac;

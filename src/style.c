@@ -24,6 +24,10 @@
 
 static void sp_style_clear (SPStyle *style);
 
+static void sp_style_merge_from_object_parent (SPStyle *style, SPObject *object);
+static void sp_style_merge_from_string (SPStyle *style, const guchar *p);
+static void sp_style_merge_property (SPStyle *style, gint id, const guchar *val);
+
 static void sp_style_merge_paint (SPStyle *style, SPPaint *paint, SPPaint *parent);
 static gint sp_style_write_paint (guchar *b, gint len, SPPaint *paint);
 static void sp_style_read_paint (SPStyle *style, SPPaint *paint, const guchar *str, SPDocument *document);
@@ -38,6 +42,9 @@ static guint sp_text_style_write (guchar *p, guint len, SPTextStyle *st);
 
 static gint sp_style_property_index (const guchar *str);
 
+static void sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str);
+static gint sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInheritedScale30 *val);
+
 static void
 sp_style_object_destroyed (GtkObject *object, SPStyle *style)
 {
@@ -45,7 +52,7 @@ sp_style_object_destroyed (GtkObject *object, SPStyle *style)
 }
 
 SPStyle *
-sp_style_new (SPObject *object)
+sp_style_new_from_object (SPObject *object)
 {
 	SPStyle *style;
 
@@ -104,6 +111,108 @@ sp_style_unref (SPStyle *style)
 	}
 
 	return NULL;
+}
+
+void
+sp_style_read_from_object (SPStyle *style, SPObject *object)
+{
+	const guchar *val;
+
+	g_return_if_fail (style != NULL);
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+
+	sp_style_clear (style);
+
+	val = sp_repr_attr (object->repr, "style");
+	if (val) sp_style_merge_from_string (style, val);
+
+	/* FIXME: CSS etc. parsing goes here */
+
+	/* opacity */
+	if (!style->opacity.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
+		if (val) {
+			sp_style_read_inherited_scale30 (&style->opacity, val);
+		}
+	}
+
+	/* CMYK has precedence here */
+	val = sp_repr_attr (object->repr, "fill-cmyk");
+	if (val) {
+		gdouble c, m, y, k;
+		gchar *cptr, *eptr;
+		c = m = y = k = 0.0;
+		cptr = (gchar *) val + 1;
+		c = strtod (cptr, &eptr);
+		if (eptr != cptr) {
+			cptr = eptr;
+			m = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			cptr = eptr;
+			y = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			cptr = eptr;
+			k = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			style->fill_set = TRUE;
+			sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
+		}
+	}
+	val = sp_repr_attr (object->repr, "stroke-cmyk");
+	if (val) {
+		gdouble c, m, y, k;
+		gchar *cptr, *eptr;
+		c = m = y = k = 0.0;
+		cptr = (gchar *) val + 1;
+		c = strtod (cptr, &eptr);
+		if (eptr != cptr) {
+			cptr = eptr;
+			m = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			cptr = eptr;
+			y = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			cptr = eptr;
+			k = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			style->fill_set = TRUE;
+			sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
+		}
+	}
+	/* fixme: */
+	if (!style->text->font_family.set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-family");
+		if (val) sp_style_merge_property (style, SP_PROP_FONT_FAMILY, val);
+	}
+	if (!style->text->font_size_set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-size");
+		if (val) sp_style_merge_property (style, SP_PROP_FONT_SIZE, val);
+	}
+	if (!style->fill_set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill");
+		if (val) {
+			sp_style_read_paint (style, &style->fill, val, SP_OBJECT_DOCUMENT (object));
+			style->fill_set = TRUE;
+		}
+	}
+	if (!style->stroke_set) {
+		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke");
+		if (val) {
+			sp_style_read_paint (style, &style->stroke, val, SP_OBJECT_DOCUMENT (object));
+			style->stroke_set = TRUE;
+		}
+	}
+
+	if (object->parent) {
+		sp_style_merge_from_object_parent (style, object->parent);
+	}
 }
 
 static void
@@ -205,9 +314,8 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		g_warning ("Unimplemented style property id: %d value: %s", id, val);
 		break;
 	case SP_PROP_OPACITY:
-		if (!style->opacity_set) {
-			style->opacity = sp_svg_read_percentage (val, style->opacity);
-			style->opacity_set = TRUE;
+		if (!style->opacity.set) {
+			sp_style_read_inherited_scale30 (&style->opacity, val);
 		}
 		break;
 	/* Filter */
@@ -402,116 +510,16 @@ sp_style_merge_from_string (SPStyle *style, const guchar *p)
 	}
 }
 
-void
-sp_style_read_from_object (SPStyle *style, SPObject *object)
-{
-	const guchar *str;
-
-	g_return_if_fail (style != NULL);
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_OBJECT (object));
-
-	sp_style_clear (style);
-
-	str = sp_repr_attr (object->repr, "style");
-	if (str) sp_style_merge_from_string (style, str);
-	/* fixme */
-	/* CMYK has precedence here */
-	str = sp_repr_attr (object->repr, "fill-cmyk");
-	if (str) {
-		gdouble c, m, y, k;
-		gchar *cptr, *eptr;
-		c = m = y = k = 0.0;
-		cptr = (gchar *) str + 1;
-		c = strtod (cptr, &eptr);
-		if (eptr != cptr) {
-			cptr = eptr;
-			m = strtod (cptr, &eptr);
-		}
-		if (eptr != cptr) {
-			cptr = eptr;
-			y = strtod (cptr, &eptr);
-		}
-		if (eptr != cptr) {
-			cptr = eptr;
-			k = strtod (cptr, &eptr);
-		}
-		if (eptr != cptr) {
-			style->fill_set = TRUE;
-			sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
-		}
-	}
-	str = sp_repr_attr (object->repr, "stroke-cmyk");
-	if (str) {
-		gdouble c, m, y, k;
-		gchar *cptr, *eptr;
-		c = m = y = k = 0.0;
-		cptr = (gchar *) str + 1;
-		c = strtod (cptr, &eptr);
-		if (eptr != cptr) {
-			cptr = eptr;
-			m = strtod (cptr, &eptr);
-		}
-		if (eptr != cptr) {
-			cptr = eptr;
-			y = strtod (cptr, &eptr);
-		}
-		if (eptr != cptr) {
-			cptr = eptr;
-			k = strtod (cptr, &eptr);
-		}
-		if (eptr != cptr) {
-			style->fill_set = TRUE;
-			sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
-		}
-	}
-	/* fixme: */
-	if (!style->text->font_family.set) {
-		str = sp_repr_attr (SP_OBJECT_REPR (object), "font-family");
-		if (str) sp_style_merge_property (style, SP_PROP_FONT_FAMILY, str);
-	}
-	if (!style->text->font_size_set) {
-		str = sp_repr_attr (SP_OBJECT_REPR (object), "font-size");
-		if (str) sp_style_merge_property (style, SP_PROP_FONT_SIZE, str);
-	}
-	if (!style->opacity_set) {
-		str = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
-		if (str) {
-			style->opacity = sp_svg_read_percentage (str, style->opacity);
-			style->opacity_set = TRUE;
-		}
-	}
-	if (!style->fill_set) {
-		str = sp_repr_attr (SP_OBJECT_REPR (object), "fill");
-		if (str) {
-			sp_style_read_paint (style, &style->fill, str, SP_OBJECT_DOCUMENT (object));
-			style->fill_set = TRUE;
-		}
-	}
-	if (!style->stroke_set) {
-		str = sp_repr_attr (SP_OBJECT_REPR (object), "stroke");
-		if (str) {
-			sp_style_read_paint (style, &style->stroke, str, SP_OBJECT_DOCUMENT (object));
-			style->stroke_set = TRUE;
-		}
-	}
-
-	if (object->parent) {
-		sp_style_merge_from_object (style, object->parent);
-	}
-}
-
-void
-sp_style_merge_from_object (SPStyle *style, SPObject *object)
+static void
+sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 {
 	g_return_if_fail (style != NULL);
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
 
 	if (object->style) {
-		if (!style->opacity_set && object->style->opacity_set) {
-			style->opacity = object->style->opacity;
-			style->opacity_set = TRUE;
+		if (style->opacity.inherit) {
+			style->opacity.value = object->style->opacity.value;
 		}
 		if (!style->display_set && object->style->display_set) {
 			style->display = object->style->display;
@@ -572,9 +580,11 @@ sp_style_merge_from_object (SPStyle *style, SPObject *object)
 		}
 	}
 
+#if 0
 	if (object->parent) {
-		sp_style_merge_from_object (style, object->parent);
+		sp_style_merge_from_object_parent (style, object->parent);
 	}
+#endif
 }
 
 static void
@@ -657,8 +667,8 @@ sp_style_write_string (SPStyle *style)
 	p = c;
 	*p = '\0';
 
-	if (style->opacity_set && style->opacity != 1.0) {
-		p += g_snprintf (p, c + 4096 - p, "opacity:%g;", style->opacity);
+	if (style->opacity.set && style->opacity.value != SP_SCALE30_MAX) {
+		p += sp_style_write_inherited_scale30 (p, c + 4096 - p, "opacity", &style->opacity);
 	}
 	if (style->fill_set) {
 		p += g_snprintf (p, c + 4096 - p, "fill:");
@@ -728,6 +738,8 @@ sp_style_write_string (SPStyle *style)
 		p += g_snprintf (p, c + 4096 - p, "stroke-opacity:%g;", style->stroke_opacity);
 	}
 
+	sp_text_style_write (p, c + 4096 - p, style->text);
+
 	return g_strdup (c);
 }
 
@@ -789,7 +801,7 @@ sp_style_clear (SPStyle *style)
 	style->text->font_weight_set = FALSE;
 	style->text->font_size_set = FALSE;
 
-	style->opacity = 1.0;
+	style->opacity.value = SP_SCALE30_MAX;
 	style->display = TRUE;
 	style->visibility = TRUE;
 	style->fill.type = SP_PAINT_TYPE_COLOR;
@@ -946,8 +958,8 @@ sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set)
 {
 	g_return_if_fail (style != NULL);
 
-	style->opacity_set = opacity_set;
-	style->opacity = opacity;
+	style->opacity.set = opacity_set;
+	style->opacity.value = SP_SCALE30_FROM_FLOAT (opacity);
 
 	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
@@ -1207,3 +1219,28 @@ sp_style_property_index (const guchar *str)
 	return GPOINTER_TO_INT (g_hash_table_lookup (propdict, str));
 }
 
+static void
+sp_style_read_inherited_scale30 (SPInheritedScale30 *val, const guchar *str)
+{
+	if (!strcmp (str, "inherit")) {
+		val->set = TRUE;
+		val->inherit = TRUE;
+	} else {
+		gfloat value;
+		if (sp_svg_read_number_f (str, &value)) {
+			val->set = TRUE;
+			val->inherit = FALSE;
+			val->value = SP_SCALE30_FROM_FLOAT (value);
+		}
+	}
+}
+
+static gint
+sp_style_write_inherited_scale30 (guchar *p, gint len, const guchar *key, SPInheritedScale30 *val)
+{
+	if (val->inherit) {
+		return g_snprintf (p, len, "%s:inherit;", key);
+	} else {
+		return g_snprintf (p, len, "%s:%g;", key, SP_SCALE30_TO_FLOAT (val->value));
+	}
+}

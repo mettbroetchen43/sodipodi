@@ -208,11 +208,13 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 
 	if (shape->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		shape->fill_painter = sp_paint_server_painter_new (shape->style->fill.server, gc->affine, shape->style->opacity, &bbox);
+		shape->fill_painter = sp_paint_server_painter_new (shape->style->fill.server, gc->affine,
+								   SP_SCALE30_TO_FLOAT (shape->style->opacity.value), &bbox);
 	}
 	if (shape->style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) {
 		/* fixme: This is probably not correct as bbox has to be the one of fill */
-		shape->stroke_painter = sp_paint_server_painter_new (shape->style->stroke.server, gc->affine, shape->style->opacity, &bbox);
+		shape->stroke_painter = sp_paint_server_painter_new (shape->style->stroke.server, gc->affine,
+								     SP_SCALE30_TO_FLOAT (shape->style->opacity.value), &bbox);
 	}
 
 	return NR_ARENA_ITEM_STATE_ALL;
@@ -241,7 +243,7 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 
 		switch (style->fill.type) {
 		case SP_PAINT_TYPE_COLOR:
-			rgba = sp_color_get_rgba32_falpha (&style->fill.color, style->fill_opacity * style->opacity);
+			rgba = sp_color_get_rgba32_falpha (&style->fill.color, style->fill_opacity * SP_SCALE30_TO_FLOAT (style->opacity.value));
 			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
 			b->empty = FALSE;
 			break;
@@ -276,7 +278,7 @@ nr_arena_shape_render (NRArenaItem *item, NRIRect *area, NRBuffer *b)
 
 		switch (style->stroke.type) {
 		case SP_PAINT_TYPE_COLOR:
-			rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * style->opacity);
+			rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * SP_SCALE30_TO_FLOAT (style->opacity.value));
 			nr_render_buf_mask_rgba32 (b, 0, 0, area->x1 - area->x0, area->y1 - area->y0, m, 0, 0, rgba);
 			b->empty = FALSE;
 			break;

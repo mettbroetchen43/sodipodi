@@ -173,7 +173,7 @@ sp_item_widget_setup (SPWidget *spw, SPSelection *selection)
 
 	/* Opacity */
 	w = glade_xml_get_widget (xml, "opacity");
-	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), object->style->opacity);
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (w), SP_SCALE30_TO_FLOAT (object->style->opacity.value));
 
 	/* Transform */
 	w = glade_xml_get_widget (xml, "transform_0");
@@ -267,6 +267,7 @@ sp_item_widget_opacity_changed (GtkWidget *widget, SPWidget *spw)
 	blocked = TRUE;
 
 	/* Opacity */
+	/* fixme: This does not propagate to reprs - what to do? (Lauris) */
 	sp_style_set_opacity (SP_OBJECT_STYLE (item), gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (widget)), TRUE);
 
 	sp_document_maybe_done (spw->document, "ItemDialog:style");
