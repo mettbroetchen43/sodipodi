@@ -93,8 +93,8 @@ typedef enum {
 } SPGradientState;
 
 typedef enum {
-	SP_GRADIENT_UNITS_USERSPACEONUSE,
-	SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX
+	SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX,
+	SP_GRADIENT_UNITS_USERSPACEONUSE
 } SPGradientUnits;
 
 typedef enum {
@@ -107,6 +107,8 @@ typedef enum {
 #define SP_GRADIENT_IS_VECTOR(g) (SP_GRADIENT(g)->state == SP_GRADIENT_STATE_VECTOR)
 #define SP_GRADIENT_IS_PRIVATE(g) (SP_GRADIENT(g)->state == SP_GRADIENT_STATE_PRIVATE)
 #define SP_GRADIENT_HAS_STOPS(g) (SP_GRADIENT(g)->has_stops)
+#define SP_GRADIENT_SPREAD(g) (SP_GRADIENT (g)->spread)
+#define SP_GRADIENT_UNITS(g) (SP_GRADIENT (g)->units)
 
 struct _SPGradient {
 	SPPaintServer paint_server;
@@ -149,6 +151,9 @@ void sp_gradient_ensure_vector (SPGradient *gradient);
 void sp_gradient_ensure_colors (SPGradient *gradient);
 /* Sets gradient vector to given value, does not update reprs */
 void sp_gradient_set_vector (SPGradient *gradient, SPGradientVector *vector);
+
+void sp_gradient_set_units (SPGradient *gr, unsigned int units);
+void sp_gradient_set_spread (SPGradient *gr, unsigned int spread);
 
 /* Gradient repr methods */
 void sp_gradient_repr_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);

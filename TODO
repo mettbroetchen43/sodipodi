@@ -3,13 +3,13 @@
 TODO for 0.28
 =============
 
-- Way to set userSpaceOnUse gradients
+- Way to set userSpaceOnUse gradients (DONE)
 - Menu exit does not ask for saving
 - Print open paths correctly (DONE)
 - Enable active desktop indicator for single new desktop (DONE)
 - Make page border togglable (DONE)
 - Autoconf test for popt.h (DONE)
-- Faster move
+- Faster move (halfway done, second half postponed)
 - Direct FreeType fonts (DONE)
 - Toolboxes show arrows to right initially (DONE)
 - localise and kill transparency 1.0 bug

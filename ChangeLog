@@ -1,5 +1,27 @@
 2002-11-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/paint-selector.c (sp_paint_selector_write_lineargradient): Normalize
+	gradient transform and recalculate positions before applying
+	(sp_paint_selector_write_radialgradient): Ditto
+
+	* src/widgets/gradient-selector.c (sp_gradient_selector_set_mode): New method
+	(sp_gradient_selector_init): Added units and spread optionmenu
+
+	* src/widgets/gradient-position.c (sp_gradient_position_motion_notify): Comment
+	out nonuniform placement, as it did not work correctly
+
+	* src/libnr/nr-matrix.c (nr_matrix_d_invert): Fix really silly bug generating identities
+	(nr_matrix_f_invert): Ditto
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_paint_update): Set gradient props
+
+	* src/dialogs/fill-style.c (sp_fill_style_widget_update): Set gradient props
+
+	* src/sp-gradient.h: Changed units enumeration, so 0 is default
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_pick): Re-enable SVP based check,
+	only do winding check, if object is filled
+
 	* src/file.c: Removed printing code, only frontends remain
 
 	* src/print.c (sp_print_document): Implement

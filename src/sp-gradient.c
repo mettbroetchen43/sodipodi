@@ -613,6 +613,24 @@ sp_gradient_set_vector (SPGradient *gradient, SPGradientVector *vector)
 	sp_object_request_modified (SP_OBJECT (gradient), SP_OBJECT_MODIFIED_FLAG);
 }
 
+void
+sp_gradient_set_units (SPGradient *gr, unsigned int units)
+{
+	if (units != gr->units) {
+		gr->units = units;
+		sp_object_request_modified (SP_OBJECT (gr), SP_OBJECT_MODIFIED_FLAG);
+	}
+}
+
+void
+sp_gradient_set_spread (SPGradient *gr, unsigned int spread)
+{
+	if (spread != gr->spread) {
+		gr->spread = spread;
+		sp_object_request_modified (SP_OBJECT (gr), SP_OBJECT_MODIFIED_FLAG);
+	}
+}
+
 /* Gradient repr methods */
 void
 sp_gradient_repr_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missing)
@@ -1098,6 +1116,12 @@ sp_gradient_set_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NR
 
 	nr_matrix_f_invert (&d2g, &g2d);
 	SP_PRINT_MATRIX ("* D2G:", &d2g);
+	SP_PRINT_MATRIX ("* G2D:", &g2d);
+	nr_matrix_f_invert (&g2d, &d2g);
+	SP_PRINT_MATRIX ("* D2G:", &d2g);
+	SP_PRINT_MATRIX ("* G2D:", &g2d);
+
+
 	nr_matrix_multiply_fff (&gs2g, gs2d, &d2g);
 	SP_PRINT_MATRIX ("* GS2G:", &gs2g);
 
@@ -1786,11 +1810,11 @@ sp_radialgradient_set_position (SPRadialGradient *rg, gdouble cx, gdouble cy, gd
 	g_return_if_fail (SP_IS_RADIALGRADIENT (rg));
 
 	/* fixme: units? (Lauris)  */
-	sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_PERCENT, cx, cx);
-	sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_PERCENT, cy, cy);
-	sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_PERCENT, fx, fx);
-	sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_PERCENT, fy, fy);
-	sp_svg_length_unset (&rg->r, SP_SVG_UNIT_PERCENT, r, r);
+	sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_NONE, cx, cx);
+	sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_NONE, cy, cy);
+	sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_NONE, fx, fx);
+	sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_NONE, fy, fy);
+	sp_svg_length_unset (&rg->r, SP_SVG_UNIT_NONE, r, r);
 
 	sp_object_request_modified (SP_OBJECT (rg), SP_OBJECT_MODIFIED_FLAG);
 }
