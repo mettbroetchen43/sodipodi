@@ -1,3 +1,9 @@
+2002-10-11  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas.h: Cleanup
+
+	* src/helper/sp-canvas.c: Cut off lot os useless stuff
+
 2002-10-10  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas.c: Local version of praised GnomeCanvas

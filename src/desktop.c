@@ -883,12 +883,16 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	gtk_widget_show (GTK_WIDGET (desktop->vscrollbar));
 	gtk_table_attach (table, desktop->vscrollbar, 2, 3, 1, 2, GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 	/* Canvas */
+#if 0
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
+#endif
 	desktop->canvas = GNOME_CANVAS (gnome_canvas_new_aa ());
+#if 0
 	gnome_canvas_set_dither (GNOME_CANVAS (desktop->canvas), GDK_RGB_DITHER_MAX);
 	gtk_widget_pop_colormap ();
 	gtk_widget_pop_visual ();
+#endif
 	style = gtk_style_copy (GTK_WIDGET (desktop->canvas)->style);
 	style->bg[GTK_STATE_NORMAL] = style->white;
 	gtk_widget_set_style (GTK_WIDGET (desktop->canvas), style);

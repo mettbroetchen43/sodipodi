@@ -334,7 +334,9 @@ sp_svg_view_widget_init (SPSVGViewWidget *vw)
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
 	vw->canvas = gnome_canvas_new_aa ();
+#if 0
 	gnome_canvas_set_dither (GNOME_CANVAS (vw->canvas), GDK_RGB_DITHER_MAX);
+#endif
 	gtk_widget_pop_colormap ();
 	gtk_widget_pop_visual ();
 	style = gtk_style_copy (vw->canvas->style);

@@ -178,7 +178,12 @@ sp_canvas_arena_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path
 			ec.send_event = TRUE;
 			ec.subwindow = ec.window;
 			ec.time = gdk_time_get ();
+#if 0
 			gnome_canvas_c2w (item->canvas, arena->cx, arena->cy, &ec.x, &ec.y);
+#else
+			ec.x = arena->cx + item->canvas->scroll_x1;
+			ec.y = arena->cy + item->canvas->scroll_y1;
+#endif
 			/* fixme: */
 			if (arena->active) {
 				ec.type = GDK_LEAVE_NOTIFY;
@@ -300,7 +305,12 @@ sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
 				gtk_object_unref (GTK_OBJECT (arena->active));
 			}
 			arena->cursor = TRUE;
+#if 0
 			gnome_canvas_w2c_d (item->canvas, event->crossing.x, event->crossing.y, &arena->cx, &arena->cy);
+#else
+			arena->cx = event->crossing.x - item->canvas->scroll_x1;
+			arena->cy = event->crossing.y - item->canvas->scroll_y1;
+#endif
 			/* fixme: Not sure abut this, but seems the right thing (Lauris) */
 			nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
 			arena->active = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);
@@ -317,7 +327,12 @@ sp_canvas_arena_event (GnomeCanvasItem *item, GdkEvent *event)
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
+#if 0
 		gnome_canvas_w2c_d (item->canvas, event->motion.x, event->motion.y, &arena->cx, &arena->cy);
+#else
+		arena->cx = event->motion.x - item->canvas->scroll_x1;
+		arena->cy = event->motion.y - item->canvas->scroll_y1;
+#endif
 		/* fixme: Not sure abut this, but seems the right thing (Lauris) */
 		nr_arena_item_invoke_update (arena->root, NULL, &arena->gc, NR_ARENA_ITEM_STATE_PICK, NR_ARENA_ITEM_STATE_NONE);
 		new = nr_arena_item_invoke_pick (arena->root, arena->cx, arena->cy, nr_arena_global_delta, arena->sticky);

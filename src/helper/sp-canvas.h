@@ -36,7 +36,9 @@ typedef struct _GnomeCanvasGroupClass GnomeCanvasGroupClass;
 #include <libart_lgpl/art_affine.h>
 
 enum {
+#if 0
 	GNOME_CANVAS_ITEM_ALWAYS_REDRAW = 1 << 6,
+#endif
 	GNOME_CANVAS_ITEM_VISIBLE       = 1 << 7,
 	GNOME_CANVAS_ITEM_NEED_UPDATE	= 1 << 8,
 	GNOME_CANVAS_ITEM_NEED_AFFINE	= 1 << 9,
@@ -136,8 +138,6 @@ void gnome_canvas_item_affine_absolute (GnomeCanvasItem *item, const double affi
 
 void gnome_canvas_item_raise (GnomeCanvasItem *item, int positions);
 void gnome_canvas_item_lower (GnomeCanvasItem *item, int positions);
-void gnome_canvas_item_raise_to_top (GnomeCanvasItem *item);
-void gnome_canvas_item_lower_to_bottom (GnomeCanvasItem *item);
 void gnome_canvas_item_show (GnomeCanvasItem *item);
 void gnome_canvas_item_hide (GnomeCanvasItem *item);
 int gnome_canvas_item_grab (GnomeCanvasItem *item, unsigned int event_mask, GdkCursor *cursor, guint32 etime);
@@ -146,9 +146,6 @@ void gnome_canvas_item_ungrab (GnomeCanvasItem *item, guint32 etime);
 void gnome_canvas_item_w2i (GnomeCanvasItem *item, double *x, double *y);
 void gnome_canvas_item_i2w (GnomeCanvasItem *item, double *x, double *y);
 void gnome_canvas_item_i2w_affine (GnomeCanvasItem *item, double affine[6]);
-void gnome_canvas_item_i2c_affine (GnomeCanvasItem *item, double affine[6]);
-
-void gnome_canvas_item_reparent (GnomeCanvasItem *item, GnomeCanvasGroup *new_group);
 
 void gnome_canvas_item_grab_focus (GnomeCanvasItem *item);
 
@@ -184,13 +181,10 @@ GtkType gnome_canvas_group_get_type (void);
 struct _GnomeCanvas {
 	GtkLayout layout;
 
-	/* Idle handler ID */
 	guint idle_id;
 
-	/* Root canvas group */
 	GnomeCanvasItem *root;
 
-	/* Signal handler ID for destruction of the root item */
 	guint root_destroy_id;
 
 	/* Scrolling region */
@@ -203,8 +197,8 @@ struct _GnomeCanvas {
 	/* Area that is being redrawn.  Contains (x1, y1) but not (x2, y2).
 	 * Specified in canvas pixel coordinates.
 	 */
-	int redraw_x1, redraw_y1;
-	int redraw_x2, redraw_y2;
+	int bret_x1, bret_y1;
+	int bret_x2, bret_y2;
 
 	/* Area that needs redrawing, stored as a microtile array */
 	ArtUta *redraw_area;
@@ -245,26 +239,16 @@ struct _GnomeCanvas {
 	/* GC for temporary draw pixmap */
 	GdkGC *pixmap_gc;
 
-
-	/* Whether items need update at next idle loop iteration */
 	unsigned int need_update : 1;
-
-	/* Whether the canvas needs redrawing at the next idle loop iteration */
 	unsigned int need_redraw : 1;
-
-	/* Whether current item will be repicked at next idle loop iteration */
 	unsigned int need_repick : 1;
 
 	/* For use by internal pick_current_item() function */
 	unsigned int left_grabbed_item : 1;
-
 	/* For use by internal pick_current_item() function */
 	unsigned int in_repick : 1;
 
-	/* Whether the canvas is in antialiased mode or not */
 	unsigned int aa : 1;
-
-	/* dither mode for aa drawing */
 	unsigned int dither : 2;
 };
 
@@ -272,87 +256,22 @@ struct _GnomeCanvasClass {
 	GtkLayoutClass parent_class;
 };
 
-
-/* Standard Gtk function */
 GtkType gnome_canvas_get_type (void);
 
 GtkWidget *gnome_canvas_new_aa (void);
 
-/* Returns the root canvas item group of the canvas */
 GnomeCanvasGroup *gnome_canvas_root (GnomeCanvas *canvas);
+void gnome_canvas_set_scroll_region (GnomeCanvas *canvas, double x1, double y1, double x2, double y2);
 
-/* Sets the limits of the scrolling region, in world coordinates */
-void gnome_canvas_set_scroll_region (GnomeCanvas *canvas,
-				     double x1, double y1, double x2, double y2);
-
-/* Gets the limits of the scrolling region, in world coordinates */
-void gnome_canvas_get_scroll_region (GnomeCanvas *canvas,
-				     double *x1, double *y1, double *x2, double *y2);
-
-/* Scrolls the canvas to the specified offsets, given in canvas pixel coordinates */
 void gnome_canvas_scroll_to (GnomeCanvas *canvas, int cx, int cy);
-
-/* Returns the scroll offsets of the canvas in canvas pixel coordinates.  You
- * can specify NULL for any of the values, in which case that value will not be
- * queried.
- */
 void gnome_canvas_get_scroll_offsets (GnomeCanvas *canvas, int *cx, int *cy);
-
-/* Requests that the canvas be repainted immediately instead of in the idle
- * loop.
- */
 void gnome_canvas_update_now (GnomeCanvas *canvas);
 
-/* Returns the item that is at the specified position in world coordinates, or
- * NULL if no item is there.
- */
-GnomeCanvasItem *gnome_canvas_get_item_at (GnomeCanvas *canvas, double x, double y);
-
-/* For use only by item type implementations. Request that the canvas eventually
- * redraw the specified region. The region is specified as a microtile
- * array. This function takes over responsibility for freeing the uta argument.
- */
 void gnome_canvas_request_redraw_uta (GnomeCanvas *canvas, ArtUta *uta);
-
-/* For use only by item type implementations.  Request that the canvas
- * eventually redraw the specified region, specified in canvas pixel
- * coordinates.  The region contains (x1, y1) but not (x2, y2).
- */
 void gnome_canvas_request_redraw (GnomeCanvas *canvas, int x1, int y1, int x2, int y2);
 
-/* Gets the affine transform that converts world coordinates into canvas pixel
- * coordinates.
- */
-void gnome_canvas_w2c_affine (GnomeCanvas *canvas, double affine[6]);
-
-/* These functions convert from a coordinate system to another.  "w" is world
- * coordinates, "c" is canvas pixel coordinates (pixel coordinates that are
- * (0,0) for the upper-left scrolling limit and something else for the
- * lower-left scrolling limit).
- */
-void gnome_canvas_w2c (GnomeCanvas *canvas, double wx, double wy, int *cx, int *cy);
-void gnome_canvas_w2c_d (GnomeCanvas *canvas, double wx, double wy, double *cx, double *cy);
-void gnome_canvas_c2w (GnomeCanvas *canvas, int cx, int cy, double *wx, double *wy);
-
-/* This function takes in coordinates relative to the GTK_LAYOUT
- * (canvas)->bin_window and converts them to world coordinates.
- */
-void gnome_canvas_window_to_world (GnomeCanvas *canvas,
-				   double winx, double winy, double *worldx, double *worldy);
-
-/* This is the inverse of gnome_canvas_window_to_world() */
-void gnome_canvas_world_to_window (GnomeCanvas *canvas,
-				   double worldx, double worldy, double *winx, double *winy);
-
-/* Controls the dithering used when the canvase renders.
- * Only applicable to antialiased canvases - ignored by non-antialiased canvases.
- */
-void gnome_canvas_set_dither (GnomeCanvas *canvas, GdkRgbDither dither);
-
-/* Returns the dither mode of an antialiased canvas.
- * Only applicable to antialiased canvases - ignored by non-antialiased canvases.
- */
-GdkRgbDither gnome_canvas_get_dither (GnomeCanvas *canvas);
+void gnome_canvas_window_to_world (GnomeCanvas *canvas, double winx, double winy, double *worldx, double *worldy);
+void gnome_canvas_world_to_window (GnomeCanvas *canvas, double worldx, double worldy, double *winx, double *winy);
 
 END_GNOME_DECLS
 
