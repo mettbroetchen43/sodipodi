@@ -12,6 +12,7 @@
  * Released under GNU GPL
  */
 
+#include <config.h>
 #include <math.h>
 #include <glib.h>
 #include <libgnome/gnome-defs.h>

@@ -1,3 +1,31 @@
+2002-01-01  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* configure.in: Added "AC_PROG_INTLTOOL(0.11)" line.
+
+	* Makefile.am: Use intltool.
+
+	* GNOME_Sodipodi.oaf.in: New, copied from GNOME_Sodipodi.oafinfo.
+
+	* sodipodi.desktop.in: New, generated from sodipodi.desktop.
+
+	* GNOME_Sodipodi.oafinfo, sodipodi.desktop: Removed.
+
+	* glade/Makefile.am (glade_DATA): Removed *.c.
+
+	* glade/*.c: Removed.
+
+	* .cvsignore: Added intltool-*, sodipodi.desktop, GNOME_Sodipodi.oaf.
+
+	* src/bonobo/svg-doc-factory.c, src/desktop.c, src/dialogs/align.c,
+	src/dialogs/display-settings.c, src/dialogs/document-properties.c,
+	src/dialogs/fill-style.c, src/dialogs/gradient-selector.c,
+	src/dialogs/gradient-vector.c, src/dialogs/item-properties.c,
+	src/dialogs/object-attributes.c, src/dialogs/object-properties.c,
+	src/help.c, src/helper/unit-menu.c, src/main.c, src/sodipodi.c,
+	src/sp-anchor.c, src/sp-image.c, src/sp-item-group.c, src/sp-rect.c,
+	src/sp-shape.c, src/sp-spiral.c, src/sp-star.c, src/sp-text.c,
+	src/widgets/sp-color-selector.c: Added missing #include <config.h>.
+
 2001-12-30  Lauris Kaplinski  <lauris@localhost.localdomain>
 
 	* src/widgets/sp-color-selector.c (sp_color_selector_adjustment_changed): Set

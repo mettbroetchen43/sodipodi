@@ -1,5 +1,6 @@
 #define SP_DOCUMENT_PROPERTIES_C
 
+#include <config.h>
 #include <gnome.h>
 #include <glade/glade.h>
 #include "document-properties.h"

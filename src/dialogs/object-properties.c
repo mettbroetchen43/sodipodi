@@ -1,5 +1,6 @@
 #define OBJECT_PROPERTIES_C
 
+#include <config.h>
 #include <gnome.h>
 #include <glade/glade.h>
 #include "../xml/repr.h"

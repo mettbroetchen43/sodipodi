@@ -15,6 +15,7 @@
 
 #define noDESKTOP_VERBOSE
 
+#include <config.h>
 #include <math.h>
 #include <gnome.h>
 #include <glade/glade.h>

@@ -20,4 +20,6 @@ ABOUT-NLS
 sodipodi.spec
 sodipodi.1
 *.svg
-
+intltool-*
+sodipodi.desktop
+GNOME_Sodipodi.oaf

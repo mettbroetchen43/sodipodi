@@ -1,5 +1,6 @@
 #define SP_QUICK_ALIGN_C
 
+#include <config.h>
 #include <math.h>
 #include <gnome.h>
 #include <glade/glade.h>

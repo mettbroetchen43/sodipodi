@@ -10,6 +10,7 @@
  *
  */
 
+#include <config.h>
 #include <stdlib.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkframe.h>

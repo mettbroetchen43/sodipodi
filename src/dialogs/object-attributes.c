@@ -11,6 +11,7 @@
  * Licensed under GNU GPL
  */
 
+#include <config.h>
 #include <string.h>
 #include <gtk/gtkwindow.h>
 #include <libgnome/gnome-defs.h>

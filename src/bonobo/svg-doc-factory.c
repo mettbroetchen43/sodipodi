@@ -1,6 +1,6 @@
 #define SP_SVG_DOC_FACTORY_C
 
-#include "config.h"
+#include <config.h>
 #include "embeddable-document.h"
 #include "svg-doc-factory.h"
 

@@ -170,17 +170,17 @@ pixmaps = \
 	guide_dialog.png
 
 glade_DATA = 					\
-	align.glade align.c			\
-	display.glade display.c			\
-	desktop.glade desktop.c			\
-	document.glade document.c		\
-	item.glade item.c			\
-	object_props.glade object_props.c	\
-	sodipodi.glade sodipodi-glade.c		\
-	text-dialog.glade text-dialog.c		\
-	toolbox.glade toolbox.c			\
-	transformation.glade transformation.c	\
-	xml-tree.glade xml-tree.c \
+	align.glade 			\
+	display.glade 			\
+	desktop.glade 			\
+	document.glade 		\
+	item.glade 			\
+	object_props.glade 	\
+	sodipodi.glade 		\
+	text-dialog.glade 		\
+	toolbox.glade 			\
+	transformation.glade 	\
+	xml-tree.glade  \
 	$(pixmaps) \
 	$(images)
 

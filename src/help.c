@@ -1,5 +1,6 @@
 #define __HELP_C__
 
+#include <config.h>
 #include <gtk/gtkwindow.h>
 #include <gtk/gtksignal.h>
 #include <libgnome/gnome-defs.h>

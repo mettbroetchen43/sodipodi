@@ -11,6 +11,7 @@
 
 #define noSPCS_PREVIEW
 
+#include <config.h>
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>

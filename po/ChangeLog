@@ -1,5 +1,20 @@
 2002-01-01  Zbigniew Chyla  <cyba@gnome.pl>
 
+	* POTFILES.in:
+	Removed: glade/align.c, glade/desktop.c, glade/display.c,
+	glade/document.c, glade/item.c, glade/object_props.c,
+	glade/sodipodi-glade.c, glade/text-dialog.c, glade/toolbox.c,
+	glade/transformation.c, glade/xml-tree.c.
+	Added: glade/align.glade, glade/desktop.glade, glade/display.glade,
+	glade/document.glade, glade/item.glade, glade/object_props.glade,
+	glade/sodipodi.glade, glade/text-dialog.glade, glade/toolbox.glade,
+	glade/transformation.glade, glade/xml-tree.glade,
+	src/dialogs/fill-style.c, src/dialogs/object-attributes.c,
+	src/dialogs/object-properties.c, src/help.c, src/sp-spiral.c,
+	src/sp-star.c, sodipodi.desktop.in, GNOME_Sodipodi.oaf.in.
+
+2002-01-01  Zbigniew Chyla  <cyba@gnome.pl>
+
 	* pl.po: Updated Polish translation by
 	GNOME PL Team <translators@gnome.pl>.
 
