@@ -134,11 +134,6 @@ sp_gradient_position_init (SPGradientPosition *pos)
 
 	pos->gradient = NULL;
 	pos->bbox.x0 = pos->bbox.y0 = pos->bbox.x1 = pos->bbox.y1 = 0.0;
-	pos->start.x = pos->start.y = 0.0;
-	pos->end.x = pos->end.y = 1.0;
-	pos->p0.x = pos->p0.y = 0.0;
-	pos->p1.x = pos->p1.y = 1.0;
-	art_affine_identity (pos->transform);
 	pos->spread = NR_GRADIENT_SPREAD_PAD;
 
 	pos->gc = NULL;
@@ -276,78 +271,48 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 
 	if (!pos->gradient) return FALSE;
 
-	if (event->button == 1) {
-		gdouble x, y, dx, dy;
-		/* Translate end to widget coords */
-		x = pos->vbox.x0 + pos->p1.x * (pos->vbox.x1 - pos->vbox.x0);
-		y = pos->vbox.y0 + pos->p1.y * (pos->vbox.y1 - pos->vbox.y0);
-		dx = event->x - x;
-		dy = event->y - y;
-		if ((dx * dx + dy * dy) < ((RADIUS + 1) * (RADIUS + 1))) {
-			/* Calculate mouse coordinates in bbox */
-			x = (event->x - pos->vbox.x0) / (pos->vbox.x1 - pos->vbox.x0);
-			y = (event->y - pos->vbox.y0) / (pos->vbox.y1 - pos->vbox.y0);
-			/* Grab end */
+	if (pos->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
+		/* Linear mode */
+		if (event->button == 1) {
+			float x1, y1;
 			pos->dragging = TRUE;
-			pos->position = 1;
-			pos->pold = pos->p1;
+			pos->changed = FALSE;
 			gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
-			if ((x != pos->p1.x) || (y != pos->p1.y)) {
-				/* Write coords and emit "dragged" */
-				pos->p1.x = x;
-				pos->p1.y = y;
-				pos->end.x = pos->bbox.x0 + x * (pos->bbox.x1 - pos->bbox.x0);
-				pos->end.y = pos->bbox.y0 + y * (pos->bbox.y1 - pos->bbox.y0);
-				pos->need_update = TRUE;
-				if (GTK_WIDGET_DRAWABLE (pos)) {
-					gtk_widget_queue_draw (GTK_WIDGET (pos));
-				}
+			x1 = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+			y1 = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+			if (!NR_DF_TEST_CLOSE (x1, pos->gdata.linear.x1, NR_EPSILON_F) ||
+			    !NR_DF_TEST_CLOSE (y1, pos->gdata.linear.y1, NR_EPSILON_F)) {
+				pos->gdata.linear.x1 = x1;
+				pos->gdata.linear.y1 = y1;
 				gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+				pos->changed = TRUE;
+				pos->need_update = TRUE;
+				if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 			}
-			gdk_pointer_grab (widget->window, FALSE,
-					  GDK_POINTER_MOTION_MASK |
-					  GDK_BUTTON_RELEASE_MASK,
-					  NULL, NULL, event->time);
-			return FALSE;
+			gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
 		}
-		/* Translate start to widget coords */
-		x = pos->vbox.x0 + pos->p0.x * (pos->vbox.x1 - pos->vbox.x0);
-		y = pos->vbox.y0 + pos->p0.y * (pos->vbox.y1 - pos->vbox.y0);
-		dx = event->x - x;
-		dy = event->y - y;
-		if ((dx * dx + dy * dy) < ((RADIUS + 1) * (RADIUS + 1))) {
-			/* Grab start */
+	} else {
+		/* Radial mode */
+		if (event->button == 1) {
+			float cx, cy;
 			pos->dragging = TRUE;
-			pos->position = 0;
-			pos->pold = pos->p0;
-		} else {
-			/* Grab end */
-			pos->dragging = TRUE;
-			pos->position = 1;
-			pos->pold = pos->p1;
-		}
-		gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
-		/* Calculate mouse coordinates in bbox */
-		x = (event->x - pos->vbox.x0) / (pos->vbox.x1 - pos->vbox.x0);
-		y = (event->y - pos->vbox.y0) / (pos->vbox.y1 - pos->vbox.y0);
-		if ((x != pos->p0.x) || (y != pos->p0.y)) {
-			/* Write coords and emit "dragged" */
-			pos->p0.x = x;
-			pos->p0.y = y;
-			pos->start.x = pos->bbox.x0 + x * (pos->bbox.x1 - pos->bbox.x0);
-			pos->start.y = pos->bbox.y0 + y * (pos->bbox.y1 - pos->bbox.y0);
-			pos->need_update = TRUE;
-			if (GTK_WIDGET_DRAWABLE (pos)) {
-				gtk_widget_queue_draw (GTK_WIDGET (pos));
+			pos->changed = FALSE;
+			gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
+			cx = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+			cy = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+			if (!NR_DF_TEST_CLOSE (cx, pos->gdata.radial.cx, NR_EPSILON_F) ||
+			    !NR_DF_TEST_CLOSE (cy, pos->gdata.radial.cy, NR_EPSILON_F)) {
+				pos->gdata.radial.cx = cx;
+				pos->gdata.radial.cy = cy;
+				pos->gdata.radial.fx = cx;
+				pos->gdata.radial.fy = cy;
+				gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+				pos->changed = TRUE;
+				pos->need_update = TRUE;
+				if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 			}
-			gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+			gdk_pointer_grab (widget->window, FALSE, GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK, NULL, NULL, event->time);
 		}
-		gtk_signal_emit (GTK_OBJECT (pos), position_signals[GRABBED]);
-		gdk_pointer_grab (widget->window, FALSE,
-				  GDK_POINTER_MOTION_MASK |
-				  GDK_BUTTON_RELEASE_MASK,
-				  NULL, NULL, event->time);
-		return FALSE;
 	}
 
 	return FALSE;
@@ -361,13 +326,13 @@ sp_gradient_position_button_release (GtkWidget *widget, GdkEventButton *event)
 	pos = SP_GRADIENT_POSITION (widget);
 
 	if ((event->button == 1) && pos->dragging) {
+		gtk_signal_emit (GTK_OBJECT (pos), position_signals[RELEASED]);
+		if (pos->changed) {
+			gtk_signal_emit (GTK_OBJECT (pos), position_signals[CHANGED]);
+			pos->changed = FALSE;
+		}
 		gdk_pointer_ungrab (event->time);
 		pos->dragging = FALSE;
-		gtk_signal_emit (GTK_OBJECT (pos), position_signals[RELEASED]);
-		if (((pos->position == 0) && ((pos->pold.x != pos->p0.x) || (pos->pold.y != pos->p0.y))) ||
-		    ((pos->position == 1) && ((pos->pold.x != pos->p1.x) || (pos->pold.y != pos->p1.y)))) {
-			gtk_signal_emit (GTK_OBJECT (pos), position_signals[CHANGED]);
-		}
 	}
 
 	return FALSE;
@@ -380,37 +345,25 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 
 	pos = SP_GRADIENT_POSITION (widget);
 
-	if (pos->dragging) {
-		if (pos->position == 0) {
-			gdouble x, y;
-			/* Dragging start */
-			/* Calculate mouse coordinates in bbox */
-			x = (event->x - pos->vbox.x0) / (pos->vbox.x1 - pos->vbox.x0);
-			y = (event->y - pos->vbox.y0) / (pos->vbox.y1 - pos->vbox.y0);
-			pos->p0.x = x;
-			pos->p0.y = y;
-			pos->start.x = pos->bbox.x0 + x * (pos->bbox.x1 - pos->bbox.x0);
-			pos->start.y = pos->bbox.y0 + y * (pos->bbox.y1 - pos->bbox.y0);
-			pos->need_update = TRUE;
-			if (GTK_WIDGET_DRAWABLE (pos)) {
-				gtk_widget_queue_draw (GTK_WIDGET (pos));
-			}
+	if (pos->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
+		if (pos->dragging) {
+			pos->gdata.linear.x2 = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+			pos->gdata.linear.y2 = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
 			gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
-		} else if (pos->position == 1) {
-			gdouble x, y;
-			/* Dragging start */
-			/* Calculate mouse coordinates in bbox */
-			x = (event->x - pos->vbox.x0) / (pos->vbox.x1 - pos->vbox.x0);
-			y = (event->y - pos->vbox.y0) / (pos->vbox.y1 - pos->vbox.y0);
-			pos->p1.x = x;
-			pos->p1.y = y;
-			pos->end.x = pos->bbox.x0 + x * (pos->bbox.x1 - pos->bbox.x0);
-			pos->end.y = pos->bbox.y0 + y * (pos->bbox.y1 - pos->bbox.y0);
+			pos->changed = TRUE;
 			pos->need_update = TRUE;
-			if (GTK_WIDGET_DRAWABLE (pos)) {
-				gtk_widget_queue_draw (GTK_WIDGET (pos));
-			}
+			if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
+		}
+	} else {
+		if (pos->dragging) {
+			float x, y;
+			x = NR_MATRIX_DF_TRANSFORM_X (&pos->w2gs, event->x, event->y);
+			y = NR_MATRIX_DF_TRANSFORM_Y (&pos->w2gs, event->x, event->y);
+			pos->gdata.radial.r = hypot (x - pos->gdata.radial.cx, y - pos->gdata.radial.cy);
 			gtk_signal_emit (GTK_OBJECT (pos), position_signals[DRAGGED]);
+			pos->changed = TRUE;
+			pos->need_update = TRUE;
+			if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 		}
 	}
 
@@ -486,11 +439,6 @@ sp_gradient_position_set_bbox (SPGradientPosition *pos, gdouble x0, gdouble y0, 
 	pos->bbox.x1 = x1;
 	pos->bbox.y1 = y1;
 
-	pos->p0.x = (pos->start.x - x0) / (x1 - x0);
-	pos->p0.y = (pos->start.y - y0) / (y1 - y0);
-	pos->p1.x = (pos->end.x - x0) / (x1 - x0);
-	pos->p1.y = (pos->end.y - y0) / (y1 - y0);
-
 	pos->need_update = TRUE;
 	if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 }
@@ -500,16 +448,8 @@ sp_gradient_position_set_gs2d_matrix_f (SPGradientPosition *pos, NRMatrixF *gs2d
 {
 	pos->gs2d = *gs2d;
 
-	/* fixme: */
-	pos->start.x = pos->gs2d.c[0] * pos->gdata.linear.x1 + pos->gs2d.c[2] * pos->gdata.linear.y1 + pos->gs2d.c[4];
-	pos->start.y = pos->gs2d.c[1] * pos->gdata.linear.x1 + pos->gs2d.c[3] * pos->gdata.linear.y1 + pos->gs2d.c[5];
-	pos->end.x = pos->gs2d.c[0] * pos->gdata.linear.x2 + pos->gs2d.c[2] * pos->gdata.linear.y2 + pos->gs2d.c[4];
-	pos->end.y = pos->gs2d.c[1] * pos->gdata.linear.x2 + pos->gs2d.c[3] * pos->gdata.linear.y2 + pos->gs2d.c[5];
-
 	pos->need_update = TRUE;
-	if (GTK_WIDGET_DRAWABLE (pos)) {
-		gtk_widget_queue_draw (GTK_WIDGET (pos));
-	}
+	if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 }
 
 void
@@ -526,16 +466,6 @@ sp_gradient_position_set_linear_position (SPGradientPosition *pos, float x1, flo
 	pos->gdata.linear.x2 = x2;
 	pos->gdata.linear.y2 = y2;
 
-	pos->start.x = pos->gs2d.c[0] * pos->gdata.linear.x1 + pos->gs2d.c[2] * pos->gdata.linear.y1 + pos->gs2d.c[4];
-	pos->start.y = pos->gs2d.c[1] * pos->gdata.linear.x1 + pos->gs2d.c[3] * pos->gdata.linear.y1 + pos->gs2d.c[5];
-	pos->end.x = pos->gs2d.c[0] * pos->gdata.linear.x2 + pos->gs2d.c[2] * pos->gdata.linear.y2 + pos->gs2d.c[4];
-	pos->end.y = pos->gs2d.c[1] * pos->gdata.linear.x2 + pos->gs2d.c[3] * pos->gdata.linear.y2 + pos->gs2d.c[5];
-
-	pos->p0.x = (pos->start.x - pos->bbox.x0) / (pos->bbox.x1 - pos->bbox.x0);
-	pos->p0.y = (pos->start.y - pos->bbox.y0) / (pos->bbox.y1 - pos->bbox.y0);
-	pos->p1.x = (pos->end.x - pos->bbox.x0) / (pos->bbox.x1 - pos->bbox.x0);
-	pos->p1.y = (pos->end.y - pos->bbox.y0) / (pos->bbox.y1 - pos->bbox.y0);
-
 	pos->need_update = TRUE;
 	if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 }
@@ -549,29 +479,8 @@ sp_gradient_position_set_radial_position (SPGradientPosition *pos, float cx, flo
 	pos->gdata.radial.fy = fy;
 	pos->gdata.radial.r = r;
 
-	pos->start.x = NR_MATRIX_DF_TRANSFORM_X (&pos->gs2d, pos->gdata.radial.cx, pos->gdata.radial.cy);
-	pos->start.y = NR_MATRIX_DF_TRANSFORM_Y (&pos->gs2d, pos->gdata.radial.cx, pos->gdata.radial.cy);
-	pos->end.x = NR_MATRIX_DF_TRANSFORM_X (&pos->gs2d, pos->gdata.radial.cx + pos->gdata.radial.r, pos->gdata.radial.cy);
-	pos->end.y = NR_MATRIX_DF_TRANSFORM_Y (&pos->gs2d, pos->gdata.radial.cx + pos->gdata.radial.r, pos->gdata.radial.cy);
-
-	pos->p0.x = (pos->start.x - pos->bbox.x0) / (pos->bbox.x1 - pos->bbox.x0);
-	pos->p0.y = (pos->start.y - pos->bbox.y0) / (pos->bbox.y1 - pos->bbox.y0);
-	pos->p1.x = (pos->end.x - pos->bbox.x0) / (pos->bbox.x1 - pos->bbox.x0);
-	pos->p1.y = (pos->end.y - pos->bbox.y0) / (pos->bbox.y1 - pos->bbox.y0);
-
 	pos->need_update = TRUE;
 	if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
-}
-
-void
-sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[])
-{
-	memcpy (pos->transform, transform, 6 * sizeof (gdouble));
-
-	pos->need_update = TRUE;
-	if (GTK_WIDGET_DRAWABLE (pos)) {
-		gtk_widget_queue_draw (GTK_WIDGET (pos));
-	}
 }
 
 void
@@ -580,29 +489,27 @@ sp_gradient_position_set_spread (SPGradientPosition *pos, unsigned int spread)
 	if (spread != pos->spread) {
 		pos->spread = spread;
 		pos->need_update = TRUE;
-		if (GTK_WIDGET_DRAWABLE (pos)) {
-			gtk_widget_queue_draw (GTK_WIDGET (pos));
-		}
+		if (GTK_WIDGET_DRAWABLE (pos)) gtk_widget_queue_draw (GTK_WIDGET (pos));
 	}
 }
 
 void
 sp_gradient_position_get_linear_position_floatv (SPGradientPosition *gp, float *pos)
 {
-	pos[0] = gp->start.x;
-	pos[1] = gp->start.y;
-	pos[2] = gp->end.x;
-	pos[3] = gp->end.y;
+	pos[0] = gp->gdata.linear.x1;
+	pos[1] = gp->gdata.linear.y1;
+	pos[2] = gp->gdata.linear.x2;
+	pos[3] = gp->gdata.linear.y2;
 }
 
 void
 sp_gradient_position_get_radial_position_floatv (SPGradientPosition *gp, float *pos)
 {
-	pos[0] = gp->start.x;
-	pos[1] = gp->start.y;
-	pos[2] = gp->start.x;
-	pos[3] = gp->start.y;
-	pos[4] = hypot (gp->end.x - gp->start.x, gp->end.y - gp->start.y);
+	pos[0] = gp->gdata.radial.cx;
+	pos[1] = gp->gdata.radial.cy;
+	pos[2] = gp->gdata.radial.fx;
+	pos[3] = gp->gdata.radial.fy;
+	pos[4] = gp->gdata.radial.r;
 }
 
 static void
@@ -611,8 +518,6 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	GtkWidget *widget;
 	int width, height;
 	gdouble xs, ys;
-	gdouble bb2d[6], n2d[6];
-	NRMatrixF v2px;
 
 	widget = GTK_WIDGET (pos);
 	width = widget->allocation.width;
@@ -662,30 +567,15 @@ sp_gradient_position_update (SPGradientPosition *pos)
 	if (!pos->cv) pos->cv = g_new (guchar, 4 * NR_GRADIENT_VECTOR_LENGTH);
 	sp_gradient_render_vector_line_rgba (pos->gradient, pos->cv, NR_GRADIENT_VECTOR_LENGTH, 0 , NR_GRADIENT_VECTOR_LENGTH);
 
-	/* BBox -> buffer */
-	bb2d[0] = pos->vbox.x1 - pos->vbox.x0;
-	bb2d[1] = 0.0;
-	bb2d[2] = 0.0;
-	bb2d[3] = pos->vbox.y1 - pos->vbox.y0;
-	bb2d[4] = pos->vbox.x0;
-	bb2d[5] = pos->vbox.y0;
-
-	art_affine_multiply (n2d, pos->transform, bb2d);
-
-	v2px.c[0] = n2d[0];
-	v2px.c[1] = n2d[1];
-	v2px.c[2] = n2d[2];
-	v2px.c[3] = n2d[3];
-	v2px.c[4] = n2d[4];
-	v2px.c[5] = n2d[5];
-
 	if (pos->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
-		nr_lgradient_renderer_setup (&pos->renderer.lgr, pos->cv, pos->spread, &v2px, pos->p0.x, pos->p0.y, pos->p1.x, pos->p1.y);
+		nr_lgradient_renderer_setup (&pos->renderer.lgr, pos->cv, pos->spread, &pos->gs2w,
+					     pos->gdata.linear.x1, pos->gdata.linear.y1,
+					     pos->gdata.linear.x2, pos->gdata.linear.y2);
 	} else {
-		/* fixme: This is radial renderer */
-		nr_rgradient_renderer_setup (&pos->renderer.rgr, pos->cv, pos->spread, &v2px,
-					     pos->p0.x, pos->p0.y, pos->p0.x, pos->p0.y,
-					     hypot (pos->p1.x - pos->p0.x, pos->p1.y - pos->p0.y));
+		nr_rgradient_renderer_setup (&pos->renderer.rgr, pos->cv, pos->spread, &pos->gs2w,
+					     pos->gdata.radial.cx, pos->gdata.radial.cy,
+					     pos->gdata.radial.fx, pos->gdata.radial.fy,
+					     pos->gdata.radial.r);
 	}
 }
 
@@ -760,13 +650,13 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 			if (gp->mode == SP_GRADIENT_POSITION_MODE_LINEAR) {
 				/* Draw start */
 				gdk_gc_set_function (gp->gc, GDK_INVERT);
-				x0 = gp->vbox.x0 + gp->p0.x * (gp->vbox.x1 - gp->vbox.x0) - x;
-				y0 = gp->vbox.y0 + gp->p0.y * (gp->vbox.y1 - gp->vbox.y0) - y;
-				gdk_draw_arc (gp->px, gp->gc, FALSE, x0 - RADIUS, y0 - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
+				x0 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, gp->gdata.linear.x1, gp->gdata.linear.y1) + 0.5);
+				y0 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, gp->gdata.linear.x1, gp->gdata.linear.y1) + 0.5);
+				gdk_draw_arc (gp->px, gp->gc, FALSE, x0 - x - RADIUS, y0 - y - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
 				/* Draw end */
-				x1 = gp->vbox.x0 + gp->p1.x * (gp->vbox.x1 - gp->vbox.x0) - x;
-				y1 = gp->vbox.y0 + gp->p1.y * (gp->vbox.y1 - gp->vbox.y0) - y;
-				gdk_draw_arc (gp->px, gp->gc, FALSE, x1 - RADIUS, y1 - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
+				x1 = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, gp->gdata.linear.x2, gp->gdata.linear.y2) + 0.5);
+				y1 = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, gp->gdata.linear.x2, gp->gdata.linear.y2) + 0.5);
+				gdk_draw_arc (gp->px, gp->gc, FALSE, x1 - x - RADIUS, y1 - y - RADIUS, 2 * RADIUS + 1, 2 * RADIUS + 1, 0, 35999);
 				/* Draw line */
 				if (((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0)) > (RADIUS * RADIUS)) {
 					gdouble dx, dy, len;
@@ -777,12 +667,13 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 					y0 += dy * RADIUS / len;
 					x1 -= dx * RADIUS / len;
 					y1 -= dy * RADIUS / len;
-					gdk_draw_line (gp->px, gp->gc, x0, y0, x1, y1);
+					gdk_draw_line (gp->px, gp->gc, x0 - x, y0 - y, x1 - x, y1 - y);
 				}
 			} else {
 				short cx, cy, fx, fy;
 				NRPointF p0, p1, p2, p3;
 				/* Draw center */
+				gdk_gc_set_function (gp->gc, GDK_INVERT);
 				cx = (short) floor (NR_MATRIX_DF_TRANSFORM_X (&gp->gs2w, gp->gdata.radial.cx, gp->gdata.radial.cy) + 0.5);
 				cy = (short) floor (NR_MATRIX_DF_TRANSFORM_Y (&gp->gs2w, gp->gdata.radial.cx, gp->gdata.radial.cy) + 0.5);
 				gdk_draw_arc (gp->px, gp->gc, FALSE,

@@ -28,7 +28,7 @@
 #include "sp-object-repr.h"
 #include "sp-gradient.h"
 
-#define SP_MACROS_SILENT
+#define noSP_MACROS_SILENT
 #include "macros.h"
 
 /* Has to be power of 2 */
@@ -1062,6 +1062,8 @@ sp_gradient_set_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NR
 {
 	NRMatrixF g2d, d2g, gs2g;
 
+	SP_PRINT_MATRIX ("* GS2D:", gs2d);
+
 	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
 		NRMatrixF bb2u;
 
@@ -1072,20 +1074,26 @@ sp_gradient_set_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NR
 		bb2u.c[4] = bbox->x0;
 		bb2u.c[5] = bbox->y0;
 
+		SP_PRINT_MATRIX ("* BB2U:", &bb2u);
+
 		nr_matrix_multiply_fff (&g2d, &bb2u, ctm);
 	} else {
 		g2d = *ctm;
 	}
 
-	nr_matrix_f_invert (&d2g, &g2d);
-	nr_matrix_multiply_fff (&gs2g, gs2d, &d2g);
+	SP_PRINT_MATRIX ("* G2D:", &g2d);
 
-	gr->transform[0] = d2g.c[0];
-	gr->transform[1] = d2g.c[1];
-	gr->transform[2] = d2g.c[2];
-	gr->transform[3] = d2g.c[3];
-	gr->transform[4] = d2g.c[4];
-	gr->transform[5] = d2g.c[5];
+	nr_matrix_f_invert (&d2g, &g2d);
+	SP_PRINT_MATRIX ("* D2G:", &d2g);
+	nr_matrix_multiply_fff (&gs2g, gs2d, &d2g);
+	SP_PRINT_MATRIX ("* GS2G:", &gs2g);
+
+	gr->transform[0] = gs2g.c[0];
+	gr->transform[1] = gs2g.c[1];
+	gr->transform[2] = gs2g.c[2];
+	gr->transform[3] = gs2g.c[3];
+	gr->transform[4] = gs2g.c[4];
+	gr->transform[5] = gs2g.c[5];
 
 	sp_object_request_modified (SP_OBJECT (gr), SP_OBJECT_MODIFIED_FLAG);
 }

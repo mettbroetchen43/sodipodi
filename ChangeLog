@@ -1,5 +1,11 @@
 2002-09-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-gradient.c (sp_gradient_set_gs2d_matrix_f): Oops, write the right transform
+
+	* src/widgets/gradient-position.c: Use new sensible internals
+
+	* src/widgets/gradient-position.h: Ported to ne internals
+
 	* src/widgets/paint-selector.c (sp_paint_selector_set_mode_gradient): Removed
 	separate linear/radial optionmenu
 

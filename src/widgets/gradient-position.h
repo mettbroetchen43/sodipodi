@@ -42,11 +42,9 @@ struct _SPGradientPosition {
 	guint dragging : 1;
 	guint position : 2;
 	guint mode : 1;
+	guint changed : 1;
 	SPGradient *gradient;
-	ArtPoint start, end; /* Start and end in document coordinates */
 	NRRectS vbox; /* BBox in widget coordinates */
-	ArtPoint p0, p1, pold;
-	gdouble transform[6];
 	GdkGC *gc;
 	GdkPixmap *px;
 
@@ -102,7 +100,6 @@ void sp_gradient_position_get_gs2d_matrix_f (SPGradientPosition *pos, NRMatrixF 
 void sp_gradient_position_set_linear_position (SPGradientPosition *pos, float x1, float y1, float x2, float y2);
 void sp_gradient_position_set_radial_position (SPGradientPosition *pos, float cx, float cy, float fx, float fy, float r);
 
-void sp_gradient_position_set_transform (SPGradientPosition *pos, gdouble transform[]);
 void sp_gradient_position_set_spread (SPGradientPosition *pos, unsigned int spread);
 
 void sp_gradient_position_get_linear_position_floatv (SPGradientPosition *gp, float *pos);
