@@ -77,20 +77,20 @@ struct _NRSlice {
 	NRSlice *next;
 	NRSVP *svp;
 	NRVertex *vertex;
-	NRCoord x;
-	NRCoord y;
-	NRCoord stepx;
+	double x;
+	double y;
+	double stepx;
 };
 
 typedef struct _NRRun NRRun;
 
 struct _NRRun {
 	NRRun *next;
-	NRCoord x0, y0, x1, y1;
-	float step;
-	float final;
-	float x;
-	float value;
+	double x0, y0, x1, y1;
+	double step;
+	double final;
+	double x;
+	double value;
 };
 
 static NRSlice *nr_slice_new (NRSVP *svp, NRCoord y);
@@ -628,20 +628,19 @@ nr_slice_insert_sorted (NRSlice * start, NRSlice * slice)
 }
 
 static int
-nr_slice_compare (NRSlice * l, NRSlice * r)
+nr_slice_compare (NRSlice *l, NRSlice *r)
 {
 	if (l->y == r->y) {
 		if (l->x < r->x) return -1;
 		if (l->x > r->x) return 1;
 		if (l->stepx < r->stepx) return -1;
 		if (l->stepx > r->stepx) return 1;
-		return 0;
 	} else if (l->y > r->y) {
-		NRVertex * v;
-		NRCoord x, stepx;
+		NRVertex *v;
+		double x, ldx, rdx;
 		/* This is bitch - we have to determine r values at l->y */
 		v = r->vertex;
-		while ((v->next) && (v->next->y <= l->y)) v = v->next;
+		while (v->next && (v->next->y <= l->y)) v = v->next;
 		/* If v is last vertex, r ends before l starts */
 		if (!v->next) return 1;
 		if (v->y == l->y) {
@@ -651,16 +650,16 @@ nr_slice_compare (NRSlice * l, NRSlice * r)
 		}
 		if (l->x < x) return -1;
 		if (l->x > x) return 1;
-		stepx = (v->next->x - v->x) / (v->next->y - v->y);
-		if (l->stepx < stepx) return -1;
-		if (l->stepx > stepx) return 1;
-		return 0;
+		ldx = l->stepx * (v->next->y - v->y);
+		rdx = v->next->x - v->x;
+		if (ldx < rdx) return -1;
+		if (ldx > rdx) return 1;
 	} else {
 		NRVertex * v;
-		NRCoord x, stepx;
+		double x, ldx, rdx;
 		/* This is bitch - we have to determine l value at r->y */
 		v = l->vertex;
-		while ((v->next) && (v->next->y <= r->y)) v = v->next;
+		while (v->next && (v->next->y <= r->y)) v = v->next;
 		/* If v is last vertex, l ends before r starts */
 		if (!v->next) return -1;
 		if (v->y == r->y) {
@@ -670,11 +669,12 @@ nr_slice_compare (NRSlice * l, NRSlice * r)
 		}
 		if (x < r->x) return -1;
 		if (x > r->x) return 1;
-		stepx = (v->next->x - v->x) / (v->next->y - v->y);
-		if (stepx < r->stepx) return -1;
-		if (stepx > r->stepx) return 1;
-		return 0;
+		ldx = l->stepx * (v->next->y - v->y);
+		rdx = v->next->x - v->x;
+		if (ldx < rdx) return -1;
+		if (ldx > rdx) return 1;
 	}
+	return 0;
 }
 
 #define NR_RUN_ALLOC_SIZE 32

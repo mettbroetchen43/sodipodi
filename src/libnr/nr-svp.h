@@ -40,11 +40,9 @@ struct _NRFlat {
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
 
-#if 0
 NRSVP *nr_svp_from_art_vpath (ArtVpath *vpath);
-ArtSVP * nr_art_svp_from_svp (NRSVP *svp);
-#endif
 NRSVP *nr_svp_from_art_svp (ArtSVP *asvp);
+ArtSVP * nr_art_svp_from_svp (NRSVP *svp);
 
 /* NRVertex */
 

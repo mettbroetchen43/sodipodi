@@ -9,8 +9,136 @@
  * This code is in public domain
  */
 
+#define NR_COORD_X_FROM_ART(v) (v)
+#define NR_COORD_Y_FROM_ART(v) (floor (64.0 * v + 0.5) / 64.0)
+#define NR_COORD_TO_ART(v) (v)
+
+#include <libart_lgpl/art_misc.h>
+
 #include "nr-macros.h"
+#include "nr-svp-uncross.h"
 #include "nr-svp.h"
+
+NRSVP *
+nr_svp_from_art_vpath (ArtVpath *vpath)
+{
+	NRSVP * svp;
+	NRVertex * start, * vertex;
+	NRFlat * flats, * flat;
+	NRRectF bbox;
+	int dir, newdir;
+	NRCoord sx, sy, x, y;
+	ArtVpath * s;
+
+	svp = NULL;
+	start = NULL;
+	flats = NULL;
+	dir = 0;
+	/* Kill warning */
+	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
+	sx = sy = 0;
+
+	for (s = vpath; s->code != ART_END; s++) {
+		switch (s->code) {
+		case ART_MOVETO:
+		case ART_MOVETO_OPEN:
+			sx = NR_COORD_X_FROM_ART (s->x);
+			sy = NR_COORD_Y_FROM_ART (s->y);
+			if (start) {
+				NRSVP *new;
+				/* We have running segment */
+				if (dir > 0) {
+					/* We are upwards, prepended, so reverse */
+					start = nr_vertex_reverse_list (start);
+				}
+				new = nr_svp_new_full (start, &bbox, dir);
+				svp = nr_svp_insert_sorted (svp, new);
+			}
+			start = NULL;
+			dir = 0;
+			break;
+		case ART_LINETO:
+			x = NR_COORD_X_FROM_ART (s->x);
+			y = NR_COORD_Y_FROM_ART (s->y);
+			if (y != sy) {
+				/* We have valid line */
+				newdir = (y > sy) ? 1 : -1;
+				if (newdir != dir) {
+					/* We have either start or turn */
+					if (start) {
+						NRSVP * new;
+						/* We have running segment */
+						if (dir > 0) {
+							/* We are upwards, prepended, so reverse */
+							start = nr_vertex_reverse_list (start);
+						}
+						new = nr_svp_new_full (start, &bbox, dir);
+						svp = nr_svp_insert_sorted (svp, new);
+					}
+					start = NULL;
+					dir = newdir;
+				}
+				if (!start) {
+					start = nr_vertex_new_xy (sx, sy);
+					bbox.x0 = bbox.x1 = sx;
+					bbox.y0 = bbox.y1 = sy;
+				}
+				/* Add vertex to list */
+				vertex = nr_vertex_new_xy (x, y);
+				vertex->next = start;
+				start = vertex;
+				/* Stretch bbox */
+				bbox.x0 = MIN (bbox.x0, x);
+				bbox.y0 = MIN (bbox.y0, y);
+				bbox.x1 = MAX (bbox.x1, x);
+				bbox.y1 = MAX (bbox.y1, y);
+				sx = x;
+				sy = y;
+			} else if (x != sx) {
+				/* Horizontal line ends running segment */
+				if (start) {
+					NRSVP * new;
+					/* We have running segment */
+					if (dir > 0) {
+						/* We are upwards, prepended, so reverse */
+						start = nr_vertex_reverse_list (start);
+					}
+					new = nr_svp_new_full (start, &bbox, dir);
+					svp = nr_svp_insert_sorted (svp, new);
+				}
+				start = NULL;
+				dir = 0;
+				/* Add horizontal lines to flat list */
+				flat = nr_flat_new_full (y, MIN (sx, x), MAX (sx, x));
+				flats = nr_flat_insert_sorted (flats, flat);
+				sx = x;
+				/* sy = y ;-) */
+			}
+			break;
+		default:
+			/* fixme: free lists */
+			return NULL;
+			break;
+		}
+	}
+	if (start) {
+		NRSVP * new;
+		/* We have running segment */
+		if (dir > 0) {
+			/* We are upwards, prepended, so reverse */
+			start = nr_vertex_reverse_list (start);
+		}
+		new = nr_svp_new_full (start, &bbox, dir);
+		svp = nr_svp_insert_sorted (svp, new);
+	}
+
+	if (svp) {
+		svp = nr_svp_uncross_full (svp, flats);
+		}
+	nr_flat_free_list (flats);
+
+	return svp;
+}
 
 NRSVP *
 nr_svp_from_art_svp (ArtSVP *asvp)
@@ -41,6 +169,59 @@ nr_svp_from_art_svp (ArtSVP *asvp)
 	return svp;
 }
 
+ArtSVP *
+nr_art_svp_from_svp (NRSVP * svp)
+{
+	ArtSVP * asvp;
+	NRSVP * s;
+	int n_segs, sn;
+
+	if (!svp) {
+		asvp = art_alloc (sizeof (ArtSVP));
+		asvp->n_segs = 0;
+		return asvp;
+	}
+
+	n_segs = 0;
+	for (s = svp; s != NULL; s = s->next) n_segs++;
+
+	asvp = art_alloc (sizeof (ArtSVP) + (n_segs - 1) * sizeof (ArtSVPSeg));
+	asvp->n_segs = n_segs;
+
+	sn = 0;
+	for (s = svp; s != NULL; s = s->next) {
+		ArtSVPSeg * aseg;
+		NRVertex * v;
+		int n_points, pn;
+
+		aseg = &asvp->segs[sn];
+
+		n_points = 0;
+		for (v = s->vertex; v != NULL; v = v->next) n_points++;
+		aseg->n_points = n_points;
+
+		aseg->dir = (s->wind == -1);
+
+		aseg->points = art_new (ArtPoint, n_points);
+
+		pn = 0;
+		for (v = s->vertex; v != NULL; v = v->next) {
+			aseg->points[pn].x = NR_COORD_TO_ART (v->x);
+			aseg->points[pn].y = NR_COORD_TO_ART (v->y);
+			pn++;
+		}
+
+		aseg->bbox.x0 = NR_COORD_TO_ART (s->bbox.x0);
+		aseg->bbox.y0 = NR_COORD_TO_ART (s->bbox.y0);
+		aseg->bbox.x1 = NR_COORD_TO_ART (s->bbox.x1);
+		aseg->bbox.y1 = NR_COORD_TO_ART (s->bbox.y1);
+
+		sn++;
+	}
+
+	return asvp;
+}
+
 /* NRVertex */
 
 #define NR_VERTEX_ALLOC_SIZE 256
@@ -62,6 +243,8 @@ nr_vertex_new (void)
 	} else {
 		ffvertex = v->next;
 	}
+
+	v->next = NULL;
 
 	return v;
 }
@@ -135,6 +318,8 @@ nr_svp_new (void)
 	} else {
 		ffsvp = svp->next;
 	}
+
+	svp->next = NULL;
 
 	return svp;
 }
@@ -321,6 +506,7 @@ nr_flat_new_full (NRCoord y, NRCoord x0, NRCoord x1)
 		ffflat = flat->next;
 	}
 
+	flat->next = NULL;
 	flat->y = y;
 	flat->x0 = x0;
 	flat->x1 = x1;
@@ -375,325 +561,4 @@ nr_flat_insert_sorted (NRFlat *start, NRFlat *flat)
 
 	return start;
 }
-
-/*
- * Old stuff
- */
-
-#if 0
-
-static NRLine * nr_lines_sort (NRLine * l);
-static NRLine * nr_lines_sort_merge (NRLine * l1, NRLine * l2);
-
-static NRLine *
-nr_lines_sort (NRLine * l)
-{
-	NRLine * l1, * l2;
-
-	if (!l) return NULL;
-	if (!l->next) return l;
-
-	l1 = l;
-	l2 = l->next;
-
-	while ((l2 = l2->next) != NULL) {
-		if ((l2 = l2->next) == NULL) break;
-		l1 = l1->next;
-	}
-
-	l2 = l1->next;
-	l1->next = NULL;
-
-	return nr_lines_sort_merge (nr_lines_sort (l), nr_lines_sort (l2));
-}
-
-static NRLine *
-nr_lines_sort_merge (NRLine * l1, NRLine * l2)
-{
-	NRLine line, * l;
-
-	l = &line;
-
-	while (l1 && l2) {
-		if (nr_lines_compare (l1, l2) < 0) {
-			l = l->next = l1;
-			l1 = l1->next;
-		} else {
-			l = l->next = l2;
-			l2 = l2->next;
-		}
-	}
-
-	l->next = l1 ? l1 : l2;
-
-	return line.next;
-}
-
-static NRLine *
-nr_svp_merge_segments (GSList * segments)
-{
-	NRLine ** lines, * start, * ln;
-	GSList * l;
-	gint len, c, i;
-
-	len = 0;
-	for (l = segments; l != NULL; l = l->next) len++;
-	lines = alloca (len * sizeof (NRLine *));
-	i = 0;
-	for (l = segments; l != NULL; l = l->next) lines[i++] = (NRLine *) l->data;
-
-	c = 0;
-	for (i = 1; i < len; i++) {
-		if (nr_lines_compare (lines[i], lines[c]) < 0) c = i;
-	}
-
-	start = ln = lines[c];
-	lines[c] = lines[c]->next;
-	if (lines[c] == NULL) lines[c] = lines[--len];
-
-	while (len > 0) {
-		c = 0;
-		for (i = 1; i < len; i++) if (nr_lines_compare (lines[i], lines[c]) < 0) c = i;
-		ln->next = lines[c];
-		ln = ln->next;
-		lines[c] = lines[c]->next;
-		if (lines[c] == NULL) lines[c] = lines[--len];
-	}
-
-	return start;
-}
-
-static void nr_svp_segment_split_flat_list (NRVertex * vertex, NRFlat * flat);
-
-static void
-nr_svp_segment_split_flat_list (NRVertex * vertex, NRFlat * flat)
-{
-	NRLine * fstart, * f, * new;
-
-	fstart = flat;
-
-	while (l != NULL) {
-		NRCoord xmin, xmax;
-		/* Find first flat > ystart */
-		while ((fstart) && (fstart->s.y <= l->s.y)) fstart = fstart->next;
-		if (!fstart) return;
-		xmin = MIN (l->s.x, l->e.x);
-		xmax = MAX (l->s.x, l->e.x);
-		f = fstart;
-		while ((f) && (f->s.y < l->e.y)) {
-			/* Y overlap */
-			if ((f->s.x <= xmax) && (f->e.x >= xmin)) {
-				NRCoord x;
-				/* Bounding boxes intersect */
-				/* x = x0 + (x1 - x0)(y - y0)/(y1 - y0) */
-				x = NR_COORD_SNAP (l->s.x + (l->e.x - l->s.x) * (f->s.y - l->s.y) / (l->e.y - l->s.y));
-				if ((x >= f->s.x) && (x <= f->e.x)) {
-					/* We intersect */
-					new = nr_line_new_xyxyd (x, f->s.y, l->e.x, l->e.y, l->direction);
-					l->e.x = x;
-					l->e.y = f->s.y;
-					new->next = l->next;
-					l->next = new;
-					/* We can be sure that this line does not intersect more, so break */
-					break;
-				}
-			}
-			/* We do not intersect, so try next flat */
-			f = f->next;
-		}
-		l = l->next;
-	}
-}
-
-#endif
-
-
-#if 0
-NRSVP *
-nr_svp_from_art_vpath (ArtVpath * vpath)
-{
-	NRSVP * svp;
-	NRVertex * start, * vertex;
-	NRFlat * flats, * flat;
-	NRDRect bbox;
-	gint dir, newdir;
-	NRCoord sx, sy, x, y;
-	ArtVpath * s;
-
-	svp = NULL;
-	start = NULL;
-	flats = NULL;
-	dir = 0;
-	/* Kill warning */
-	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
-	sx = sy = 0;
-
-	for (s = vpath; s->code != ART_END; s++) {
-		switch (s->code) {
-		case ART_MOVETO:
-		case ART_MOVETO_OPEN:
-			sx = NR_COORD_FROM_ART (s->x);
-			sy = NR_COORD_FROM_ART (s->y);
-			if (start) {
-				NRSVP * new;
-				/* We have running segment */
-				if (dir > 0) {
-					/* We are upwards, prepended, so reverse */
-					start = nr_vertex_reverse_list (start);
-				}
-				new = nr_svp_new_full (start, &bbox, dir);
-				svp = nr_svp_insert_sorted (svp, new);
-			}
-			start = NULL;
-			dir = 0;
-			break;
-		case ART_LINETO:
-			x = NR_COORD_FROM_ART (s->x);
-			y = NR_COORD_FROM_ART (s->y);
-			if (y != sy) {
-				/* We have valid line */
-				newdir = (y > sy) ? 1 : -1;
-				if (newdir != dir) {
-					/* We have either start or turn */
-					if (start) {
-						NRSVP * new;
-						/* We have running segment */
-						if (dir > 0) {
-							/* We are upwards, prepended, so reverse */
-							start = nr_vertex_reverse_list (start);
-						}
-						new = nr_svp_new_full (start, &bbox, dir);
-						svp = nr_svp_insert_sorted (svp, new);
-					}
-					start = NULL;
-					dir = newdir;
-				}
-				if (!start) {
-					start = nr_vertex_new_xy (sx, sy);
-					bbox.x0 = bbox.x1 = sx;
-					bbox.y0 = bbox.y1 = sy;
-				}
-				/* Add vertex to list */
-				vertex = nr_vertex_new_xy (x, y);
-				vertex->next = start;
-				start = vertex;
-				nr_drect_stretch_xy (&bbox, x, y);
-				sx = x;
-				sy = y;
-			} else if (x != sx) {
-				/* Horizontal line ends running segment */
-				if (start) {
-					NRSVP * new;
-					/* We have running segment */
-					if (dir > 0) {
-						/* We are upwards, prepended, so reverse */
-						start = nr_vertex_reverse_list (start);
-					}
-					new = nr_svp_new_full (start, &bbox, dir);
-					svp = nr_svp_insert_sorted (svp, new);
-				}
-				start = NULL;
-				dir = 0;
-				/* Add horizontal lines to flat list */
-				flat = nr_flat_new_full (y, MIN (sx, x), MAX (sx, x));
-				flats = nr_flat_insert_sorted (flats, flat);
-				sx = x;
-				/* sy = y ;-) */
-			}
-			break;
-		default:
-			/* fixme: free lists */
-			return NULL;
-			break;
-		}
-	}
-	if (start) {
-		NRSVP * new;
-		/* We have running segment */
-		if (dir > 0) {
-			/* We are upwards, prepended, so reverse */
-			start = nr_vertex_reverse_list (start);
-		}
-		new = nr_svp_new_full (start, &bbox, dir);
-		svp = nr_svp_insert_sorted (svp, new);
-	}
-
-	/* Test for empty SVP */
-	if (!svp) {
-		nr_flat_free_list (flats);
-		return NULL;
-	}
-
-#if 0
-	/* Now split all lines crossing flats */
-	if (flats) {
-		nr_svp_split_flat_list (svp, flats);
-		nr_flat_free_list (flats);
-	}
-
-#if 0
-	nr_svp_uncross (svp);
-#endif
-#else
-	svp = nr_svp_uncross_full (svp, flats);
-	if (flats) nr_flat_free_list (flats);
-#endif
-
-	return svp;
-}
-
-ArtSVP *
-nr_art_svp_from_svp (NRSVP * svp)
-{
-	ArtSVP * asvp;
-	NRSVP * s;
-	gint n_segs, sn;
-
-	if (!svp) {
-		asvp = art_alloc (sizeof (ArtSVP));
-		asvp->n_segs = 0;
-		return asvp;
-	}
-
-	n_segs = 0;
-	for (s = svp; s != NULL; s = s->next) n_segs++;
-
-	asvp = art_alloc (sizeof (ArtSVP) + (n_segs - 1) * sizeof (ArtSVPSeg));
-	asvp->n_segs = n_segs;
-
-	sn = 0;
-	for (s = svp; s != NULL; s = s->next) {
-		ArtSVPSeg * aseg;
-		NRVertex * v;
-		gint n_points, pn;
-
-		aseg = &asvp->segs[sn];
-
-		n_points = 0;
-		for (v = s->vertex; v != NULL; v = v->next) n_points++;
-		aseg->n_points = n_points;
-
-		aseg->dir = (s->wind == -1);
-
-		aseg->points = art_new (ArtPoint, n_points);
-
-		pn = 0;
-		for (v = s->vertex; v != NULL; v = v->next) {
-			aseg->points[pn].x = NR_COORD_TO_ART (v->x);
-			aseg->points[pn].y = NR_COORD_TO_ART (v->y);
-			pn++;
-		}
-
-		aseg->bbox.x0 = NR_COORD_TO_ART (s->bbox.x0);
-		aseg->bbox.y0 = NR_COORD_TO_ART (s->bbox.y0);
-		aseg->bbox.x1 = NR_COORD_TO_ART (s->bbox.x1);
-		aseg->bbox.y1 = NR_COORD_TO_ART (s->bbox.y1);
-
-		sn++;
-	}
-
-	return asvp;
-}
-
-#endif
 

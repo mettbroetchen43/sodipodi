@@ -293,19 +293,26 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 	if (shape->style->fill.type != SP_PAINT_TYPE_NONE) {
 		if ((shape->curve->end > 2) || (shape->curve->bpath[1].code == ART_CURVETO)) {
 			if (TRUE || !shape->fill_svp) {
-				ArtSVP *svpa, *svpb;
+#ifdef WITH_NRSVP
 				NRMatrixF ctmf;
 				nr_matrix_f_from_d (&ctmf, &gc->transform);
+				vp = sp_vpath_from_bpath_transform_closepath (shape->curve->bpath, &ctmf, TRUE, FALSE, 0.25);
+#if 0
+				shape->nrsvp = nr_svp_from_art_svp (shape->fill_svp);
+#else
+				shape->nrsvp = nr_svp_from_art_vpath (vp);
+#endif
+				shape->fill_svp = nr_art_svp_from_svp (shape->nrsvp);
+#else
+				ArtSVP *svpa, *svpb;
 				vp = sp_vpath_from_bpath_transform_closepath (shape->curve->bpath, &ctmf, TRUE, TRUE, 0.25);
 				svpa = art_svp_from_vpath (vp);
-				art_free (vp);
 				svpb = art_svp_uncross (svpa);
 				art_svp_free (svpa);
 				shape->fill_svp = art_svp_rewind_uncrossed (svpb, shape->style->fill_rule.value);
 				art_svp_free (svpb);
-#ifdef WITH_NRSVP
-				shape->nrsvp = nr_svp_from_art_svp (shape->fill_svp);
 #endif
+				art_free (vp);
 			} else if (!NR_MATRIX_DF_TEST_TRANSLATE_CLOSE (&gc->transform, &NR_MATRIX_D_IDENTITY, NR_EPSILON_D)) {
 				ArtSVP *svpa;
 				/* Concept test */
@@ -406,7 +413,11 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 		guint32 rgba;
 
 		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+#ifdef WITH_NRSVP
+		nr_pixblock_render_svp_mask_or (&m, shape->nrsvp);
+#else
 		art_gray_svp_aa (shape->fill_svp, area->x0, area->y0, area->x1, area->y1, NR_PIXBLOCK_PX (&m), m.rs);
+#endif
 		m.empty = FALSE;
 
 		switch (style->fill.type) {
@@ -414,7 +425,7 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 			rgba = sp_color_get_rgba32_falpha (&style->fill.value.color,
 							   SP_SCALE24_TO_FLOAT (style->fill_opacity.value) *
 							   SP_SCALE24_TO_FLOAT (style->opacity.value));
-#ifdef WITH_NRSVP
+#ifdef loooWITH_NRSVP
 			nr_pixblock_render_svp_rgba (pb, shape->nrsvp, rgba);
 #else
 			nr_blit_pixblock_mask_rgba32 (pb, &m, rgba);

@@ -1,3 +1,11 @@
+2003-04-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_update): Switch fill
+	completely to new renderer
+	(nr_arena_shape_render): Ditto, but use masks as before
+
+	* src/libnr/nr-svp-uncross.c (nr_svp_uncross_full): Pass most stress-tests
+
 2003-04-15  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-svp-render.c (nr_pixblock_render_svp_mask_or): new method
