@@ -287,10 +287,13 @@ arikkei_ucs2_utf8_strcpy (const unsigned short *s, unsigned char *d)
 		} else if (*s < 0x800) {
 			d[dp++] = 0xc0 | (*s >> 6);
 			d[dp++] = 0x80 | (*s & 0x3f);
-		} else if (*s < 0x10000) {
+		} else /* if (*s < 0x10000) */ {
+			/* As long as these are 16 bit we do not need more */
+			/* fixme: Surrogates (Lauris) */
 			d[dp++] = 0xe0 | (*s >> 12);
 			d[dp++] = 0x80 | ((*s >> 6) & 0x3f);
 			d[dp++] = 0x80 | (*s & 0x3f);
+#if 0
 		} else if (*s < 0x200000) {
 			d[dp++] = 0xf0 | (*s >> 18);
 			d[dp++] = 0x80 | ((*s >> 12) & 0x3f);
@@ -309,6 +312,7 @@ arikkei_ucs2_utf8_strcpy (const unsigned short *s, unsigned char *d)
 			d[dp++] = 0x80 | ((*s >> 12) & 0x3f);
 			d[dp++] = 0x80 | ((*s >> 6) & 0x3f);
 			d[dp++] = 0x80 | (*s & 0x3f);
+#endif
 		}
 		s += 1;
 	}

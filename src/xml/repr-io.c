@@ -560,6 +560,8 @@ sp_wmf_image_name (void * context)
 
 #endif /* HAVE_LIBWMF */
 
+#include <unistd.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -646,6 +648,9 @@ arikkei_mmap (const unsigned char *filename, int *size, const unsigned char *nam
 		close (fd);
 		if ((!cdata) || (cdata == (unsigned char *) -1)) return NULL;
 	}
+
+	*size = st.st_size;
+
 	return cdata;
 #endif
 }
@@ -657,6 +662,6 @@ arikkei_munmap (const unsigned char *cdata, int size)
 	/* Release data */
 	UnmapViewOfFile (cdata);
 #else
-	munmap (cdata, size);
+	munmap ((void *) cdata, size);
 #endif
 }
