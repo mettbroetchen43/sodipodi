@@ -14,7 +14,8 @@
 
 #include <X11/Xft/Xft.h>
 
-#include <glib.h>
+#include <libarikkei/arikkei-dict.h>
+
 #include <gdk/gdkx.h>
 
 #include "nr-type-directory.h"
@@ -28,8 +29,8 @@ static NRNameList NRXftTypefaces = {0, NULL, NULL};
 static NRNameList NRXftFamilies = {0, NULL, NULL};
 
 static XftFontSet *NRXftPatterns = NULL;
-static GHashTable *NRXftNamedict = NULL;
-static GHashTable *NRXftFamilydict = NULL;
+static ArikkeiDict NRXftNamedict;
+static ArikkeiDict NRXftFamilydict;
 
 void
 nr_type_xft_typefaces_get (NRNameList *names)
@@ -51,8 +52,7 @@ void
 nr_type_xft_build_def (NRTypeFaceDefFT2 *dft2, const unsigned char *name, const unsigned char *family)
 {
 	XftPattern *pat;
-
-	pat = g_hash_table_lookup (NRXftNamedict, name);
+	pat = arikkei_dict_lookup (&NRXftNamedict, name);
 	if (pat) {
 		char *file;
 		int index;
@@ -146,8 +146,8 @@ nr_type_xft_init (void)
 	NRXftTypefaces.length = NRXftPatterns->nfont;
 	NRXftTypefaces.names = nr_new (unsigned char *, NRXftTypefaces.length);
 	NRXftTypefaces.destructor = NULL;
-	NRXftNamedict = g_hash_table_new (g_str_hash, g_str_equal);
-	NRXftFamilydict = g_hash_table_new (g_str_hash, g_str_equal);
+	arikkei_dict_setup (&NRXftNamedict, 2777);
+	arikkei_dict_setup (&NRXftFamilydict, 173);
 
 	if (debug) {
 		fprintf (stderr, "Read %lu fonts\n", NRXftTypefaces.length);
@@ -222,16 +222,18 @@ nr_type_xft_init (void)
 					sn = "Normal";
 					break;
 				}
-				name = g_strdup_printf ("%s %s %s", fn, wn, sn);
-				if (!g_hash_table_lookup (NRXftNamedict, name)) {
-					if (!g_hash_table_lookup (NRXftFamilydict, fn)) {
-						NRXftFamilies.names[fpos] = g_strdup (fn);
-						g_hash_table_insert (NRXftFamilydict, NRXftFamilies.names[fpos++], (void *) TRUE);
+				if (strlen (fn) < 1024) {
+					char c[1280];
+					sprintf (c, "%s %s %s", fn, wn, sn);
+					if (!arikkei_dict_lookup (&NRXftNamedict, c)) {
+						name = strdup (c);
+						if (!arikkei_dict_lookup (&NRXftFamilydict, fn)) {
+							NRXftFamilies.names[fpos] = strdup (fn);
+							arikkei_dict_insert (&NRXftFamilydict, NRXftFamilies.names[fpos++], (void *) TRUE);
+						}
+						NRXftTypefaces.names[pos++] = name;
+						arikkei_dict_insert (&NRXftNamedict, name, NRXftPatterns->fonts[i]);
 					}
-					NRXftTypefaces.names[pos++] = name;
-					g_hash_table_insert (NRXftNamedict, name, NRXftPatterns->fonts[i]);
-				} else {
-					g_free (name);
 				}
 			}
 		}

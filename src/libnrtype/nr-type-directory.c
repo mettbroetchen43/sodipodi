@@ -492,7 +492,7 @@ nr_type_read_private_list (void)
 					arikkei_token_strip (&tokens[1], &namet);
 					arikkei_token_strip (&tokens[2], &familyt);
 					face = 0;
-					if (nfnt > 0) {
+					if (nfnt > 1) {
 						unsigned char b[32];
 						arikkei_token_strncpy (&fnt[1], b, 32);
 						face = atoi (b);

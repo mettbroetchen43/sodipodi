@@ -1,3 +1,13 @@
+2003-10-12  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnrtype/nr-type-directory.c (nr_type_read_private_list): Test
+	for > 1 tokens, fixes potential crash
+
+	* src/libnrtype/nr-type-primitives.c: Make type dict frontend
+	to ArikkeiDict
+
+	* src/libarikkei/arikkei-dict.c: Implement
+
 2003-10-06  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libarikkei/Makefile.am: New stuff from ariariki
