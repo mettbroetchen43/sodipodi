@@ -159,6 +159,8 @@ pixmaps = \
 	toolbox_select.xpm \
 	toolbox_zoom.xpm \
 	unknown.xpm \
+	writing_mode_lr.xpm \
+	writing_mode_tb.xpm \
 	zoom.xpm \
 	zoom_1_to_1.xpm \
 	zoom_1_to_2.xpm \

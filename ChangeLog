@@ -1,3 +1,15 @@
+2002-08-30  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/text-edit.c (sp_text_edit_dialog): Layout radiobuttons
+	(sp_text_edit_dialog_apply): Do layout
+	(sp_text_edit_dialog_read_selection): Ditto
+
+	* src/sp-text.c (sp_font_get_glyph_bbox): New helper
+	(sp_font_get_glyph_advance): Ditto
+	(sp_font_get_glyph_bbox_lr2tb): Ditto
+	(sp_string_calculate_dimensions): Do vertical dimension correctly
+	(sp_string_set_shape): Ditto
+
 2002-08-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c (sp_string_calculate_dimensions): New method
