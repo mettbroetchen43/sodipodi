@@ -215,7 +215,7 @@ sp_document_attr_changed (SPDocument *doc, SPObject *object, const guchar *key, 
 
 		sp_document_clear_redo (doc);
 
-		action = sp_action_new (SP_ACTION_CHGATTR, strcmp (key, "id") ? object->id : oldval);
+		action = sp_action_new (SP_ACTION_CHGATTR, strcmp (key, "id") ? (const guchar *) object->id : oldval);
 		action->act.chgattr.key = g_quark_from_string (key);
 		if (oldval) action->act.chgattr.oldval = g_strdup (oldval);
 		if (newval) action->act.chgattr.newval = g_strdup (newval);

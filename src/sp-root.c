@@ -5,6 +5,7 @@
 #include "svg/svg.h"
 #include "document.h"
 #include "desktop.h"
+#include "sp-defs.h"
 #include "sp-namedview.h"
 #include "sp-root.h"
 
@@ -89,6 +90,9 @@ sp_root_init (SPRoot *root)
 	root->viewbox.x0 = root->viewbox.y0 = 0.0;
 	root->viewbox.x1 = root->width;
 	root->viewbox.y1 = root->height;
+
+	root->namedviews = NULL;
+	root->defs = NULL;
 }
 
 static void
@@ -98,7 +102,9 @@ sp_root_destroy (GtkObject *object)
 
 	root = (SPRoot *) object;
 
+	root->defs = NULL;
 	g_slist_free (root->namedviews);
+	root->namedviews = NULL;
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -144,13 +150,21 @@ sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	sp_root_read_attr (object, "height");
 	sp_root_read_attr (object, "viewBox");
 
+	/* Collect all out namedviews */
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_NAMEDVIEW (o)) {
 			root->namedviews = g_slist_prepend (root->namedviews, o);
 		}
 	}
-
 	root->namedviews = g_slist_reverse (root->namedviews);
+
+	/* Search for first <defs> node */
+	for (o = group->children; o != NULL; o = o->next) {
+		if (SP_IS_DEFS (o)) {
+			root->defs = SP_DEFS (o);
+			break;
+		}
+	}
 }
 
 /* fixme: */
@@ -243,13 +257,15 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 }
 
 static void
-sp_root_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
+sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
-	SPRoot * root;
-	SPObject * co;
+	SPRoot *root;
+	SPGroup *group;
+	SPObject *co;
 	const gchar * id;
 
 	root = (SPRoot *) object;
+	group = (SPGroup *) object;
 
 	if (((SPObjectClass *) (parent_class))->child_added)
 		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
@@ -260,6 +276,15 @@ sp_root_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 
 	if (SP_IS_NAMEDVIEW (co)) {
 		root->namedviews = g_slist_append (root->namedviews, co);
+	} else if (SP_IS_DEFS (co)) {
+		SPObject *c;
+		/* We search for first <defs> node - it is not beautiful, but works */
+		for (c = group->children; c != NULL; c = c->next) {
+			if (SP_IS_DEFS (c)) {
+				root->defs = SP_DEFS (c);
+				break;
+			}
+		}
 	}
 }
 
@@ -278,6 +303,13 @@ sp_root_remove_child (SPObject * object, SPRepr * child)
 
 	if (SP_IS_NAMEDVIEW (co)) {
 		root->namedviews = g_slist_remove (root->namedviews, co);
+	} else if (SP_IS_DEFS (co) && root->defs == (SPDefs *) co) {
+		SPObject *c;
+		/* We search for next <defs> node - it is not beautiful, but works */
+		for (c = co->next; c != NULL; c = c->next) {
+			if (SP_IS_DEFS (c)) break;
+		}
+		root->defs = SP_DEFS (c);
 	}
 
 	if (((SPObjectClass *) (parent_class))->remove_child)

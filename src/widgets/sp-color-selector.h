@@ -58,6 +58,7 @@ SPColorSelectorMode sp_color_selector_get_mode (SPColorSelector *csel);
 
 void sp_color_selector_set_rgba_float (SPColorSelector *csel, gfloat r, gfloat g, gfloat b, gfloat a);
 void sp_color_selector_set_cmyka_float (SPColorSelector *csel, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a);
+void sp_color_selector_set_rgba_uint (SPColorSelector *csel, guint32 rgba);
 
 void sp_color_selector_get_rgba_double (SPColorSelector *csel, gdouble *rgba);
 void sp_color_selector_get_cmyka_double (SPColorSelector *csel, gdouble *cmyka);

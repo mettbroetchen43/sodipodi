@@ -206,11 +206,9 @@ sp_embeddable_document_ps_save (BonoboPersistStream *ps,
 
 	/* FIXME: super dirty but functional */
 	do {
-		if (filename)
-			free (filename);
-		filename = tempnam (NULL, "sodipodi");
-
-		fd = open (filename, O_CREAT | O_EXCL | O_TRUNC | O_RDWR, 0600);
+		if (filename) g_free (filename);
+		filename = g_strdup ("sodipodiXXXXXX");
+		fd = mkstemp (filename);
 
 	} while (fd == -1);
 

@@ -19,6 +19,9 @@ static void sp_zoom_context_setup (SPEventContext * event_context, SPDesktop * d
 static gint sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_zoom_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
+void sp_zoom_string (gchar * zoom_str);
+void sp_zoom_any ();
+
 static SPEventContextClass * parent_class;
 
 extern GtkWidget * zoom_any;

@@ -1,3 +1,36 @@
+2001-09-04  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/document.c (sp_document_add_resource): Implemented simple
+	named resource lists
+	(sp_document_remove_resource): Ditto
+	(sp_document_get_resource_list): Ditto
+
+2001-09-03  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-gradient.c: Added middle SPGradient class and morphed
+	LinearGradient accordingly
+
+	* src/sp-gradient.h: Added middle SPGradient Class
+
+	* src/forward.h: Declare stops and gradients here
+
+	* src/dialogs/gradient-vector.c: New file
+
+	* src/dialogs/gradient-vector.h: New file
+
+	* src/bonobo/embeddable-document.c (sp_embeddable_document_ps_save):
+	Kill warning
+
+	* src/select-context.c: Kill warning
+
+2001-08-31  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/forward.h: typedef SPDefs[Class] here
+
+	* src/sp-root.h: Added pointer to root-level <defs> node
+
+	* src/sp-gradient.c (sp_stop_get_type): Fixed type on type init
+
 2001-08-30  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/document.c (sp_document_new): Use fill-opacity 0.5, not 50%

@@ -121,6 +121,10 @@ sp_fill_style_widget_new (void)
 	gtk_container_add (GTK_CONTAINER (b), w);
 	gtk_box_pack_start (GTK_BOX (hb), b, TRUE, TRUE, 0);
 	gtk_widget_set_sensitive (GTK_WIDGET (b), FALSE);
+	gtk_object_set_data (GTK_OBJECT (spw), "fill-gradient", b);
+	gtk_object_set_data (GTK_OBJECT (b), "SPWidget", spw);
+	gtk_signal_connect (GTK_OBJECT (b), "toggled",
+			    GTK_SIGNAL_FUNC (sp_fill_style_widget_type_toggled), GINT_TO_POINTER (FSW_GRADIENT));
 	/* fill:pattern */
 	b = gtk_toggle_button_new ();
 	gtk_widget_show (b);
@@ -203,6 +207,7 @@ sp_fill_style_dialog (SPItem *item)
 	}
 
 	if (!GTK_WIDGET_VISIBLE (dialog)) gtk_widget_show (dialog);
+
 #if 0
 	sp_item_dialog_setup (item);
 #endif
@@ -249,6 +254,7 @@ sp_fill_style_widget_type_toggled (GtkToggleButton *b, FSWFillType type)
 	if (!SP_DT_SELECTION (spw->desktop)) return;
 	reprs = sp_selection_repr_list (SP_DT_SELECTION (spw->desktop));
 
+	/* Switch the style of all selected items */
 	if (reprs) {
 		SPCSSAttr *css;
 		const GSList *l;
@@ -269,6 +275,9 @@ sp_fill_style_widget_type_toggled (GtkToggleButton *b, FSWFillType type)
 			sp_repr_css_set_property (css, "fill", c);
 			g_snprintf (c, 64, "%g", lastalpha);
 			sp_repr_css_set_property (css, "fill-opacity", c);
+			break;
+		case FSW_GRADIENT:
+			g_warning ("Gradient fill specified");
 			break;
 		default:
 			g_assert_not_reached ();
@@ -299,6 +308,9 @@ sp_fill_style_widget_set_type (SPWidget *spw, FSWFillType type)
 	gtk_widget_set_sensitive (b, !(type == FSW_EMPTY));
 	b = gtk_object_get_data (GTK_OBJECT (spw), "fill-solid");
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), type == FSW_SOLID);
+	gtk_widget_set_sensitive (b, !(type == FSW_EMPTY));
+	b = gtk_object_get_data (GTK_OBJECT (spw), "fill-gradient");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (b), type == FSW_GRADIENT);
 	gtk_widget_set_sensitive (b, !(type == FSW_EMPTY));
 
 	switch (type) {

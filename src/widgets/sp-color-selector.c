@@ -311,6 +311,19 @@ sp_color_selector_set_cmyka_float (SPColorSelector *csel, gfloat c, gfloat m, gf
 }
 
 void
+sp_color_selector_set_rgba_uint (SPColorSelector *csel, guint32 rgba)
+{
+	g_return_if_fail (csel != NULL);
+	g_return_if_fail (SP_IS_COLOR_SELECTOR (csel));
+
+	sp_color_selector_set_rgba_float (csel,
+					  (rgba >> 24) / 255.0,
+					  ((rgba >> 16) & 0xff) / 255.0,
+					  ((rgba >> 8) & 0xff) / 255.0,
+					  (rgba & 0xff) / 255.0);
+}
+
+void
 sp_color_selector_get_rgba_double (SPColorSelector *csel, gdouble *rgba)
 {
 	g_return_if_fail (csel != NULL);

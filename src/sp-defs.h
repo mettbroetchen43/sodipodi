@@ -12,9 +12,6 @@
 
 #include "sp-object.h"
 
-typedef struct _SPDefs SPDefs;
-typedef struct _SPDefsClass SPDefsClass;
-
 #define SP_TYPE_DEFS            (sp_defs_get_type ())
 #define SP_DEFS(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_DEFS, SPDefs))
 #define SP_DEFS_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_DEFS, SPDefsClass))

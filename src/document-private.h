@@ -1,6 +1,7 @@
 #ifndef SP_DOCUMENT_PRIVATE_H
 #define SP_DOCUMENT_PRIVATE_H
 
+#include "sp-defs.h"
 #include "document.h"
 
 typedef struct _SPAction SPAction;
@@ -9,6 +10,8 @@ typedef struct _SPActionDel SPActionDel;
 typedef struct _SPActionChgAttr SPActionChgAttr;
 typedef struct _SPActionChgContent SPActionChgContent;
 typedef struct _SPActionChgOrder SPActionChgOrder;
+
+/* Actions - i.e. undo/redo stuff */
 
 typedef enum {
 	SP_ACTION_INVALID,
@@ -73,10 +76,18 @@ struct _SPDocumentPrivate {
 	SPAspect aspect;	/* Our aspect ratio preferences */
 	guint clip :1;		/* Whether we clip or meet outer viewport */
 
+#if 0
 	GSList * namedviews;	/* Our NamedViews */
+	/* Base <defs> node */
+	/* fixme: I do not know, what to do with it (Lauris) */
+	SPDefs *defs;
+#endif
+
+	/* Resources */
+	/* It is GHashTable of GSLists */
+	GHashTable *resources;
 
 	/* State */
-
 	guint sensitive: 1; /* If we save actions to undo stack */
 	GSList * undo; /* Undo stack of reprs */
 	GSList * redo; /* Redo stack of reprs */
@@ -90,5 +101,24 @@ struct _SPDocumentPrivate {
 };
 
 void sp_action_free_list (SPAction *action);
+
+/* Resource management */
+gboolean sp_document_add_resource (SPDocument *document, const guchar *key, SPObject *object);
+gboolean sp_document_remove_resource (SPDocument *document, const guchar *key, SPObject *object);
+const GSList *sp_document_get_resource_list (SPDocument *document, const guchar *key);
+
+/*
+ * Ideas: How to overcome style invalidation nightmare
+ *
+ * 1. There is reference request dictionary, that contains
+ * objects (styles) needing certain id. Object::build checks
+ * final id against it, and invokes necesary methods
+ *
+ * 2. Removing referenced object is simply prohibited -
+ * needs analyse, how we can deal with situations, where
+ * we simply want to ungroup etc. - probably we need
+ * Repr::reparent method :( [Or was it ;)]
+ *
+ */
 
 #endif

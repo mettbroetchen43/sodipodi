@@ -25,6 +25,7 @@ gchar * import_path = NULL;
 gchar * export_path = NULL;
 
 static void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer);
+static void sp_do_file_print_preview (SPDocument * doc);
 
 void sp_file_new (void)
 {
@@ -399,7 +400,8 @@ sp_print_preview_destroy_cb (GtkObject *obj, gpointer data)
 {
 }
 
-void sp_do_file_print_preview (SPDocument * doc)
+static void
+sp_do_file_print_preview (SPDocument * doc)
 {
         GnomePrintContext * gpc;
         GnomePrintMaster * gpm;

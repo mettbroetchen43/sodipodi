@@ -33,6 +33,8 @@ static void sp_document_destroy (GtkObject * object);
 
 static gint sp_document_idle_handler (gpointer data);
 
+gboolean sp_document_resource_list_free (gpointer key, gpointer value, gpointer data);
+
 static GtkObjectClass * parent_class;
 static guint signals[LAST_SIGNAL] = { 0 };
 static gint doc_count = 0;
@@ -96,7 +98,12 @@ sp_document_init (SPDocument * document)
 	p->aspect = SPXMidYMid;
 	p->clip = FALSE;
 
+#if 0
 	p->namedviews = NULL;
+	p->defs = NULL;
+#endif
+
+	p->resources = g_hash_table_new (g_str_hash, g_str_equal);
 
 	p->sensitive = FALSE;
 	p->undo = NULL;
@@ -136,6 +143,10 @@ sp_document_destroy (GtkObject * object)
 		if (private->rdoc) sp_repr_document_unref (private->rdoc);
 
 		if (private->modified_id) gtk_idle_remove (private->modified_id);
+
+		/* Free resources */
+		g_hash_table_foreach_remove (private->resources, sp_document_resource_list_free, document);
+		g_hash_table_destroy (private->resources);
 
 		g_free (private);
 		document->private = NULL;
@@ -207,13 +218,20 @@ sp_document_new (const gchar * uri)
 	document->private->root = SP_ROOT (object);
 
 	/* Namedviews */
-
 	if (!document->private->root->namedviews) {
 		SPRepr * r;
 		r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
-		sp_repr_add_child (rroot, r, 0);
+		sp_repr_add_child (rroot, r, NULL);
 		g_assert (document->private->root->namedviews);
+	}
+
+	/* Defs */
+	if (!document->private->root->defs) {
+		SPRepr *r;
+		r = sp_repr_new ("defs");
+		sp_repr_add_child (rroot, r, NULL);
+		g_assert (document->private->root->defs);
 	}
 
 	sodipodi_ref ();
@@ -264,13 +282,20 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	/* fixme: docbase */
 
 	/* Namedviews */
-
 	if (!document->private->root->namedviews) {
 		SPRepr * r;
 		r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, 0);
 		g_assert (document->private->root->namedviews);
+	}
+
+	/* Defs */
+	if (!document->private->root->defs) {
+		SPRepr *r;
+		r = sp_repr_new ("defs");
+		sp_repr_add_child (rroot, r, NULL);
+		g_assert (document->private->root->defs);
 	}
 
 	sodipodi_ref ();
@@ -500,3 +525,65 @@ sp_document_items_in_box (SPDocument * document, ArtDRect * box)
 	return s;
 }
 
+/* Resource management */
+
+gboolean
+sp_document_add_resource (SPDocument *document, const guchar *key, SPObject *object)
+{
+	GSList *rlist;
+
+	g_return_val_if_fail (document != NULL, FALSE);
+	g_return_val_if_fail (SP_IS_DOCUMENT (document), FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (*key != '\0', FALSE);
+	g_return_val_if_fail (object != NULL, FALSE);
+	g_return_val_if_fail (SP_IS_OBJECT (object), FALSE);
+
+	rlist = g_hash_table_lookup (document->private->resources, key);
+	g_return_val_if_fail (!g_slist_find (rlist, object), FALSE);
+	rlist = g_slist_prepend (rlist, object);
+	g_hash_table_insert (document->private->resources, (gpointer) key, rlist);
+
+	return TRUE;
+}
+
+gboolean
+sp_document_remove_resource (SPDocument *document, const guchar *key, SPObject *object)
+{
+	GSList *rlist;
+
+	g_return_val_if_fail (document != NULL, FALSE);
+	g_return_val_if_fail (SP_IS_DOCUMENT (document), FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (*key != '\0', FALSE);
+	g_return_val_if_fail (object != NULL, FALSE);
+	g_return_val_if_fail (SP_IS_OBJECT (object), FALSE);
+
+	rlist = g_hash_table_lookup (document->private->resources, key);
+	g_return_val_if_fail (rlist != NULL, FALSE);
+	g_return_val_if_fail (g_slist_find (rlist, object), FALSE);
+	rlist = g_slist_remove (rlist, object);
+	g_hash_table_insert (document->private->resources, (gpointer) key, rlist);
+
+	return TRUE;
+}
+
+const GSList *
+sp_document_get_resource_list (SPDocument *document, const guchar *key)
+{
+	g_return_val_if_fail (document != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
+	g_return_val_if_fail (key != NULL, NULL);
+	g_return_val_if_fail (*key != '\0', NULL);
+
+	return g_hash_table_lookup (document->private->resources, key);
+}
+
+/* Helpers */
+
+gboolean
+sp_document_resource_list_free (gpointer key, gpointer value, gpointer data)
+{
+	g_slist_free ((GSList *) value);
+	return TRUE;
+}

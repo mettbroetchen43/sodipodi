@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG August 1999//EN"
+"http://www.w3.org/Graphics/SVG/SVG-19990812.dtd">
+<svg
+   style="fill:#000000;fill-opacity:0.5;stroke:none"
+   id="svg1"
+   sodipodi:docbase="samples/"
+   sodipodi:docname="samples/gradient.svg"
+   xmlns="http://www.w3.org/Graphics/SVG/SVG-19991203.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd">  <sodipodi:namedview
+     id="base">
+  </sodipodi:namedview>
+  <defs
+     id="defs3">    <linearGradient
+       id="grad01"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">      <stop
+         offset="5%"
+         style="stop-color:#f60"
+         id="stop5">
+      </stop>
+      <stop
+         offset="95%"
+         style="stop-color:#06f"
+         id="stop6">
+      </stop>
+
+    </linearGradient>
+    <linearGradient
+       id="grad02"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">      <stop
+         offset="5%"
+         style="stop-color:#fff"
+         id="stop8">
+      </stop>
+      <stop
+         offset="95%"
+         style="stop-color:#000"
+         id="stop9">
+      </stop>
+
+    </linearGradient>
+
+  </defs>
+  <ellipse
+     style="stroke:#000000; fill:url(#grad01); fill-opacity:100%; stroke-opacity:100%; stroke-width:1pt; stroke-linejoin:miter; stroke-linecap:butt; "
+     id="ellipse3"
+     cx="260.453738"
+     cy="327.991845"
+     rx="146.069243"
+     ry="151.380852"
+     transform="matrix(1 0 0 1 -50.4599 135.446)">
+  </ellipse>
+  <ellipse
+     style="stroke:#000000; fill:url(#grad02); fill-opacity:100%; stroke-opacity:100%; stroke-width:1pt; stroke-linejoin:miter; stroke-linecap:butt; "
+     id="ellipse4"
+     cx="288.339685"
+     cy="423.600804"
+     rx="227.071278"
+     ry="82.329937"
+     transform="matrix(0.684211 0 0 1.8871 186.664 -467.405)">
+  </ellipse>
+
+</svg>

@@ -7,7 +7,10 @@
 #include "selection.h"
 #include "desktop-affine.h"
 #include "seltrans-handles.h"
+#if 0
+/* This is not needed, so kill warning (Lauris) */
 #include "pixmaps/cursor-select.xpm"
+#endif
 #include "select-context.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"

@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include "sodipodi.h"
+#include "interface.h"
 #include "document.h"
 #include "desktop.h"
 #include "desktop-handles.h"

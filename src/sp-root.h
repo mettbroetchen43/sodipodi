@@ -24,7 +24,11 @@ struct _SPRoot {
 	SPGroup group;
 	double width, height;
 	ArtDRect viewbox;
+	/* List of namedviews */
+	/* fixme: use single container instead */
 	GSList * namedviews;
+	/* Root-level <defs> node */
+	SPDefs *defs;
 };
 
 struct _SPRootClass {

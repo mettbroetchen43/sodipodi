@@ -34,6 +34,9 @@ typedef struct _SPItemClass SPItemClass;
 typedef struct _SPGroup SPGroup;
 typedef struct _SPGroupClass SPGroupClass;
 
+typedef struct _SPDefs SPDefs;
+typedef struct _SPDefsClass SPDefsClass;
+
 typedef struct _SPRoot SPRoot;
 typedef struct _SPRootClass SPRootClass;
 
@@ -57,6 +60,18 @@ typedef struct _SPCharsClass SPCharsClass;
 
 typedef struct _SPPaintServer SPPaintServer;
 typedef struct _SPPaintServerClass SPPaintServerClass;
+
+typedef struct _SPStop SPStop;
+typedef struct _SPStopClass SPStopClass;
+
+typedef struct _SPGradient SPGradient;
+typedef struct _SPGradientClass SPGradientClass;
+
+typedef struct _SPLinearGradient SPLinearGradient;
+typedef struct _SPLinearGradientClass SPLinearGradientClass;
+
+typedef struct _SPRadialGradient SPRadialGradient;
+typedef struct _SPRadialGradientClass SPRadialGradientClass;
 
 typedef struct _SPColorSpace SPColorSpace;
 typedef struct _SPColor SPColor;
