@@ -1,3 +1,12 @@
+2004-01-11  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* glade/icons.svg: Added two new icon images for xml:space UI
+
+	* src/dialogs/text-edit.c (sp_text_edit_dialog): xml:space UI for
+	text object
+	(sp_text_edit_dialog_update_object): xml:space support
+	(sp_text_edit_dialog_read_selection): xml:space UI update code
+
 2004-01-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* configure.in: Added "fi" to ALL_LINGUAS, thanks to Jaakko H Kyro
