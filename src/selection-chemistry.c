@@ -12,6 +12,7 @@
 #include "svg/svg.h"
 #include "document.h"
 #include "mdi-desktop.h"
+#include "desktop.h"
 #include "desktop-handles.h"
 #include "selection-chemistry.h"
 
@@ -40,7 +41,7 @@ sp_selection_delete (GtkWidget * widget)
 
 	while (selected) {
 		sp_document_del_repr (SP_DT_DOCUMENT (desktop), (SPRepr *) selected->data);
-		selected = g_slist_remove (sel, sel->data);
+		selected = g_slist_remove (selected, selected->data);
 	}
 
 	sp_document_done (SP_DT_DOCUMENT (desktop));

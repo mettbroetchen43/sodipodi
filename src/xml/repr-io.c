@@ -81,6 +81,13 @@ sp_repr_save_file (SPRepr * repr, const gchar * filename)
 	file = fopen (filename, "w");
 	g_return_if_fail (file != NULL);
 
+	/* fixme: do this The Right Way */
+
+	fputs ("<?xml version=\"1.0\" standalone=\"no\"?>\n"
+		"<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG August 1999//EN\"\n"
+		"\"http://www.w3.org/Graphics/SVG/SVG-19990812.dtd\">\n",
+		file);
+
 	repr_write (repr, file, 0);
 
 	fclose (file);
@@ -135,10 +142,11 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 
 	if (sp_repr_content (repr)) {
 		fprintf (file, "%s", sp_repr_content (repr));
+	} else {
 		fputs ("\n", file);
+		for (i = 0; i < level; i++) fputs ("  ", file);
 	}
 
-	for (i = 0; i < level; i++) fputs ("  ", file);
-	fprintf (file, "</%s>", sp_repr_name (repr));
+	fprintf (file, "</%s>\n", sp_repr_name (repr));
 }
 

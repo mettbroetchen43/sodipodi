@@ -1,5 +1,10 @@
 2000-04-04  Lauris Kaplinski <lauris@ariman.ee>
 
+    * xml/repr-io.c: save DTD & standard header
+    * dialogs/object-*: modify default fill & stroke, if nothing selected
+
+2000-04-04  Lauris Kaplinski <lauris@ariman.ee>
+
     * selection.*: Added functions to select via reprs (now when we have
       unique id-s there isn't any reason thare wasn't such)
 

@@ -122,6 +122,8 @@ sp_document_new (const gchar * uri)
 	} else {
 		repr = sp_repr_new ("svg");
 		g_return_val_if_fail (repr != NULL, NULL);
+		sp_repr_set_attr (repr, "style",
+			"fill:#000000;fill-opacity:10%;stroke:none");
 	}
 
 	document = gtk_type_new (SP_TYPE_DOCUMENT);

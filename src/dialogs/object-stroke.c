@@ -102,6 +102,9 @@ sp_stroke_read_selection (void)
 	if (l != NULL) {
 		repr = (SPRepr *) l->data;
 		css = sp_repr_css_attr_inherited (repr, "style");
+	} else {
+		repr = SP_OBJECT (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP)->root)->repr;
+		css = sp_repr_css_attr (repr, "style");
 	}
 
 	if (css != NULL) {
@@ -245,10 +248,15 @@ apply_stroke (void)
 
 	l = sp_selection_repr_list (selection);
 
-	while (l != NULL) {
-		repr = (SPRepr *) l->data;
-		sp_repr_css_change_recursive (repr, css, "style");
-		l = l->next;
+	if (l != NULL) {
+		while (l != NULL) {
+			repr = (SPRepr *) l->data;
+			sp_repr_css_change_recursive (repr, css, "style");
+			l = l->next;
+		}
+	} else {
+		repr = SP_OBJECT (SP_DT_DOCUMENT (desktop)->root)->repr;
+		sp_repr_css_change (repr, css, "style");
 	}
 
 	sp_document_done (SP_DT_DOCUMENT (desktop));

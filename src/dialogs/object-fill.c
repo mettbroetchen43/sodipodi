@@ -89,6 +89,8 @@ sp_fill_read_selection (void)
 	if (l != NULL) {
 		repr = (SPRepr *) l->data;
 		css = sp_repr_css_attr_inherited (repr, "style");
+	} else {
+		css = sp_repr_css_attr (SP_OBJECT (SP_DT_DOCUMENT (SP_ACTIVE_DESKTOP)->root)->repr, "style");
 	}
 
 	if (css != NULL) {
@@ -211,10 +213,14 @@ apply_fill (void)
 
 	l = sp_selection_repr_list (selection);
 
-	while (l != NULL) {
-		repr = (SPRepr *) l->data;
-		sp_repr_css_change_recursive (repr, css, "style");
-		l = l->next;
+	if (l != NULL) {
+		while (l != NULL) {
+			repr = (SPRepr *) l->data;
+			sp_repr_css_change_recursive (repr, css, "style");
+			l = l->next;
+		}
+	} else {
+		sp_repr_css_change (SP_OBJECT (SP_DT_DOCUMENT (desktop)->root)->repr, css, "style");
 	}
 
 	sp_document_done (SP_DT_DOCUMENT (desktop));
