@@ -1,3 +1,7 @@
+2002-09-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* POTFILES.in: Added src/rect-context.c
+
 Mon Sep 23 19:15:05 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* ja.po: Updated Japanese translation..
