@@ -105,22 +105,20 @@ sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	b = NR_RGBA32_B (gl->rgba);
 	a = NR_RGBA32_A (gl->rgba);
 
-	ipos = (int) (gl->position + 0.5);
-
 	if (gl->vertical) {
-		if (ipos < buf->rect.x0) return;
-		if (ipos >= buf->rect.x1) return;
+		if (gl->position < buf->rect.x0) return;
+		if (gl->position >= buf->rect.x1) return;
 		p0 = buf->rect.y0;
 		p1 = buf->rect.y1;
 		step = buf->buf_rowstride;
-		d = buf->buf + 3 * (ipos - buf->rect.x0);
+		d = buf->buf + 3 * (gl->position - buf->rect.x0);
 	} else {
-		if (ipos < buf->rect.y0) return;
-		if (ipos >= buf->rect.y1) return;
+		if (gl->position < buf->rect.y0) return;
+		if (gl->position >= buf->rect.y1) return;
 		p0 = buf->rect.x0;
 		p1 = buf->rect.x1;
 		step = 3;
-		d = buf->buf + (ipos - buf->rect.y0) * buf->buf_rowstride;
+		d = buf->buf + (gl->position - buf->rect.y0) * buf->buf_rowstride;
 	}
 
 	for (p = p0; p < p1; p++) {
