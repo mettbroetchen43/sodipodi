@@ -1,3 +1,8 @@
+200-04-07  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* sp-shape.c: It prints now semitransparent shapes, rendering these
+          to bitmaps. No clipping yet and resolution is hardcoded to 72dpi
+	
 200-04-05  Kjartan Maraas  <kmaraas@online.no>
 
 	* no.po: Added no to ALL_LINGUAS.

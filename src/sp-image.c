@@ -1,6 +1,7 @@
 #define SP_IMAGE_C
 
 #include <gnome.h>
+#include <libart_lgpl/art_rgb_rgba_affine.h>
 #include "helper/art-rgba-rgba-affine.h"
 #include "display/canvas-image.h"
 #include "brokenimage.xpm"
@@ -232,6 +233,7 @@ static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
 
 		item->stop_paint = TRUE;
 		sp_item_paint (SP_ITEM (SP_OBJECT (item)->document->root), abp, aa);
+		item->stop_paint = FALSE;
 
 		art_affine_identity (a);
 		art_rgba_rgba_affine (abp->pixels,
@@ -304,11 +306,19 @@ sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
 
 	if (ipb->n_channels != 4) return FALSE;
 
-	art_rgba_rgba_affine (pixbuf->pixels,
-		0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
-		ipb->pixels, ipb->width, ipb->height, ipb->rowstride,
-		affine,
-		ART_FILTER_NEAREST, NULL);
+	if (pixbuf->n_channels == 3) {
+		art_rgb_rgba_affine (pixbuf->pixels,
+			0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
+			ipb->pixels, ipb->width, ipb->height, ipb->rowstride,
+			affine,
+			ART_FILTER_NEAREST, NULL);
+	} else {
+		art_rgba_rgba_affine (pixbuf->pixels,
+			0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
+			ipb->pixels, ipb->width, ipb->height, ipb->rowstride,
+			affine,
+			ART_FILTER_NEAREST, NULL);
+	}
 
 	return FALSE;
 }

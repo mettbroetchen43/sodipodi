@@ -9,6 +9,7 @@
 #include <libart_lgpl/art_svp_wind.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
+#include <libart_lgpl/art_rgb_svp.h>
 
 #include "helper/art-rgba-svp.h"
 #include "display/canvas-shape.h"
@@ -25,7 +26,7 @@ static void sp_shape_destroy (GtkObject *object);
 static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_shape_read_attr (SPObject * object, const gchar * attr);
 
-static void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
+void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
 static GnomeCanvasItem * sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static gboolean sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
@@ -161,7 +162,7 @@ g_print ("sp_shape_read_attr: %s\n", attr);
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
 }
 
-static void
+void
 sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 {
 
@@ -173,10 +174,57 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 	GSList * l;
 	ArtBpath * bpath;
 
-	gnome_print_gsave (gpc);
-
 	path = SP_PATH (item);
 	shape = SP_SHAPE (item);
+
+	if ((shape->fill->type == SP_FILL_COLOR) && ((shape->fill->color & 0xff) != 255)) {
+		gdouble i2d[6], doc2d[6], doc2buf[6], d2buf[6], i2buf[6], d2i[6];
+		ArtDRect box, bbox, dbbox;
+		gint bx, by, bw, bh;
+		art_u8 * b;
+		ArtPixBuf * pb;
+
+		dbbox.x0 = 0.0;
+		dbbox.y0 = 0.0;
+		dbbox.x1 = sp_document_width (SP_OBJECT (item)->document);
+		dbbox.y1 = sp_document_height (SP_OBJECT (item)->document);
+		sp_item_bbox (item, &bbox);
+		art_drect_intersect (&box, &dbbox, &bbox);
+		if ((box.x1 - box.x0) < 1.0) return;
+		if ((box.y1 - box.y0) < 1.0) return;
+		art_affine_identity (d2buf);
+		d2buf[4] = -box.x0;
+		d2buf[5] = -box.y0;
+		bx = box.x0;
+		by = box.y0;
+		bw = (box.x1 + 1.0) - bx;
+		bh = (box.y1 + 1.0) - by;
+		b = art_new (art_u8, bw * bh * 3);
+		memset (b, 0xff, bw * bh * 3);
+		pb = art_pixbuf_new_rgb (b, bw, bh, bw * 3);
+		sp_item_i2d_affine (SP_ITEM (SP_OBJECT (item)->document->root), doc2d);
+		art_affine_multiply (doc2buf, doc2d, d2buf);
+		item->stop_paint = TRUE;
+		sp_item_paint (SP_ITEM (SP_OBJECT (item)->document->root), pb, doc2buf);
+		item->stop_paint = FALSE;
+		sp_item_i2d_affine (item, i2d);
+		art_affine_multiply (i2buf, i2d, d2buf);
+		sp_item_paint (item, pb, i2buf);
+
+		gnome_print_gsave (gpc);
+		art_affine_invert (d2i, i2d);
+		gnome_print_concat (gpc, d2i);
+		gnome_print_translate (gpc, bx, by + bh);
+		gnome_print_scale (gpc, bw, -bh);
+		gnome_print_rgbimage (gpc, b, bw, bh, bw * 3);
+		gnome_print_grestore (gpc);
+
+		art_pixbuf_free (pb);
+
+		return;
+	}
+
+	gnome_print_gsave (gpc);
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
@@ -186,46 +234,6 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 			bpath = comp->curve->bpath;
 
 			gnome_print_bpath (gpc, bpath, FALSE);
-
-#if 0
-			gnome_print_newpath (gpc);
-			gnome_print_moveto (gpc,
-				bpath->x3,
-				bpath->y3);
-
-			for (bpath = bpath + 1; bpath->code != ART_END; bpath++) {
-				switch (bpath->code) {
-					case ART_MOVETO:
-						gnome_print_closepath (gpc);
-						gnome_print_moveto (gpc,
-							bpath->x3,
-							bpath->y3);
-						break;
-					case ART_MOVETO_OPEN:
-						gnome_print_moveto (gpc,
-							bpath->x3,
-							bpath->y3);
-						break;
-					case ART_LINETO:
-						gnome_print_lineto (gpc,
-							bpath->x3,
-							bpath->y3);
-						break;
-					case ART_CURVETO:
-						gnome_print_curveto (gpc,
-							bpath->x1,
-							bpath->y1,
-							bpath->x2,
-							bpath->y2,
-							bpath->x3,
-							bpath->y3);
-						break;
-					default:
-						break;
-				}
-			}
-			gnome_print_closepath (gpc);
-#endif
 
 			if (shape->fill->type == SP_FILL_COLOR) {
 				r = (double) ((shape->fill->color >> 24) & 0xff) / 255.0;
@@ -320,10 +328,17 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 				art_svp_free (svpb);
 
 				if (shape->fill->type == SP_FILL_COLOR) {
-					art_rgba_svp_alpha (svp,
-						0, 0, buf->width, buf->height,
-						shape->fill->color,
-						buf->pixels, buf->rowstride, NULL);
+					if (buf->n_channels == 3) {
+						art_rgb_svp_alpha (svp,
+							0, 0, buf->width, buf->height,
+							shape->fill->color,
+							buf->pixels, buf->rowstride, NULL);
+					} else {
+						art_rgba_svp_alpha (svp,
+							0, 0, buf->width, buf->height,
+							shape->fill->color,
+							buf->pixels, buf->rowstride, NULL);
+					}
 				}
 				art_svp_free (svp);
 			}
@@ -334,10 +349,17 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 					shape->stroke->cap,
 					shape->stroke->width,
 					4, 0.25);
-				art_rgba_svp_alpha (svp,
-					0, 0, buf->width, buf->height,
-					shape->stroke->color,
-					buf->pixels, buf->rowstride, NULL);
+				if (buf->n_channels == 3) {
+					art_rgb_svp_alpha (svp,
+						0, 0, buf->width, buf->height,
+						shape->stroke->color,
+						buf->pixels, buf->rowstride, NULL);
+				} else {
+					art_rgba_svp_alpha (svp,
+						0, 0, buf->width, buf->height,
+						shape->stroke->color,
+						buf->pixels, buf->rowstride, NULL);
+				}
 				art_svp_free (svp);
 			}
 			art_free (vp);
