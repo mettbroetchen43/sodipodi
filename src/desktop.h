@@ -60,7 +60,7 @@ struct _SPDesktop {
 };
 
 struct _SPDesktopClass {
-	GtkEventBoxClass parent_class;
+	SPViewClass parent_class;
 
 	void (* activate) (SPDesktop *desktop);
 	void (* desactivate) (SPDesktop *desktop);

@@ -1,3 +1,14 @@
+2002-11-01  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/desktop.h: s/GtkEventBoxClass/SPViewClass/; thanks to MenTaLguY
+
+	* configure.in (have_gnome_print): Gnome-print support can be disabled
+
+	* src/libnrtype/Makefile.am (INCLUDES): SODIPODI_GNOME_PRINT_CFLAGS
+
+	* src/Makefile.am (sodipodi_LDADD): Added SODIPODI_GNOME_PRINT_LIBS
+	(INCLUDES): Same for CFLAGS
+
 2002-10-31  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/font-selector.c (struct _SPFontSelector): Use NRNameListss

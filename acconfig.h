@@ -10,4 +10,5 @@
 #undef ENABLE_BONOBO
 #undef USING_OAF
 #undef ENABLE_AUTOTRACE
+#undef ENABLE_GNOME_PRINT
 #undef USE_MMX

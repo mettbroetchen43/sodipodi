@@ -3,7 +3,8 @@ noinst_LIBRARIES = libnrtype.a
 INCLUDES = \
 	-I.. \
 	$(cflags) \
-	$(SODIPODI_CFLAGS)
+	$(SODIPODI_CFLAGS) \
+	$(SODIPODI_GNOME_PRINT_CFLAGS)
 
 libnrtype_a_SOURCES = \
 	nr-typeface.c nr-typeface.h \

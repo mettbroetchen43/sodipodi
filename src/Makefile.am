@@ -18,6 +18,7 @@ INCLUDES = \
 	-I$(srcdir) \
 	$(cflags) \
 	$(SODIPODI_CFLAGS) \
+	$(SODIPODI_GNOME_PRINT_CFLAGS) \
 	$(SODIPODI_BONOBO_CFLAGS)
 
 LDFLAGS = \
@@ -129,6 +130,7 @@ sodipodi_LDADD = \
 	$(sodipodi_private_libs) \
 	$(bonobo_libs) \
 	$(SODIPODI_LIBS) \
+	$(SODIPODI_GNOME_PRINT_LIBS) \
 	$(SODIPODI_BONOBO_LIBS)
 
 EXTRA_DIST = \

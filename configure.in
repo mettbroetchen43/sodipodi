@@ -19,10 +19,6 @@ GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS
 GNOME_XML_CHECK
 
-dnl GNOME_PRINT_CHECK(0.29)
-GNOME_PRINT_LIBS=`gnome-config --libs print`
-AC_SUBST(GNOME_PRINT_LIBS)
-
 dnl Add the languages which your application supports here.
 ALL_LINGUAS="az ca da de el es et fr ga gl hu it ja no ru sk sl sv tr uk pl pt_BR pt zh_CN"
 AM_GNU_GETTEXT
@@ -114,18 +110,37 @@ AC_SUBST(SODIPODI_BONOBO_LIBS)
 dnl ******************************
 dnl GnomePrint checking
 dnl ******************************
-AC_MSG_CHECKING(for GnomePrint libraries >= 0.21)
-if gnome-config --libs print > /dev/null 2>&1; then
-vers=`gnome-config --modversion print | sed -e "s/gnome-print-//" -e 's/cvs$//' | \
-        awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
-    if test "$vers" -ge 21; then
-        AC_MSG_RESULT(found)
-    else
-         AC_MSG_ERROR(You need at least GNOME print 0.21 for this version of sodipodi)
-    fi
+try_gnome_print=true
+have_gnome_print=false
+AC_ARG_WITH(gnome-print,
+	[--{with,without}-gnome-print  Use Gnome printing architecture],
+	if test x$withval = xno; then
+		try_gnome_print=false
+	fi
+)
+if $try_gnome_print; then
+	AC_MSG_CHECKING(for GnomePrint libraries >= 0.27)
+	if gnome-config --libs print > /dev/null 2>&1; then
+		vers=`gnome-config --modversion print | sed -e "s/gnome-print-//" -e 's/cvs$//' | \
+			awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
+		if test "$vers" -ge 27; then
+			AC_MSG_RESULT(found)
+			SODIPODI_GNOME_PRINT_LIBS=`$GNOME_CONFIG --libs print`
+			SODIPODI_GNOME_PRINT_CFLAGS=`$GNOME_CONFIG --cflags print`
+		else
+			AC_MSG_ERROR(You need at least GNOME print 0.21 for this version of sodipodi)
+		fi
+	else
+		AC_MSG_ERROR(Did not find GnomePrint installed)
+	fi
 else
-    AC_MSG_ERROR(Did not find GnomePrint installed)
+	SODIPODI_GNOME_PRINT_LIBS=
+	SODIPODI_GNOME_PRINT_CFLAGS=
 fi
+
+AM_CONDITIONAL(USE_GNOME_PRINT, $have_gnome_print)
+AC_SUBST(SODIPODI_GNOME_PRINT_CFLAGS)
+AC_SUBST(SODIPODI_GNOME_PRINT_LIBS)
 
 XML_KEY=xml
 AC_ARG_WITH(gnome-xml2,
@@ -135,8 +150,8 @@ AC_ARG_WITH(gnome-xml2,
 	fi
 )
 
-SODIPODI_CFLAGS=`$GNOME_CONFIG --cflags gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print $XML_KEY`
-SODIPODI_LIBS=`$GNOME_CONFIG --libs gal gdk_pixbuf gdk_pixbuf_xlib libart libglade print $XML_KEY`
+SODIPODI_CFLAGS=`$GNOME_CONFIG --cflags gal gdk_pixbuf gdk_pixbuf_xlib libart libglade $XML_KEY`
+SODIPODI_LIBS=`$GNOME_CONFIG --libs gal gdk_pixbuf gdk_pixbuf_xlib libart libglade $XML_KEY`
 SODIPODI_LIBS="$SODIPODI_LIBS -lpng -lz"
 
 dnl ******************************
