@@ -1,13 +1,20 @@
 23/09/2002
 
 TODO for 0.27
+=============
 
 - Illustrator import/export
-- Stamping
+- Stamping (Masatake)
 - Empty bbox of horizontal/vertical lines bug
 - Toolbox scaling bug
 
+Other tasks
+===========
+
+- Interface for clipart collections (Lauris)
+
 TODO for 0.26
+=============
 
 - fill-rule modification (DONE)
 - backwards compatibility for fill (DONE)
