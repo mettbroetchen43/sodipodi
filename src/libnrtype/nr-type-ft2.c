@@ -17,6 +17,12 @@
 #include <freetype/ftbbox.h>
 #include "nr-type-ft2.h"
 
+#define NRTFFT2_DEBUG
+
+#ifdef NRTFFT2_DEBUG
+static int olcount = 0;
+#endif
+
 #define NR_SLOTS_BLOCK 32
 
 static void nr_typeface_ft2_class_init (NRTypeFaceFT2Class *klass);
@@ -98,8 +104,12 @@ nr_typeface_ft2_finalize (NRObject *object)
 		if (tff->slots) {
 			int i;
 			for (i = 0; i < tff->slots_length; i++) {
-				if (tff->slots[i].outline.path > 0) {
+				if (tff->slots[i].outline.path) {
 					nr_free (tff->slots[i].outline.path);
+#ifdef NRTFFT2_DEBUG
+					olcount -= 1;
+					printf ("finalize - outlines %d\n", olcount);
+#endif
 				}
 			}
 			nr_free (tff->slots);
@@ -232,14 +242,8 @@ nr_typeface_ft2_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned 
 	}
 
 	if (slot) {
-		nr_typeface_ft2_ensure_outline (tff, slot, glyph, metrics);
-		if (slot->olref >= 0) {
-			if (ref) {
-				slot->olref += 1;
-			} else {
-				slot->olref = -1;
-			}
-		}
+		if (!slot->olref) nr_typeface_ft2_ensure_outline (tff, slot, glyph, metrics);
+		if (ref) slot->olref += 1;
 		*d = slot->outline;
 	} else {
 		d->path = NULL;
@@ -267,6 +271,10 @@ nr_typeface_ft2_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigne
 		if (slot->olref < 1) {
 			nr_free (slot->outline.path);
 			slot->outline.path = NULL;
+#ifdef NRTFFT2_DEBUG
+			olcount -= 1;
+			printf ("outline unref - outlines %d\n", olcount);
+#endif
 		}
 	}
 }
@@ -485,6 +493,13 @@ nr_typeface_ft2_ensure_outline (NRTypeFaceFT2 *tff, NRTypeFaceGlyphFT2 *slot, un
 	}
 
 	slot->outline.path = tff_ol2bp (&tff->ft_face->glyph->outline, a);
+	slot->olref = 1;
+#ifdef NRTFFT2_DEBUG
+	if (slot->outline.path) {
+		olcount += 1;
+		printf ("ensure outline - outlines %d\n", olcount);
+	}
+#endif
 
 	return &slot->outline;
 }
