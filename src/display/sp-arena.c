@@ -114,10 +114,11 @@ sp_arena_size_allocate (GtkWidget * widget, GtkAllocation * allocation)
 
 	arena = (SPArena *) widget;
 
-	uta = nr_uta_new (allocation->x, allocation->y, allocation->x + allocation->width, allocation->y + allocation->height);
+	/* fixme: centering & stuff... */
+	uta = nr_uta_new (allocation->width, allocation->height);
 
 	if (arena->uta) {
-		nr_uta_set_uta (uta, arena->uta);
+		nr_uta_set_uta (uta, arena->uta, 0, 0);
 		nr_uta_free (arena->uta);
 	}
 

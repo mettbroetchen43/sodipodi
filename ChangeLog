@@ -1,3 +1,12 @@
+2000-12-20  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/display/nr-svp-render.c (nr_svp_render_rgb_rgba): It
+	works to some extent!
+	* src/display/canvas-shape.c (sp-canvas_shape_render): Use New
+	Rendering, #ifdef NEW_RENDER
+
+	* src/display/testnr.c: Silly file
+
 2000-12-19  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/display/nr-uta.*: UTA Implementation

@@ -8,16 +8,16 @@ typedef struct _NRUTA NRUTA;
 typedef int NRUTile;
 
 struct _NRUTA {
-	NRIRect area;
-	int width, height;
+	int utwidth, utheight;
 	NRUTile * utiles;
 };
 
-NRUTA * nr_uta_new (int x0, int y0, int x1, int y1);
+/* width and height are in pixels */
+NRUTA * nr_uta_new (int width, int height);
 
 void nr_uta_free (NRUTA * uta);
 
 void nr_uta_set_rect (NRUTA * uta, NRIRect * rect);
-void nr_uta_set_uta (NRUTA * uta, NRUTA * src);
+void nr_uta_set_uta (NRUTA * uta, NRUTA * src, int x0, int y0);
 
 #endif

@@ -1,5 +1,6 @@
 #define SP_CANVAS_SHAPE_C
 
+#include <config.h>
 #include <math.h>
 #include <gnome.h>
 #include <libart_lgpl/art_alphagamma.h>
@@ -10,6 +11,9 @@
 #include <libart_lgpl/art_vpath_bpath.h>
 #include <libart_lgpl/art_svp_wind.h>
 #include <libart_lgpl/art_svp_point.h>
+#ifdef NEW_RENDER
+#include "nr-svp-render.h"
+#endif
 
 #define noCANVAS_SHAPE_VERBOSE
 
@@ -218,6 +222,19 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 
 			case SP_FILL_COLOR:
 				/* Experimental */
+#ifdef NEW_RENDER
+				if (buf->is_bg) {
+					gnome_canvas_clear_buffer (buf);
+					buf->is_bg = FALSE;
+					buf->is_buf = TRUE;
+				}
+				nr_svp_render_rgb_rgba (comp->archetype->nrsvp,
+							buf->buf,
+							buf->rect.x0 - comp->cx, buf->rect.y0 - comp->cy,
+							buf->rect.x1 - buf->rect.x0, buf->rect.y1 - buf->rect.y0,
+							buf->buf_rowstride,
+							shape->fill->color);
+#else
 #if 0
 			{
 				ArtRender * render;
@@ -245,6 +262,7 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 #else
 				gnome_canvas_render_svp_translated (buf, comp->archetype->svp, shape->fill->color,
 								    comp->cx, comp->cy);
+#endif
 #endif
 				break;
 

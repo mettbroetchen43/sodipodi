@@ -23,7 +23,7 @@ nr_svp_from_art_vpath (ArtVpath * vpath)
 	NRSVP * svp;
 	ArtVpath * s;
 	NRLine * line, * start, * flat;
-	gint sx, sy, x, y;
+	NRCoord sx, sy, x, y;
 	gint dir, newdir;
 	GSList * segments;
 
@@ -102,9 +102,6 @@ nr_svp_from_art_vpath (ArtVpath * vpath)
 
 	svp = nr_svp_new ();
 	svp->lines = nr_svp_merge_segments (segments);
-#if 0
-	svp->lines = nr_lines_sort (svp->lines);
-#endif
 	g_slist_free (segments);
 
 	nr_svp_uncross (svp);
@@ -164,7 +161,7 @@ nr_svp_split_flat (NRLine * l, NRLine * flat)
 	fstart = flat;
 
 	while (l != NULL) {
-		gint32 xmin, xmax;
+		NRCoord xmin, xmax;
 		/* Find first flat > ystart */
 		while ((fstart) && (fstart->s.y <= l->s.y)) fstart = fstart->next;
 		if (!fstart) return;
@@ -174,10 +171,10 @@ nr_svp_split_flat (NRLine * l, NRLine * flat)
 		while ((f) && (f->s.y < l->e.y)) {
 			/* Y overlap */
 			if ((f->s.x <= xmax) && (f->e.x >= xmin)) {
-				gint32 x;
+				NRCoord x;
 				/* Bounding boxes intersect */
 				/* x = x0 + (x1 - x0)(y - y0)/(y1 - y0) */
-				x = l->s.x + NR_COORD_MUL_DIV ((l->e.x - l->s.x), (f->s.y - l->s.y), (l->e.y - l->s.y));
+				x = NR_COORD_SNAP (l->s.x + (l->e.x - l->s.x) * (f->s.y - l->s.y) / (l->e.y - l->s.y));
 				if ((x >= f->s.x) && (x <= f->e.x)) {
 					/* We intersect */
 					new = nr_line_new_xyxyd (x, f->s.y, l->e.x, l->e.y, l->direction);
@@ -199,7 +196,6 @@ nr_svp_split_flat (NRLine * l, NRLine * flat)
 ArtSVP *
 nr_art_svp_from_svp (NRSVP * svp)
 {
-#if 1
 	ArtSVP * asvp;
 	NRLine * l;
 	gint size;
@@ -239,49 +235,6 @@ nr_art_svp_from_svp (NRSVP * svp)
 	}
 
 	return asvp;
-#else
-	ArtVpath * vpath, * v, * pvpath;
-	NRLine * l;
-	gint len;
-	ArtSVP * asvp;
-
-	if (!svp) {
-		asvp = art_alloc (sizeof (ArtSVP));
-		asvp->n_segs = 0;
-		return asvp;
-	}
-
-	len = 0;
-	for (l = svp->lines; l != NULL; l = l->next) len++;
-	vpath = g_new (ArtVpath, 2 * len + 1);
-
-	v = vpath;
-	for (l = svp->lines; l != NULL; l = l->next) {
-		v->code = ART_MOVETO;
-		v->x = NR_COORD_TO_ART (l->s.x);
-		v->y = NR_COORD_TO_ART (l->s.y);
-		v++;
-		v->code = ART_LINETO;
-		v->x = NR_COORD_TO_ART (l->e.x);
-		v->y = NR_COORD_TO_ART (l->e.y);
-		v++;
-	}
-	v->code = ART_END;
-#if 0
-	pvpath = art_vpath_perturb (vpath);
-	g_free (vpath);
-#endif
-	asvp = art_svp_vpath_stroke (vpath,
-				     ART_PATH_STROKE_JOIN_MITER,
-				     ART_PATH_STROKE_CAP_SQUARE,
-				     4.0, 10.0, 0.25);
-	g_free (vpath);
-#if 0
-	art_free (pvpath);
-#endif
-
-	return asvp;
-#endif
 }
 
 static NRLine *
@@ -386,7 +339,7 @@ nr_line_new (void)
 }
 
 NRLine *
-nr_line_new_xyxy (gint32 x0, gint32 y0, gint32 x1, gint32 y1)
+nr_line_new_xyxy (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1)
 {
 	NRLine * l;
 
@@ -412,7 +365,7 @@ nr_line_new_xyxy (gint32 x0, gint32 y0, gint32 x1, gint32 y1)
 }
 
 NRLine *
-nr_line_new_xyxyd (gint32 x0, gint32 y0, gint32 x1, gint32 y1, gint direction)
+nr_line_new_xyxyd (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, gint direction)
 {
 	NRLine * l;
 

@@ -149,7 +149,7 @@ sp_path_at_new (SPCurve * curve,
 	nrsvp1 = nr_svp_rewind (nrsvp0);
 	nr_svp_free (nrsvp0);
 	svpa = nr_art_svp_from_svp (nrsvp1);
-	nr_svp_free (nrsvp1);
+	at->nrsvp = nrsvp1;
 #else
 	at->vpath = art_vpath_perturb (vpath);
 	art_free (vpath);
@@ -182,6 +182,12 @@ static void
 sp_pat_free_state (SPPathAT * at)
 {
 	g_assert (at != NULL);
+#ifdef NEW_RENDER
+	if (at->nrsvp) {
+		nr_svp_free (at->nrsvp);
+		at->nrsvp = NULL;
+	}
+#endif
 	if (at->svp != NULL) {
 		art_svp_free (at->svp);
 		at->svp = NULL;

@@ -16,6 +16,9 @@
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include "../helper/curve.h"
+#ifdef NEW_RENDER
+#include "nr-svp.h"
+#endif
 
 typedef struct _SPPathAT SPPathAT;
 
@@ -33,6 +36,9 @@ struct _SPPathAT {
 	ArtSVP * svp;
 	ArtSVP * stroke;
 	ArtDRect bbox;
+#ifdef NEW_RENDER
+	NRSVP * nrsvp;
+#endif
 };
 
 /*

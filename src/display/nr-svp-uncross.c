@@ -34,7 +34,7 @@ static NRLine *
 nr_svp_uncross_line (NRLine * line)
 {
 	NRLine * l;
-	gint32 xmin, xmax;
+	NRCoord xmin, xmax;
 
 	xmin = MIN (line->s.x, line->e.x);
 	xmax = MAX (line->s.x, line->e.x);
@@ -61,12 +61,12 @@ nr_svp_uncross_line (NRLine * line)
 				nums = yac * xba - xac * yba;
 				r = numr / d;
 				s = nums / d;
-				if ((r > 0) && (r < 1.0) && (s > 0) && (s < 1.0)) {
+				if ((r > 0.0) && (r < 1.0) && (s > 0.0) && (s < 1.0)) {
 					gint32 x, y;
-					y = line->s.y + (gint32) floor (r * yba + 0.5);
+					y = NR_COORD_SNAP (line->s.y + r * yba);
 					if ((y > line->s.y) && (y < line->e.y) && (y > l->s.y) && (y < l->e.y)) {
 						NRLine * new;
-						x = line->s.x + (gint32) floor (r * xba + 0.5);
+						x = NR_COORD_SNAP (line->s.x + r * xba);
 						new = nr_line_new_xyxyd (x, y, line->e.x, line->e.y, line->direction);
 						line->e.x = x;
 						line->e.y = y;

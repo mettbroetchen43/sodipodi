@@ -19,6 +19,14 @@ nr_sources = \
 	nr-svp.c nr-svp.h \
 	nr-svp-uncross.c nr-svp-uncross.h \
 	nr-svp-render.c nr-svp-render.h
+
+noinst_PROGRAMS = testnr
+testnr_LDADD = \
+	$(GNOME_LIBDIR) \
+	$(GNOMEUI_LIBS)
+testnr_SOURCES = \
+	testnr.c \
+	$(nr_sources)
 else
 nr_sources =
 endif

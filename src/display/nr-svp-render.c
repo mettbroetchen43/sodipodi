@@ -10,35 +10,57 @@ struct _NRRSpan {
 	NRLine * line;
 	NRPoint s;
 	NRPoint e;
-	float cvstep;
-	float endcv;
+	float stepx;
+};
+
+typedef struct _NRRun NRRun;
+
+struct _NRRun {
+	NRRun * next;
+	NRPoint s;
+	NRPoint e;
+	float step;
+	float value;
+	float final;
+	float x;
 };
 
 static NRRSpan * nr_rspan_new (NRLine * line);
 static void nr_rspan_free (NRRSpan * rs);
 static void nr_rspan_free_list (NRRSpan * rs);
 static NRRSpan * nr_rspan_insert_sorted (NRRSpan * start, NRRSpan * span);
+
+static NRRun * nr_run_new (NRRSpan * span);
+static void nr_run_free (NRRun * run);
+static void nr_run_free_list (NRRun * run);
+static NRRun * nr_run_insert_sorted (NRRun * start, NRRun * run);
+
 static gint nr_x_order (NRLine * l0, NRLine * l1);
 
 void
 nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint width, gint height, gint rowstride, guint32 rgba)
 {
 	NRRSpan * spans;
+	NRRun * runs;
 	NRLine * line;
+	gint32 xstart, ystart;
 	gint32 x1, y1;
+	guchar * b;
 	gint y;
 
-	x0 = x0 << 4;
-	y0 = y0 << 4;
-	x1 = (x0 + width) << 4;
-	y1 = (y0 + height) << 4;
+	if (!svp) return;
+
+	x1 = x0 + width;
+	y1 = y0 + height;
 	spans = NULL;
 
-	/* Construct initial spans */
+	/* Construct initial spans from lines crossing y0 */
 	for (line = svp->lines; (line) && (line->s.y < y0); line = line->next) {
 		if (line->e.y > y0) {
 			NRRSpan * new;
 			new = nr_rspan_new (line);
+			new->s.x = line->s.x + (line->e.x - line->s.x) * (y0 - line->s.y) / (line->e.y - line->s.y);
+			new->s.y = y0;
 			if (!spans) {
 				spans = new;
 			} else {
@@ -47,18 +69,25 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 		}
 	}
 
-	if (!spans) {
+	if (spans) {
+		ystart = y0;
+	} else {
 		if (!line) return;
-		y0 = line->s.y;
+		ystart = (gint32) floor (line->s.y);
 	}
 
 	/* Main iteration */
-	for (y = y0; y < y1; y += 16) {
-		NRRSpan * s;
-		/* Add new lines to spans */
-		while ((line) && (line->s.y < (y + 16))) {
+	for (y = ystart; y < y1; y ++) {
+		NRRSpan * s, * s0;
+		NRRun * r, * r0;
+		float globalval;
+		gint x;
+		/* Add new lines starting between y and y+1 to spans */
+		while ((line) && (line->s.y < (y + 1.0))) {
 			NRRSpan * new;
 			new = nr_rspan_new (line);
+			new->s.x = line->s.x;
+			new->s.y = line->s.y;
 			if (!spans) {
 				spans = new;
 			} else {
@@ -66,41 +95,139 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 			}
 			line = line->next;
 		}
-		/* Now we have sorted list of spans */
-		/* Fill run data */
+		/* Now we have sorted list of spans with CORRECT STARTPOINTS */
+		/* Generate endpoints */
 		for (s = spans; s != NULL; s = s->next) {
-			g_assert (s->line->s.y < y + 16);
-			g_assert (s->line->e.y > y);
-			if (s->line->s.y >= y) {
-				/* We start at current line */
-				s->s.x = s->line->s.x;
-				s->s.y = s->line->s.y;
-			} else {
-				/* Find intersection with y */
-			}
-			if (s->line->e.y < y + 16) {
-				/* We end before next line */
+			if (s->line->e.y < y + 1.0) {
 				s->e.x = s->line->e.x;
 				s->e.y = s->line->e.y;
 			} else {
-				/* Find intersection with y + 16 */
+				if (s->s.y == y) {
+					s->e.x = s->s.x + s->stepx;
+				} else {
+					s->e.x = s->s.x + s->stepx * (y + 1.0 - s->s.y);
+				}
+				s->e.y = y + 1.0;
 			}
-			if (s->s.x > s->e.x) {
-				/* Swap points */
-				NRPoint t;
-				t = s->s;
-				s->s = s->e;
-				s->e = t;
+		}
+
+		/* Generate runs */
+		runs = NULL;
+		for (s = spans; s != NULL; s = s->next) {
+			runs = nr_run_insert_sorted (runs, nr_run_new (s));
+		}
+		/* fixme: killpoints */
+		/* Find initial value */
+		globalval = 0.0;
+		if ((runs) && (x0 < runs->s.x)) {
+			xstart = (gint32) floor (runs->s.x);
+		} else {
+			xstart = x0;
+			r0 = NULL;
+			r = runs;
+			while ((r) && (r->s.x < x0)) {
+				if (r->e.x <= x0) {
+					globalval += r->final;
+					if (r0) {
+						r0->next = r->next;
+						nr_run_free (r);
+						r = r0->next;
+					} else {
+						runs = r->next;
+						nr_run_free (r);
+						r = runs;
+					}
+				} else {
+					r->x = x0;
+					r->value = (x0 - r->s.x) * r->step;
+					r0 = r;
+					r = r->next;
+				}
 			}
-			s->endcv = fabs (s->e.y - s->s.y);
-			s->cvstep = fabs (s->endcv * 16.0 / (s->e.x - s->s.x));
+		}
+		for (x = xstart; (runs) && (x < x1); x++) {
+			float xnext;
+			float localval;
+			guint coverage;
 
-			/* Sillyrender */
+			xnext = x + 1.0;
+			/* process runs */
+			/* fixme: generate fills */
+			localval = globalval;
+			r0 = NULL;
+			r = runs;
+			while ((r) && (r->s.x < xnext)) {
+				if (r->e.x <= xnext) {
+					globalval += r->final;
+#if 0
+					g_print ("A: localval += %f + (%f - %f) * %f / 2\n", r->value, xnext, r->x, r->step);
+#endif
+					localval += r->value + (r->e.x - r->x) * r->step / 2.0;
+#if 0
+					g_print ("B: localval += (%f - %f) * %f\n", xnext, r->e.x, r->final);
+#endif
+					localval += (xnext - r->e.x) * r->final;
+					if (r0) {
+						r0->next = r->next;
+						nr_run_free (r);
+						r = r0->next;
+					} else {
+						runs = r->next;
+						nr_run_free (r);
+						r = runs;
+					}
+				} else {
+#if 0
+					g_print ("C: localval += %f\n", r->value + (xnext - r->x) * r->step / 2.0);
+#endif
+					localval += r->value + (xnext - r->x) * r->step / 2.0;
+					r->x = xnext;
+					r->value = (xnext - r->s.x) * r->step;
+					r0 = r;
+					r = r->next;
+				}
+			}
+			/* Draw */
+			b = buffer + (y - y0) * rowstride + (x - x0) * 3;
+			coverage = (guint) (floor (localval * 255.99));
+#if 1
+#if 0
+			if (x == xstart + 2) g_print ("Y: %d X: %d Localval: %f Coverage %d\n", y, x, localval, coverage);
+#endif
+			*b++ = (((rgba >> 24) & 0xff) * coverage) >> 8;
+			*b++ = (((rgba >> 16) & 0xff) * coverage) >> 8;
+			*b++ = (((rgba >>  8) & 0xff) * coverage) >> 8;
+#else
+			*b++ = 0xff;
+			*b++ = 0x7f;
+			*b++ = 0x00;
+#endif
+		}
+		nr_run_free_list (runs);
 
-			/* Start walking through spans, filling pixels and generating runs, as needed */
-			/* All right-infinite runs will be added to single global run */
+		/* Remove exhausted spans and update crossings */
+		s0 = NULL;
+		s = spans;
+		while (s) {
+			if (s->line->e.y <= y) {
+				if (s0) {
+					s0->next = s->next;
+					nr_rspan_free (s);
+					s = s0->next;
+				} else {
+					spans = s->next;
+					nr_rspan_free (s);
+					s = spans;
+				}
+			} else {
+				s->s.x = s->e.x;
+				s->s.y = s->e.y;
+				s0 = s;
+				s = s->next;
+			}
 		}
 	}
+	nr_rspan_free_list (spans);
 }
 
 /*
@@ -129,6 +256,7 @@ nr_rspan_new (NRLine * line)
 
 	rs->next = NULL;
 	rs->line = line;
+	rs->stepx = (line->e.x - line->s.x) / (line->e.y - line->s.y);
 
 	return rs;
 }
@@ -178,6 +306,102 @@ nr_rspan_free_list (NRRSpan * rs)
 	for (l = rs; l->next != NULL; l = l->next);
 	l->next = firstfreers;
 	firstfreers = rs;
+}
+
+#define NR_RUN_ALLOC_SIZE 32
+static NRRun * firstfreerun = NULL;
+
+static NRRun *
+nr_run_new (NRRSpan * span)
+{
+	NRRun * r;
+
+	r = firstfreerun;
+
+	if (r == NULL) {
+		gint i;
+		r = g_new (NRRun, NR_RUN_ALLOC_SIZE);
+		for (i = 1; i < (NR_RUN_ALLOC_SIZE - 1); i++) (r + i)->next = (r + i + 1);
+		(r + NR_RUN_ALLOC_SIZE - 1)->next = NULL;
+		firstfreerun = r + 1;
+	} else {
+		firstfreerun = r->next;
+	}
+
+	r->next = NULL;
+
+	if (span->s.x == span->e.x) {
+		r->s.x = r->e.x = span->s.x;
+		r->s.y = span->s.y;
+		r->e.y = span->e.y;
+		r->step = 0.0;
+		r->final = r->e.y - r->s.y;
+	} else if (span->s.x < span->e.x) {
+		r->s = span->s;
+		r->e = span->e;
+		r->step = (r->e.y - r->s.y) / (r->e.x - r->s.x);
+		r->final = r->e.y - r->s.y;
+	} else {
+		r->s = span->e;
+		r->e = span->s;
+		r->step = (r->s.y - r->e.y) / (r->e.x - r->s.x);
+		r->final = r->s.y - r->e.y;
+	}
+
+	r->step *= -span->line->direction;
+	r->final *= -span->line->direction;
+
+	r->value = 0.0;
+	r->x = r->s.x;
+
+	return r;
+}
+
+static void
+nr_run_free (NRRun * run)
+{
+	run->next = firstfreerun;
+	firstfreerun = run;
+}
+
+static void
+nr_run_free_list (NRRun * run)
+{
+	NRRun * l;
+
+	if (!run) return;
+
+	for (l = run; l->next != NULL; l = l->next);
+	l->next = firstfreerun;
+	firstfreerun = run;
+}
+
+static NRRun *
+nr_run_insert_sorted (NRRun * start, NRRun * run)
+{
+	NRRun * s, * l;
+
+	if (!start) return run;
+	if (!run) return start;
+
+	if (run->s.x < start->s.x) {
+		run->next = start;
+		return run;
+	}
+
+	s = start;
+	for (l = start->next; l != NULL; l = l->next) {
+		if (run->s.x < l->s.x) {
+			run->next = l;
+			s->next = run;
+			return start;
+		}
+		s = l;
+	}
+
+	s->next = run;
+
+	return start;
 }
 
 /*
