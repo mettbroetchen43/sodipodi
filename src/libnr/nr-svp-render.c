@@ -13,6 +13,64 @@
 #include "nr-pixops.h"
 #include "nr-svp-render.h"
 
+static void nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs, int x0, int y0, int x1, int y1,
+			   void (* run) (unsigned char *px, int len, unsigned int c0_24, int s0_24, void *data), void *data);
+
+static void nr_svp_run_A8_OR (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
+static void nr_svp_run_R8G8B8 (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
+static void nr_svp_run_R8G8B8A8P_EMPTY (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
+static void nr_svp_run_R8G8B8A8P_R8G8B8A8P (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
+static void nr_svp_run_R8G8B8A8N_R8G8B8A8N (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
+
+/* Renders graymask of svp into buffer */
+
+void
+nr_pixblock_render_svp_mask_or (NRPixBlock *d, NRSVP *svp)
+{
+	nr_svp_render (svp, NR_PIXBLOCK_PX (d), 1, d->rs,
+		       d->area.x0, d->area.y0, d->area.x1, d->area.y1,
+		       nr_svp_run_A8_OR, NULL);
+}
+
+/* Renders colored SVP into buffer (has to be RGB/RGBA) */
+
+void
+nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
+{
+	unsigned char c[4];
+
+	c[0] = NR_RGBA32_R (rgba);
+	c[1] = NR_RGBA32_G (rgba);
+	c[2] = NR_RGBA32_B (rgba);
+	c[3] = NR_RGBA32_A (rgba);
+
+	switch (dpb->mode) {
+	case NR_PIXBLOCK_MODE_R8G8B8:
+		nr_svp_render (svp, NR_PIXBLOCK_PX (dpb), 3, dpb->rs,
+			       dpb->area.x0, dpb->area.y0, dpb->area.x1, dpb->area.y1,
+			       nr_svp_run_R8G8B8, c);
+		break;
+	case NR_PIXBLOCK_MODE_R8G8B8A8P:
+		if (dpb->empty) {
+			nr_svp_render (svp, NR_PIXBLOCK_PX (dpb), 4, dpb->rs,
+				       dpb->area.x0, dpb->area.y0, dpb->area.x1, dpb->area.y1,
+				       nr_svp_run_R8G8B8A8P_EMPTY, c);
+		} else {
+			nr_svp_render (svp, NR_PIXBLOCK_PX (dpb), 4, dpb->rs,
+				       dpb->area.x0, dpb->area.y0, dpb->area.x1, dpb->area.y1,
+				       nr_svp_run_R8G8B8A8P_R8G8B8A8P, c);
+		}
+		break;
+	case NR_PIXBLOCK_MODE_R8G8B8A8N:
+		nr_svp_render (svp, NR_PIXBLOCK_PX (dpb), 4, dpb->rs,
+			       dpb->area.x0, dpb->area.y0, dpb->area.x1, dpb->area.y1,
+			       nr_svp_run_R8G8B8A8N_R8G8B8A8N, c);
+		break;
+	default:
+		break;
+	}
+}
+
 typedef struct _NRSlice NRSlice;
 
 struct _NRSlice {
@@ -46,32 +104,227 @@ static NRRun *nr_run_free_one (NRRun *run);
 static void nr_run_free_list (NRRun *run);
 static NRRun *nr_run_insert_sorted (NRRun *start, NRRun *run);
 
-void
-nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
+static void
+nr_svp_run_A8_OR (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+{
+	if ((c0_24 >= 0xff0000) && (s0_24 == 0x0)) {
+		/* Simple copy */
+		while (len > 0) {
+			d[0] = 255;
+			d += 1;
+			len -= 1;
+		}
+	} else {
+		while (len > 0) {
+			unsigned int ca, da;
+			/* Draw */
+			ca = c0_24 >> 16;
+			da = 65025 - (255 - ca) * (255 - d[0]);
+			d[0] = (da + 127) / 255;
+			d += 1;
+			c0_24 += s0_24;
+			/* c24 = CLAMP (c24, 0, 16777216); */
+			len -= 1;
+		}
+	}
+}
+
+static void
+nr_svp_run_R8G8B8 (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+{
+	unsigned char *c;
+
+	c = (unsigned char *) data;
+
+	if ((c0_24 >= 0xff0000) && (c[3] == 0xff) && (s0_24 == 0x0)) {
+		/* Simple copy */
+		while (len > 0) {
+			d[0] = c[0];
+			d[1] = c[1];
+			d[2] = c[2];
+			d += 3;
+			len -= 1;
+		}
+	} else {
+		while (len > 0) {
+			unsigned int ca;
+			/* Draw */
+			ca = c0_24 >> 16;
+			ca = NR_PREMUL (ca, c[3]);
+			if (ca == 0) {
+				/* Transparent FG, NOP */
+			} else if (ca == 255) {
+				/* Full coverage, COPY */
+				d[0] = c[0];
+				d[1] = c[1];
+				d[2] = c[2];
+			} else {
+				d[0] = NR_COMPOSEN11 (c[0], ca, d[0]);
+				d[1] = NR_COMPOSEN11 (c[1], ca, d[1]);
+				d[2] = NR_COMPOSEN11 (c[2], ca, d[2]);
+			}
+			d += 3;
+			c0_24 += s0_24;
+			/* c24 = CLAMP (c24, 0, 16777216); */
+			len -= 1;
+		}
+	}
+}
+
+static void
+nr_svp_run_R8G8B8A8P_EMPTY (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+{
+	unsigned char *c;
+
+	c = (unsigned char *) data;
+
+	if ((c0_24 >= 0xff0000) && (s0_24 == 0x0)) {
+		unsigned char r, g, b;
+		/* Simple copy */
+		r = NR_PREMUL (c[0], c[3]);
+		g = NR_PREMUL (c[1], c[3]);
+		b = NR_PREMUL (c[2], c[3]);
+		while (len > 0) {
+			d[0] = r;
+			d[1] = g;
+			d[2] = b;
+			d[3] = c[3];
+			d += 4;
+			len -= 1;
+		}
+	} else {
+		while (len > 0) {
+			unsigned int ca;
+			/* Draw */
+			ca = c0_24 >> 16;
+			ca = NR_PREMUL (ca, c[3]);
+			if (ca == 0) {
+				/* Transparent FG, NOP */
+			} else {
+				/* Full coverage, COPY */
+				d[0] = NR_PREMUL (c[0], ca);
+				d[1] = NR_PREMUL (c[1], ca);
+				d[2] = NR_PREMUL (c[2], ca);
+				d[3] = ca;
+			}
+			d += 4;
+			len -= 1;
+		}
+	}
+}
+
+static void
+nr_svp_run_R8G8B8A8P_R8G8B8A8P (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+{
+	unsigned char *c;
+
+	c = (unsigned char *) data;
+
+	if ((c0_24 >= 0xff0000) && (c[3] == 0xff) && (s0_24 == 0x0)) {
+		/* Simple copy */
+		while (len > 0) {
+			d[0] = c[0];
+			d[1] = c[1];
+			d[2] = c[2];
+			d[3] = c[3];
+			d += 4;
+			len -= 1;
+		}
+	} else {
+		while (len > 0) {
+			unsigned int ca;
+			/* Draw */
+			ca = c0_24 >> 16;
+			ca = NR_PREMUL (ca, c[3]);
+			if (ca == 0) {
+				/* Transparent FG, NOP */
+			} else if ((ca == 255) || (d[3] == 0)) {
+				/* Full coverage, COPY */
+				d[0] = NR_PREMUL (c[0], ca);
+				d[1] = NR_PREMUL (c[1], ca);
+				d[2] = NR_PREMUL (c[2], ca);
+				d[3] = ca;
+			} else {
+				/* Full composition */
+				d[0] = NR_COMPOSENPP (c[0], ca, d[0], d[3]);
+				d[1] = NR_COMPOSENPP (c[1], ca, d[1], d[3]);
+				d[2] = NR_COMPOSENPP (c[2], ca, d[2], d[3]);
+				d[3] = (65025 - (255 - ca) * (255 - d[3]) + 127) / 255;
+			}
+			d += 4;
+			c0_24 += s0_24;
+			/* c24 = CLAMP (c24, 0, 16777216); */
+			len -= 1;
+		}
+	}
+}
+
+static void
+nr_svp_run_R8G8B8A8N_R8G8B8A8N (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+{
+	unsigned char *c;
+
+	c = (unsigned char *) data;
+
+	if ((c0_24 >= 0xff0000) && (s0_24 == 0x0)) {
+		/* Simple copy */
+		while (len > 0) {
+			d[0] = c[0];
+			d[1] = c[1];
+			d[2] = c[2];
+			d[3] = c[3];
+			d += 4;
+			len -= 1;
+		}
+	} else {
+		while (len > 0) {
+			unsigned int ca;
+			/* Draw */
+			ca = c0_24 >> 16;
+			ca = NR_PREMUL (ca, c[3]);
+			if (ca == 0) {
+				/* Transparent FG, NOP */
+			} else if ((ca == 255) || (d[3] == 0)) {
+				/* Full coverage, COPY */
+				d[0] = c[0];
+				d[1] = c[1];
+				d[2] = c[2];
+				d[3] = ca;
+			} else {
+				unsigned int da;
+				/* Full composition */
+				da = 65025 - (255 - ca) * (255 - d[3]);
+				d[0] = NR_COMPOSENNN_A7 (c[0], ca, d[0], d[3], da);
+				d[1] = NR_COMPOSENNN_A7 (c[1], ca, d[1], d[3], da);
+				d[2] = NR_COMPOSENNN_A7 (c[2], ca, d[2], d[3], da);
+				d[3] = (da + 127) / 255;
+			}
+			d += 4;
+			c0_24 += s0_24;
+			/* c24 = CLAMP (c24, 0, 16777216); */
+			len -= 1;
+		}
+	}
+}
+
+static void
+nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs, int x0, int y0, int x1, int y1,
+	       void (* run) (unsigned char *px, int len, unsigned int c0_24, int s0_24, void *data), void *data)
 {
 	NRSVP *nsvp;
 	NRSlice *slices;
-	int x0, y0, x1, y1, ystart;
-	unsigned long fg_r, fg_g, fg_b, fg_a;
-	unsigned char *px, *rowbuffer;
+	int ystart;
+	unsigned char *rowbuffer;
 	int y;
 
 	if (!svp) return;
-
-	if (dpb->mode != NR_PIXBLOCK_MODE_R8G8B8A8P) return;
-
-	x0 = dpb->area.x0;
-	y0 = dpb->area.y0;
-	x1 = dpb->area.x1;
-	y1 = dpb->area.y1;
-	px = NR_PIXBLOCK_PX (dpb);
 
 	/* Find starting pixel row */
 	/* g_assert (svp->bbox.y0 == svp->vertex->y); */
 	ystart = (int) svp->bbox.y0;
 	if (ystart >= y1) return;
 	if (ystart > y0) {
-		px += (ystart - y0) * dpb->rs;
+		px += (ystart - y0) * rs;
 		y0 = ystart;
 	}
 
@@ -88,12 +341,6 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 		nsvp = nsvp->next;
 	}
 	if ((!nsvp) && (!slices)) return;
-
-	/* Get colors */
-	fg_r = (rgba >> 24) & 0xff;
-	fg_g = (rgba >> 16) & 0xff;
-	fg_b = (rgba >> 8) & 0xff;
-	fg_a = rgba & 0xff;
 
 	/* Row buffer */
 	/* fixme: not needed */
@@ -195,17 +442,16 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 		}
 
 		/* Running buffer */
-		d = rowbuffer + 4 * (xstart - x0);
+		d = rowbuffer + bpp * (xstart - x0);
 
 		for (x = xstart; (runs) && (x < x1); x++) {
 			NRRun *sr, *cr;
 			float xnext;
 			float localval;
-			int coverage;
-			unsigned int ca;
 			unsigned int fill;
 			float fillstep;
 			int xstop;
+			int c24;
 
 			xnext = x + 1.0;
 			/* process runs */
@@ -254,72 +500,23 @@ nr_pixblock_render_svp_rgba (NRPixBlock *dpb, NRSVP *svp, NRULong rgba)
 			if (fill) {
 				if (cr) xstop = MIN (xstop, (int) floor (cr->x0));
 			}
+			localval = CLAMP (localval, 0.0, 1.0);
+			c24 = (int) (16777215 * localval + 0.5);
 			if (fill && (xstop > xnext)) {
-				int c24, s24;
-				localval = CLAMP (localval, 0.0, 1.0);
-				c24 = (int) (16777215 * localval + 0.5);
+				int s24;
 				s24 = (int) (16777215 * fillstep + 0.5);
 				if ((s24 != 0) || (c24 > 65535)) {
-					while (x < xstop) {
-						/* Draw */
-						coverage = c24 >> 16;
-						c24 += s24;
-						c24 = CLAMP (c24, 0, 16777216);
-#if 1
-						/* coverage = CLAMP (coverage, 0, 255); */
-						ca = NR_PREMUL (coverage, fg_a);
-						if (ca == 0) {
-							/* Transparent FG, NOP */
-						} else if ((ca == 255) || (d[3] == 0)) {
-							/* Full coverage, COPY */
-							d[0] = NR_PREMUL (fg_r, ca);
-							d[1] = NR_PREMUL (fg_g, ca);
-							d[2] = NR_PREMUL (fg_b, ca);
-							d[3] = ca;
-						} else {
-							/* Full composition */
-							d[0] = NR_COMPOSENPP (fg_r, ca, d[0], d[3]);
-							d[1] = NR_COMPOSENPP (fg_g, ca, d[1], d[3]);
-							d[2] = NR_COMPOSENPP (fg_b, ca, d[2], d[3]);
-							d[3] = (65025 - (255 - ca) * (255 - d[3]) + 127) / 255;
-						}
-#else
-						d[0] = 255;d[1] = 255;d[2] = 127;d[3] = 255;
-#endif
-						d += 4;
-						x += 1;
-					}
-					x -= 1;
-				} else {
-					d += 4 * (xstop - x);
-					x = xstop - 1;
+					run (d, xstop - x, c24, s24, data);
 				}
+				d += bpp * (xstop - x);
+				x = xstop - 1;
 			} else {
-				/* Draw */
-				localval = CLAMP (localval, 0.0, 1.0);
-				coverage = (int) (localval * 255.9999);
-				/* coverage = CLAMP (coverage, 0, 255); */
-				ca = NR_PREMUL (coverage, fg_a);
-				if (ca == 0) {
-					/* Transparent FG, NOP */
-				} else if ((ca == 255) || (d[3] == 0)) {
-					/* Full coverage, COPY */
-					d[0] = NR_PREMUL (fg_r, ca);
-					d[1] = NR_PREMUL (fg_g, ca);
-					d[2] = NR_PREMUL (fg_b, ca);
-					d[3] = ca;
-				} else {
-					/* Full composition */
-					d[0] = NR_COMPOSENPP (fg_r, ca, d[0], d[3]);
-					d[1] = NR_COMPOSENPP (fg_g, ca, d[1], d[3]);
-					d[2] = NR_COMPOSENPP (fg_b, ca, d[2], d[3]);
-					d[3] = (65025 - (255 - ca) * (255 - d[3]) + 127) / 255;
-				}
-				d += 4;
+				run (d, 1, c24, 0, data);
+				d += bpp;
 			}
 		}
 		nr_run_free_list (runs);
-		rowbuffer += dpb->rs;
+		rowbuffer += rs;
 	}
 	if (slices) nr_slice_free_list (slices);
 }

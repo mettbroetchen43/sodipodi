@@ -223,7 +223,7 @@ nr_blit_pixblock_mask_rgba32 (NRPixBlock *d, NRPixBlock *m, unsigned long rgba)
 
 		if (d->empty) {
 			if (d->mode == NR_PIXBLOCK_MODE_R8G8B8) {
-				nr_R8G8B8_EMPTY_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
+				nr_R8G8B8_R8G8B8_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
 			} else if (d->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 				nr_R8G8B8A8_P_EMPTY_A8_RGBA32 (dpx, w, h, d->rs, mpx, m->rs, rgba);
 			} else {
