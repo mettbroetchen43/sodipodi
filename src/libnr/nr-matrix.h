@@ -50,6 +50,9 @@ NRMatrixF *nr_matrix_f_set_translate (NRMatrixF *m, float x, float y);
 NRMatrixD *nr_matrix_d_set_scale (NRMatrixD *m, double sx, double sy);
 NRMatrixF *nr_matrix_f_set_scale (NRMatrixF *m, float sx, float sy);
 
+NRMatrixD *nr_matrix_d_set_rotate (NRMatrixD *m, double theta);
+NRMatrixF *nr_matrix_f_set_rotate (NRMatrixF *m, float theta);
+
 #define NR_MATRIX_DF_TRANSFORM_X(m,x,y) ((m)->c[0] * (x) + (m)->c[2] * (y) + (m)->c[4])
 #define NR_MATRIX_DF_TRANSFORM_Y(m,x,y) ((m)->c[1] * (x) + (m)->c[3] * (y) + (m)->c[5])
 

@@ -406,3 +406,34 @@ nr_matrix_f_set_scale (NRMatrixF *m, float sx, float sy)
 	return m;
 }
 
+NRMatrixD *
+nr_matrix_d_set_rotate (NRMatrixD *m, double theta)
+{
+	double s, c;
+	s = sin (theta);
+	c = cos (theta);
+	m->c[0] = c;
+	m->c[1] = s;
+	m->c[2] = -s;
+	m->c[3] = c;
+	m->c[4] = 0.0;
+	m->c[5] = 0.0;
+	return m;
+}
+
+NRMatrixF *
+nr_matrix_f_set_rotate (NRMatrixF *m, float theta)
+{
+	float s, c;
+	s = sin (theta);
+	c = cos (theta);
+	m->c[0] = c;
+	m->c[1] = s;
+	m->c[2] = -s;
+	m->c[3] = c;
+	m->c[4] = 0.0;
+	m->c[5] = 0.0;
+	return m;
+}
+
+

@@ -336,7 +336,28 @@ sp_shape_update_marker_view (SPShape *shape, NRArenaItem *ai)
 						 &m, style->stroke_width.computed);
 			nstart += 1;
 		} else if (shape->marker_end && ((bp[1].code != ART_LINETO) && (bp[1].code != ART_CURVETO))) {
-			nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
+			float dx, dy, h;
+			if ((bp->code == ART_LINETO) && (bp > shape->curve->bpath)) {
+				dx = bp->x3 - (bp - 1)->x3;
+				dy = bp->y3 - (bp - 1)->y3;
+			} else if (bp[1].code == ART_CURVETO) {
+				dx = bp->x3 - bp->x2;
+				dy = bp->y3 - bp->y2;
+			} else {
+				dx = 1.0;
+				dy = 0.0;
+			}
+			h = hypot (dx, dy);
+			if (h > 1e-9) {
+				m.c[0] = dx / h;
+				m.c[1] = dy / h;
+				m.c[2] = -dy / h;
+				m.c[3] = dx / h;
+				m.c[4] = bp->x3;
+				m.c[5] = bp->y3;
+			} else {
+				nr_matrix_f_set_translate (&m, bp->x3, bp->y3);
+			}
 			sp_marker_show_instance ((SPMarker *) shape->marker_end, ai,
 						 NR_ARENA_ITEM_GET_KEY (ai) + SP_MARKER_END, nend,
 						 &m, style->stroke_width.computed);

@@ -11,7 +11,9 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <math.h>
 #include <string.h>
+
 #include "svg/svg.h"
 #include "display/nr-arena-group.h"
 #include "attributes.h"
@@ -573,14 +575,22 @@ sp_marker_show_instance (SPMarker *marker, NRArenaItem *parent,
 				}
 			}
 			if (v->items[pos]) {
-				if (marker->markerUnits == SP_MARKER_UNITS_STROKEWIDTH) {
-					NRMatrixF m;
-					nr_matrix_f_set_scale (&m, linewidth, linewidth);
-					nr_matrix_multiply_fff (&m, &m, base);
-					nr_arena_item_set_transform (v->items[pos], &m);
+				NRMatrixF m;
+				if (marker->orient_auto) {
+					m = *base;
 				} else {
-					nr_arena_item_set_transform (v->items[pos], base);
+					/* fixme: Orient units (Lauris) */
+					nr_matrix_f_set_rotate (&m, marker->orient * M_PI / 180.0);
+					m.c[4] = base->c[4];
+					m.c[5] = base->c[5];
 				}
+				if (marker->markerUnits == SP_MARKER_UNITS_STROKEWIDTH) {
+					m.c[0] *= linewidth;
+					m.c[1] *= linewidth;
+					m.c[2] *= linewidth;
+					m.c[3] *= linewidth;
+				}
+				nr_arena_item_set_transform (v->items[pos], &m);
 			}
 			return v->items[pos];
 		}
