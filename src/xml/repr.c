@@ -17,6 +17,7 @@
 
 #include <string.h>
 #include <stddef.h>
+#include <assert.h>
 
 #include <glib.h>
 
@@ -195,8 +196,8 @@ repr_finalize (SPRepr *repr)
 {
 	SPReprListener *rl;
 	/* Parents reference children */
-	g_assert (repr->parent == NULL);
-	g_assert (repr->next == NULL);
+	assert (repr->parent == NULL);
+	assert (repr->next == NULL);
 	repr->doc = NULL;
 
 	for (rl = repr->listeners; rl; rl = rl->next) {
@@ -222,10 +223,10 @@ repr_doc_finalize (SPRepr *repr)
 static SPRepr *
 sp_repr_attach (SPRepr *parent, SPRepr *child)
 {
-	g_assert (parent != NULL);
-	g_assert (child != NULL);
-	g_assert (child->parent == NULL);
-	g_assert (child->doc == NULL && parent->doc == NULL);
+	assert (parent != NULL);
+	assert (child != NULL);
+	assert (child->parent == NULL);
+	assert (child->doc == NULL && parent->doc == NULL);
 
 	child->parent = parent;
 
@@ -472,8 +473,8 @@ sp_repr_set_attr (SPRepr *repr, const unsigned char *key, const unsigned char *v
 static void
 sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr)
 {
-	g_assert (repr != NULL);
-	g_assert (attr != NULL);
+	assert (repr != NULL);
+	assert (attr != NULL);
 
 	if (attr == repr->attributes) {
 		repr->attributes = attr->next;
@@ -482,7 +483,7 @@ sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr)
 		prev = repr->attributes;
 		while (prev->next != attr) {
 			prev = prev->next;
-			g_assert (prev != NULL);
+			assert (prev != NULL);
 		}
 		prev->next = attr->next;
 	}
@@ -494,7 +495,7 @@ sp_repr_remove_attribute (SPRepr *repr, SPReprAttr *attr)
 SPRepr *
 sp_repr_get_parent (SPRepr * repr)
 {
-	g_assert (repr != NULL);
+	assert (repr != NULL);
 
 	return repr->parent;
 }
@@ -505,11 +506,11 @@ sp_repr_add_child (SPRepr *repr, SPRepr *child, SPRepr *ref)
 	SPReprListener * rl;
 	unsigned int allowed;
 
-	g_assert (repr != NULL);
-	g_assert (child != NULL);
-	g_assert (!ref || ref->parent == repr);
-	g_assert (child->parent == NULL);
-	g_assert (child->doc == NULL || child->doc == repr->doc);
+	assert (repr != NULL);
+	assert (child != NULL);
+	assert (!ref || ref->parent == repr);
+	assert (child->parent == NULL);
+	assert (child->doc == NULL || child->doc == repr->doc);
 
 	allowed = TRUE;
 	for (rl = repr->listeners; rl != NULL; rl = rl->next) {
@@ -547,7 +548,7 @@ bind_document (SPReprDoc *doc, SPRepr *repr)
 {
 	SPRepr *child;
 
-	g_assert (repr->doc == NULL);
+	assert (repr->doc == NULL);
 
 	repr->doc = doc;
 
@@ -563,9 +564,9 @@ sp_repr_remove_child (SPRepr *repr, SPRepr *child)
 	SPRepr *ref;
 	unsigned int allowed;
 
-	g_assert (repr != NULL);
-	g_assert (child != NULL);
-	g_assert (child->parent == repr);
+	assert (repr != NULL);
+	assert (child != NULL);
+	assert (child->parent == repr);
 
 	ref = NULL;
 	if (child != repr->children) {
@@ -683,8 +684,8 @@ sp_repr_add_listener (SPRepr *repr, const SPReprEventVector *vector, void * data
 {
 	SPReprListener *rl, *last;
 
-	g_assert (repr != NULL);
-	g_assert (vector != NULL);
+	assert (repr != NULL);
+	assert (vector != NULL);
 
 	last = NULL;
 	if (repr->listeners) {
@@ -798,10 +799,10 @@ sp_repr_doc_unref (SPReprDoc * doc)
 void
 sp_repr_document_set_root (SPReprDoc *doc, SPRepr *repr)
 {
-	g_assert (doc != NULL);
-	g_assert (repr != NULL);
-	g_assert (doc->repr.children != NULL);
-	g_assert (repr->doc == NULL || repr->doc == doc);
+	assert (doc != NULL);
+	assert (repr != NULL);
+	assert (doc->repr.children != NULL);
+	assert (repr->doc == NULL || repr->doc == doc);
 
 	sp_repr_remove_child (&doc->repr, doc->repr.children);
 	sp_repr_add_child (&doc->repr, repr, NULL);
@@ -817,7 +818,7 @@ sp_repr_get_doc (SPRepr *repr)
 SPRepr *
 sp_repr_doc_get_root (SPReprDoc *doc)
 {
-	g_assert (doc != NULL);
+	assert (doc != NULL);
 	return doc->root;
 }
 

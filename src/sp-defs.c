@@ -307,7 +307,7 @@ sp_defs_write (SPObject *object, SPRepr *repr, guint flags)
 		l = NULL;
 		for (child = object->children; child != NULL; child = child->next) {
 			crepr = sp_object_invoke_write (child, NULL, flags);
-			l = g_slist_prepend (l, crepr);
+			if (crepr) l = g_slist_prepend (l, crepr);
 		}
 		while (l) {
 			sp_repr_add_child (repr, (SPRepr *) l->data, NULL);
