@@ -637,6 +637,12 @@ sp_color_picker_color_mod (SPColorSelector *csel, GObject *cp)
 }
 
 static void
+sp_color_picker_window_close (GtkButton * button, GtkWidget * w)
+{
+  gtk_widget_destroy (w);
+}
+
+static void
 sp_color_picker_clicked (GObject *cp, void *data)
 {
 	GtkWidget *w;
@@ -668,6 +674,7 @@ sp_color_picker_clicked (GObject *cp, void *data)
 
 		b = gtk_button_new_with_label (_("Close"));
 		gtk_box_pack_end (GTK_BOX (hb), b, FALSE, FALSE, 0);
+		g_signal_connect (G_OBJECT (b), "clicked", G_CALLBACK(sp_color_picker_window_close), w);
 
 		gtk_widget_show_all (w);
 	} else {
