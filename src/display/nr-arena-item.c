@@ -352,7 +352,9 @@ nr_arena_item_invoke_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 {
 	g_return_val_if_fail (item != NULL, NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail (NR_IS_ARENA_ITEM (item), NR_ARENA_ITEM_STATE_INVALID);
+#if 0
 	g_return_val_if_fail (item->state & NR_ARENA_ITEM_STATE_CLIP, item->state);
+#endif
 	g_return_val_if_fail ((pb->area.x1 - pb->area.x0) >= (area->x1 - area->x0), NR_ARENA_ITEM_STATE_INVALID);
 	g_return_val_if_fail ((pb->area.y1 - pb->area.y0) >= (area->y1 - area->y0), NR_ARENA_ITEM_STATE_INVALID);
 

@@ -406,6 +406,7 @@ nr_arena_shape_clip (NRArenaItem *item, NRRectL *area, NRPixBlock *pb)
 				s += 1;
 			}
 		}
+		nr_pixblock_release (&m);
 		pb->empty = FALSE;
 	}
 
