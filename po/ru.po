@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-09-27 16:59+0200\n"
-"PO-Revision-Date: 2001-07-26 01:00+0400\n"
+"POT-Creation-Date: 2001-09-29 23:23+0400\n"
+"PO-Revision-Date: 2001-09-29 23:33+0400\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -312,7 +312,7 @@ msgstr "Непрозрачность:"
 #: glade/item.c:14 src/dialogs/item-properties.c:180
 #: src/dialogs/item-properties.c:250 src/dialogs/item-properties.c:491
 msgid "The SVG ID of item"
-msgstr ""
+msgstr "SVG-идентификатор элемента"
 
 #: glade/item.c:15
 msgid "Transformation"
@@ -320,11 +320,11 @@ msgstr "Преобразование"
 
 #: glade/item.c:16
 msgid "Parent X ="
-msgstr ""
+msgstr "Исходное X ="
 
 #: glade/item.c:17
 msgid "Parent Y ="
-msgstr ""
+msgstr "Исходное Y ="
 
 #: glade/item.c:18 glade/item.c:19
 msgid "X +"
@@ -374,9 +374,8 @@ msgid "Stroke width"
 msgstr "Ширина штриха"
 
 #: glade/object_props.c:15 glade/object_props.c:62 src/helper/unit-menu.c:94
-#, fuzzy
 msgid "px"
-msgstr "x"
+msgstr "px"
 
 #: glade/object_props.c:16 glade/object_props.c:48 glade/object_props.c:55
 #: glade/object_props.c:63 glade/transformation.c:70 glade/transformation.c:80
@@ -404,7 +403,7 @@ msgstr "Соединить:"
 
 #: glade/object_props.c:20
 msgid "Bevel join"
-msgstr ""
+msgstr "Скошенное соединение"
 
 #: glade/object_props.c:21
 msgid "Round join"
@@ -412,12 +411,11 @@ msgstr "Скругленное соединение"
 
 #: glade/object_props.c:22
 msgid "Mitter join"
-msgstr ""
+msgstr "Угловое соединение"
 
 #: glade/object_props.c:23
-#, fuzzy
 msgid "Butt endpoints"
-msgstr "Круглые концы"
+msgstr "Тупые концы"
 
 #: glade/object_props.c:24
 msgid "Round endpoints"
@@ -436,9 +434,8 @@ msgid "Choose stroke color"
 msgstr "Выбрать цвет штриха"
 
 #: glade/object_props.c:28
-#, fuzzy
 msgid "Pick stroke color"
-msgstr "Выбрать цвет"
+msgstr "Указать цвет штриха"
 
 #: glade/object_props.c:30
 msgid "No fill"
@@ -533,29 +530,24 @@ msgid "Pick a color"
 msgstr "Выбрать цвет"
 
 #: glade/object_props.c:68 glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:40
-#, fuzzy
 msgid "pixels"
-msgstr "Точки растра\n"
+msgstr "точки растра"
 
 #: glade/object_props.c:69
-#, fuzzy
 msgid "millimeters"
-msgstr "Миллиметры\n"
+msgstr "миллиметры"
 
 #: glade/object_props.c:70
-#, fuzzy
 msgid "centimeter"
-msgstr "Сантиметры"
+msgstr "cантиметры"
 
 #: glade/object_props.c:71
-#, fuzzy
 msgid "points"
-msgstr "Пункты"
+msgstr "пункты"
 
 #: glade/object_props.c:72
-#, fuzzy
 msgid "inches"
-msgstr "Дюймы"
+msgstr "дюймы"
 
 #: glade/object_props.c:75
 msgid "none"
@@ -714,7 +706,7 @@ msgstr "Экспортировать как"
 
 #: glade/sodipodi-glade.c:41 glade/sodipodi-glade.c:42
 msgid "dpi"
-msgstr ""
+msgstr "dpi"
 
 #: glade/sodipodi-glade.c:43
 msgid "Lock aspect ratio"
@@ -722,7 +714,7 @@ msgstr "Сохранять пропорции"
 
 #: glade/sodipodi-glade.c:44
 msgid "1.0MB"
-msgstr ""
+msgstr "1.0МБ"
 
 #: glade/sodipodi-glade.c:45
 msgid "Uncompressed file size:"
@@ -966,19 +958,16 @@ msgid "Draw text"
 msgstr "Рисование текста"
 
 #: glade/toolbox.c:21
-#, fuzzy
 msgid "Select and transform"
-msgstr "Удалить преобразование"
+msgstr "Выбрать и преобразовать"
 
 #: glade/toolbox.c:22
-#, fuzzy
 msgid "Draw dynahand line"
 msgstr "Рисовать свободные линии"
 
 #: glade/toolbox.c:24
-#, fuzzy
 msgid "Zoom to 2:1"
-msgstr "Масштаб 1:1"
+msgstr "Масштаб 2:1"
 
 #: glade/toolbox.c:25
 msgid "Zoom to page"
@@ -1001,9 +990,8 @@ msgid "Zoom to 1:1"
 msgstr "Масштаб 1:1"
 
 #: glade/toolbox.c:31
-#, fuzzy
 msgid "Zoom to 1:2"
-msgstr "Масштаб 1:1"
+msgstr "Масштаб 1:2"
 
 #: glade/toolbox.c:33
 msgid "lower selection to bottom"
@@ -1131,8 +1119,7 @@ msgid "Flip selected objects"
 msgstr "Отражение выбранных объектов"
 
 #: glade/toolbox.c:76
-#, fuzzy
-msgid "Rotate selected objects 90╟ clockwise"
+msgid "Rotate selected objects 90  clockwise"
 msgstr "Поворот выбранных объектов на 90  по часовой"
 
 #: glade/toolbox.c:77
@@ -1269,23 +1256,19 @@ msgid "deg"
 msgstr "градусов"
 
 #: glade/transformation.c:31
-#, fuzzy
-msgid "Set angle to 0╟"
+msgid "Set angle to 0 "
 msgstr "Установить угол в 0 "
 
 #: glade/transformation.c:32
-#, fuzzy
-msgid "Set angle to 90╟"
+msgid "Set angle to 90 "
 msgstr "Установить угол в 90 "
 
 #: glade/transformation.c:33
-#, fuzzy
-msgid "Set angle to 180╟"
+msgid "Set angle to 180 "
 msgstr "Установить угол в 180 "
 
 #: glade/transformation.c:34
-#, fuzzy
-msgid "Set angle to 270╟"
+msgid "Set angle to 270 "
 msgstr "Установить угол в 270 "
 
 #: glade/transformation.c:35
@@ -1525,29 +1508,28 @@ msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Не удалось создать фабрику sodipodi-svg-doc"
 
 #: src/widgets/sp-color-selector.c:498
-#, fuzzy
 msgid "Hue:"
-msgstr "Синий:"
+msgstr "Тон:"
 
 #: src/widgets/sp-color-selector.c:499
 msgid "Saturation:"
-msgstr ""
+msgstr "Насыщенность:"
 
 #: src/widgets/sp-color-selector.c:517
 msgid "Cyan:"
-msgstr ""
+msgstr "Голубой"
 
 #: src/widgets/sp-color-selector.c:518
 msgid "Magenta:"
-msgstr ""
+msgstr "Пурпурный"
 
 #: src/widgets/sp-color-selector.c:519
 msgid "Yellow:"
-msgstr ""
+msgstr "Жёлтый"
 
 #: src/widgets/sp-color-selector.c:520
 msgid "Black:"
-msgstr ""
+msgstr "Чёрный"
 
 #: src/dialogs/align.c:80
 msgid "Last selected"
@@ -1591,35 +1573,32 @@ msgstr "Элемент -- ссылка"
 
 #: src/dialogs/item-properties.c:252 src/dialogs/item-properties.c:493
 msgid "The ID is not valid"
-msgstr ""
+msgstr "Недопустимый идентификатор"
 
 #: src/dialogs/item-properties.c:254 src/dialogs/item-properties.c:495
 msgid "The ID is already defined"
-msgstr ""
+msgstr "Уже определённый идентификатор"
 
 #: src/dialogs/item-properties.c:257 src/dialogs/item-properties.c:497
 msgid "The ID is valid"
-msgstr ""
+msgstr "Допустимый идентификатор"
 
 #. Reset button
 #: src/dialogs/gradient-selector.c:101
 msgid "Reset"
-msgstr ""
+msgstr "Сбросить"
 
 #: src/dialogs/gradient-vector.c:56
-#, fuzzy
 msgid "Start color"
-msgstr "Цвет сетки"
+msgstr "Начальный цвет"
 
 #: src/dialogs/gradient-vector.c:68
-#, fuzzy
 msgid "End color"
-msgstr "Цвет сетки"
+msgstr "Конечный цвет"
 
 #: src/dialogs/gradient-vector.c:95
-#, fuzzy
 msgid "Gradient vector"
-msgstr "Градиентная заливка"
+msgstr "Вектор градиента"
 
 #: src/file.c:83
 msgid "Select file to open"
@@ -1664,40 +1643,35 @@ msgstr "Точка растра"
 
 #: src/helper/unit-menu.c:95
 msgid "Userspace"
-msgstr ""
+msgstr "Пространство пользователя"
 
 #: src/helper/unit-menu.c:95
 msgid "us"
-msgstr ""
+msgstr "пп"
 
 #: src/helper/unit-menu.c:97
-#, fuzzy
 msgid "Em squares"
-msgstr "квадрат"
+msgstr "М-квадрат"
 
 #: src/helper/unit-menu.c:97
-#, fuzzy
 msgid "Em square"
-msgstr "квадрат"
+msgstr "М-квадрат"
 
 #: src/helper/unit-menu.c:97
 msgid "em"
-msgstr ""
+msgstr "мк"
 
 #: src/helper/unit-menu.c:98
-#, fuzzy
 msgid "Ex squares"
-msgstr "квадрат"
+msgstr "X-квадрат"
 
 #: src/helper/unit-menu.c:98
-#, fuzzy
 msgid "Ex square"
-msgstr "квадрат"
+msgstr "X-квадрат"
 
 #: src/helper/unit-menu.c:98
-#, fuzzy
 msgid "ex"
-msgstr "Текст"
+msgstr "xк"
 
 #: src/interface.c:110
 #, c-format
@@ -1724,7 +1698,7 @@ msgstr ""
 
 #: src/main.c:81
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
-msgstr ""
+msgstr "Показывать заданные файлы один за другим, переключаться на следующий при любом событии мыши/клавиатуры"
 
 #: src/main.c:183
 msgid "Oaf options"
@@ -1742,6 +1716,9 @@ msgid ""
 "Although sodipodi will run, you can\n"
 "neither load nor save preferences\n"
 msgstr ""
+"%s не является обычным файлом.\n"
+"Хотя sodipodi запустится, вы не сможете\n"
+"ни загрузить ни сохранить настройки.\n"
 
 #. Not an valid xml file
 #: src/sodipodi.c:315
@@ -1817,15 +1794,13 @@ msgstr "Неизвестный элемент :-("
 
 #. Item dialog
 #: src/sp-item.c:548
-#, fuzzy
 msgid "Item Properties"
-msgstr "Свойства текста"
+msgstr "Свойства элемента"
 
 #. Select item
 #: src/sp-item.c:558
-#, fuzzy
 msgid "Select this"
-msgstr "Выделение"
+msgstr "Выделить это"
 
 #. Reset transformations
 #: src/sp-item.c:568
@@ -1860,15 +1835,13 @@ msgstr "Контур - чтобы это значило"
 
 #. Create toplevel menuitem
 #: src/sp-shape.c:581
-#, fuzzy
 msgid "Shape"
-msgstr "Шкала"
+msgstr "Форма"
 
 #. Item dialog
 #: src/sp-shape.c:584
-#, fuzzy
 msgid "Fill settings"
-msgstr "Установки дисплея"
+msgstr "Установки заливки"
 
 #: src/sp-text.c:201
 msgid "Text object"
@@ -1877,6 +1850,3 @@ msgstr "Текстовый объект"
 #: src/toolbox.c:99
 msgid "Draw"
 msgstr "Чертеж"
-
-#~ msgid "Pixelss"
-#~ msgstr "Точки растра"
