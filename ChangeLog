@@ -1,3 +1,15 @@
+2000-09-15  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/sp-line.h, sp-line.c: <line> item
+
+	* src/sp-polyline.h, sp-polyline.c: <polyline> item
+
+	* src/sp-polygon.c, sp-polygon.h: <polygon> item
+
+	* src/sp-object-repr.c (sp_object_type_lookup): Register new item types
+
+	* src/helper/curve.c (sp_curve_closepath): Add point, if end != start
+	
 2000-09-14  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/Makefile.am: Define GNOME_PIXMAPDIR

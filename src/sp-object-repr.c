@@ -8,8 +8,11 @@
 #include "sp-guide.h"
 #include "sp-image.h"
 #include "sp-rect.h" 
-#include "sp-text.h" 
 #include "sp-ellipse.h"
+#include "sp-line.h"
+#include "sp-polyline.h"
+#include "sp-polygon.h"
+#include "sp-text.h" 
 #include "sp-gradient.h"
 #include "sp-object-repr.h"
 
@@ -52,6 +55,9 @@ sp_object_type_lookup (const gchar * name)
 		g_hash_table_insert (dtable, "path", GINT_TO_POINTER (SP_TYPE_SHAPE));
 		g_hash_table_insert (dtable, "rect", GINT_TO_POINTER (SP_TYPE_RECT));
 		g_hash_table_insert (dtable, "ellipse", GINT_TO_POINTER (SP_TYPE_ELLIPSE));
+		g_hash_table_insert (dtable, "line", GINT_TO_POINTER (SP_TYPE_LINE));
+		g_hash_table_insert (dtable, "polyline", GINT_TO_POINTER (SP_TYPE_POLYLINE));
+		g_hash_table_insert (dtable, "polygon", GINT_TO_POINTER (SP_TYPE_POLYGON));
 		g_hash_table_insert (dtable, "text", GINT_TO_POINTER (SP_TYPE_TEXT));
 		g_hash_table_insert (dtable, "image", GINT_TO_POINTER (SP_TYPE_IMAGE));
 		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));

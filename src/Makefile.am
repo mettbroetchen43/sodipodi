@@ -39,6 +39,9 @@ sodipodi_SOURCES = \
 	sp-shape.c sp-shape.h \
 	sp-rect.c sp-rect.h \
 	sp-ellipse.c sp-ellipse.h \
+	sp-line.c sp-line.h \
+	sp-polyline.c sp-polyline.h \
+	sp-polygon.c sp-polygon.h \
 	sp-chars.c sp-chars.h \
 	sp-text.c sp-text.h \
 	sp-gradient.c sp-gradient.h \

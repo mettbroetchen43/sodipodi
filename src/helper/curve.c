@@ -450,8 +450,9 @@ sp_curve_closepath (SPCurve * curve)
 	bs = curve->bpath + curve->substart;
 	be = curve->bpath + curve->end - 1;
 
-	g_return_if_fail (bs->x3 != be->x3);
-	g_return_if_fail (bs->y3 != be->y3);
+	if ((bs->x3 != be->x3) || (bs->y3 != be->y3)) {
+		sp_curve_lineto (curve, bs->x3, bs->y3);
+	}
 
 	bs->code = ART_MOVETO;
 

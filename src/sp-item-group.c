@@ -185,6 +185,7 @@ sp_group_add_child (SPObject * object, SPRepr * child)
 	name = sp_repr_name (child);
 	g_assert (name != NULL);
 	type = sp_object_type_lookup (name);
+	g_return_if_fail (type > GTK_TYPE_NONE);
 
 	childobject = gtk_type_new (type);
 	childobject->parent = object;
@@ -238,7 +239,7 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 			return;
 		}
 	}
-	g_assert_not_reached ();
+	/* fixme: this occurs, if item is not supported, although shouldn't */
 }
 
 static gint
