@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.17\n"
 "POT-Creation-Date: 2003-02-24 11:42+0200\n"
-"PO-Revision-Date: 2003-04-09 05:20--500\n"
+"PO-Revision-Date: 2003-04-10 11:31--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -272,7 +272,7 @@ msgstr ""
 
 #: src/dialogs/document-properties.c:155
 msgid "Document settings"
-msgstr "Параметри документу"
+msgstr "Параметри документа"
 
 #: src/dialogs/document-properties.c:176
 msgid "Paper size:"
@@ -320,7 +320,7 @@ msgstr "Висота:"
 
 #: src/dialogs/export.c:115
 msgid "Export bitmap"
-msgstr "Експортувати растр"
+msgstr "Експортувати растрове зображення"
 
 #. Export area frame
 #: src/dialogs/export.c:124
@@ -361,7 +361,7 @@ msgstr ""
 
 #: src/dialogs/export.c:206
 msgid "Export png file"
-msgstr "Експортувати файл у форматі PNG"
+msgstr "Експортувати у файл у форматі PNG"
 
 #: src/dialogs/export.c:235
 #: src/interface.c:220
@@ -407,9 +407,8 @@ msgid "Opacity:"
 msgstr ""
 
 #: src/dialogs/item-properties.c:122
-#, fuzzy
 msgid "Transformation matrix"
-msgstr "Діалог трансформації"
+msgstr "Матриця трансформації"
 
 #: src/dialogs/item-properties.c:240
 msgid "Item is reference"
@@ -559,7 +558,7 @@ msgstr "RY:"
 #: src/dialogs/object-attributes.c:115
 #, c-format
 msgid "%s attributes"
-msgstr "Ознаки %s"
+msgstr "Властивості %s"
 
 #: src/dialogs/object-properties.c:109
 msgid "Object style"
@@ -571,15 +570,15 @@ msgstr "Заповнити"
 
 #: src/dialogs/object-properties.c:138
 msgid "Stroke paint"
-msgstr "Малювання обведення"
+msgstr "Малювання контура"
 
 #: src/dialogs/object-properties.c:152
 msgid "Stroke style"
-msgstr "Стиль обведення"
+msgstr "Стиль контура"
 
 #: src/dialogs/object-properties.c:172
 msgid "Apply to:"
-msgstr ""
+msgstr "Застосувати до:"
 
 #: src/dialogs/object-properties.c:182
 msgid "Selected objects"
@@ -607,11 +606,11 @@ msgstr "Спіраль"
 
 #: src/dialogs/object-properties.c:200
 msgid "Freehand and pen"
-msgstr ""
+msgstr "Олівець і ручка"
 
 #: src/dialogs/object-properties.c:203
 msgid "Calligraphic line"
-msgstr ""
+msgstr "Каліграфічна лінія"
 
 #: src/dialogs/object-properties.c:206
 #: src/interface.c:390
@@ -629,7 +628,7 @@ msgstr "Позиція і розмір"
 #: src/dialogs/stroke-style.c:545
 #: src/toolbox.c:380
 msgid "Stroke settings"
-msgstr "Параметри обведення"
+msgstr "Параметри контура"
 
 #. Join type
 #: src/dialogs/stroke-style.c:581
@@ -639,7 +638,7 @@ msgstr "Об'єднання:"
 #. Cap type
 #: src/dialogs/stroke-style.c:624
 msgid "Cap:"
-msgstr ""
+msgstr "Закінчення:"
 
 #. Dash
 #: src/dialogs/stroke-style.c:667
@@ -673,7 +672,7 @@ msgstr ""
 
 #: src/dialogs/tool-attributes.c:45
 msgid "Tool attributes"
-msgstr "Ознаки інструмента"
+msgstr "Властивості інструмента"
 
 #: src/dialogs/tool-attributes.c:90
 msgid "Expansion"
@@ -702,7 +701,7 @@ msgstr "Пропорція"
 
 #: src/dialogs/tool-attributes.c:110
 msgid "Transform:"
-msgstr "Перетворення:"
+msgstr "Трансформація:"
 
 #. Mass
 #: src/dialogs/tool-attributes.c:120
@@ -723,7 +722,7 @@ msgstr "Кут"
 
 #: src/dialogs/tool-attributes.c:127
 msgid "Tool has no attributes"
-msgstr "Інструмент не має ознак"
+msgstr "Інструмент не має властивостей"
 
 #: src/dialogs/tool-attributes.c:130
 #: src/dialogs/tool-options.c:89
@@ -740,7 +739,7 @@ msgstr "Інструмент не має параметрів"
 
 #: src/dialogs/transformation.c:194
 msgid "Transform selection"
-msgstr "Вибір перетворення"
+msgstr "Вибір трансформації"
 
 #: src/dialogs/transformation.c:366
 msgid "Move"
@@ -776,11 +775,11 @@ msgstr "Параметри документу"
 
 #: src/dialogs/xml-tree.c:188
 msgid "New text node"
-msgstr ""
+msgstr "Новий текстовий вузол"
 
 #: src/dialogs/xml-tree.c:205
 msgid "Duplicate node"
-msgstr "Продублювати вузол"
+msgstr "Дублювати вузол"
 
 #: src/dialogs/xml-tree.c:221
 msgid "Delete node"
@@ -806,19 +805,19 @@ msgstr "Опустити вузол"
 
 #: src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
-msgstr "Стерти атрибут"
+msgstr "Знищити властивість"
 
 #: src/dialogs/xml-tree.c:333
 msgid "Attribute name"
-msgstr "Назва ознаки"
+msgstr "Назва властивості"
 
 #: src/dialogs/xml-tree.c:340
 msgid "Set attribute"
-msgstr "Встановити ознаку"
+msgstr "Встановити властивість"
 
 #: src/dialogs/xml-tree.c:353
 msgid "Attribute value"
-msgstr "Значення ознаки"
+msgstr "Значення властивості"
 
 #: src/dialogs/xml-tree.c:825
 #, c-format
@@ -899,9 +898,8 @@ msgid "Roundness ratio for y:"
 msgstr ""
 
 #: src/select-context.c:632
-#, fuzzy
 msgid "Visual transformation"
-msgstr "Скинути трансформацію"
+msgstr "Зорова трансформація"
 
 #: src/select-context.c:640
 #, fuzzy
@@ -915,7 +913,7 @@ msgstr "Показати напрямні"
 
 #: src/select-context.c:654
 msgid "Object transformation"
-msgstr "Перетворення об'єкта"
+msgstr "Трансформація об'єкта"
 
 #: src/select-context.c:662
 msgid "Optimize"
@@ -1172,7 +1170,7 @@ msgstr "Вставити"
 
 #: src/interface.c:239
 msgid "Duplicate"
-msgstr "Продублювати"
+msgstr "Дублювати"
 
 #: src/interface.c:240
 msgid "Delete"
@@ -1310,7 +1308,7 @@ msgstr ""
 
 #: src/interface.c:397
 msgid "Fill and Stroke"
-msgstr "Заповнення і обведення"
+msgstr "Заповнення і контур"
 
 #: src/interface.c:398
 msgid "Size and Position"
@@ -1326,7 +1324,7 @@ msgstr "Редагування тексту"
 
 #: src/interface.c:401
 msgid "Transformations"
-msgstr "Перетворення"
+msgstr "Трансформації"
 
 #: src/interface.c:402
 msgid "Tool Options"
@@ -1334,7 +1332,7 @@ msgstr "Параметри інструмента"
 
 #: src/interface.c:403
 msgid "Tool Attributes"
-msgstr "Ознаки інструмента"
+msgstr "Властивості інструмента"
 
 #: src/interface.c:404
 msgid "Document"
@@ -1677,7 +1675,7 @@ msgstr ""
 
 #: src/sp-image.c:1002
 msgid "Document Name:"
-msgstr "Назва документу:"
+msgstr "Назва документа:"
 
 #: src/sp-image.c:1015
 #, fuzzy
@@ -1787,7 +1785,7 @@ msgstr "Зберегти документ"
 
 #: src/toolbox.c:310
 msgid "Save document under new name"
-msgstr "Зберегти документ з новою назвою"
+msgstr "Зберегти документ під іншою назвою"
 
 #: src/toolbox.c:311
 msgid "Print document"
@@ -1800,7 +1798,7 @@ msgstr "Перегляд друку малюнка"
 
 #: src/toolbox.c:316
 msgid "Import bitmap or SVG image into document"
-msgstr "Імпортувати растрове зображення чи зображення у форматі SVG у документ"
+msgstr "Імпортувати у документ растрове зображення чи зображення у форматі SVG"
 
 #: src/toolbox.c:317
 msgid "Export document as PNG bitmap"
@@ -1816,7 +1814,7 @@ msgstr "Повторити скасовану дію"
 
 #: src/toolbox.c:349
 msgid "Delete selected objects"
-msgstr "Стерти вибрані об'єкти"
+msgstr "Знищити вибрані об'єкти"
 
 #: src/toolbox.c:350
 msgid "Cut selected objects to clipboard"
@@ -1832,7 +1830,7 @@ msgstr "Вставити об'єкти з кишені"
 
 #: src/toolbox.c:353
 msgid "Duplicate selected objects"
-msgstr "Продублювати вибрані об'єкти"
+msgstr "Дублювати вибрані об'єкти"
 
 #: src/toolbox.c:377
 msgid "Object"
@@ -1844,11 +1842,11 @@ msgstr "Позиція і розмір об'єкта"
 
 #: src/toolbox.c:383
 msgid "Text and font settings"
-msgstr "Параметри тексту і шрифту"
+msgstr "Параметри тексту і шрифта"
 
 #: src/toolbox.c:385
 msgid "Object transformations"
-msgstr "Перетворення об'єктів"
+msgstr "Трансформації об'єктів"
 
 #. START COMPONENTS
 #: src/toolbox.c:392
@@ -1865,11 +1863,11 @@ msgstr "Обернути об'єкт на 90° за годинниковою с�
 
 #: src/toolbox.c:398
 msgid "Remove transformations"
-msgstr "Видалити перетворення"
+msgstr "Усунути всі трансформації"
 
 #: src/toolbox.c:399
 msgid "Convert object to curve"
-msgstr "Перетворити об'єкт у криві"
+msgstr "Перетворити об'єкт на криву"
 
 #: src/toolbox.c:426
 msgid "Raise selected objects to top"
@@ -1912,59 +1910,59 @@ msgstr "Малювання"
 #. Select
 #: src/toolbox.c:461
 msgid "Select tool - select and transform objects"
-msgstr "Вибір - вибір і перетворення об'єктів"
+msgstr "Інструмент вибору - вибір і трансформація об'єктів"
 
 #. Node
 #: src/toolbox.c:468
 msgid "Node tool - modify different aspects of existing objects"
-msgstr "Вузол - модифікація різних аспектів наявних об'єктів"
+msgstr "Інструмент \"вузол\" - модифікація різних аспектів наявних об'єктів"
 
 #. START COMPONENTS
 #. Rect
 #: src/toolbox.c:480
 msgid "Rectangle tool - create rectangles and squares with optional rounded corners"
-msgstr "Прямокутник - створення прямокутників і квадратів"
+msgstr "Інструмент \"прямокутник\" - створення прямокутників і квадратів з можливістю скруглення кутів"
 
 #: src/toolbox.c:481
 msgid "Arc tool - create circles, ellipses and arcs"
-msgstr "Дуга - створення кіл, еліпсів і дуг"
+msgstr "Інструмент \"дуга\" - створення кіл, еліпсів і дуг"
 
 #: src/toolbox.c:482
 msgid "Star tool - create stars and polygons"
-msgstr "Зірка - створення зірок і багатокутників"
+msgstr "Інструмент \"зірка\" - створення зірок і багатокутників"
 
 #: src/toolbox.c:483
 msgid "Spiral tool - create spirals"
-msgstr "Спіраль - створення спіралей"
+msgstr "Інструмент \"спіраль\" - створення спіралей"
 
 #. START COMPONENTS
 #. Rect
 #: src/toolbox.c:498
 msgid "Pencil tool - draw freehand lines and straight segments"
-msgstr "Олівець - малювання від руки"
+msgstr "Інструмент \"олівець\" - малювання довільних ліній або прямих відрізків"
 
 #: src/toolbox.c:499
 msgid "Pen tool - draw exactly positioned curved lines"
-msgstr "Ручка - точне малювання кривих"
+msgstr "Інструмент \"ручка\" - точне малювання кривих"
 
 #: src/toolbox.c:500
 msgid "Calligraphic tool - draw calligraphic lines"
-msgstr "Каліграфія - малювання каліграфічних ліній"
+msgstr "Каліграфічний інструмент - малювання каліграфічних ліній"
 
 #. Text
 #: src/toolbox.c:509
 msgid "Text tool - create editable text objects"
-msgstr "Текст - створення текстових об'єктів"
+msgstr "Текстовий інструмент - створення текстових об'єктів"
 
 #. Zoom
 #: src/toolbox.c:515
 msgid "Zoom tool - zoom into choosen area"
-msgstr "Масштабування - масштабування вибраної ділянки"
+msgstr "Інструмент масштабування - масштабування вибраної ділянки"
 
 #. Dropper
 #: src/toolbox.c:521
 msgid "Dropper tool - pick averaged colors from image"
-msgstr "Піпетка - отримання кольорів із зображення"
+msgstr "Інструмент \"піпетка\" - отримання кольорів із зображення"
 
 #. Todo:  Generalize all the toolbox routines to have general purpose
 #. routine for creating them
@@ -1997,15 +1995,15 @@ msgstr "Зменшити рисунок"
 
 #: src/toolbox.c:608
 msgid "Fit the whole page into window"
-msgstr "Підігнати сторінку під вікно"
+msgstr "Підігнати сторінку до розмірів вікна"
 
 #: src/toolbox.c:609
 msgid "Fit the whole drawing into window"
-msgstr "Підігнати рисунок під вікно"
+msgstr "Підігнати рисунок до розмірів вікна"
 
 #: src/toolbox.c:610
 msgid "Fit the whole selection into window"
-msgstr "Підігнати вибране під вікно"
+msgstr "Підігнати вибране до розмірів вікна"
 
 #: src/toolbox.c:634
 msgid "Nodes"
@@ -2017,11 +2015,11 @@ msgstr "Вставити нові вузли у вибрані відрізки"
 
 #: src/toolbox.c:638
 msgid "Break line at selected nodes"
-msgstr "Розбити лінію у вибраних вузлах"
+msgstr "Роз'єднати лінію у вибраних вузлах"
 
 #: src/toolbox.c:639
 msgid "Make selected nodes corner"
-msgstr ""
+msgstr "Зробити вибрані вузли кутовими"
 
 #: src/toolbox.c:640
 msgid "Make selected segments lines"
@@ -2037,7 +2035,7 @@ msgstr "Об'єднати лінії у вибраних вузлах"
 
 #: src/toolbox.c:643
 msgid "Make selected nodes smooth"
-msgstr "Згладити вибрані вузли"
+msgstr "Зробити вибрані вузли гладкими"
 
 #: src/toolbox.c:644
 msgid "Make selected segments curves"
@@ -2055,7 +2053,7 @@ msgstr "Стиль"
 
 #: src/widgets/font-selector.c:207
 msgid "Font size:"
-msgstr "Розмір шрифту:"
+msgstr "Розмір шрифта:"
 
 #: src/widgets/font-selector.c:517
 msgid "AaBbCcIiPpQq12368.;/()"
@@ -2084,7 +2082,7 @@ msgstr "У документі немає градієнтів"
 
 #: src/widgets/gradient-vector.c:257
 msgid "No gradient selected"
-msgstr "Не вибрано градієнта"
+msgstr "Не вибрано жодного градієнта"
 
 #: src/widgets/gradient-vector.c:412
 msgid "Start color"
@@ -2204,7 +2202,7 @@ msgstr "Чорний:"
 
 #: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Attribute"
-msgstr "Ознака"
+msgstr "Властивість"
 
 #: src/widgets/sp-xmlview-attr-list.c:56
 msgid "Value"
