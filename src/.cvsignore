@@ -2,3 +2,6 @@ Makefile
 Makefile.in
 sodipodi
 .deps
+*.o
+tmp
+toru

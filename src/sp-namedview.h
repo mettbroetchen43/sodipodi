@@ -11,7 +11,7 @@
  *
  */
 
-#include "sp-object.h"
+#include "sp-object-group.h"
 
 typedef struct _SPNamedView SPNamedView;
 typedef struct _SPNamedViewClass SPNamedViewClass;
@@ -23,14 +23,14 @@ typedef struct _SPNamedViewClass SPNamedViewClass;
 #define SP_IS_NAMEDVIEW_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_NAMEDVIEW))
 
 struct _SPNamedView {
-	SPObject object;
+	SPObjectGroup objectgroup;
 	gboolean editable;
 	GSList * hguides;
 	GSList * vguides;
 };
 
 struct _SPNamedViewClass {
-	SPObjectClass parent_class;
+	SPObjectGroupClass parent_class;
 };
 
 GtkType sp_namedview_get_type (void);

@@ -9,7 +9,7 @@ static void sp_repr_init (SPRepr * repr);
 static void sp_repr_destroy (GtkObject * object);
 
 static void sp_marshal_BOOL__POINTER_POINTER (GtkObject *object, GtkSignalFunc func, gpointer func_data, GtkArg * args);
-static void sp_repr_hash_del_value (gpointer key, gpointer value, gpointer user_data);
+static gboolean sp_repr_hash_del_value (gpointer key, gpointer value, gpointer user_data);
 static void sp_repr_attr_to_list (gpointer key, gpointer value, gpointer user_data);
 static void sp_repr_hash_copy (gpointer key, gpointer value, gpointer new_hash);
 
@@ -153,7 +153,7 @@ sp_repr_destroy (GtkObject * object)
 	}
 
 	if (repr->attr) {
-		g_hash_table_foreach (repr->attr, sp_repr_hash_del_value, repr);
+		g_hash_table_foreach_remove (repr->attr, sp_repr_hash_del_value, repr);
 		g_hash_table_destroy (repr->attr);
 	}
 
@@ -512,10 +512,12 @@ sp_repr_document_root (SPReprDoc * doc)
 
 /* Helpers */
 
-static void
+static gboolean
 sp_repr_hash_del_value (gpointer key, gpointer value, gpointer user_data)
 {
 	g_free (value);
+
+	return TRUE;
 }
 
 static void

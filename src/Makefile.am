@@ -24,6 +24,7 @@ sodipodi_SOURCES = \
 	\
 	sp-object.c sp-object.h \
 	sp-object-repr.c sp-object-repr.h \
+	sp-object-group.c sp-object-group.h \
 	sp-defs.c sp-defs.h \
 	sp-item.c sp-item.h \
 	sp-item-group.c \

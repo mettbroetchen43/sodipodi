@@ -359,25 +359,17 @@ void sp_do_file_print_preview (SPDocument * doc)
         GnomePrintMaster * gpm;
 	GnomePrintMasterPreview *gpmp;
 	gchar * title;
-#ifdef ENABLE_FRGBA
-        GnomePrintFRGBA * frgba;
-#endif
+
 	gpm = gnome_print_master_new();
 	gpc = gnome_print_master_get_context (gpm);
 
 	g_return_if_fail (gpm != NULL);
 	g_return_if_fail (gpc != NULL);
 
-#ifdef ENABLE_FRGBA
-	frgba = gnome_print_frgba_new (gpc);
-        sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (frgba));
-        gnome_print_showpage (GNOME_PRINT_CONTEXT (frgba));
-        gnome_print_context_close (GNOME_PRINT_CONTEXT (frgba));
-#else
 	sp_item_print (SP_ITEM (sp_document_root (doc)), GNOME_PRINT_CONTEXT (gpc));
         gnome_print_showpage (gpc);
         gnome_print_context_close (gpc);
-#endif	
+
 	title = g_strdup_printf (_("Sodipodi (doc name %s..): Print Preview"),"");
 	gpmp = gnome_print_master_preview_new (gpm, title);
 
