@@ -1,4 +1,21 @@
+2002-09-23  Masatake YAMATO  <jet@gyve.org>
+
+	* src/knot.c (sp_knot_class_init): Added "stamped" signal
+	(sp_knot_handler): Emit it
+
+	* src/select-context.c (sp_select_context_item_handler): Do stamping
+	(sp_select_context_root_handler): Ditto
+
+	* src/seltrans.c (sp_sel_trans_stamp): new method
+	(sp_show_handles): Connect "stamped" signal
+	(sp_sel_trans_handle_stamp): new handler
+
 2002-09-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/seltrans.c (sp_seltrans_handle_event): Just here for my debugging
+
+	* src/knot.c (sp_knot_handler): No ungrabbing, added TOP CANVAS HACK,
+	so we can now get key events and do not kill Gdk
 
 	* configure.in: Version 0.27pre
 

@@ -44,11 +44,7 @@
 
 #define TOLERANCE 1.0
 
-#if 1
 #define SPDC_EVENT_MASK (GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK)
-#else
-#define SPDC_EVENT_MASK 0x204
-#endif
 
 /* Drawing anchors */
 

@@ -274,6 +274,10 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 				sc->grabbed = NULL;
 			}
 			ret = TRUE;
+		} else if (event->button.button == 2) {	
+			/* stamping mode: show content mode moving */
+			sp_sel_trans_stamp(seltrans);
+			ret = TRUE;
 		}
 		break;
 	case GDK_ENTER_NOTIFY:
@@ -413,8 +417,14 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 			if (sc->grabbed) {
 				gnome_canvas_item_ungrab (sc->grabbed, event->button.time);
 			}
+			sc->button_press_shift = FALSE;
+		} else if (event->button.button == 2) {	
+			/* stamping mode: show outline mode moving */
+			/* FIXME: Is next condition ok? */
+			if (sc->dragging && sc->grabbed) 
+				sp_sel_trans_stamp(seltrans);
+			ret = TRUE;
 		}
-		sc->button_press_shift = FALSE;
 		break;
 	case GDK_KEY_PRESS: // keybindings for select context
           switch (event->key.keyval) {  

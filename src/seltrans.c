@@ -38,12 +38,27 @@ static void sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data)
 static void sp_sel_trans_handle_ungrab (SPKnot * knot, guint state, gpointer data);
 static void sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint32 state, gpointer data);
 static gboolean sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * p, guint state, gboolean * data);
+static void sp_sel_trans_handle_stamp (SPKnot * knot, guint state, gpointer data);
 
 static void sp_sel_trans_sel_changed (SPSelection * selection, gpointer data);
 static void sp_sel_trans_sel_modified (SPSelection * selection, guint flags, gpointer data);
 
 extern GdkCursor * CursorSelectMouseover, * CursorSelectDragging;
 extern GdkPixbuf * handles[];
+
+static gboolean
+sp_seltrans_handle_event (SPKnot *knot, GdkEvent *event, gpointer data)
+{
+	switch (event->type) {
+	case GDK_MOTION_NOTIFY:
+		break;
+	default:
+		g_print ("Event type %d occured\n", event->type);
+		break;
+	}
+
+	return FALSE;
+}
 
 void
 sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
@@ -376,6 +391,49 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	sp_sel_trans_update_handles (seltrans);
 }
 
+void
+sp_sel_trans_stamp (SPSelTrans * seltrans)
+{
+	/* stamping mode */
+	SPItem * original_item, * copy_item;
+	SPRepr * original_repr, * copy_repr;
+	const GSList * l;
+
+	gchar tstr[80];
+	gdouble i2d[6], i2dnew[6];
+	
+	gdouble * new_affine;
+
+	tstr[79] = '\0';
+	
+	if (!seltrans->empty) {
+		l = sp_selection_item_list (SP_DT_SELECTION (seltrans->desktop));
+		while (l) {
+			original_item = SP_ITEM(l->data);
+			original_repr = (SPRepr *)(SP_OBJECT (original_item)->repr);
+			copy_repr = sp_repr_duplicate (original_repr);
+			copy_item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (seltrans->desktop), 
+								     copy_repr);
+			
+			if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
+				sp_item_i2d_affine (original_item, i2d);
+				art_affine_multiply (i2dnew, i2d, seltrans->current);
+				sp_item_set_i2d_affine (copy_item, i2dnew);
+				new_affine = copy_item->affine;
+			} else 
+				new_affine = original_item->affine;
+
+			if (sp_svg_write_affine (tstr, 79, new_affine)) 
+				sp_repr_set_attr (copy_repr, "transform", tstr);
+			else
+				sp_repr_set_attr (copy_repr, "transform", NULL);
+			sp_repr_unref (copy_repr);
+			l = l->next;
+		}
+		sp_document_done (SP_DT_DOCUMENT (seltrans->desktop));
+	}
+}
+
 ArtPoint *
 sp_sel_trans_point_desktop (SPSelTrans * seltrans, ArtPoint * p)
 {
@@ -517,6 +575,9 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], const SPSelTransHandle 
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_grab), (gpointer) &handle[i]);
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "ungrabbed",
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_ungrab), (gpointer) &handle[i]);
+			gtk_signal_connect (GTK_OBJECT (knot[i]), "stamped",
+				GTK_SIGNAL_FUNC (sp_sel_trans_handle_stamp), (gpointer) &handle[i]);
+			gtk_signal_connect (GTK_OBJECT (knot[i]), "event", GTK_SIGNAL_FUNC (sp_seltrans_handle_event), (gpointer) &handle[i]);
 		}
 		sp_knot_show (knot[i]);
 
@@ -564,7 +625,6 @@ sp_sel_trans_handle_grab (SPKnot * knot, guint state, gpointer data)
 	}
 
 	sp_knot_position (knot, &p);
-
 	sp_sel_trans_grab (seltrans, &p, handle->x, handle->y, FALSE);
 }
 
@@ -594,10 +654,24 @@ sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint state, 
 	desktop = knot->desktop;
 	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
 	handle = (SPSelTransHandle *) data;
-
 	handle->action (seltrans, handle, position, state);
 
 	//sp_desktop_coordinate_status (desktop, position->x, position->y, 4);
+}
+
+static void
+sp_sel_trans_handle_stamp (SPKnot * knot, guint state, gpointer data)
+{
+	/* stamping mode: both mode(show content and outline) operation with knot */
+	SPDesktop * desktop;
+	SPSelTrans * seltrans;
+	
+	if (!SP_KNOT_IS_GRABBED (knot)) return;
+	
+	desktop = knot->desktop;
+	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
+
+	sp_sel_trans_stamp (seltrans);
 }
 
 /* fixme: Highly experimental test :) */

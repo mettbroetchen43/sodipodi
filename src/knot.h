@@ -94,7 +94,8 @@ struct _SPKnotClass {
 	void (* grabbed) (SPKnot * knot, guint state);
 	void (* ungrabbed) (SPKnot * knot, guint state);
 	void (* moved) (SPKnot * knot, ArtPoint * position, guint state);
-
+	void (* stamped)  (SPKnot * know, guint state);
+	
 	/*
 	 * Request knot to move to absolute position
 	 */

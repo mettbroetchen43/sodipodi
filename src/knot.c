@@ -23,6 +23,8 @@
 
 #include "sp-guide.h"
 
+#define KNOT_EVENT_MASK (GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK)
+
 #define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 
 #define noKNOT_NOGRAB
@@ -46,6 +48,7 @@ enum {
 	GRABBED,
 	UNGRABBED,
 	MOVED,
+	STAMPED,
 	REQUEST,
 	DISTANCE,
 	LAST_SIGNAL
@@ -145,6 +148,12 @@ sp_knot_class_init (SPKnotClass * klass)
 		GTK_SIGNAL_OFFSET (SPKnotClass, moved),
 		gtk_marshal_NONE__POINTER_UINT,
 		GTK_TYPE_NONE, 2, GTK_TYPE_POINTER, GTK_TYPE_UINT);
+	knot_signals[STAMPED] = gtk_signal_new ("stamped",
+		GTK_RUN_FIRST,
+		object_class->type,
+		GTK_SIGNAL_OFFSET (SPKnotClass, stamped),
+		gtk_marshal_NONE__UINT,
+		GTK_TYPE_NONE, 1, GTK_TYPE_UINT);
 	knot_signals[REQUEST] = gtk_signal_new ("request",
 		GTK_RUN_LAST,
 		object_class->type,
@@ -206,7 +215,7 @@ sp_knot_destroy (GtkObject * object)
 	knot = (SPKnot *) object;
 
 	/* ungrab pointer if still grabbed by mouseover, find a different way */
-	if (gdk_pointer_is_grabbed) gdk_pointer_ungrab (0);
+	if (gdk_pointer_is_grabbed) gdk_pointer_ungrab (gdk_time_get ());
 
 	if (knot->item) gtk_object_destroy (GTK_OBJECT (knot->item));
 	/*
@@ -341,12 +350,18 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			knot->hx = p.x - knot->x;
 			knot->hy = p.y - knot->y;
 #ifndef KNOT_NOGRAB
+#if 0
 			gdk_pointer_ungrab (event->button.time);
+#endif
 			gnome_canvas_item_grab (knot->item,
-						GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK,
+						KNOT_EVENT_MASK,
 						knot->cursor[SP_KNOT_STATE_DRAGGING],
 						event->button.time);
 			
+			/* fixme: Top hack (Lauris) */
+			/* fixme: If we add key masks to event mask, Gdk will abort (Lauris) */
+			/* fixme: But Canvas actualle does get key events, so all we need is routing these here */
+			knot->item->canvas->grabbed_event_mask |= (GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK);
 #endif
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, TRUE);
 			grabbed = TRUE;
@@ -358,6 +373,7 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			sp_knot_set_flag (knot, SP_KNOT_GRABBED, FALSE);
 #ifndef KNOT_NOGRAB
 			gnome_canvas_item_ungrab (knot->item, event->button.time);
+#if 0
 			gdk_pointer_grab (knot->item->canvas->layout.bin_window,
 					  FALSE,
 					  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | 
@@ -365,7 +381,7 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 					  NULL,
 					  knot->cursor[SP_KNOT_STATE_MOUSEOVER],
 					  event->button.time);
-
+#endif
 #endif
 			if (moved) {
 				sp_knot_set_flag (knot,
@@ -382,6 +398,11 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			grabbed = FALSE;
 			moved = FALSE;
 			consumed = TRUE;
+		} else if (event->button.button == 2) {
+			if (grabbed)
+				gtk_signal_emit (GTK_OBJECT (knot),
+						 knot_signals[STAMPED],
+						 event->button.state);
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
@@ -406,6 +427,7 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 		}
 		break;
 	case GDK_ENTER_NOTIFY:
+#if 0
 		gdk_pointer_grab (knot->item->canvas->layout.bin_window,
 				  FALSE,
 				  GDK_POINTER_MOTION_MASK | GDK_BUTTON_RELEASE_MASK | 
@@ -413,12 +435,15 @@ sp_knot_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				  NULL,
 				  knot->cursor[SP_KNOT_STATE_MOUSEOVER],
 				  event->button.time);
+#endif
 
 		sp_knot_set_flag (knot, SP_KNOT_MOUSEOVER, TRUE);
 		consumed = TRUE;
 		break;
 	case GDK_LEAVE_NOTIFY:
+#if 0
 		gdk_pointer_ungrab (event->button.time);
+#endif
 		sp_knot_set_flag (knot, SP_KNOT_MOUSEOVER, FALSE);
 		consumed = TRUE;
 		break;

@@ -93,6 +93,7 @@ void sp_sel_trans_set_center (SPSelTrans * seltrans, gdouble x, gdouble y);
 void sp_sel_trans_grab (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y, gboolean show_handles);
 void sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[], ArtPoint * norm);
 void sp_sel_trans_ungrab (SPSelTrans * seltrans);
+void sp_sel_trans_stamp (SPSelTrans * seltrans);
 
 ArtPoint * sp_sel_trans_point_desktop (SPSelTrans * seltrans, ArtPoint * p);
 ArtPoint * sp_sel_trans_origin_desktop (SPSelTrans * seltrans, ArtPoint * p);

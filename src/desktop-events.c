@@ -1,4 +1,15 @@
-#define SP_DESKTOP_EVENTS_C
+#define __SP_DESKTOP_EVENTS_C__
+
+/*
+ * Event handlers for SPDesktop
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include "helper/sp-guide.h"
 #include "helper/unit-menu.h"

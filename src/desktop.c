@@ -4,13 +4,12 @@
  * Editable view and widget implementation
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 1999-2002 Lauris Kaplinski
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
- *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #define noDESKTOP_VERBOSE
@@ -1322,7 +1321,9 @@ sp_desktop_widget_set_focus (GtkWidget *widget, GdkEvent *event, SPDesktopWidget
 
 	/* give focus to canvas widget */
 	gtk_widget_grab_focus (GTK_WIDGET (dtw->canvas));
+#if 0
 	gnome_canvas_item_grab_focus ((GnomeCanvasItem *) dtw->desktop->main); 
+#endif
 
 	return FALSE;
 }
