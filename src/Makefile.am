@@ -95,7 +95,6 @@ sodipodi_SOURCES = \
 	draw-context.c draw-context.h \
 	dyna-draw-context.c dyna-draw-context.h \
 	text-context.c text-context.h \
-	slide-context.c slide-context.h \
 	\
 	knot.c knot.h \
 	\
@@ -114,11 +113,9 @@ sodipodi_SOURCES = \
 	file.c file.h \
 	print.c print.h \
 	interface.c interface.h \
+	slideshow.c slideshow.h \
 	\
 	preferences-skeleton.h
-
-#	font-wrapper.c font-wrapper.h \
-#
 
 sodipodi_private_libs = \
 	dialogs/libspdialogs.a \

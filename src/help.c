@@ -1,4 +1,4 @@
-#define __HELP_C__
+#define __SP_HELP_C__
 
 /*
  * Help/About window
@@ -6,7 +6,7 @@
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 authors
+ * Copyright (C) 1999-2003 authors
  * Copyright (C) 2000-2002 Ximian, Inc.
  *
  * Released under GNU GPL, read the file 'COPYING' for more information

@@ -129,7 +129,6 @@ sp_symbol_set (SPObject *object, unsigned int key, const unsigned char *value)
 {
 	SPItem *item;
 	SPSymbol *symbol;
-	gulong unit;
 
 	item = SP_ITEM (object);
 	symbol = SP_SYMBOL (object);
@@ -237,8 +236,6 @@ sp_symbol_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 {
 	SPSymbol *symbol;
 	SPGroup *group;
-	SPObject *co;
-	const gchar *id;
 
 	symbol = (SPSymbol *) object;
 	group = (SPGroup *) object;
@@ -251,8 +248,6 @@ static void
 sp_symbol_remove_child (SPObject * object, SPRepr * child)
 {
 	SPSymbol *symbol;
-	SPObject *co;
-	const gchar *id;
 
 	symbol = (SPSymbol *) object;
 

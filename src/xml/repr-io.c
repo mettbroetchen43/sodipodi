@@ -172,7 +172,6 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default
 	SPRepr *repr, *crepr;
 	xmlAttrPtr prop;
 	xmlNodePtr child;
-	xmlNsPtr ns;
 	gchar c[256];
 
 #ifdef SP_REPR_IO_VERBOSE

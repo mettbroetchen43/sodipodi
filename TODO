@@ -1,4 +1,11 @@
-01/12/2002
+03/02/2003
+
+TODO for 0.30
+=============
+
+- Make export dialog honour filename
+- make internal canvas position floating-point
+
 
 TODO for 0.29
 =============

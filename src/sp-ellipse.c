@@ -39,10 +39,10 @@
 
 #if 1
 /* Hmmm... shouldn't this also qualify */
-/* Wheter it is faster or not, well, nobody knows */
+/* Whether it is faster or not, well, nobody knows */
 #define sp_round(v,m) (((v) < 0.0) ? (ceil ((v) / (m) - 0.5)) * (m) : (floor ((v) / (m) + 0.5)))
 #else
-/* we does not use C99 round(3) function yet */
+/* we do not use C99 round(3) function yet */
 static double sp_round (double x, double y)
 {
 	double remain;

@@ -1,8 +1,8 @@
-#ifndef __SP_HELP_H__
-#define __SP_HELP_H__
+#ifndef __SP_SLIDESHOW_H__
+#define __SP_SLIDESHOW_H__
 
 /*
- * Help/About window
+ * Slideshow/About window
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
@@ -13,6 +13,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-void sp_help_about (void);
+#include <gtk/gtkwidget.h>
+
+GtkWidget *sp_slideshow_new (const GSList *files);
 
 #endif

@@ -1,3 +1,9 @@
+2003-02-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/slideshow.h: New file
+
+	* src/slideshow.c: New file
+
 2003-02-02  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-rect.c (sp_rect_set): Accept 0.0 as valid for x, y, width and height

@@ -57,11 +57,7 @@
 #include "toolbox.h"
 #include "interface.h"
 #include "print.h"
-
-#if 1
-/* fixme: This are required for temporary slideshow hack */
-#include "slide-context.h"
-#endif
+#include "slideshow.h"
 
 #include "svg/svg.h"
 
@@ -262,35 +258,17 @@ sp_main_gui (int argc, const char **argv)
 			fl = g_slist_remove (fl, fl->data);
 		}
 	} else {
-		GSList *slides = NULL;
-		SPDocument * doc;
-		SPViewWidget *dtw;
-		/* fixme: This is terrible hack */
-		sodipodi = sodipodi_application_new ();
-		sodipodi_load_preferences (sodipodi);
-		sp_maintoolbox_create_toplevel ();
-		sodipodi_unref ();
-		
-		while (fl) {
-			doc = sp_document_new ((const gchar *) fl->data, FALSE, TRUE);
-			if (doc) {
-				slides = g_slist_append (slides, doc);
-			}
-			fl = g_slist_remove (fl, fl->data);
+		if (fl) {
+			GtkWidget *ss;
+			sodipodi = sodipodi_application_new ();
+			sodipodi_load_preferences (sodipodi);
+			ss = sp_slideshow_new (fl);
+			if (ss) gtk_widget_show (ss);
+			sodipodi_unref ();
+		} else {
+			fprintf (stderr, "No slides to display\n");
+			exit (0);
 		}
-		
-		if (slides) {
-			doc = slides->data;
-			slides = g_slist_remove (slides, doc);
-			dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
-			if (dtw) {
-				sp_desktop_set_event_context (SP_DESKTOP_WIDGET (dtw)->desktop, SP_TYPE_SLIDE_CONTEXT, NULL);
-				g_object_set_data (G_OBJECT (SP_DESKTOP_WIDGET (dtw)->desktop), "slides", slides);
-				sp_create_window (dtw, FALSE);
-			}
-		}
-		
-		sodipodi_unref ();
 	}
 
 	gtk_main ();
