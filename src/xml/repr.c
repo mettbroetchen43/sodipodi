@@ -296,6 +296,27 @@ sp_repr_get_attr (SPRepr *repr, const unsigned char *key)
 	return NULL;
 }
 
+const unsigned char *
+sp_repr_get_inherited_attr (SPRepr *repr, const unsigned char *key)
+{
+	SPRepr *cur;
+	unsigned int q;
+
+	g_return_val_if_fail (repr != NULL, NULL);
+	g_return_val_if_fail (key != NULL, NULL);
+
+	q = g_quark_from_string (key);
+
+	for (cur = repr; cur; cur = cur->parent) {
+		SPReprAttr *ra;
+		for (ra = cur->attributes; ra != NULL; ra = ra->next) {
+			if (ra->key == q) return ra->value;
+		}
+	}
+
+	return NULL;
+}
+
 unsigned int
 sp_repr_set_content (SPRepr *repr, const unsigned char *newcontent)
 {

@@ -182,7 +182,7 @@ sp_string_read_content (SPObject *object)
 			unival = g_utf8_get_char (p);
 			if (g_unichar_isspace (unival)) {
 				if (preserve) string->ulen += 1;
-				inspace = TRUE;
+				if (unival == ' ' || unival == '\t') inspace = TRUE;
 			} else {
 				/* Append space if needed */
 				if (!preserve && inspace && intext) string->ulen += 1;
@@ -203,9 +203,9 @@ sp_string_read_content (SPObject *object)
 		for (p = t; p && *p; p = g_utf8_next_char (p)) {
 			unival = g_utf8_get_char (p);
 			if (g_unichar_isspace (unival)) {
-				if (preserve) string->uchars[pos++] = unival;
+				if (preserve) string->uchars[pos++] = 32;
 				if (!intext) string->spstart = TRUE;
-				inspace = TRUE;
+				if (unival == ' ' || unival == '\t') inspace = TRUE;
 			} else {
 				/* Append space if needed */
 				if (!preserve && inspace && intext) string->uchars[pos++] = 32;

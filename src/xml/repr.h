@@ -25,6 +25,12 @@ typedef struct _SPRepr SPRepr;
 typedef struct _SPReprDoc SPReprDoc;
 typedef struct _SPReprAttr SPReprAttr;
 
+typedef enum {
+	SP_REPR_XML_SPACE_NONE,
+	SP_REPR_XML_SPACE_DEFAULT,
+	SP_REPR_XML_SPACE_PRESERVE
+} SPReprXmlSpaceType;
+
 /* SPRepr */
 
 SPRepr *sp_repr_new (const unsigned char *name);
@@ -41,6 +47,7 @@ SPRepr *sp_repr_get_next (SPRepr *repr);
 const unsigned char *sp_repr_get_name (SPRepr *repr);
 const unsigned char *sp_repr_get_content (SPRepr *repr);
 const unsigned char *sp_repr_get_attr (SPRepr *repr, const unsigned char *key);
+const unsigned char *sp_repr_get_inherited_attr (SPRepr *repr, const unsigned char *key);
 
 unsigned int sp_repr_is_element (SPRepr *repr);
 unsigned int sp_repr_is_text (SPRepr *repr);
@@ -74,6 +81,11 @@ SPReprAttr *sp_repr_attr_get_first (SPRepr *repr);
 SPReprAttr *sp_repr_attr_get_next (SPRepr *repr, SPReprAttr *ref);
 const unsigned char *sp_repr_attr_get_key (SPRepr *repr, SPReprAttr *attr);
 const unsigned char *sp_repr_attr_get_value (SPRepr *repr, SPReprAttr *attr);
+
+/* XML namespace attribute */
+
+SPReprXmlSpaceType sp_repr_get_xml_space (SPRepr *repr);
+void sp_repr_set_xml_space (SPRepr *repr, SPReprXmlSpaceType space);
 
 /* Convenience */
 

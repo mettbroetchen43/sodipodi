@@ -1,3 +1,23 @@
+2004-01-31  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-object.c (sp_object_private_set): Modified to work for
+	xml:space attribute unset operation
+
+	* src/xml/repr.h (SPReprXmlSpaceType): New enumeration type
+	
+	* src/xml/repr.c (sp_repr_get_inherited_attr): New method
+
+	* src/xml/repr-util.c (sp_repr_get_xml_space): New method
+	(sp_repr_set_xml_space): New method
+
+	* src/xml/repr-io.c (sp_repr_write_stream): Support XML file
+	saving feature for xml:space preserve
+	(sp_repr_doc_write_stream): Ditto
+	(sp_repr_print): Ditto
+	
+	* src/sp-text.c (sp_string_read_content): Modified white space
+	handling in xml:space compliant manner
+
 2004-01-25  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/style.c (trim_space): New function

@@ -34,6 +34,7 @@
 #endif
 
 #include "repr-private.h"
+#include "repr.h"
 
 static void sp_xml_ns_register_defaults ();
 static char *sp_xml_ns_auto_prefix (const char *uri);
@@ -259,6 +260,39 @@ sp_repr_attr_get_value (SPRepr *repr, SPReprAttr *attr)
 	g_return_val_if_fail (attr != NULL, NULL);
 
 	return SP_REPR_ATTRIBUTE_VALUE (attr);
+}
+
+SPReprXmlSpaceType
+sp_repr_get_xml_space (SPRepr *repr)
+{
+	const unsigned char *space;
+
+	space = sp_repr_get_inherited_attr (repr, "xml:space");
+
+	if (space && !strcmp(space, "preserve"))
+		return SP_REPR_XML_SPACE_PRESERVE;
+
+	return SP_REPR_XML_SPACE_DEFAULT;
+}
+
+void
+sp_repr_set_xml_space (SPRepr *repr, SPReprXmlSpaceType space)
+{
+	const char *space_str;
+	switch (space) {
+	case SP_REPR_XML_SPACE_PRESERVE:
+		space_str = "preserve";
+		break;
+	case SP_REPR_XML_SPACE_DEFAULT:
+		space_str = "default";
+		break;
+	case SP_REPR_XML_SPACE_NONE:
+	default:
+		space_str = NULL;
+		break;
+	}
+
+	sp_repr_set_attr (repr, "xml:space", space_str);
 }
 
 #if 0

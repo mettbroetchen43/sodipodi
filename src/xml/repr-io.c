@@ -287,6 +287,7 @@ sp_repr_doc_write_stream (SPReprDoc *doc, FILE *fp)
 	repr = sp_repr_doc_get_root (doc);
 
 	sp_repr_write_stream (repr, fp, 0);
+	fputs ("\n", fp);
 
 	return 1;
 }
@@ -329,6 +330,7 @@ void
 sp_repr_print (SPRepr * repr)
 {
 	sp_repr_write_stream (repr, stdout, 0);
+	fputs ("\n", stdout);
 
 	return;
 }
@@ -373,7 +375,7 @@ sp_repr_write_stream (SPRepr *repr, FILE * file, unsigned int level)
 		repr_quote_write (file, val);
 		putc ('"', file);
 	}
-	loose = TRUE;
+	loose = (sp_repr_get_xml_space (repr) != SP_REPR_XML_SPACE_PRESERVE);
 	for (child = repr->children; child != NULL; child = child->next) {
 		if (child->type == SP_XML_TEXT_NODE) {
 			loose = FALSE;
@@ -397,15 +399,16 @@ sp_repr_write_stream (SPRepr *repr, FILE * file, unsigned int level)
 				repr_quote_write (file, sp_repr_content (child));
 			} else {
 				sp_repr_write_stream (child, file, (loose) ? (level + 1) : 0);
+				if (loose) fputs ("\n", file);
 			}
 		}
 		
 		if (loose) {
 			for (i = 0; i < level; i++) fputs ("  ", file);
 		}
-		fprintf (file, "</%s>\n", sp_repr_name (repr));
+		fprintf (file, "</%s>", sp_repr_name (repr));
 	} else {
-		fputs (" />\n", file);
+		fputs (" />", file);
 	}
 
 	return 1;

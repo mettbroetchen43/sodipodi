@@ -437,10 +437,12 @@ sp_object_private_set (SPObject *object, unsigned int key, const unsigned char *
 		} else if (value && !strcmp (value, "default")) {
 			object->xml_space.value = SP_XML_SPACE_DEFAULT;
 			object->xml_space.set = TRUE;
-		} else if (object->parent) {
-			SPObject *parent;
-			parent = object->parent;
-			object->xml_space.value = parent->xml_space.value;
+		} else {
+			/* unset value */
+			object->xml_space.value = object->parent ?
+				object->parent->xml_space.value :
+				SP_XML_SPACE_DEFAULT;
+			object->xml_space.set = FALSE;
 		}
 		sp_object_request_update (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 		break;

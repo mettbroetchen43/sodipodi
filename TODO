@@ -6,8 +6,8 @@ TODO for 0.34
 - Remove file extension check from xft
 - Fix to handle white space for SPStirng correctly (DONE)
 - Fix cursor position for empty text (DONE)
-- Keep alive original text string at SPString
-- Fix bug around white space on preserve mode
+- Keep alive original text string at SPString (PENDING)
+- Fix bug around white space on preserve mode (DONE)
 
 
 22/02/2003
