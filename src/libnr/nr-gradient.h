@@ -33,7 +33,7 @@ struct _NRLGradientRenderer {
 	NRRenderer renderer;
 	const unsigned char *vector;
 	unsigned int spread;
-	float x0, y0;
+	int x0, y0;
 	float dx, dy;
 };
 

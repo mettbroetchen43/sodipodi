@@ -1,3 +1,12 @@
+2003-02-09  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-gradient.c (nr_lgradient_render_R8G8B8A8N_EMPTY): New shortcut
+
+	* src/libnr/nr-gradient.h: Made x0 and x0 integers - this introduces possible
+	upt to 0.7 pixel error, but other rendering parts are not exact anyways
+
+	* src/sp-paint-server.h: Fill function signature change
+
 2003-02-08  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-gradient.c (nr_rgradient_render_generic_symmetric): Special

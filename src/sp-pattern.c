@@ -427,7 +427,7 @@ sp_pattern_href_modified (SPObject *href, guint flags, SPPattern *pattern)
 
 /* Painter */
 
-static void sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
+static void sp_pat_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPPainter *
 sp_pattern_painter_new (SPPaintServer *ps, const gdouble *ctm, const NRRectD *bbox)
@@ -589,7 +589,7 @@ sp_pattern_painter_free (SPPaintServer *ps, SPPainter *painter)
 }
 
 static void
-sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
+sp_pat_fill (SPPainter *painter, NRPixBlock *pb)
 {
 	SPPatPainter *pp;
 	NRRectF ba, psa;
@@ -604,10 +604,10 @@ sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint 
 	/* Find buffer area in gradient space */
 	/* fixme: This is suboptimal (Lauris) */
 
-	ba.x0 = x0;
-	ba.y0 = y0;
-	ba.x1 = x0 + width;
-	ba.y1 = y0 + height;
+	ba.x0 = pb->area.x0;
+	ba.y0 = pb->area.y0;
+	ba.x1 = pb->area.x1;
+	ba.y1 = pb->area.y1;
 	nr_rect_f_matrix_f_transform (&psa, &ba, &pp->px2ps);
 
 	psa.x0 = floor ((psa.x0 - pp->pat->x.computed) / pp->pat->width.computed);
@@ -617,28 +617,26 @@ sp_pat_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint 
 
 	for (y = psa.y0; y < psa.y1; y++) {
 		for (x = psa.x0; x < psa.x1; x++) {
-			NRPixBlock pb;
+			NRPixBlock ppb;
 			float psx, psy;
 
 			psx = x * pp->pat->width.computed;
 			psy = y * pp->pat->height.computed;
 
-			area.x0 = x0 - (pp->ps2px.c[0] * psx + pp->ps2px.c[2] * psy);
-			area.y0 = y0 - (pp->ps2px.c[1] * psx + pp->ps2px.c[3] * psy);
-			area.x1 = area.x0 + width;
-			area.y1 = area.y0 + height;
+			area.x0 = pb->area.x0 - (pp->ps2px.c[0] * psx + pp->ps2px.c[2] * psy);
+			area.y0 = pb->area.y0 - (pp->ps2px.c[1] * psx + pp->ps2px.c[3] * psy);
+			area.x1 = area.x0 + pb->area.x1 - pb->area.x0;
+			area.y1 = area.y0 + pb->area.y1 - pb->area.y0;
 
 			/* We do not update here anymore */
 
 			/* Set up buffer */
 			/* fixme: (Lauris) */
-			nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, area.x0, area.y0, area.x1, area.y1,
-						  px, rowstride,
-						  FALSE, FALSE);
+			nr_pixblock_setup_extern (&ppb, pb->mode, area.x0, area.y0, area.x1, area.y1, NR_PIXBLOCK_PX (pb), pb->rs, FALSE, FALSE);
 
-			nr_arena_item_invoke_render (pp->root, &area, &pb, 0);
+			nr_arena_item_invoke_render (pp->root, &area, &ppb, 0);
 
-			nr_pixblock_release (&pb);
+			nr_pixblock_release (&ppb);
 		}
 	}
 }

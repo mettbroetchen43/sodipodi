@@ -13,9 +13,7 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-#include <glib.h>
-
-G_BEGIN_DECLS
+#include <libnr/nr-pixblock.h>
 
 #include "forward.h"
 #include "sp-object.h"
@@ -33,7 +31,7 @@ typedef enum {
 	SP_PAINTER_DEP
 } SPPainterType;
 
-typedef void (* SPPainterFillFunc) (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
+typedef void (* SPPainterFillFunc) (SPPainter *painter, NRPixBlock *pb);
 
 /* fixme: I do not like that class thingie (Lauris) */
 struct _SPPainter {
@@ -62,12 +60,6 @@ GType sp_paint_server_get_type (void);
 
 SPPainter *sp_paint_server_painter_new (SPPaintServer *ps, const gdouble *affine, const NRRectD *bbox);
 
-#if 0
-void sp_paint_server_painter_free (SPPaintServer *ps, SPPainter *painter);
-#endif
-
 SPPainter *sp_painter_free (SPPainter *painter);
-
-G_END_DECLS
 
 #endif

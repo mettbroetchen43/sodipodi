@@ -303,6 +303,8 @@ sp_gradient_release (SPObject *object)
 
 	gradient = (SPGradient *) object;
 
+	g_print ("Releasing gradient %s\n", SP_OBJECT_ID (object));
+
 	if (SP_OBJECT_DOCUMENT (object)) {
 		/* Unregister ourselves */
 		sp_document_remove_resource (SP_OBJECT_DOCUMENT (object), "gradient", SP_OBJECT (object));
@@ -1242,7 +1244,7 @@ static void sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painte
 
 static void sp_lineargradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
 
-static void sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
+static void sp_lg_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPGradientClass *lg_parent_class;
 
@@ -1571,18 +1573,13 @@ sp_lineargradient_build_repr (SPLinearGradient *lg, gboolean vector)
 }
 
 static void
-sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
+sp_lg_fill (SPPainter *painter, NRPixBlock *pb)
 {
 	SPLGPainter *lgp;
-	NRPixBlock pb;
 
 	lgp = (SPLGPainter *) painter;
 
-	nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, x0, y0, x0 + width, y0 + height, px, rowstride, FALSE, FALSE);
-
-	nr_render ((NRRenderer *) &lgp->lgr, &pb, NULL);
-
-	nr_pixblock_release (&pb);
+	nr_render ((NRRenderer *) &lgp->lgr, pb, NULL);
 }
 
 /*
@@ -1609,7 +1606,7 @@ static void sp_radialgradient_painter_free (SPPaintServer *ps, SPPainter *painte
 
 static void sp_radialgradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
 
-static void sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride);
+static void sp_rg_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPGradientClass *rg_parent_class;
 
@@ -1886,17 +1883,12 @@ sp_radialgradient_build_repr (SPRadialGradient *rg, gboolean vector)
 }
 
 static void
-sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint height, gint rowstride)
+sp_rg_fill (SPPainter *painter, NRPixBlock *pb)
 {
 	SPRGPainter *rgp;
-	NRPixBlock pb;
 
 	rgp = (SPRGPainter *) painter;
 
-	nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8A8N, x0, y0, x0 + width, y0 + height, px, rowstride, FALSE, FALSE);
-
-	nr_render ((NRRenderer *) &rgp->rgr, &pb, NULL);
-
-	nr_pixblock_release (&pb);
+	nr_render ((NRRenderer *) &rgp->rgr, pb, NULL);
 }
 

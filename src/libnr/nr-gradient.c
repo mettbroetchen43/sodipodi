@@ -29,6 +29,7 @@
 #define NRG_2MASK ((NR_GRADIENT_VECTOR_LENGTH << 1) - 1)
 
 static void nr_lgradient_render_block (NRRenderer *r, NRPixBlock *pb, NRPixBlock *m);
+static void nr_lgradient_render_R8G8B8A8N_EMPTY (NRLGradientRenderer *lgr, unsigned char *px, int x0, int y0, int width, int height, int rs);
 static void nr_lgradient_render_R8G8B8A8N (NRLGradientRenderer *lgr, unsigned char *px, int x0, int y0, int width, int height, int rs);
 static void nr_lgradient_render_R8G8B8 (NRLGradientRenderer *lgr, unsigned char *px, int x0, int y0, int width, int height, int rs);
 static void nr_lgradient_render_generic (NRLGradientRenderer *lgr, NRPixBlock *pb);
@@ -58,8 +59,8 @@ nr_lgradient_renderer_setup (NRLGradientRenderer *lgr,
 	nr_matrix_multiply_fff (&n2px, &n2gs, gs2px);
 	nr_matrix_f_invert (&px2n, &n2px);
 
-	lgr->x0 = n2px.c[4];
-	lgr->y0 = n2px.c[5];
+	lgr->x0 = (int) (n2px.c[4] + 0.5);
+	lgr->y0 = (int) (n2px.c[5] + 0.5);
 	lgr->dx = px2n.c[0] * NR_GRADIENT_VECTOR_LENGTH;
 	lgr->dy = px2n.c[2] * NR_GRADIENT_VECTOR_LENGTH;
 
@@ -89,7 +90,7 @@ nr_lgradient_render_block (NRRenderer *r, NRPixBlock *pb, NRPixBlock *m)
 			nr_lgradient_render_generic (lgr, pb);
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8A8N:
-			nr_lgradient_render_generic (lgr, pb);
+			nr_lgradient_render_R8G8B8A8N_EMPTY (lgr, NR_PIXBLOCK_PX (pb), pb->area.x0, pb->area.y0, width, height, pb->rs);
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8A8P:
 			nr_lgradient_render_generic (lgr, pb);
@@ -116,6 +117,59 @@ nr_lgradient_render_block (NRRenderer *r, NRPixBlock *pb, NRPixBlock *m)
 		}
 	}
 #endif
+}
+
+static void
+nr_lgradient_render_R8G8B8A8N_EMPTY (NRLGradientRenderer *lgr, unsigned char *px, int x0, int y0, int width, int height, int rs)
+{
+	int x, y;
+	double pos;
+
+	for (y = 0; y < height; y++) {
+		const unsigned char *s;
+		unsigned char *d;
+		int idx;
+		d = px + y * rs;
+		pos = (y + y0 - lgr->y0) * lgr->dy + (0 + x0 - lgr->x0) * lgr->dx;
+		if (lgr->spread == NR_GRADIENT_SPREAD_PAD) {
+			for (x = 0; x < width; x++) {
+				idx = (int) pos;
+				idx = CLAMP (idx, 0, NRG_MASK);
+				s = lgr->vector + 4 * idx;
+				d[0] = s[0];
+				d[1] = s[1];
+				d[2] = s[2];
+				d[3] = s[3];
+				d += 4;
+				pos += lgr->dx;
+			}
+		} else if (lgr->spread == NR_GRADIENT_SPREAD_REFLECT) {
+			for (x = 0; x < width; x++) {
+				idx = (int) pos;
+				idx = idx & NRG_2MASK;
+				if (idx > NRG_MASK) idx = NRG_2MASK - idx;
+				s = lgr->vector + 4 * idx;
+				d[0] = s[0];
+				d[1] = s[1];
+				d[2] = s[2];
+				d[3] = s[3];
+				d += 4;
+				pos += lgr->dx;
+			}
+		} else {
+			for (x = 0; x < width; x++) {
+				idx = (int) pos;
+				idx = idx & NRG_MASK;
+				s = lgr->vector + 4 * idx;
+				d[0] = s[0];
+				d[1] = s[1];
+				d[2] = s[2];
+				d[3] = s[3];
+				d += 4;
+				pos += lgr->dx;
+			}
+		}
+	}
 }
 
 static void

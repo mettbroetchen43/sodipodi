@@ -507,8 +507,7 @@ nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, 
 				NRPixBlock cb;
 				/* Need separate gradient buffer */
 				nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
-				ggroup->fill_painter->fill (ggroup->fill_painter, NR_PIXBLOCK_PX (&cb),
-							    area->x0, area->y0, area->x1 - area->x0, area->y1 - area->y0, cb.rs);
+				ggroup->fill_painter->fill (ggroup->fill_painter, &cb);
 				cb.empty = FALSE;
 				/* Composite */
 				nr_blit_pixblock_pixblock_mask (pb, &cb, &mb);
@@ -549,8 +548,7 @@ nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, 
 				NRPixBlock cb;
 				/* Need separate gradient buffer */
 				nr_pixblock_setup_fast (&cb, NR_PIXBLOCK_MODE_R8G8B8A8N, area->x0, area->y0, area->x1, area->y1, TRUE);
-				ggroup->stroke_painter->fill (ggroup->stroke_painter, NR_PIXBLOCK_PX (&cb),
-							    area->x0, area->y0, area->x1 - area->x0, area->y1 - area->y0, cb.rs);
+				ggroup->stroke_painter->fill (ggroup->stroke_painter, &cb);
 				cb.empty = FALSE;
 				/* Composite */
 				nr_blit_pixblock_pixblock_mask (pb, &cb, &m);
