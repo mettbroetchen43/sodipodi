@@ -2068,7 +2068,7 @@ msgstr "選択した領域を拡大します"
 
 #: src/verbs.c:477
 msgid "Dropper"
-msgstr "dropper"
+msgstr "スポイト"
 
 #: src/verbs.c:477
 msgid "Pick averaged colors from image"
@@ -2290,7 +2290,7 @@ msgstr "CMYKカラースペース"
 #. Use dropper
 #: src/widgets/paint-selector.c:757
 msgid "Get from dropper"
-msgstr "dropperから取得"
+msgstr "スポイトツールから取得"
 
 #: src/widgets/paint-selector.c:788
 msgid "Color paint"
