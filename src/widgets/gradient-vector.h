@@ -2,13 +2,15 @@
 #define __SP_GRADIENT_VECTOR_H__
 
 /*
- * Gradient vector selector and editor
+ * Gradient vector selection widget
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <libgnome/gnome-defs.h>
@@ -30,16 +32,13 @@ typedef struct _SPGradientVectorSelectorClass SPGradientVectorSelectorClass;
 struct _SPGradientVectorSelector {
 	GtkVBox vbox;
 
+	guint idlabel : 1;
+
 	SPDocument *doc;
 	SPGradient *gr;
 
 	/* Vector menu */
 	GtkWidget *menu;
-#if 0
-	/* fixme: Move these back to gradient editor */
-	/* Buttons */
-	GtkWidget *chg, *add, *del;
-#endif
 };
 
 struct _SPGradientVectorSelectorClass {

@@ -108,34 +108,30 @@ sp_gradient_selector_class_init (SPGradientSelectorClass *klass)
 static void
 sp_gradient_selector_init (SPGradientSelector *sel)
 {
-	GtkWidget *hb, *bb;
+	GtkWidget *hb;
 
 	sel->mode = SP_GRADIENT_SELECTOR_MODE_LINEAR;
 
-	/* Create box for vector & buttons */
-	hb = gtk_hbox_new (FALSE, 0);
-	gtk_widget_show (hb);
-	gtk_box_pack_start (GTK_BOX (sel), hb, FALSE, FALSE, 4);
-
+	/* Vectors */
 	sel->vectors = sp_gradient_vector_selector_new (NULL, NULL);
 	gtk_widget_show (sel->vectors);
-	gtk_box_pack_start (GTK_BOX (hb), sel->vectors, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (sel), sel->vectors, FALSE, FALSE, 0);
 	gtk_signal_connect (GTK_OBJECT (sel->vectors), "vector_set", GTK_SIGNAL_FUNC (sp_gradient_selector_vector_set), sel);
 
 	/* Create box for buttons */
-	bb = gtk_hbox_new (TRUE, 0);
-	gtk_widget_show (bb);
-	gtk_box_pack_start (GTK_BOX (hb), bb, TRUE, TRUE, 0);
+	hb = gtk_hbox_new (FALSE, 0);
+	gtk_widget_show (hb);
+	gtk_box_pack_start (GTK_BOX (sel), hb, FALSE, FALSE, 0);
 
 	sel->edit = gtk_button_new_with_label (_("Edit"));
 	gtk_widget_show (sel->edit);
-	gtk_box_pack_start (GTK_BOX (bb), sel->edit, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hb), sel->edit, TRUE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (sel->edit), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_edit_vector_clicked), sel);
 	gtk_widget_set_sensitive (sel->edit, FALSE);
 
 	sel->add = gtk_button_new_with_label (_("Add"));
 	gtk_widget_show (sel->add);
-	gtk_box_pack_start (GTK_BOX (bb), sel->add, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (hb), sel->add, TRUE, TRUE, 0);
 	gtk_signal_connect (GTK_OBJECT (sel->add), "clicked", GTK_SIGNAL_FUNC (sp_gradient_selector_add_vector_clicked), sel);
 	gtk_widget_set_sensitive (sel->add, FALSE);
 
@@ -212,13 +208,25 @@ sp_gradient_selector_set_bbox (SPGradientSelector *sel, gdouble x0, gdouble y0, 
 }
 
 void
+sp_gradient_selector_set_gs2d_matrix_f (SPGradientSelector *gsel, NRMatrixF *gs2d)
+{
+	sp_gradient_position_set_gs2d_matrix_f (SP_GRADIENT_POSITION (gsel->position), gs2d);
+}
+
+void
+sp_gradient_selector_get_gs2d_matrix_f (SPGradientSelector *gsel, NRMatrixF *gs2d)
+{
+	sp_gradient_position_get_gs2d_matrix_f (SP_GRADIENT_POSITION (gsel->position), gs2d);
+}
+
+void
 sp_gradient_selector_set_lgradient_position (SPGradientSelector *sel, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
 {
 	g_return_if_fail (sel != NULL);
 	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (sel));
 	g_return_if_fail (sel->mode == SP_GRADIENT_SELECTOR_MODE_LINEAR);
 
-	sp_gradient_position_set_vector (SP_GRADIENT_POSITION (sel->position), x0, y0, x1, y1);
+	sp_gradient_position_set_linear_position (SP_GRADIENT_POSITION (sel->position), x0, y0, x1, y1);
 }
 
 void
@@ -228,7 +236,7 @@ sp_gradient_selector_set_rgradient_position (SPGradientSelector *sel, gdouble cx
 	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (sel));
 	g_return_if_fail (sel->mode == SP_GRADIENT_SELECTOR_MODE_RADIAL);
 
-	sp_gradient_position_set_vector (SP_GRADIENT_POSITION (sel->position), cx, cy, cx + r, cy);
+	sp_gradient_position_set_radial_position (SP_GRADIENT_POSITION (sel->position), cx, cy, fx, fy, r);
 }
 
 SPGradient *
@@ -248,25 +256,25 @@ sp_gradient_selector_get_lgradient_position_floatv (SPGradientSelector *gsel, gf
 	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (gsel));
 	g_return_if_fail (gsel->mode == SP_GRADIENT_SELECTOR_MODE_LINEAR);
 
-	sp_gradient_position_get_position_floatv (SP_GRADIENT_POSITION (gsel->position), pos);
+	sp_gradient_position_get_linear_position_floatv (SP_GRADIENT_POSITION (gsel->position), pos);
 }
 
 void
 sp_gradient_selector_get_rgradient_position_floatv (SPGradientSelector *gsel, gfloat *pos)
 {
-	gfloat p[4];
+	gfloat p[5];
 
 	g_return_if_fail (gsel != NULL);
 	g_return_if_fail (SP_IS_GRADIENT_SELECTOR (gsel));
 	g_return_if_fail (gsel->mode == SP_GRADIENT_SELECTOR_MODE_RADIAL);
 
-	sp_gradient_position_get_position_floatv (SP_GRADIENT_POSITION (gsel->position), p);
+	sp_gradient_position_get_radial_position_floatv (SP_GRADIENT_POSITION (gsel->position), p);
 
 	pos[0] = p[0];
 	pos[1] = p[1];
-	pos[2] = p[0];
-	pos[3] = p[1];
-	pos[4] = hypot (p[2] - p[0], p[3] - p[1]);
+	pos[2] = p[2];
+	pos[3] = p[3];
+	pos[4] = p[4];
 }
 
 static void

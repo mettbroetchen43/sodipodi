@@ -17,6 +17,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <libnr/nr-values.h>
+
 #include <gtk/gtksignal.h>
 #include <gtk/gtkhbox.h>
 #include <gtk/gtkradiobutton.h>
@@ -33,7 +35,8 @@
 
 #include <libgnomeui/gnome-stock.h>
 
-#include "../sp-object.h"
+#include "../sp-item.h"
+#include "../sp-gradient.h"
 
 #include "sp-color-selector.h"
 /* fixme: Move it from dialogs to here */
@@ -375,6 +378,36 @@ sp_paint_selector_set_gradient_bbox (SPPaintSelector *psel, gdouble x0, gdouble 
 }
 
 void
+sp_paint_selector_set_gradient_gs2d_matrix_f (SPPaintSelector *psel, NRMatrixF *gs2d)
+{
+	SPGradientSelector *gsel;
+
+	g_return_if_fail (psel != NULL);
+	g_return_if_fail (SP_IS_PAINT_SELECTOR (psel));
+	g_return_if_fail ((psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) ||
+			  (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL));
+
+	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
+
+	sp_gradient_selector_set_gs2d_matrix_f (gsel, gs2d);
+}
+
+void
+sp_paint_selector_get_gradient_gs2d_matrix_f (SPPaintSelector *psel, NRMatrixF *gs2d)
+{
+	SPGradientSelector *gsel;
+
+	g_return_if_fail (psel != NULL);
+	g_return_if_fail (SP_IS_PAINT_SELECTOR (psel));
+	g_return_if_fail ((psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) ||
+			  (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL));
+
+	gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
+
+	sp_gradient_selector_get_gs2d_matrix_f (gsel, gs2d);
+}
+
+void
 sp_paint_selector_get_rgba_floatv (SPPaintSelector *psel, gfloat *rgba)
 {
 	SPColorSelector *csel;
@@ -426,6 +459,67 @@ sp_paint_selector_get_gradient_position_floatv (SPPaintSelector *psel, gfloat *p
 	} else {
 		return sp_gradient_selector_get_rgradient_position_floatv (gsel, pos);
 	}
+}
+
+void
+sp_paint_selector_write_lineargradient (SPPaintSelector *psel, SPLinearGradient *lg, SPItem *item)
+{
+	gfloat p[4];
+	ArtDRect bbox;
+	gdouble ctm[6];
+	NRMatrixF fctm, gs2d;
+	NRRectF fbb;
+
+	g_return_if_fail (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
+
+	sp_item_invoke_bbox (item, &bbox, (gdouble *) &NR_MATRIX_D_IDENTITY);
+	sp_item_i2doc_affine (item, ctm);
+	fctm.c[0] = ctm[0];
+	fctm.c[1] = ctm[1];
+	fctm.c[2] = ctm[2];
+	fctm.c[3] = ctm[3];
+	fctm.c[4] = ctm[4];
+	fctm.c[5] = ctm[5];
+	fbb.x0 = bbox.x0;
+	fbb.y0 = bbox.y0;
+	fbb.x1 = bbox.x1;
+	fbb.y1 = bbox.y1;
+	sp_paint_selector_get_gradient_gs2d_matrix_f (psel, &gs2d);
+	sp_gradient_set_gs2d_matrix_f (SP_GRADIENT (lg), &fctm, &fbb, &gs2d);
+
+	sp_paint_selector_get_gradient_position_floatv (psel, p);
+
+	sp_lineargradient_set_position (lg, p[0], p[1], p[2], p[3]);
+}
+
+void
+sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient *rg, SPItem *item)
+{
+	gfloat p[5];
+	ArtDRect bbox;
+	gdouble ctm[6];
+	NRMatrixF fctm, gs2d;
+	NRRectF fbb;
+
+	g_return_if_fail (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL);
+
+	sp_item_invoke_bbox (item, &bbox, (gdouble *) &NR_MATRIX_D_IDENTITY);
+	sp_item_i2doc_affine (item, ctm);
+	fctm.c[0] = ctm[0];
+	fctm.c[1] = ctm[1];
+	fctm.c[2] = ctm[2];
+	fctm.c[3] = ctm[3];
+	fctm.c[4] = ctm[4];
+	fctm.c[5] = ctm[5];
+	fbb.x0 = bbox.x0;
+	fbb.y0 = bbox.y0;
+	fbb.x1 = bbox.x1;
+	fbb.y1 = bbox.y1;
+	sp_paint_selector_get_gradient_gs2d_matrix_f (psel, &gs2d);
+	sp_gradient_set_gs2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &gs2d);
+
+	sp_paint_selector_get_gradient_position_floatv (psel, p);
+	sp_radialgradient_set_position (rg, p[0], p[1], p[2], p[3], p[4]);
 }
 
 static void
@@ -663,66 +757,27 @@ sp_paint_selector_set_mode_gradient (SPPaintSelector *psel, SPPaintSelectorMode 
 		/* Already have gradient selector */
 		gsel = gtk_object_get_data (GTK_OBJECT (psel->selector), "gradient-selector");
 	} else {
-		GtkWidget *vb, *hb, *l, *om, *m, *i;
 		if (psel->selector) {
 			gtk_widget_destroy (psel->selector);
 			psel->selector = NULL;
 		}
 		/* Create new gradient selector */
-		/* Create vbox */
-		vb = gtk_vbox_new (FALSE, 4);
-		gtk_widget_show (vb);
-		/* Create hbox */
-		hb = gtk_hbox_new (FALSE, 4);
-		gtk_widget_show (hb);
-		gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 4);
-		/* Label */
-		l = gtk_label_new (_("Mode:"));
-		gtk_widget_show (l);
-		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-		gtk_box_pack_start (GTK_BOX (hb), l, TRUE, TRUE, 4);
-		/* Create option menu */
-		om = gtk_option_menu_new ();
-		gtk_widget_show (om);
-		gtk_widget_set_sensitive (om, FALSE);
-		/* Create menu */
-		m = gtk_menu_new ();
-		gtk_widget_show (m);
-		i = gtk_menu_item_new_with_label (_("Linear"));
-		gtk_widget_show (i);
-		gtk_menu_append (GTK_MENU (m), i);
-		i = gtk_menu_item_new_with_label (_("Radial"));
-		gtk_widget_show (i);
-		gtk_menu_append (GTK_MENU (m), i);
-		gtk_option_menu_set_menu (GTK_OPTION_MENU (om), m);
-		gtk_object_set_data (GTK_OBJECT (vb), "mode-menu", om);
-		gtk_box_pack_start (GTK_BOX (hb), om, FALSE, FALSE, 0);
-		/* Gradient selector */
 		gsel = sp_gradient_selector_new ();
 		gtk_widget_show (gsel);
-		gtk_object_set_data (GTK_OBJECT (vb), "gradient-selector", gsel);
-		gtk_box_pack_start (GTK_BOX (vb), gsel, TRUE, TRUE, 0);
 		gtk_signal_connect (GTK_OBJECT (gsel), "grabbed", GTK_SIGNAL_FUNC (sp_paint_selector_gradient_grabbed), psel);
 		gtk_signal_connect (GTK_OBJECT (gsel), "dragged", GTK_SIGNAL_FUNC (sp_paint_selector_gradient_dragged), psel);
 		gtk_signal_connect (GTK_OBJECT (gsel), "released", GTK_SIGNAL_FUNC (sp_paint_selector_gradient_released), psel);
 		gtk_signal_connect (GTK_OBJECT (gsel), "changed", GTK_SIGNAL_FUNC (sp_paint_selector_gradient_changed), psel);
 		/* Pack everything to frame */
-		gtk_container_add (GTK_CONTAINER (psel->frame), vb);
-		psel->selector = vb;
+		gtk_container_add (GTK_CONTAINER (psel->frame), gsel);
+		psel->selector = gsel;
+		gtk_object_set_data (GTK_OBJECT (psel->selector), "gradient-selector", gsel);
 	}
 
 	/* Actually we have to set optiomenu history here */
 	if (mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) {
-		GtkWidget *om;
-		om = gtk_object_get_data (GTK_OBJECT (psel->selector), "mode-menu");
-		gtk_option_menu_set_history (GTK_OPTION_MENU (om), 0);
-
 		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Linear gradient"));
 	} else {
-		GtkWidget *om;
-		om = gtk_object_get_data (GTK_OBJECT (psel->selector), "mode-menu");
-		gtk_option_menu_set_history (GTK_OPTION_MENU (om), 1);
-
 		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Radial gradient"));
 	}
 

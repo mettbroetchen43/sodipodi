@@ -175,6 +175,7 @@ static void sp_gradient_read_attr (SPObject *object, const gchar *key);
 static void sp_gradient_child_added (SPObject *object, SPRepr *child, SPRepr *ref);
 static void sp_gradient_remove_child (SPObject *object, SPRepr *child);
 static void sp_gradient_modified (SPObject *object, guint flags);
+static SPRepr *sp_gradient_write (SPObject *object, SPRepr *repr, guint flags);
 
 static void sp_gradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
 
@@ -222,6 +223,7 @@ sp_gradient_class_init (SPGradientClass *klass)
 	sp_object_class->child_added = sp_gradient_child_added;
 	sp_object_class->remove_child = sp_gradient_remove_child;
 	sp_object_class->modified = sp_gradient_modified;
+	sp_object_class->write = sp_gradient_write;
 
 	klass->flatten_attributes = sp_gradient_flatten_attributes;
 }
@@ -512,6 +514,36 @@ sp_gradient_modified (SPObject *object, guint flags)
 		}
 		gtk_object_unref (GTK_OBJECT (child));
 	}
+}
+
+static SPRepr *
+sp_gradient_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPGradient *gr;
+
+	gr = SP_GRADIENT (object);
+
+	if (SP_OBJECT_CLASS (gradient_parent_class)->write)
+		(* SP_OBJECT_CLASS (gradient_parent_class)->write) (object, repr, flags);
+
+	if (flags & SP_OBJECT_WRITE_BUILD) {
+		SPObject *child;
+		GSList *l;
+		l = NULL;
+		for (child = gr->stops; child != NULL; child = child->next) {
+			SPRepr *crepr;
+			crepr = sp_object_invoke_write (child, NULL, flags);
+			if (crepr) l = g_slist_prepend (l, crepr);
+		}
+		while (l) {
+			sp_repr_add_child (repr, (SPRepr *) l->data, NULL);
+			sp_repr_unref ((SPRepr *) l->data);
+			l = g_slist_remove (l, l->data);
+		}
+	}
+
+	/* fixme: (Lauris) */
+	sp_gradient_flatten_attributes (SP_GRADIENT (object), repr, TRUE);
 }
 
 static void
@@ -1003,6 +1035,61 @@ sp_gradient_render_vector_block_rgb (SPGradient *gradient, guchar *buf, gint wid
 	}
 }
 
+NRMatrixF *
+sp_gradient_get_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NRMatrixF *gs2d)
+{
+	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF bb2u, gs2u;
+
+		bb2u.c[0] = bbox->x1 - bbox->x0;
+		bb2u.c[1] = 0.0;
+		bb2u.c[2] = 0.0;
+		bb2u.c[3] = bbox->y1 - bbox->y0;
+		bb2u.c[4] = bbox->x0;
+		bb2u.c[5] = bbox->y0;
+
+		nr_matrix_multiply_fdf (&gs2u, (NRMatrixD *) gr->transform, &bb2u);
+		nr_matrix_multiply_fff (gs2d, &gs2u, ctm);
+	} else {
+		nr_matrix_multiply_fdf (gs2d, (NRMatrixD *) gr->transform, ctm);
+	}
+
+	return gs2d;
+}
+
+void
+sp_gradient_set_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NRMatrixF *gs2d)
+{
+	NRMatrixF g2d, d2g, gs2g;
+
+	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
+		NRMatrixF bb2u;
+
+		bb2u.c[0] = bbox->x1 - bbox->x0;
+		bb2u.c[1] = 0.0;
+		bb2u.c[2] = 0.0;
+		bb2u.c[3] = bbox->y1 - bbox->y0;
+		bb2u.c[4] = bbox->x0;
+		bb2u.c[5] = bbox->y0;
+
+		nr_matrix_multiply_fff (&g2d, &bb2u, ctm);
+	} else {
+		g2d = *ctm;
+	}
+
+	nr_matrix_f_invert (&d2g, &g2d);
+	nr_matrix_multiply_fff (&gs2g, gs2d, &d2g);
+
+	gr->transform[0] = d2g.c[0];
+	gr->transform[1] = d2g.c[1];
+	gr->transform[2] = d2g.c[2];
+	gr->transform[3] = d2g.c[3];
+	gr->transform[4] = d2g.c[4];
+	gr->transform[5] = d2g.c[5];
+
+	sp_object_request_modified (SP_OBJECT (gr), SP_OBJECT_MODIFIED_FLAG);
+}
+
 void
 sp_gradient_from_position_xy (SPGradient *gr, gdouble *ctm, ArtDRect *bbox, NRPointF *p, float x, float y)
 {
@@ -1082,6 +1169,7 @@ static void sp_lineargradient_destroy (GtkObject * object);
 
 static void sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_lineargradient_read_attr (SPObject * object, const gchar * key);
+static SPRepr *sp_lineargradient_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
 static void sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter);
@@ -1129,6 +1217,7 @@ sp_lineargradient_class_init (SPLinearGradientClass * klass)
 
 	sp_object_class->build = sp_lineargradient_build;
 	sp_object_class->read_attr = sp_lineargradient_read_attr;
+	sp_object_class->write = sp_lineargradient_write;
 
 	ps_class->painter_new = sp_lineargradient_painter_new;
 	ps_class->painter_free = sp_lineargradient_painter_free;
@@ -1206,6 +1295,28 @@ sp_lineargradient_read_attr (SPObject * object, const gchar * key)
 		if (SP_OBJECT_CLASS (lg_parent_class)->read_attr)
 			(* SP_OBJECT_CLASS (lg_parent_class)->read_attr) (object, key);
 	}
+}
+
+static SPRepr *
+sp_lineargradient_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPLinearGradient * lg;
+
+	lg = SP_LINEARGRADIENT (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("linearGradient");
+	}
+
+	sp_repr_set_double (repr, "x1", lg->x1.computed);
+	sp_repr_set_double (repr, "y1", lg->y1.computed);
+	sp_repr_set_double (repr, "x2", lg->x2.computed);
+	sp_repr_set_double (repr, "y2", lg->y2.computed);
+
+	if (SP_OBJECT_CLASS (lg_parent_class)->write)
+		(* SP_OBJECT_CLASS (lg_parent_class)->write) (object, repr, flags);
+
+	return repr;
 }
 
 /*
@@ -1433,6 +1544,7 @@ static void sp_radialgradient_destroy (GtkObject *object);
 
 static void sp_radialgradient_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_radialgradient_read_attr (SPObject *object, const gchar *key);
+static SPRepr *sp_radialgradient_write (SPObject *object, SPRepr *repr, guint flags);
 
 static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const ArtDRect *bbox);
 static void sp_radialgradient_painter_free (SPPaintServer *ps, SPPainter *painter);
@@ -1480,6 +1592,7 @@ sp_radialgradient_class_init (SPRadialGradientClass * klass)
 
 	sp_object_class->build = sp_radialgradient_build;
 	sp_object_class->read_attr = sp_radialgradient_read_attr;
+	sp_object_class->write = sp_radialgradient_write;
 
 	ps_class->painter_new = sp_radialgradient_painter_new;
 	ps_class->painter_free = sp_radialgradient_painter_free;
@@ -1564,6 +1677,29 @@ sp_radialgradient_read_attr (SPObject *object, const gchar *key)
 		if (SP_OBJECT_CLASS (rg_parent_class)->read_attr)
 			(* SP_OBJECT_CLASS (rg_parent_class)->read_attr) (object, key);
 	}
+}
+
+static SPRepr *
+sp_radialgradient_write (SPObject *object, SPRepr *repr, guint flags)
+{
+	SPRadialGradient *rg;
+
+	rg = SP_RADIALGRADIENT (object);
+
+	if ((flags & SP_OBJECT_WRITE_BUILD) && !repr) {
+		repr = sp_repr_new ("radialGradient");
+	}
+
+	sp_repr_set_double (repr, "cx", rg->cx.computed);
+	sp_repr_set_double (repr, "cy", rg->cy.computed);
+	sp_repr_set_double (repr, "fx", rg->fx.computed);
+	sp_repr_set_double (repr, "fy", rg->fy.computed);
+	sp_repr_set_double (repr, "r", rg->r.computed);
+
+	if (SP_OBJECT_CLASS (rg_parent_class)->write)
+		(* SP_OBJECT_CLASS (rg_parent_class)->write) (object, repr, flags);
+
+	return repr;
 }
 
 static SPPainter *

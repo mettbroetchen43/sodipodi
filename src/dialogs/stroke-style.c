@@ -132,8 +132,13 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 	gfloat c[5];
 	ArtDRect bbox;
 	SPLinearGradient *lg;
+	SPRadialGradient *rg;
 	gdouble ctm[6];
+#if 0
 	NRPointF p0, p1;
+#endif
+	NRMatrixF fctm, gs2d;
+	NRRectF fbb;
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
@@ -203,9 +208,69 @@ sp_stroke_style_paint_update (SPWidget *spw, SPSelection *sel)
 		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object));
 		sp_item_invoke_bbox (SP_ITEM (object), &bbox, NR_MATRIX_D_IDENTITY.c);
 		sp_item_i2doc_affine (SP_ITEM (object), ctm);
+		fctm.c[0] = ctm[0];
+		fctm.c[1] = ctm[1];
+		fctm.c[2] = ctm[2];
+		fctm.c[3] = ctm[3];
+		fctm.c[4] = ctm[4];
+		fctm.c[5] = ctm[5];
+		fbb.x0 = bbox.x0;
+		fbb.y0 = bbox.y0;
+		fbb.x1 = bbox.x1;
+		fbb.y1 = bbox.y1;
+		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (lg), &fctm, &fbb, &gs2d);
+		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
+
+#if 0
 		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, lg->x1.computed, lg->y1.computed);
 		sp_gradient_from_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, lg->x2.computed, lg->y2.computed);
 		sp_paint_selector_set_lgradient_position (psel, p0.x, p0.y, p1.x, p1.y);
+#else
+		sp_paint_selector_set_lgradient_position (psel, lg->x1.computed, lg->y1.computed, lg->x2.computed, lg->y2.computed);
+#endif
+		break;
+	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
+		object = SP_OBJECT (objects->data);
+		/* We know that all objects have radialgradient stroke style */
+		vector = sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object)), FALSE);
+		for (l = objects->next; l != NULL; l = l->next) {
+			SPObject *next;
+			next = SP_OBJECT (l->data);
+			if (sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (next)), FALSE) != vector) {
+				/* Multiple vectors */
+				sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
+				gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+				return;
+			}
+		}
+		/* fixme: Probably we should set multiple mode here too */
+		sp_paint_selector_set_gradient_radial (psel, vector);
+		sp_selection_bbox_document (sel, &bbox);
+		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+		/* fixme: This is plain wrong */
+		rg = SP_RADIALGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (object));
+		sp_item_invoke_bbox (SP_ITEM (object), &bbox, (gdouble *) &NR_MATRIX_D_IDENTITY);
+		sp_item_i2doc_affine (SP_ITEM (object), ctm);
+		fctm.c[0] = ctm[0];
+		fctm.c[1] = ctm[1];
+		fctm.c[2] = ctm[2];
+		fctm.c[3] = ctm[3];
+		fctm.c[4] = ctm[4];
+		fctm.c[5] = ctm[5];
+		fbb.x0 = bbox.x0;
+		fbb.y0 = bbox.y0;
+		fbb.x1 = bbox.x1;
+		fbb.y1 = bbox.y1;
+		sp_gradient_get_gs2d_matrix_f (SP_GRADIENT (rg), &fctm, &fbb, &gs2d);
+		sp_paint_selector_set_gradient_gs2d_matrix_f (psel, &gs2d);
+#if 0
+		sp_gradient_from_position_xy (SP_GRADIENT (rg), ctm, &bbox, &p0, rg->cx.computed, rg->cy.computed);
+		sp_gradient_from_position_xy (SP_GRADIENT (rg), ctm, &bbox, &p1, rg->fx.computed, rg->fy.computed);
+		sp_gradient_from_position_xy (SP_GRADIENT (rg), ctm, &bbox, &p2, rg->cx.computed + rg->r.computed, rg->cy.computed);
+		sp_paint_selector_set_rgradient_position (psel, p0.x, p0.y, p1.x, p1.y, hypot (p2.x - p0.x, p2.y - p0.y));
+#else
+		sp_paint_selector_set_rgradient_position (psel, rg->cx.computed, rg->cy.computed, rg->fx.computed, rg->fy.computed, rg->r.computed);
+#endif
 		break;
 	default:
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
@@ -312,27 +377,20 @@ sp_stroke_style_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 		vector = sp_gradient_ensure_vector_normalized (vector);
 		items = sp_widget_get_item_list (spw);
 		for (i = items; i != NULL; i = i->next) {
-			SPLinearGradient *lg;
-			gfloat p[4];
-			ArtDRect bbox;
-			gdouble ctm[6];
-			NRPointF p0, p1;
-			sp_item_force_stroke_lineargradient_vector (SP_ITEM (i->data), vector);
-			/* This gives us position in document coordinates */
-			sp_paint_selector_get_gradient_position_floatv (psel, p);
-
-			sp_item_invoke_bbox (SP_ITEM (i->data), &bbox, NR_MATRIX_D_IDENTITY.c);
-			sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
-
-			lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (i->data));
-			sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, p[0], p[1]);
-			sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, p[2], p[3]);
-
-			sp_lineargradient_set_position (lg, p0.x, p0.y, p1.x, p1.y);
+			SPGradient *lg;
+			lg = sp_item_force_stroke_lineargradient_vector (SP_ITEM (i->data), vector);
+			sp_paint_selector_write_lineargradient (psel, SP_LINEARGRADIENT (lg), SP_ITEM (i->data));
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
-		g_warning ("file %s: line %d: Paint %d should not emit 'dragged'", __FILE__, __LINE__, psel->mode);
+		vector = sp_paint_selector_get_gradient_vector (psel);
+		vector = sp_gradient_ensure_vector_normalized (vector);
+		items = sp_widget_get_item_list (spw);
+		for (i = items; i != NULL; i = i->next) {
+			SPGradient *rg;
+			rg = sp_item_force_stroke_radialgradient_vector (SP_ITEM (i->data), vector);
+			sp_paint_selector_write_radialgradient (psel, SP_RADIALGRADIENT (rg), SP_ITEM (i->data));
+		}
 		break;
 	default:
 		g_warning ("file %s: line %d: Paint selector should not be in mode %d", __FILE__, __LINE__, psel->mode);
@@ -422,35 +480,35 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 			} else {
 				vector = sp_gradient_ensure_vector_normalized (vector);
 				for (i = items; i != NULL; i = i->next) {
-					SPLinearGradient *lg;
-					gfloat p[4];
-					ArtDRect bbox;
-					gdouble ctm[6];
-					NRPointF p0, p1;
-
-					sp_item_force_stroke_lineargradient_vector (SP_ITEM (i->data), vector);
-
-					/* This gives us position in document coordinates */
-					sp_paint_selector_get_gradient_position_floatv (psel, p);
-
-					sp_item_invoke_bbox (SP_ITEM (i->data), &bbox, NR_MATRIX_D_IDENTITY.c);
-					sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
-
-					lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_STROKE_SERVER (i->data));
-					sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p0, p[0], p[1]);
-					sp_gradient_to_position_xy (SP_GRADIENT (lg), ctm, &bbox, &p1, p[2], p[3]);
-
-					sp_repr_set_double (SP_OBJECT_REPR (lg), "x1", p0.x);
-					sp_repr_set_double (SP_OBJECT_REPR (lg), "y1", p0.y);
-					sp_repr_set_double (SP_OBJECT_REPR (lg), "x2", p1.x);
-					sp_repr_set_double (SP_OBJECT_REPR (lg), "y2", p1.y);
+					SPGradient *lg;
+					lg = sp_item_force_stroke_lineargradient_vector (SP_ITEM (i->data), vector);
+					sp_paint_selector_write_lineargradient (psel, SP_LINEARGRADIENT (lg), SP_ITEM (i->data));
+					sp_object_invoke_write (SP_OBJECT (lg), SP_OBJECT_REPR (lg), SP_OBJECT_WRITE_SODIPODI);
 				}
 			}
 			sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
-		g_warning ("file %s: line %d: Paint %d should not emit 'changed'", __FILE__, __LINE__, psel->mode);
+		if (items) {
+			vector = sp_paint_selector_get_gradient_vector (psel);
+			if (!vector) {
+				/* No vector in paint selector should mean that we just changed mode */
+				vector = sp_document_default_gradient_vector (SP_WIDGET_DOCUMENT (spw));
+				for (i = items; i != NULL; i = i->next) {
+					sp_item_force_stroke_radialgradient_vector (SP_ITEM (i->data), vector);
+				}
+			} else {
+				vector = sp_gradient_ensure_vector_normalized (vector);
+				for (i = items; i != NULL; i = i->next) {
+					SPGradient *lg;
+					lg = sp_item_force_stroke_radialgradient_vector (SP_ITEM (i->data), vector);
+					sp_paint_selector_write_radialgradient (psel, SP_RADIALGRADIENT (lg), SP_ITEM (i->data));
+					sp_object_invoke_write (SP_OBJECT (lg), SP_OBJECT_REPR (lg), SP_OBJECT_WRITE_SODIPODI);
+				}
+			}
+			sp_document_done (SP_WIDGET_DOCUMENT (spw));
+		}
 		break;
 	default:
 		g_warning ("file %s: line %d: Paint selector should not be in mode %d", __FILE__, __LINE__, psel->mode);
@@ -1027,8 +1085,9 @@ sp_stroke_style_determine_paint_selector_mode (SPStyle *style)
 	case SP_PAINT_TYPE_PAINTSERVER:
 		if (SP_IS_LINEARGRADIENT (SP_STYLE_STROKE_SERVER (style))) {
 			return SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR;
+		} else if (SP_IS_RADIALGRADIENT (SP_STYLE_STROKE_SERVER (style))) {
+			return SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL;
 		}
-		g_warning ("file %s: line %d: Unknown paintserver", __FILE__, __LINE__);
 		return SP_PAINT_SELECTOR_MODE_NONE;
 	default:
 		g_warning ("file %s: line %d: Unknown paint type %d", __FILE__, __LINE__, style->stroke.type);

@@ -152,11 +152,13 @@ nr_lgradient_render_R8G8B8A8N (NRLGradientRenderer *lgr, unsigned char *px, int 
 			}
 			/* Full composition */
 			s = lgr->vector + 4 * idx;
-			ca = 65025 - (255 - s[3]) * (255 - d[3]);
-			d[0] = NR_COMPOSENNN_A7 (s[0], s[3], d[0], d[3], ca);
-			d[1] = NR_COMPOSENNN_A7 (s[1], s[3], d[1], d[3], ca);
-			d[2] = NR_COMPOSENNN_A7 (s[2], s[3], d[2], d[3], ca);
-			d[3] = (ca + 127) / 255;
+			if (s[3] != 0) {
+				ca = 65025 - (255 - s[3]) * (255 - d[3]);
+				d[0] = NR_COMPOSENNN_A7 (s[0], s[3], d[0], d[3], ca);
+				d[1] = NR_COMPOSENNN_A7 (s[1], s[3], d[1], d[3], ca);
+				d[2] = NR_COMPOSENNN_A7 (s[2], s[3], d[2], d[3], ca);
+				d[3] = (ca + 127) / 255;
+			}
 			d += 4;
 			pos += lgr->dx;
 		}

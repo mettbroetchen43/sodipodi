@@ -81,11 +81,18 @@ void sp_paint_selector_set_rgradient_position (SPPaintSelector *psel, gdouble cx
 
 void sp_paint_selector_set_gradient_bbox (SPPaintSelector *psel, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 
+void sp_paint_selector_set_gradient_gs2d_matrix_f (SPPaintSelector *psel, NRMatrixF *gs2d);
+void sp_paint_selector_get_gradient_gs2d_matrix_f (SPPaintSelector *psel, NRMatrixF *gs2d);
+
 void sp_paint_selector_get_rgba_floatv (SPPaintSelector *psel, gfloat *rgba);
 void sp_paint_selector_get_cmyka_floatv (SPPaintSelector *psel, gfloat *cmyka);
 
 SPGradient *sp_paint_selector_get_gradient_vector (SPPaintSelector *psel);
+
 void sp_paint_selector_get_gradient_position_floatv (SPPaintSelector *psel, gfloat *pos);
+
+void sp_paint_selector_write_lineargradient (SPPaintSelector *psel, SPLinearGradient *lg, SPItem *item);
+void sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient *rg, SPItem *item);
 
 END_GNOME_DECLS
 

@@ -1,4 +1,42 @@
+2002-09-29  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/paint-selector.c (sp_paint_selector_set_mode_gradient): Removed
+	separate linear/radial optionmenu
+
+	* src/widgets/gradient-selector.c (sp_gradient_selector_set_gs2d_matrix_f): New method
+	(sp_gradient_selector_get_gs2d_matrix_f): Ditto
+	(sp_gradient_selector_set_rgradient_position): Implement
+	(sp_gradient_selector_init): Pax buttons under vector
+
+	* src/widgets/gradient-position.c: New positioning syntax, lots of radial stuff
+
+	* src/libnr/nr-matrix.h (NR_MATRIX_DF_TRANSFORM_X): Convenience macro
+	(NR_MATRIX_DF_TRANSFORM_Y): Ditto
+
+	* src/dialogs/object-properties.c (sp_object_properties_dialog): Shorten string
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_paint_update): Use new
+	gradient widgets syntax
+	(sp_stroke_style_paint_dragged): Ditto
+	(sp_stroke_style_paint_changed): Ditto
+
+	* src/dialogs/fill-style.c (sp_fill_style_widget_update): Use new gradient
+	widgets syntax for bbox, transform, position
+	(sp_fill_style_widget_paint_dragged): Ditto, use helper
+	(sp_fill_style_widget_paint_changed): Ditto
+
+	* src/sp-gradient.c (sp_gradient_get_gs2d_matrix_f): New method
+	(sp_gradient_set_gs2d_matrix_f): Ditto
+	(sp_gradient_write): Implement
+	(sp_lineargradient_write): Ditto
+	(sp_radialgradient_write): Ditto
+
+	* src/select-context.c (sp_select_context_root_handler): Process button
+	release only if grabbed
+
 2002-09-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/gradient-vector.c (sp_gvs_rebuild_gui_full): Do not add id label
 
 	* src/widgets/paint-selector.c (sp_paint_selector_init): Added radial button
 	(sp_paint_selector_set_style_buttons): Set radial

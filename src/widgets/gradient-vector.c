@@ -1,13 +1,15 @@
 #define __SP_GRADIENT_VECTOR_C__
 
 /*
- * Gradient vector selector and editor
+ * Gradient vector selection widget
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 2001-2002 Lauris Kaplinski
  * Copyright (C) 2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
@@ -40,12 +42,6 @@ static void sp_gvs_defs_modified (SPObject *defs, guint flags, SPGradientVectorS
 
 static void sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs);
 static void sp_gvs_gradient_activate (GtkMenuItem *mi, SPGradientVectorSelector *gvs);
-
-#if 0
-static void sp_gvs_gradient_edit_clicked (GtkWidget *w, SPGradientVectorSelector *gvs);
-static void sp_gvs_gradient_add_clicked (GtkWidget *w, SPGradientVectorSelector *gvs);
-static void sp_gvs_gradient_delete_clicked (GtkWidget *w, SPGradientVectorSelector *gvs);
-#endif
 
 static GtkVBoxClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
@@ -92,6 +88,8 @@ sp_gradient_vector_selector_class_init (SPGradientVectorSelectorClass *klass)
 static void
 sp_gradient_vector_selector_init (SPGradientVectorSelector *gvs)
 {
+	gvs->idlabel = TRUE;
+
 	gvs->doc = NULL;
 	gvs->gr = NULL;
 
@@ -259,7 +257,7 @@ sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs)
 	} else {
 		while (gl) {
 			SPGradient *gr;
-			GtkWidget *w, *i, *hb, *g;
+			GtkWidget *i, *w;
 			gr = SP_GRADIENT (gl->data);
 			gl = g_slist_remove (gl, gr);
 
@@ -271,17 +269,22 @@ sp_gvs_rebuild_gui_full (SPGradientVectorSelector *gvs)
 			gtk_object_set_data (GTK_OBJECT (i), "gradient", gr);
 			gtk_signal_connect (GTK_OBJECT (i), "activate", GTK_SIGNAL_FUNC (sp_gvs_gradient_activate), gvs);
 
-			hb = gtk_hbox_new (FALSE, 4);
-			gtk_widget_show (hb);
-			gtk_container_add (GTK_CONTAINER (i), hb);
-
-			w = gtk_label_new (SP_OBJECT_ID (gr));
+			w = sp_gradient_image_new (gr);
 			gtk_widget_show (w);
-			gtk_box_pack_start (GTK_BOX (hb), w, TRUE, TRUE, 4);
 
-			g = sp_gradient_image_new (gr);
-			gtk_widget_show (g);
-			gtk_box_pack_start (GTK_BOX (hb), g, FALSE, FALSE, 4);
+			if (gvs->idlabel) {
+				GtkWidget *hb, *l;
+				hb = gtk_hbox_new (FALSE, 4);
+				gtk_widget_show (hb);
+				l = gtk_label_new (SP_OBJECT_ID (gr));
+				gtk_widget_show (l);
+				gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
+				gtk_box_pack_start (GTK_BOX (hb), l, TRUE, TRUE, 0);
+				gtk_box_pack_start (GTK_BOX (hb), w, FALSE, FALSE, 0);
+				w = hb;
+			}
+
+			gtk_container_add (GTK_CONTAINER (i), w);
 
 			gtk_menu_append (GTK_MENU (m), i);
 

@@ -357,7 +357,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
-		if (event->button.button == 1) {
+		if ((event->button.button == 1) && (sc->grabbed)) {
 			if (sc->dragging) {
 				if (sc->moved) {
 					// item has been moved

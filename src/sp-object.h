@@ -59,6 +59,8 @@
 #define SP_OBJECT_NEXT(o) (SP_OBJECT (o)->next)
 #define SP_OBJECT_HREFCOUNT(o) (SP_OBJECT (o)->hrefcount)
 #define SP_OBJECT_STYLE(o) (SP_OBJECT (o)->style)
+#define SP_OBJECT_TITLE(o) (SP_OBJECT (o)->title)
+#define SP_OBJECT_DESCRIPTION(o) (SP_OBJECT (o)->description)
 
 #include <gtk/gtktypeutils.h>
 #include <gtk/gtkobject.h>
@@ -102,8 +104,8 @@ struct _SPObject {
 	SPRepr *repr; /* Our xml representation */
 	gchar *id; /* Our very own unique id */
 	SPStyle *style;
-	const gchar *title; /* Our title, if any */
-	const gchar *description; /* Our description, if any */
+	const guchar *title; /* Our title, if any */
+	const guchar *description; /* Our description, if any */
 };
 
 struct _SPObjectClass {

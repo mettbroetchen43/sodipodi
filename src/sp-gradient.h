@@ -169,6 +169,8 @@ void sp_gradient_render_vector_block_rgba (SPGradient *gr, guchar *px, gint w, g
 void sp_gradient_render_vector_block_rgb (SPGradient *gr, guchar *px, gint w, gint h, gint rs, gint pos, gint span, gboolean horizontal);
 
 /* Transforms to/from gradient position space in given environment */
+NRMatrixF *sp_gradient_get_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NRMatrixF *gs2d);
+void sp_gradient_set_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NRMatrixF *gs2d);
 void sp_gradient_from_position_xy (SPGradient *gr, gdouble *ctm, ArtDRect *bbox, NRPointF *p, float x, float y);
 void sp_gradient_to_position_xy (SPGradient *gr, gdouble *ctm, ArtDRect *bbox, NRPointF *p, float x, float y);
 
