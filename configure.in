@@ -356,7 +356,6 @@ src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile
 src/modules/Makefile
-src/modules/mlview/Makefile
 extensions/Makefile
 po/Makefile.in
 glade/Makefile

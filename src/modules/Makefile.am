@@ -15,11 +15,11 @@ if PLATFORM_WIN32
 win32_source = win32.c win32.h 
 endif
 
-if USE_MLVIEW
-mlviewdir = mlview
-endif
+# if USE_MLVIEW
+# mlviewdir = mlview
+# endif
 
-SUBDIRS = $(mlviewdir)
+# SUBDIRS = $(mlviewdir)
 
 extdir = $(libdir)/sodipodi/extensions
 extdatadir = $(datadir)/sodipodi/extensions
