@@ -270,8 +270,8 @@ sp_button_size_request (GtkWidget *widget, GtkRequisition *requisition)
 
 	button = SP_BUTTON (widget);
 
-	requisition->width = button->size + 2 * widget->style->xthickness;
-	requisition->height = button->size + 2 * widget->style->ythickness;
+	requisition->width = button->size + 2 * MAX (2, widget->style->xthickness);
+	requisition->height = button->size + 2 * MAX (2, widget->style->ythickness);
 }
 
 static void
@@ -666,10 +666,10 @@ sp_button_paint (SPButton *button, GdkRectangle *area)
 
 	widget = GTK_WIDGET (button);
 
-	parea.x0 = widget->allocation.x + widget->style->xthickness;
-	parea.y0 = widget->allocation.y + widget->style->ythickness;
-	parea.x1 = widget->allocation.x + widget->allocation.width - widget->style->xthickness;
-	parea.y1 = widget->allocation.y + widget->allocation.height - widget->style->ythickness;
+	parea.x0 = widget->allocation.x + MAX (2, widget->style->xthickness);
+	parea.y0 = widget->allocation.y + MAX (2, widget->style->ythickness);
+	parea.x1 = widget->allocation.x + widget->allocation.width - MAX (2, widget->style->xthickness);
+	parea.y1 = widget->allocation.y + widget->allocation.height - MAX (2, widget->style->ythickness);
 
 	padx = (parea.x1 - parea.x0 - button->size) / 2;
 	pady = (parea.y1 - parea.y0 - button->size) / 2;

@@ -29,8 +29,9 @@
 #include <gtk/gtkimage.h>
 #include "helper/sp-intl.h"
 #include "helper/window.h"
-#include "../widgets/sp-widget.h"
-#include "../sodipodi.h"
+#include "widgets/sp-widget.h"
+#include "macros.h"
+#include "sodipodi.h"
 #include "fill-style.h"
 #include "stroke-style.h"
 
@@ -41,6 +42,7 @@ static GtkWidget *dlg = NULL;
 static void
 sp_object_properties_dialog_destroy (GtkObject *object, gpointer data)
 {
+	sp_signal_disconnect_by_data (SODIPODI, dlg);
 	dlg = NULL;
 }
 

@@ -301,7 +301,7 @@ sp_toolbox_new (GtkWidget * contents, const gchar * name, const gchar * internal
 	/* Separate button */
 	b = sp_button_new_from_data (SP_ICON_SIZE_TITLEBAR,
 				     SP_BUTTON_TYPE_TOGGLE,
-				     "separate_tool",
+				     "seperate_tool",
 				     _("Toggle separate window and main toolbox placement"),
 				     tt);
 #if 0
