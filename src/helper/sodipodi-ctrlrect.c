@@ -100,22 +100,30 @@ sp_ctrlrect_class_init (SPCtrlRectClass *klass)
 }
 
 static void
-sp_ctrlrect_init (SPCtrlRect * ctrlrect)
+sp_ctrlrect_init (SPCtrlRect *cr)
 {
-	ctrlrect->rect.x0 = ctrlrect->rect.y0 = ctrlrect->rect.x1 = ctrlrect->rect.y1 = 0.0;
-	ctrlrect->width = 1;
-	ctrlrect->irect.x0 = ctrlrect->irect.y0 = ctrlrect->irect.x1 = ctrlrect->irect.y1 = 0;
+	cr->has_fill = FALSE;
+
+	cr->rect.x0 = cr->rect.y0 = cr->rect.x1 = cr->rect.y1 = 0;
+
+	cr->shadow = 0;
+
+	cr->area.x0 = cr->area.y0 = 0;
+	cr->area.x1 = cr->area.y1 = -1;
+
+	cr->shadow_size = 0;
+
+	cr->border_color = 0x000000ff;
+	cr->fill_color = 0xffffffff;
+	cr->shadow_color = 0x000000ff;
 }
 
 static void
 sp_ctrlrect_destroy (GtkObject *object)
 {
-	SPCtrlRect *ctrlrect;
+	SPCtrlRect *cr;
 
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_CTRLRECT (object));
-
-	ctrlrect = SP_CTRLRECT (object);
+	cr = SP_CTRLRECT (object);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -183,76 +191,121 @@ sp_ctrlrect_get_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 }
 #endif
 
+#define RGBA_R(v) ((v) >> 24)
+#define RGBA_G(v) (((v) >> 16) & 0xff)
+#define RGBA_B(v) (((v) >> 8) & 0xff)
+#define RGBA_A(v) ((v) & 0xff)
 #define COMPOSE(b,f,a) (((255 - (a)) * b + (f * a) + 127) / 255)
+
+static void
+sp_ctrlrect_hline (GnomeCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
+{
+	if ((y >= buf->rect.y0) && (y < buf->rect.y1)) {
+		guint r, g, b, a;
+		gint x0, x1, x;
+		guchar *p;
+		r = RGBA_R (rgba);
+		g = RGBA_G (rgba);
+		b = RGBA_B (rgba);
+		a = RGBA_A (rgba);
+		x0 = MAX (buf->rect.x0, xs);
+		x1 = MIN (buf->rect.x1, xe + 1);
+		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x0 - buf->rect.x0) * 3;
+		for (x = x0; x < x1; x++) {
+			p[0] = COMPOSE (p[0], r, a);
+			p[1] = COMPOSE (p[1], g, a);
+			p[2] = COMPOSE (p[2], b, a);
+			p += 3;
+		}
+	}
+}
+
+static void
+sp_ctrlrect_vline (GnomeCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
+{
+	if ((x >= buf->rect.x0) && (x < buf->rect.x1)) {
+		guint r, g, b, a;
+		gint y0, y1, y;
+		guchar *p;
+		r = RGBA_R (rgba);
+		g = RGBA_G (rgba);
+		b = RGBA_B (rgba);
+		a = RGBA_A (rgba);
+		y0 = MAX (buf->rect.y0, ys);
+		y1 = MIN (buf->rect.y1, ye + 1);
+		p = buf->buf + (y0 - buf->rect.y0) * buf->buf_rowstride + (x - buf->rect.x0) * 3;
+		for (y = y0; y < y1; y++) {
+			p[0] = COMPOSE (p[0], r, a);
+			p[1] = COMPOSE (p[1], g, a);
+			p[2] = COMPOSE (p[2], b, a);
+			p += buf->buf_rowstride;
+		}
+	}
+}
+
+static void
+sp_ctrlrect_area (GnomeCanvasBuf *buf, gint xs, gint ys, gint xe, gint ye, guint32 rgba)
+{
+	guint r, g, b, a;
+	gint x0, x1, x;
+	gint y0, y1, y;
+	guchar *p;
+	r = RGBA_R (rgba);
+	g = RGBA_G (rgba);
+	b = RGBA_B (rgba);
+	a = RGBA_A (rgba);
+	x0 = MAX (buf->rect.x0, xs);
+	x1 = MIN (buf->rect.x1, xe + 1);
+	y0 = MAX (buf->rect.y0, ys);
+	y1 = MIN (buf->rect.y1, ye + 1);
+	for (y = y0; y < y1; y++) {
+		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x0 - buf->rect.x0) * 3;
+		for (x = x0; x < x1; x++) {
+			p[0] = COMPOSE (p[0], r, a);
+			p[1] = COMPOSE (p[1], g, a);
+			p[2] = COMPOSE (p[2], b, a);
+			p += 3;
+		}
+	}
+}
 
 static void
 sp_ctrlrect_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 {
-	SPCtrlRect *ctrlrect;
-	guint fr, fg, fb, fa;
-	gint x0, y0, x1, y1;
-	gint x, y;
-	guchar *b, *bb;
+	SPCtrlRect *cr;
 
-	ctrlrect = SP_CTRLRECT (item);
+	cr = SP_CTRLRECT (item);
 	
-	if (ctrlrect->irect.x1 < buf->rect.x0) return;
-	if (ctrlrect->irect.y1 < buf->rect.y0) return;
-	if (ctrlrect->irect.x0 >= buf->rect.x1) return;
-	if (ctrlrect->irect.y0 >= buf->rect.y1) return;
-
-	fr = 0x0;
-	fg = 0x0;
-	fb = 0x0;
-	fa = 0xbf;
-
-	x0 = MAX (buf->rect.x0, ctrlrect->irect.x0) - buf->rect.x0;
-	y0 = MAX (buf->rect.y0, ctrlrect->irect.y0) - buf->rect.y0;
-	x1 = MIN (buf->rect.x1 - 1, ctrlrect->irect.x1) - buf->rect.x0;
-	y1 = MIN (buf->rect.y1 - 1, ctrlrect->irect.y1) - buf->rect.y0;
-
-	if (buf->is_bg) {
-		gnome_canvas_clear_buffer (buf);
-		buf->is_bg = FALSE;
-		buf->is_buf = TRUE;
-	}
-
-	/* fixme: corners are possibly drawn twice */
-
-	if (ctrlrect->irect.y0 >= buf->rect.y0) {
-		b = buf->buf + y0 * buf->buf_rowstride + 3 * x0;
-		for (x = x0; x <= x1; x++) {
-			*b++ = COMPOSE (*b, fr, fa);
-			*b++ = COMPOSE (*b, fg, fa);
-			*b++ = COMPOSE (*b, fb, fa);
+	if ((cr->area.x0 < buf->rect.x1) &&
+	    (cr->area.y0 < buf->rect.y1) &&
+	    ((cr->area.x1 + cr->shadow_size) >= buf->rect.x0) &&
+	    ((cr->area.y1 + cr->shadow_size) >= buf->rect.y0)) {
+		/* Initialize buffer, if needed */
+		if (buf->is_bg) {
+			gnome_canvas_clear_buffer (buf);
+			buf->is_bg = FALSE;
+			buf->is_buf = TRUE;
 		}
-	}
-	if (ctrlrect->irect.y1 < buf->rect.y1) {
-		b = buf->buf + y1 * buf->buf_rowstride + 3 * x0;
-		for (x = x0; x <= x1; x++) {
-			*b++ = COMPOSE (*b, fr, fa);
-			*b++ = COMPOSE (*b, fg, fa);
-			*b++ = COMPOSE (*b, fb, fa);
+		/* Top */
+		sp_ctrlrect_hline (buf, cr->area.y0, cr->area.x0, cr->area.x1, cr->border_color);
+		/* Bottom */
+		sp_ctrlrect_hline (buf, cr->area.y1, cr->area.x0, cr->area.x1, cr->border_color);
+		/* Left */
+		sp_ctrlrect_vline (buf, cr->area.x0, cr->area.y0 + 1, cr->area.y1 - 1, cr->border_color);
+		/* Right */
+		sp_ctrlrect_vline (buf, cr->area.x1, cr->area.y0 + 1, cr->area.y1 - 1, cr->border_color);
+		if (cr->shadow_size > 0) {
+			/* Right shadow */
+			sp_ctrlrect_area (buf, cr->area.x1 + 1, cr->area.y0 + cr->shadow_size,
+					  cr->area.x1 + cr->shadow_size, cr->area.y1 + cr->shadow_size, cr->shadow_color);
+			/* Bottom shadow */
+			sp_ctrlrect_area (buf, cr->area.x0 + cr->shadow_size, cr->area.y1 + 1,
+					  cr->area.x1, cr->area.y1 + cr->shadow_size, cr->shadow_color);
 		}
-	}
-	if (ctrlrect->irect.x0 >= buf->rect.x0) {
-		bb = buf->buf + y0 * buf->buf_rowstride + 3 * x0;
-		for (y = y0; y <= y1; y++) {
-			b = bb;
-			*b++ = COMPOSE (*b, fr, fa);
-			*b++ = COMPOSE (*b, fg, fa);
-			*b++ = COMPOSE (*b, fb, fa);
-			bb += buf->buf_rowstride;
-		}
-	}
-	if (ctrlrect->irect.x1 < buf->rect.x1) {
-		bb = buf->buf + y0 * buf->buf_rowstride + 3 * x1;
-		for (y = y0; y <= y1; y++) {
-			b = bb;
-			*b++ = COMPOSE (*b, fr, fa);
-			*b++ = COMPOSE (*b, fg, fa);
-			*b++ = COMPOSE (*b, fb, fa);
-			bb += buf->buf_rowstride;
+		if (cr->has_fill) {
+			/* Fill */
+			sp_ctrlrect_area (buf, cr->area.x0 + 1, cr->area.y0 + 1,
+					  cr->area.x1 - 1, cr->area.y1 - 1, cr->fill_color);
 		}
 	}
 }
@@ -261,41 +314,115 @@ static void
 sp_ctrlrect_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_path, int flags)
 {
 	SPCtrlRect *cr;
-	ArtPoint p0, p1;
+	ArtDRect bbox;
 
 	cr = SP_CTRLRECT (item);
 
-	if (parent_class->update)
-		(* parent_class->update) (item, affine, clip_path, flags);
+	if (((GnomeCanvasItemClass *) parent_class)->update)
+		((GnomeCanvasItemClass *) parent_class)->update (item, affine, clip_path, flags);
 
 	gnome_canvas_item_reset_bounds (item);
 
-	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y0 - 1, cr->irect.x1 + 1, cr->irect.y0 + 1);
-	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y0 - 1, cr->irect.x0 + 1, cr->irect.y1 + 1);
-	gnome_canvas_request_redraw (item->canvas, cr->irect.x1 - 1, cr->irect.y0 - 1, cr->irect.x1 + 1, cr->irect.y1 + 1);
-	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y1 - 1, cr->irect.x1 + 1, cr->irect.y1 + 1);
+	/* Request redraw old */
+	if (!cr->has_fill) {
+		/* Top */
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x0 - 1, cr->area.y0 - 1,
+					     cr->area.x1 + 1, cr->area.y0 + 1);
+		/* Left */
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x0 - 1, cr->area.y0 - 1,
+					     cr->area.x0 + 1, cr->area.y1 + 1);
+		/* Right */
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x1 - 1, cr->area.y0 - 1,
+					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
+		/* Bottom */
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x0 - 1, cr->area.y1 - 1,
+					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
+	} else {
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x0 - 1, cr->area.y0 - 1,
+					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
+	}
 
-	p0.x = cr->rect.x0;
-	p0.y = cr->rect.y0;
-	art_affine_point (&p0, &p0, affine);
-	p1.x = cr->rect.x1;
-	p1.y = cr->rect.y1;
-	art_affine_point (&p1, &p1, affine);
+	art_drect_affine_transform (&bbox, &cr->rect, affine);
 
-	cr->irect.x0 = (int) floor (MIN (p0.x, p1.x) + 0.5);
-	cr->irect.y0 = (int) floor (MIN (p0.y, p1.y) + 0.5);
-	cr->irect.x1 = (int) floor (MAX (p0.x, p1.x) + 0.5);
-	cr->irect.y1 = (int) floor (MAX (p0.y, p1.y) + 0.5);
+	cr->area.x0 = (gint) floor (bbox.x0 + 0.5);
+	cr->area.y0 = (gint) floor (bbox.y0 + 0.5);
+	cr->area.x1 = (gint) floor (bbox.x1 + 0.5);
+	cr->area.y1 = (gint) floor (bbox.y1 + 0.5);
 
-	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y0 - 1, cr->irect.x1 + 1, cr->irect.y0 + 1);
-	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y0 - 1, cr->irect.x0 + 1, cr->irect.y1 + 1);
-	gnome_canvas_request_redraw (item->canvas, cr->irect.x1 - 1, cr->irect.y0 - 1, cr->irect.x1 + 1, cr->irect.y1 + 1);
-	gnome_canvas_request_redraw (item->canvas, cr->irect.x0 - 1, cr->irect.y1 - 1, cr->irect.x1 + 1, cr->irect.y1 + 1);
+	cr->shadow_size = cr->shadow;
 
-	item->x1 = cr->irect.x0 - 1;
-	item->y1 = cr->irect.y0 - 1;
-	item->x2 = cr->irect.x1 + 1;
-	item->y2 = cr->irect.y1 + 1;
+	/* Request redraw new */
+	if (!cr->has_fill) {
+		/* Top */
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x0 - 1, cr->area.y0 - 1,
+					     cr->area.x1 + 1, cr->area.y0 + 1);
+		/* Left */
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x0 - 1, cr->area.y0 - 1,
+					     cr->area.x0 + 1, cr->area.y1 + 1);
+		/* Right */
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x1 - 1, cr->area.y0 - 1,
+					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
+		/* Bottom */
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x0 - 1, cr->area.y1 - 1,
+					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
+	} else {
+		gnome_canvas_request_redraw (item->canvas,
+					     cr->area.x0 - 1, cr->area.y0 - 1,
+					     cr->area.x1 + cr->shadow_size + 1, cr->area.y1 + cr->shadow_size + 1);
+	}
+
+	item->x1 = cr->area.x0 - 1;
+	item->y1 = cr->area.y0 - 1;
+	item->x2 = cr->area.x1 + cr->shadow_size + 1;
+	item->y2 = cr->area.y1 + cr->shadow_size + 1;
+}
+
+void
+sp_ctrlrect_set_area (SPCtrlRect *cr, gint x0, gint y0, gint x1, gint y1)
+{
+	g_return_if_fail (cr != NULL);
+	g_return_if_fail (SP_IS_CTRLRECT (cr));
+
+	cr->rect.x0 = MIN (x0, x1);
+	cr->rect.y0 = MIN (y0, y1);
+	cr->rect.x1 = MAX (x0, x1);
+	cr->rect.y1 = MAX (y0, y1);
+
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cr));
+}
+
+void
+sp_ctrlrect_set_color (SPCtrlRect *cr, guint32 border_color, gboolean has_fill, guint32 fill_color)
+{
+	g_return_if_fail (cr != NULL);
+	g_return_if_fail (SP_IS_CTRLRECT (cr));
+
+	cr->border_color = border_color;
+	cr->has_fill = has_fill;
+	cr->fill_color = fill_color;
+
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cr));
+}
+
+void
+sp_ctrlrect_set_shadow (SPCtrlRect *cr, gint shadow_size, guint32 shadow_color)
+{
+	g_return_if_fail (cr != NULL);
+	g_return_if_fail (SP_IS_CTRLRECT (cr));
+
+	cr->shadow = shadow_size;
+	cr->shadow_color = shadow_color;
+
+	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (cr));
 }
 
 void

@@ -1,12 +1,24 @@
-#ifndef SP_TEXT_H
-#define SP_TEXT_H
+#ifndef __SP_TEXT_H__
+#define __SP_TEXT_H__
+
+/*
+ * SPText - a SVG <text> element
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
 
 #include "sp-chars.h"
 
-#define SP_TYPE_TEXT            (sp_text_get_type ())
-#define SP_TEXT(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_TEXT, SPText))
-#define SP_TEXT_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_TEXT, SPTextClass))
-#define SP_IS_TEXT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_TEXT))
+#define SP_TYPE_TEXT (sp_text_get_type ())
+#define SP_TEXT(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_TEXT, SPText))
+#define SP_TEXT_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_TEXT, SPTextClass))
+#define SP_IS_TEXT(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_TEXT))
 #define SP_IS_TEXT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_TEXT))
 
 typedef struct _SPText SPText;
@@ -22,15 +34,13 @@ struct _SPText {
 	GnomeFontWeight weight;
 	gboolean italic;
 	GnomeFontFace * face;
-	double size;
+	gdouble size;
 };
 
 struct _SPTextClass {
 	SPCharsClass parent_class;
 };
 
-
-/* Standard Gtk function */
 GtkType sp_text_get_type (void);
 
 #endif

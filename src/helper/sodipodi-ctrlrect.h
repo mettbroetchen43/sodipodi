@@ -31,11 +31,16 @@ typedef struct _SPCtrlRectClass SPCtrlRectClass;
 struct _SPCtrlRect {
 	GnomeCanvasItem item;
 
-	ArtDRect rect;		/* Dimensions */
-	
-	double width;		/* Line width */
+	guint has_fill : 1;
 
-	ArtIRect irect;
+	ArtDRect rect;
+	gint shadow;
+
+	ArtIRect area;
+	gint shadow_size;
+	guint32 border_color;
+	guint32 fill_color;
+	guint32 shadow_color;
 };
 
 struct _SPCtrlRectClass {
@@ -46,8 +51,12 @@ struct _SPCtrlRectClass {
 /* Standard Gtk function */
 GtkType sp_ctrlrect_get_type (void);
 
-void
-sp_ctrlrect_set_rect (SPCtrlRect * rect, ArtDRect * box);
+void sp_ctrlrect_set_area (SPCtrlRect *rect, gint x0, gint y0, gint x1, gint y1);
+void sp_ctrlrect_set_color (SPCtrlRect *rect, guint32 border_color, gboolean has_fill, guint32 fill_color);
+void sp_ctrlrect_set_shadow (SPCtrlRect *rect, gint shadow_size, guint32 shadow_color);
+
+/* Deprecated */
+void sp_ctrlrect_set_rect (SPCtrlRect * rect, ArtDRect * box);
 
 END_GNOME_DECLS
 

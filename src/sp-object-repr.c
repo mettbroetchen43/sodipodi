@@ -18,6 +18,7 @@
 #include "sp-text.h" 
 #include "sp-gradient.h"
 #include "sp-clippath.h"
+#include "sp-anchor.h"
 #include "sp-object-repr.h"
 
 SPObject *
@@ -65,8 +66,7 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "defs", GINT_TO_POINTER (SP_TYPE_DEFS));
 		g_hash_table_insert (dtable, "use", GINT_TO_POINTER (SP_TYPE_USE));
 		g_hash_table_insert (dtable, "g", GINT_TO_POINTER (SP_TYPE_GROUP));
-		/* fixme: implement <a> */
-		g_hash_table_insert (dtable, "a", GINT_TO_POINTER (SP_TYPE_GROUP));
+		g_hash_table_insert (dtable, "a", GINT_TO_POINTER (SP_TYPE_ANCHOR));
 		g_hash_table_insert (dtable, "sodipodi:namedview", GINT_TO_POINTER (SP_TYPE_NAMEDVIEW));
 		g_hash_table_insert (dtable, "sodipodi:guide", GINT_TO_POINTER (SP_TYPE_GUIDE));
 		g_hash_table_insert (dtable, "svg", GINT_TO_POINTER (SP_TYPE_ROOT));

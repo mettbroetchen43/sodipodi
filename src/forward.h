@@ -90,4 +90,6 @@ typedef struct _SPColor SPColor;
 
 typedef struct _SPStyle SPStyle;
 
+typedef struct _SPEvent SPEvent;
+
 #endif

@@ -90,6 +90,57 @@ sp_svg_view_destroy (GtkObject *object)
 		(* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 
+/* fixme: */
+
+static gint
+arena_handler (SPCanvasArena *arena, NRArenaItem *item, GdkEvent *event, SPSVGView *svgview)
+{
+	static gdouble x, y;
+	static gboolean active = FALSE;
+	SPItem *spitem;
+	SPEvent spev;
+
+	switch (event->type) {
+	case GDK_BUTTON_PRESS:
+		if (event->button.button == 1) {
+			active = TRUE;
+			x = event->button.x;
+			y = event->button.y;
+		}
+		break;
+	case GDK_BUTTON_RELEASE:
+		if (event->button.button == 1) {
+			if (active && (event->button.x == x) && (event->button.y == y)) {
+				g_print ("Invoking event\n");
+				spitem = gtk_object_get_user_data (GTK_OBJECT (item));
+				spev.type = SP_EVENT_ACTIVATE;
+				sp_item_event (spitem, &spev);
+			}
+		}
+		active = FALSE;
+		break;
+	case GDK_MOTION_NOTIFY:
+		active = FALSE;
+		break;
+	case GDK_ENTER_NOTIFY:
+		spitem = gtk_object_get_user_data (GTK_OBJECT (item));
+		spev.type = SP_EVENT_MOUSEOVER;
+		spev.data = svgview;
+		sp_item_event (spitem, &spev);
+		break;
+	case GDK_LEAVE_NOTIFY:
+		spitem = gtk_object_get_user_data (GTK_OBJECT (item));
+		spev.type = SP_EVENT_MOUSEOUT;
+		spev.data = svgview;
+		sp_item_event (spitem, &spev);
+		break;
+	default:
+		break;
+	}
+
+	return TRUE;
+}
+
 static void
 sp_svg_view_set_document (SPView *view, SPDocument *doc)
 {
@@ -106,6 +157,7 @@ sp_svg_view_set_document (SPView *view, SPDocument *doc)
 	if (doc) {
 		NRArenaItem *ai;
 		svgview->drawing = gnome_canvas_item_new (svgview->parent, SP_TYPE_CANVAS_ARENA, NULL);
+		gtk_signal_connect (GTK_OBJECT (svgview->drawing), "arena_event", GTK_SIGNAL_FUNC (arena_handler), svgview);
 		ai = sp_item_show (SP_ITEM (sp_document_root (doc)), SP_CANVAS_ARENA (svgview->drawing)->arena);
 		if (ai) {
 			nr_arena_item_add_child (SP_CANVAS_ARENA (svgview->drawing)->root, ai, NULL);

@@ -32,6 +32,7 @@ sodipodi_SOURCES = \
 	sp-use.c sp-use.h \
 	sp-item.c sp-item.h \
 	sp-item-group.c sp-item-group.h \
+	sp-anchor.c sp-anchor.h \
 	sp-root.c sp-root.h \
 	sp-namedview.c sp-namedview.h \
 	sp-guide.c sp-guide.h \

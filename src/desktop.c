@@ -180,6 +180,8 @@ sp_desktop_document_resized (SPView *view, SPDocument *doc, gdouble width, gdoub
 	desktop->doc2dt[5] = height;
 
 	gnome_canvas_item_affine_absolute (GNOME_CANVAS_ITEM (desktop->drawing), desktop->doc2dt);
+
+	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, width, height);
 }
 
 /* fixme: */
@@ -204,10 +206,9 @@ SPView *
 sp_desktop_new (SPDesktopWidget *widget)
 {
 	SPDesktop *desktop;
-	GnomeCanvasGroup * root;
+	GnomeCanvasGroup *root, *page;
 	NRArenaItem *ai;
 	gdouble dw, dh;
-	ArtDRect pdim;
 	SPDocument *document;
 	SPNamedView *namedview;
 
@@ -239,8 +240,12 @@ sp_desktop_new (SPDesktopWidget *widget)
 	desktop->main = (GnomeCanvasGroup *) gnome_canvas_item_new (root, GNOME_TYPE_CANVAS_GROUP, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->main), "event",
 		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
+	/* fixme: */
+	page = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main, GNOME_TYPE_CANVAS_GROUP, NULL);
+
 	desktop->drawing = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main, SP_TYPE_CANVAS_ARENA, NULL);
 	gtk_signal_connect (GTK_OBJECT (desktop->drawing), "arena_event", GTK_SIGNAL_FUNC (arena_handler), desktop);
+
 	desktop->grid = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 	desktop->guides = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
@@ -259,11 +264,9 @@ sp_desktop_new (SPDesktopWidget *widget)
 	dw = sp_document_width (document);
 	dh = sp_document_height (document);
 
-	desktop->page = gnome_canvas_item_new (desktop->grid, SP_TYPE_CTRLRECT, NULL);
-	pdim.x0 = pdim.y0 = 0.0;
-	pdim.x1 = dw;
-	pdim.y1 = dh;
-	sp_ctrlrect_set_rect ((SPCtrlRect *) desktop->page, &pdim);
+	desktop->page = gnome_canvas_item_new (page, SP_TYPE_CTRLRECT, NULL);
+	sp_ctrlrect_set_area (SP_CTRLRECT (desktop->page), 0.0, 0.0, sp_document_width (document), sp_document_height (document));
+	sp_ctrlrect_set_shadow (SP_CTRLRECT (desktop->page), 5, 0x3f3f3fff);
 
 	/* Connect event for page resize */
 	art_affine_identity (desktop->doc2dt);

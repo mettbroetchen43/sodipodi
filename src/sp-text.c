@@ -1,4 +1,16 @@
-#define SP_TEXT_C
+#define __SP_TEXT_C__
+
+/*
+ * SPText - a SVG <text> element
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 1999-2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL
+ */
 
 #include <math.h>
 #include <glib.h>

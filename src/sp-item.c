@@ -533,6 +533,19 @@ sp_item_write_transform (SPItem *item, SPRepr *repr, gdouble *transform)
 	}
 }
 
+gint
+sp_item_event (SPItem *item, SPEvent *event)
+{
+	g_return_val_if_fail (item != NULL, FALSE);
+	g_return_val_if_fail (SP_IS_ITEM (item), FALSE);
+	g_return_val_if_fail (event != NULL, FALSE);
+
+	if (((SPItemClass *) (((GtkObject *) item)->klass))->event)
+		return ((SPItemClass *) (((GtkObject *) item)->klass))->event (item, event);
+
+	return FALSE;
+}
+
 /* Sets item private transform (not propagated to repr) */
 
 void

@@ -35,6 +35,29 @@
 #define SP_IS_ITEM(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_ITEM))
 #define SP_IS_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ITEM))
 
+/* fixme: This is just placeholder */
+/*
+ * Plan:
+ * We do extensible event structure, that hold applicable (ui, non-ui)
+ * data pointers. So it is up to given object/arena implementation
+ * to process correct ones in meaningful way.
+ * Also, this probably goes to SPObject base class
+ *
+ */
+
+typedef enum {
+	SP_EVENT_INVALID,
+	SP_EVENT_NONE,
+	SP_EVENT_ACTIVATE,
+	SP_EVENT_MOUSEOVER,
+	SP_EVENT_MOUSEOUT
+} SPEventType;
+
+struct _SPEvent {
+	SPEventType type;
+	gpointer data;
+};
+
 typedef struct _SPItemView SPItemView;
 
 struct _SPItemView {
@@ -83,6 +106,9 @@ struct _SPItemClass {
 
 	/* Write item transform to repr optimally */
 	void (* write_transform) (SPItem *item, SPRepr *repr, gdouble *transform);
+
+	/* Emit event, if applicable */
+	gint (* event) (SPItem *item, SPEvent *event);
 };
 
 /* Flag testing macros */
@@ -110,6 +136,8 @@ gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
 GSList * sp_item_snappoints (SPItem * item);
 
 void sp_item_write_transform (SPItem *item, SPRepr *repr, gdouble *transform);
+
+gint sp_item_event (SPItem *item, SPEvent *event);
 
 void sp_item_set_item_transform (SPItem *item, const gdouble *transform);
 
