@@ -1,3 +1,7 @@
+2001-04-16  Jesus Bravo Alvarez  <jba@pobox.com>
+
+	* configure.in: Added gl (Galician) to ALL_LINGUAS
+
 2001-04-14  Lauris Kaplinski  <lauris@ximian.com>
 
 	* everywhere (TM): Changed the basic structure of Reprs (they are
