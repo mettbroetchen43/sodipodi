@@ -201,7 +201,7 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 					ss = cs;
 					cs = ns;
 				}
-			} else if ((ns->x - cs->x) <= NR_COORD_TOLERANCE) {
+			} else if ((ns->x - cs->x) <= NR_EPSILON_F) {
 				/* Slices are very close at yslice */
 				/* Start by breaking slices */
 				csvp = nr_svp_slice_break (cs, cs->x, yslice, csvp);
@@ -225,7 +225,8 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 				CHECK_SLICES (slices, yslice, "CHECK", 0, 0, 1);
 				ss = NULL;
 				cs = slices;
-			} else if ((cs->x > ns->vertex->next->x) || (ns->x < cs->vertex->next->x)) {
+			} else if ((cs->x > ns->vertex->next->x) || (ns->x < cs->vertex->next->x) ||
+				   (cs->vertex->next->x > ns->vertex->next->x)) {
 				/* (MAX (cs->x, cs->vertex->next->x) > MIN (ns->x, ns->vertex->next->x)) */
 				/* Potential intersection */
 				double xba, yba, xdc, ydc;
@@ -259,6 +260,10 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 							/* Start by breaking slices */
 							csvp = nr_svp_slice_break (cs, cs->x, yslice, csvp);
 							csvp = nr_svp_slice_break (ns, ns->x, yslice, csvp);
+							if ((ns->x - cs->x) <= NR_COORD_TOLERANCE) {
+								/* Merge intersection into cs */
+								x = cs->x;
+							}
 							if (cs->x != x) {
 								double x0, x1;
 								x0 = MIN (x, cs->x);
@@ -266,7 +271,7 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 								f = nr_flat_new_full (y, x0, x1);
 								nflat = nr_flat_insert_sorted (nflat, f);
 							}
-							if (ns->x != x) {
+							if (ns->x != cs->x) {
 								double x0, x1;
 								x0 = MIN (x, ns->x);
 								x1 = MAX (x, ns->x);
@@ -276,7 +281,7 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 							/* Set the new starting point */
 							cs->vertex->x = x;
 							cs->x = cs->vertex->x;
-							ns->vertex->x = x;
+							ns->vertex->x = cs->x;
 							ns->x = ns->vertex->x;
 							/* Reorder slices */
 							if (ss) {

@@ -1,3 +1,8 @@
+2003-04-24  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/libnr/nr-svp-uncross.c (nr_svp_uncross_full): Concat segment start only if
+	within epsilon, snap intersection point at yslice, if close
+
 2003-04-23  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/sp-color-slider.c (sp_color_slider_paint): Use proper style painters,
