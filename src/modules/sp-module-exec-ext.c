@@ -24,6 +24,7 @@
 #include "xml/repr-private.h"
 #include "interface.h"
 #include "document.h"
+#include "sp-namedview.h"
 #include "sodipodi.h"
 #include "desktop.h"
 #include "desktop-handles.h"

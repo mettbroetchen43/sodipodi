@@ -23,6 +23,7 @@
 #include "desktop-events.h"
 #include "desktop-handles.h"
 #include "sp-guide.h"
+#include "sp-item-group.h"
 #include "sp-namedview.h"
 
 #define PTPERMM (72.0 / 25.4)
@@ -665,4 +666,24 @@ sp_nv_read_opacity (const guchar *str, guint32 *color)
 	*color = (*color & 0xffffff00) | (guint32) floor (v * 255.9999);
 
 	return TRUE;
+}
+
+SPNamedView *
+sp_document_namedview (SPDocument *document, const gchar *id)
+{
+	SPObject *nv;
+
+	g_return_val_if_fail (document != NULL, NULL);
+	g_return_val_if_fail (SP_IS_DOCUMENT (document), NULL);
+
+	nv = sp_item_group_get_child_by_name ((SPGroup *) document->root, NULL, "sodipodi:namedview");
+	g_assert (nv != NULL);
+
+	if (id == NULL) return (SPNamedView *) nv;
+
+	while (nv && strcmp (nv->id, id)) {
+		nv = sp_item_group_get_child_by_name ((SPGroup *) document->root, nv, "sodipodi:namedview");
+	}
+
+	return (SPNamedView *) nv;
 }

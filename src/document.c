@@ -275,14 +275,13 @@ sp_document_create (SPReprDoc *rdoc,
 	}
 
 	/* Namedviews */
-	if (!SP_ROOT (document->root)->namedviews) {
+	if (!sp_item_group_get_child_by_name ((SPGroup *) document->root, NULL, "sodipodi:namedview")) {
 		SPRepr *r;
 		r = sodipodi_get_repr (SODIPODI, "template.sodipodi:namedview");
 		if (!r) r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, NULL);
 		sp_repr_unref (r);
-		g_assert (SP_ROOT (document->root)->namedviews);
 	}
 
 	/* Defs */
@@ -471,6 +470,7 @@ sp_document_set_size_px (SPDocument *doc, gdouble width, gdouble height)
 	g_signal_emit (G_OBJECT (doc), signals [RESIZED], 0, width / 1.25, height / 1.25);
 }
 
+#if 0
 /* named views */
 
 const GSList *
@@ -502,6 +502,7 @@ sp_document_namedview (SPDocument * document, const gchar * id)
 
 	return NULL;
 }
+#endif
 
 void
 sp_document_def_id (SPDocument * document, const gchar * id, SPObject * object)

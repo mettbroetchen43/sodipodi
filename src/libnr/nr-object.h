@@ -88,6 +88,7 @@ NRObject *nr_object_release (NRObject *object);
 /* NRActiveObject */
 
 typedef struct _NRObjectListener NRObjectListener;
+typedef struct _NRObjectCallbackBlock NRObjectCallbackBlock;
 typedef struct _NRObjectEventVector NRObjectEventVector;
 
 struct _NRObjectEventVector {
@@ -95,15 +96,20 @@ struct _NRObjectEventVector {
 };
 
 struct _NRObjectListener {
-	NRObjectListener *next;
 	const NRObjectEventVector *vector;
 	unsigned int size;
 	void *data;
 };
 
+struct _NRObjectCallbackBlock {
+	unsigned int size;
+	unsigned int length;
+	NRObjectListener listeners[1];
+};
+
 struct _NRActiveObject {
 	NRObject object;
-	NRObjectListener *listeners;
+	NRObjectCallbackBlock *callbacks;
 };
 
 struct _NRActiveObjectClass {

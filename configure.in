@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.50)
-AC_INIT(sodipodi, 0.32)
+AC_INIT(sodipodi, 0.33pre)
 AC_CONFIG_SRCDIR(src/main.c)
 AM_INIT_AUTOMAKE
 
@@ -110,6 +110,9 @@ if test "x$with_xft" != "xno" ; then
 					dnl Xft was explicitly asked, so stop
 					AC_MSG_ERROR([--with-xft was specified, but appropriate development packages could not be found])
 				fi
+			else
+				dnl Working Xft1
+				XFT_LIBS="-lXft"
 			fi
 		fi
 	fi

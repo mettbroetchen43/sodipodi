@@ -37,4 +37,6 @@ void sp_item_group_ungroup (SPGroup *group, GSList **children);
 
 GSList *sp_item_group_item_list (SPGroup *group);
 
+SPObject *sp_item_group_get_child_by_name (SPGroup *group, SPObject *ref, const unsigned char *name);
+
 #endif

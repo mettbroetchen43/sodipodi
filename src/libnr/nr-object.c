@@ -261,20 +261,17 @@ static void
 nr_active_object_finalize (NRObject *object)
 {
 	NRActiveObject *aobject;
-	NRObjectListener *listener;
 
 	aobject = (NRActiveObject *) object;
 
-	for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
-		if ((listener->size >= sizeof (NRObjectEventVector)) && listener->vector->dispose) {
-			listener->vector->dispose (object, listener->data);
+	if (aobject->callbacks) {
+		int i;
+		for (i = 0; i < aobject->callbacks->length; i++) {
+			NRObjectListener *listener;
+			listener = aobject->callbacks->listeners + i;
+			if (listener->vector->dispose) listener->vector->dispose (object, listener->data);
 		}
-	}
-
-	while (aobject->listeners) {
-		listener = aobject->listeners;
-		aobject->listeners = listener->next;
-		free (listener);
+		free (aobject->callbacks);
 	}
 
 	((NRObjectClass *) (parent_class))->finalize (object);
@@ -283,35 +280,45 @@ nr_active_object_finalize (NRObject *object)
 void
 nr_active_object_add_listener (NRActiveObject *object, const NRObjectEventVector *vector, unsigned int size, void *data)
 {
-	NRObjectListener *l;
+	NRObjectListener *listener;
 
-	l = malloc (sizeof (NRObjectListener));
-	l->next = object->listeners;
-	object->listeners = l;
-	l->vector = vector;
-	l->size = size;
-	l->data = data;
+	if (!object->callbacks) {
+		object->callbacks = malloc (sizeof (NRObjectCallbackBlock));
+		object->callbacks->size = 1;
+		object->callbacks->length = 0;
+	}
+	if (object->callbacks->length >= object->callbacks->size) {
+		int newsize;
+		newsize = object->callbacks->size << 1;
+		object->callbacks = realloc (object->callbacks, sizeof (NRObjectCallbackBlock) + (newsize - 1) * sizeof (NRObjectListener));
+		object->callbacks->size = newsize;
+	}
+	listener = object->callbacks->listeners + object->callbacks->length;
+	listener->vector = vector;
+	listener->size = size;
+	listener->data = data;
+	object->callbacks->length += 1;
 }
 
 void
 nr_active_object_remove_listener_by_data (NRActiveObject *object, void *data)
 {
-	NRObjectListener *l, *ref;
-
-	ref = NULL;
-	l = object->listeners;
-	while (l) {
-		if (l->data == data) {
-			if (ref) {
-				ref->next = l->next;
-			} else {
-				object->listeners = l->next;
+	if (object->callbacks) {
+		int i;
+		for (i = 0; i < object->callbacks->length; i++) {
+			NRObjectListener *listener;
+			listener = object->callbacks->listeners + i;
+			if (listener->data == data) {
+				object->callbacks->length -= 1;
+				if (object->callbacks->length < 1) {
+					free (object->callbacks);
+					object->callbacks = NULL;
+				} else if (object->callbacks->length != i) {
+					*listener = object->callbacks->listeners[object->callbacks->length];
+				}
+				return;
 			}
-			free (l);
-			break;
 		}
-		ref = l;
-		l = l->next;
 	}
 }
 

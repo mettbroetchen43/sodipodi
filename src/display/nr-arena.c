@@ -92,7 +92,6 @@ void
 nr_arena_request_update (NRArena *arena, NRArenaItem *item)
 {
 	NRActiveObject *aobject;
-	NRObjectListener *listener;
 
 	aobject = (NRActiveObject *) arena;
 
@@ -101,11 +100,16 @@ nr_arena_request_update (NRArena *arena, NRArenaItem *item)
 	nr_return_if_fail (item != NULL);
 	nr_return_if_fail (NR_IS_ARENA_ITEM (item));
 
-	for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
-		NRArenaEventVector *avector;
-		avector = (NRArenaEventVector *) listener->vector;
-		if ((listener->size >= sizeof (NRArenaEventVector)) && avector->request_update) {
-			avector->request_update (arena, item, listener->data);
+	if (aobject->callbacks) {
+		int i;
+		for (i = 0; i < aobject->callbacks->length; i++) {
+			NRObjectListener *listener;
+			NRArenaEventVector *avector;
+			listener = aobject->callbacks->listeners + i;
+			avector = (NRArenaEventVector *) listener->vector;
+			if ((listener->size >= sizeof (NRArenaEventVector)) && avector->request_update) {
+				avector->request_update (arena, item, listener->data);
+			}
 		}
 	}
 }
@@ -114,7 +118,6 @@ void
 nr_arena_request_render_rect (NRArena *arena, NRRectL *area)
 {
 	NRActiveObject *aobject;
-	NRObjectListener *listener;
 
 	aobject = (NRActiveObject *) arena;
 
@@ -122,9 +125,12 @@ nr_arena_request_render_rect (NRArena *arena, NRRectL *area)
 	nr_return_if_fail (NR_IS_ARENA (arena));
 	nr_return_if_fail (area != NULL);
 
-	if (area && !nr_rect_l_test_empty (area)) {
-		for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
+	if (aobject->callbacks && area && !nr_rect_l_test_empty (area)) {
+		int i;
+		for (i = 0; i < aobject->callbacks->length; i++) {
+			NRObjectListener *listener;
 			NRArenaEventVector *avector;
+			listener = aobject->callbacks->listeners + i;
 			avector = (NRArenaEventVector *) listener->vector;
 			if ((listener->size >= sizeof (NRArenaEventVector)) && avector->request_render) {
 				avector->request_render (arena, area, listener->data);

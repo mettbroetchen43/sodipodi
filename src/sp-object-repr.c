@@ -71,15 +71,15 @@ sp_repr_type_lookup (SPRepr *repr)
 	return sp_object_type_lookup (name);
 }
 
+static GHashTable *dtable = NULL;
+
 unsigned int
 sp_object_type_lookup (const guchar * name)
 {
-	static GHashTable *dtable = NULL;
 	gpointer data;
 
-	if (dtable == NULL) {
+	if (!dtable) {
 		dtable = g_hash_table_new (g_str_hash, g_str_equal);
-		g_assert (dtable != NULL);
 		g_hash_table_insert (dtable, "a", GINT_TO_POINTER (SP_TYPE_ANCHOR));
 		g_hash_table_insert (dtable, "animate", GINT_TO_POINTER (SP_TYPE_ANIMATE));
 		g_hash_table_insert (dtable, "arc", GINT_TO_POINTER (SP_TYPE_ARC));
@@ -106,8 +106,6 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "symbol", GINT_TO_POINTER (SP_TYPE_SYMBOL));
 		g_hash_table_insert (dtable, "text", GINT_TO_POINTER (SP_TYPE_TEXT));
 		g_hash_table_insert (dtable, "use", GINT_TO_POINTER (SP_TYPE_USE));
-		g_hash_table_insert (dtable, "sodipodi:namedview", GINT_TO_POINTER (SP_TYPE_NAMEDVIEW));
-		g_hash_table_insert (dtable, "sodipodi:guide", GINT_TO_POINTER (SP_TYPE_GUIDE));
 	}
 
 	data = g_hash_table_lookup (dtable, name);
@@ -117,3 +115,14 @@ sp_object_type_lookup (const guchar * name)
 	return GPOINTER_TO_UINT (data);
 }
 
+/* Return TRUE on success */
+
+unsigned int
+sp_object_type_register (const unsigned char *name, unsigned int type)
+{
+	unsigned int current;
+	current = sp_object_type_lookup (name);
+	if (current != SP_TYPE_OBJECT) return FALSE;
+	g_hash_table_insert (dtable, (char *) name, GINT_TO_POINTER (type));
+	return TRUE;
+}

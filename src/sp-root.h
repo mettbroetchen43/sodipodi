@@ -52,7 +52,7 @@ struct _SPRoot {
 
 	/* List of namedviews */
 	/* fixme: use single container instead */
-	GSList *namedviews;
+	/* GSList *namedviews; */
 	/* Root-level <defs> node */
 	SPDefs *defs;
 };
@@ -61,6 +61,6 @@ struct _SPRootClass {
 	SPGroupClass parent_class;
 };
 
-GType sp_root_get_type (void);
+unsigned int sp_root_get_type (void);
 
 #endif

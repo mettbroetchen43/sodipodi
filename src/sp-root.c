@@ -20,7 +20,7 @@
 #include "document.h"
 #include "desktop.h"
 #include "sp-defs.h"
-#include "sp-namedview.h"
+/* #include "sp-namedview.h" */
 #include "sp-root.h"
 
 static void sp_root_class_init (SPRootClass *klass);
@@ -41,10 +41,10 @@ static void sp_root_print (SPItem *item, SPPrintContext *ctx);
 
 static SPGroupClass *parent_class;
 
-GType
+unsigned int
 sp_root_get_type (void)
 {
-	static GType type = 0;
+	static unsigned int type = 0;
 	if (!type) {
 		GTypeInfo info = {
 			sizeof (SPRootClass),
@@ -108,7 +108,7 @@ sp_root_init (SPRoot *root)
 
 	nr_matrix_d_set_identity (&root->c2p);
 
-	root->namedviews = NULL;
+	/* root->namedviews = NULL; */
 	root->defs = NULL;
 }
 
@@ -139,6 +139,7 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	if (((SPObjectClass *) parent_class)->build)
 		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
 
+#if 0
 	/* Collect all our namedviews */
 	for (o = group->children; o != NULL; o = o->next) {
 		if (SP_IS_NAMEDVIEW (o)) {
@@ -146,6 +147,7 @@ sp_root_build (SPObject *object, SPDocument *document, SPRepr *repr)
 		}
 	}
 	root->namedviews = g_slist_reverse (root->namedviews);
+#endif
 
 	/* Search for first <defs> node */
 	for (o = group->children; o != NULL; o = o->next) {
@@ -164,8 +166,10 @@ sp_root_release (SPObject *object)
 	root = (SPRoot *) object;
 
 	root->defs = NULL;
+#if 0
 	g_slist_free (root->namedviews);
 	root->namedviews = NULL;
+#endif
 
 	if (((SPObjectClass *) parent_class)->release)
 		((SPObjectClass *) parent_class)->release (object);
@@ -363,9 +367,12 @@ sp_root_child_added (SPObject *object, SPRepr *child, SPRepr *ref)
 	co = sp_document_lookup_id (object->document, id);
 	g_assert (co != NULL);
 
+#if 0
 	if (SP_IS_NAMEDVIEW (co)) {
 		root->namedviews = g_slist_append (root->namedviews, co);
-	} else if (SP_IS_DEFS (co)) {
+	}
+#endif
+	if (SP_IS_DEFS (co)) {
 		SPObject *c;
 		/* We search for first <defs> node - it is not beautiful, but works */
 		for (c = group->children; c != NULL; c = c->next) {
@@ -390,9 +397,12 @@ sp_root_remove_child (SPObject * object, SPRepr * child)
 	co = sp_document_lookup_id (object->document, id);
 	g_assert (co != NULL);
 
+#if 0
 	if (SP_IS_NAMEDVIEW (co)) {
 		root->namedviews = g_slist_remove (root->namedviews, co);
-	} else if (SP_IS_DEFS (co) && root->defs == (SPDefs *) co) {
+	}
+#endif
+	if (SP_IS_DEFS (co) && root->defs == (SPDefs *) co) {
 		SPObject *c;
 		/* We search for next <defs> node - it is not beautiful, but works */
 		for (c = co->next; c != NULL; c = c->next) {

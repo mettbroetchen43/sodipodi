@@ -93,17 +93,21 @@ void
 sp_action_perform (SPAction *action)
 {
 	NRActiveObject *aobject;
-	NRObjectListener *listener;
 
 	nr_return_if_fail (action != NULL);
 	nr_return_if_fail (SP_IS_ACTION (action));
 
 	aobject = (NRActiveObject *) action;
-	for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
-		SPActionEventVector *avector;
-		avector = (SPActionEventVector *) listener->vector;
-		if ((listener->size >= sizeof (SPActionEventVector)) && avector->perform) {
-			avector->perform (action, listener->data);
+	if (aobject->callbacks) {
+		int i;
+		for (i = 0; i < aobject->callbacks->length; i++) {
+			NRObjectListener *listener;
+			SPActionEventVector *avector;
+			listener = aobject->callbacks->listeners + i;
+			avector = (SPActionEventVector *) listener->vector;
+			if ((listener->size >= sizeof (SPActionEventVector)) && avector->perform) {
+				avector->perform (action, listener->data);
+			}
 		}
 	}
 }
@@ -116,14 +120,18 @@ sp_action_set_active (SPAction *action, unsigned int active)
 
 	if (active != action->active) {
 		NRActiveObject *aobject;
-		NRObjectListener *listener;
 		action->active = active;
 		aobject = (NRActiveObject *) action;
-		for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
-			SPActionEventVector *avector;
-			avector = (SPActionEventVector *) listener->vector;
-			if ((listener->size >= sizeof (SPActionEventVector)) && avector->set_active) {
-				avector->set_active (action, active, listener->data);
+		if (aobject->callbacks) {
+			int i;
+			for (i = 0; i < aobject->callbacks->length; i++) {
+				NRObjectListener *listener;
+				SPActionEventVector *avector;
+				listener = aobject->callbacks->listeners + i;
+				avector = (SPActionEventVector *) listener->vector;
+				if ((listener->size >= sizeof (SPActionEventVector)) && avector->set_active) {
+					avector->set_active (action, active, listener->data);
+				}
 			}
 		}
 	}
@@ -137,14 +145,18 @@ sp_action_set_sensitive (SPAction *action, unsigned int sensitive)
 
 	if (sensitive != action->sensitive) {
 		NRActiveObject *aobject;
-		NRObjectListener *listener;
 		action->sensitive = sensitive;
 		aobject = (NRActiveObject *) action;
-		for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
-			SPActionEventVector *avector;
-			avector = (SPActionEventVector *) listener->vector;
-			if ((listener->size >= sizeof (SPActionEventVector)) && avector->set_sensitive) {
-				avector->set_sensitive (action, sensitive, listener->data);
+		if (aobject->callbacks) {
+			int i;
+			for (i = 0; i < aobject->callbacks->length; i++) {
+				NRObjectListener *listener;
+				SPActionEventVector *avector;
+				listener = aobject->callbacks->listeners + i;
+				avector = (SPActionEventVector *) listener->vector;
+				if ((listener->size >= sizeof (SPActionEventVector)) && avector->set_sensitive) {
+					avector->set_sensitive (action, sensitive, listener->data);
+				}
 			}
 		}
 	}
@@ -158,14 +170,18 @@ sp_action_set_shortcut (SPAction *action, unsigned int shortcut)
 
 	if (shortcut != action->shortcut) {
 		NRActiveObject *aobject;
-		NRObjectListener *listener;
 		action->shortcut = shortcut;
 		aobject = (NRActiveObject *) action;
-		for (listener = aobject->listeners; listener != NULL; listener = listener->next) {
-			SPActionEventVector *avector;
-			avector = (SPActionEventVector *) listener->vector;
-			if ((listener->size >= sizeof (SPActionEventVector)) && avector->set_shortcut) {
-				avector->set_shortcut (action, shortcut, listener->data);
+		if (aobject->callbacks) {
+			int i;
+			for (i = 0; i < aobject->callbacks->length; i++) {
+				NRObjectListener *listener;
+				SPActionEventVector *avector;
+				listener = aobject->callbacks->listeners + i;
+				avector = (SPActionEventVector *) listener->vector;
+				if ((listener->size >= sizeof (SPActionEventVector)) && avector->set_shortcut) {
+					avector->set_shortcut (action, shortcut, listener->data);
+				}
 			}
 		}
 	}

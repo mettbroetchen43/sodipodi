@@ -616,3 +616,13 @@ sp_item_group_item_list (SPGroup * group)
 
 	return g_slist_reverse (s);
 }
+
+SPObject *
+sp_item_group_get_child_by_name (SPGroup *group, SPObject *ref, const unsigned char *name)
+{
+	SPObject *child;
+	child = (ref) ? ref->next : group->children;
+	while (child && strcmp (sp_repr_name (child->repr), name)) child = child->next;
+	return child;
+}
+

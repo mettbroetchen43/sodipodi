@@ -58,6 +58,10 @@
 
 #include "sodipodi-private.h"
 
+#include "sp-namedview.h"
+#include "sp-guide.h"
+#include "sp-object-repr.h"
+
 #ifdef WITH_MODULES
 #include "modules/sp-module-sys.h"
 #endif /* WITH_MODULES */
@@ -224,6 +228,10 @@ sp_main_gui (int argc, const char **argv)
 
 	setlocale (LC_NUMERIC, "C");
 
+	/* fixme: Move these to some centralized location (Lauris) */
+	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
+	sp_object_type_register ("sodipodi:guide", SP_TYPE_GUIDE);
+
 #if WITH_POPT
 	ctx = poptGetContext (NULL, argc, argv, options, 0);
 	g_return_val_if_fail (ctx != NULL, 1);
@@ -313,6 +321,10 @@ sp_main_console (int argc, const char **argv)
 	/* we'll end with localised SVG files :-( */
 
 	setlocale (LC_NUMERIC, "C");
+
+	/* fixme: Move these to some centralized location (Lauris) */
+	sp_object_type_register ("sodipodi:namedview", SP_TYPE_NAMEDVIEW);
+	sp_object_type_register ("sodipodi:guide", SP_TYPE_GUIDE);
 
 #ifdef WITH_POPT
 	ctx = poptGetContext (NULL, argc, argv, options, 0);

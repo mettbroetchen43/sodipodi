@@ -1,3 +1,28 @@
+2003-06-22  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-root.c: Removed namedview tracking
+
+	* src/sp-object-repr.c (sp_object_type_lookup): Do not register GUI types
+	(sp_object_type_register): New method
+
+	* src/sp-namedview.c (sp_document_namedview): Moved it here to clean
+	up dependency chain
+
+	* src/sp-item-group.c (sp_item_group_get_child_by_name): New method
+
+	* src/main.c (sp_main_gui): Register GUI object types
+	(sp_main_console): Ditto
+
+	* src/document.c (sp_document_create): Check for namedview using name only
+
+	* src/Makefile.am (spsvgview_SOURCES): Uncommented spsvgview
+
+	* src/libnr/nr-object.c: Use listener arrays instead of lists
+
+2003-06-20  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Version 0.33pre
+
 2003-06-19  Masatake YAMATO  <jet@gyve.org>
 
 	* src/dialogs/desktop-properties.c (sp_color_picker_clicked): Enable "Close"

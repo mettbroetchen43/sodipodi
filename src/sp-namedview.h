@@ -67,7 +67,7 @@ guint sp_namedview_viewcount (SPNamedView * nv);
 const gchar * sp_namedview_get_name (SPNamedView * nv);
 const GSList * sp_namedview_view_list (SPNamedView * nv);
 
-
+SPNamedView *sp_document_namedview (SPDocument * document, const gchar * name);
 
 #endif
 

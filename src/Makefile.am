@@ -41,8 +41,6 @@ sodipodilib_src = \
 	sp-use.c sp-use.h \
 	sp-anchor.c sp-anchor.h \
 	sp-root.c sp-root.h \
-	sp-namedview.c sp-namedview.h \
-	sp-guide.c sp-guide.h \
 	sp-image.c sp-image.h \
 	sp-path.c sp-path.h \
 	sp-shape.c sp-shape.h \
@@ -78,6 +76,9 @@ sodipodi_SOURCES = \
 	$(spprogsrc) \
 	\
 	sodipodi.c sodipodi.h sodipodi-private.h \
+	\
+	sp-namedview.c sp-namedview.h \
+	sp-guide.c sp-guide.h \
 	\
 	view.c view.h \
 	svg-view.c svg-view.h \
@@ -159,23 +160,33 @@ sodipodi_LDADD = \
 
 sodipodi_LDFLAGS = -Wl,--export-dynamic $(kdeldflags)
 
-#noinst_PROGRAMS = spsvgview
+noinst_PROGRAMS = spsvgview
 
-#spsvgview_SOURCES =
-#	spsvgview.c
-#	view.c view.h
-#	svg-view.c svg-view.h
-#	module.c module.h
-#	dir-util.c dir-util.h
-#	print.c print.h
+spsvgview_SOURCES = \
+	spsvgview.c \
+	view.c view.h \
+	svg-view.c svg-view.h \
+	dir-util.c dir-util.h \
+	modules/ps.c modules/ps.h \
+	module.c module.h \
+	print.c print.h
 
-#spsvgview_LDADD =
-#	$(sodipodi_private_libs)
-#	$(SODIPODI_LIBS)
-#	$(GNOME_PRINT_LIBS)
-#	$(XFT_LIBS)
-#	$(FREETYPE_LIBS)
-#	$(kdeldadd)
+spsvgview_LDADD = \
+	$(spproglibs) \
+	dialogs/libspdialogs.a \
+	xml/libspxml.a \
+	svg/libspsvg.a \
+	widgets/libspwidgets.a \
+	display/libspdisplay.a \
+	helper/libspchelp.a \
+	libnrtype/libnrtype.a \
+	libnr/libnr.a \
+	libnrtype/libnrtype.a \
+	$(SODIPODI_LIBS) \
+	$(GNOME_PRINT_LIBS) \
+	$(XFT_LIBS) \
+	$(FREETYPE_LIBS) \
+	$(kdeldadd)
 
 #	sodipodi.c sodipodi.h
 #	desktop.c desktop.h
