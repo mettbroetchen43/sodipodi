@@ -1,4 +1,4 @@
-2001-02-19  Lauris Kaplinski  <lauris@tont.kaplinski.com>
+2001-02-19  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/desktop.c (sp_desktop_connect_item): New function
 
@@ -22,7 +22,7 @@
 	Use new bonobo object stuff
 	(sp_embeddable_document_new): Ditto
 
-2001-02-17  Lauris Kaplinski  <lauris@tont.kaplinski.com>
+2001-02-17  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-object.c (sp_object_getAttribute): New function
 	(sp_object_setAttribute): New function

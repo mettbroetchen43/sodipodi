@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.19\n"
 "POT-Creation-Date: 2001-02-11 04:44+0100\n"
-"PO-Revision-Date: 2001-02-11 04:44+0100\n"
+"PO-Revision-Date: 2001-02-16 20:32+0100\n"
 "Last-Translator: Jose A. Salgueiro <joseantsa@retemail.es>\n"
 "Language-Team: Spanish <joseantsa@retemail.es>\n"
 "MIME-Version: 1.0\n"
@@ -91,7 +91,7 @@ msgstr "Muestra red"
 #: glade/desktop.c:13
 #, fuzzy
 msgid "Snap to grid"
-msgstr "Alinea con las guías"
+msgstr "Alinea con la red"
 
 #: glade/desktop.c:14
 #, fuzzy
@@ -109,20 +109,20 @@ msgstr "Color de la red"
 
 #: glade/desktop.c:17 glade/desktop.c:36
 msgid "Snap distance:"
-msgstr "Distancia de guías"
+msgstr "Distancia autoajuste a la red"
 
 #: glade/desktop.c:18
 msgid "Set maximum distance for grid snapping"
-msgstr "Fija la máxima distancia para el espaciado de la red"
+msgstr "Fija la máxima distancia a la red"
 
 #: glade/desktop.c:19 glade/desktop.c:32
 #, fuzzy
 msgid "Snap units:"
-msgstr "Unidades de las guías:"
+msgstr " Unidades para la distancia de ajuste"
 
 #: glade/desktop.c:20
 msgid "Choose unit system for grid snapping"
-msgstr "Escoga el sistema de unidades para las guías"
+msgstr "Escoga el sistema de unidades de ajuste"
 
 #: glade/desktop.c:21 glade/desktop.c:34
 #, fuzzy
@@ -135,7 +135,7 @@ msgstr "Espaciado Y:"
 
 #: glade/desktop.c:24
 msgid "Set distance between vertical grid lines"
-msgstr "Fija la distancia entre las líneas verticales de la red"
+msgstr "Ajuste de la distancia entre las líneas verticales de la red"
 
 #: glade/desktop.c:25
 msgid "Spacing X:"
@@ -143,7 +143,7 @@ msgstr "Espaciado X:"
 
 #: glade/desktop.c:26
 msgid "Set distance between horizontal grid lines"
-msgstr "Fija la distancia entre las líneas horizontales de la red"
+msgstr "Ajuste de la distancia entre las líneas horizontales de la red"
 
 #: glade/desktop.c:27
 msgid "Origin X:"
@@ -155,7 +155,7 @@ msgstr "Origen Y:"
 
 #: glade/desktop.c:29 glade/desktop.c:30
 msgid "Set origin of page coordinate system"
-msgstr "Fija el origen del sistema de coordenadas de la página"
+msgstr "Fija el origen del sistema de coordenadas de la páginasa"
 
 #: glade/desktop.c:31
 msgid "Grid"
@@ -163,11 +163,11 @@ msgstr "Red"
 
 #: glade/desktop.c:33
 msgid "Choose unit system for guideline snapping"
-msgstr "Escoja el sisema de unidades para las guías"
+msgstr "Escoja el sistema de unidades para el ajuste a las guías"
 
 #: glade/desktop.c:37
 msgid "Set maximum distance for guideline snapping"
-msgstr "Fija la máxima distancia para  las líneas guías"
+msgstr "Fija la máxima distancia para el ajuste a las guias"
 
 #: glade/desktop.c:38
 msgid "Guides color:"
@@ -189,7 +189,7 @@ msgstr "Muestra las guías"
 
 #: glade/desktop.c:42
 msgid "Snap to guides"
-msgstr "Alinea con las guías"
+msgstr "Ajuste a las guías"
 
 #: glade/desktop.c:43
 msgid "Highlight color:"
@@ -353,12 +353,12 @@ msgstr "redondeada"
 
 #: glade/object_props.c:28
 msgid "miter"
-msgstr "mitra"
+msgstr "inglete"
 
 #: glade/object_props.c:29
 #, fuzzy
 msgid " Cap "
-msgstr "Cobreix"
+msgstr "Seleccionar"
 
 #: glade/object_props.c:30
 msgid "butt"
@@ -371,7 +371,7 @@ msgstr "cuadrado"
 #: glade/object_props.c:33 glade/object_props.c:63 glade/sodipodi-glade.c:61
 #: glade/sodipodi-glade.c:169
 msgid "Stroke"
-msgstr "Contorno"
+msgstr "Pincelada"
 
 #: glade/object_props.c:34
 msgid "None"
@@ -388,7 +388,7 @@ msgstr "Gradiente"
 #: glade/object_props.c:37
 #, fuzzy
 msgid "Pattern"
-msgstr "Patrón"
+msgstr "Patron"
 
 #: glade/object_props.c:38
 msgid "Fractal"
@@ -402,7 +402,7 @@ msgstr "Color de relleno"
 #: glade/object_props.c:40
 #, fuzzy
 msgid "Fill Color : "
-msgstr "Color 1"
+msgstr "Relleno de color "
 
 #: glade/object_props.c:41 glade/object_props.c:64 glade/object_props.c:79
 msgid "Pick a color"
@@ -1024,7 +1024,7 @@ msgstr "Incremento de Zoom "
 #: glade/toolbox.c:17
 #, fuzzy
 msgid "Draw rectangle"
-msgstr "Dibuja rectángulos"
+msgstr "Dibuja rectangulos"
 
 #: glade/toolbox.c:18
 #, fuzzy
@@ -1034,7 +1034,7 @@ msgstr "Dibuja elipses"
 #: glade/toolbox.c:19
 #, fuzzy
 msgid "Draw freehand line"
-msgstr "Dibuja líneas a mano alzada"
+msgstr "Dibuja lineas a mano alzada"
 
 #: glade/toolbox.c:20
 #, fuzzy
@@ -1047,21 +1047,21 @@ msgstr "Aumentos a 1:1"
 
 #: glade/toolbox.c:24
 msgid "Zoom to page"
-msgstr "Zoom a la página"
+msgstr "Vista a la pagina"
 
 #: glade/toolbox.c:26
 #, fuzzy
 msgid "Zoom out"
-msgstr "Zoom out"
+msgstr "Disminuir vista"
 
 #: glade/toolbox.c:27
 msgid "Zoom to drawing"
-msgstr "Zoom a lo dibujado"
+msgstr "Vista a lo dibujado"
 
 #: glade/toolbox.c:28
 #, fuzzy
 msgid "Zoom to selection"
-msgstr "Zoom a la selección"
+msgstr "Vista a la selección"
 
 #: glade/toolbox.c:32
 #, fuzzy
@@ -1176,12 +1176,12 @@ msgstr "Objeto"
 #: glade/toolbox.c:68
 #, fuzzy
 msgid "Align dialog"
-msgstr "Diálogo de alineación"
+msgstr "Dialogo de alineacion"
 
 #: glade/toolbox.c:69
 #, fuzzy
 msgid "Transformation dialog"
-msgstr "Diálogo de transformación"
+msgstr "Dialogo de transformacion"
 
 #: glade/toolbox.c:70
 #, fuzzy
@@ -1206,7 +1206,7 @@ msgstr "Edita el estilo de borde de los objetos seleccionados"
 #: glade/toolbox.c:74
 #, fuzzy
 msgid "Flip selected objects"
-msgstr "Flip los objectos seleccionados"
+msgstr "Voltea los objectos seleccionados"
 
 #: glade/toolbox.c:75
 #, fuzzy
@@ -1333,12 +1333,12 @@ msgstr "seleccionar métrica para la escala"
 #: glade/transformation.c:25
 #, fuzzy
 msgid "flip horizontal"
-msgstr "flip horizontal"
+msgstr "volteo horizontal"
 
 #: glade/transformation.c:26
 #, fuzzy
 msgid "flip vertical"
-msgstr "vertical"
+msgstr "volteo vertical"
 
 #: glade/transformation.c:27
 msgid "Rotate"
