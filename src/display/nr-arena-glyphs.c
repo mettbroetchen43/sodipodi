@@ -167,7 +167,7 @@ nr_arena_glyphs_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state,
 		glyphs->rfont = rfont;
 		glyphs->x = t.c[4];
 		glyphs->y = t.c[5];
-		nr_rasterfont_get_glyph_area (rfont, glyphs->glyph, &area);
+		nr_rasterfont_glyph_area_get (rfont, glyphs->glyph, &area);
 		bbox.x0 = area.x0 + glyphs->x;
 		bbox.y0 = area.y0 + glyphs->y;
 		bbox.x1 = area.x1 + glyphs->x;
@@ -318,7 +318,7 @@ nr_arena_glyphs_fill_mask (NRArenaGlyphs *glyphs, NRRectL *area, NRPixBlock *m)
 	item = NR_ARENA_ITEM (glyphs);
 
 	if (glyphs->rfont && nr_rect_l_test_intersect (area, &item->bbox)) {
-		nr_rasterfont_render_glyph_mask (glyphs->rfont, glyphs->glyph, m, glyphs->x, glyphs->y);
+		nr_rasterfont_glyph_mask_render (glyphs->rfont, glyphs->glyph, m, glyphs->x, glyphs->y);
 	}
 
 	return item->state;
@@ -618,7 +618,7 @@ nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *sg, NRFont *font, int g
 
 	group = NR_ARENA_GROUP (sg);
 
-	if (nr_font_get_glyph_outline (font, glyph, &bpath, FALSE)) {
+	if (nr_font_glyph_outline_get (font, glyph, &bpath, FALSE)) {
 		SPCurve *curve;
 
 		nr_arena_item_request_render (NR_ARENA_ITEM (group));

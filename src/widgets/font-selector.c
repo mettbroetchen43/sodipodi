@@ -344,30 +344,27 @@ sp_font_selector_set_font (SPFontSelector *fsel, NRFont *font)
 	scl = GTK_CLIST (fsel->style);
 
 	if (font) {
-		NRTypeFace *tf;
-		const unsigned char *fn, *sn;
-		unsigned char s[8];
+		unsigned char n[256], s[8];
 		int i;
-		tf = nr_font_get_typeface (font);
-		fn = nr_typeface_get_family_name (tf);
+		nr_typeface_family_name_get (NR_FONT_TYPEFACE (font), n, 256);
 		for (i = 0; i < fcl->rows; i++) {
 			gchar *rtxt;
 			gtk_clist_get_text (fcl, i, 0, &rtxt);
-			if (rtxt && !strcmp (fn, rtxt)) {
+			if (rtxt && !strcmp (n, rtxt)) {
 				gtk_clist_select_row (fcl, i, 0);
 				break;
 			}
 		}
-		sn = nr_typeface_get_style (tf);
+		nr_typeface_style_get (NR_FONT_TYPEFACE (font), n, 256);
 		for (i = 0; i < scl->rows; i++) {
 			gchar *rtxt;
 			gtk_clist_get_text (scl, i, 0, &rtxt);
-			if (rtxt && !strcmp (sn, rtxt)) {
+			if (rtxt && !strcmp (n, rtxt)) {
 				gtk_clist_select_row (scl, i, 0);
 				break;
 			}
 		}
-		g_snprintf (s, 8, "%.2g", nr_font_get_size (font));
+		g_snprintf (s, 8, "%.2g", NR_FONT_SIZE (font));
 		gtk_entry_set_text (GTK_ENTRY (GTK_COMBO (fsel->size)->entry), s);
 	}
 }
@@ -512,7 +509,7 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 			NRRectF bbox;
 			float startx, starty;
 			int x, y;
-			tface = nr_rasterfont_get_typeface (fprev->rfont);
+			tface = NR_RASTERFONT_TYPEFACE (fprev->rfont);
 			if (fprev->phrase) {
 				p = fprev->phrase;
 			} else {
@@ -529,8 +526,8 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 				unival = g_utf8_get_char (p);
 				glyphs[len] = nr_typeface_lookup_default (tface, unival);
 				hpos[len] = px;
-				nr_rasterfont_get_glyph_advance (fprev->rfont, glyphs[len], &adv);
-				nr_rasterfont_get_glyph_area (fprev->rfont, glyphs[len], &gbox);
+				nr_rasterfont_glyph_advance_get (fprev->rfont, glyphs[len], &adv);
+				nr_rasterfont_glyph_area_get (fprev->rfont, glyphs[len], &gbox);
 				bbox.x0 = MIN (px + gbox.x0, bbox.x0);
 				bbox.y0 = MIN (py + gbox.y0, bbox.y0);
 				bbox.x1 = MAX (px + gbox.x1, bbox.x1);
@@ -556,7 +553,7 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 					nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, x0, y0, x1, y1, TRUE);
 					pb.empty = FALSE;
 					for (i = 0; i < len; i++) {
-						nr_rasterfont_render_glyph_mask (fprev->rfont, glyphs[i], &m, hpos[i] + startx, starty);
+						nr_rasterfont_glyph_mask_render (fprev->rfont, glyphs[i], &m, hpos[i] + startx, starty);
 					}
 					nr_blit_pixblock_mask_rgba32 (&pb, &m, fprev->rgba);
 					gdk_draw_rgb_image (widget->window, widget->style->black_gc,

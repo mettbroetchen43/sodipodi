@@ -142,15 +142,17 @@ sp_text_context_finalize (GtkObject *object)
 static gint
 sptc_focus_in (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 {
-	g_print ("focus in\n");
 	gdk_im_begin (tc->ic, GTK_WIDGET (SP_DT_CANVAS (SP_EVENT_CONTEXT (tc)->desktop))->window);
+
+	return FALSE;
 }
 
 static gint
 sptc_focus_out (GtkWidget *widget, GdkEventFocus *event, SPTextContext *tc)
 {
-	g_print ("focus out\n");
 	gdk_im_end ();
+
+	return FALSE;
 }
 
 static void

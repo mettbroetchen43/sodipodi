@@ -35,6 +35,8 @@
 #define A4_WIDTH_STR "210mm"
 #define A4_HEIGHT_STR "297mm"
 
+#define SP_DOCUMENT_UPDATE_PRIORITY -10
+
 enum {
 	MODIFIED,
 	URI_SET,
@@ -558,7 +560,7 @@ void
 sp_document_request_modified (SPDocument *doc)
 {
 	if (!doc->modified_id) {
-		doc->modified_id = gtk_idle_add (sp_document_idle_handler, doc);
+		doc->modified_id = gtk_idle_add_priority (SP_DOCUMENT_UPDATE_PRIORITY, sp_document_idle_handler, doc);
 	}
 }
 

@@ -20,6 +20,8 @@
 #include "document.h"
 #include "selection.h"
 
+#define SP_SELECTION_UPDATE_PRIORITY 0
+
 enum {
 	CHANGED,
 	MODIFIED,
@@ -148,7 +150,7 @@ sp_selection_selected_item_modified (SPItem *item, guint flags, SPSelection *sel
 
 	if (!selection->idle) {
 		/* Request handling to be run in idle loop */
-		selection->idle = gtk_idle_add (sp_selection_idle_handler, selection);
+		selection->idle = gtk_idle_add_priority (SP_SELECTION_UPDATE_PRIORITY, sp_selection_idle_handler, selection);
 	}
 
 	/* Collect all flags */

@@ -181,7 +181,7 @@ sp_font_get_glyph_bbox (NRFont *font, gint glyph, gint mode, ArtDRect *bbox)
 	ArtDRect hbox;
 
 	/* Find correct bbox (gnome-print does it wrong) */
-	if (!nr_font_get_glyph_outline (font, glyph, &bpath, FALSE)) return NULL;
+	if (!nr_font_glyph_outline_get (font, glyph, &bpath, FALSE)) return NULL;
 	hbox.x0 = hbox.y0 = 1e18;
 	hbox.x1 = hbox.y1 = -1e18;
 	sp_bpath_matrix_d_bbox_d_union (bpath.path, NULL, &hbox, 0.25);
@@ -196,7 +196,7 @@ sp_font_get_glyph_bbox (NRFont *font, gint glyph, gint mode, ArtDRect *bbox)
 		bbox->x0 = 0.0 - (hbox.x1 - hbox.x0) / 2;
 		bbox->x1 = 0.0 + (hbox.x1 - hbox.x0) / 2;
 		/* Just move down by EM */
-		dy = nr_font_get_size (font);
+		dy = NR_FONT_SIZE (font);
 		bbox->y0 = hbox.y0 - dy;
 		bbox->y1 = hbox.y1 - dy;
 		return bbox;
@@ -207,10 +207,10 @@ static NRPointF *
 sp_font_get_glyph_advance (NRFont *font, gint glyph, gint mode, NRPointF *adv)
 {
 	if (mode == SP_CSS_WRITING_MODE_LR) {
-		return nr_font_get_glyph_advance (font, glyph, adv);
+		return nr_font_glyph_advance_get (font, glyph, adv);
 	} else {
 		adv->x = 0.0;
-		adv->y = -nr_font_get_size (font);
+		adv->y = -NR_FONT_SIZE (font);
 		return adv;
 	}
 }
@@ -227,7 +227,7 @@ sp_font_get_glyph_bbox_lr2tb (NRFont *font, gint glyph, ArtPoint *d)
 		/* Center horizontally */
 		d->x = 0.0 - (hbox.x1 + hbox.x0) / 2;
 		/* Just move down by EM */
-		d->y = 0.0 - nr_font_get_size (font);
+		d->y = 0.0 - NR_FONT_SIZE (font);
 	}
 }
 
@@ -255,7 +255,7 @@ sp_string_calculate_dimensions (SPString *string)
 	spglyph = nr_typeface_lookup_default (face, ' ');
 	if (spglyph > 0) {
 		NRPointF adv;
-		if (nr_font_get_glyph_advance (font, spglyph, &adv)) {
+		if (nr_font_glyph_advance_get (font, spglyph, &adv)) {
 			spwidth = adv.x;
 		}
 	}
@@ -364,7 +364,7 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 	spglyph = nr_typeface_lookup_default (face, ' ');
 	if (spglyph > 0) {
 		NRPointF adv;
-		if (nr_font_get_glyph_advance (font, spglyph, &adv)) {
+		if (nr_font_glyph_advance_get (font, spglyph, &adv)) {
 			spwidth = adv.x;
 		}
 	}

@@ -128,7 +128,7 @@ sp_chars_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 		NRBPath bpath;
 		gdouble a[6], b[6];
 		gint i;
-		if (nr_font_get_glyph_outline (el->font, el->glyph, &bpath, FALSE)) {
+		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
 			for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
 			art_affine_multiply (b, a, transform);
 			sp_bpath_matrix_d_bbox_d_union (bpath.path, b, bbox, 0.25);
@@ -154,7 +154,7 @@ sp_chars_show (SPItem *item, NRArena *arena)
 		NRBPath bpath;
 		SPCurve *curve;
 
-		if (nr_font_get_glyph_outline (el->font, el->glyph, &bpath, FALSE)) {
+		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
 			curve = sp_curve_new_from_static_bpath (bpath.path);
 			if (curve) {
 				gdouble a[6];
@@ -220,7 +220,7 @@ sp_chars_add_element (SPChars *chars, guint glyph, NRFont *font, const NRMatrixF
 	chars->elements = el;
 
 #if 0
-	if (nr_font_get_glyph_outline (el->font, el->glyph, &bpath, FALSE)) {
+	if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
 		curve = sp_curve_new_from_static_bpath (bpath.path);
 		if (curve) {
 			gdouble a[6];
@@ -254,7 +254,7 @@ sp_chars_normalized_bpath (SPChars *chars)
 		gdouble a[6];
 		gint i;
 		for (i = 0; i < 6; i++) a[i] = el->transform.c[i];
-		if (nr_font_get_glyph_outline (el->font, el->glyph, &bp, FALSE)) {
+		if (nr_font_glyph_outline_get (el->font, el->glyph, &bp, FALSE)) {
 			abp = art_bpath_affine_transform (bp.path, a);
 			c = sp_curve_new_from_bpath (abp);
 			if (c) cc = g_slist_prepend (cc, c);
@@ -392,7 +392,7 @@ sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, c
 		gint i;
 
 		for (i = 0; i < 6; i++) chela[i] = el->transform.c[i];
-		if (nr_font_get_glyph_outline (el->font, el->glyph, &bpath, FALSE)) {
+		if (nr_font_glyph_outline_get (el->font, el->glyph, &bpath, FALSE)) {
 			abp = art_bpath_affine_transform (bpath.path, chela);
 
 			sp_chars_print_bpath (gpc, abp, SP_OBJECT_STYLE (chars), ctm, pbox, dbox, bbox);

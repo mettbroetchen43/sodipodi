@@ -13,7 +13,7 @@
 
 #include <string.h>
 #include <libnr/nr-macros.h>
-#include "nr-type-gnome.h"
+#include <libnr/nr-matrix.h>
 #include "nr-typeface.h"
 
 NRTypeFace *
@@ -24,58 +24,68 @@ nr_typeface_ref (NRTypeFace *tf)
 	return tf;
 }
 
-/* Unref is in type directory module */
-
-const unsigned char *
-nr_typeface_get_family_name (NRTypeFace *tf)
+NRTypeFace *
+nr_typeface_unref (NRTypeFace *tf)
 {
-	return gnome_font_face_get_family_name (tf->face);
-}
+	tf->refcount -= 1;
 
-const unsigned char *
-nr_typeface_get_style (NRTypeFace *tf)
-{
-	return gnome_font_face_get_species_name (tf->face);
-}
-
-const unsigned char *
-nr_typeface_get_attribute (NRTypeFace *tf, const unsigned char *key)
-{
-	if (!strcmp (key, "weight")) {
-		guint wc;
-		wc = gnome_font_face_get_weight_code (tf->face);
-		return (wc >= GNOME_FONT_BOLD) ? "bold" : "normal";
-	} else if (!strcmp (key, "style")) {
-		return gnome_font_face_is_italic (tf->face) ? "italic" : "normal";
+	if (tf->refcount < 1) {
+		tf->vmv->free (tf);
 	}
 
-	return "normal";
-}
-
-NRBPath *
-nr_typeface_get_glyph_outline (NRTypeFace *tf, int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
-{
-	if (metrics == NR_TYPEFACE_METRICS_VERTICAL) {
-		/* fixme: Really should implement this */
-		return NULL;
-	} else {
-		d->path = (ArtBpath *) gnome_font_face_get_glyph_stdoutline (tf->face, glyph);
-		if (ref) gnome_font_face_ref (tf->face);
-	}
-
-	return d;
-}
-
-void
-nr_typeface_unref_glyph_outline (NRTypeFace *tf, int glyph)
-{
-	/* fixme: This is somewhat dangerous, but OK... */
-	gnome_font_face_unref (tf->face);
+	return NULL;
 }
 
 unsigned int
-nr_typeface_lookup_default (NRTypeFace *tf, int unival)
+nr_typeface_family_name_get (NRTypeFace *tf, unsigned char *str, unsigned int size)
 {
-	return gnome_font_face_lookup_default (tf->face, unival);
+	return nr_typeface_attribute_get (tf, "family", str, size);
 }
+
+unsigned int
+nr_typeface_style_get (NRTypeFace *tf, unsigned char *str, unsigned int size)
+{
+	return nr_typeface_attribute_get (tf, "style", str, size);
+}
+
+unsigned int
+nr_typeface_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size)
+{
+	return tf->vmv->attribute_get (tf, key, str, size);
+}
+
+NRBPath *
+nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref)
+{
+	return tf->vmv->glyph_outline_get (tf, glyph, metrics, d, ref);
+}
+
+void
+nr_typeface_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph)
+{
+	return tf->vmv->glyph_outline_unref (tf, glyph);
+}
+
+NRPointF *
+nr_typeface_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv)
+{
+	return tf->vmv->glyph_advance_get (tf, glyph, metrics, adv);
+}
+
+unsigned int
+nr_typeface_lookup_default (NRTypeFace *tf, unsigned int unival)
+{
+	return tf->vmv->lookup (tf, NR_TYPEFACE_LOOKUP_RULE_DEFAULT, unival);
+}
+
+NRFont *
+nr_font_new_default (NRTypeFace *tf, unsigned int metrics, float size)
+{
+	NRMatrixF scale;
+
+	nr_matrix_f_set_scale (&scale, size, size);
+
+	return tf->vmv->font_new (tf, metrics, &scale);
+}
+
 

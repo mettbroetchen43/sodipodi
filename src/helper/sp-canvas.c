@@ -30,6 +30,8 @@
 #include <libnr/nr-pixblock.h>
 #include "sp-canvas.h"
 
+#define SP_CANVAS_UPDATE_PRIORITY 10
+
 enum {
 	SP_CANVAS_ITEM_VISIBLE = 1 << 7,
 	SP_CANVAS_ITEM_NEED_UPDATE = 1 << 8,
@@ -1916,8 +1918,9 @@ paint (SPCanvas *canvas)
 			nr_pixelstore_64K_free (buf.buf);
 	  	}
 
-		uta_clear (canvas->redraw_area, &rects[i]);
 #if 0
+		uta_clear (canvas->redraw_area, &rects[i]);
+
 		if (gdk_events_pending ()) {
 			art_free (rects);
 			return FALSE;
@@ -1969,7 +1972,7 @@ idle_handler (gpointer data)
 	SPCanvas *canvas;
 	int ret;
 
-#if 0
+#if 1
 	GDK_THREADS_ENTER ();
 #endif
 
@@ -1984,7 +1987,7 @@ idle_handler (gpointer data)
 		canvas->idle_id = 0;
 	}
 
-#if 0
+#if 1
 	GDK_THREADS_LEAVE ();
 #endif
 
@@ -1997,7 +2000,7 @@ add_idle (SPCanvas *canvas)
 {
 	if (canvas->idle_id != 0) return;
 
-	canvas->idle_id = gtk_idle_add (idle_handler, canvas);
+	canvas->idle_id = gtk_idle_add_priority (SP_CANVAS_UPDATE_PRIORITY, idle_handler, canvas);
 }
 
 /**

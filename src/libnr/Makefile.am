@@ -37,7 +37,7 @@ libnr_a_SOURCES = \
 	nr-blit.c nr-blit.h \
 	nr-render.h \
 	nr-gradient.c nr-gradient.h \
-	nr-path.h \
+	nr-path.c nr-path.h \
 	$(mmx_sources)
 
 testnr_SOURCES = \

@@ -261,10 +261,8 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 	if (repr) {
 		GtkWidget *fontsel, *preview, *b;
 		SPCSSAttr *css;
-		NRTypeFace *tf;
 		NRFont *font;
-		const guchar *fstr, *wstr, *sstr;
-		guchar c[64];
+		guchar c[256];
 
 		fontsel = gtk_object_get_data (GTK_OBJECT (dlg), "fontsel");
 		preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
@@ -273,14 +271,13 @@ sp_text_edit_dialog_update_object (SPText *text, SPRepr *repr)
 
 		/* font */
 		font = sp_font_selector_get_font (SP_FONT_SELECTOR (fontsel));
-		tf = nr_font_get_typeface (font);
-		fstr = nr_typeface_get_family_name (tf);
-		sp_repr_css_set_property (css, "font-family", fstr);
-		wstr = nr_typeface_get_attribute (tf, "weight");
-		sp_repr_css_set_property (css, "font-weight", wstr);
-		sstr = nr_typeface_get_attribute (tf, "style");
-		sp_repr_css_set_property (css, "font-style", sstr);
-		snprintf (c, 64, "%g", nr_font_get_size (font));
+		nr_typeface_family_name_get (NR_FONT_TYPEFACE (font), c, 256);
+		sp_repr_css_set_property (css, "font-family", c);
+		nr_typeface_attribute_get (NR_FONT_TYPEFACE (font), "weight", c, 256);
+		sp_repr_css_set_property (css, "font-weight", c);
+		nr_typeface_attribute_get (NR_FONT_TYPEFACE (font), "style", c, 256);
+		sp_repr_css_set_property (css, "font-style", c);
+		snprintf (c, 64, "%g", NR_FONT_SIZE (font));
 		sp_repr_css_set_property (css, "font-size", c);
 		nr_font_unref (font);
 		/* Layout */

@@ -30,8 +30,47 @@
 #include <libart_lgpl/art_rect_svp.h>
 #include <libart_lgpl/art_gray_svp.h>
 
-#include "nr-type-gnome.h"
 #include "nr-rasterfont.h"
+
+NRRasterFont *
+nr_rasterfont_ref (NRRasterFont *rf)
+{
+	rf->refcount += 1;
+
+	return rf;
+}
+
+NRRasterFont *
+nr_rasterfont_unref (NRRasterFont *rf)
+{
+	rf->refcount -= 1;
+
+	if (rf->refcount < 1) {
+		rf->font->face->vmv->rasterfont_free (rf);
+	}
+
+	return NULL;
+}
+
+NRPointF *
+nr_rasterfont_glyph_advance_get (NRRasterFont *rf, int glyph, NRPointF *adv)
+{
+	return rf->font->face->vmv->rasterfont_glyph_advance_get (rf, glyph, adv);
+}
+
+NRRectF *
+nr_rasterfont_glyph_area_get (NRRasterFont *rf, int glyph, NRRectF *area)
+{
+	return rf->font->face->vmv->rasterfont_glyph_area_get (rf, glyph, area);
+}
+
+void
+nr_rasterfont_glyph_mask_render (NRRasterFont *rf, int glyph, NRPixBlock *mask, float x, float y)
+{
+	rf->font->face->vmv->rasterfont_glyph_mask_render (rf, glyph, mask, x, y);
+}
+
+/* Generic implementation */
 
 #define NRRF_PAGEBITS 6
 #define NRRF_PAGE_SIZE (1 << NRRF_PAGEBITS)
@@ -48,9 +87,9 @@
 #define NRRF_COORD_INT_LOWER(i) ((i) >> 6)
 #define NRRF_COORD_INT_UPPER(i) (((i) + 63) >> 6)
 #define NRRF_COORD_INT_SIZE(i0,i1) (NRRF_COORD_INT_UPPER (i1) - NRRF_COORD_INT_LOWER (i0))
-#define NRRF_COORD_TO_FLOAT(i) ((gdouble) (i) / 64.0)
-#define NRRF_COORD_FROM_FLOAT_LOWER(f) ((gint) floor (f * 64.0))
-#define NRRF_COORD_FROM_FLOAT_UPPER(f) ((gint) ceil (f * 64.0))
+#define NRRF_COORD_TO_FLOAT(i) ((double) (i) / 64.0)
+#define NRRF_COORD_FROM_FLOAT_LOWER(f) ((int) (f * 64.0))
+#define NRRF_COORD_FROM_FLOAT_UPPER(f) ((int) (f * 64.0 + 63.999999))
 
 enum {
 	NRRF_GMAP_NONE,
@@ -58,8 +97,6 @@ enum {
 	NRRF_GMAP_IMAGE,
 	NRRF_GMAP_SVP
 };
-
-typedef struct _NRRFGlyphSlot NRRFGlyphSlot;
 
 struct _NRRFGlyphSlot {
 	unsigned int has_advance : 1;
@@ -74,133 +111,61 @@ struct _NRRFGlyphSlot {
 	} gmap;
 };
 
-struct _NRRasterFont {
-	NRRasterFont *prev, *next;
-	unsigned int refcount;
-	NRFont *font;
-	NRMatrixF transform;
-	unsigned int nglyphs;
-	NRRFGlyphSlot **pages;
-};
-
 static NRRFGlyphSlot *nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned int flags);
 
-#ifdef RFDEBUG
-#include <stdio.h>
-#endif
-
-#ifdef RFDEBUG
-static int numrfonts = 0;
-#endif
-
 NRRasterFont *
-nr_rasterfont_new (NRFont *font, NRMatrixF *transform)
+nr_rasterfont_generic_new (NRFont *font, NRMatrixF *transform)
 {
 	NRRasterFont *rf;
-	double mexp;
-
-	mexp = NR_MATRIX_DF_EXPANSION (transform);
-	rf = font->rfonts;
-	while (rf != NULL) {
-		double fmexp;
-		fmexp = NR_MATRIX_DF_EXPANSION (&rf->transform);
-		if (NR_DF_TEST_CLOSE (mexp, fmexp, 0.001 * mexp)) {
-			double rmexp;
-			if (NR_DF_TEST_CLOSE (mexp, 0.0, 0.0001)) return nr_rasterfont_ref (rf);
-			rmexp = mexp * 0.001;
-			if (NR_DF_TEST_CLOSE (transform->c[0], rf->transform.c[0], rmexp) &&
-			    NR_DF_TEST_CLOSE (transform->c[1], rf->transform.c[1], rmexp) &&
-			    NR_DF_TEST_CLOSE (transform->c[2], rf->transform.c[2], rmexp) &&
-			    NR_DF_TEST_CLOSE (transform->c[3], rf->transform.c[3], rmexp)) {
-#ifdef RFDEBUG
-				printf ("Found cached rfont mexp %g fmexp %g\n", mexp, fmexp);
-#endif
-				return nr_rasterfont_ref (rf);
-			}
-		}
-		rf = rf->next;
-	}
 
 	rf = nr_new (NRRasterFont, 1);
 
 	rf->refcount = 1;
+	rf->next = NULL;
 	rf->font = nr_font_ref (font);
 	rf->transform = *transform;
 	/* fixme: How about subpixel positioning */
 	rf->transform.c[4] = 0.0;
 	rf->transform.c[5] = 0.0;
-	rf->nglyphs = font->nglyphs;
+	rf->nglyphs = NR_FONT_NUM_GLYPHS (font);
 	rf->pages = NULL;
 
-	rf->prev = NULL;
-	rf->next = font->rfonts;
-	if (rf->next) rf->next->prev = rf;
-	font->rfonts = rf;
-
-#ifdef RFDEBUG
-	numrfonts += 1;
-#endif
-
 	return rf;
 }
 
-NRRasterFont *
-nr_rasterfont_ref (NRRasterFont *rf)
+void
+nr_rasterfont_generic_free (NRRasterFont *rf)
 {
-	rf->refcount += 1;
-
-	return rf;
-}
-
-NRRasterFont *
-nr_rasterfont_unref (NRRasterFont *rf)
-{
-	rf->refcount -= 1;
-
-	if (rf->refcount < 1) {
-		if (rf->pages) {
-			int npages, p;
-			npages = rf->nglyphs / NRRF_PAGE_SIZE;
-			for (p = 0; p < npages; p++) {
-				if (rf->pages[p]) {
-					NRRFGlyphSlot *slots;
-					int s;
-					slots = rf->pages[p];
-					for (s = 0; s < NRRF_PAGE_SIZE; s++) {
-						if (slots[s].has_gmap == NRRF_GMAP_IMAGE) {
-							nr_free (slots[s].gmap.px);
-						} else if (slots[s].has_gmap == NRRF_GMAP_SVP) {
-							art_svp_free (slots[s].gmap.svp);
-						}
+	if (rf->pages) {
+		int npages, p;
+		npages = rf->nglyphs / NRRF_PAGE_SIZE;
+		for (p = 0; p < npages; p++) {
+			if (rf->pages[p]) {
+				NRRFGlyphSlot *slots;
+				int s;
+				slots = rf->pages[p];
+				for (s = 0; s < NRRF_PAGE_SIZE; s++) {
+					if (slots[s].has_gmap == NRRF_GMAP_IMAGE) {
+						nr_free (slots[s].gmap.px);
+					} else if (slots[s].has_gmap == NRRF_GMAP_SVP) {
+						art_svp_free (slots[s].gmap.svp);
 					}
-					nr_free (rf->pages[p]);
 				}
+				nr_free (rf->pages[p]);
 			}
-			nr_free (rf->pages);
 		}
-		if (rf->prev) {
-			rf->prev->next = rf->next;
-		} else {
-			rf->font->rfonts = rf->next;
-		}
-		if (rf->next) rf->next->prev = rf->prev;
-		nr_font_unref (rf->font);
-		nr_free (rf);
-#ifdef RFDEBUG
-		numrfonts -= 1;
-		printf ("Num rfonts %d\n", numrfonts);
-#endif
+		nr_free (rf->pages);
 	}
-
-	return NULL;
+	nr_font_unref (rf->font);
+	nr_free (rf);
 }
 
 NRPointF *
-nr_rasterfont_get_glyph_advance (NRRasterFont *rf, int glyph, NRPointF *adv)
+nr_rasterfont_generic_glyph_advance_get (NRRasterFont *rf, unsigned int glyph, NRPointF *adv)
 {
 	NRPointF a;
 
-	if (nr_font_get_glyph_advance (rf->font, glyph, &a)) {
+	if (nr_font_glyph_advance_get (rf->font, glyph, &a)) {
 		adv->x = NR_MATRIX_DF_TRANSFORM_X (&rf->transform, a.x, a.y);
 		adv->y = NR_MATRIX_DF_TRANSFORM_Y (&rf->transform, a.x, a.y);
 		return adv;
@@ -210,7 +175,7 @@ nr_rasterfont_get_glyph_advance (NRRasterFont *rf, int glyph, NRPointF *adv)
 }
 
 NRRectF *
-nr_rasterfont_get_glyph_area (NRRasterFont *rf, int glyph, NRRectF *area)
+nr_rasterfont_generic_glyph_area_get (NRRasterFont *rf, unsigned int glyph, NRRectF *area)
 {
 	NRRFGlyphSlot *slot;
 
@@ -226,20 +191,8 @@ nr_rasterfont_get_glyph_area (NRRasterFont *rf, int glyph, NRRectF *area)
 	return area;
 }
 
-NRFont *
-nr_rasterfont_get_font (NRRasterFont *rf)
-{
-	return rf->font;
-}
-
-NRTypeFace *
-nr_rasterfont_get_typeface (NRRasterFont *rf)
-{
-	nr_font_get_typeface (rf->font);
-}
-
 void
-nr_rasterfont_render_glyph_mask (NRRasterFont *rf, int glyph, NRPixBlock *m, float x, float y)
+nr_rasterfont_generic_glyph_mask_render (NRRasterFont *rf, unsigned int glyph, NRPixBlock *m, float x, float y)
 {
 	NRRFGlyphSlot *slot;
 	NRRectS area;
@@ -262,7 +215,7 @@ nr_rasterfont_render_glyph_mask (NRRasterFont *rf, int glyph, NRPixBlock *m, flo
 	area.x1 = NRRF_COORD_INT_UPPER (slot->bbox.x1) + sx;
 	area.y1 = NRRF_COORD_INT_UPPER (slot->bbox.y1) + sy;
 
-	spb.empty = TRUE;
+	spb.empty = 1;
 	if (slot->has_gmap == NRRF_GMAP_IMAGE) {
 		spx = slot->gmap.px;
 		srs = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
@@ -270,10 +223,10 @@ nr_rasterfont_render_glyph_mask (NRRasterFont *rf, int glyph, NRPixBlock *m, flo
 		spx = slot->gmap.d;
 		srs = NRRF_COORD_INT_SIZE (slot->bbox.x0, slot->bbox.x1);
 	} else {
-		nr_pixblock_setup_fast (&spb, NR_PIXBLOCK_MODE_A8, area.x0, area.y0, area.x1, area.y1, FALSE);
+		nr_pixblock_setup_fast (&spb, NR_PIXBLOCK_MODE_A8, area.x0, area.y0, area.x1, area.y1, 0);
 		art_gray_svp_aa (slot->gmap.svp, area.x0 - sx, area.y0 - sy, area.x1 - sx, area.y1 - sy,
 				 NR_PIXBLOCK_PX (&spb), spb.rs);
-		spb.empty = FALSE;
+		spb.empty = 0;
 		spx = NR_PIXBLOCK_PX (&spb);
 		srs = spb.rs;
 	}
@@ -320,18 +273,19 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 
 	if ((flags & NR_RASTERFONT_ADVANCE_FLAG) && !slot->has_advance) {
 		NRPointF a;
-		if (nr_font_get_glyph_advance (rf->font, glyph, &a)) {
+		if (nr_font_glyph_advance_get (rf->font, glyph, &a)) {
 			slot->advance.x = NR_MATRIX_DF_TRANSFORM_X (&rf->transform, a.x, a.y);
 			slot->advance.y = NR_MATRIX_DF_TRANSFORM_Y (&rf->transform, a.x, a.y);
 		}
-		slot->has_advance = TRUE;
+		slot->has_advance = 1;
 	}
 
 	if (((flags & NR_RASTERFONT_BBOX_FLAG) && !slot->has_bbox) ||
 	    ((flags & NR_RASTERFONT_GMAP_FLAG) && !slot->has_gmap)) {
 		NRBPath gbp;
-		if (nr_font_get_glyph_outline (rf->font, glyph, &gbp, 0) &&
-		    gbp.path && (gbp.path->code == ART_MOVETO)) {
+		if (nr_font_glyph_outline_get (rf->font, glyph, &gbp, 0)) {
+
+		    if (gbp.path && (gbp.path->code == ART_MOVETO)) {
 			ArtBpath *abp;
 			ArtVpath *vp, *pvp;
 			ArtSVP *svpa, *svpb;
@@ -391,7 +345,7 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 						 w);
 				art_svp_free (svpa);
 				slot->has_gmap = NRRF_GMAP_IMAGE;
-			}
+			}}
 		} else {
 			slot->bbox.x0 = 0;
 			slot->bbox.y0 = 0;
@@ -400,7 +354,7 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 			slot->gmap.d[0] = 0;
 			slot->has_gmap = NRRF_GMAP_TINY;
 		}
-		slot->has_bbox = TRUE;
+		slot->has_bbox = 1;
 	}
 
 	return slot;

@@ -16,6 +16,8 @@
 typedef struct _NRVPath NRVPath;
 typedef struct _NRBPath NRBPath;
 
+#include <libnr/nr-matrix.h>
+
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
 
@@ -26,5 +28,7 @@ struct _NRVPath {
 struct _NRBPath {
 	ArtBpath *path;
 };
+
+NRBPath *nr_path_duplicate_transform (NRBPath *d, NRBPath *s, NRMatrixF *transform);
 
 #endif
