@@ -4,8 +4,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-09-29 23:23+0400\n"
-"PO-Revision-Date: 2001-09-29 23:33+0400\n"
+"POT-Creation-Date: 2001-11-24 20:42+0300\n"
+"PO-Revision-Date: 2001-11-24 20:46+03:00\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -271,7 +271,7 @@ msgstr "Ширина:"
 msgid "Height:"
 msgstr "Высота:"
 
-#: glade/document.c:21 glade/sodipodi-glade.c:24 glade/sodipodi-glade.c:51
+#: glade/document.c:21 glade/sodipodi-glade.c:21 glade/sodipodi-glade.c:48
 #: src/dialogs/align.c:100
 msgid "Page"
 msgstr "Страница"
@@ -335,7 +335,7 @@ msgid "Y +"
 msgstr "Y +"
 
 #. Create toplevel menuitem
-#: glade/item.c:22 src/sp-item.c:545
+#: glade/item.c:22 src/sp-item.c:646
 msgid "Item"
 msgstr "Элемент"
 
@@ -529,7 +529,7 @@ msgstr "Перечитать"
 msgid "Pick a color"
 msgstr "Выбрать цвет"
 
-#: glade/object_props.c:68 glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:40
+#: glade/object_props.c:68 glade/sodipodi-glade.c:36 glade/sodipodi-glade.c:37
 msgid "pixels"
 msgstr "точки растра"
 
@@ -586,273 +586,273 @@ msgstr "Правка..."
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/sodipodi-glade.c:7
-msgid "Copyright Lauris Kaplinski 1999-2000."
-msgstr "Авторское право Lauris Kaplinski 1999-2000."
-
-#: glade/sodipodi-glade.c:8
-msgid ""
-"A Vector Drawing Program.\n"
-"Released under GPL"
-msgstr ""
-"Программа векторного рисования.\n"
-"Выпущено под GPL"
-
-#: glade/sodipodi-glade.c:10 glade/toolbox.c:41
+#: glade/sodipodi-glade.c:7 glade/toolbox.c:43
 msgid "Node Edit"
 msgstr "Правка узла"
 
-#: glade/sodipodi-glade.c:11 glade/toolbox.c:42
+#: glade/sodipodi-glade.c:8 glade/toolbox.c:44
 msgid "Include one node into selected segments"
 msgstr "Вставить один узел в выбранные сегменты"
 
-#: glade/sodipodi-glade.c:12 glade/toolbox.c:46
+#: glade/sodipodi-glade.c:9 glade/toolbox.c:48
 msgid "Break apart selected node"
 msgstr "Разделить на части по выбранному узлу"
 
-#: glade/sodipodi-glade.c:13 glade/toolbox.c:45
+#: glade/sodipodi-glade.c:10 glade/toolbox.c:47
 msgid "Convert selected segments to curves"
 msgstr "Преобразовать выбранные сегменты в кривые"
 
-#: glade/sodipodi-glade.c:14 glade/toolbox.c:47
+#: glade/sodipodi-glade.c:11 glade/toolbox.c:49
 msgid "Join 2 selected endpoints"
 msgstr "Объединить 2 выбранные конечные точки"
 
-#: glade/sodipodi-glade.c:15 glade/toolbox.c:48
+#: glade/sodipodi-glade.c:12 glade/toolbox.c:50
 msgid "Cusp line at selected nodes"
 msgstr "Заострить линию по выбранным узлам"
 
-#: glade/sodipodi-glade.c:16 glade/toolbox.c:49
+#: glade/sodipodi-glade.c:13 glade/toolbox.c:51
 msgid "Smooth line at selected nodes"
 msgstr "Сгладить линию по выбранным узлам"
 
-#: glade/sodipodi-glade.c:17 glade/toolbox.c:50
+#: glade/sodipodi-glade.c:14 glade/toolbox.c:52
 msgid "Symmetric "
 msgstr "Симметрично "
 
-#: glade/sodipodi-glade.c:18 glade/toolbox.c:52
+#: glade/sodipodi-glade.c:15 glade/toolbox.c:54
 msgid "Close dialog"
 msgstr "Закрыть диалог"
 
-#: glade/sodipodi-glade.c:19 glade/toolbox.c:44
+#: glade/sodipodi-glade.c:16 glade/toolbox.c:46
 msgid "Convert selected segments to lines"
 msgstr "Преобразовать выбранные сегменты в прямые"
 
-#: glade/sodipodi-glade.c:20 glade/toolbox.c:43
+#: glade/sodipodi-glade.c:17 glade/toolbox.c:45
 msgid "Delete selected nodes"
 msgstr "Удалить выбранные узлы"
 
-#: glade/sodipodi-glade.c:21
+#: glade/sodipodi-glade.c:18
 msgid "Export picture to png"
 msgstr "Экспорт картинки в PNG"
 
-#: glade/sodipodi-glade.c:22
+#: glade/sodipodi-glade.c:19
 msgid "Set dimensions"
 msgstr "Установить размеры"
 
-#: glade/sodipodi-glade.c:23 glade/sodipodi-glade.c:49 src/dialogs/align.c:105
+#: glade/sodipodi-glade.c:20 glade/sodipodi-glade.c:46 src/dialogs/align.c:105
 msgid "Drawing"
 msgstr "Чертеж"
 
-#: glade/sodipodi-glade.c:25 glade/sodipodi-glade.c:50
-#: glade/sodipodi-glade.c:54 glade/toolbox.c:32 src/dialogs/align.c:110
+#: glade/sodipodi-glade.c:22 glade/sodipodi-glade.c:47
+#: glade/sodipodi-glade.c:51 glade/toolbox.c:34 src/dialogs/align.c:110
 #: src/toolbox.c:95
 msgid "Selection"
 msgstr "Выделение"
 
-#: glade/sodipodi-glade.c:26
+#: glade/sodipodi-glade.c:23
 msgid "Where to export"
 msgstr "Куда экспортировать"
 
-#: glade/sodipodi-glade.c:27
+#: glade/sodipodi-glade.c:24
 msgid "Filename:"
 msgstr "Название файла:"
 
-#: glade/sodipodi-glade.c:28
+#: glade/sodipodi-glade.c:25
 msgid "Png file name"
 msgstr "Название файла PNG"
 
-#: glade/sodipodi-glade.c:29
+#: glade/sodipodi-glade.c:26
 msgid "Image size"
 msgstr "Размер изображения"
 
-#: glade/sodipodi-glade.c:30
+#: glade/sodipodi-glade.c:27
 msgid "X0"
 msgstr "X0"
 
-#: glade/sodipodi-glade.c:31
+#: glade/sodipodi-glade.c:28
 msgid "Y0"
 msgstr "Y0"
 
-#: glade/sodipodi-glade.c:32
+#: glade/sodipodi-glade.c:29
 msgid "X1"
 msgstr "X1"
 
-#: glade/sodipodi-glade.c:33
+#: glade/sodipodi-glade.c:30
 msgid "Y1"
 msgstr "Y1"
 
-#: glade/sodipodi-glade.c:34 glade/sodipodi-glade.c:37
+#: glade/sodipodi-glade.c:31 glade/sodipodi-glade.c:34
 msgid "Width"
 msgstr "Ширина"
 
-#: glade/sodipodi-glade.c:35 glade/sodipodi-glade.c:38
+#: glade/sodipodi-glade.c:32 glade/sodipodi-glade.c:35
 msgid "Height"
 msgstr "Высота"
 
-#: glade/sodipodi-glade.c:36
+#: glade/sodipodi-glade.c:33
 msgid "Exported as"
 msgstr "Экспортировать как"
 
-#: glade/sodipodi-glade.c:41 glade/sodipodi-glade.c:42
+#: glade/sodipodi-glade.c:38 glade/sodipodi-glade.c:39
 msgid "dpi"
 msgstr "dpi"
 
-#: glade/sodipodi-glade.c:43
+#: glade/sodipodi-glade.c:40
 msgid "Lock aspect ratio"
 msgstr "Сохранять пропорции"
 
-#: glade/sodipodi-glade.c:44
+#: glade/sodipodi-glade.c:41
 msgid "1.0MB"
 msgstr "1.0МБ"
 
-#: glade/sodipodi-glade.c:45
+#: glade/sodipodi-glade.c:42
 msgid "Uncompressed file size:"
 msgstr "Размер несжатого файла:"
 
-#: glade/sodipodi-glade.c:46 glade/toolbox.c:9
+#: glade/sodipodi-glade.c:43 glade/toolbox.c:9
 msgid "_New"
 msgstr "Новый"
 
-#: glade/sodipodi-glade.c:47
+#: glade/sodipodi-glade.c:44
 msgid "Import"
 msgstr "Импортировать"
 
-#: glade/sodipodi-glade.c:48 glade/toolbox.c:55
+#: glade/sodipodi-glade.c:45 glade/toolbox.c:57
 msgid "Export"
 msgstr "Экспортировать"
 
-#: glade/sodipodi-glade.c:52
+#: glade/sodipodi-glade.c:49
 msgid "Duplicate"
 msgstr "Дублировать"
 
-#: glade/sodipodi-glade.c:53 glade/xml-tree.c:18
+#: glade/sodipodi-glade.c:50 glade/xml-tree.c:18
 #: src/dialogs/gradient-selector.c:83
 msgid "Delete"
 msgstr "Удалить"
 
-#: glade/sodipodi-glade.c:55
+#: glade/sodipodi-glade.c:52
 msgid "_Align"
 msgstr "Выровнять"
 
-#: glade/sodipodi-glade.c:56
+#: glade/sodipodi-glade.c:53
 msgid "Order"
 msgstr "Порядок"
 
-#: glade/sodipodi-glade.c:57
+#: glade/sodipodi-glade.c:54
 msgid "Bring to _Front"
 msgstr "Переместить доверху"
 
-#: glade/sodipodi-glade.c:58
+#: glade/sodipodi-glade.c:55
 msgid "Send to _Back"
 msgstr "Переместить донизу"
 
-#: glade/sodipodi-glade.c:59
+#: glade/sodipodi-glade.c:56
 msgid "Forward One"
 msgstr "Поднять на один уровень"
 
-#: glade/sodipodi-glade.c:60
+#: glade/sodipodi-glade.c:57
 msgid "Back One"
 msgstr "Опустить на один уровень"
 
-#: glade/sodipodi-glade.c:61
+#: glade/sodipodi-glade.c:58
 msgid "_Group"
 msgstr "Сгруппировать"
 
-#: glade/sodipodi-glade.c:62
+#: glade/sodipodi-glade.c:59
 msgid "_Ungroup"
 msgstr "Разгруппировать"
 
-#: glade/sodipodi-glade.c:63
+#: glade/sodipodi-glade.c:60
 msgid "_Combine"
 msgstr "Объединить"
 
-#: glade/sodipodi-glade.c:64
+#: glade/sodipodi-glade.c:61
 msgid "_Break Apart"
 msgstr "Разделить на части"
 
-#: glade/sodipodi-glade.c:65
+#: glade/sodipodi-glade.c:62
 msgid "Convert to Cu_rves"
 msgstr "Преобразовать в кривые"
 
-#: glade/sodipodi-glade.c:66
+#: glade/sodipodi-glade.c:63
 msgid "New View"
 msgstr "Новое окно"
 
-#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:86 glade/toolbox.c:23
-#: src/desktop.c:316 src/toolbox.c:130
+#: glade/sodipodi-glade.c:64
+msgid "New Preview"
+msgstr "Новый просмотр"
+
+#: glade/sodipodi-glade.c:65 glade/sodipodi-glade.c:86 glade/toolbox.c:25
+#: src/desktop.c:1083 src/toolbox.c:134
 msgid "Zoom"
 msgstr "Масштаб"
 
-#: glade/sodipodi-glade.c:68 glade/transformation.c:16
+#: glade/sodipodi-glade.c:66 glade/transformation.c:16
 msgid "Scale"
 msgstr "Шкала"
 
-#: glade/sodipodi-glade.c:69
+#: glade/sodipodi-glade.c:67
 msgid "1:2"
 msgstr "1:2"
 
-#: glade/sodipodi-glade.c:70
+#: glade/sodipodi-glade.c:68
 msgid "1:1"
 msgstr "1:1"
 
-#: glade/sodipodi-glade.c:71
+#: glade/sodipodi-glade.c:69
 msgid "2:1"
 msgstr "2:1"
 
-#: glade/sodipodi-glade.c:72
+#: glade/sodipodi-glade.c:70
 msgid "_Interactive"
 msgstr "Интерактивный"
 
-#: glade/sodipodi-glade.c:73
+#: glade/sodipodi-glade.c:71
 msgid "_Selection"
 msgstr "Выделение"
 
-#: glade/sodipodi-glade.c:74
+#: glade/sodipodi-glade.c:72
 msgid "_Drawing"
 msgstr "Чертеж"
 
-#: glade/sodipodi-glade.c:75
+#: glade/sodipodi-glade.c:73
 msgid "_Page"
 msgstr "Страница"
 
-#: glade/sodipodi-glade.c:76
+#: glade/sodipodi-glade.c:74
 msgid "Toggle Borders"
 msgstr "Переключить границы"
 
-#: glade/sodipodi-glade.c:77
+#: glade/sodipodi-glade.c:75
 msgid "Show Toolbox"
 msgstr "Показать панель инструментов"
 
-#: glade/sodipodi-glade.c:78
+#: glade/sodipodi-glade.c:76
 msgid "Drawing Context"
 msgstr "Контекст черчения"
 
-#: glade/sodipodi-glade.c:79
+#: glade/sodipodi-glade.c:77
 msgid "Select"
 msgstr "Выделение"
 
-#: glade/sodipodi-glade.c:80
+#: glade/sodipodi-glade.c:78
 msgid "Node"
 msgstr "Узел"
 
-#: glade/sodipodi-glade.c:81
+#: glade/sodipodi-glade.c:79
 msgid "Rectangle"
 msgstr "Прямоугольник"
 
-#: glade/sodipodi-glade.c:82
+#: glade/sodipodi-glade.c:80
 msgid "Ellipse"
 msgstr "Эллипс"
+
+#: glade/sodipodi-glade.c:81
+msgid "Star"
+msgstr "Звезда"
+
+#: glade/sodipodi-glade.c:82
+msgid "Spiral"
+msgstr "Спираль"
 
 #: glade/sodipodi-glade.c:83
 msgid "Freehand"
@@ -871,7 +871,7 @@ msgstr ""
 msgid "Text"
 msgstr "Текст"
 
-#: glade/sodipodi-glade.c:90 src/toolbox.c:134
+#: glade/sodipodi-glade.c:90 src/toolbox.c:138
 msgid "Nodes"
 msgstr "Узлы"
 
@@ -937,7 +937,7 @@ msgstr "Контекст черчения"
 msgid "Edit nodes"
 msgstr "Правка узлов"
 
-#: glade/toolbox.c:16 glade/toolbox.c:27
+#: glade/toolbox.c:16 glade/toolbox.c:29
 msgid "Zoom in"
 msgstr "Масштаб +"
 
@@ -950,215 +950,223 @@ msgid "Draw ellipse"
 msgstr "Рисовать эллипсы"
 
 #: glade/toolbox.c:19
-msgid "Draw freehand line"
-msgstr "Рисовать свободные линии"
-
-#: glade/toolbox.c:20
-msgid "Draw text"
-msgstr "Рисование текста"
-
-#: glade/toolbox.c:21
 msgid "Select and transform"
 msgstr "Выбрать и преобразовать"
 
-#: glade/toolbox.c:22
+#: glade/toolbox.c:20
+msgid "Draw freehand line"
+msgstr "Рисовать свободные линии"
+
+#: glade/toolbox.c:21
 msgid "Draw dynahand line"
 msgstr "Рисовать свободные линии"
 
+#: glade/toolbox.c:22
+msgid "Draw text"
+msgstr "Рисование текста"
+
+#: glade/toolbox.c:23
+msgid "Draw star"
+msgstr "Рисование звезды"
+
 #: glade/toolbox.c:24
+msgid "Draw spiral"
+msgstr "Рисование спирали"
+
+#: glade/toolbox.c:26
 msgid "Zoom to 2:1"
 msgstr "Масштаб 2:1"
 
-#: glade/toolbox.c:25
+#: glade/toolbox.c:27
 msgid "Zoom to page"
 msgstr "Масштаб по странице"
 
-#: glade/toolbox.c:26
+#: glade/toolbox.c:28
 msgid "Zoom out"
 msgstr "Масштаб -"
 
-#: glade/toolbox.c:28
+#: glade/toolbox.c:30
 msgid "Zoom to drawing"
 msgstr "Масштаб по чертежу"
 
-#: glade/toolbox.c:29
+#: glade/toolbox.c:31
 msgid "Zoom to selection"
 msgstr "Масштаб по выделению"
 
-#: glade/toolbox.c:30
+#: glade/toolbox.c:32
 msgid "Zoom to 1:1"
 msgstr "Масштаб 1:1"
 
-#: glade/toolbox.c:31
+#: glade/toolbox.c:33
 msgid "Zoom to 1:2"
 msgstr "Масштаб 1:2"
 
-#: glade/toolbox.c:33
+#: glade/toolbox.c:35
 msgid "lower selection to bottom"
 msgstr "опустить выбранное вниз"
 
-#: glade/toolbox.c:34
+#: glade/toolbox.c:36
 msgid "Raise selection to top"
 msgstr "Поднять выбранное наверх"
 
-#: glade/toolbox.c:35
+#: glade/toolbox.c:37
 msgid "Lower selection one layer"
 msgstr "Опустить выбранное на один слой"
 
-#: glade/toolbox.c:36
+#: glade/toolbox.c:38
 msgid "Rise selection one layer"
 msgstr "Поднять выбранное на один слой"
 
-#: glade/toolbox.c:37
+#: glade/toolbox.c:39
 msgid "Break apart selected paths"
 msgstr "Разделить на части выбранные контуры"
 
-#: glade/toolbox.c:38
+#: glade/toolbox.c:40
 msgid "Combine selected paths"
 msgstr "Объединить выбранные контуры"
 
-#: glade/toolbox.c:39
+#: glade/toolbox.c:41
 msgid "Group selected objects"
 msgstr "Сгруппировать выбранные объекты"
 
-#: glade/toolbox.c:40
+#: glade/toolbox.c:42
 msgid "Ungroup selected objects"
 msgstr "Разгруппировать выбранные объекты"
 
-#: glade/toolbox.c:51
+#: glade/toolbox.c:53
 msgid "Unsymmetric"
 msgstr "Асимметрично "
 
-#: glade/toolbox.c:53 src/toolbox.c:74
+#: glade/toolbox.c:55 src/toolbox.c:74
 msgid "File"
 msgstr "Файл"
 
-#: glade/toolbox.c:54
+#: glade/toolbox.c:56
 msgid "New drawing"
 msgstr "Новый чертеж"
 
-#: glade/toolbox.c:56
+#: glade/toolbox.c:58
 msgid "Open new drawing"
 msgstr "Открыть новый чертеж"
 
-#: glade/toolbox.c:57
+#: glade/toolbox.c:59
 msgid "Import "
 msgstr "Импортировать"
 
-#: glade/toolbox.c:58
+#: glade/toolbox.c:60
 msgid "Print drawing"
 msgstr "Напечатать чертеж"
 
-#: glade/toolbox.c:59
+#: glade/toolbox.c:61
 msgid "Preview print drawing"
 msgstr "Просмотр печати"
 
-#: glade/toolbox.c:60
+#: glade/toolbox.c:62
 msgid "Save drawing "
 msgstr "Сохранить чертеж"
 
-#: glade/toolbox.c:61
+#: glade/toolbox.c:63
 msgid "Save drawing under new filename"
 msgstr "Сохранить чертеж под другим названием"
 
-#: glade/toolbox.c:62
+#: glade/toolbox.c:64
 msgid "Quit or not quit ?"
 msgstr "Выходить или не выходить?"
 
-#: glade/toolbox.c:63
+#: glade/toolbox.c:65
 msgid "Yes quick! I want to leave sodipodi and come back later."
 msgstr "Да, быстро! Я хочу выйти из sodipodi и вернуться позже."
 
-#: glade/toolbox.c:64
+#: glade/toolbox.c:66
 msgid "Yep !"
 msgstr "Да!"
 
-#: glade/toolbox.c:65
+#: glade/toolbox.c:67
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
 msgstr ""
 "Нет, я лучше сделаю еще несколько крутых векторных чертежей в sodipodi."
 
-#: glade/toolbox.c:66
+#: glade/toolbox.c:68
 msgid "Nope !"
 msgstr "Нет!"
 
-#: glade/toolbox.c:67
+#: glade/toolbox.c:69
 msgid "Really wanna quit sodipodi ?"
 msgstr "Действительно хотите выйти из sodipodi?"
 
-#: glade/toolbox.c:68 src/event-context.c:432 src/toolbox.c:87
+#: glade/toolbox.c:70 src/event-context.c:432 src/toolbox.c:87
 msgid "Object"
 msgstr "Объект"
 
-#: glade/toolbox.c:69
+#: glade/toolbox.c:71
 msgid "Align dialog"
 msgstr "Диалог выравнивания"
 
-#: glade/toolbox.c:70
+#: glade/toolbox.c:72
 msgid "Transformation dialog"
 msgstr "Диалог преобразования"
 
-#: glade/toolbox.c:71
+#: glade/toolbox.c:73
 msgid "Edit font style of selected objects"
 msgstr "Правка стиля шрифта выбранных объектов"
 
-#: glade/toolbox.c:72
+#: glade/toolbox.c:74
 msgid "Edit layout of selected objects"
 msgstr "Правка размещения выбранных объектов"
 
-#: glade/toolbox.c:73
+#: glade/toolbox.c:75
 msgid "Edit fill style of selected objects"
 msgstr "Правка стиля заливки выбранных объектов"
 
-#: glade/toolbox.c:74
+#: glade/toolbox.c:76
 msgid "Edit stroke style of selected objects"
 msgstr "Правка стиля штриха выбранных объектов"
 
-#: glade/toolbox.c:75
+#: glade/toolbox.c:77
 msgid "Flip selected objects"
 msgstr "Отражение выбранных объектов"
 
-#: glade/toolbox.c:76
-msgid "Rotate selected objects 90  clockwise"
-msgstr "Поворот выбранных объектов на 90  по часовой"
+#: glade/toolbox.c:78
+msgid "Rotate selected objects 90╟ clockwise"
+msgstr "Поворот выбранных объектов на 90╟ по часовой"
 
-#: glade/toolbox.c:77
+#: glade/toolbox.c:79
 msgid "Remove transformation"
 msgstr "Удалить преобразование"
 
-#: glade/toolbox.c:78
+#: glade/toolbox.c:80
 msgid "Convert selected objects to curves"
 msgstr "Преобразовать выбранные объеты в кривые"
 
-#: glade/toolbox.c:79 src/dialogs/gradient-selector.c:73 src/toolbox.c:78
+#: glade/toolbox.c:81 src/dialogs/gradient-selector.c:73 src/toolbox.c:78
 msgid "Edit"
 msgstr "Правка"
 
-#: glade/toolbox.c:80
+#: glade/toolbox.c:82
 msgid "Undo "
 msgstr "Откат"
 
-#: glade/toolbox.c:81
+#: glade/toolbox.c:83
 msgid "Redo"
 msgstr "Возврат"
 
-#: glade/toolbox.c:82
+#: glade/toolbox.c:84
 msgid "Delete selection"
 msgstr "Удалить выбранное"
 
-#: glade/toolbox.c:83
+#: glade/toolbox.c:85
 msgid "Paste from clipboard"
 msgstr "Вставить из буфера обмена"
 
-#: glade/toolbox.c:84
+#: glade/toolbox.c:86
 msgid "Copy selection to clipboard"
 msgstr "Скопировать выделение в буфер обмена"
 
-#: glade/toolbox.c:85
+#: glade/toolbox.c:87
 msgid "Cut selection"
 msgstr "Вырезать выделение"
 
-#: glade/toolbox.c:86
+#: glade/toolbox.c:88
 msgid "Duplicate selection"
 msgstr "Дублировать выбранные объекты"
 
@@ -1256,20 +1264,20 @@ msgid "deg"
 msgstr "градусов"
 
 #: glade/transformation.c:31
-msgid "Set angle to 0 "
-msgstr "Установить угол в 0 "
+msgid "Set angle to 0 degrees"
+msgstr "Установить угол в 0 градусов"
 
 #: glade/transformation.c:32
-msgid "Set angle to 90 "
-msgstr "Установить угол в 90 "
+msgid "Set angle to 90 degrees"
+msgstr "Установить угол в 90 градусов"
 
 #: glade/transformation.c:33
-msgid "Set angle to 180 "
-msgstr "Установить угол в 180 "
+msgid "Set angle to 180 degrees"
+msgstr "Установить угол в 180 градусов"
 
 #: glade/transformation.c:34
-msgid "Set angle to 270 "
-msgstr "Установить угол в 270 "
+msgid "Set angle to 270 degrees"
+msgstr "Установить угол в 270 градусов"
 
 #: glade/transformation.c:35
 msgid "Skew"
@@ -1507,6 +1515,11 @@ msgstr "Вы хотите удалить аттрибут?"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Не удалось создать фабрику sodipodi-svg-doc"
 
+#: src/desktop.c:1207
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "В документе %s есть несохраненные изменения, сохранить их?"
+
 #: src/widgets/sp-color-selector.c:498
 msgid "Hue:"
 msgstr "Тон:"
@@ -1600,23 +1613,23 @@ msgstr "Конечный цвет"
 msgid "Gradient vector"
 msgstr "Вектор градиента"
 
-#: src/file.c:83
+#: src/file.c:97
 msgid "Select file to open"
 msgstr "Выбрать файл для открытия"
 
-#: src/file.c:176
+#: src/file.c:207
 msgid "Save file"
 msgstr "Сохранить файл"
 
-#: src/file.c:284
+#: src/file.c:324
 msgid "Select file to import"
 msgstr "Выбрать файл для импортирования"
 
-#: src/file.c:361
+#: src/file.c:401
 msgid "Export file"
 msgstr "Экспортировать файл"
 
-#: src/file.c:422
+#: src/file.c:468
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (документ %s..): Просмотр печати"
@@ -1673,11 +1686,6 @@ msgstr "X-квадрат"
 msgid "ex"
 msgstr "xк"
 
-#: src/interface.c:110
-#, c-format
-msgid "Document %s has unsaved changes, save them?"
-msgstr "В документе %s есть несохраненные изменения, сохранить их?"
-
 #: src/main.c:54
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
@@ -1698,7 +1706,9 @@ msgstr ""
 
 #: src/main.c:81
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
-msgstr "Показывать заданные файлы один за другим, переключаться на следующий при любом событии мыши/клавиатуры"
+msgstr ""
+"Показывать заданные файлы один за другим, переключаться на следующий при "
+"любом событии мыши/клавиатуры"
 
 #: src/main.c:183
 msgid "Oaf options"
@@ -1741,7 +1751,7 @@ msgid ""
 msgstr ""
 
 #. Cannot create directory
-#: src/sodipodi.c:586
+#: src/sodipodi.c:585
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1751,7 +1761,7 @@ msgid ""
 msgstr ""
 
 #. Not a directory
-#: src/sodipodi.c:598
+#: src/sodipodi.c:597
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1761,7 +1771,7 @@ msgid ""
 msgstr ""
 
 #. Cannot create file
-#: src/sodipodi.c:614
+#: src/sodipodi.c:613
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1771,7 +1781,7 @@ msgid ""
 msgstr ""
 
 #. Cannot create file
-#: src/sodipodi.c:626
+#: src/sodipodi.c:625
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1780,72 +1790,127 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sp-image.c:276
+#: src/sp-image.c:290
 msgid "Broken bitmap"
 msgstr "Испорченая битовая карта"
 
-#: src/sp-image.c:277
+#: src/sp-image.c:291
 msgid "Color bitmap"
 msgstr "Цветная битовая карта"
 
-#: src/sp-item.c:299
+#. Create toplevel menuitem
+#: src/sp-image.c:507
+msgid "Image"
+msgstr "Изображение"
+
+#. Link dialog
+#: src/sp-image.c:510
+msgid "Image Properties"
+msgstr "Свойства изображение"
+
+#: src/sp-item.c:386
 msgid "Unknown item :-("
 msgstr "Неизвестный элемент :-("
 
 #. Item dialog
-#: src/sp-item.c:548
+#: src/sp-item.c:649
 msgid "Item Properties"
 msgstr "Свойства элемента"
 
 #. Select item
-#: src/sp-item.c:558
+#: src/sp-item.c:659
 msgid "Select this"
 msgstr "Выделить это"
 
 #. Reset transformations
-#: src/sp-item.c:568
+#: src/sp-item.c:669
 msgid "Reset transformation"
 msgstr "Удалить преобразование"
 
-#: src/sp-item.c:574
+#: src/sp-item.c:675
 msgid "Make sensitive"
 msgstr "Сделать чувствительным"
 
-#: src/sp-item.c:574
+#: src/sp-item.c:675
 msgid "Make insensitive"
 msgstr "Сделать нечувствительным"
 
-#: src/sp-item-group.c:430
+#. Create link
+#: src/sp-item.c:680
+msgid "Create link"
+msgstr "Создать ссылку"
+
+#: src/sp-item-group.c:432
 #, c-format
 msgid "Group of %d objects"
 msgstr "Группа из %d элементов"
 
-#: src/sp-item-group.c:514
+#: src/sp-item-group.c:494
 msgid "Group"
 msgstr "Сгруппировать"
 
+#. Group dialog
+#: src/sp-item-group.c:498
+msgid "Group Properties"
+msgstr "Свойства группы"
+
 #. "Ungroup"
-#: src/sp-item-group.c:519
+#: src/sp-item-group.c:511
 msgid "Ungroup"
 msgstr "Разгруппировать"
 
-#: src/sp-shape.c:350
+#. Create toplevel menuitem
+#: src/sp-rect.c:361
+msgid "Rect"
+msgstr "Прямоугольник"
+
+#. Link dialog
+#: src/sp-rect.c:364
+msgid "Rect Properties"
+msgstr "Свойства прямоугольник"
+
+#: src/sp-shape.c:364
 msgid "A path - whatever it means"
 msgstr "Контур - чтобы это значило"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:581
+#: src/sp-shape.c:420
 msgid "Shape"
 msgstr "Форма"
 
 #. Item dialog
-#: src/sp-shape.c:584
+#: src/sp-shape.c:423
 msgid "Fill settings"
 msgstr "Установки заливки"
 
-#: src/sp-text.c:201
+#: src/sp-text.c:217
 msgid "Text object"
 msgstr "Текстовый объект"
+
+#: src/sp-anchor.c:156
+#, c-format
+msgid "Link to %s"
+msgstr "Ссылка на %s"
+
+#. Create toplevel menuitem
+#: src/sp-anchor.c:217
+msgid "Link"
+msgstr "Ссылка"
+
+#. Link dialog
+#: src/sp-anchor.c:220
+msgid "Link Properties"
+msgstr "Свойства свойства"
+
+#. Select item
+#: src/sp-anchor.c:230
+msgid "Follow link"
+msgstr ""
+
+#. Reset transformations
+#: src/sp-anchor.c:235
+msgid "Remove link"
+msgstr "Удалить ссылку"
 
 #: src/toolbox.c:99
 msgid "Draw"
