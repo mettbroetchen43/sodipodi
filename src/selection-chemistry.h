@@ -35,8 +35,7 @@ void sp_selection_rotate_relative (SPSelection * selection, ArtPoint * center, g
 void sp_selection_skew_relative (SPSelection * selection, ArtPoint * align, double dx, double dy);
 void sp_selection_move_relative (SPSelection * selection, double dx, double dy);
 
-
-
+void sp_selection_rotate_90 (void);
 
 #endif
 

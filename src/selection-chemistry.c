@@ -9,6 +9,7 @@
  *
  */
 
+#include <string.h>
 #include "svg/svg.h"
 #include "document.h"
 #include "sodipodi.h"
@@ -459,22 +460,26 @@ void sp_selection_apply_affine (SPSelection * selection, double affine[6]) {
 
 
 void
-sp_selection_remove_transform (void) {
-  SPDesktop * desktop;
-  SPSelection * selection;
-  GSList * l;
+sp_selection_remove_transform (void)
+{
+	SPDesktop * desktop;
+	SPSelection * selection;
+	const GSList * l;
 
-  desktop = SP_ACTIVE_DESKTOP;
-  if (desktop == NULL) return;
-  selection = SP_DT_SELECTION (desktop);
-  if (!SP_IS_SELECTION (selection)) return;
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop == NULL) return;
+	selection = SP_DT_SELECTION (desktop);
+	if (!SP_IS_SELECTION (selection)) return;
 
-  l = sp_selection_repr_list (selection);  
-  for (l; l != NULL; l = l-> next) sp_repr_set_attr (l->data,"transform", NULL);
+	l = sp_selection_repr_list (selection);
 
-  sp_selection_changed (selection);
-  sp_document_done (SP_DT_DOCUMENT (desktop));
+	while (l != NULL) {
+		sp_repr_set_attr (l->data,"transform", NULL);
+		l = l->next;
+	}
 
+	sp_selection_changed (selection);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
 
@@ -566,3 +571,24 @@ sp_selection_move_relative (SPSelection * selection, double dx, double dy) {
   sp_selection_apply_affine (selection, move);
 }
 
+void
+sp_selection_rotate_90 (void)
+{
+	SPDesktop * desktop;
+	SPSelection * selection;
+	SPItem * item;
+	GSList * l, * l2;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (!SP_IS_DESKTOP(desktop)) return;
+	selection = SP_DT_SELECTION(desktop);
+	if sp_selection_is_empty(selection) return;
+	l = selection->items;  
+	for (l2 = l; l2 != NULL; l2 = l2-> next) {
+		item = SP_ITEM (l2->data);
+		sp_item_rotate_rel (item,-90);
+	}
+
+	sp_selection_changed (selection);
+	sp_document_done (SP_DT_DOCUMENT (desktop));
+}

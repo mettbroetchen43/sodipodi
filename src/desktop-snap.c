@@ -175,10 +175,23 @@ sp_desktop_vector_snap (SPDesktop * desktop, ArtPoint * req, gdouble dx, gdouble
 		}
 	}
 
+	/* fixme: snap to grid */
+
 	* req = actual;
 
 	if (snapped) return best;
 
+	return 1e18;
+}
+
+gdouble
+sp_desktop_circular_snap (SPDesktop * desktop, ArtPoint * req, gdouble cx, gdouble cy)
+{
+#if 0
+	gdouble r2;
+
+	r2 = (req->x - cx) * (req->x - cx) + (req->y - cy) * (req->y - cy);
+#endif
 	return 1e18;
 }
 

@@ -87,7 +87,8 @@ sp_ellipse_context_destroy (GtkObject * object)
 
 	ec = SP_ELLIPSE_CONTEXT (object);
 
-	g_assert (!ec->item);
+	/* fixme: This is necessary because we do not grab */
+	if (ec->item) sp_ellipse_finish (ec);
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);

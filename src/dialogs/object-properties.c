@@ -562,9 +562,6 @@ void
 sp_object_properties_apply_fill (void)
 {
 	SPCSSAttr * fill_css;
-	gdouble color[4];
-	guint32 f_color;
-	SPFillType fill_type;
 	gchar cstr[80];
 
 	fill_css = sp_repr_css_attr_new ();
@@ -632,9 +629,6 @@ sp_object_properties_reread_layout (void) {
   SPSelection * selection;
   SPDesktop * desktop;
   ArtDRect  bbox;
-  double aff[6];
-  GSList * l;
-  SPItem * item;
   gfloat w,h;
 
   desktop = SP_ACTIVE_DESKTOP;

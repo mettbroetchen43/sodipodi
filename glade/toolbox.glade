@@ -2459,7 +2459,7 @@
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>pressed</name>
-	      <handler>object_rotate_90</handler>
+	      <handler>sp_selection_rotate_90</handler>
 	      <last_modification_time>Sun, 03 Sep 2000 17:34:54 GMT</last_modification_time>
 	    </signal>
 	    <child>

@@ -1,3 +1,16 @@
+2001-01-08  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/selection-chemistry.c (sp_selection_rotate_90): Brought
+	function here from toolbox.c and renamed
+
+	* glade/toolbox.glade: Use sp_selection_rotate_90
+
+	* src/desktop_snap.* (sp_desktop_circular_snap): New function
+
+	* src/rect-context.c (sp_rect_context_destroy): Finish object, if exists
+
+	* src/ellipse-context.c: (sp_ellipse_context_destroy): Ditto
+	
 2001-01-04  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/helper/sodipodi-ctrlrect.*: Draw by hand instead of using

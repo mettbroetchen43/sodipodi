@@ -26,7 +26,7 @@
 #include "desktop-handles.h"
 
 #if 0
-// needed for draw toolbox update
+/* needed for draw toolbox update */
 #include "select-context.h"
 #include "node-context.h"
 #include "rect-context.h"
@@ -39,6 +39,7 @@
 GtkWidget * sp_toolbox_create (GladeXML * xml, const gchar * widgetname, const gchar * name, const gchar * internalname, const gchar * pxname);
 
 static gint sp_toolbox_set_state_handler (SPToolBox * t, guint state, gpointer data);
+static void sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data);
 
 static GladeXML  * toolbox_xml = NULL;
 static GtkWidget * toolbox = NULL;
@@ -58,7 +59,7 @@ void
 sp_maintoolbox_create (void)
 {
 	if (toolbox == NULL) {
-		GtkWidget * vbox, * t;
+		GtkWidget * vbox, * t, * w;
 		GladeXML * xml;
 
 	        /* Crete main toolbox */
@@ -94,19 +95,34 @@ sp_maintoolbox_create (void)
 		t = sp_toolbox_create (xml, "select_table", _("Selection"), "selection", "toolbox_select.xpm");
 		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
 		/* Draw */
-#if 0
-		draw_select = glade_xml_get_widget (draw_box.DialogXML, "draw_select");
-		draw_node = glade_xml_get_widget (draw_box.DialogXML, "draw_node");
-		draw_zoom = glade_xml_get_widget (draw_box.DialogXML, "draw_zoom");
-		draw_text = glade_xml_get_widget (draw_box.DialogXML, "draw_text");
-		draw_rect = glade_xml_get_widget (draw_box.DialogXML, "draw_rect");
-		draw_ellipse = glade_xml_get_widget (draw_box.DialogXML, "draw_ellipse");
-		draw_freehand = glade_xml_get_widget (draw_box.DialogXML, "draw_freehand");
-		gtk_toggle_button_set_active ((GtkToggleButton *) draw_select, TRUE);
-#endif
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "draw_table");
 		t = sp_toolbox_create (xml, "draw_table", _("Draw"), "draw", "toolbox_draw.xpm");
 		gtk_box_pack_start (GTK_BOX (vbox), t, FALSE, FALSE, 0);
+		w = glade_xml_get_widget (xml, "draw_select");
+		gtk_object_set_data (GTK_OBJECT (t), "SPSelectContext", w);
+		w = glade_xml_get_widget (xml, "draw_node");
+		gtk_object_set_data (GTK_OBJECT (t), "SPNodeContext", w);
+		w = glade_xml_get_widget (xml, "draw_zoom");
+		gtk_object_set_data (GTK_OBJECT (t), "SPZoomContext", w);
+		w = glade_xml_get_widget (xml, "draw_text");
+		gtk_object_set_data (GTK_OBJECT (t), "SPTextContext", w);
+		w = glade_xml_get_widget (xml, "draw_rect");
+		gtk_object_set_data (GTK_OBJECT (t), "SPRectContext", w);
+		w = glade_xml_get_widget (xml, "draw_ellipse");
+		gtk_object_set_data (GTK_OBJECT (t), "SPEllipseContext", w);
+		w = glade_xml_get_widget (xml, "draw_freehand");
+		gtk_object_set_data (GTK_OBJECT (t), "SPDrawContext", w);
+		if (SP_ACTIVE_DESKTOP) {
+			const gchar * tname;
+			tname = gtk_type_name (GTK_OBJECT_TYPE (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP)));
+			w = gtk_object_get_data (GTK_OBJECT (t), tname);
+			if (w != NULL) {
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (w), TRUE);
+				gtk_object_set_data (GTK_OBJECT (t), "active", t);
+			}
+		}
+		gtk_signal_connect_while_alive (GTK_OBJECT (SODIPODI), "set_eventcontext",
+						GTK_SIGNAL_FUNC (sp_update_draw_toolbox), t, GTK_OBJECT (t));
 		/* Zoom */
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "zoom_table");
 		t = sp_toolbox_create (xml, "zoom_table", _("Zoom"), "zoom", "toolbox_zoom.xpm");
@@ -208,6 +224,26 @@ object_flip (GtkWidget * widget, GdkEventButton * event) {
     sp_document_done (SP_DT_DOCUMENT (desktop));
   }
 
+}
+
+static void 
+sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data)
+{
+	gpointer active, new;
+
+	active = gtk_object_get_data (GTK_OBJECT (data), "active");
+
+	if (eventcontext != NULL) {
+		new = gtk_object_get_data (GTK_OBJECT (data), gtk_type_name (GTK_OBJECT_TYPE (eventcontext)));
+	} else {
+		new = NULL;
+	}
+
+	if (new != active) {
+		if (active) gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (active), FALSE);
+		if (new) gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (new), TRUE);
+		gtk_object_set_data (GTK_OBJECT (data), "active", new);
+	}
 }
 
 #if 0
@@ -352,8 +388,8 @@ sp_maintoolbox_create (void)
 		select_box.BoxTable = glade_xml_get_widget (select_box.DialogXML, "select_table");
 		sp_toolbox_expose (&select_box);
 		//draw_box
-		draw_box.DialogXML = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "draw_table");
-		glade_xml_signal_autoconnect (draw_box.DialogXML);
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/toolbox.glade", "draw_table");
+		glade_xml_signal_autoconnect (xml);
 
  		draw_box.visible = TRUE;
 		draw_box.standalone = FALSE;
@@ -361,14 +397,14 @@ sp_maintoolbox_create (void)
 		draw_box.dialog_name = _("Draw context");
 		draw_box.icon = SODIPODI_GLADEDIR "/toolbox_draw.xpm";
 		sp_toolbox_create_widgets (&draw_box);
-		draw_box.BoxTable = glade_xml_get_widget (draw_box.DialogXML, "draw_table");
-		draw_select = glade_xml_get_widget (draw_box.DialogXML, "draw_select");
-		draw_node = glade_xml_get_widget (draw_box.DialogXML, "draw_node");
-		draw_zoom = glade_xml_get_widget (draw_box.DialogXML, "draw_zoom");
-		draw_text = glade_xml_get_widget (draw_box.DialogXML, "draw_text");
-		draw_rect = glade_xml_get_widget (draw_box.DialogXML, "draw_rect");
-		draw_ellipse = glade_xml_get_widget (draw_box.DialogXML, "draw_ellipse");
-		draw_freehand = glade_xml_get_widget (draw_box.DialogXML, "draw_freehand");
+		draw_box.BoxTable = glade_xml_get_widget (xml, "draw_table");
+		draw_select = glade_xml_get_widget (xml, "draw_select");
+		draw_node = glade_xml_get_widget (xml, "draw_node");
+		draw_zoom = glade_xml_get_widget (xml, "draw_zoom");
+		draw_text = glade_xml_get_widget (xml, "draw_text");
+		draw_rect = glade_xml_get_widget (xml, "draw_rect");
+		draw_ellipse = glade_xml_get_widget (xml, "draw_ellipse");
+		draw_freehand = glade_xml_get_widget (xml, "draw_freehand");
 		gtk_toggle_button_set_active ((GtkToggleButton *) draw_select, TRUE);
 		sp_toolbox_expose (&draw_box);
 
@@ -601,56 +637,4 @@ void toolbox_toggle_seperate (GtkWidget * widget, SPToolBox * toolbox) {
   g_print ("seperate ");
 }
 
-static void 
-sp_update_draw_toolbox (Sodipodi * sodipodi, SPEventContext * eventcontext, gpointer data) {
-	SPDesktop * desktop;
-
-	if (eventcontext == NULL) return;
-
-	desktop = eventcontext->desktop;
-
-  if (GTK_OBJECT_TYPE(desktop->event_context) == SP_TYPE_SELECT_CONTEXT) 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_select), TRUE);
-  else gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_select), FALSE);
-  if (GTK_OBJECT_TYPE(desktop->event_context) == SP_TYPE_NODE_CONTEXT) 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_node), TRUE);
-  else gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_node), FALSE);
-  if (GTK_OBJECT_TYPE(desktop->event_context) == SP_TYPE_ZOOM_CONTEXT) 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_zoom), TRUE);
-  else gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_zoom), FALSE);
-  if (GTK_OBJECT_TYPE(desktop->event_context) == SP_TYPE_RECT_CONTEXT) 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_rect), TRUE);
-  else gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_rect), FALSE);
-  if (GTK_OBJECT_TYPE(desktop->event_context) == SP_TYPE_ELLIPSE_CONTEXT) 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_ellipse), TRUE);
-  else gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_ellipse), FALSE);
-  if (GTK_OBJECT_TYPE(desktop->event_context) == SP_TYPE_DRAW_CONTEXT) 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_freehand), TRUE);
-  else gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_freehand), FALSE);
-  if (GTK_OBJECT_TYPE(desktop->event_context) == SP_TYPE_TEXT_CONTEXT) 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_text), TRUE);
-  else gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (draw_text), FALSE);
-}
-
-
-void object_rotate_90 () {
-  SPDesktop * desktop;
-  SPSelection * selection;
-  SPItem * item;
-  GSList * l, * l2;
-
-  desktop = SP_ACTIVE_DESKTOP;
-  if (!SP_IS_DESKTOP(desktop)) return;
-  selection = SP_DT_SELECTION(desktop);
-  if sp_selection_is_empty(selection) return;
-  l = selection->items;  
-  for (l2 = l; l2 != NULL; l2 = l2-> next) {
-    item = SP_ITEM (l2->data);
-    sp_item_rotate_rel (item,-90);
-  }
-
-  sp_selection_changed (selection);
-  sp_document_done (SP_DT_DOCUMENT (desktop));
-
-}
 #endif
