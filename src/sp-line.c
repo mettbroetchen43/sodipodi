@@ -3,6 +3,8 @@
 #include <math.h>
 #include "sp-line.h"
 
+#define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
+
 enum {ARG_0, ARG_X1, ARG_Y1, ARG_X2, ARG_Y2};
 
 static void sp_line_class_init (SPLineClass *class);

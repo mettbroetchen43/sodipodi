@@ -16,7 +16,7 @@
 
 <widget>
   <class>GnomePropertyBox</class>
-  <name>text_dialog</name>
+  <name>text_old</name>
   <signal>
     <name>apply</name>
     <handler>sp_text_dialog_apply</handler>
@@ -32,6 +32,8 @@
   <allow_shrink>False</allow_shrink>
   <allow_grow>True</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <wmclass_name>text</wmclass_name>
+  <wmclass_class>Sodipodi</wmclass_class>
 
   <widget>
     <class>GtkNotebook</class>
@@ -53,7 +55,7 @@
 
     <widget>
       <class>GtkVBox</class>
-      <name>vbox</name>
+      <name>vbox_old</name>
       <homogeneous>False</homogeneous>
       <spacing>0</spacing>
 
@@ -72,7 +74,7 @@
 
 	<widget>
 	  <class>GtkText</class>
-	  <name>text</name>
+	  <name>text_old</name>
 	  <can_focus>True</can_focus>
 	  <signal>
 	    <name>changed</name>
@@ -100,6 +102,123 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+  </widget>
+</widget>
+
+<widget>
+  <class>GtkWindow</class>
+  <name>text_dialog</name>
+  <border_width>4</border_width>
+  <signal>
+    <name>delete_event</name>
+    <handler>sp_text_dialog_delete</handler>
+    <last_modification_time>Wed, 29 Nov 2000 21:30:51 GMT</last_modification_time>
+  </signal>
+  <title>Text Properties</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>True</allow_grow>
+  <auto_shrink>False</auto_shrink>
+  <wmclass_name>text_properties</wmclass_name>
+  <wmclass_class>Sodipodi</wmclass_class>
+
+  <widget>
+    <class>GtkVBox</class>
+    <name>vbox</name>
+    <homogeneous>False</homogeneous>
+    <spacing>4</spacing>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow2</name>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkText</class>
+	<name>text</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>changed</name>
+	  <handler>sp_text_dialog_text_changed</handler>
+	  <last_modification_time>Sat, 05 Aug 2000 01:04:04 GMT</last_modification_time>
+	</signal>
+	<editable>True</editable>
+	<text></text>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHBox</class>
+      <name>hbox1</name>
+      <homogeneous>False</homogeneous>
+      <spacing>4</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button1</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>sp_text_dialog_close</handler>
+	  <last_modification_time>Wed, 29 Nov 2000 21:18:01 GMT</last_modification_time>
+	</signal>
+	<stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	  <pack>GTK_PACK_END</pack>
+	</child>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>button2</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>sp_text_dialog_apply</handler>
+	  <last_modification_time>Wed, 29 Nov 2000 21:17:45 GMT</last_modification_time>
+	</signal>
+	<stock_button>GNOME_STOCK_BUTTON_APPLY</stock_button>
+	<child>
+	  <padding>0</padding>
+	  <expand>False</expand>
+	  <fill>False</fill>
+	  <pack>GTK_PACK_END</pack>
+	</child>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>Placeholder</class>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
     </widget>
   </widget>
 </widget>

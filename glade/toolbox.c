@@ -20,24 +20,14 @@ gchar *s = N_("Draw freehand line");
 gchar *s = N_("Draw text");
 gchar *s = N_("Edit nodes");
 gchar *s = N_("Zoom");
-gchar *s = N_("10%\n"
-              "25%\n"
-              "50%\n"
-              "75%\n"
-              "100%\n"
-              "150%\n"
-              "200%\n"
-              "300%\n"
-              "500%\n"
-              "");
-gchar *s = N_("Select zoom factor");
-gchar *s = N_("100%");
-gchar *s = N_("Zoom out");
+gchar *s = N_("Zoom to 1:1");
+gchar *s = N_("Zoom to page");
 gchar *s = N_("Zoom in");
+gchar *s = N_("Zoom out");
 gchar *s = N_("Zoom to drawing");
 gchar *s = N_("Zoom to selection");
 gchar *s = N_("Zoom to 1:1");
-gchar *s = N_("Zoom to page");
+gchar *s = N_("Zoom to 1:1");
 gchar *s = N_("Selection");
 gchar *s = N_("lower selection to bottom");
 gchar *s = N_("Raise selection to top");
@@ -82,7 +72,7 @@ gchar *s = N_("Edit layout of selected objects");
 gchar *s = N_("Edit fill style of selected objects");
 gchar *s = N_("Edit stroke style of selected objects");
 gchar *s = N_("Flip selected objects");
-gchar *s = N_("Rotate selected objects 90\260 clockwise");
+gchar *s = N_("Rotate selected objects 90° clockwise");
 gchar *s = N_("Remove transformation");
 gchar *s = N_("Convert selected objects to curves");
 gchar *s = N_("Edit");

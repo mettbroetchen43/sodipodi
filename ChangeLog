@@ -1,3 +1,13 @@
+2000-12-15  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/display/nr-canvas.*: Experimental new rendering stuff
+	(Not working yet)
+	* src/display/nr-svp.*: Ditto (works)
+	* src/display/nr-svp-uncross.*: Ditto (works)
+	* src/display/nr-svp-render.*: Not working yet
+
+	* configure.in: Added {with|without}-new-render switch
+
 2000-11-30  Szabolcs Ban  <shooby@gnome.hu>
 
 	* glade/toolbox.c: corrected "zom factor" to "zoom factor"
@@ -5,6 +15,13 @@
 2000-11-30  Szabolcs Ban  <shooby@gnome.hu>
 
 	* configure.in (ALL_LINGUAS): add hu.
+
+2000-11-26  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/toolbox.c (sp_maintoolbox_create): Strip toolbox names
+	(sp_toolbox_create_widgets): Make windows toplevel
+
+	* glade/*.glade: Make windows to be toplevel
 
 2000-11-25  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
 

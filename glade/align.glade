@@ -24,12 +24,14 @@
     <last_modification_time>Sat, 19 Aug 2000 00:57:45 GMT</last_modification_time>
   </signal>
   <title>Align</title>
-  <type>GTK_WINDOW_DIALOG</type>
+  <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <wmclass_name>align</wmclass_name>
+  <wmclass_class>Sodipodi</wmclass_class>
 
   <widget>
     <class>GtkTable</class>
@@ -50,7 +52,6 @@
 	<handler>sp_quick_align_center_hor</handler>
 	<last_modification_time>Sun, 13 Aug 2000 01:57:54 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>2</left_attach>
 	<right_attach>3</right_attach>
@@ -88,7 +89,6 @@
 	<handler>sp_quick_align_right_out</handler>
 	<last_modification_time>Sun, 13 Aug 2000 01:59:55 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>4</left_attach>
 	<right_attach>5</right_attach>
@@ -126,7 +126,6 @@
 	<handler>sp_quick_align_right_in</handler>
 	<last_modification_time>Sun, 13 Aug 2000 01:57:17 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>3</left_attach>
 	<right_attach>4</right_attach>
@@ -164,7 +163,6 @@
 	<handler>sp_quick_align_left_in</handler>
 	<last_modification_time>Sun, 13 Aug 2000 01:56:41 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>1</left_attach>
 	<right_attach>2</right_attach>
@@ -202,7 +200,6 @@
 	<handler>sp_quick_align_left_out</handler>
 	<last_modification_time>Sun, 13 Aug 2000 01:59:23 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>0</left_attach>
 	<right_attach>1</right_attach>
@@ -240,7 +237,6 @@
 	<handler>sp_quick_align_center_ver</handler>
 	<last_modification_time>Sun, 13 Aug 2000 01:58:44 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>2</left_attach>
 	<right_attach>3</right_attach>
@@ -278,7 +274,6 @@
 	<handler>sp_quick_align_top_in</handler>
 	<last_modification_time>Sat, 12 Aug 2000 23:26:56 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>1</left_attach>
 	<right_attach>2</right_attach>
@@ -316,7 +311,6 @@
 	<handler>sp_quick_align_bottom_in</handler>
 	<last_modification_time>Sun, 13 Aug 2000 01:10:02 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>3</left_attach>
 	<right_attach>4</right_attach>
@@ -354,7 +348,6 @@
 	<handler>sp_quick_align_bottom_out</handler>
 	<last_modification_time>Sun, 13 Aug 2000 02:00:48 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>4</left_attach>
 	<right_attach>5</right_attach>
@@ -392,7 +385,6 @@
 	<handler>sp_quick_align_top_out</handler>
 	<last_modification_time>Sun, 13 Aug 2000 01:55:50 GMT</last_modification_time>
       </signal>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>0</left_attach>
 	<right_attach>1</right_attach>
@@ -431,7 +423,6 @@
 	<last_modification_time>Sat, 12 Aug 2000 23:02:06 GMT</last_modification_time>
       </signal>
       <stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
-      <relief>GTK_RELIEF_NORMAL</relief>
       <child>
 	<left_attach>0</left_attach>
 	<right_attach>5</right_attach>

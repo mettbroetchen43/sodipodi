@@ -17,7 +17,10 @@ GNOME_COMPILE_WARNINGS
 GNOME_X_CHECKS
 GNOME_XML_CHECK
 
-GNOME_PRINT_CHECK
+dnl GNOME_PRINT_CHECK
+GNOME_PRINT_LIBS=`gnome-config --libs print`
+AC_SUBST(GNOME_PRINT_LIBS)
+
 AC_CHECK_HEADER(libgnomeprint/gnome-print-frgba.h,AC_DEFINE(ENABLE_FRGBA))
 AC_CHECK_HEADER(libgnomeprint/gnome-print-rbuf.h,AC_DEFINE(ENABLE_RBUF))
 AC_CHECK_HEADER(libgnomeprint/gnome-font-face.h,AC_DEFINE(NEW_FONT_MODEL))
@@ -105,6 +108,17 @@ vers=`gnome-config --modversion print | sed -e "s/gnome-print-//" -e 's/cvs$//' 
 else
     AC_MSG_ERROR(Did not find GnomePrint installed)
 fi
+
+use_new_render=false
+AC_ARG_WITH(new-render,
+	[--{with,without}-new-render Compile with experimental rendering engine],
+	if test x$withval = xyes; then
+		use_new_render=true
+		AC_DEFINE(NEW_RENDER)
+	fi
+)
+AM_CONDITIONAL(WITH_NEW_RENDER, $use_new_render)
+AC_SUBST(WITH_NEW_RENDER)
 
 dnl Define libxml include path
 SODIPODI_XML_CFLAGS=`$GNOME_CONFIG --cflags xml`

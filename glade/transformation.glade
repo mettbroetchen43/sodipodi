@@ -28,12 +28,14 @@
     <last_modification_time>Sat, 30 Sep 2000 17:49:48 GMT</last_modification_time>
   </signal>
   <title>Transform selection</title>
-  <type>GTK_WINDOW_DIALOG</type>
+  <type>GTK_WINDOW_TOPLEVEL</type>
   <position>GTK_WIN_POS_NONE</position>
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
   <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
+  <wmclass_name>transform</wmclass_name>
+  <wmclass_class>Sodipodi</wmclass_class>
 
   <widget>
     <class>GtkHBox</class>
@@ -362,7 +364,6 @@
 		  <last_modification_time>Mon, 02 Oct 2000 04:28:32 GMT</last_modification_time>
 		</signal>
 		<label>absolute</label>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>True</expand>
@@ -719,7 +720,6 @@
 		    <handler>sp_transformation_scale_lock</handler>
 		    <last_modification_time>Mon, 02 Oct 2000 04:26:13 GMT</last_modification_time>
 		  </signal>
-		  <relief>GTK_RELIEF_NORMAL</relief>
 		  <child>
 		    <padding>0</padding>
 		    <expand>False</expand>
@@ -807,7 +807,6 @@
 		  <last_modification_time>Mon, 02 Oct 2000 04:28:25 GMT</last_modification_time>
 		</signal>
 		<label>absolute</label>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>True</expand>
@@ -851,7 +850,6 @@
 		  <handler>sp_transformation_dialog_set_flip</handler>
 		  <last_modification_time>Sun, 01 Oct 2000 00:56:32 GMT</last_modification_time>
 		</signal>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<active>False</active>
 		<child>
 		  <padding>0</padding>
@@ -881,7 +879,6 @@
 		  <handler>sp_transformation_dialog_set_flip</handler>
 		  <last_modification_time>Sun, 01 Oct 2000 00:56:49 GMT</last_modification_time>
 		</signal>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<active>False</active>
 		<child>
 		  <padding>0</padding>
@@ -952,7 +949,6 @@
 		  <handler>sp_transformation_direction_change</handler>
 		  <last_modification_time>Mon, 02 Oct 2000 04:26:42 GMT</last_modification_time>
 		</signal>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
@@ -1063,7 +1059,6 @@
 		  <handler>sp_transformation_set_angle</handler>
 		  <last_modification_time>Mon, 02 Oct 2000 04:26:49 GMT</last_modification_time>
 		</signal>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
@@ -1092,7 +1087,6 @@
 		  <handler>sp_transformation_set_angle</handler>
 		  <last_modification_time>Mon, 02 Oct 2000 04:26:56 GMT</last_modification_time>
 		</signal>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
@@ -1121,7 +1115,6 @@
 		  <handler>sp_transformation_set_angle</handler>
 		  <last_modification_time>Mon, 02 Oct 2000 04:27:04 GMT</last_modification_time>
 		</signal>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
@@ -1150,7 +1143,6 @@
 		  <handler>sp_transformation_set_angle</handler>
 		  <last_modification_time>Mon, 02 Oct 2000 04:27:11 GMT</last_modification_time>
 		</signal>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
@@ -1220,7 +1212,6 @@
 		  <handler>sp_transformation_direction_change</handler>
 		  <last_modification_time>Mon, 02 Oct 2000 04:27:23 GMT</last_modification_time>
 		</signal>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>False</expand>
@@ -1397,7 +1388,6 @@
 	    <last_modification_time>Tue, 15 Aug 2000 06:35:45 GMT</last_modification_time>
 	  </signal>
 	  <stock_button>GNOME_STOCK_BUTTON_APPLY</stock_button>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>True</expand>
@@ -1416,7 +1406,6 @@
 	    <last_modification_time>Tue, 15 Aug 2000 06:20:12 GMT</last_modification_time>
 	  </signal>
 	  <stock_button>GNOME_STOCK_BUTTON_CLOSE</stock_button>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>True</expand>
@@ -1434,7 +1423,6 @@
 	    <handler>sp_transformation_expand_dialog</handler>
 	    <last_modification_time>Sun, 01 Oct 2000 00:35:08 GMT</last_modification_time>
 	  </signal>
-	  <relief>GTK_RELIEF_NORMAL</relief>
 	  <child>
 	    <padding>0</padding>
 	    <expand>False</expand>
@@ -1512,7 +1500,6 @@
 	      <last_modification_time>Mon, 02 Oct 2000 04:29:25 GMT</last_modification_time>
 	    </signal>
 	    <label>Align</label>
-	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <active>False</active>
 	    <child>
 	      <padding>0</padding>
@@ -1532,7 +1519,6 @@
 	      <last_modification_time>Mon, 02 Oct 2000 04:29:32 GMT</last_modification_time>
 	    </signal>
 	    <label>Center</label>
-	    <relief>GTK_RELIEF_NORMAL</relief>
 	    <active>False</active>
 	    <child>
 	      <padding>0</padding>
@@ -1715,7 +1701,6 @@
 		  <last_modification_time>Mon, 02 Oct 2000 04:28:17 GMT</last_modification_time>
 		</signal>
 		<label>desktop</label>
-		<relief>GTK_RELIEF_NORMAL</relief>
 		<child>
 		  <padding>0</padding>
 		  <expand>True</expand>
@@ -1857,7 +1842,6 @@
 		<handler>sp_transformation_dialog_reset</handler>
 		<last_modification_time>Sat, 30 Sep 2000 00:07:38 GMT</last_modification_time>
 	      </signal>
-	      <relief>GTK_RELIEF_NORMAL</relief>
 	      <child>
 		<padding>0</padding>
 		<expand>False</expand>

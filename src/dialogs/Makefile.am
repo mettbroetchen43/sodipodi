@@ -26,6 +26,3 @@ libspdialogs_a_SOURCES = \
 	document-properties.c document-properties.h \
 	object-properties.c object-properties.h
 
-#	object-fill.c object-fill.h
-#	object-stroke.c object-stroke.h
-

@@ -21,3 +21,4 @@ libspsvg_a_SOURCES = \
 	svg-fill.c \
 	svg-stroke.c \
 	svg-font.c
+

@@ -17,6 +17,8 @@
 
 #include "sp-guide.h"
 
+#define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
+
 #define noKNOT_NOGRAB
 
 enum {

@@ -32,7 +32,7 @@
 #include "draw-context.h"
 
 #define TOLERANCE 1.0
-
+#define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 static void sp_draw_context_class_init (SPDrawContextClass * klass);
 static void sp_draw_context_init (SPDrawContext * draw_context);
 static void sp_draw_context_destroy (GtkObject * object);

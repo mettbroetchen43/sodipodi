@@ -5,3 +5,4 @@
  */
 
 gchar *s = N_("Text");
+gchar *s = N_("Text Properties");

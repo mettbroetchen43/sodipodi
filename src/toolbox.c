@@ -112,7 +112,7 @@ sp_maintoolbox_create (void)
 		file_box.visible = TRUE;
 		file_box.standalone = FALSE;
 		file_box.inmain = TRUE;
-		file_box.dialog_name = _(" File ");
+		file_box.dialog_name = _("File");
 		file_box.icon = SODIPODI_GLADEDIR "/toolbox_file.xpm";
 
 		sp_toolbox_create_widgets (&file_box);
@@ -126,7 +126,7 @@ sp_maintoolbox_create (void)
 		edit_box.visible = TRUE;
 		edit_box.standalone = FALSE;
 		edit_box.inmain = TRUE;
-		edit_box.dialog_name = _(" Edit ");
+		edit_box.dialog_name = _("Edit");
 		edit_box.icon = SODIPODI_GLADEDIR "/toolbox_edit.xpm";
 
 		sp_toolbox_create_widgets (&edit_box);
@@ -140,7 +140,7 @@ sp_maintoolbox_create (void)
 		object_box.visible = TRUE;
 		object_box.standalone = FALSE;
 		object_box.inmain = TRUE;
-		object_box.dialog_name = _(" Object ");
+		object_box.dialog_name = _("Object");
 		object_box.icon = SODIPODI_GLADEDIR "/toolbox_object.xpm";
 
 		flip_button = glade_xml_get_widget (object_box.DialogXML, "flip_button");
@@ -159,7 +159,7 @@ sp_maintoolbox_create (void)
 		select_box.visible = FALSE;
 		select_box.standalone = FALSE;
 		select_box.inmain = TRUE;
-		select_box.dialog_name = _(" Selection ");
+		select_box.dialog_name = _("Selection");
 		select_box.icon = SODIPODI_GLADEDIR "/toolbox_select.xpm";
 
 		sp_toolbox_create_widgets (&select_box);
@@ -172,7 +172,7 @@ sp_maintoolbox_create (void)
  		draw_box.visible = TRUE;
 		draw_box.standalone = FALSE;
 		draw_box.inmain = TRUE;
-		draw_box.dialog_name = _(" Draw context ");
+		draw_box.dialog_name = _("Draw context");
 		draw_box.icon = SODIPODI_GLADEDIR "/toolbox_draw.xpm";
 		sp_toolbox_create_widgets (&draw_box);
 		draw_box.BoxTable = glade_xml_get_widget (draw_box.DialogXML, "draw_table");
@@ -197,7 +197,7 @@ sp_maintoolbox_create (void)
 		zoom_box.visible = FALSE;
 		zoom_box.standalone = FALSE;
 		zoom_box.inmain = TRUE;
-		zoom_box.dialog_name = _(" Zoom ");
+		zoom_box.dialog_name = _("Zoom");
 		zoom_box.icon = SODIPODI_GLADEDIR "/toolbox_zoom.xpm";
 
 		sp_toolbox_create_widgets (&zoom_box);
@@ -211,7 +211,7 @@ sp_maintoolbox_create (void)
 		node_box.visible = FALSE;
 		node_box.standalone = FALSE;
 		node_box.inmain = TRUE;
-		node_box.dialog_name = _(" Node edit");
+		node_box.dialog_name = _("Node edit");
 		node_box.icon = SODIPODI_GLADEDIR "/toolbox_node.xpm";
 
 		sp_toolbox_create_widgets (&node_box);
@@ -228,11 +228,16 @@ void sp_toolbox_create_widgets (SPToolBox * toolbox) {
   GtkWidget * vbox, * hbox;
   GtkWidget * gnpixmap;
   GtkWidget * sep, * label;
+  gchar * c;
 
   // dialog
-  toolbox->Dialog = gtk_window_new (GTK_WINDOW_DIALOG);
+  /* fixme: set atoms or something */
+  toolbox->Dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_window_set_title ((GtkWindow *) toolbox->Dialog, toolbox->dialog_name);
-  gtk_window_set_policy ((GtkWindow *) toolbox->Dialog,0,0,0);
+  gtk_window_set_policy ((GtkWindow *) toolbox->Dialog, FALSE, FALSE, FALSE);
+  c = g_strdup_printf ("toolbox_%s", toolbox->dialog_name);
+  gtk_window_set_wmclass (GTK_WINDOW (toolbox->Dialog), c, "Sodipodi");
+  g_free (c);
   // main_vbox
   toolbox->MainVBox = gtk_vbox_new (FALSE, 0);
   gtk_box_pack_start ((GtkBox *) main_vbox, toolbox->MainVBox, TRUE, TRUE, 0);

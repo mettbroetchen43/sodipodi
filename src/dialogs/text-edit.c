@@ -16,8 +16,9 @@ static void sp_text_hide_dialog (void);
 
 /* glade gui handlers */
 
-void sp_text_dialog_apply (GnomePropertyBox * propertybox, gint pagenum);
-void sp_text_dialog_close (void);
+void sp_text_dialog_apply (GtkButton * button, gpointer data);
+void sp_text_dialog_close (GtkButton * button, gpointer data);
+gint sp_text_dialog_delete (GtkWidget * widget);
 
 void sp_text_family_select_row (GtkCList * c, gint row, gint column);
 void sp_text_family_unselect_row (GtkCList * c, gint row, gint column);
@@ -126,7 +127,7 @@ sp_text_read_selection (void)
 }
 
 void
-sp_text_dialog_apply (GnomePropertyBox * propertybox, gint pagenum)
+sp_text_dialog_apply (GtkButton * button, gpointer data)
 {
 	SPRepr * repr;
 	const gchar * str;
@@ -178,13 +179,27 @@ sp_text_dialog_apply (GnomePropertyBox * propertybox, gint pagenum)
 }
 
 void
-sp_text_dialog_close (void)
+sp_text_dialog_close (GtkButton * button, gpointer data)
 {
 	sp_text_hide_dialog ();
 
 	/* Fixme: test */
 	gtk_object_destroy (GTK_OBJECT (dialog));
+	dialog = NULL;
 	xml = NULL;
+}
+
+gint
+sp_text_dialog_delete (GtkWidget * widget)
+{
+	sp_text_hide_dialog ();
+
+	/* Fixme: test */
+	gtk_object_destroy (GTK_OBJECT (dialog));
+	dialog = NULL;
+	xml = NULL;
+
+	return TRUE;
 }
 
 
@@ -199,16 +214,18 @@ sp_text_dialog_text_changed (GtkEditable * editable, gpointer data)
 	} else {
 		gnome_font_preview_set_phrase ((GnomeFontPreview *) preview, NULL);
 	}
-
+#if 0
 	gnome_property_box_changed (GNOME_PROPERTY_BOX (dialog));
+#endif
 }
 
 static void
 sp_text_dialog_font_changed (GnomeFontSelection * fontsel, GnomeFont * font, gpointer data)
 {
 	gnome_font_preview_set_font ((GnomeFontPreview *) preview, font);
-
+#if 0
 	gnome_property_box_changed (GNOME_PROPERTY_BOX (dialog));
+#endif
 }
 
 /*

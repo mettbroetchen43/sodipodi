@@ -2,6 +2,8 @@
 
 #include <math.h>
 #include <gnome.h>
+#include <libart_lgpl/art_alphagamma.h>
+#include "../helper/art_render.h"
 #include "../helper/canvas-helper.h"
 #include "canvas-shape.h"
 
@@ -107,8 +109,8 @@ sp_canvas_shape_request_redraw (SPCanvasShape * shape)
 	for (l = shape->comp; l != NULL; l = l->next) {
 		comp = (SPCPathComp *) l->data;
 		if (comp->archetype) {
-			if (((comp->bbox.x1 - comp->bbox.x0) < 64.0) &&
-				((comp->bbox.y1 - comp->bbox.y0) < 64.0)) {
+			if (((comp->bbox.x1 - comp->bbox.x0) < 512.0) &&
+				((comp->bbox.y1 - comp->bbox.y0) < 512.0)) {
 				/* fixme: cope with miter lines */
 				gnome_canvas_request_redraw (GNOME_CANVAS_ITEM (shape)->canvas,
 					comp->bbox.x0 - comp->stroke_width - 1.0,
@@ -158,7 +160,7 @@ g_print ("sp_canvas_shape_update: entering\n");
 				gdouble wx, wy;
 				wx = affine[0] + affine[1];
 				wy = affine[2] + affine[3];
-				comp->stroke_width *= hypot (wx, wy) / 1.414213562;
+				comp->stroke_width *= sqrt (wx * wx + wy * wy) / 1.414213562;
 			}
 		} else {
 			comp->stroke_width = 0.0;
@@ -213,10 +215,38 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 		comp = (SPCPathComp *) l->data;
 
 		if (comp->closed) {
-		switch (shape->fill->type) {
+			switch (shape->fill->type) {
 
 			case SP_FILL_COLOR:
-				gnome_canvas_render_svp_translated (buf, comp->archetype->svp, shape->fill->color, comp->cx, comp->cy);
+				/* Experimental */
+#if 0
+			{
+				ArtRender * render;
+				ArtPixMaxDepth c[3];
+				gint o;
+				g_print ("! %d %d\n", comp->cx, comp->cy);
+				if (buf->is_bg) {
+					gnome_canvas_clear_buffer (buf);
+					buf->is_bg = FALSE;
+					buf->is_buf = TRUE;
+				}
+				c[0] = ART_PIX_MAX_FROM_8 ((shape->fill->color >> 24) & 0xff);
+				c[1] = ART_PIX_MAX_FROM_8 ((shape->fill->color >> 16) & 0xff);
+				c[2] = ART_PIX_MAX_FROM_8 ((shape->fill->color >> 8) & 0xff);
+				o = shape->fill->color & 0xff;
+				o = (o << 8) + o + (o >> 7);
+				render = art_render_new (buf->rect.x0 - comp->cx, buf->rect.y0 - comp->cy,
+							 buf->rect.x1 - comp->cx, buf->rect.y1 - comp->cy,
+							 buf->buf, buf->buf_rowstride, 3, 8, ART_ALPHA_NONE, NULL);
+				art_render_svp (render, comp->archetype->svp);
+				art_render_mask_solid (render, o);
+				art_render_image_solid (render, c);
+				art_render_invoke (render);
+			}
+#else
+				gnome_canvas_render_svp_translated (buf, comp->archetype->svp, shape->fill->color,
+								    comp->cx, comp->cy);
+#endif
 				break;
 
 			case SP_FILL_IND:
@@ -291,7 +321,7 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 				  buf->is_bg = FALSE;
 				}
 				break;
-		}
+			}
 		}
 
 		switch (shape->stroke->type) {

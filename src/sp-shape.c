@@ -358,7 +358,7 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 				if (shape->stroke->scaled) {
 					wx = affine[0] + affine[1];
 					wy = affine[2] + affine[3];
-					width *= hypot (wx, wy) / 1.414213562;
+					width *= sqrt (wx * wx + wy * wy) / 1.414213562;
 				}
 				svp = art_svp_vpath_stroke (vp,
 					shape->stroke->join,

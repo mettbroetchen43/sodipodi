@@ -4,6 +4,8 @@
 #include "sp-guide.h"
 #include "desktop-snap.h"
 
+#define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
+
 gdouble
 sp_desktop_free_snap (SPDesktop * desktop, ArtPoint * req)
 {

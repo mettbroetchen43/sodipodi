@@ -10,6 +10,10 @@
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 #include <libart_lgpl/art_rect_svp.h>
+#ifdef NEW_RENDER
+#include "nr-svp.h"
+#include "nr-svp-uncross.h"
+#endif
 #include "path-archetype.h"
 
 #define noDEBUG_PATH_AT
@@ -110,9 +114,13 @@ sp_path_at_new (SPCurve * curve,
 	gint i;
 	ArtBpath * affine_bpath;
 	ArtVpath * vpath;
-	ArtSVP * svpa, * svpb;
+	ArtSVP * svpa;
 	gdouble fa[6];
-
+#ifdef NEW_RENDER
+	NRSVP * nrsvp0, * nrsvp1;
+#else
+	ArtSVP * svpb;
+#endif
 	g_return_val_if_fail (curve != NULL, NULL);
 
 	at = g_new (SPPathAT, 1);
@@ -132,16 +140,26 @@ sp_path_at_new (SPCurve * curve,
 	affine_bpath = art_bpath_affine_transform (at->curve->bpath, fa);
 	vpath = art_bez_path_to_vec (affine_bpath, 0.25);
 	art_free (affine_bpath);
+
+#ifdef NEW_RENDER
+	at->vpath = vpath;
+	art_vpath_bbox_drect (at->vpath, &at->bbox);
+	nrsvp0 = nr_svp_from_art_vpath (at->vpath);
+	nrsvp1 = nr_svp_rewind (nrsvp0);
+	nr_svp_free (nrsvp0);
+	svpa = nr_art_svp_from_svp (nrsvp1);
+	nr_svp_free (nrsvp1);
+#else
 	at->vpath = art_vpath_perturb (vpath);
 	art_free (vpath);
-
 	art_vpath_bbox_drect (at->vpath, &at->bbox);
-
 	svpa = art_svp_from_vpath (at->vpath);
 	svpb = art_svp_uncross (svpa);
 	art_svp_free (svpa);
 	svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
 	art_svp_free (svpb);
+#endif
+
 	at->svp = svpa;
 
 	if (at->stroke_width > 0.0) {
