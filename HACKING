@@ -1,0 +1,58 @@
+If you are interested in hacking sodipodi source, you are welcome. But be
+cautious, as every single thing in structure/API may change yet.
+
+Some things that should be done (in random order):
+- printing from command line, without display (should work without X)
+- bonobo support
+- plugin support
+- use GnomeMDI for App<->Desktop hierarchy
+- good and clean API for dealing with sealection changes
+- extracting available fonts from gnome-print
+- gradient fills
+- 'fastart' rendering of svp-s (without antialiasing)
+- exporting bitmaps (png-s, at least). Also from command line
+- undo/redo, cut/copy/paste
+- all fancy filling types
+- automake chemistry, creating package files
+- import and export filters
+
+Please consult with separate HACKING files in subdirs. Some modules
+are only placeholders for something better and standardized (repr et al.)
+
+This code should be quite modular and will become even more. A rough
+blueprint is as follows:
+
+1. reprs & cousins
+SPRepr, SPCSSAttr ...
+These are temporary wrappers around xml backbone. As soon as gdome is
+usable for such tasks I'll replace these with DOM.
+Currently reprs (Representation Objects) hold all item attributes. Object
+tree is also constructed of reprs. They emit signals (to be exact - call
+functions), if modified, deleted etc. Most editing should be done directly
+to repr attributes.
+Reprs know, who are their editable (canvas) object, canvas objects do not
+know anything about reprs.
+
+2. Items
+
+3. Graphics layout
+desktop.c, drawing.c
+
+Canvas root
+Acetate, Desktop
+Grid, Guides, Drawarea, Sketch, Controls
+
+Acetate is borrowed from gill - it is basically infinite empty item, which
+serves as mouse target
+
+grid & guides groups are there, but not in use
+drawing - this is most interesting
+sketch - simply a group I created for temporary items
+controls - group which holds resizing buttons, rubberband etc.
+
+Primary coordinate system for all items is desktop. This is mirrored
+vertically to produce postscript coordinates. I.e. desktop unit = 1/72 in.
+While reading svg, the drawing group will be mirrored once more, to produce
+svg coords (y grows downwards)
+
+

@@ -1,0 +1,9 @@
+2000/09/01 Version 0.16
+
+Imported to CVS.
+Added multiple files / multiple views support. As a result, most things
+do not work any more, but you can experiment with load/save/print/import,
+group/ungroup, delete/duplicate, transforming, node editing, drawing,
+rects, ellipses and text. Sometimes it does not crash.
+
+30.12.1999 Node editing now works!

@@ -1,0 +1,575 @@
+<?xml version="1.0"?>
+<GTK-Interface>
+
+<project>
+  <name>Stroke Dialog</name>
+  <program_name>stroke-dialog</program_name>
+  <directory></directory>
+  <source_directory>src</source_directory>
+  <pixmaps_directory>pixmaps</pixmaps_directory>
+  <language>C</language>
+  <gnome_support>True</gnome_support>
+  <gettext_support>True</gettext_support>
+  <use_widget_names>False</use_widget_names>
+  <output_main_file>True</output_main_file>
+  <output_support_files>True</output_support_files>
+  <output_build_files>True</output_build_files>
+  <backup_source_files>True</backup_source_files>
+  <main_source_file>interface.c</main_source_file>
+  <main_header_file>interface.h</main_header_file>
+  <handler_source_file>callbacks.c</handler_source_file>
+  <handler_header_file>callbacks.h</handler_header_file>
+  <support_source_file>support.c</support_source_file>
+  <support_header_file>support.h</support_header_file>
+  <translatable_strings_file></translatable_strings_file>
+</project>
+
+<widget>
+  <class>GnomeDialog</class>
+  <name>stroke_dialog</name>
+  <title>Stroke settings</title>
+  <type>GTK_WINDOW_TOPLEVEL</type>
+  <position>GTK_WIN_POS_NONE</position>
+  <modal>False</modal>
+  <allow_shrink>False</allow_shrink>
+  <allow_grow>False</allow_grow>
+  <auto_shrink>False</auto_shrink>
+  <auto_close>False</auto_close>
+  <hide_on_close>False</hide_on_close>
+
+  <widget>
+    <class>GtkVBox</class>
+    <child_name>GnomeDialog:vbox</child_name>
+    <name>dialog-vbox3</name>
+    <homogeneous>False</homogeneous>
+    <spacing>8</spacing>
+    <child>
+      <padding>4</padding>
+      <expand>True</expand>
+      <fill>True</fill>
+    </child>
+
+    <widget>
+      <class>GtkVBox</class>
+      <name>vbox4</name>
+      <homogeneous>False</homogeneous>
+      <spacing>0</spacing>
+      <child>
+	<padding>0</padding>
+	<expand>True</expand>
+	<fill>True</fill>
+      </child>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame4</name>
+	<label>General</label>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkHBox</class>
+	  <name>hbox3</name>
+	  <border_width>4</border_width>
+	  <homogeneous>False</homogeneous>
+	  <spacing>8</spacing>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>stroke_dialog_stroked</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>stroke_dialog_stroked_toggled</handler>
+	      <last_modification_time>Tue, 12 Oct 1999 21:20:58 GMT</last_modification_time>
+	    </signal>
+	    <label>Is stroked</label>
+	    <active>True</active>
+	    <draw_indicator>True</draw_indicator>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkHBox</class>
+	    <name>hbox4</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>4</spacing>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GnomeColorPicker</class>
+	      <name>stroke_dialog_color</name>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>color_set</name>
+		<handler>stroke_dialog_color_set</handler>
+		<last_modification_time>Tue, 12 Oct 1999 21:50:26 GMT</last_modification_time>
+	      </signal>
+	      <dither>True</dither>
+	      <use_alpha>True</use_alpha>
+	      <title>Valige värv</title>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label5</name>
+	      <label>Stroke color</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame5</name>
+	<label>Width</label>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkVBox</class>
+	  <name>vbox5</name>
+	  <border_width>4</border_width>
+	  <homogeneous>False</homogeneous>
+	  <spacing>0</spacing>
+
+	  <widget>
+	    <class>GtkHBox</class>
+	    <name>hbox5</name>
+	    <homogeneous>False</homogeneous>
+	    <spacing>4</spacing>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+
+	    <widget>
+	      <class>GtkLabel</class>
+	      <name>label6</name>
+	      <label>Stroke width</label>
+	      <justify>GTK_JUSTIFY_CENTER</justify>
+	      <wrap>False</wrap>
+	      <xalign>0.5</xalign>
+	      <yalign>0.5</yalign>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkSpinButton</class>
+	      <name>stroke_dialog_width</name>
+	      <width>96</width>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>changed</name>
+		<handler>stroke_dialog_width_changed</handler>
+		<last_modification_time>Tue, 12 Oct 1999 21:59:31 GMT</last_modification_time>
+	      </signal>
+	      <climb_rate>1</climb_rate>
+	      <digits>2</digits>
+	      <numeric>True</numeric>
+	      <update_policy>GTK_UPDATE_ALWAYS</update_policy>
+	      <snap>False</snap>
+	      <wrap>False</wrap>
+	      <value>0.9</value>
+	      <lower>0</lower>
+	      <upper>100</upper>
+	      <step>0.1</step>
+	      <page>10</page>
+	      <page_size>10</page_size>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>True</fill>
+	      </child>
+	    </widget>
+
+	    <widget>
+	      <class>GtkOptionMenu</class>
+	      <name>dialog_stroke_width_units</name>
+	      <can_focus>True</can_focus>
+	      <items>pixels
+millimeters
+points
+inches
+</items>
+	      <initial_choice>0</initial_choice>
+	      <child>
+		<padding>0</padding>
+		<expand>False</expand>
+		<fill>False</fill>
+	      </child>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>stroke_dialog_scale</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>stroke_dialog_scale_toggled</handler>
+	      <last_modification_time>Tue, 12 Oct 1999 22:10:13 GMT</last_modification_time>
+	    </signal>
+	    <label>Scale with image</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkCheckButton</class>
+	    <name>dialog_stroke_behind</name>
+	    <can_focus>True</can_focus>
+	    <label>Behind fill</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <child>
+	      <padding>0</padding>
+	      <expand>False</expand>
+	      <fill>False</fill>
+	    </child>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkFrame</class>
+	<name>frame6</name>
+	<label>Join &amp; cap</label>
+	<label_xalign>0</label_xalign>
+	<shadow_type>GTK_SHADOW_ETCHED_IN</shadow_type>
+	<child>
+	  <padding>0</padding>
+	  <expand>True</expand>
+	  <fill>True</fill>
+	</child>
+
+	<widget>
+	  <class>GtkTable</class>
+	  <name>table4</name>
+	  <border_width>2</border_width>
+	  <rows>4</rows>
+	  <columns>2</columns>
+	  <homogeneous>False</homogeneous>
+	  <row_spacing>0</row_spacing>
+	  <column_spacing>0</column_spacing>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label7</name>
+	    <label>Join</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.1</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>label8</name>
+	    <label>Cap</label>
+	    <justify>GTK_JUSTIFY_LEFT</justify>
+	    <wrap>False</wrap>
+	    <xalign>0.1</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>0</top_attach>
+	      <bottom_attach>1</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioButton</class>
+	    <name>stroke_dialog_join_miter</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>stroke_dialog_join_miter</handler>
+	      <last_modification_time>Tue, 12 Oct 1999 22:18:54 GMT</last_modification_time>
+	    </signal>
+	    <label>miter</label>
+	    <active>True</active>
+	    <draw_indicator>True</draw_indicator>
+	    <group>stroke_dialog_join</group>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>1</top_attach>
+	      <bottom_attach>2</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioButton</class>
+	    <name>dialog_stroke_cap_butt</name>
+	    <can_focus>True</can_focus>
+	    <label>butt</label>
+	    <active>True</active>
+	    <draw_indicator>True</draw_indicator>
+	    <group>dialog_stroke_cap</group>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>1</top_attach>
+	      <bottom_attach>2</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioButton</class>
+	    <name>stroke_dialog_join_round</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>stroke_dialog_join_round</handler>
+	      <last_modification_time>Tue, 12 Oct 1999 22:19:08 GMT</last_modification_time>
+	    </signal>
+	    <label>round</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <group>stroke_dialog_join</group>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>2</top_attach>
+	      <bottom_attach>3</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioButton</class>
+	    <name>stroke_dialog_join_bevel</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>toggled</name>
+	      <handler>stroke_dialog_join_bevel</handler>
+	      <last_modification_time>Tue, 12 Oct 1999 22:19:26 GMT</last_modification_time>
+	    </signal>
+	    <label>bevel</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <group>stroke_dialog_join</group>
+	    <child>
+	      <left_attach>0</left_attach>
+	      <right_attach>1</right_attach>
+	      <top_attach>3</top_attach>
+	      <bottom_attach>4</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioButton</class>
+	    <name>dialog_stroke_cap_round</name>
+	    <can_focus>True</can_focus>
+	    <label>round</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <group>dialog_stroke_cap</group>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>2</top_attach>
+	      <bottom_attach>3</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+
+	  <widget>
+	    <class>GtkRadioButton</class>
+	    <name>dialog_stroke_cap_square</name>
+	    <can_focus>True</can_focus>
+	    <label>square</label>
+	    <active>False</active>
+	    <draw_indicator>True</draw_indicator>
+	    <group>dialog_stroke_cap</group>
+	    <child>
+	      <left_attach>1</left_attach>
+	      <right_attach>2</right_attach>
+	      <top_attach>3</top_attach>
+	      <bottom_attach>4</bottom_attach>
+	      <xpad>0</xpad>
+	      <ypad>0</ypad>
+	      <xexpand>False</xexpand>
+	      <yexpand>False</yexpand>
+	      <xshrink>False</xshrink>
+	      <yshrink>False</yshrink>
+	      <xfill>True</xfill>
+	      <yfill>False</yfill>
+	    </child>
+	  </widget>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkHButtonBox</class>
+      <child_name>GnomeDialog:action_area</child_name>
+      <name>dialog-action_area2</name>
+      <layout_style>GTK_BUTTONBOX_END</layout_style>
+      <spacing>8</spacing>
+      <child_min_width>85</child_min_width>
+      <child_min_height>27</child_min_height>
+      <child_ipad_x>7</child_ipad_x>
+      <child_ipad_y>0</child_ipad_y>
+      <child>
+	<padding>0</padding>
+	<expand>False</expand>
+	<fill>True</fill>
+	<pack>GTK_PACK_END</pack>
+      </child>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>dialog_stroke_ok</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>stroke_dialog_ok</handler>
+	  <last_modification_time>Tue, 12 Oct 1999 20:58:49 GMT</last_modification_time>
+	</signal>
+	<stock_button>GNOME_STOCK_BUTTON_OK</stock_button>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>dialog_stroke_apply</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>stroke_dialog_apply</handler>
+	  <last_modification_time>Wed, 13 Oct 1999 21:30:44 GMT</last_modification_time>
+	</signal>
+	<stock_button>GNOME_STOCK_BUTTON_APPLY</stock_button>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<name>dialog_stroke_cancel</name>
+	<can_default>True</can_default>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>stroke_dialog_cancel</handler>
+	  <last_modification_time>Wed, 13 Oct 1999 21:31:08 GMT</last_modification_time>
+	</signal>
+	<stock_button>GNOME_STOCK_BUTTON_CANCEL</stock_button>
+      </widget>
+    </widget>
+  </widget>
+</widget>
+
+</GTK-Interface>

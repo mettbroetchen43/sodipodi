@@ -1,0 +1,39 @@
+#ifndef SP_CANVAS_UTILS_H
+#define SP_CANVAS_UTILS_H
+
+#include <libgnomeui/gnome-canvas.h>
+
+/* Miscellaneous utility & convenience functions for general canvas objects */
+
+/* fill buffer with background color */
+
+void
+gnome_canvas_clear_buffer (GnomeCanvasBuf * buf);
+
+/* render svp, translated to x, y */
+
+void
+gnome_canvas_render_svp_translated (GnomeCanvasBuf * buf, ArtSVP * svp,
+	guint32 rgba, gint x, gint y);
+
+/* get i2p (item to parent) affine transformation as general 6-element array */
+
+void gnome_canvas_item_i2p_affine (GnomeCanvasItem * item, double affine[]);
+
+/* get i2i (item to item) affine transformation as general 6-element array */
+
+void gnome_canvas_item_i2i_affine (GnomeCanvasItem * from, GnomeCanvasItem * to, double affine[]);
+
+/* set item affine matrix to achieve given i2w matrix */
+
+void gnome_canvas_item_set_i2w_affine (GnomeCanvasItem * item, double i2w[]);
+
+/* get item z-order in parent group */
+
+gint gnome_canvas_item_order (GnomeCanvasItem * item);
+
+void gnome_canvas_item_move_to_z (GnomeCanvasItem * item, gint z);
+
+gint gnome_canvas_item_compare_z (GnomeCanvasItem * a, GnomeCanvasItem * b);
+
+#endif

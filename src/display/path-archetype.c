@@ -1,0 +1,208 @@
+#define SP_PATH_ARCHETYPE_C
+
+#include <math.h>
+#include <glib.h>
+#include <libart_lgpl/art_misc.h>
+#include <libart_lgpl/art_vpath.h>
+#include <libart_lgpl/art_svp.h>
+#include <libart_lgpl/art_svp_vpath.h>
+#include <libart_lgpl/art_svp_wind.h>
+#include <libart_lgpl/art_bpath.h>
+#include <libart_lgpl/art_vpath_bpath.h>
+#include <libart_lgpl/art_rect_svp.h>
+
+#include "path-archetype.h"
+
+#define noDEBUG_PATH_AT
+
+#ifdef DEBUG_PATH_AT
+	gint num_at = 0;
+#endif
+
+static guint sp_pat_hash (gconstpointer key);
+static gint sp_pat_equal (gconstpointer a, gconstpointer b);
+
+static void sp_pat_free_state (SPPathAT * at);
+
+static SPPathAT * sp_path_at_new (ArtBpath * bpath,
+	gboolean private,
+	double affine[],
+	double stroke_width,
+	ArtPathStrokeJoinType join,
+	ArtPathStrokeCapType cap);
+
+GHashTable * archetypes = NULL;
+
+SPPathAT *
+sp_path_at (ArtBpath * bpath,
+	gboolean private,
+	double affine[],
+	double stroke_width,
+	ArtPathStrokeJoinType join,
+	ArtPathStrokeCapType cap)
+{
+	SPPathAT cat, * at;
+	gint i;
+
+	g_return_val_if_fail (bpath != NULL, NULL);
+
+	if (archetypes == NULL)
+		archetypes = g_hash_table_new (sp_pat_hash, sp_pat_equal);
+
+	if (!private) {
+		cat.bpath = bpath;
+		for (i = 0; i < 4; i++) cat.affine[i] = affine[i];
+		cat.stroke_width = stroke_width;
+		cat.join = join;
+		cat.cap = cap;
+
+		at = g_hash_table_lookup (archetypes, &cat);
+
+		if (at != NULL) {
+			at->refcount++;
+			return at;
+		}
+	}
+
+	at = sp_path_at_new (bpath, private, affine, stroke_width, join, cap);
+
+	if (!private) {
+		g_hash_table_insert (archetypes, at, at);
+	}
+
+	return at;
+}
+
+void
+sp_path_at_ref (SPPathAT * at)
+{
+	g_assert (at != NULL);
+	at->refcount++;
+}
+
+void
+sp_path_at_unref (SPPathAT * at)
+{
+	g_assert (at != NULL);
+	at->refcount--;
+
+	if (at->refcount < 1) {
+		if (!at->private)
+			g_hash_table_remove (archetypes, at);
+		sp_pat_free_state (at);
+		g_free (at);
+#ifdef DEBUG_PATH_AT
+		num_at--;
+		g_print ("num_at = %d\n", num_at);
+#endif
+	}
+}
+
+static SPPathAT *
+sp_path_at_new (ArtBpath * bpath,
+	gboolean private,
+	double affine[],
+	double stroke_width,
+	ArtPathStrokeJoinType join,
+	ArtPathStrokeCapType cap)
+{
+	SPPathAT * at;
+	gint i;
+	ArtBpath * affine_bpath;
+	ArtVpath * perturbed_vpath;
+	ArtSVP * svpa, * svpb;
+
+	g_return_val_if_fail (bpath != NULL, NULL);
+
+	at = g_new (SPPathAT, 1);
+	at->refcount = 1;
+	at->bpath = bpath;
+	at->private = private;
+	for (i = 0; i < 4; i++) at->affine[i] = affine[i];
+	at->affine[4] = at->affine[5] = 0.0;
+	at->stroke_width = stroke_width;
+	at->join = join;
+	at->cap = cap;
+
+	affine_bpath = art_bpath_affine_transform (at->bpath, at->affine);
+	at->vpath = art_bez_path_to_vec (affine_bpath, 0.25);
+	art_free (affine_bpath);
+
+	art_vpath_bbox_drect (at->vpath, &at->bbox);
+
+	perturbed_vpath = art_vpath_perturb (at->vpath);
+	svpa = art_svp_from_vpath (perturbed_vpath);
+	art_free (perturbed_vpath);
+	svpb = art_svp_uncross (svpa);
+	art_svp_free (svpa);
+	svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
+	art_svp_free (svpb);
+	at->svp = svpa;
+
+	if (at->stroke_width > 0.0) {
+		at->stroke = art_svp_vpath_stroke (at->vpath, at->join, at->cap, at->stroke_width, 4, 0.25);
+		/* it seems silly - isn't stroke always bigger than shape? */
+		art_drect_svp_union (&at->bbox, at->stroke);
+	} else {
+		at->stroke = NULL;
+	}
+
+#ifdef DEBUG_PATH_AT
+	num_at++;
+	g_print ("num_at = %d\n", num_at);
+#endif
+	return at;
+}
+
+static void
+sp_pat_free_state (SPPathAT * at)
+{
+	g_assert (at != NULL);
+	if (at->svp != NULL) {
+		art_svp_free (at->svp);
+		at->svp = NULL;
+	}
+	if (at->stroke != NULL) {
+		art_svp_free (at->stroke);
+		at->stroke = NULL;
+	}
+	if (at->vpath != NULL) {
+		art_free (at->vpath);
+		at->vpath = NULL;
+	}
+};
+
+static guint
+sp_pat_hash (gconstpointer key)
+{
+	SPPathAT * at;
+	at = (SPPathAT *) key;
+	/* fixme: */
+	return GPOINTER_TO_INT (at->bpath);
+}
+
+static gint
+sp_pat_equal (gconstpointer a, gconstpointer b)
+{
+	SPPathAT * ata, * atb;
+	gint i;
+	gdouble d;
+
+	ata = (SPPathAT *) a;
+	atb = (SPPathAT *) b;
+	/* fixme: */
+	if (ata->bpath != atb->bpath)
+		return FALSE;
+	for (i = 0; i < 4; i++) {
+		d = fabs (ata->affine[i] - atb->affine[i]);
+		if (d > 1e-6) return FALSE;
+	}
+	if (ata->stroke_width != atb->stroke_width)
+		return FALSE;
+	if (ata->join != atb->join)
+		return FALSE;
+	if (ata->cap != atb->cap)
+		return FALSE;
+	return TRUE;
+}
+

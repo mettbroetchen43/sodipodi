@@ -1,0 +1,52 @@
+Sodipodi
+
+Sodipodi is (or at least should be) an vector illustrator program for GNOME
+environment. It is currently in active development and not usable for any
+real work.
+
+If you are interested in production quality program, try sketch
+http://www.sourceforge.org/sketch
+
+If you are more interested in hacking, you can also try out KIllustrator,
+Gill and GYVE. Sodipodi eagerly borrows code from every other free program
+under the Sun (hey - isn't it the main point about free software?)
+
+You can always find the freshest sodipodi at GNOME CVS.
+
+Compiling should be trivial, but I cannot guarantee that it works on any other
+system aside mine:
+
+./configure
+make
+make install
+
+You need reasonably recent libglade ang gdk-pixbuf.
+If you have very fresh gnome-print, you should manually comment out libspgt1
+in src/Makefile.am.
+
+If you modify sodipodi in any usable way, please let me know also.
+
+Some demo pictures could have absolute paths for imported images. So if they
+do not display correctly, tune them with a good text editor.
+
+Some guidelines:
+Node editing does not update xml objects correctly yet. So before saving
+anything switch to selection mode.
+Ctrl & Shift modify dragging behaviour in some modes
+Shift click usually toggles selection
+To break line (or add node) select its endpoints
+It should import png, bmp, jpg, xpm & gif bitmaps and svg vector images.
+Open can handle only svg graphics
+It does not yet handle following svg shapes:
+- line
+- polyline
+- polygon (use path instead)
+- circle
+- square?
+When importing svg, all paths are usually grouped. Ungroup these manually.
+To add more fonts, please tinker with font-wrapper.c & text-dialog.c
+
+2000/01/09
+
+Lauris Kaplinski
+<lauris@ariman.ee>

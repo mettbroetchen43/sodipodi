@@ -1,0 +1,46 @@
+2000-01-08  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Major rewrite of object system
+    * Multiple views almost work
+    * Rultiple documents almost work
+    * Rects, Ellipses, Drawing and Nodes almost work
+    * Nothing else works ;-(
+    
+1999-12-30  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Bumped version number to 0.15
+    * Node editing works enough to be usable
+    * Images use relative paths, if possible
+    * Text can show accented chars
+    
+1999-12-25  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Increased version number to 0.14
+    * Preliminary node editing mode
+    * Stacking order can be changed again
+    * Convert to Curves, Combine & Separate functions
+    * Corrected repr refcounting - much fewer segfaults now
+    * Countless bugfixes here & there
+    
+1999-12-23  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Major cleanup - most things work better now, but some
+    don't work at all :-(
+    * Implemented SPChars class
+    * Text editing
+    * svg importing
+    * loading, saving and printing almost works
+    
+1999-09-02  Lauris Kaplinski <lauris@ariman.ee>
+
+    * Rewrote many things and hacked up the rest.
+    Removed Gdome dependency, as I had neither time nor patience
+    to mess with it. As a temporary solution I've created SPRepr objects,
+    which can contain xml data.
+    Added functions: group, ungroup, delete, duplicate, to_front,
+    to_back, up, down
+    Freehand drawing almost works although need some cleanup
+    Outlines are implemented, although not usable yet
+    Rect can handle round corners i hope
+    Ellipse can be sliced
+    
