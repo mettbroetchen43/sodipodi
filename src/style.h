@@ -19,9 +19,11 @@ BEGIN_GNOME_DECLS
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_vpath_dash.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
+#include "color.h"
 #include "forward.h"
 
-typedef struct _SPColor SPColor;
+/* Colors */
+
 typedef struct _SPPaint SPPaint;
 typedef struct _SPDistance SPDistance;
 
@@ -39,10 +41,6 @@ typedef enum {
 	SP_UNIT_EM       = (1 << 8),
 	SP_UNIT_EX       = (1 << 9)
 } SPUnit;
-
-struct _SPColor {
-	gdouble r, g, b;
-};
 
 struct _SPPaint {
 	SPPaintType type;

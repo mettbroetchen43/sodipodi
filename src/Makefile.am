@@ -53,6 +53,7 @@ sodipodi_SOURCES = \
 	sp-paint-server.c sp-paint-server.h \
 	sp-gradient.c sp-gradient.h \
 	\
+	color.c color.h \
 	style.c style.h \
 	\
 	document.c document.h document-private.h \

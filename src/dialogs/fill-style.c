@@ -61,7 +61,9 @@ void sp_fill_style_dialog_close (GtkWidget *widget);
 static gint sp_fill_style_dialog_delete (GtkWidget *widget, GdkEvent *event);
 
 static gboolean blocked = FALSE;
-static guint32 widgetrgba = 0x7f7f7fff;
+static SPColorSelectorMode lastmode = SP_COLOR_SELECTOR_MODE_RGB;
+static SPColor lastprocesscolor;
+static gdouble lastalpha;
 static GtkWidget *dialog = NULL;
 
 /* Creates new instance of item properties widget */
@@ -69,7 +71,14 @@ static GtkWidget *dialog = NULL;
 GtkWidget *
 sp_fill_style_widget_new (void)
 {
+	static gboolean colorinitialized = FALSE;
 	GtkWidget *spw, *vb, *hb, *b, *f, *w;
+
+	if (!colorinitialized) {
+		/* Set up last used process color values */
+		sp_color_set_rgb_float (&lastprocesscolor, 1.0, 1.0, 1.0);
+		lastalpha = 1.0;
+	}
 
 	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
 
@@ -256,9 +265,9 @@ sp_fill_style_widget_type_toggled (GtkToggleButton *b, FSWFillType type)
 			sp_repr_css_set_property (css, "fill", "none");
 			break;
 		case FSW_SOLID:
-			sp_svg_write_color (c, 64, widgetrgba & 0xffffff00);
+			sp_svg_write_color (c, 64, sp_color_get_rgba32_ualpha (&lastprocesscolor, 0));
 			sp_repr_css_set_property (css, "fill", c);
-			g_snprintf (c, 64, "%g", (widgetrgba & 0x000000ff) / 255.0);
+			g_snprintf (c, 64, "%g", lastalpha);
 			sp_repr_css_set_property (css, "fill-opacity", c);
 			break;
 		default:
@@ -369,76 +378,221 @@ sp_fill_style_set_none (SPWidget *spw)
  */
 
 static void
+sp_fill_style_widget_solid_color_mode_activated (GtkWidget *widget, gpointer data)
+{
+	SPColorSelector *csel;
+	SPColorSelectorMode mode, oldmode;
+
+	csel = gtk_object_get_data (GTK_OBJECT (widget), "color-selector");
+	mode = (SPColorSelectorMode) GPOINTER_TO_INT (data);
+	oldmode = sp_color_selector_get_mode (csel);
+
+	lastmode = mode;
+
+	sp_color_selector_set_mode (csel, GPOINTER_TO_INT (data));
+}
+
+static void
+sp_fill_style_widget_get_collective_color (SPWidget *spw, SPColor *color, gdouble *alpha)
+{
+	const GSList *objects, *l;
+	gdouble r, g, b, a, c, m, y, k;
+	gint items;
+	SPColorSpaceType colorspace;
+
+	if (!spw->desktop || !SP_DT_SELECTION (spw->desktop)) {
+		/* Noting interesting, use last value */
+		sp_color_copy (color, &lastprocesscolor);
+		*alpha = lastalpha;
+		return;
+	}
+
+	objects = sp_selection_item_list (SP_DT_SELECTION (spw->desktop));
+
+	/* Try to determine colorspace */
+	colorspace = SP_COLORSPACE_NONE;
+	for (l = objects; l != NULL; l = l->next) {
+		SPObject *o;
+		o = SP_OBJECT (l->data);
+		if (o->style->fill.type == SP_PAINT_TYPE_COLOR) {
+			SPColorSpaceType sct;
+			sct = sp_color_get_colorspace_type (&o->style->fill.color);
+			if (colorspace == SP_COLORSPACE_NONE) {
+				colorspace = sct;
+			} else if (colorspace != sct) {
+				colorspace = SP_COLORSPACE_UNKNOWN;
+			}
+		}
+	}
+
+	switch (colorspace) {
+	case SP_COLORSPACE_NONE:
+		/* Noting interesting, use last value */
+		sp_color_copy (color, &lastprocesscolor);
+		*alpha = lastalpha;
+	case SP_COLORSPACE_CMYK:
+		/* RGB has precendence over CMYK */
+		/* Find average */
+		items = 0;
+		c = m = y = k = a = 0.0;
+		for (l = objects; l != NULL; l = l->next) {
+			SPObject *o;
+			o = SP_OBJECT (l->data);
+			if (o->style->fill.type == SP_PAINT_TYPE_COLOR) {
+				gfloat cmyk[4];
+				sp_color_get_cmyk_floatv (&o->style->fill.color, cmyk);
+				c += cmyk[0];
+				m += cmyk[1];
+				y += cmyk[2];
+				k += cmyk[3];
+				a += o->style->fill_opacity;
+				items += 1;
+			}
+		}
+		if (items > 0) {
+			c = c / items;
+			m = m / items;
+			y = y / items;
+			k = k / items;
+		}
+		sp_color_set_cmyk_float (color, c, m, y, k);
+		*alpha = a;
+		break;
+	default:
+		/* RGB has precendence over CMYK */
+		/* Find average */
+		items = 0;
+		r = g = b = a = 0.0;
+		for (l = objects; l != NULL; l = l->next) {
+			SPObject *o;
+			o = SP_OBJECT (l->data);
+			if (o->style->fill.type == SP_PAINT_TYPE_COLOR) {
+				gfloat rgb[4];
+				sp_color_get_rgb_floatv (&o->style->fill.color, rgb);
+				r += rgb[0];
+				g += rgb[1];
+				b += rgb[2];
+				a += o->style->fill_opacity;
+				items += 1;
+			}
+		}
+		if (items > 0) {
+			r = r / items;
+			g = g / items;
+			b = b / items;
+			a = a / items;
+			sp_color_set_rgb_float (color, r, g, b);
+			*alpha = a;
+		} else {
+		/* Noting interesting, use last value */
+			sp_color_copy (color, &lastprocesscolor);
+			*alpha = lastalpha;
+		}
+		break;
+	}
+}
+
+static void
 sp_fill_style_set_solid (SPWidget *spw)
 {
 	FSWFillType oldtype;
 	GtkWidget *csel;
-	const GSList *objects, *l;
-	gdouble r, g, b, a;
-	gint items;
+	SPColor color;
+	gdouble alpha;
 
 	oldtype = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (spw), "fill-type"));
 	if (oldtype != FSW_SOLID) {
-		GtkWidget *frame;
+		GtkWidget *frame, *vb, *hb, *m, *i, *w;
 		GList *children;
+		/* Create solid fill widget */
 		frame = gtk_object_get_data (GTK_OBJECT (spw), "type-frame");
-
+		/* Clear frame contents */
 		children = gtk_container_children (GTK_CONTAINER (frame));
 		while (children) {
 			gtk_container_remove (GTK_CONTAINER (frame), children->data);
 			children = g_list_remove (children, children->data);
 		}
-
+		/* Set frame label */
 		gtk_frame_set_label (GTK_FRAME (frame), _("Solid color"));
-
-		/* Color selector */
+		/* Create color selector for later reference */
 		csel = sp_color_selector_new ();
+		/* Create vbox */
+		vb = gtk_vbox_new (FALSE, 4);
+		gtk_widget_show (vb);
+		/* Create hbox */
+		hb = gtk_hbox_new (FALSE, 4);
+		gtk_widget_show (hb);
+		gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 4);
+		/* Label */
+		w = gtk_label_new (_("Mode:"));
+		gtk_misc_set_alignment (GTK_MISC (w), 1.0, 0.5);
+		gtk_widget_show (w);
+		gtk_box_pack_start (GTK_BOX (hb), w, TRUE, TRUE, 4);
+		/* Create menu */
+		m = gtk_menu_new ();
+		gtk_widget_show (m);
+		i = gtk_menu_item_new_with_label (_("RGB"));
+		gtk_object_set_data (GTK_OBJECT (i), "color-selector", csel);
+		gtk_signal_connect (GTK_OBJECT (i), "activate",
+				    GTK_SIGNAL_FUNC (sp_fill_style_widget_solid_color_mode_activated),
+				    GINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_RGB));
+		gtk_widget_show (i);
+		gtk_menu_append (GTK_MENU (m), i);
+		i = gtk_menu_item_new_with_label (_("HSV"));
+		gtk_object_set_data (GTK_OBJECT (i), "color-selector", csel);
+		gtk_signal_connect (GTK_OBJECT (i), "activate",
+				    GTK_SIGNAL_FUNC (sp_fill_style_widget_solid_color_mode_activated),
+				    GINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_HSV));
+		gtk_widget_show (i);
+		gtk_menu_append (GTK_MENU (m), i);
+		i = gtk_menu_item_new_with_label (_("CMYK"));
+		gtk_object_set_data (GTK_OBJECT (i), "color-selector", csel);
+		gtk_signal_connect (GTK_OBJECT (i), "activate",
+				    GTK_SIGNAL_FUNC (sp_fill_style_widget_solid_color_mode_activated),
+				    GINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_CMYK));
+		gtk_widget_show (i);
+		gtk_menu_append (GTK_MENU (m), i);
+		/* Create option menu */
+		w = gtk_option_menu_new ();
+		gtk_widget_show (w);
+		gtk_option_menu_set_menu (GTK_OPTION_MENU (w), m);
+		gtk_object_set_data (GTK_OBJECT (csel), "mode-menu", w);
+		gtk_box_pack_start (GTK_BOX (hb), w, FALSE, FALSE, 0);
+		/* Color selector */
 		gtk_widget_show (csel);
-		gtk_container_add (GTK_CONTAINER (frame), csel);
+		gtk_box_pack_start (GTK_BOX (vb), csel, TRUE, TRUE, 0);
 		gtk_object_set_data (GTK_OBJECT (spw), "rgb-selector", csel);
 		gtk_signal_connect (GTK_OBJECT (csel), "changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_rgba_changed), spw);
 		gtk_signal_connect (GTK_OBJECT (csel), "dragged", GTK_SIGNAL_FUNC (sp_fill_style_widget_rgba_dragged), spw);
+		/* Pack everything to frame */
+		gtk_container_add (GTK_CONTAINER (frame), vb);
 	} else {
 		csel = gtk_object_get_data (GTK_OBJECT (spw), "rgb-selector");
 		g_assert (csel != NULL);
 		g_assert (SP_IS_COLOR_SELECTOR (csel));
 	}
 
-	/* Set values */
-	if (!spw->desktop) return;
-	if (!SP_DT_SELECTION (spw->desktop)) return;
-	objects = sp_selection_item_list (SP_DT_SELECTION (spw->desktop));
-	items = 0;
-	r = g = b = a = 0.0;
-	for (l = objects; l != NULL; l = l->next) {
-		SPObject *o;
-		o = SP_OBJECT (l->data);
-		if (o->style->fill.type == SP_PAINT_TYPE_COLOR) {
-			r += o->style->fill.color.r;
-			g += o->style->fill.color.g;
-			b += o->style->fill.color.b;
-			a += o->style->fill_opacity;
-			items += 1;
+	sp_fill_style_widget_get_collective_color (spw, &color, &alpha);
+
+	if (sp_color_get_colorspace_type (&color) == SP_COLORSPACE_CMYK) {
+		gtk_option_menu_set_history (GTK_OPTION_MENU (gtk_object_get_data (GTK_OBJECT (csel), "mode-menu")), 2);
+		sp_color_selector_set_mode (SP_COLOR_SELECTOR (csel), SP_COLOR_SELECTOR_MODE_CMYK);
+		sp_color_selector_set_cmyka_float (SP_COLOR_SELECTOR (csel), color.v.c[0], color.v.c[1], color.v.c[2], color.v.c[3], alpha);
+	} else {
+		/* fixme: preserve RGB/HSV mode */
+		if (lastmode == SP_COLOR_SELECTOR_MODE_HSV) {
+		gtk_option_menu_set_history (GTK_OPTION_MENU (gtk_object_get_data (GTK_OBJECT (csel), "mode-menu")), 1);
+			sp_color_selector_set_mode (SP_COLOR_SELECTOR (csel), SP_COLOR_SELECTOR_MODE_HSV);
+		} else {
+		gtk_option_menu_set_history (GTK_OPTION_MENU (gtk_object_get_data (GTK_OBJECT (csel), "mode-menu")), 0);
+			sp_color_selector_set_mode (SP_COLOR_SELECTOR (csel), SP_COLOR_SELECTOR_MODE_RGB);
 		}
+		sp_color_selector_set_rgba_float (SP_COLOR_SELECTOR (csel), color.v.c[0], color.v.c[1], color.v.c[2], alpha);
 	}
 	
-	if (items > 0) {
-		r = r / items;
-		g = g / items;
-		b = b / items;
-		a = a / items;
-		widgetrgba = (((guint) floor (r * 255.999)) << 24) |
-			(((guint) floor (g * 255.9999)) << 16) |
-			(((guint) floor (b * 255.9999)) << 8) |
-			((guint) floor (a * 255.9999));
-	} else {
-		r = (widgetrgba >> 24) / 255.0;
-		g = ((widgetrgba >> 16) & 0xff) / 255.0;
-		b = ((widgetrgba >> 8) & 0xff) / 255.0;
-		a = (widgetrgba & 0xff) / 255.0;
-	}
-
-	sp_color_selector_set_rgba_float (SP_COLOR_SELECTOR (csel), r, g, b, a);
+	/* Save colors used */
+	sp_color_copy (&lastprocesscolor, &color);
+	lastalpha = alpha;
 }
 
 static void
@@ -488,17 +642,30 @@ sp_fill_style_widget_rgba_changed (SPColorSelector *csel, SPWidget *spw)
 		SPCSSAttr *css;
 		const GSList *l;
 		guchar c[64];
+		gboolean fill_cmyk;
+		guchar *cmykstr;
 
 		css = sp_repr_css_attr_new ();
 
+		fill_cmyk = (sp_color_selector_get_mode (csel) == SP_COLOR_SELECTOR_MODE_CMYK);
 		sp_svg_write_color (c, 64, sp_color_selector_get_color_uint (csel));
 		sp_repr_css_set_property (css, "fill", c);
 		g_snprintf (c, 64, "%g", sp_color_selector_get_a (csel));
 		sp_repr_css_set_property (css, "fill-opacity", c);
+		if (fill_cmyk) {
+			gdouble cmyk[5];
+			sp_color_selector_get_cmyka_double (csel, cmyk);
+			cmykstr = g_strdup_printf ("(%g %g %g %g)", cmyk[0], cmyk[1], cmyk[2], cmyk[3]);
+		} else {
+			cmykstr = NULL;
+		}
 
 		for (l = reprs; l != NULL; l = l->next) {
 			sp_repr_css_change_recursive (((SPRepr *) l->data), css, "style");
+			sp_repr_set_attr_recursive (((SPRepr *) l->data), "fill-cmyk", cmykstr);
 		}
+
+		if (cmykstr) g_free (cmykstr);
 
 		sp_document_done (spw->document);
 
@@ -533,9 +700,15 @@ sp_fill_style_widget_rgba_dragged (SPColorSelector *csel, SPWidget *spw)
 		}
 		style->fill_set = TRUE;
 		style->fill.type = SP_PAINT_TYPE_COLOR;
-		style->fill.color.r = sp_color_selector_get_r (csel);
-		style->fill.color.g = sp_color_selector_get_g (csel);
-		style->fill.color.b = sp_color_selector_get_b (csel);
+		if (sp_color_selector_get_mode (csel) == SP_COLOR_SELECTOR_MODE_CMYK) {
+			gdouble cmyk[5];
+			sp_color_selector_get_cmyka_double (csel, cmyk);
+			sp_color_set_cmyk_float (&style->fill.color, cmyk[0], cmyk[1], cmyk[2], cmyk[3]);
+		} else {
+			gdouble rgb[4];
+			sp_color_selector_get_rgba_double (csel, rgb);
+			sp_color_set_rgb_float (&style->fill.color, rgb[0], rgb[1], rgb[2]);
+		}
 		style->fill_opacity_set = TRUE;
 		style->fill_opacity = sp_color_selector_get_a (csel);
 

@@ -184,8 +184,32 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	sp_style_init (style);
 
 	str = sp_repr_attr (object->repr, "style");
-
 	sp_style_read_from_string (style, str, object->document);
+	/* fixme */
+	str = sp_repr_attr (object->repr, "fill-cmyk");
+	if (str) {
+		gdouble c, m, y, k;
+		gchar *cptr, *eptr;
+		c = m = y = k = 0.0;
+		cptr = (gchar *) str + 1;
+		c = strtod (cptr, &eptr);
+		if (eptr != cptr) {
+			cptr = eptr;
+			m = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			cptr = eptr;
+			y = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			cptr = eptr;
+			k = strtod (cptr, &eptr);
+		}
+		if (eptr != cptr) {
+			style->fill_set = TRUE;
+			sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
+		}
+	}
 
 	if (object->parent) {
 		sp_style_merge_from_object (style, object->parent);
@@ -368,7 +392,7 @@ sp_style_write_paint (guchar *b, gint len, SPPaint *paint)
 {
 	switch (paint->type) {
 	case SP_PAINT_TYPE_COLOR:
-		return g_snprintf (b, len, "#%06x;", SP_RGBA_FROM_COLOR (&paint->color, 0.0) >> 8);
+		return g_snprintf (b, len, "#%06x;", sp_color_get_rgba32_falpha (&paint->color, 0.0) >> 8);
 		break;
 	case SP_PAINT_TYPE_PAINTSERVER:
 		if (paint->server) {
@@ -408,16 +432,12 @@ sp_style_init (SPStyle *style)
 	style->display = TRUE;
 	style->visibility = TRUE;
 	style->fill.type = SP_PAINT_TYPE_COLOR;
-	style->fill.color.r = 0.0;
-	style->fill.color.g = 0.0;
-	style->fill.color.b = 0.0;
+	sp_color_set_rgb_float (&style->fill.color, 0.0, 0.0, 0.0);
 	style->fill.server = NULL;
 	style->fill_rule = TRUE;
 	style->fill_opacity = 1.0;
 	style->stroke.type = SP_PAINT_TYPE_NONE;
-	style->stroke.color.r = 0.0;
-	style->stroke.color.g = 0.0;
-	style->stroke.color.b = 0.0;
+	sp_color_set_rgb_float (&style->stroke.color, 0.0, 0.0, 0.0);
 	style->stroke.server = NULL;
 	style->stroke_width.unit = SP_UNIT_USER;
 	style->stroke_width.distance = 1.0;
@@ -483,11 +503,9 @@ sp_style_read_paint (SPPaint *paint, const guchar *str, SPDocument *document)
 	}
 
 	paint->type = SP_PAINT_TYPE_COLOR;
-	color = ((guint) (paint->color.r * 255) << 24) | ((guint) (paint->color.g * 255) << 16) | ((guint) (paint->color.b * 255));
+	color = sp_color_get_rgba32_ualpha (&paint->color, 0);
 	color = sp_svg_read_color (str, color);
-	paint->color.r = (color >> 24) / 255.0;
-	paint->color.g = ((color >> 16) & 0xff) / 255.0;
-	paint->color.b = ((color >> 8) & 0xff) / 255.0;
+	sp_color_set_rgb_rgba32 (&paint->color, color);
 }
 
 static void

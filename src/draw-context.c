@@ -45,7 +45,9 @@ static gint sp_draw_context_item_handler (SPEventContext * event_context, SPItem
 static void clear_current (SPDrawContext * dc);
 static void set_to_accumulated (SPDrawContext * dc);
 static void concat_current (SPDrawContext * dc);
+#if 0
 static void repr_destroyed (SPRepr * repr, gpointer data);
+#endif
 
 static void test_inside (SPDrawContext * dc, double x, double y);
 static void move_ctrl (SPDrawContext * dc, double x, double y);
@@ -443,6 +445,7 @@ concat_current (SPDrawContext * dc)
 	}
 }
 
+#if 0
 static void
 repr_destroyed (SPRepr * repr, gpointer data)
 {
@@ -455,6 +458,7 @@ repr_destroyed (SPRepr * repr, gpointer data)
 
 	remove_ctrl (dc);
 }
+#endif
 
 static void
 test_inside (SPDrawContext * dc, double x, double y)

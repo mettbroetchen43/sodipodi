@@ -252,7 +252,7 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 			guint32 rgba;
 			switch (style->fill.type) {
 			case SP_PAINT_TYPE_COLOR:
-				rgba = SP_RGBA_FROM_COLOR (&style->fill.color, style->fill_opacity * style->real_opacity);
+				rgba = sp_color_get_rgba32_falpha (&style->fill.color, style->fill_opacity * style->real_opacity);
 				/* Experimental */
 #ifdef NEW_RENDER
 				if (buf->is_bg) {
@@ -403,7 +403,7 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 		switch (style->stroke.type) {
 			guint32 rgba;
 			case SP_PAINT_TYPE_COLOR:
-				rgba = SP_RGBA_FROM_COLOR (&style->stroke.color, style->stroke_opacity * style->real_opacity);
+				rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * style->real_opacity);
 				if (comp->archetype->stroke) {
 					gnome_canvas_render_svp_translated (buf, comp->archetype->stroke, rgba,
 									    comp->cx, comp->cy);

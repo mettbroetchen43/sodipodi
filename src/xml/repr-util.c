@@ -209,11 +209,11 @@ sp_repr_remove_signals (SPRepr * repr)
 #endif
 }
 
-const gchar *
-sp_repr_attr_inherited (SPRepr * repr, const gchar * key)
+const guchar *
+sp_repr_attr_inherited (SPRepr *repr, const guchar *key)
 {
-	SPRepr * current;
-	const gchar * val;
+	SPRepr *current;
+	const gchar *val;
 
 	g_assert (repr != NULL);
 	g_assert (key != NULL);
@@ -224,5 +224,19 @@ sp_repr_attr_inherited (SPRepr * repr, const gchar * key)
 			return val;
 	}
 	return NULL;
+}
+
+gboolean
+sp_repr_set_attr_recursive (SPRepr *repr, const guchar *key, const guchar *value)
+{
+	SPRepr *child;
+
+	if (!sp_repr_set_attr (repr, key, value)) return FALSE;
+
+	for (child = repr->children; child != NULL; child = child->next) {
+		sp_repr_set_attr (child, key, NULL);
+	}
+
+	return TRUE;
 }
 

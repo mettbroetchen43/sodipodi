@@ -144,7 +144,7 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 	if (((SPObjectClass *) (parent_class))->read_attr)
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
 
-	if (strcmp (key, "style") == 0) {
+	if (!strcmp (key, "style") || !strcmp (key, "fill-cmyk")) {
 		sp_style_read_from_object (object->style, object);
 		sp_object_style_changed (object, SP_OBJECT_MODIFIED_FLAG);
 	}

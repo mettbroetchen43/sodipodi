@@ -171,7 +171,7 @@ void
 sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 {
 
-	gdouble r, g, b, opacity;
+	gfloat rgb[3], opacity;
 	SPObject *object;
 	SPPath *path;
 	SPShape * shape;
@@ -248,23 +248,19 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 			gnome_print_bpath (gpc, bpath, FALSE);
 
 			if (object->style->fill.type == SP_PAINT_TYPE_COLOR) {
-				r = object->style->fill.color.r;
-				g = object->style->fill.color.g;
-				b = object->style->fill.color.b;
+				sp_color_get_rgb_floatv (&object->style->fill.color, rgb);
 				opacity = object->style->fill_opacity * object->style->real_opacity;
 				gnome_print_gsave (gpc);
-				gnome_print_setrgbcolor (gpc, r, g, b);
+				gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 				gnome_print_setopacity (gpc, opacity);
 				gnome_print_eofill (gpc);
 				gnome_print_grestore (gpc);
 			}
 			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
-				r = object->style->stroke.color.r;
-				g = object->style->stroke.color.g;
-				b = object->style->stroke.color.b;
+				sp_color_get_rgb_floatv (&object->style->stroke.color, rgb);
 				opacity = object->style->stroke_opacity * object->style->real_opacity;
 				gnome_print_gsave (gpc);
-				gnome_print_setrgbcolor (gpc, r, g, b);
+				gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
 				gnome_print_setopacity (gpc, opacity);
 				gnome_print_setlinewidth (gpc, object->style->user_stroke_width);
 				gnome_print_setlinejoin (gpc, object->style->stroke_linejoin);
@@ -349,7 +345,7 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 
 				if (style->fill.type == SP_PAINT_TYPE_COLOR) {
 					guint32 rgba;
-					rgba = SP_RGBA_FROM_COLOR (&style->fill.color, style->fill_opacity * style->real_opacity);
+					rgba = sp_color_get_rgba32_falpha (&style->fill.color, style->fill_opacity * style->real_opacity);
 					if (buf->n_channels == 3) {
 						art_rgb_svp_alpha (svp,
 							0, 0, buf->width, buf->height,
@@ -380,7 +376,7 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 							    width,
 							    object->style->stroke_miterlimit,
 							    0.25);
-				rgba = SP_RGBA_FROM_COLOR (&style->stroke.color, style->stroke_opacity * style->real_opacity);
+				rgba = sp_color_get_rgba32_falpha (&style->stroke.color, style->stroke_opacity * style->real_opacity);
 				if (buf->n_channels == 3) {
 					art_rgb_svp_alpha (svp,
 						0, 0, buf->width, buf->height,

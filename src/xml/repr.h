@@ -120,6 +120,8 @@ SPRepr * sp_repr_duplicate_and_parent (SPRepr * repr);
 
 void sp_repr_remove_signals (SPRepr * repr);
 
-const gchar * sp_repr_attr_inherited (SPRepr * repr, const gchar * key);
+const guchar *sp_repr_attr_inherited (SPRepr *repr, const guchar *key);
+gboolean sp_repr_set_attr_recursive (SPRepr *repr, const guchar *key, const guchar *value);
+
 
 #endif

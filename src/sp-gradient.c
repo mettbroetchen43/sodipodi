@@ -355,7 +355,6 @@ sp_lineargradient_painter_new (SPPaintServer *ps, gdouble *affine, gdouble opaci
 
 	if (lg->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
 		gdouble b2c[6], vec2b[6], norm2vec[6], norm2c[6], c2norm[6];
-		gint i;
 		/* fixme: we should use start & end here */
 		norm2vec[0] = lg->len / 255.0;
 		norm2vec[1] = 0.0;

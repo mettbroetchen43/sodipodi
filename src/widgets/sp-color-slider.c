@@ -423,20 +423,25 @@ sp_color_slider_adjustment_value_changed (GtkAdjustment *adjustment, SPColorSlid
 	widget = GTK_WIDGET (slider);
 
 	if (slider->value != adjustment->value) {
-		gint cx, cy, cw, ch, ax, ay;
-		gfloat value;
-		value = slider->value;
-		slider->value = adjustment->value;
+		gint cx, cy, cw, ch;
 		cx = widget->style->klass->xthickness;
 		cy = widget->style->klass->ythickness;
 		cw = widget->allocation.width - 2 * cx;
 		ch = widget->allocation.height - 2 * cy;
-		ax = value * cw - ARROW_SIZE / 2 + cx;
-		ay = ch - ARROW_SIZE + cy * 2;
-		gtk_widget_queue_draw_area (widget, ax, ay, ARROW_SIZE, ARROW_SIZE);
-		ax = slider->value * cw - ARROW_SIZE / 2 + cx;
-		ay = ch - ARROW_SIZE + cy * 2;
-		gtk_widget_queue_draw_area (widget, ax, ay, ARROW_SIZE, ARROW_SIZE);
+		if ((gint) (adjustment->value * cw) != (gint) (slider->value * cw)) {
+			gint ax, ay;
+			gfloat value;
+			value = slider->value;
+			slider->value = adjustment->value;
+			ax = value * cw - ARROW_SIZE / 2 + cx;
+			ay = ch - ARROW_SIZE + cy * 2;
+			gtk_widget_queue_draw_area (widget, ax, ay, ARROW_SIZE, ARROW_SIZE);
+			ax = slider->value * cw - ARROW_SIZE / 2 + cx;
+			ay = ch - ARROW_SIZE + cy * 2;
+			gtk_widget_queue_draw_area (widget, ax, ay, ARROW_SIZE, ARROW_SIZE);
+		} else {
+			slider->value = adjustment->value;
+		}
 	}
 }
 

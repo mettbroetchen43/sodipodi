@@ -32,7 +32,6 @@ typedef enum {
 struct _SPColorSelector {
 	GtkTable table;
 	gint8 mode;
-	gint8 channels;
 	guint updating : 1;
 	guint dragging : 1;
 	GtkAdjustment *a[5]; /* Channel adjustments */
@@ -55,10 +54,13 @@ GtkType sp_color_selector_get_type (void);
 GtkWidget *sp_color_selector_new (void);
 
 void sp_color_selector_set_mode (SPColorSelector *csel, SPColorSelectorMode mode);
+SPColorSelectorMode sp_color_selector_get_mode (SPColorSelector *csel);
 
 void sp_color_selector_set_rgba_float (SPColorSelector *csel, gfloat r, gfloat g, gfloat b, gfloat a);
+void sp_color_selector_set_cmyka_float (SPColorSelector *csel, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a);
 
 void sp_color_selector_get_rgba_double (SPColorSelector *csel, gdouble *rgba);
+void sp_color_selector_get_cmyka_double (SPColorSelector *csel, gdouble *cmyka);
 
 gfloat sp_color_selector_get_r (SPColorSelector *csel);
 gfloat sp_color_selector_get_g (SPColorSelector *csel);

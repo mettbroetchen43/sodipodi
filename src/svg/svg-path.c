@@ -287,6 +287,9 @@ svg_parse_path_data (SVGParsePathCtx *ctx, const char *data)
   int sign;
   double frac;
 
+  sign = 1;
+  frac = 0.0;
+  in_frac = FALSE;
   in_num = FALSE;
   for (i = 0; ; i++)
     {

@@ -194,7 +194,7 @@ sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[], ArtPoint * norm
 {
 	SPItem * item;
 	const GSList * l;
-	gdouble current_[6], i2d[6], i2current[6], i2dnew[6], in2current[6], in2dnew[6], n2p[6], p2n[6];
+	gdouble current_[6], i2d[6], i2current[6], i2dnew[6], n2p[6], p2n[6];
 	ArtPoint p1, p2, p3, p4;
 	gint i;
 

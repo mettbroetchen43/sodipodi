@@ -61,7 +61,6 @@ static SPTransformationType tr_move_type=ABSOLUTE, tr_scale_type=ABSOLUTE;
 static SPReferType tr_center_type=DESKTOP;
 static guint sel_changed_id = 0;
 
-void sp_transformation_dialog (void);
 // move, scale, rotate, skew, center
 void sp_transformation_apply_move (SPSelection * selection);
 void sp_transformation_apply_scale (SPSelection * selection);

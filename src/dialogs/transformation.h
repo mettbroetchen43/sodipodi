@@ -3,6 +3,8 @@
 
 #include "../sp-metrics.h"
 
+void sp_transformation_dialog (void);
+
 // dialog invocation and close can be called from menues etc
 void sp_transformation_dialog_move (void);
 void sp_transformation_dialog_scale (void);

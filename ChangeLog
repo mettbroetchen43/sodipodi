@@ -1,4 +1,23 @@
+2001-08-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dialogs/fill-style.c: Implement CMYK/RGB colorspace switching
+
+	* src/widgets/sp-color-selector.c: Implement CMYK read/set methods
+
+	* src/widgets/sp-color-slider.c (sp_color_slider_adjustment_value_changed): Set
+	local value, even if arrow is not visible
+
+	* src/color.c: New file
+
+	* src/color.h: New file
+
+	* src/sp-item.c (sp_item_read_attr): Check for "fill-cmyk"
+
+	* src/style.c (sp_style_read_from_object): Parse "fill-cmyk" (quick hack)
+
 2001-08-20  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/svg/svg-path.c (svg_parse_path_data): Kill warning
 
 	* src/widgets/sp-color-selector.c: New file & class
 

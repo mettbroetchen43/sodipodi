@@ -244,7 +244,10 @@ sp_repr_chg_attr (SPRepr *repr, const guchar *key, const guchar *value)
 	q = g_quark_from_string (key);
 	prev = NULL;
 	for (attr = repr->attributes; attr && (attr->key != q); attr = attr->next) prev = attr;
-	if (attr) oldval = attr->value;
+	if (attr) {
+		if (!strcmp (attr->value, value)) return TRUE;
+		oldval = attr->value;
+	}
 
 	allowed = TRUE;
 	for (rl = repr->listeners; rl && allowed; rl = rl->next) {

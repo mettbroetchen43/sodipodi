@@ -373,7 +373,7 @@ sp_selection_copy (GtkWidget * widget)
 	SPSelection *selection;
 	SPRepr *repr, *copy;
 	SPCSSAttr *css;
-	GSList *sl, *l;
+	GSList *sl;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
@@ -382,7 +382,7 @@ sp_selection_copy (GtkWidget * widget)
 	selection = SP_DT_SELECTION (desktop);
 	if (sp_selection_is_empty (selection)) return;
 
-	sl = g_slist_copy (sp_selection_repr_list (selection));
+	sl = g_slist_copy ((GSList *) sp_selection_repr_list (selection));
 	sl = g_slist_sort (sl, (GCompareFunc) sp_repr_compare_position);
 
 	/* Clear old clipboard */
