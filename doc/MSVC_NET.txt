@@ -76,7 +76,13 @@ sodipodi with installed libpng DLL, but it had
 bad habit of crashing during bitmap export for me
 :-(
 
-10. MinGW
+10. Microsoft Layer for Unicode
+Download from:
+http://www.microsoft.com/msdownload/platformsdk/sdkupdate/psdkredist.htm
+And unpack/install to $TOPDIR\Microsoft, I.e. there
+should be file $TOPDIR\Microsoft\unicows.dll
+
+11. MinGW
 Download from
 http://www.mingw.org/download.shtml
 (full MinGW package, around 14MB exe). Install

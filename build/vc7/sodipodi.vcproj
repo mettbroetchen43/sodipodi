@@ -32,10 +32,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libz.lib intl.lib libxml2.lib libfreetype.lib glib-2.0.lib gmodule-2.0.lib gobject-2.0.lib atk-1.0.lib pango-1.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib gtk-win32-2.0.lib $(OutDir)\libarikkei.lib $(OutDir)\libnr.lib $(OutDir)\libnrtype.lib $(OutDir)\libspxml.lib"
+				AdditionalDependencies="unicows.lib libz.lib intl.lib libxml2.lib libfreetype.lib glib-2.0.lib gmodule-2.0.lib gobject-2.0.lib atk-1.0.lib pango-1.0.lib gdk-win32-2.0.lib gdk_pixbuf-2.0.lib gtk-win32-2.0.lib $(OutDir)\libarikkei.lib $(OutDir)\libnr.lib $(OutDir)\libnrtype.lib $(OutDir)\libspxml.lib"
 				OutputFile="$(OutDir)/sodipodi.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\GnuWin32\lib"
+				IgnoreAllDefaultLibraries="FALSE"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/sodipodi.pdb"
 				SubSystem="2"
