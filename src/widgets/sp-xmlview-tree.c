@@ -29,7 +29,6 @@ typedef struct _NodeData {
 	SPXMLViewTree * tree;
 	GtkCTreeNode * node;
 	SPRepr * repr;
-	gint child_count;
 } NodeData;
 
 #define NODE_DATA(node) ((NodeData *)(GTK_CTREE_ROW ((node))->row.data))
@@ -190,10 +189,10 @@ add_node (SPXMLViewTree * tree, GtkCTreeNode * parent, GtkCTreeNode * before, SP
 	static const gchar *default_text[] = { "???" };
 
 	g_assert (tree != NULL);
-
-	node = gtk_ctree_insert_node (GTK_CTREE (tree), parent, before, (gchar **)default_text, 2, NULL, NULL, NULL, NULL, FALSE, FALSE);
-	g_assert (node != NULL);
 	g_assert (repr != NULL);
+
+	node = gtk_ctree_insert_node (GTK_CTREE (tree), parent, before, (gchar **)default_text, 2, NULL, NULL, NULL, NULL, ( SP_REPR_TYPE (repr) != SP_XML_ELEMENT_NODE ), FALSE);
+	g_assert (node != NULL);
 
 	data = node_data_new (tree, node, repr);
 	g_assert (data != NULL);
@@ -224,7 +223,6 @@ node_data_new (SPXMLViewTree * tree, GtkCTreeNode * node, SPRepr * repr)
 	data->tree = tree;
 	data->node = node;
 	data->repr = repr;
-	data->child_count = 0;
 	sp_repr_ref (repr);
 	return data;
 }
@@ -248,8 +246,6 @@ element_child_added (SPRepr * repr, SPRepr * child, SPRepr * ref, gpointer ptr)
 	data = (NodeData *) ptr;
 
 	if (data->tree->blocked) return;
-
-	data->child_count++;
 
 	before = ref_to_sibling (data->node, ref);
 
@@ -284,11 +280,7 @@ element_child_removed (SPRepr * repr, SPRepr * child, SPRepr * ref, gpointer ptr
 
 	if (data->tree->blocked) return;
 
-	g_assert (data->child_count > 0);
-
 	gtk_ctree_remove_node (GTK_CTREE (data->tree), repr_to_child (data->node, child));
-
-	data->child_count--;
 }
 
 void

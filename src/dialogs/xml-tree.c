@@ -20,6 +20,7 @@
 #include <libgnome/gnome-i18n.h>
 #include <gtk/gtkmain.h>
 #include <gtk/gtkwindow.h>
+#include <gtk/gtkhbox.h>
 #include <gtk/gtkvbox.h>
 #include <gtk/gtkhpaned.h>
 #include <gtk/gtkvpaned.h>
@@ -81,6 +82,7 @@ static void on_tree_select_row_enable_if_element (GtkCTree * tree, GtkCTreeNode 
 static void on_tree_select_row_enable_if_non_root (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_select_row_show_if_element (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_select_row_show_if_text (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
+static void on_tree_select_row_enable_if_indentable (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_select_row_enable_if_not_first_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_select_row_enable_if_not_last_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
 static void on_tree_select_row_enable_if_has_grandparent (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data);
@@ -131,7 +133,7 @@ sp_xml_tree_dialog (void)
 
 	if (dialog == NULL) {
 		GtkWidget *box, *sw, *paned, *toolbar, *button;
-		GtkWidget *text_container, *attr_container, *attr_subpaned_container;
+		GtkWidget *text_container, *attr_container, *attr_subpaned_container, *box2;
 		GtkWidget *set_attr;
 
 		tooltips = gtk_tooltips_new ();
@@ -190,7 +192,7 @@ sp_xml_tree_dialog (void)
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
 		button = gtk_toolbar_append_item (GTK_TOOLBAR (toolbar), ">", _("Indent node"), NULL, gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/indent_xml_node.xpm"), cmd_indent_node, NULL);
-		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_not_first_child, button, GTK_OBJECT (button));
+		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_select_row", on_tree_select_row_enable_if_indentable, button, GTK_OBJECT (button));
 		gtk_signal_connect_while_alive (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_disable, button, GTK_OBJECT (button));
 		gtk_widget_set_sensitive (GTK_WIDGET (button), FALSE);
 
@@ -250,12 +252,24 @@ sp_xml_tree_dialog (void)
 		toolbar = gtk_vbox_new (FALSE, 4);
 		gtk_container_set_border_width (GTK_CONTAINER (toolbar), 4);
 
+		box2 = gtk_hbox_new (FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (toolbar), GTK_WIDGET (box2), FALSE, TRUE, 0);
+
 		attr_name = GTK_EDITABLE (gtk_entry_new ());
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (attr_name), _("Attribute name"), NULL);
 		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", on_attr_select_row_set_name_content, attr_name);
 		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", on_attr_unselect_row_clear_text, attr_name);
 		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", on_tree_unselect_row_clear_text, attr_name);
-		gtk_box_pack_start (GTK_BOX (toolbar), GTK_WIDGET (attr_name), FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (box2), GTK_WIDGET (attr_name), TRUE, TRUE, 0);
+
+		set_attr = gtk_button_new ();
+		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (set_attr), _("Set attribute"), NULL);
+		gtk_container_add (GTK_CONTAINER (set_attr), gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/set.xpm"));
+		gtk_signal_connect (GTK_OBJECT (set_attr), "clicked", cmd_set_attr, NULL);
+		gtk_signal_connect (GTK_OBJECT (attr_name), "changed", on_editable_changed_enable_if_valid_xml_name, set_attr);
+		gtk_widget_set_sensitive (GTK_WIDGET (set_attr), FALSE);
+
+		gtk_box_pack_start (GTK_BOX (box2), set_attr, FALSE, FALSE, 0);
 
 		sw = gtk_scrolled_window_new (NULL, NULL);
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -269,17 +283,7 @@ sp_xml_tree_dialog (void)
 		gtk_editable_set_editable (GTK_EDITABLE (attr_value), TRUE);
 		gtk_container_add (GTK_CONTAINER (sw), GTK_WIDGET (attr_value));
 
-		set_attr = gtk_button_new ();
-		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (set_attr), _("Set attribute"), NULL);
-		gtk_container_add (GTK_CONTAINER (set_attr), gnome_stock_pixmap_widget (dialog, SODIPODI_PIXMAPDIR "/set.xpm"));
-		gtk_signal_connect (GTK_OBJECT (set_attr), "clicked", cmd_set_attr, NULL);
-		gtk_signal_connect (GTK_OBJECT (attr_name), "changed", on_editable_changed_enable_if_valid_xml_name, set_attr);
-		gtk_widget_set_sensitive (GTK_WIDGET (set_attr), FALSE);
-
-		gtk_box_pack_start (GTK_BOX (toolbar), set_attr, FALSE, FALSE, 0);
-
 		gtk_paned_pack2 (GTK_PANED(attr_subpaned_container), GTK_WIDGET (toolbar), FALSE, TRUE);
-
 
 		/* text */
 
@@ -452,11 +456,12 @@ set_dt_select (SPRepr *repr)
 		object = NULL;
 	}
 
-	blocked++;
-	if ( object && SP_IS_ITEM (object) ) {
-		sp_selection_set_item (selection, SP_ITEM (object));
-	} else {
-		sp_selection_empty (selection);
+	if (!blocked++) {
+		if ( object && SP_IS_ITEM (object) ) {
+			sp_selection_set_item (selection, SP_ITEM (object));
+		} else {
+			sp_selection_empty (selection);
+		}
 	}
 	blocked--;
 }
@@ -642,6 +647,25 @@ on_attr_select_row_set_value_content (GtkCList *list, gint row, gint column, Gdk
 }
 
 void
+on_tree_select_row_enable_if_indentable (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
+{
+	GtkCTreeNode * prev, * parent;
+	parent = GTK_CTREE_ROW (node)->parent;
+	prev = GTK_CTREE_NODE_PREV (node);
+	if ( parent && prev && GTK_CTREE_ROW (prev)->parent == parent ) {
+		SPRepr * prev_repr;
+		prev_repr = sp_xmlview_tree_node_get_repr (SP_XMLVIEW_TREE (tree), prev);
+		if (SP_REPR_TYPE (prev_repr) == SP_XML_ELEMENT_NODE) {
+			gtk_widget_set_sensitive (GTK_WIDGET (data), TRUE);
+		} else {
+			gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
+		}
+	} else {
+		gtk_widget_set_sensitive (GTK_WIDGET (data), FALSE);
+	}
+}
+
+void
 on_tree_select_row_enable_if_not_first_child (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
 {
 	GtkCTreeNode * prev, * parent;
@@ -708,11 +732,10 @@ on_editable_changed_enable_if_valid_xml_name (GtkEditable * editable, gpointer d
 void
 on_desktop_selection_changed (SPSelection * selection)
 {
-	if (!blocked) {
-		blocked++;
+	if (!blocked++) {
 		set_tree_select (get_dt_select ());
-		blocked--;
 	}
+	blocked--;
 }
 
 void
@@ -903,6 +926,9 @@ cmd_raise_node (GtkObject * object, gpointer data)
 	sp_repr_change_order (parent, selected_repr, ref);
 
 	sp_document_done (current_document);
+
+	set_tree_select (selected_repr);
+	set_dt_select (selected_repr);
 }
 
 void
@@ -916,6 +942,9 @@ cmd_lower_node (GtkObject * object, gpointer data)
 	sp_repr_change_order (parent, selected_repr, selected_repr->next);
 
 	sp_document_done (current_document);
+
+	set_tree_select (selected_repr);
+	set_dt_select (selected_repr);
 }
 
 void
@@ -935,6 +964,7 @@ cmd_indent_node (GtkObject * object, gpointer data)
 	      prev = prev->next;
 	}
 	g_return_if_fail (prev != NULL);
+	g_return_if_fail (SP_REPR_TYPE (prev) == SP_XML_ELEMENT_NODE);
 
 	sp_repr_ref (repr);
 	success = sp_repr_remove_child (parent, repr);

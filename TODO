@@ -12,7 +12,7 @@ TODO for 0.28
 - Faster move (halfway done, second half postponed)
 - Direct FreeType fonts (DONE)
 - Toolboxes show arrows to right initially (DONE)
-- localise and kill transparency 1.0 bug
+- localise and kill transparency 1.0 bug (Unsure, maybe done)
 
 TODO for 0.27
 =============

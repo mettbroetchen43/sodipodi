@@ -1,3 +1,10 @@
+2002-11-17  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/xml-tree.c (sp_xml_tree_dialog): Cleanup by MenTaLguY
+
+	* src/widgets/sp-xmlview-attr-list.c (event_attr_changed): Clamping string
+	width to 64[+3], thanks to MenTaLguY
+
 2002-11-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/helper/sp-canvas.c (sp_canvas_motion): Get pointer if motion hints are requested
