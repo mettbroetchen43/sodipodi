@@ -237,7 +237,7 @@ sp_main_gui (int argc, char **argv)
 			slides = g_slist_remove (slides, doc);
 			dtw = sp_desktop_widget_new (sp_document_namedview (doc, NULL));
 			if (dtw) {
-				sp_desktop_set_event_context (SP_DESKTOP_WIDGET (dtw)->desktop, SP_TYPE_SLIDE_CONTEXT);
+				sp_desktop_set_event_context (SP_DESKTOP_WIDGET (dtw)->desktop, SP_TYPE_SLIDE_CONTEXT, NULL);
 				gtk_object_set_data (GTK_OBJECT (SP_DESKTOP_WIDGET (dtw)->desktop), "slides", slides);
 				sp_create_window (dtw, FALSE);
 			}

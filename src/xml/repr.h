@@ -61,13 +61,13 @@ typedef struct _SPReprDoc SPReprDoc;
 SPReprDoc * sp_repr_document_new (const gchar * rootname);
 void sp_repr_document_ref (SPReprDoc * doc);
 void sp_repr_document_unref (SPReprDoc * doc);
-SPRepr * sp_repr_document_root (SPReprDoc * doc);
 
-SPReprDoc * sp_repr_document (SPRepr * repr);
+SPRepr *sp_repr_document_root (const SPReprDoc *doc);
+SPReprDoc *sp_repr_document (const SPRepr *repr);
+
 /* Documents Utility */
-void        sp_repr_document_overwrite (SPReprDoc       *doc,
-					const SPReprDoc *source,
-					const guchar    *key);
+gboolean sp_repr_document_merge (SPReprDoc *doc, const SPReprDoc *src, const guchar *key);
+gboolean sp_repr_merge (SPRepr *repr, const SPRepr *src, const guchar *key);
 
 /* Contents */
 

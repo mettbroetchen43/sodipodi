@@ -43,7 +43,11 @@ typedef struct _SPAttributeTableClass SPAttributeTableClass;
 struct _SPAttributeWidget {
 	GtkEntry entry;
 	guint blocked : 1;
-	SPObject *object;
+	guint hasobj : 1;
+	union {
+		SPObject *object;
+		SPRepr *repr;
+	} src;
 	guchar *attribute;
 };
 
@@ -54,15 +58,21 @@ struct _SPAttributeWidgetClass {
 GtkType sp_attribute_widget_get_type (void);
 
 GtkWidget *sp_attribute_widget_new (SPObject *object, const guchar *attribute);
+GtkWidget *sp_attribute_widget_new_repr (SPRepr *repr, const guchar *attribute);
 void sp_attribute_widget_set_object (SPAttributeWidget *spw, SPObject *object, const guchar *attribute);
+void sp_attribute_widget_set_repr (SPAttributeWidget *spw, SPRepr *repr, const guchar *attribute);
 
 /* SPAttributeTable */
 
 struct _SPAttributeTable {
 	GtkVBox vbox;
 	guint blocked : 1;
+	guint hasobj : 1;
 	GtkWidget *table;
-	SPObject *object;
+	union {
+		SPObject *object;
+		SPRepr *repr;
+	} src;
 	gint num_attr;
 	guchar **attributes;
 	GtkWidget **entries;
@@ -75,7 +85,9 @@ struct _SPAttributeTableClass {
 GtkType sp_attribute_table_get_type (void);
 
 GtkWidget *sp_attribute_table_new (SPObject *object, gint num_attr, const guchar **labels, const guchar **attributes);
+GtkWidget *sp_attribute_table_new_repr (SPRepr *repr, gint num_attr, const guchar **labels, const guchar **attributes);
 void sp_attribute_table_set_object (SPAttributeTable *spw, SPObject *object, gint num_attr, const guchar **labels, const guchar **attrs);
+void sp_attribute_table_set_repr (SPAttributeTable *spw, SPRepr *repr, gint num_attr, const guchar **labels, const guchar **attrs);
 
 END_GNOME_DECLS
 

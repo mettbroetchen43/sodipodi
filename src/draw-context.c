@@ -123,7 +123,7 @@ sp_draw_context_finalize (GtkObject *object)
 
 	dc = SP_DRAW_CONTEXT (object);
 
-	gtk_signal_disconnect_by_data (GTK_OBJECT (SP_DT_SELECTION (SP_EVENT_CONTEXT_DESKTOP (dc))), dc);
+	gtk_signal_disconnect_by_data (GTK_OBJECT (dc->selection), dc);
 
 	spdc_free_colors (dc);
 
@@ -142,9 +142,11 @@ sp_draw_context_setup (SPEventContext *ec)
 	if (SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (draw_parent_class)->setup (ec);
 
+	dc->selection = SP_DT_SELECTION (dt);
+
 	/* Connect signals to track selection changes */
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "changed", GTK_SIGNAL_FUNC (spdc_selection_changed), dc);
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "modified", GTK_SIGNAL_FUNC (spdc_selection_modified), dc);
+	gtk_signal_connect (GTK_OBJECT (dc->selection), "changed", GTK_SIGNAL_FUNC (spdc_selection_changed), dc);
+	gtk_signal_connect (GTK_OBJECT (dc->selection), "modified", GTK_SIGNAL_FUNC (spdc_selection_modified), dc);
 
 	/* Create red bpath */
 	dc->red_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
@@ -163,7 +165,7 @@ sp_draw_context_setup (SPEventContext *ec)
 	/* No green anchor by default */
 	dc->green_anchor = NULL;
 
-	spdc_read_selection (dc, SP_DT_SELECTION (dt));
+	spdc_read_selection (dc, dc->selection);
 }
 
 /*
@@ -197,7 +199,7 @@ spdc_read_selection (SPDrawContext *dc, SPSelection *sel)
 	dc->sa = NULL;
 	dc->ea = NULL;
 
-	item = sp_selection_item (SP_DT_SELECTION (SP_EVENT_CONTEXT_DESKTOP (dc)));
+	item = sp_selection_item (dc->selection);
 
 	if (item && SP_IS_PATH (item) && SP_PATH (item)->independent) {
 		SPCurve *norm;
@@ -424,7 +426,7 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 		if (!dc->white_item) {
 			/* Attach repr */
 			sp_document_add_repr (SP_DT_DOCUMENT (dt), repr);
-			sp_selection_set_repr (SP_DT_SELECTION (dt), repr);
+			sp_selection_set_repr (dc->selection, repr);
 			sp_repr_unref (repr);
 		}
 

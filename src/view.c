@@ -21,6 +21,8 @@ enum {
 	SHUTDOWN,
 	URI_SET,
 	RESIZED,
+	POSITION_SET,
+	STATUS_SET,
 	LAST_SIGNAL
 };
 
@@ -61,24 +63,36 @@ sp_view_class_init (SPViewClass *klass)
 
 	parent_class = gtk_type_class (GTK_TYPE_OBJECT);
 
-	signals[SHUTDOWN] = gtk_signal_new ("shutdown",
-					    GTK_RUN_LAST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (SPViewClass, shutdown),
-					    gtk_marshal_BOOL__NONE,
-					    GTK_TYPE_BOOL, 0);
-	signals[URI_SET] =  gtk_signal_new ("uri_set",
-					    GTK_RUN_FIRST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (SPViewClass, uri_set),
-					    gtk_marshal_NONE__STRING,
-					    GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
-	signals[RESIZED] =  gtk_signal_new ("resized",
-					    GTK_RUN_FIRST,
-					    object_class->type,
-					    GTK_SIGNAL_OFFSET (SPViewClass, resized),
-					    sp_marshal_NONE__DOUBLE_DOUBLE,
-					    GTK_TYPE_NONE, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
+	signals[SHUTDOWN] =     gtk_signal_new ("shutdown",
+						GTK_RUN_LAST,
+						object_class->type,
+						GTK_SIGNAL_OFFSET (SPViewClass, shutdown),
+						gtk_marshal_BOOL__NONE,
+						GTK_TYPE_BOOL, 0);
+	signals[URI_SET] =      gtk_signal_new ("uri_set",
+						GTK_RUN_FIRST,
+						object_class->type,
+						GTK_SIGNAL_OFFSET (SPViewClass, uri_set),
+						gtk_marshal_NONE__STRING,
+						GTK_TYPE_NONE, 1, GTK_TYPE_STRING);
+	signals[RESIZED] =      gtk_signal_new ("resized",
+						GTK_RUN_FIRST,
+						object_class->type,
+						GTK_SIGNAL_OFFSET (SPViewClass, resized),
+						sp_marshal_NONE__DOUBLE_DOUBLE,
+						GTK_TYPE_NONE, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
+	signals[POSITION_SET] = gtk_signal_new ("position_set",
+						GTK_RUN_FIRST,
+						object_class->type,
+						GTK_SIGNAL_OFFSET (SPViewClass, position_set),
+						sp_marshal_NONE__DOUBLE_DOUBLE,
+						GTK_TYPE_NONE, 2, GTK_TYPE_DOUBLE, GTK_TYPE_DOUBLE);
+	signals[STATUS_SET] =   gtk_signal_new ("status_set",
+						GTK_RUN_FIRST,
+						object_class->type,
+						GTK_SIGNAL_OFFSET (SPViewClass, status_set),
+						sp_marshal_NONE__STRING_BOOL,
+						GTK_TYPE_NONE, 2, GTK_TYPE_STRING, GTK_TYPE_BOOL);
 	gtk_object_class_add_signals (object_class, signals, LAST_SIGNAL);
 
 	object_class->destroy = sp_view_destroy;
@@ -162,6 +176,24 @@ sp_view_emit_resized (SPView *view, gdouble width, gdouble height)
 	g_return_if_fail (SP_IS_VIEW (view));
 
 	gtk_signal_emit (GTK_OBJECT (view), signals[RESIZED], width, height);
+}
+
+void
+sp_view_set_position (SPView *view, gdouble x, gdouble y)
+{
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (SP_IS_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[POSITION_SET], x, y);
+}
+
+void
+sp_view_set_status (SPView *view, const guchar *status, gboolean isdefault)
+{
+	g_return_if_fail (view != NULL);
+	g_return_if_fail (SP_IS_VIEW (view));
+
+	gtk_signal_emit (GTK_OBJECT (view), signals[STATUS_SET], status, isdefault);
 }
 
 static void

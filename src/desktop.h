@@ -5,12 +5,13 @@
  * Editable view and widget implementation
  *
  * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
  *
- * Copyright (C) 1999-2001 Lauris Kaplinski
+ * Copyright (C) 1999-2002 authors
  * Copyright (C) 2000-2001 Ximian, Inc.
  *
- * Released under GNU GPL
+ * Released under GNU GPL, read the file 'COPYING' for more information
  *
  */
 
@@ -44,14 +45,14 @@ struct _SPDesktop {
 	SPSelection *selection;
 	SPEventContext *event_context;
 
-	GnomeCanvasItem * acetate;
-	GnomeCanvasGroup * main;
-	GnomeCanvasGroup * grid;
-  	GnomeCanvasGroup * guides;
-	GnomeCanvasGroup * drawing;
-	GnomeCanvasGroup * sketch;
-	GnomeCanvasGroup * controls;
-	GnomeCanvasItem * page;
+	GnomeCanvasItem *acetate;
+	GnomeCanvasGroup *main;
+	GnomeCanvasGroup *grid;
+  	GnomeCanvasGroup *guides;
+	GnomeCanvasGroup *drawing;
+	GnomeCanvasGroup *sketch;
+	GnomeCanvasGroup *controls;
+	GnomeCanvasItem *page;
 	gdouble d2w[6], w2d[6], doc2dt[6];
         gint number;
 	gboolean active;
@@ -94,9 +95,12 @@ void sp_desktop_change_document (SPDesktop *desktop, SPDocument * document);
 #define SP_DESKTOP_ZOOM_MIN     0.01
 
 gdouble sp_desktop_zoom_factor (SPDesktop * desktop);
+#if 0
+/* Use sp_view_set_position instead */
 void sp_desktop_set_position (SPDesktop * desktop, gdouble x, gdouble y);
+#endif
 void sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy);
-ArtDRect * sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area);
+ArtDRect *sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area);
 void sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint border);
 void sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
 void sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
@@ -105,42 +109,36 @@ void sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gd
 void sp_desktop_toggle_borders (GtkWidget * widget);
 
 /* Context */
+void sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *config);
 
-void sp_desktop_set_event_context (SPDesktop * desktop, GtkType type);
-
+#if 0
 // statusbars
 void sp_desktop_default_status (SPDesktop *desktop, const gchar * text);
 void sp_desktop_set_status (SPDesktop * desktop, const gchar * stat);
 void sp_desktop_clear_status (SPDesktop * desktop);
-void sp_desktop_coordinate_status (SPDesktop * desktop, gdouble x, gdouble y, gint8 underline);
+#endif
 
-#include <gtk/gtkscrollbar.h>
-#include <gtk/gtkruler.h>
-#include <libgnomeui/gnome-appbar.h>
+#define SP_COORDINATES_UNDERLINE_X (1 << 0)
+#define SP_COORDINATES_UNDERLINE_Y (1 << 1)
+
+void sp_desktop_set_coordinate_status (SPDesktop *desktop, gdouble x, gdouble y, guint underline);
 
 struct _SPDesktopWidget {
 	SPViewWidget viewwidget;
 
-#if 0
-	SPDocument *document;
-	SPNamedView *namedview;
-#endif
-
 	SPDesktop *desktop;
 
 	gint decorations : 1;
-	GtkBox * table;
-	GtkScrollbar * hscrollbar;
-	GtkScrollbar * vscrollbar;
-	GtkRuler * hruler;
-	GtkRuler * vruler;
-        GtkWidget * active;
-        GtkWidget * inactive;
-        GtkWidget * menubutton;   
-        GnomeAppBar * select_status, * coord_status;
+	GtkWidget *table;
+	GtkWidget *hscrollbar, *vscrollbar;
+	GtkWidget *hruler, *vruler;
+        GtkWidget *active;
+        GtkWidget *inactive;
+        GtkWidget *menubutton;   
+        GtkWidget *select_status, *coord_status;
 
         gint coord_status_id, select_status_id;
-        GtkWidget * zoom;
+        GtkWidget *zoom;
 
 	GnomeCanvas *canvas;
 };

@@ -568,7 +568,7 @@ sp_sel_trans_handle_request (SPKnot * knot, ArtPoint * position, guint state, gb
 	seltrans = &SP_SELECT_CONTEXT (desktop->event_context)->seltrans;
 	handle = (SPSelTransHandle *) data;
 
-	sp_desktop_coordinate_status (desktop, position->x, position->y, 4);
+	sp_desktop_set_coordinate_status (desktop, position->x, position->y, 0);
 
 	if (state & GDK_MOD1_MASK) {
 	  sp_sel_trans_point_desktop (seltrans, &point);
@@ -668,7 +668,7 @@ sp_sel_trans_scale_request (SPSelTrans * seltrans, SPSelTransHandle * handle, Ar
 
 	// status text
 	sprintf (status, "Scale  %0.2f%c, %0.2f%c", 100 * sx, '%', 100 * sy, '%');
-	sp_desktop_set_status (seltrans->desktop, status);
+	sp_view_set_status (SP_VIEW (seltrans->desktop), status, FALSE);
 
 	return TRUE;
 }
@@ -726,7 +726,7 @@ sp_sel_trans_stretch_request (SPSelTrans * seltrans, SPSelTransHandle * handle, 
 
 	// status text
 	sprintf (status, "Scale  %0.2f%c, %0.2f%c", 100 * sx, '%', 100 * sy, '%');
-	sp_desktop_set_status (seltrans->desktop, status);
+	sp_view_set_status (SP_VIEW (seltrans->desktop), status, FALSE);
 
 	return TRUE;
 }
@@ -793,7 +793,7 @@ sp_sel_trans_skew_request (SPSelTrans * seltrans, SPSelTransHandle * handle, Art
 	}
 	// status text
 	sprintf (status, "Skew  %0.2f%c %0.2f%c", 100 * fabs(skew[2]), '%', 100 * fabs(skew[1]), '%');
-	sp_desktop_set_status (seltrans->desktop, status);
+	sp_view_set_status (SP_VIEW (seltrans->desktop), status, FALSE);
 
 	return TRUE;
 }
@@ -846,7 +846,7 @@ sp_sel_trans_rotate_request (SPSelTrans * seltrans, SPSelTransHandle * handle, A
 	if (fabs (sg) > 1e-15) angle *= sg / fabs (sg);
 	
 	sprintf (status, "Rotate by %0.2f deg", angle);
-	sp_desktop_set_status (seltrans->desktop, status);
+	sp_view_set_status (SP_VIEW (seltrans->desktop), status, FALSE);
 
 	return TRUE;
 }
@@ -879,7 +879,7 @@ sp_sel_trans_center_request (SPSelTrans * seltrans, SPSelTransHandle * handle, A
 	xs = SP_PT_TO_METRIC_STRING (p->x, SP_DEFAULT_METRIC);
 	ys = SP_PT_TO_METRIC_STRING (p->y, SP_DEFAULT_METRIC);
 	sprintf (status, "Center  %s, %s", xs->str, ys->str);
-	sp_desktop_set_status (seltrans->desktop, status);
+	sp_view_set_status (SP_VIEW (seltrans->desktop), status, FALSE);
 	g_string_free (xs, FALSE);
 	g_string_free (ys, FALSE);
 

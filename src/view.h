@@ -47,6 +47,10 @@ struct _SPViewClass {
 	void (* uri_set) (SPView *view, const guchar *uri);
 	/* Signal of view size change */
 	void (* resized) (SPView *view, gdouble width, gdouble height);
+	/* Cursor position */
+	void (* position_set) (SPView *view, gdouble x, gdouble y);
+	/* Status */
+	void (* status_set) (SPView *view, const guchar *status, gboolean isdefault);
 };
 
 GtkType sp_view_get_type (void);
@@ -56,6 +60,8 @@ GtkType sp_view_get_type (void);
 void sp_view_set_document (SPView *view, SPDocument *doc);
 
 void sp_view_emit_resized (SPView *view, gdouble width, gdouble height);
+void sp_view_set_position (SPView *view, gdouble x, gdouble y);
+void sp_view_set_status (SPView *view, const guchar *status, gboolean isdefault);
 
 gboolean sp_view_shutdown (SPView *view);
 void sp_view_request_redraw (SPView *view);

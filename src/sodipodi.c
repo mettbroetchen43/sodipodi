@@ -449,7 +449,7 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 		return;
 	}
 
-	sp_repr_document_overwrite (sodipodi->preferences, doc, "id");
+	sp_repr_document_merge (sodipodi->preferences, doc, "id");
 	sp_repr_document_unref (doc);
 	g_free (fn);
 }

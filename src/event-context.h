@@ -46,6 +46,7 @@ struct _SPEventContextClass {
 };
 
 #define SP_EVENT_CONTEXT_DESKTOP(e) (SP_EVENT_CONTEXT (e)->desktop)
+#define SP_EVENT_CONTEXT_REPR(e) (SP_EVENT_CONTEXT (e)->repr)
 
 GtkType sp_event_context_get_type (void);
 

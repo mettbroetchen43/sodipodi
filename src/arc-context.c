@@ -281,7 +281,7 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 	xs = SP_PT_TO_METRIC_STRING (fabs(x1-x0), SP_DEFAULT_METRIC);
 	ys = SP_PT_TO_METRIC_STRING (fabs(y1-y0), SP_DEFAULT_METRIC);
 	sprintf (status, "Draw arc  %s x %s", xs->str, ys->str);
-	sp_desktop_set_status (desktop, status);
+	sp_view_set_status (SP_VIEW (desktop), status, FALSE);
 	g_string_free (xs, FALSE);
 	g_string_free (ys, FALSE);
 }

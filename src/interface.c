@@ -45,6 +45,7 @@
 #include "dialogs/desktop-properties.h"
 #include "dialogs/document-properties.h"
 #include "dialogs/display-settings.h"
+#include "dialogs/tool-attributes.h"
 
 void fake_dialogs (void);
 
@@ -403,6 +404,7 @@ sp_ui_dialog_menu (GtkMenu *menu, SPDocument *doc)
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Align Objects"), sp_quick_align_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Text Editing"), sp_text_edit_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Transformations"), sp_transformation_dialog, NULL);
+	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Tool Attributes"), sp_tool_attributes_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Document"), sp_document_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("Editing Window"), sp_desktop_dialog, NULL);
 	sp_ui_menu_append_item (menu, GNOME_STOCK_MENU_BLANK, _("XML Editor"), sp_xml_tree_dialog, NULL);

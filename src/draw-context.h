@@ -34,6 +34,8 @@ typedef struct _SPDrawAnchor SPDrawAnchor;
 struct _SPDrawContext {
 	SPEventContext event_context;
 
+	SPSelection *selection;
+
 	/* Red */
 	GnomeCanvasItem *red_bpath;
 	SPCurve *red_curve;

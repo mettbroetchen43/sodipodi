@@ -107,11 +107,11 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 			sp_guideline_moveto ((SPGuideLine *) guide, p.x, p.y);
 			switch (SP_GUIDELINE(guide)->orientation){
 			case SP_GUIDELINE_ORIENTATION_HORIZONTAL:
-			  sp_desktop_coordinate_status (desktop, p.x, p.y, 2);
-			  break;
+				sp_desktop_set_coordinate_status (desktop, p.x, p.y, SP_COORDINATES_UNDERLINE_Y);
+				break;
 			case SP_GUIDELINE_ORIENTATION_VERTICAL:
-			  sp_desktop_coordinate_status (desktop, p.x, p.y, 1);
-			  break;
+				sp_desktop_set_coordinate_status (desktop, p.x, p.y, SP_COORDINATES_UNDERLINE_X);
+				break;
 			}
 		}
 		break;
@@ -131,7 +131,7 @@ sp_dt_ruler_event (GtkWidget * widget, GdkEvent * event, gpointer data, gboolean
 				sp_repr_unref (repr);
 				sp_document_done (SP_DT_DOCUMENT (desktop));
 			}
-			sp_desktop_coordinate_status (desktop, p.x, p.y, 4);
+			sp_desktop_set_coordinate_status (desktop, p.x, p.y, 0);
 		}
 	default:
 		break;
@@ -190,10 +190,10 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			moved = TRUE;
 			switch (guide->orientation){
 			case SP_GUIDE_HORIZONTAL:
-				sp_desktop_coordinate_status (desktop, p.x, p.y, 2);
+				sp_desktop_set_coordinate_status (desktop, p.x, p.y, SP_COORDINATES_UNDERLINE_Y);
 				break;
 			case SP_GUIDE_VERTICAL:
-				sp_desktop_coordinate_status (desktop, p.x, p.y, 1);
+				sp_desktop_set_coordinate_status (desktop, p.x, p.y, SP_COORDINATES_UNDERLINE_X);
 				break;
 			}
 			ret=TRUE;
@@ -216,7 +216,7 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 				}
 				moved = FALSE;
 				sp_document_done (SP_DT_DOCUMENT (desktop));
-				sp_desktop_coordinate_status (desktop, p.x, p.y, 4);
+				sp_desktop_set_coordinate_status (desktop, p.x, p.y, 0);
 			}
 			dragging = FALSE;
 			gnome_canvas_item_ungrab (item, event->button.time);
@@ -233,12 +233,12 @@ sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 			g_string_prepend(msg, "vertical guideline at ");
 			break;
 		}
-		sp_desktop_set_status (desktop, msg->str);
+		sp_view_set_status (SP_VIEW (desktop), msg->str, FALSE);
 		g_string_free (msg, FALSE);
        		break;
 	case GDK_LEAVE_NOTIFY:
 		gnome_canvas_item_set (item, "color", guide->color, NULL);
-		sp_desktop_clear_status (desktop);
+		sp_view_set_status (SP_VIEW (desktop), NULL, FALSE);
 		break;
 	default:
 		break;

@@ -197,7 +197,7 @@ sp_select_context_item_handler (SPEventContext *event_context, SPItem *item, Gdk
 				// item has been moved
 				sp_sel_trans_ungrab (seltrans);
 				sc->moved = FALSE;
-				sp_desktop_clear_status (desktop);
+				sp_view_set_status (SP_VIEW (desktop), NULL, FALSE);
 			} else {
 				// item has not been moved -> do selecting
 				if (!sp_selection_is_empty (selection)) {
@@ -309,7 +309,7 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 					// item has been moved
 					sp_sel_trans_ungrab (seltrans);
 					sc->moved = FALSE;
-					sp_desktop_clear_status (desktop);
+					sp_view_set_status (SP_VIEW (desktop), NULL, FALSE);
 				} else {
 					// item has not been moved -> do selecting
 					if (!sp_selection_is_empty (selection)) {
@@ -528,7 +528,7 @@ sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state)
 	xs = SP_PT_TO_METRIC_STRING (dx, SP_DEFAULT_METRIC);
 	ys = SP_PT_TO_METRIC_STRING (dy, SP_DEFAULT_METRIC);
 	sprintf (status, "Move  %s, %s", xs->str, ys->str);
-	sp_desktop_set_status (seltrans->desktop, status);
+	sp_view_set_status (SP_VIEW (seltrans->desktop), status, FALSE);
 	g_string_free (xs, FALSE);
 	g_string_free (ys, FALSE);
 }

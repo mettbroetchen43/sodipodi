@@ -512,8 +512,8 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 		return;
 
 	sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
-	sp_desktop_set_position (desktop, p.x, p.y);
-	sp_desktop_coordinate_status (desktop, p.x, p.y, 0);
+	sp_view_set_position (SP_VIEW (desktop), p.x, p.y);
+	sp_desktop_set_coordinate_status (desktop, p.x, p.y, 0);
 }
 
 void

@@ -31,7 +31,7 @@
 #define NORMALIZED_COORDINATE
 
 #include <math.h>
-#include "xml/repr.h"
+#include <string.h>
 #include "svg/svg.h"
 #include "helper/curve.h"
 #include "helper/canvas-bpath.h"
@@ -158,6 +158,7 @@ sp_dyna_draw_context_init (SPDynaDrawContext *ddc)
 	ddc->timer_id = 0;
 	ddc->dragging = FALSE;
 	ddc->dynahand = FALSE;
+
 #ifdef NORMALIZED_COORDINATE
 	ddc->mass = 0.3;
 	ddc->drag = 0.5;
@@ -219,14 +220,37 @@ sp_dyna_draw_context_setup (SPEventContext *ec)
 	sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (ddc->currentshape), 0x00000000, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	/* fixme: Cannot we cascade it to root more clearly? */
 	gtk_signal_connect (GTK_OBJECT (ddc->currentshape), "event", GTK_SIGNAL_FUNC (sp_desktop_root_handler), ec->desktop);
+
+	sp_event_context_read (ec, "mass");
+	sp_event_context_read (ec, "drag");
+	sp_event_context_read (ec, "angle");
+	sp_event_context_read (ec, "width");
 }
 
 static void
 sp_dyna_draw_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
 {
 	SPDynaDrawContext *ddc;
+	gdouble dval;
 
 	ddc = SP_DYNA_DRAW_CONTEXT (ec);
+
+	if (!strcmp (key, "mass")) {
+		dval = (val) ? atof (val) : 0.2;
+		ddc->mass = CLAMP (dval, -1000.0, 1000.0);
+	} else if (!strcmp (key, "drag")) {
+		dval = (val) ? atof (val) : 0.5;
+		ddc->drag = CLAMP (dval, -1000.0, 1000.0);
+	} else if (!strcmp (key, "angle")) {
+		dval = (val) ? atof (val) : 0.5;
+		dval = fmod (dval, 360.0);
+		ddc->angle = (dval > 0) ? dval : dval + 360.0;
+	} else if (!strcmp (key, "width")) {
+		dval = (val) ? atof (val) : 0.1;
+		ddc->width = CLAMP (dval, -1000.0, 1000.0);
+	}
+
+	g_print ("DDC: %g %g %g %g\n", ddc->mass, ddc->drag, ddc->angle, ddc->width);
 }
 
 static double

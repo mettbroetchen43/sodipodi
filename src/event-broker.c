@@ -31,7 +31,7 @@ void
 sp_event_context_set_select (gpointer data)
 {
 	if (SP_ACTIVE_DESKTOP) {
-		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_SELECT_CONTEXT);
+		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_SELECT_CONTEXT, "tools.select");
 		/* fixme: This is really ugly hack. We should bind bind and unbind class methods */
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, TRUE);
 		sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
@@ -42,7 +42,7 @@ void
 sp_event_context_set_node_edit (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_NODE_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_NODE_CONTEXT, "tools.nodes");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, TRUE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
@@ -52,7 +52,7 @@ void
 sp_event_context_set_rect (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_RECT_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_RECT_CONTEXT, "tools.shapes.rect");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
@@ -62,7 +62,7 @@ void
 sp_event_context_set_arc (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ARC_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ARC_CONTEXT, "tools.shapes.arc");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
@@ -72,7 +72,7 @@ void
 sp_event_context_set_star (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_STAR_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_STAR_CONTEXT, "tools.shapes.star");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
@@ -82,7 +82,7 @@ void
 sp_event_context_set_spiral (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_SPIRAL_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_SPIRAL_CONTEXT, "tools.shapes.spiral");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
@@ -92,7 +92,7 @@ void
 sp_event_context_set_freehand (gpointer data)
 {
 	if (SP_ACTIVE_DESKTOP) {
-		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_PENCIL_CONTEXT);
+		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_PENCIL_CONTEXT, "tools.freehand.pencil");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
 		sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
 	}
@@ -102,7 +102,7 @@ void
 sp_event_context_set_pen (gpointer data)
 {
 	if (SP_ACTIVE_DESKTOP) {
-		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_PEN_CONTEXT);
+		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_PEN_CONTEXT, "tools.freehand.pen");
 		/* fixme: */
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
 		sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
@@ -113,7 +113,7 @@ void
 sp_event_context_set_dynahand (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DYNA_DRAW_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DYNA_DRAW_CONTEXT, "tools.freehand.dynamic");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
@@ -123,7 +123,7 @@ void
 sp_event_context_set_text (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_TEXT_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_TEXT_CONTEXT, "tools.text");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }
@@ -133,7 +133,7 @@ void
 sp_event_context_set_zoom (gpointer data)
 {
   if (SP_ACTIVE_DESKTOP) {
-    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ZOOM_CONTEXT);
+    sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_ZOOM_CONTEXT, "tools.zoom");
 		sp_desktop_activate_guides (SP_ACTIVE_DESKTOP, FALSE);
     sodipodi_eventcontext_set (SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP));
   }

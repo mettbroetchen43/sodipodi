@@ -613,18 +613,6 @@ sp_desktop_zoom (GtkEntry * caller, SPDesktopWidget *dtw) {
 /* Public methods */
 
 void
-sp_desktop_set_position (SPDesktop * desktop, double x, double y)
-{
-	g_return_if_fail (desktop != NULL);
-	g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-	desktop->owner->hruler->position = x;
-	gtk_ruler_draw_pos (desktop->owner->hruler);
-	desktop->owner->vruler->position = y;
-	gtk_ruler_draw_pos (desktop->owner->vruler);
-}
-
-void
 sp_desktop_scroll_world (SPDesktop * desktop, gint dx, gint dy)
 {
 	gint x, y;
@@ -768,12 +756,17 @@ sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble
 /* Context switching */
 
 void
-sp_desktop_set_event_context (SPDesktop * desktop, GtkType type)
+sp_desktop_set_event_context (SPDesktop *desktop, GtkType type, const guchar *config)
 {
-	if (desktop->event_context)
-		gtk_object_unref (GTK_OBJECT (desktop->event_context));
+	SPRepr *repr;
 
-	desktop->event_context = sp_event_context_new (type, desktop, NULL);
+	if (desktop->event_context) {
+		gtk_object_unref (GTK_OBJECT (desktop->event_context));
+	}
+
+	repr = (config) ? sodipodi_get_repr (SODIPODI, config) : NULL;
+
+	desktop->event_context = sp_event_context_new (type, desktop, repr);
 }
 
 /* Private helpers */
@@ -809,74 +802,33 @@ sp_desktop_toggle_borders (GtkWidget * widget)
 	sp_desktop_show_decorations (desktop, !desktop->owner->decorations);
 }
 
-/*
- * the statusbars
- *
- * we have 
- * - coordinate status   set with sp_desktop_coordinate_status which is currently not unset
- * - selection status    which is used in two ways:
- *    * sp_desktop_default_status sets the default status text which is visible
- *      if no other text is displayed
- *    * sp_desktop_set_status sets the status text and can be cleared
-        with sp_desktop_clear_status making the default visible
- */
-
-void 
-sp_desktop_default_status (SPDesktop *desktop, const gchar * stat)
-{
-  gint b =0;
-  GString * text;
-
-  g_return_if_fail (SP_IS_DESKTOP (desktop));
-
-  text = g_string_new(stat);
-  // remove newlines 
-  for (b=0; text->str[b]!=0; b+=1) if (text->str[b]=='\n') text->str[b]=' ';
-  gnome_appbar_set_default (desktop->owner->select_status, text->str);
-  g_string_free(text,FALSE);
-}
-
-void
-sp_desktop_set_status (SPDesktop * desktop, const gchar * stat)
-{
-  gnome_appbar_set_status (desktop->owner->select_status, stat);
-}
-
-void
-sp_desktop_clear_status(SPDesktop * desktop)
-{
-  gnome_appbar_clear_stack (desktop->owner->select_status);
-}
-
 /* set the coordinate statusbar underline single coordinates with undeline-mask 
  * x and y are document coordinates
  * underline :
  *   0 - don't underline, 1 - underlines x, 2 - underlines y
  *   3 - underline both, 4 - underline none  */
+
 void
-sp_desktop_coordinate_status (SPDesktop * desktop, gdouble x, gdouble y, gint8 underline)
+sp_desktop_set_coordinate_status (SPDesktop *desktop, gdouble x, gdouble y, guint underline)
 {
-  static gchar coord_str[40];
-  gchar coord_pattern [20]= "                    ";
-  GString * x_str, * y_str;
-  gint i=0,j=0;
+	static gchar coord_str[40];
+	gchar coord_pattern [20]= "                    ";
+	GString * x_str, * y_str;
+	gint i=0,j=0;
 
-  x_str = SP_PT_TO_STRING (x, SP_DEFAULT_METRIC);
-  y_str = SP_PT_TO_STRING (y, SP_DEFAULT_METRIC);
-  sprintf (coord_str, "%s, %s",
-	     x_str->str,
-	     y_str->str);
-  gnome_appbar_set_status (desktop->owner->coord_status, coord_str);
-  // set underline
-  if (underline & 0x01) for (; i<x_str->len; i++) coord_pattern[i]='_';
-  i = x_str->len + 2;
-  if (underline & 0x02) for (; j<y_str->len; j++,i++) coord_pattern[i]='_';
-  if (underline) gtk_label_set_pattern(GTK_LABEL(desktop->owner->coord_status->status), coord_pattern);
+	x_str = SP_PT_TO_STRING (x, SP_DEFAULT_METRIC);
+	y_str = SP_PT_TO_STRING (y, SP_DEFAULT_METRIC);
+	sprintf (coord_str, "%s, %s", x_str->str, y_str->str);
+	gnome_appbar_set_status (GNOME_APPBAR (desktop->owner->coord_status), coord_str);
+	// set underline
+	if (underline & SP_COORDINATES_UNDERLINE_X) for (; i<x_str->len; i++) coord_pattern[i]='_';
+	i = x_str->len + 2;
+	if (underline & SP_COORDINATES_UNDERLINE_Y) for (; j<y_str->len; j++,i++) coord_pattern[i]='_';
+	if (underline) gtk_label_set_pattern(GTK_LABEL(GNOME_APPBAR (desktop->owner->coord_status)->status), coord_pattern);
 
-  g_string_free (x_str, TRUE);
-  g_string_free (y_str, TRUE);
+	g_string_free (x_str, TRUE);
+	g_string_free (y_str, TRUE);
 }
-
 
 static void
 sp_desktop_menu_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
@@ -886,6 +838,12 @@ sp_desktop_menu_popup (GtkWidget *widget, GdkEventButton *event, gpointer data)
 
 /* SPDesktopWidget */
 
+#if 0
+#include <gtk/gtkscrollbar.h>
+#include <gtk/gtkruler.h>
+#include <libgnomeui/gnome-appbar.h>
+#endif
+
 static void sp_desktop_widget_class_init (SPDesktopWidgetClass *klass);
 static void sp_desktop_widget_init (SPDesktopWidget *widget);
 static void sp_desktop_widget_destroy (GtkObject *object);
@@ -894,6 +852,8 @@ static void sp_desktop_widget_realize (GtkWidget *widget);
 
 static gint sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw);
 
+static void sp_desktop_widget_view_position_set (SPView *view, gdouble x, gdouble y, SPDesktopWidget *dtw);
+static void sp_desktop_widget_view_status_set (SPView *view, const guchar *status, gboolean isdefault, SPDesktopWidget *dtw);
 static void sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw);
 static void sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw);
 
@@ -955,7 +915,7 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 
 	desktop->decorations = TRUE;
 
-	desktop->table = GTK_BOX (gtk_vbox_new (FALSE,0));
+	desktop->table = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (GTK_WIDGET (desktop->table));
 	gtk_box_set_spacing (GTK_BOX (desktop->table), 0);
 	gtk_container_add (GTK_CONTAINER (desktop), GTK_WIDGET (desktop->table));
@@ -969,25 +929,13 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
        				0);
 
 	/* Horizontal scrollbar */
-	desktop->hscrollbar = GTK_SCROLLBAR (gtk_hscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (4000.0,
-		0.0, 8000.0, 10.0, 100.0, 4.0))));
+	desktop->hscrollbar = gtk_hscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (4000.0, 0.0, 8000.0, 10.0, 100.0, 4.0)));
 	gtk_widget_show (GTK_WIDGET (desktop->hscrollbar));
-	gtk_table_attach (table,
-		GTK_WIDGET (desktop->hscrollbar),
-		1,2,2,3,
-		GTK_EXPAND | GTK_FILL,
-		GTK_FILL,
-		0,1);
+	gtk_table_attach (table, desktop->hscrollbar, 1, 2, 2, 3, GTK_EXPAND | GTK_FILL, GTK_FILL, 0, 0);
 	/* Vertical scrollbar */
-	desktop->vscrollbar = GTK_SCROLLBAR (gtk_vscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (4000.0,
-		0.0, 8000.0, 10.0, 100.0, 4.0))));
+	desktop->vscrollbar = gtk_vscrollbar_new (GTK_ADJUSTMENT (gtk_adjustment_new (4000.0, 0.0, 8000.0, 10.0, 100.0, 4.0)));
 	gtk_widget_show (GTK_WIDGET (desktop->vscrollbar));
-	gtk_table_attach (table,
-		GTK_WIDGET (desktop->vscrollbar),
-		2,3,1,2,
-		GTK_FILL,
-		GTK_EXPAND | GTK_FILL,
-		1,0);
+	gtk_table_attach (table, desktop->vscrollbar, 2, 3, 1, 2, GTK_FILL, GTK_EXPAND | GTK_FILL, 0, 0);
 	/* Canvas */
 	gtk_widget_push_visual (gdk_rgb_get_visual ());
 	gtk_widget_push_colormap (gdk_rgb_get_cmap ());
@@ -1016,10 +964,10 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	/* Horizonatl ruler */
 	eventbox = gtk_event_box_new ();
 	gtk_widget_show (eventbox);
-	desktop->hruler = GTK_RULER (sp_hruler_new ());
-	sp_ruler_set_metric (desktop->hruler, SP_DEFAULT_METRIC);
-	gtk_widget_show (GTK_WIDGET (desktop->hruler));
-	gtk_container_add (GTK_CONTAINER (eventbox), GTK_WIDGET (desktop->hruler));
+	desktop->hruler = sp_hruler_new ();
+	sp_ruler_set_metric (GTK_RULER (desktop->hruler), SP_DEFAULT_METRIC);
+	gtk_widget_show (desktop->hruler);
+	gtk_container_add (GTK_CONTAINER (eventbox), desktop->hruler);
 	gtk_table_attach (table,
 		eventbox,
 		1,2,0,1,
@@ -1035,8 +983,8 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 	/* Vertical ruler */
 	eventbox = gtk_event_box_new ();
 	gtk_widget_show (eventbox);
-	desktop->vruler = GTK_RULER (sp_vruler_new ());
-	sp_ruler_set_metric (desktop->vruler, SP_DEFAULT_METRIC);
+	desktop->vruler = sp_vruler_new ();
+	sp_ruler_set_metric (GTK_RULER (desktop->vruler), SP_DEFAULT_METRIC);
 	gtk_widget_show (GTK_WIDGET (desktop->vruler));
 	gtk_container_add (GTK_CONTAINER (eventbox), GTK_WIDGET (desktop->vruler));
 	gtk_table_attach (table,
@@ -1094,8 +1042,8 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
                               0);
         gtk_widget_show (hbox);
 
-        desktop->coord_status = GNOME_APPBAR(gnome_appbar_new (FALSE, TRUE,GNOME_PREFERENCES_NEVER));
-	gtk_misc_set_alignment (GTK_MISC (desktop->coord_status->status), 0.5, 0.5);
+        desktop->coord_status = gnome_appbar_new (FALSE, TRUE, GNOME_PREFERENCES_NEVER);
+	gtk_misc_set_alignment (GTK_MISC (GNOME_APPBAR (desktop->coord_status)->status), 0.5, 0.5);
 	gtk_widget_show (GTK_WIDGET(desktop->coord_status));	
 	gtk_box_pack_start (GTK_BOX (hbox),
 			    GTK_WIDGET(desktop->coord_status),
@@ -1104,9 +1052,9 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 			    0);
 	gtk_widget_set_usize (GTK_WIDGET (desktop->coord_status),120,0);
 
-        desktop->select_status = GNOME_APPBAR(gnome_appbar_new (FALSE, TRUE,GNOME_PREFERENCES_NEVER));
-        gtk_misc_set_alignment (GTK_MISC (desktop->select_status->status), 0.0, 0.5);
-        gtk_misc_set_padding (GTK_MISC (desktop->select_status->status), 5, 0);
+        desktop->select_status = gnome_appbar_new (FALSE, TRUE,GNOME_PREFERENCES_NEVER);
+        gtk_misc_set_alignment (GTK_MISC (GNOME_APPBAR (desktop->select_status)->status), 0.0, 0.5);
+        gtk_misc_set_padding (GTK_MISC (GNOME_APPBAR (desktop->select_status)->status), 5, 0);
         //gtk_label_set_line_wrap (GTK_LABEL (desktop->select_status->label), TRUE);
         gtk_widget_show (GTK_WIDGET (desktop->select_status));
         gtk_box_pack_start (GTK_BOX (hbox),
@@ -1117,7 +1065,7 @@ sp_desktop_widget_init (SPDesktopWidget *desktop)
 
 	//desktop->coord_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "mouse coordinates");
 	//desktop->select_status_id = gtk_statusbar_get_context_id (desktop->coord_status, "selection stuff");
-        gnome_appbar_set_status (desktop->select_status, _("Welcome !"));
+        gnome_appbar_set_status (GNOME_APPBAR (desktop->select_status), _("Welcome !"));
 
         // zoom combo
         zoom = desktop->zoom = gtk_combo_text_new (FALSE);
@@ -1306,15 +1254,52 @@ sp_desktop_widget_new (SPNamedView *namedview)
 	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "uri_set", GTK_SIGNAL_FUNC (sp_desktop_uri_set), dtw);
 	sp_view_widget_set_view (SP_VIEW_WIDGET (dtw), SP_VIEW (dtw->desktop));
 
+	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "position_set", GTK_SIGNAL_FUNC (sp_desktop_widget_view_position_set), dtw);
+	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "status_set", GTK_SIGNAL_FUNC (sp_desktop_widget_view_status_set), dtw);
+
 	/* Connect activation signals to update indicator */
-	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "activate",
-			    GTK_SIGNAL_FUNC (sp_dtw_desktop_activate), dtw);
-	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "desactivate",
-			    GTK_SIGNAL_FUNC (sp_dtw_desktop_desactivate), dtw);
+	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "activate", GTK_SIGNAL_FUNC (sp_dtw_desktop_activate), dtw);
+	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "desactivate", GTK_SIGNAL_FUNC (sp_dtw_desktop_desactivate), dtw);
 
 	gtk_signal_connect (GTK_OBJECT (dtw->desktop), "shutdown", GTK_SIGNAL_FUNC (sp_dtw_desktop_shutdown), dtw);
 
 	return SP_VIEW_WIDGET (dtw);
+}
+
+static void
+sp_desktop_widget_view_position_set (SPView *view, gdouble x, gdouble y, SPDesktopWidget *dtw)
+{
+	/* fixme: */
+	GTK_RULER (dtw->hruler)->position = x;
+	gtk_ruler_draw_pos (GTK_RULER (dtw->hruler));
+	GTK_RULER (dtw->vruler)->position = y;
+	gtk_ruler_draw_pos (GTK_RULER (dtw->vruler));
+}
+
+/*
+ * the statusbars
+ *
+ * we have 
+ * - coordinate status   set with sp_desktop_coordinate_status which is currently not unset
+ * - selection status    which is used in two ways:
+ *    * sp_desktop_default_status sets the default status text which is visible
+ *      if no other text is displayed
+ *    * sp_desktop_set_status sets the status text and can be cleared
+        with sp_desktop_clear_status making the default visible
+ */
+
+static void 
+sp_desktop_widget_view_status_set (SPView *view, const guchar *status, gboolean isdefault, SPDesktopWidget *dtw)
+{
+	if (isdefault) {
+		gnome_appbar_set_default (GNOME_APPBAR (dtw->select_status), status);
+	} else {
+		if (status) {
+			gnome_appbar_set_status (GNOME_APPBAR (dtw->select_status), status);
+		} else {
+			gnome_appbar_clear_stack (GNOME_APPBAR (dtw->select_status));
+		}
+	}
 }
 
 static void
@@ -1333,8 +1318,8 @@ sp_desktop_widget_update_rulers (GtkWidget *widget, SPDesktopWidget *dtw)
 		art_affine_point (&p0, &p0, dtw->desktop->w2d);
 		art_affine_point (&p1, &p1, dtw->desktop->w2d);
 
-		gtk_ruler_set_range (dtw->hruler, p0.x, p1.x, dtw->hruler->position, p1.x);
-		gtk_ruler_set_range (dtw->vruler, p0.y, p1.y, dtw->vruler->position, p1.y);
+		gtk_ruler_set_range (GTK_RULER (dtw->hruler), p0.x, p1.x, GTK_RULER (dtw->hruler)->position, p1.x);
+		gtk_ruler_set_range (GTK_RULER (dtw->vruler), p0.y, p1.y, GTK_RULER (dtw->vruler)->position, p1.y);
 	}
 }
 

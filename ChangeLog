@@ -1,3 +1,40 @@
+2002-08-23  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/sp-attribute-widget.h: It can now be attached to mere SPRepr too
+
+	* src/dialogs/sp-attribute-widget.c (sp_attribute_widget_new_repr): New constructor
+	(sp_attribute_widget_set_repr): New method
+	(sp_attribute_table_new_repr): New constructor
+	(sp_attribute_table_set_repr): New method
+
+	* src/star-context.c (sp_star_context_set): Attribute reader
+	(sp_star_context_setup): parse attributes
+
+	* src/marshal.c (sp_marshal_NONE__STRING_BOOL): New method
+
+	* src/interface.c (sp_ui_dialog_menu): Tool attributes menu
+
+	* src/event-broker.c: Added event context node location
+
+	* src/dyna-draw-context.c (sp_dyna_draw_context_set): Attribute reader
+	(sp_dyna_draw_context_setup): Parse attributes
+
+	* src/draw-context.h: Added selection member
+
+	* src/view.c (sp_view_set_position): Frontend to virtual method
+	(sp_view_set_status): Ditto
+
+	* src/view.h: Added virtual methods for marking status and position
+
+	* src/desktop.c (sp_desktop_widget_view_status_set): Moved status to
+	parent container, where it belongs
+	(sp_desktop_widget_view_position_set): Same for position
+	(sp_desktop_widget_new): Listen status and position signals
+
+	* src/dialogs/tool-attributes.c: New file
+
+	* src/dialogs/tool-attributes.h: New file
+
 2002-08-20  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dyna-draw-context.c: Removed control knot, as we do not attach to anything

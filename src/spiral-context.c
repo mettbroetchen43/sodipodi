@@ -252,7 +252,7 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 	xs = SP_PT_TO_METRIC_STRING (fabs(p0.x), SP_DEFAULT_METRIC);
 	ys = SP_PT_TO_METRIC_STRING (fabs(p0.y), SP_DEFAULT_METRIC);
 	sprintf (status, "Draw spiral at (%s,%s)", xs->str, ys->str);
-	sp_desktop_set_status (desktop, status);
+	sp_view_set_status (SP_VIEW (desktop), status, FALSE);
 	g_string_free (xs, FALSE);
 	g_string_free (ys, FALSE);
 }

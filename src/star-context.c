@@ -94,6 +94,8 @@ sp_star_context_init (SPStarContext * star_context)
 	event_context->hot_y = 4;
 
 	star_context->item = NULL;
+
+	star_context->magnitude = 11;
 }
 
 static void
@@ -120,7 +122,7 @@ sp_star_context_setup (SPEventContext *ec)
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
 
-	sp_star_context_set (ec, "magnitude", "5");
+	sp_event_context_read (ec, "magnitude");
 }
 
 static void
@@ -244,7 +246,7 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 	xs = SP_PT_TO_METRIC_STRING (fabs(p0.x), SP_DEFAULT_METRIC);
 	ys = SP_PT_TO_METRIC_STRING (fabs(p0.y), SP_DEFAULT_METRIC);
 	sprintf (status, "Draw star at (%s,%s)", xs->str, ys->str);
-	sp_desktop_set_status (desktop, status);
+	sp_view_set_status (SP_VIEW (desktop), status, FALSE);
 	g_string_free (xs, FALSE);
 	g_string_free (ys, FALSE);
 }

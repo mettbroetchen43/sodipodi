@@ -217,7 +217,7 @@ sp_selection_update_statusbar (SPSelection * selection)
 			 g_slist_length (selection->items));
 	}
 
-	sp_desktop_default_status (SP_ACTIVE_DESKTOP, message);
+	sp_view_set_status (SP_VIEW (SP_ACTIVE_DESKTOP), message, TRUE);
 	
 	g_free (message);
 }

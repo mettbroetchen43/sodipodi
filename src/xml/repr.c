@@ -607,7 +607,7 @@ sp_repr_document_set_root (SPReprDoc * doc, SPRepr * repr)
 }
 
 SPReprDoc *
-sp_repr_document (SPRepr * repr)
+sp_repr_document (const SPRepr *repr)
 {
 	/* fixme: */
 	while (repr->parent) repr = repr->parent;
@@ -616,7 +616,7 @@ sp_repr_document (SPRepr * repr)
 }
 
 SPRepr *
-sp_repr_document_root (SPReprDoc * doc)
+sp_repr_document_root (const SPReprDoc *doc)
 {
 	SPRepr * repr;
 
@@ -626,78 +626,65 @@ sp_repr_document_root (SPReprDoc * doc)
 	return repr->children;
 }
 
-/**
- * sp_repr_document_overwrite:
- * @doc: overwrite into
- * @source: overwrite it
- * @key: identify each node by
- *
- * Copy all @source subtree into @doc.
+/*
+ * Duplicate all attributes and children from src into doc
+ * Does NOT erase original attributes and children
  */
-void
-sp_repr_document_overwrite (SPReprDoc       *doc,
-			    const SPReprDoc *source,
-			    const guchar    *key)
+
+gboolean
+sp_repr_document_merge (SPReprDoc *doc, const SPReprDoc *src, const guchar *key)
 {
-	SPRepr       *rdoc;
+	SPRepr *rdoc;
 	const SPRepr *rsrc;
 	
+	g_return_val_if_fail (doc != NULL, FALSE);
+	g_return_val_if_fail (src != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
+
 	rdoc = sp_repr_document_root (doc);
-	rsrc = sp_repr_document_root ((SPReprDoc *) source);
+	rsrc = sp_repr_document_root (src);
 	
-	sp_repr_overwrite (rdoc->children, rsrc->children, key);
+	return sp_repr_merge (rdoc, rsrc, key);
 }
 
-/**
- * sp_repr_overwrite:
- * @repr: overwrite into
- * @src: overwrite it
- * @key: identify each node by
- *
- * Copy all @src subtree into @doc.
+/*
+ * Duplicate all attributes and children from src into doc
+ * Does NOT erase original attributes and children
  */
+
 gboolean
-sp_repr_overwrite (SPRepr       *repr,
-		   const SPRepr *src,
-		   const guchar *key)
+sp_repr_merge (SPRepr *repr, const SPRepr *src, const guchar *key)
 {
 	SPRepr *child;
-	SPReprAttr *attr, *lastattr;
+	SPReprAttr *attr;
 	
 	g_return_val_if_fail (repr != NULL, FALSE);
 	g_return_val_if_fail (src != NULL, FALSE);
+	g_return_val_if_fail (key != NULL, FALSE);
 
-	/* Fixme: we should use hash table for faster lookup? */
-	
-	if (src->content != NULL) {
-		if (repr->content != NULL) g_free (repr->content);
+	if (src->content) {
+		if (repr->content) g_free (repr->content);
 		repr->content = g_strdup (src->content);
+	} else {
+		if (repr->content) g_free (repr->content);
+		repr->content = NULL;
 	}
 	
 	for (child = src->children; child != NULL; child = child->next) {
-		SPRepr *rchild;
-		const guchar *value;
-		
-		value = sp_repr_attr (child, key);
-		rchild = sp_repr_lookup_child (repr, key, value);
-		if (rchild) {
-			sp_repr_overwrite (rchild, child, key);
+		SPRepr *rch;
+		const guchar *id;
+		id = sp_repr_attr (child, key);
+		rch = sp_repr_lookup_child (repr, key, id);
+		if (rch) {
+			sp_repr_merge (rch, child, key);
 		} else {
-			rchild = sp_repr_duplicate (child);
-			sp_repr_append_child (repr, rchild);
+			rch = sp_repr_duplicate (child);
+			sp_repr_append_child (repr, rch);
 		}
 	}
 	
-	/* fixme: We probably should merge, not replace here (Lauris) */
-	while (repr->attributes) sp_repr_remove_attribute (repr, repr->attributes);
-
-	lastattr = NULL;
 	for (attr = src->attributes; attr != NULL; attr = attr->next) {
-		if (lastattr) {
-			lastattr = lastattr->next = sp_attribute_duplicate (attr);
-		} else {
-			lastattr = repr->attributes = sp_attribute_duplicate (attr);
-		}
+		sp_repr_set_attr (repr, SP_REPR_ATTRIBUTE_KEY (attr), SP_REPR_ATTRIBUTE_VALUE (attr));
 	}
 
 	return TRUE;

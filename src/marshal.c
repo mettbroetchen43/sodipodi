@@ -14,7 +14,8 @@
 
 #include "marshal.h"
 
-typedef gint (* SPSignal_NONE__DOUBLE_DOUBLE) (GtkObject *object, gdouble arg1, gdouble arg2, gpointer user_data);
+typedef void (* SPSignal_NONE__DOUBLE_DOUBLE) (GtkObject *object, gdouble arg1, gdouble arg2, gpointer user_data);
+typedef void (* SPSignal_NONE__STRING_BOOL) (GtkObject *object, gchar *arg1, gboolean arg2, gpointer user_data);
 
 void
 sp_marshal_NONE__DOUBLE_DOUBLE (GtkObject *object, GtkSignalFunc func, gpointer func_data, GtkArg *args)
@@ -24,6 +25,16 @@ sp_marshal_NONE__DOUBLE_DOUBLE (GtkObject *object, GtkSignalFunc func, gpointer 
 	rfunc = (SPSignal_NONE__DOUBLE_DOUBLE) func;
 
 	(* rfunc) (object, GTK_VALUE_DOUBLE (args[0]), GTK_VALUE_DOUBLE (args[1]), func_data);
+}
+
+void
+sp_marshal_NONE__STRING_BOOL (GtkObject *object, GtkSignalFunc func, gpointer func_data, GtkArg *args)
+{
+	SPSignal_NONE__STRING_BOOL rfunc;
+
+	rfunc = (SPSignal_NONE__STRING_BOOL) func;
+
+	(* rfunc) (object, GTK_VALUE_STRING (args[0]), GTK_VALUE_BOOL (args[1]), func_data);
 }
 
 

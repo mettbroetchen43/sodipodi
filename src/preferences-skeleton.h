@@ -26,6 +26,14 @@ static const char preferences_skeleton[] =
 "    <interface id=\"zoom\" state=\"0\"/>\n"
 "    <interface id=\"node\" state=\"0\"/>\n"
 "  </interface>\n"
+"  <group id=\"tools\">\n"
+"    <group id=\"shapes\">\n"
+"      <eventcontext id=\"star\" magnitude=\"6\"/>\n"
+"    </group>\n"
+"    <group id=\"freehand\">\n"
+"      <eventcontext id=\"dynamic\" mass=\"0.1\" drag=\"0.4\" angle=\"60\" width=\"0.4\"/>\n"
+"    </group>\n"
+"  </group>\n"
 "</sodipodi>\n";
 
 #define PREFERENCES_SKELETON_SIZE (sizeof (preferences_skeleton) - 1)
