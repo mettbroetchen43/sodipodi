@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-09-25 11:54-0400\n"
+"POT-Creation-Date: 2001-09-27 16:59+0200\n"
 "PO-Revision-Date: 2001-09-25 13:30+0100\n"
 "Last-Translator: Keld Simonsen <keld@dkuug.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
@@ -265,11 +265,11 @@ msgstr "Enheder:"
 msgid "Choose unit system"
 msgstr "Vælg måleenhed"
 
-#: glade/document.c:19 glade/object_props.c:12 glade/object_props.c:45
+#: glade/document.c:19 glade/object_props.c:12 glade/object_props.c:52
 msgid "Width:"
 msgstr "Bredde:"
 
-#: glade/document.c:20 glade/object_props.c:46
+#: glade/document.c:20 glade/object_props.c:53
 msgid "Height:"
 msgstr "Højde:"
 
@@ -362,7 +362,7 @@ msgstr "Er skraveret"
 msgid "Scale with object"
 msgstr "Skalér med objekt"
 
-#: glade/object_props.c:11 glade/object_props.c:29 glade/object_props.c:53
+#: glade/object_props.c:11 glade/object_props.c:29 glade/object_props.c:60
 #: glade/sodipodi-glade.c:88
 msgid "Stroke"
 msgstr "Skravering"
@@ -375,26 +375,26 @@ msgstr "Farve:"
 msgid "Stroke width"
 msgstr "Bredde på strøg"
 
-#: glade/object_props.c:15 glade/object_props.c:55 src/helper/unit-menu.c:94
+#: glade/object_props.c:15 glade/object_props.c:62 src/helper/unit-menu.c:94
 msgid "px"
 msgstr "px"
 
-#: glade/object_props.c:16 glade/object_props.c:41 glade/object_props.c:48
-#: glade/object_props.c:56 glade/transformation.c:70 glade/transformation.c:80
+#: glade/object_props.c:16 glade/object_props.c:48 glade/object_props.c:55
+#: glade/object_props.c:63 glade/transformation.c:70 glade/transformation.c:80
 #: glade/transformation.c:88 glade/transformation.c:98
 #: src/helper/unit-menu.c:90
 msgid "mm"
 msgstr "mm"
 
-#: glade/object_props.c:17 glade/object_props.c:42 glade/object_props.c:49
-#: glade/object_props.c:57 glade/transformation.c:72 glade/transformation.c:82
+#: glade/object_props.c:17 glade/object_props.c:49 glade/object_props.c:56
+#: glade/object_props.c:64 glade/transformation.c:72 glade/transformation.c:82
 #: glade/transformation.c:90 glade/transformation.c:100
 #: src/helper/unit-menu.c:91
 msgid "cm"
 msgstr "cm"
 
-#: glade/object_props.c:18 glade/object_props.c:43 glade/object_props.c:50
-#: glade/object_props.c:59 glade/transformation.c:74 glade/transformation.c:84
+#: glade/object_props.c:18 glade/object_props.c:50 glade/object_props.c:57
+#: glade/object_props.c:66 glade/transformation.c:74 glade/transformation.c:84
 #: glade/transformation.c:92 glade/transformation.c:102
 msgid "in"
 msgstr "\""
@@ -447,7 +447,7 @@ msgstr "Uden fyld"
 msgid "Color fill"
 msgstr "Farvefyld"
 
-#: glade/object_props.c:32 glade/object_props.c:74
+#: glade/object_props.c:32 glade/object_props.c:81
 msgid "Gradient fill"
 msgstr "Gradient fyld"
 
@@ -460,97 +460,130 @@ msgid "Fractal fill"
 msgstr "Fraktalfyld"
 
 #: glade/object_props.c:35
-msgid "Color fill "
+#, fuzzy
+msgid " Color fill "
 msgstr "Udfyld med farve "
 
-#: glade/object_props.c:36 glade/object_props.c:66 glade/sodipodi-glade.c:87
+#: glade/object_props.c:36
+#, fuzzy
+msgid "Choose fill color"
+msgstr "Vælg farve for strøg"
+
+#: glade/object_props.c:37
+#, fuzzy
+msgid "Pick fill color"
+msgstr "Vælg en farve"
+
+#: glade/object_props.c:38 src/widgets/sp-color-selector.c:480
+msgid "Red:"
+msgstr "Rød:"
+
+#: glade/object_props.c:39
+#, fuzzy
+msgid "Fill Color:"
+msgstr "Farve:"
+
+#: glade/object_props.c:40 src/widgets/sp-color-selector.c:481
+msgid "Green:"
+msgstr "Grøn:"
+
+#: glade/object_props.c:41 src/widgets/sp-color-selector.c:482
+msgid "Blue:"
+msgstr "Blå:"
+
+#: glade/object_props.c:42 src/widgets/sp-color-selector.c:483
+#: src/widgets/sp-color-selector.c:501 src/widgets/sp-color-selector.c:521
+msgid "Alpha:"
+msgstr "Alfa:"
+
+#: glade/object_props.c:43 glade/object_props.c:73 glade/sodipodi-glade.c:87
 msgid "Fill"
 msgstr "Fyld"
 
-#: glade/object_props.c:37 glade/object_props.c:60
+#: glade/object_props.c:44 glade/object_props.c:67
 msgid "Position"
 msgstr "Position"
 
-#: glade/object_props.c:38
+#: glade/object_props.c:45
 msgid "X:"
 msgstr "X:"
 
-#: glade/object_props.c:39
+#: glade/object_props.c:46
 msgid "Y:"
 msgstr "Y:"
 
-#: glade/object_props.c:40 glade/object_props.c:47 glade/object_props.c:58
+#: glade/object_props.c:47 glade/object_props.c:54 glade/object_props.c:65
 #: glade/transformation.c:68 glade/transformation.c:78
 #: glade/transformation.c:86 glade/transformation.c:96
 #: src/helper/unit-menu.c:93
 msgid "pt"
 msgstr "pt"
 
-#: glade/object_props.c:44
+#: glade/object_props.c:51
 msgid "Dimension"
 msgstr "Dimension"
 
-#: glade/object_props.c:51
+#: glade/object_props.c:58
 msgid "Layout"
 msgstr "Udformning"
 
-#: glade/object_props.c:52
+#: glade/object_props.c:59
 msgid "Reread"
 msgstr "Genlæs"
 
-#: glade/object_props.c:54 glade/object_props.c:67
+#: glade/object_props.c:61 glade/object_props.c:74
 msgid "Pick a color"
 msgstr "Vælg en farve"
 
-#: glade/object_props.c:61 glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:40
+#: glade/object_props.c:68 glade/sodipodi-glade.c:39 glade/sodipodi-glade.c:40
 msgid "pixels"
 msgstr "piksler"
 
-#: glade/object_props.c:62
+#: glade/object_props.c:69
 msgid "millimeters"
 msgstr "millimeter"
 
-#: glade/object_props.c:63
+#: glade/object_props.c:70
 msgid "centimeter"
 msgstr "centimeter"
 
-#: glade/object_props.c:64
+#: glade/object_props.c:71
 msgid "points"
 msgstr "punkter"
 
-#: glade/object_props.c:65
+#: glade/object_props.c:72
 msgid "inches"
 msgstr "tommer"
 
-#: glade/object_props.c:68
+#: glade/object_props.c:75
 msgid "none"
 msgstr "ingen"
 
-#: glade/object_props.c:69
+#: glade/object_props.c:76
 msgid "color"
 msgstr "farve"
 
-#: glade/object_props.c:70
+#: glade/object_props.c:77
 msgid "window1"
 msgstr "vindue1"
 
-#: glade/object_props.c:71
+#: glade/object_props.c:78
 msgid " General "
 msgstr " Generelt "
 
-#: glade/object_props.c:72
+#: glade/object_props.c:79
 msgid " Style "
 msgstr " Stíl "
 
-#: glade/object_props.c:73
+#: glade/object_props.c:80
 msgid "window2"
 msgstr "vindue2"
 
-#: glade/object_props.c:75
+#: glade/object_props.c:82
 msgid "Add new gradient"
 msgstr ""
 
-#: glade/object_props.c:76
+#: glade/object_props.c:83
 msgid "Edit..."
 msgstr "Redigering..."
 
@@ -710,6 +743,7 @@ msgid "Duplicate"
 msgstr "Duplikér"
 
 #: glade/sodipodi-glade.c:53 glade/xml-tree.c:18
+#: src/dialogs/gradient-selector.c:83
 msgid "Delete"
 msgstr "Slet"
 
@@ -1101,7 +1135,7 @@ msgstr "Fjern transformation"
 msgid "Convert selected objects to curves"
 msgstr "Omform valgte ting til kurver"
 
-#: glade/toolbox.c:79 src/toolbox.c:78
+#: glade/toolbox.c:79 src/dialogs/gradient-selector.c:73 src/toolbox.c:78
 msgid "Edit"
 msgstr "Redigering"
 
@@ -1433,7 +1467,7 @@ msgstr "Nøgle"
 msgid "Value"
 msgstr "Værdi"
 
-#: glade/xml-tree.c:19
+#: glade/xml-tree.c:19 src/dialogs/gradient-selector.c:78
 msgid "Add"
 msgstr "Tilføj"
 
@@ -1476,23 +1510,6 @@ msgstr "Ønsker du at slette attributten?"
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunne ikke oprette sodipodi-svg-doc fabrik"
-
-#: src/widgets/sp-color-selector.c:480
-msgid "Red:"
-msgstr "Rød:"
-
-#: src/widgets/sp-color-selector.c:481
-msgid "Green:"
-msgstr "Grøn:"
-
-#: src/widgets/sp-color-selector.c:482
-msgid "Blue:"
-msgstr "Blå:"
-
-#: src/widgets/sp-color-selector.c:483 src/widgets/sp-color-selector.c:501
-#: src/widgets/sp-color-selector.c:521
-msgid "Alpha:"
-msgstr "Alfa:"
 
 #: src/widgets/sp-color-selector.c:498
 msgid "Hue:"
@@ -1570,17 +1587,10 @@ msgstr ""
 msgid "The ID is valid"
 msgstr ""
 
-#: src/dialogs/gradient-selector.c:68
-msgid "Edit vector"
+#. Reset button
+#: src/dialogs/gradient-selector.c:101
+msgid "Reset"
 msgstr ""
-
-#: src/dialogs/gradient-selector.c:73
-msgid "Add vector"
-msgstr ""
-
-#: src/dialogs/gradient-selector.c:78
-msgid "Delete vector"
-msgstr "Slet vektor"
 
 #: src/dialogs/gradient-vector.c:56
 msgid "Start color"
@@ -1702,7 +1712,7 @@ msgid "Could not initialize Bonobo"
 msgstr "Kunne ikke initialisere Bonobo"
 
 #. Not a regular file
-#: src/sodipodi.c:298
+#: src/sodipodi.c:302
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1711,7 +1721,7 @@ msgid ""
 msgstr ""
 
 #. Not an valid xml file
-#: src/sodipodi.c:311
+#: src/sodipodi.c:315
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1721,7 +1731,7 @@ msgid ""
 "preferences."
 msgstr ""
 
-#: src/sodipodi.c:325
+#: src/sodipodi.c:329
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1731,7 +1741,7 @@ msgid ""
 msgstr ""
 
 #. Cannot create directory
-#: src/sodipodi.c:582
+#: src/sodipodi.c:586
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1741,7 +1751,7 @@ msgid ""
 msgstr ""
 
 #. Not a directory
-#: src/sodipodi.c:594
+#: src/sodipodi.c:598
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1751,7 +1761,7 @@ msgid ""
 msgstr ""
 
 #. Cannot create file
-#: src/sodipodi.c:610
+#: src/sodipodi.c:614
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1761,7 +1771,7 @@ msgid ""
 msgstr ""
 
 #. Cannot create file
-#: src/sodipodi.c:622
+#: src/sodipodi.c:626
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1819,24 +1829,27 @@ msgstr "Gruppér"
 msgid "Ungroup"
 msgstr "Opdel gruppe"
 
-#: src/sp-shape.c:291
+#: src/sp-shape.c:350
 msgid "A path - whatever it means"
 msgstr "En sti - hvad det så end betyder"
 
 #. Create toplevel menuitem
-#: src/sp-shape.c:438
+#: src/sp-shape.c:581
 msgid "Shape"
 msgstr "Form"
 
 #. Item dialog
-#: src/sp-shape.c:441
+#: src/sp-shape.c:584
 msgid "Fill settings"
 msgstr "Indstillinger for fyld"
 
-#: src/sp-text.c:198
+#: src/sp-text.c:201
 msgid "Text object"
 msgstr "Tekstobjekt"
 
 #: src/toolbox.c:99
 msgid "Draw"
 msgstr "Tegn"
+
+#~ msgid "Delete vector"
+#~ msgstr "Slet vektor"

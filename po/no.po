@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.18\n"
-"POT-Creation-Date: 2001-05-22 16:43+0200\n"
+"POT-Creation-Date: 2001-09-27 16:59+0200\n"
 "PO-Revision-Date: 2001-05-22 16:44+02:00\n"
 "Last-Translator: Kjartan Maraas <kmaraas@online.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -203,7 +203,7 @@ msgstr "Rettesnorer"
 msgid "Millimeters"
 msgstr "Millimeter"
 
-#: glade/display.c:20 glade/display.c:32
+#: glade/display.c:20 glade/display.c:32 src/helper/unit-menu.c:94
 msgid "Pixels"
 msgstr "Piksler"
 
@@ -282,7 +282,7 @@ msgstr "Side"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/item.c:7
+#: glade/item.c:7 src/dialogs/item-properties.c:340
 msgid "Item properties"
 msgstr "Egenskaper for oppføring"
 
@@ -310,8 +310,8 @@ msgstr "ID:"
 msgid "Opacity:"
 msgstr "Ugjennomsiktighet"
 
-#: glade/item.c:14 src/dialogs/item-properties.c:99
-#: src/dialogs/item-properties.c:236
+#: glade/item.c:14 src/dialogs/item-properties.c:180
+#: src/dialogs/item-properties.c:250 src/dialogs/item-properties.c:491
 msgid "The SVG ID of item"
 msgstr "SVG ID for oppføringen"
 
@@ -335,7 +335,8 @@ msgstr "X +"
 msgid "Y +"
 msgstr "Y +"
 
-#: glade/item.c:22 src/sp-item.c:471
+#. Create toplevel menuitem
+#: glade/item.c:22 src/sp-item.c:545
 msgid "Item"
 msgstr "Oppføring"
 
@@ -361,7 +362,7 @@ msgid "Scale with object"
 msgstr "Skaler med objekt"
 
 #: glade/object_props.c:11 glade/object_props.c:29 glade/object_props.c:60
-#: glade/sodipodi-glade.c:87
+#: glade/sodipodi-glade.c:88
 msgid "Stroke"
 msgstr "Strøk"
 
@@ -470,7 +471,7 @@ msgstr "Velg farge på fyll"
 msgid "Pick fill color"
 msgstr "Velg en farge for fyll"
 
-#: glade/object_props.c:38
+#: glade/object_props.c:38 src/widgets/sp-color-selector.c:480
 msgid "Red:"
 msgstr "Rød:"
 
@@ -478,19 +479,20 @@ msgstr "Rød:"
 msgid "Fill Color:"
 msgstr "Fyllfarge:"
 
-#: glade/object_props.c:40
+#: glade/object_props.c:40 src/widgets/sp-color-selector.c:481
 msgid "Green:"
 msgstr "Grønn:"
 
-#: glade/object_props.c:41
+#: glade/object_props.c:41 src/widgets/sp-color-selector.c:482
 msgid "Blue:"
 msgstr "Blå:"
 
-#: glade/object_props.c:42
+#: glade/object_props.c:42 src/widgets/sp-color-selector.c:483
+#: src/widgets/sp-color-selector.c:501 src/widgets/sp-color-selector.c:521
 msgid "Alpha:"
 msgstr "Alpha:"
 
-#: glade/object_props.c:43 glade/object_props.c:73 glade/sodipodi-glade.c:86
+#: glade/object_props.c:43 glade/object_props.c:73 glade/sodipodi-glade.c:87
 msgid "Fill"
 msgstr "Fyll"
 
@@ -598,47 +600,47 @@ msgstr ""
 "Et vektorbasert tegneprogram\n"
 "Utgitt under GPL"
 
-#: glade/sodipodi-glade.c:10 glade/toolbox.c:40
+#: glade/sodipodi-glade.c:10 glade/toolbox.c:41
 msgid "Node Edit"
 msgstr "Noderedigering"
 
-#: glade/sodipodi-glade.c:11 glade/toolbox.c:41
+#: glade/sodipodi-glade.c:11 glade/toolbox.c:42
 msgid "Include one node into selected segments"
 msgstr "Inkluder en node i valgte segmenter"
 
-#: glade/sodipodi-glade.c:12 glade/toolbox.c:45
+#: glade/sodipodi-glade.c:12 glade/toolbox.c:46
 msgid "Break apart selected node"
 msgstr "Bryt opp valgte noder"
 
-#: glade/sodipodi-glade.c:13 glade/toolbox.c:44
+#: glade/sodipodi-glade.c:13 glade/toolbox.c:45
 msgid "Convert selected segments to curves"
 msgstr "Konverter valgte segmenter til ku_rver"
 
-#: glade/sodipodi-glade.c:14 glade/toolbox.c:46
+#: glade/sodipodi-glade.c:14 glade/toolbox.c:47
 msgid "Join 2 selected endpoints"
 msgstr "Slå sammen 2 valgte endepunkter"
 
-#: glade/sodipodi-glade.c:15 glade/toolbox.c:47
+#: glade/sodipodi-glade.c:15 glade/toolbox.c:48
 msgid "Cusp line at selected nodes"
 msgstr "Gjør linjen spiss ved valgte noder"
 
-#: glade/sodipodi-glade.c:16 glade/toolbox.c:48
+#: glade/sodipodi-glade.c:16 glade/toolbox.c:49
 msgid "Smooth line at selected nodes"
 msgstr "Jevn ut en linje ved valgte noder"
 
-#: glade/sodipodi-glade.c:17 glade/toolbox.c:49
+#: glade/sodipodi-glade.c:17 glade/toolbox.c:50
 msgid "Symmetric "
 msgstr "Symmetrisk "
 
-#: glade/sodipodi-glade.c:18 glade/toolbox.c:51
+#: glade/sodipodi-glade.c:18 glade/toolbox.c:52
 msgid "Close dialog"
 msgstr "Lukk dialog"
 
-#: glade/sodipodi-glade.c:19 glade/toolbox.c:43
+#: glade/sodipodi-glade.c:19 glade/toolbox.c:44
 msgid "Convert selected segments to lines"
 msgstr "Konverter valgte segmenter til linjer"
 
-#: glade/sodipodi-glade.c:20 glade/toolbox.c:42
+#: glade/sodipodi-glade.c:20 glade/toolbox.c:43
 msgid "Delete selected nodes"
 msgstr "Slett valgte noder"
 
@@ -655,8 +657,8 @@ msgid "Drawing"
 msgstr "Tegning"
 
 #: glade/sodipodi-glade.c:25 glade/sodipodi-glade.c:50
-#: glade/sodipodi-glade.c:54 glade/toolbox.c:31 src/dialogs/align.c:110
-#: src/toolbox.c:93
+#: glade/sodipodi-glade.c:54 glade/toolbox.c:32 src/dialogs/align.c:110
+#: src/toolbox.c:95
 msgid "Selection"
 msgstr "Valg"
 
@@ -728,7 +730,7 @@ msgstr "_Ny"
 msgid "Import"
 msgstr "Importer"
 
-#: glade/sodipodi-glade.c:48 glade/toolbox.c:54
+#: glade/sodipodi-glade.c:48 glade/toolbox.c:55
 msgid "Export"
 msgstr "Eksporter"
 
@@ -737,6 +739,7 @@ msgid "Duplicate"
 msgstr "Dupliser"
 
 #: glade/sodipodi-glade.c:53 glade/xml-tree.c:18
+#: src/dialogs/gradient-selector.c:83
 msgid "Delete"
 msgstr "Slett"
 
@@ -788,8 +791,8 @@ msgstr "Konverter til ku_rver"
 msgid "New View"
 msgstr "Ny visning"
 
-#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:85 glade/toolbox.c:22
-#: src/desktop.c:316 src/toolbox.c:126
+#: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:86 glade/toolbox.c:23
+#: src/desktop.c:316 src/toolbox.c:130
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -857,28 +860,32 @@ msgstr "Elipse"
 msgid "Freehand"
 msgstr "Frihånd"
 
+#: glade/sodipodi-glade.c:84
+msgid "Dynahand"
+msgstr ""
+
 #.
 #. * Translatable strings file generated by Glade.
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/sodipodi-glade.c:84 glade/sodipodi-glade.c:88 glade/text-dialog.c:7
+#: glade/sodipodi-glade.c:85 glade/sodipodi-glade.c:89 glade/text-dialog.c:7
 msgid "Text"
 msgstr "Tekst"
 
-#: glade/sodipodi-glade.c:89 src/toolbox.c:130
+#: glade/sodipodi-glade.c:90 src/toolbox.c:134
 msgid "Nodes"
 msgstr "Noder"
 
-#: glade/sodipodi-glade.c:90
+#: glade/sodipodi-glade.c:91
 msgid "Desktop"
 msgstr "Skrivebord"
 
-#: glade/sodipodi-glade.c:91
+#: glade/sodipodi-glade.c:92
 msgid "Document"
 msgstr "Dokument"
 
-#: glade/sodipodi-glade.c:92
+#: glade/sodipodi-glade.c:93
 msgid "Display"
 msgstr "Skjerm"
 
@@ -887,7 +894,7 @@ msgstr "Skjerm"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/sodipodi-glade.c:93 glade/xml-tree.c:7
+#: glade/sodipodi-glade.c:94 glade/xml-tree.c:7
 msgid "XML Tree"
 msgstr "XML-tre"
 
@@ -928,11 +935,11 @@ msgstr "_Om..."
 msgid "Drawing context"
 msgstr "Tegnekontekst"
 
-#: glade/toolbox.c:15 glade/toolbox.c:21
+#: glade/toolbox.c:15
 msgid "Edit nodes"
 msgstr "Rediger noder"
 
-#: glade/toolbox.c:16 glade/toolbox.c:25
+#: glade/toolbox.c:16 glade/toolbox.c:27
 msgid "Zoom in"
 msgstr "Zoom inn"
 
@@ -952,11 +959,22 @@ msgstr "Tegn frihåndslinje"
 msgid "Draw text"
 msgstr "Tegn tekst"
 
-#: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
-msgid "Zoom to 1:1"
-msgstr "Zoom til 1:1"
+#: glade/toolbox.c:21
+#, fuzzy
+msgid "Select and transform"
+msgstr "Velg og transformer objekter og grupper"
+
+#: glade/toolbox.c:22
+#, fuzzy
+msgid "Draw dynahand line"
+msgstr "Tegn frihåndslinje"
 
 #: glade/toolbox.c:24
+#, fuzzy
+msgid "Zoom to 2:1"
+msgstr "Zoom til 1:1"
+
+#: glade/toolbox.c:25
 msgid "Zoom to page"
 msgstr "Zoom til side"
 
@@ -964,179 +982,188 @@ msgstr "Zoom til side"
 msgid "Zoom out"
 msgstr "Zoom ut"
 
-#: glade/toolbox.c:27
+#: glade/toolbox.c:28
 msgid "Zoom to drawing"
 msgstr "Zoom til tegning"
 
-#: glade/toolbox.c:28
+#: glade/toolbox.c:29
 msgid "Zoom to selection"
 msgstr "Zoom til utvalg"
 
-#: glade/toolbox.c:32
+#: glade/toolbox.c:30
+msgid "Zoom to 1:1"
+msgstr "Zoom til 1:1"
+
+#: glade/toolbox.c:31
+#, fuzzy
+msgid "Zoom to 1:2"
+msgstr "Zoom til 1:1"
+
+#: glade/toolbox.c:33
 msgid "lower selection to bottom"
 msgstr "senk utvalg til bunnen"
 
-#: glade/toolbox.c:33
+#: glade/toolbox.c:34
 msgid "Raise selection to top"
 msgstr "Hev utvalg til toppen"
 
-#: glade/toolbox.c:34
+#: glade/toolbox.c:35
 msgid "Lower selection one layer"
 msgstr "Senk utvalg ett lag"
 
-#: glade/toolbox.c:35
+#: glade/toolbox.c:36
 msgid "Rise selection one layer"
 msgstr "Hev utvalg ett lag"
 
-#: glade/toolbox.c:36
+#: glade/toolbox.c:37
 msgid "Break apart selected paths"
 msgstr "Bryt opp valgte stier"
 
-#: glade/toolbox.c:37
+#: glade/toolbox.c:38
 msgid "Combine selected paths"
 msgstr "Slå sammen valgte stier"
 
-#: glade/toolbox.c:38
+#: glade/toolbox.c:39
 msgid "Group selected objects"
 msgstr "Grupper valgte objekter"
 
-#: glade/toolbox.c:39
+#: glade/toolbox.c:40
 msgid "Ungroup selected objects"
 msgstr "Del opp valgte objekter"
 
-#: glade/toolbox.c:50
+#: glade/toolbox.c:51
 msgid "Unsymmetric"
 msgstr "Usymmetrisk "
 
-#: glade/toolbox.c:52 src/toolbox.c:72
+#: glade/toolbox.c:53 src/toolbox.c:74
 msgid "File"
 msgstr "Fil"
 
-#: glade/toolbox.c:53
+#: glade/toolbox.c:54
 msgid "New drawing"
 msgstr "Ny tegning"
 
-#: glade/toolbox.c:55
+#: glade/toolbox.c:56
 msgid "Open new drawing"
 msgstr "Åpne ny tegning"
 
-#: glade/toolbox.c:56
+#: glade/toolbox.c:57
 msgid "Import "
 msgstr "Importer "
 
-#: glade/toolbox.c:57
+#: glade/toolbox.c:58
 msgid "Print drawing"
 msgstr "Skriv ut tegning"
 
-#: glade/toolbox.c:58
+#: glade/toolbox.c:59
 msgid "Preview print drawing"
 msgstr "Forhåndsvis utskrift av tegning"
 
-#: glade/toolbox.c:59
+#: glade/toolbox.c:60
 msgid "Save drawing "
 msgstr "Lagre tegning"
 
-#: glade/toolbox.c:60
+#: glade/toolbox.c:61
 msgid "Save drawing under new filename"
 msgstr "Lagre tegning med nytt filnavn"
 
-#: glade/toolbox.c:61
+#: glade/toolbox.c:62
 msgid "Quit or not quit ?"
 msgstr "Avslutt eller ikke?"
 
-#: glade/toolbox.c:62
+#: glade/toolbox.c:63
 msgid "Yes quick! I want to leave sodipodi and come back later."
 msgstr "Ja, raskt! Jeg ønsker å forlate sodipodi og komme tilbae senere."
 
-#: glade/toolbox.c:63
+#: glade/toolbox.c:64
 msgid "Yep !"
 msgstr "Ja!"
 
-#: glade/toolbox.c:64
+#: glade/toolbox.c:65
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
 msgstr "Nei, jeg vil heller tegne flere kule vektortegniner med sodipodi."
 
-#: glade/toolbox.c:65
+#: glade/toolbox.c:66
 msgid "Nope !"
 msgstr "Nei!"
 
-#: glade/toolbox.c:66
+#: glade/toolbox.c:67
 msgid "Really wanna quit sodipodi ?"
 msgstr "Vil du virkelig avslutte sodipodi?"
 
-#: glade/toolbox.c:67 src/event-context.c:431 src/toolbox.c:85
+#: glade/toolbox.c:68 src/event-context.c:432 src/toolbox.c:87
 msgid "Object"
 msgstr "Objekt"
 
-#: glade/toolbox.c:68
+#: glade/toolbox.c:69
 msgid "Align dialog"
 msgstr "Juster dialog"
 
-#: glade/toolbox.c:69
+#: glade/toolbox.c:70
 msgid "Transformation dialog"
 msgstr "Transformasjonsdialog"
 
-#: glade/toolbox.c:70
+#: glade/toolbox.c:71
 msgid "Edit font style of selected objects"
 msgstr "Rediger skrifttypestil for valgte objekter"
 
-#: glade/toolbox.c:71
+#: glade/toolbox.c:72
 msgid "Edit layout of selected objects"
 msgstr "Rediger plassering for valgte objekter"
 
-#: glade/toolbox.c:72
+#: glade/toolbox.c:73
 msgid "Edit fill style of selected objects"
 msgstr "Rediger fylltype for valgte objekter"
 
-#: glade/toolbox.c:73
+#: glade/toolbox.c:74
 msgid "Edit stroke style of selected objects"
 msgstr "Rediger pennestil for valgte objekter"
 
-#: glade/toolbox.c:74
+#: glade/toolbox.c:75
 msgid "Flip selected objects"
 msgstr "Vend valgte objekter"
 
-#: glade/toolbox.c:75
+#: glade/toolbox.c:76
 msgid "Rotate selected objects 90° clockwise"
 msgstr "Roter valgte objekter 90° med klokken"
 
-#: glade/toolbox.c:76
+#: glade/toolbox.c:77
 msgid "Remove transformation"
 msgstr "Fjern transformering"
 
-#: glade/toolbox.c:77
+#: glade/toolbox.c:78
 msgid "Convert selected objects to curves"
 msgstr "Konverter valgte objekter til kurver"
 
-#: glade/toolbox.c:78 src/toolbox.c:76
+#: glade/toolbox.c:79 src/dialogs/gradient-selector.c:73 src/toolbox.c:78
 msgid "Edit"
 msgstr "Rediger"
 
-#: glade/toolbox.c:79
+#: glade/toolbox.c:80
 msgid "Undo "
 msgstr "Angre"
 
-#: glade/toolbox.c:80
+#: glade/toolbox.c:81
 msgid "Redo"
 msgstr "Gjenopprett"
 
-#: glade/toolbox.c:81
+#: glade/toolbox.c:82
 msgid "Delete selection"
 msgstr "Slett utvalg"
 
-#: glade/toolbox.c:82
+#: glade/toolbox.c:83
 msgid "Paste from clipboard"
 msgstr "Lim inn fra utklippstavlen"
 
-#: glade/toolbox.c:83
+#: glade/toolbox.c:84
 msgid "Copy selection to clipboard"
 msgstr "Kopier utvalg til utklippstavlen"
 
-#: glade/toolbox.c:84
+#: glade/toolbox.c:85
 msgid "Cut selection"
 msgstr "Klipp ut utvalg"
 
-#: glade/toolbox.c:85
+#: glade/toolbox.c:86
 msgid "Duplicate selection"
 msgstr "Dupliser utvalg"
 
@@ -1440,7 +1467,7 @@ msgstr "Nøkkel"
 msgid "Value"
 msgstr "Verdi"
 
-#: glade/xml-tree.c:19
+#: glade/xml-tree.c:19 src/dialogs/gradient-selector.c:78
 msgid "Add"
 msgstr "Legg til"
 
@@ -1456,7 +1483,7 @@ msgstr "Innhold"
 msgid "Change Attribute"
 msgstr "Endre attributt"
 
-#: glade/xml-tree.c:24 glade/xml-tree.c:28
+#: glade/xml-tree.c:24 glade/xml-tree.c:28 src/widgets/sp-color-selector.c:500
 msgid "Value:"
 msgstr "Verdi:"
 
@@ -1483,6 +1510,32 @@ msgstr "Ønsker du å slette attributten?"
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Kunne ikke opprette sodipodi-svg-doc factory"
+
+#: src/widgets/sp-color-selector.c:498
+#, fuzzy
+msgid "Hue:"
+msgstr "Blå:"
+
+#: src/widgets/sp-color-selector.c:499
+msgid "Saturation:"
+msgstr ""
+
+#: src/widgets/sp-color-selector.c:517
+msgid "Cyan:"
+msgstr ""
+
+#: src/widgets/sp-color-selector.c:518
+msgid "Magenta:"
+msgstr ""
+
+#: src/widgets/sp-color-selector.c:519
+msgid "Yellow:"
+msgstr ""
+
+#: src/widgets/sp-color-selector.c:520
+#, fuzzy
+msgid "Black:"
+msgstr "Til bakgrunn"
 
 #: src/dialogs/align.c:80
 msgid "Last selected"
@@ -1520,35 +1573,56 @@ msgstr "16x16"
 msgid "Custom"
 msgstr "Tilpasset"
 
-#: src/dialogs/item-properties.c:93
+#: src/dialogs/item-properties.c:174
 msgid "Item is reference"
 msgstr "Oppføring er referanse"
 
-#: src/dialogs/item-properties.c:238
+#: src/dialogs/item-properties.c:252 src/dialogs/item-properties.c:493
 msgid "The ID is not valid"
 msgstr "IDen er ikke gyldig"
 
-#: src/dialogs/item-properties.c:240
+#: src/dialogs/item-properties.c:254 src/dialogs/item-properties.c:495
 msgid "The ID is already defined"
 msgstr "IDen er allerede definert"
 
-#: src/dialogs/item-properties.c:242
+#: src/dialogs/item-properties.c:257 src/dialogs/item-properties.c:497
 msgid "The ID is valid"
 msgstr "IDen er gyldig"
 
-#: src/file.c:82
+#. Reset button
+#: src/dialogs/gradient-selector.c:101
+#, fuzzy
+msgid "Reset"
+msgstr "Rekt"
+
+#: src/dialogs/gradient-vector.c:56
+#, fuzzy
+msgid "Start color"
+msgstr "Farge for strøk : "
+
+#: src/dialogs/gradient-vector.c:68
+#, fuzzy
+msgid "End color"
+msgstr "Farge på rutenett"
+
+#: src/dialogs/gradient-vector.c:95
+#, fuzzy
+msgid "Gradient vector"
+msgstr "Gradient"
+
+#: src/file.c:83
 msgid "Select file to open"
 msgstr "Velg fil som skal åpnes"
 
-#: src/file.c:177
+#: src/file.c:176
 msgid "Save file"
 msgstr "Lagre fil"
 
-#: src/file.c:285
+#: src/file.c:284
 msgid "Select file to import"
 msgstr "Velg fil som skal importeres"
 
-#: src/file.c:362
+#: src/file.c:361
 msgid "Export file"
 msgstr "Eksporter fil"
 
@@ -1572,10 +1646,6 @@ msgstr "\""
 #: src/helper/unit-menu.c:93
 msgid "Point"
 msgstr "Punkt"
-
-#: src/helper/unit-menu.c:94
-msgid "Pixelss"
-msgstr "Piksler"
 
 #: src/helper/unit-menu.c:94
 msgid "Pixel"
@@ -1613,7 +1683,7 @@ msgstr "Ex kvadrat"
 msgid "ex"
 msgstr "ex"
 
-#: src/interface.c:109
+#: src/interface.c:110
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s har ikke-lagrede endringer, lagre dem?"
@@ -1648,7 +1718,7 @@ msgid "Could not initialize Bonobo"
 msgstr "Kunne ikke initialisere Bonobo"
 
 #. Not a regular file
-#: src/sodipodi.c:229
+#: src/sodipodi.c:302
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1660,7 +1730,7 @@ msgstr ""
 "ikke kunne lagre eller laste brukervalg\n"
 
 #. Not an valid xml file
-#: src/sodipodi.c:242
+#: src/sodipodi.c:315
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1674,7 +1744,7 @@ msgstr ""
 "Selv om sodipodi vil kjøre vil du\n"
 "ikke kunne laste eller lagre brukervalg"
 
-#: src/sodipodi.c:256
+#: src/sodipodi.c:329
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1687,7 +1757,7 @@ msgstr ""
 "ikke kunne laste eller lagre brukervalg."
 
 #. Cannot create directory
-#: src/sodipodi.c:474
+#: src/sodipodi.c:586
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1701,7 +1771,7 @@ msgstr ""
 "brukervalg."
 
 #. Not a directory
-#: src/sodipodi.c:486
+#: src/sodipodi.c:598
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1715,7 +1785,7 @@ msgstr ""
 "brukervalg."
 
 #. Cannot create file
-#: src/sodipodi.c:502
+#: src/sodipodi.c:614
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1729,7 +1799,7 @@ msgstr ""
 "brukervalg."
 
 #. Cannot create file
-#: src/sodipodi.c:514
+#: src/sodipodi.c:626
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1742,63 +1812,82 @@ msgstr ""
 "du ikke kunne laste eller lagre\n"
 "brukervalg."
 
-#: src/sp-image.c:270
+#: src/sp-image.c:276
 msgid "Broken bitmap"
 msgstr "Ødelagt bitkart"
 
-#: src/sp-image.c:271
+#: src/sp-image.c:277
 msgid "Color bitmap"
 msgstr "Farge bitkart"
 
-#: src/sp-item.c:243
+#: src/sp-item.c:299
 msgid "Unknown item :-("
 msgstr "Ukjent oppføring :-("
 
 #. Item dialog
-#: src/sp-item.c:475
+#: src/sp-item.c:548
 msgid "Item Properties"
 msgstr "Egenskaper for oppføring"
 
+#. Select item
+#: src/sp-item.c:558
+#, fuzzy
+msgid "Select this"
+msgstr "Velg"
+
 #. Reset transformations
-#: src/sp-item.c:484
+#: src/sp-item.c:568
 msgid "Reset transformation"
 msgstr "Nullstill transformasjon"
 
-#: src/sp-item.c:491
+#: src/sp-item.c:574
 msgid "Make sensitive"
 msgstr "Gjør sensitiv"
 
-#: src/sp-item.c:491
+#: src/sp-item.c:574
 msgid "Make insensitive"
 msgstr "Gjør insensitiv"
 
-#: src/sp-item-group.c:375
+#: src/sp-item-group.c:430
 #, c-format
 msgid "Group of %d objects"
 msgstr "Gruppe med %d objekter"
 
-#: src/sp-item-group.c:459
+#: src/sp-item-group.c:514
 msgid "Group"
 msgstr "Grupper"
 
-#: src/sp-item-group.c:462
+#. "Ungroup"
+#: src/sp-item-group.c:519
 msgid "Ungroup"
 msgstr "Del opp gruppe"
 
-#: src/sp-shape.c:270
+#: src/sp-shape.c:350
 msgid "A path - whatever it means"
 msgstr "En sti - hva nå enn det betyr"
 
-#: src/sp-text.c:193
+#. Create toplevel menuitem
+#: src/sp-shape.c:581
+#, fuzzy
+msgid "Shape"
+msgstr "Lagre\t"
+
+#. Item dialog
+#: src/sp-shape.c:584
+#, fuzzy
+msgid "Fill settings"
+msgstr "Innstillinger for skrifttyper"
+
+#: src/sp-text.c:201
 msgid "Text object"
 msgstr "Tekstobjekt"
 
-#: src/toolbox.c:97
+#: src/toolbox.c:99
 msgid "Draw"
 msgstr "Tegn"
 
-#~ msgid "Stroke color : "
-#~ msgstr "Farge for strøk : "
+#~ msgid "Pixelss"
+#~ msgstr "Piksler"
 
 #~ msgid "Valige värv"
 #~ msgstr "Valige varv"
@@ -1848,9 +1937,6 @@ msgstr "Tegn"
 
 #~ msgid "sqare"
 #~ msgstr "kvadrat"
-
-#~ msgid "Gradient"
-#~ msgstr "Gradient"
 
 #~ msgid "Pattern"
 #~ msgstr "Mønster"
@@ -1951,9 +2037,6 @@ msgstr "Tegn"
 #~ msgid "Save File"
 #~ msgstr "Lagre fil"
 
-#~ msgid "Save\t"
-#~ msgstr "Lagre\t"
-
 #~ msgid "Print"
 #~ msgstr "Skriv ut"
 
@@ -1962,9 +2045,6 @@ msgstr "Tegn"
 
 #~ msgid "Stroke settings"
 #~ msgstr "Innstillinger for strøk"
-
-#~ msgid "Font settings"
-#~ msgstr "Innstillinger for skrifttyper"
 
 #~ msgid "Delete selected object(s)"
 #~ msgstr "Slett valgte objekt(er)"
@@ -1984,9 +2064,6 @@ msgstr "Tegn"
 #~ msgid "Lower selected object(s) to bottom"
 #~ msgstr "Senk valgt(e) objekt(er) til bunnen"
 
-#~ msgid "To Back"
-#~ msgstr "Til bakgrunn"
-
 #~ msgid "Raise one position"
 #~ msgstr "Hev ett nivå"
 
@@ -1999,17 +2076,11 @@ msgstr "Tegn"
 #~ msgid "Down"
 #~ msgstr "Ned"
 
-#~ msgid "Select and transform objects and groups"
-#~ msgstr "Velg og transformer objekter og grupper"
-
 #~ msgid "Edit objects using control nodes"
 #~ msgstr "Rediger objekter ved bruk av kontrollnoder"
 
 #~ msgid "Draw rectangles"
 #~ msgstr "Tegn rektangler"
-
-#~ msgid "Rect"
-#~ msgstr "Rekt"
 
 #~ msgid "Draw ellipses"
 #~ msgstr "Tegn elipser"

@@ -1,3 +1,64 @@
+2001/09/27 Version 0.24
+
+This experimental release. While many old bugs have actualy been fixed,
+most probably countless new have been introduced. GUI is somewhat
+messed up, with older and newer versions present at the same time.
+
+Linear gradients work now. OK - to some extent. Only objectBoundingBox
+unit system is supported, and there are known artefacts in printing
+and bitmap export. Still, if you follow some guidelines, you should
+be able to use them:
+- If opening non-sodipodi SVG, either leave old gradients intact
+  entirely, or create fresh new ones, if you want to edit them.
+- Always edit gradient of single object at a time. Do not try to
+  modify gradient of group of objects at the same time.
+- If you want to export or print gradiented text, better convert
+  it to curves before.
+
+There have been lot of work on internals. Not much visible, except
+numerous bugs. Still, there is now near-complete asynchronous
+notifiaction system, that has been used to build dynamic dialogs
+- look at new experimental fill/gradient dialog for example.
+Hopefully there will be more these in future.
+
+Mitsuru contributed dynadraw-filtered drawing tool. Although
+it does currently only simple lines, it should emerge into
+full-featured XInput (read Wacom tablets) calligraphic tool.
+
+Sodipodi now saves emergency backups on segfault. So it would
+be good idea, to check $HOME/.sodipodi, $HOME or $TMP time-to-time,
+or you will run out of disk space. Also - although it should
+save files 99.9% correctly, unless there is grave memory corruption,
+it does not mean these files do not cause the same segfault again,
+if opened. But it helps a lot for crashes in UI system.
+
+Frank contributed neat enhanced knots. I.e. these small handles,
+used for scaling, node editing etc. can now have all kinds
+of fancy shapes, and handle X cursor by thmselves as well.
+
+I re-borrowed Raph SVG path code from librsvg (the old one
+came from Gill). The new code parses SVG files exported from
+Illustrator the right way - so you can now open and edit
+most Nautilus SVG icons.
+
+UI-wise there are neat color slider widgets, that should give
+a little better user experience than plain Gtk sliders. Among
+composite widgets there is CMYK color selector, but it is mainly
+placeholder - both display and printing go through RGB anyways.
+
+Frank also did near-complete snappoints implementation, so
+guidelines and grid are quite useful now.
+
+Francis contributed several bugfixes and also Base64 inline image
+support.
+
+Many other people have contributed to sodipodi. Big thanks to
+everybody!
+
+2001/09/27 Multiple skipped versions
+
+Hmm... Seems that I have omitted some versions
+
 2000/10/09 Version 0.20
 
 This release is intended to test the whole thing out before Gnome 1.4 release
