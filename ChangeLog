@@ -1,3 +1,7 @@
+2003-12-27  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-gradient.c (sp_gradient_set_units): Mark units as set
+
 2003-12-24  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-text.c (sp_string_set_shape): Fixed bug which was lack of
