@@ -10,7 +10,7 @@ TODO for 0.28
 - Make page border togglable (DONE)
 - Autoconf test for popt.h (DONE)
 - Faster move
-- Direct FreeType fonts
+- Direct FreeType fonts (DONE)
 - Toolboxes show arrows to right initially (DONE)
 - localise and kill transparency 1.0 bug
 

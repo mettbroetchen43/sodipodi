@@ -63,9 +63,9 @@ nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int 
 }
 
 void
-nr_typeface_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph)
+nr_typeface_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics)
 {
-	return tf->vmv->glyph_outline_unref (tf, glyph);
+	return tf->vmv->glyph_outline_unref (tf, glyph, metrics);
 }
 
 NRPointF *

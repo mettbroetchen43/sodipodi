@@ -1,3 +1,27 @@
+2002-11-10  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* configure.in: Commented out AM_PROG_AS, as there is not such macro
+	in my installation
+
+	* src/libnrtype/nr-typeface.h: Signature change for outline unref
+
+	* src/libnrtype/nr-type-gnome.c (nr_typeface_gnome_glyph_outline_get): Implemented
+	vertical metrics outline
+	(nr_typeface_gnome_glyph_advance_get): Ditto for advance
+
+	* src/libnrtype/nr-type-directory.c: Cleaned up a lot, now we can hopefully
+	work with multiple font sources
+
+	* src/libnrtype/nr-type-directory.h: Moved namelist to nr-type-primitives
+
+	* src/libnrtype/nr-type-primitives.c: New file
+
+	* src/libnrtype/nr-type-primitives.h: New file
+
+	* src/libnrtype/nr-type-ft2.c: New file
+
+	* src/libnrtype/nr-type-ft2.h: New file
+
 2002-11-09  Masatake YAMATO  <jet@gyve.org>
 
 	* configure.in (AM_CONDITIONAL(USING_OAF)): moved to toplevel.

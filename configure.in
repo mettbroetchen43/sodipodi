@@ -9,7 +9,7 @@ AC_PROG_INTLTOOL(0.11)
 AC_ISC_POSIX
 AC_PROG_CC
 AM_PROG_CC_STDC
-AM_PROG_AS
+dnl AM_PROG_AS
 AC_HEADER_STDC
 
 CFLAGS="$CFLAGS -Wall -Wunused"
@@ -124,6 +124,7 @@ if $try_gnome_print; then
 			awk 'BEGIN { FS = "."; } { print $1 * 1000 + $2;}'`
 		if test "$vers" -ge 27; then
 			AC_MSG_RESULT(found)
+			AC_DEFINE(ENABLE_GNOME_PRINT)
 			SODIPODI_GNOME_PRINT_LIBS=`$GNOME_CONFIG --libs print`
 			SODIPODI_GNOME_PRINT_CFLAGS=`$GNOME_CONFIG --cflags print`
 		else

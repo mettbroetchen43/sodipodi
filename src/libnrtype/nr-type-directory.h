@@ -12,25 +12,14 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-typedef struct _NRNameList NRNameList;
-
-typedef void (* NRNameListDestructor) (NRNameList *list);
-
+#include <libnrtype/nr-type-primitives.h>
 #include <libnrtype/nr-typeface.h>
-
-struct _NRNameList {
-	unsigned long length;
-	unsigned char **names;
-	NRNameListDestructor destructor;
-};
-
-void nr_name_list_release (NRNameList *list);
 
 NRTypeFace *nr_type_directory_lookup (const unsigned char *name);
 NRTypeFace *nr_type_directory_lookup_fuzzy (const unsigned char *family, const unsigned char *style);
 
-NRNameList *nr_type_directory_family_list_get (NRNameList *families);
-NRNameList *nr_type_directory_style_list_get (const unsigned char *family, NRNameList *styles);
+NRNameList *nr_type_directory_family_list_get (NRNameList *flist);
+NRNameList *nr_type_directory_style_list_get (const unsigned char *family, NRNameList *slist);
 
 void nr_type_directory_forget_face (NRTypeFace *tf);
 

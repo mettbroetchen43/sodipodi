@@ -15,6 +15,7 @@
 typedef struct _NRTypeFace NRTypeFace;
 typedef struct _NRTypeFaceDef NRTypeFaceDef;
 typedef struct _NRTypeFaceVMV NRTypeFaceVMV;
+typedef struct _NRTypePosDef NRTypePosDef;
 
 #include <libnr/nr-types.h>
 #include <libnr/nr-path.h>
@@ -32,7 +33,10 @@ enum {
 };
 
 struct _NRTypeFaceDef {
+	NRTypeFaceDef *next;
 	NRTypeFaceVMV *vmv;
+	NRTypePosDef *pdef;
+	unsigned int idx;
 	unsigned char *name;
 	NRTypeFace *typeface;
 };
@@ -43,7 +47,7 @@ struct _NRTypeFaceVMV {
 	void (* free) (NRTypeFace *tf);
 	unsigned int (* attribute_get) (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
 	NRBPath *(* glyph_outline_get) (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *path, unsigned int ref);
-	void (* glyph_outline_unref) (NRTypeFace *tf, unsigned int glyph);
+	void (* glyph_outline_unref) (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
 	NRPointF *(* glyph_advance_get) (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
 	unsigned int (* lookup) (NRTypeFace *tf, unsigned int rule, unsigned int glyph);
 	NRFont *(* font_new) (NRTypeFace *tf, unsigned int metrics, NRMatrixF *transform);
@@ -63,6 +67,7 @@ struct _NRTypeFaceVMV {
 struct _NRTypeFace {
 	NRTypeFaceVMV *vmv;
 	unsigned int refcount;
+	NRTypeFaceDef *def;
 	unsigned int nglyphs;
 };
 
@@ -74,7 +79,7 @@ unsigned int nr_typeface_family_name_get (NRTypeFace *tf, unsigned char *str, un
 unsigned int nr_typeface_attribute_get (NRTypeFace *tf, const unsigned char *key, unsigned char *str, unsigned int size);
 
 NRBPath *nr_typeface_glyph_outline_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRBPath *d, unsigned int ref);
-void nr_typeface_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph);
+void nr_typeface_glyph_outline_unref (NRTypeFace *tf, unsigned int glyph, unsigned int metrics);
 NRPointF *nr_typeface_glyph_advance_get (NRTypeFace *tf, unsigned int glyph, unsigned int metrics, NRPointF *adv);
 
 unsigned int nr_typeface_lookup_default (NRTypeFace *tf, unsigned int unival);

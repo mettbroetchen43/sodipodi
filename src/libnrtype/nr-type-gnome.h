@@ -23,6 +23,8 @@ struct _NRTypeFaceGnome {
 
 	GnomeFontFace *face;
 	NRFont *fonts;
+
+	NRBPath *voutlines;
 };
 
 NRNameList *nr_type_gnome_typefaces_get (NRNameList *typefaces);
