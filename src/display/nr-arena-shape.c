@@ -284,16 +284,8 @@ nr_arena_shape_update (NRArenaItem *item, NRRectL *area, NRGC *gc, guint state, 
 				NRSVL *svl;
 				unsigned int windrule;
 				nr_matrix_f_from_d (&ctmf, &gc->transform);
-#if 0
-				vp = sp_vpath_from_bpath_transform_closepath (shape->curve->bpath, &ctmf, TRUE, FALSE, 0.25);
-#endif
 				windrule = (shape->style->fill_rule.value == SP_WIND_RULE_EVENODD) ? NR_WIND_RULE_EVENODD : NR_WIND_RULE_NONZERO;
-#if 0
-				svl = nr_svl_from_art_vpath (vp, windrule);
-				art_free (vp);
-#else
 				svl = nr_svl_from_art_bpath (shape->curve->bpath, &ctmf, windrule, TRUE, 0.25);
-#endif
 				shape->fill_svp = nr_svp_from_svl (svl, NULL);
 				nr_svl_free_list (svl);
 			} else if (!NR_MATRIX_DF_TEST_TRANSLATE_CLOSE (&gc->transform, &NR_MATRIX_D_IDENTITY, NR_EPSILON_D)) {
@@ -416,11 +408,7 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 			rgba = sp_color_get_rgba32_falpha (&style->fill.value.color,
 							   SP_SCALE24_TO_FLOAT (style->fill_opacity.value) *
 							   SP_SCALE24_TO_FLOAT (style->opacity.value));
-#ifdef loooWITH_NRSVP
-			nr_pixblock_render_svp_rgba (pb, shape->nrsvp, rgba);
-#else
 			nr_blit_pixblock_mask_rgba32 (pb, &m, rgba);
-#endif
 			pb->empty = FALSE;
 			break;
 		case SP_PAINT_TYPE_PAINTSERVER:

@@ -253,31 +253,43 @@ sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 		sh = 128;
 	}
 
+/* fixme: RGB transformed bitmap blit is not implemented (Lauris) */
+/* And even if it would be, unless it uses MMX there is little reason to go RGB */
+#define STRICT_RGBA
+
 	for (y = buf->rect.y0; y < buf->rect.y1; y += sh) {
 		for (x = buf->rect.x0; x < buf->rect.x1; x += sw) {
 			NRRectL area;
-			NRPixBlock pb, cb;
+#ifdef STRICT_RGBA
+			NRPixBlock pb;
+#endif
+			NRPixBlock cb;
 
 			area.x0 = x;
 			area.y0 = y;
 			area.x1 = MIN (x + sw, buf->rect.x1);
 			area.y1 = MIN (y + sh, buf->rect.y1);
 
+#ifdef STRICT_RGBA
 			nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8A8P, area.x0, area.y0, area.x1, area.y1, TRUE);
 			/* fixme: */
 			pb.empty = FALSE;
-
-			nr_arena_item_invoke_render (arena->root, &area, &pb, 0);
+#endif
 
 			nr_pixblock_setup_extern (&cb, NR_PIXBLOCK_MODE_R8G8B8, area.x0, area.y0, area.x1, area.y1,
 						  buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + 3 * (x - buf->rect.x0),
 						  buf->buf_rowstride,
 						  FALSE, FALSE);
 
+#ifdef STRICT_RGBA
+			nr_arena_item_invoke_render (arena->root, &area, &pb, 0);
 			nr_blit_pixblock_pixblock (&cb, &pb);
+			nr_pixblock_release (&pb);
+#else
+			nr_arena_item_invoke_render (arena->root, &area, &cb, 0);
+#endif
 
 			nr_pixblock_release (&cb);
-			nr_pixblock_release (&pb);
 		}
 	}
 }

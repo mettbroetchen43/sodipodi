@@ -962,4 +962,64 @@ nr_R8G8B8_R8G8B8_R8G8B8A8_N (unsigned char *px, int w, int h, int rs, const unsi
 	}
 }
 
+void
+nr_R8G8B8_R8G8B8_R8G8B8A8_P_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
+{
+	int x, y;
+
+	for (y = 0; y < h; y++) {
+		unsigned char *d, *s, *m;
+		d = (unsigned char *) px;
+		s = (unsigned char *) spx;
+		m = (unsigned char *) mpx;
+		for (x = 0; x < w; x++) {
+			unsigned int a;
+			a = NR_PREMUL (s[3], m[0]);
+			if (a != 0) {
+				unsigned int r, g, b;
+				r = NR_PREMUL (s[0], m[0]);
+				d[0] = NR_COMPOSEP11 (r, a, d[0]);
+				g = NR_PREMUL (s[1], m[0]);
+				d[1] = NR_COMPOSEP11 (g, a, d[1]);
+				b = NR_PREMUL (s[2], m[0]);
+				d[2] = NR_COMPOSEP11 (b, a, d[2]);
+			}
+			d += 3;
+			s += 4;
+			m += 1;
+		}
+		px += rs;
+		spx += srs;
+		mpx += mrs;
+	}
+}
+
+void
+nr_R8G8B8_R8G8B8_R8G8B8A8_N_A8 (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, const unsigned char *mpx, int mrs)
+{
+	int x, y;
+
+	for (y = 0; y < h; y++) {
+		unsigned char *d, *s, *m;
+		d = (unsigned char *) px;
+		s = (unsigned char *) spx;
+		m = (unsigned char *) mpx;
+		for (x = 0; x < w; x++) {
+			unsigned int a;
+			a = NR_PREMUL (s[3], m[0]);
+			if (a != 0) {
+				d[0] = NR_COMPOSEP11 (s[0], a, d[0]);
+				d[1] = NR_COMPOSEP11 (s[1], a, d[1]);
+				d[2] = NR_COMPOSEP11 (s[2], a, d[2]);
+			}
+			d += 3;
+			s += 4;
+			m += 1;
+		}
+		px += rs;
+		spx += srs;
+		mpx += mrs;
+	}
+}
+
 
