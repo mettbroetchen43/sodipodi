@@ -26,7 +26,7 @@ typedef struct _SPCtrlLineClass SPCtrlLineClass;
 GtkType sp_ctrlline_get_type (void);
 
 void sp_ctrlline_set_rgba32 (SPCtrlLine *cl, guint32 rgba);
-void sp_ctrlline_set_coords (SPCtrlLine *cl, gdouble x0, gdouble y0, gdouble x2, gdouble y1);
+void sp_ctrlline_set_coords (SPCtrlLine *cl, gdouble x0, gdouble y0, gdouble x1, gdouble y1);
 
 G_END_DECLS
 

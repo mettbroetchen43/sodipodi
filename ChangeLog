@@ -1,3 +1,7 @@
+2003-07-15  Masatake YAMATO  <jet@gyve.org>
+
+	* src/helper/sp-ctrlline.h: Fix a typo(x2->x1).
+
 2003-07-12  Yukihiro Nakai  <ynakai@redhat.com>
 
 	* src/text-context.c (sptc_preedit_changed): New signal handler
