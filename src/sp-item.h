@@ -125,6 +125,7 @@ void sp_item_raise_canvasitem_to_top (SPItem * item);
 struct _SPGroup {
 	SPItem item;
 	GSList * children;
+	GSList * other;
 	gboolean transparent;
 };
 

@@ -1,3 +1,11 @@
+2000-05-01  Lauris Kaplinski  <lauris@ariman.ee>
+
+	* src/helper/sodipodi-ctrl.c: Fixed bug in ::render, which left
+	buffer->is_bg untouched
+	* src/sp-defs.*: New objects, implementing <defs> nodes
+	* src/sp-group.*: Groups have both item and non-item members
+	* src/sp-image.c: Changed "src" attribute to "href"
+
 2000-04-29  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* xml/repr.*: Reprs are now GtkObjects

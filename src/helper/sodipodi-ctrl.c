@@ -198,6 +198,7 @@ sp_ctrl_render (GnomeCanvasItem *item, GnomeCanvasBuf *buf)
 	if (!ctrl->defined) return;
 
 	gnome_canvas_buf_ensure_buf (buf);
+	buf->is_bg = FALSE;
 
 	for (y = MAX (ctrl->box.y0, buf->rect.y0); (y <= ctrl->box.y1) && (y < buf->rect.y1); y++)
 	for (x = MAX (ctrl->box.x0, buf->rect.x0); (x <= ctrl->box.x1) && (x < buf->rect.x1); x++) {

@@ -80,6 +80,7 @@ static void
 sp_group_init (SPGroup *group)
 {
 	group->children = NULL;
+	group->other = NULL;
 	group->transparent = FALSE;
 }
 
@@ -94,8 +95,15 @@ sp_group_destroy (GtkObject *object)
 	while (group->children) {
 		spobject = SP_OBJECT (group->children->data);
 		spobject->parent = NULL;
-		gtk_object_destroy ((GtkObject *) spobject);
-		group->children = g_slist_remove (group->children, spobject);
+		gtk_object_unref ((GtkObject *) spobject);
+		group->children = g_slist_remove_link (group->children, group->children);
+	}
+
+	while (group->other) {
+		spobject = SP_OBJECT (group->other->data);
+		spobject->parent = NULL;
+		gtk_object_unref ((GtkObject *) spobject);
+		group->children = g_slist_remove_link (group->other, group->other);
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
@@ -106,7 +114,6 @@ static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * r
 {
 	SPGroup * group;
 	const GList * l;
-	gint order;
 	SPRepr * crepr;
 	const gchar * name;
 	GtkType type;
@@ -118,23 +125,21 @@ static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * r
 		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
 
 	l = sp_repr_children (repr);
-	order = 0;
 
 	while (l != NULL) {
 		crepr = (SPRepr *) l->data;
 		name = sp_repr_name (crepr);
 		g_assert (name != NULL);
 		type = sp_object_type_lookup (name);
-		if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
-			child = gtk_type_new (type);
-			g_assert (child != NULL);
-			child->parent = object;
-			child->order = order;
+		child = gtk_type_new (type);
+		child->parent = object;
+		if (SP_IS_ITEM (child)) {
 			group->children = g_slist_append (group->children, child);
-			sp_object_invoke_build (child, document, crepr);
+		} else {
+			group->other = g_slist_append (group->other, child);
 		}
+		sp_object_invoke_build (child, document, crepr);
 		l = l->next;
-		order++;
 	}
 }
 
@@ -156,23 +161,24 @@ sp_group_add_child (SPObject * object, SPRepr * child)
 	name = sp_repr_name (child);
 	g_assert (name != NULL);
 	type = sp_object_type_lookup (name);
-	if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
-		childobject = gtk_type_new (type);
-		g_assert (childobject != NULL);
-		childobject->parent = object;
-		childobject->order = sp_repr_position (child);
+
+	childobject = gtk_type_new (type);
+	childobject->parent = object;
+
+	if (SP_IS_ITEM (childobject)) {
 		group->children = g_slist_append (group->children, childobject);
 		sp_object_invoke_build (childobject, object->document, child);
-
 		g_print ("sp-item-group.c: Please fix signals\n");
-
 		for (l = SP_ITEM (object)->display; l != NULL; l = l->next) {
 			ci = sp_item_show (SP_ITEM (childobject),
 				GNOME_CANVAS_GROUP (l->data),
 				sp_desktop_item_handler);
 		}
-		sp_group_set_order (object);
+	} else {
+		group->other = g_slist_append (group->other, childobject);
+		sp_object_invoke_build (childobject, object->document, child);
 	}
+	sp_group_set_order (object);
 }
 
 static void
@@ -192,13 +198,23 @@ sp_group_remove_child (SPObject * object, SPRepr * child)
 		if (childobject->repr == child) {
 			group->children = g_slist_remove (group->children, childobject);
 			childobject->parent = NULL;
-			gtk_object_destroy (GTK_OBJECT (childobject));
+			gtk_object_unref (GTK_OBJECT (childobject));
 #if 0
 			sp_group_set_order (object);
 #endif
 			return;
 		}
 	}
+	for (l = group->other; l != NULL; l = l->next) {
+		childobject = (SPObject *) l->data;
+		if (childobject->repr == child) {
+			group->other = g_slist_remove_link (group->other, l);
+			childobject->parent = NULL;
+			gtk_object_unref (GTK_OBJECT (childobject));
+			return;
+		}
+	}
+	g_assert_not_reached ();
 }
 
 static gint
@@ -230,19 +246,11 @@ sp_group_set_order (SPObject * object)
 			child = SP_ITEM (l->data);
 			delta = g_slist_index (group->children, child);
 			sp_item_change_canvasitem_position (child, -delta);
-			group->children = g_slist_remove (group->children, child);
+			group->children = g_slist_remove (group->children, l->data);
 		}
 	}
 
 	group->children = neworder;
-#if 0
-	group->children = g_slist_sort (group->children, sp_group_compare_children_pos);
-
-	for (l = group->children; l != NULL; l = l->next) {
-		child = SP_ITEM (l->data);
-		sp_item_raise_canvasitem_to_top (child);
-	}
-#endif
 }
 
 static void
