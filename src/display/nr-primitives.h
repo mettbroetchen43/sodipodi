@@ -2,6 +2,10 @@
 #define _NR_PRIMITIVES_H_
 
 typedef struct {
+	float x, y;
+} NRPoint;
+
+typedef struct {
 	float x0, y0, x1, y1;
 } NRDRect;
 

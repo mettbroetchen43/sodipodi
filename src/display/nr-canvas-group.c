@@ -15,8 +15,10 @@
 static void nr_canvas_group_class_init (NRCanvasGroupClass * klass);
 static void nr_canvas_group_init (NRCanvasGroup * group);
 static void nr_canvas_group_destroy (GtkObject * object);
+
 static void nr_canvas_group_add_child (NRCanvasItem * item, NRCanvasItem * child, gint position);
 static void nr_canvas_group_remove_child (NRCanvasItem * item, NRCanvasItem * child);
+static NRCanvasItemState nr_canvas_group_update (NRCanvasItem * item, NRGraphicCtx * ctx, NRCanvasItemState state, guint32 flags);
 
 static NRCanvasItemClass * parent_class;
 
@@ -54,6 +56,7 @@ nr_canvas_group_class_init (NRCanvasGroupClass * klass)
 
 	item_class->add_child = nr_canvas_group_add_child;
 	item_class->remove_child = nr_canvas_group_remove_child;
+	item_class->update = nr_canvas_group_update;
 }
 
 static void
@@ -140,5 +143,31 @@ nr_canvas_group_remove_child (NRCanvasItem * item, NRCanvasItem * child)
 		}
 		p = l;
 	}
+}
+
+static NRCanvasItemState
+nr_canvas_group_update (NRCanvasItem * item, NRGraphicCtx * ctx, NRCanvasItemState state, guint32 flags)
+{
+	NRCanvasGroup * group;
+	NRCanvasItemState beststate;
+	GSList * l;
+
+	group = (NRCanvasGroup *) item;
+
+	beststate = NR_CANVAS_ITEM_STATE_COMPLETE;
+
+	for (l = group->children; l != NULL; l = l->next) {
+		NRCanvasItem * child;
+		NRCanvasItemState childstate;
+		child = (NRCanvasItem *) l->data;
+		childstate = NR_CI_GET_STATE (child);
+		if ((childstate < state) || (flags & NR_CANVAS_ITEM_FORCED_UPDATE)) {
+			/* fixme: state mangling */
+			childstate = nr_canvas_item_invoke_update (child, ctx, NR_CANVAS_ITEM_STATE_RENDER, flags);
+			if (childstate < beststate) beststate = childstate;
+		}
+	}
+
+	return beststate;
 }
 

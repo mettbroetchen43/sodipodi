@@ -84,6 +84,74 @@ nr_canvas_item_destroy (GtkObject * object)
 	if (((GtkObjectClass *) (parent_class))->destroy) (* ((GtkObjectClass *) (parent_class))->destroy) (object);
 }
 
+/* To be used only by implementations */
+
+NRCanvasItemState
+nr_canvas_item_invoke_update (NRCanvasItem * item, NRGraphicCtx * ctx, NRCanvasItemState state, guint32 flags)
+{
+	NRCanvasItemState itemstate, newstate;
+
+	g_return_val_if_fail (item != NULL, NR_CANVAS_ITEM_STATE_INITIAL);
+	g_return_val_if_fail (NR_IS_CANVAS_ITEM (item), NR_CANVAS_ITEM_STATE_INITIAL);
+	g_return_val_if_fail (ctx != NULL, NR_CANVAS_ITEM_STATE_INITIAL);
+	g_return_val_if_fail (((NRCanvasItemClass *) ((GtkObject *) item)->klass)->update, NR_CANVAS_ITEM_STATE_INITIAL);
+
+	itemstate = NR_CI_GET_STATE (item);
+
+	if ((itemstate < state) || (flags & NR_CANVAS_ITEM_FORCED_UPDATE)) {
+		newstate = (* ((NRCanvasItemClass *) ((GtkObject *) item)->klass)->update) (item, ctx, state, flags);
+		NR_CI_SET_STATE (item, newstate);
+		return newstate;
+	}
+
+	return itemstate;
+}
+
+void
+nr_canvas_item_invoke_render (NRCanvasItem * item, NRDrawingArea * area)
+{
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (NR_IS_CANVAS_ITEM (item));
+	g_return_if_fail (area != NULL);
+	g_return_if_fail (((NRCanvasItemClass *) ((GtkObject *) item)->klass)->render);
+
+	(* ((NRCanvasItemClass *) ((GtkObject *) item)->klass)->render) (item, area);
+}
+
+NRCanvasItem *
+nr_canvas_item_invoke_pick (NRCanvasItem * item, NRPoint * point)
+{
+	g_return_val_if_fail (item != NULL, NULL);
+	g_return_val_if_fail (NR_IS_CANVAS_ITEM (item), NULL);
+	g_return_val_if_fail (point != NULL, NULL);
+	g_return_val_if_fail (((NRCanvasItemClass *) ((GtkObject *) item)->klass)->pick, NULL);
+
+	return (* ((NRCanvasItemClass *) ((GtkObject *) item)->klass)->pick) (item, point);
+}
+
+void
+nr_canvas_item_request_update (NRCanvasItem * item, NRCanvasItemState state, guint32 flags)
+{
+	NRCanvasItemState itemstate;
+
+	g_return_if_fail (item != NULL);
+	g_return_if_fail (NR_IS_CANVAS_ITEM (item));
+
+	itemstate = NR_CI_GET_STATE (item);
+
+	if ((itemstate > state) || (flags & NR_CANVAS_ITEM_FORCED_UPDATE)) {
+		if (flags & NR_CANVAS_ITEM_FORCED_UPDATE) {
+			GTK_OBJECT_SET_FLAGS (item, NR_CANVAS_ITEM_FORCED_UPDATE);
+		}
+		NR_CI_SET_STATE (item, state);
+		if (item->parent) {
+			nr_canvas_item_request_update (item->parent, state, 0);
+		} else {
+			nr_canvas_invoke_request_update (item->canvas);
+		}
+	}
+}
+
 void
 nr_canvas_item_set_transform (NRCanvasItem * item, NRAffine * transform)
 {
@@ -99,10 +167,7 @@ nr_canvas_item_set_transform (NRCanvasItem * item, NRAffine * transform)
 		*item->transform = *transform;
 	}
 
-	/* fixme: ??? */
-#if 0
-	nr_item_request_update (item, NR_ITEM_TRANSFORM_CHANGED);
-#endif
+	nr_canvas_item_request_update (item, NR_CANVAS_ITEM_STATE_INITIAL, NR_CANVAS_ITEM_FORCED_UPDATE);
 }
 
 

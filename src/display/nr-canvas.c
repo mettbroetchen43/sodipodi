@@ -110,4 +110,56 @@ nr_canvas_item_new (NRCanvasItem * parent, GtkType type)
 	return item;
 }
 
+/* To be used solely by Canvas implementations */
+
+void
+nr_canvas_invoke_request_update (NRCanvas * canvas)
+{
+	g_return_if_fail (canvas != NULL);
+	g_return_if_fail (NR_IS_CANVAS (canvas));
+
+	if (((NRCanvasClass *) ((GtkObject *) canvas)->klass)->request_update) {
+		(* ((NRCanvasClass *) ((GtkObject *) canvas)->klass)->request_update) (canvas);
+	} else {
+		/* fixme: */
+		g_assert_not_reached ();
+	}
+}
+
+/* Returns new highest state common for all canvas items */
+
+NRCanvasItemState
+nr_canvas_invoke_update (NRCanvas * canvas, NRGraphicCtx * ctx, NRCanvasItemState state, guint32 flags)
+{
+	g_return_val_if_fail (canvas != NULL, NR_CANVAS_ITEM_STATE_INITIAL);
+	g_return_val_if_fail (NR_IS_CANVAS (canvas), NR_CANVAS_ITEM_STATE_INITIAL);
+	g_return_val_if_fail (ctx != NULL, NR_CANVAS_ITEM_STATE_INITIAL);
+
+	return nr_canvas_item_invoke_update (canvas->root, ctx, state, flags);
+}
+
+/* To be used solely by Canvas implementations */
+
+void
+nr_canvas_invoke_render (NRCanvas * canvas, NRDrawingArea * area)
+{
+	g_return_if_fail (canvas != NULL);
+	g_return_if_fail (NR_IS_CANVAS (canvas));
+	g_return_if_fail (area != NULL);
+
+	nr_canvas_item_invoke_render (canvas->root, area);
+}
+
+/* To be used solely by Canvas implementations */
+
+NRCanvasItem *
+nr_canvas_invoke_pick (NRCanvas * canvas, NRPoint * point)
+{
+	g_return_val_if_fail (canvas != NULL, NULL);
+	g_return_val_if_fail (NR_IS_CANVAS (canvas), NULL);
+	g_return_val_if_fail (point != NULL, NULL);
+
+	return nr_canvas_item_invoke_pick (canvas->root, point);
+}
+
 
