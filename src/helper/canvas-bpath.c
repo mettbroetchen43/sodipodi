@@ -191,21 +191,21 @@ sp_canvas_bpath_render (SPCanvasItem *item, SPCanvasBuf *buf)
 
 	cbp = SP_CANVAS_BPATH (item);
 
-	if (buf->is_bg) {
-		sp_canvas_clear_buffer (buf);
-		buf->is_bg = FALSE;
-		buf->is_buf = TRUE;
-	}
+	sp_canvas_buf_ensure_buf (buf);
 
 	if (cbp->fill_svp) {
-		art_rgb_svp_alpha (cbp->fill_svp, buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1, cbp->fill_rgba,
-				   buf->buf, buf->buf_rowstride,
+		art_rgb_svp_alpha (cbp->fill_svp,
+				   buf->pixblock.area.x0, buf->pixblock.area.y0, buf->pixblock.area.x1, buf->pixblock.area.y1,
+				   cbp->fill_rgba,
+				   NR_PIXBLOCK_PX (&buf->pixblock), buf->pixblock.rs,
 				   NULL);
 	}
 
 	if (cbp->stroke_svp) {
-		art_rgb_svp_alpha (cbp->stroke_svp, buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1, cbp->stroke_rgba,
-				   buf->buf, buf->buf_rowstride,
+		art_rgb_svp_alpha (cbp->stroke_svp,
+				   buf->pixblock.area.x0, buf->pixblock.area.y0, buf->pixblock.area.x1, buf->pixblock.area.y1,
+				   cbp->stroke_rgba,
+				   NR_PIXBLOCK_PX (&buf->pixblock), buf->pixblock.rs,
 				   NULL);
 	}
 }

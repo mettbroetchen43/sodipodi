@@ -199,6 +199,10 @@ sp_canvas_item_dispose (GObject *object)
 	redraw_if_visible (item);
 	item->object.flags &= ~SP_CANVAS_ITEM_VISIBLE;
 
+	if (item == item->canvas->focused_item) {
+		item->canvas->focused_item = NULL;
+	}
+
 	if (item == item->canvas->current_item) {
 		item->canvas->current_item = NULL;
 		item->canvas->need_repick = TRUE;
@@ -213,9 +217,6 @@ sp_canvas_item_dispose (GObject *object)
 		item->canvas->grabbed_item = NULL;
 		gdk_pointer_ungrab (GDK_CURRENT_TIME);
 	}
-
-	if (item == item->canvas->focused_item)
-		item->canvas->focused_item = NULL;
 
 	if (item->parent) {
 		group_remove (SP_CANVAS_GROUP (item->parent), item);
@@ -591,34 +592,32 @@ is_descendant (SPCanvasItem *item, SPCanvasItem *parent)
 void
 sp_canvas_item_grab_focus (SPCanvasItem *item)
 {
-	SPCanvasItem *focused_item;
-	GdkEvent ev;
-
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_CANVAS_ITEM (item));
-	g_return_if_fail (GTK_WIDGET_CAN_FOCUS (GTK_WIDGET (item->canvas)));
+	g_return_if_fail (GTK_WIDGET_CAN_FOCUS (item->canvas));
 
-	focused_item = item->canvas->focused_item;
+	if (item != item->canvas->focused_item) {
+		if (item->canvas->focused_item) {
+			GdkEvent ev;
+			ev.focus_change.type = GDK_FOCUS_CHANGE;
+			ev.focus_change.window = SP_CANVAS_WINDOW (item->canvas);
+			ev.focus_change.send_event = FALSE;
+			ev.focus_change.in = FALSE;
+			emit_event (item->canvas, &ev);
+		}
 
-	if (focused_item) {
-		ev.focus_change.type = GDK_FOCUS_CHANGE;
-		ev.focus_change.window = SP_CANVAS_WINDOW (item->canvas);
-		ev.focus_change.send_event = FALSE;
-		ev.focus_change.in = FALSE;
+		item->canvas->focused_item = item;
 
-		emit_event (item->canvas, &ev);
-	}
+		gtk_widget_grab_focus ((GtkWidget *) item->canvas);
 
-	item->canvas->focused_item = item;
-	gtk_widget_grab_focus (GTK_WIDGET (item->canvas));
-
-	if (focused_item) {
-		ev.focus_change.type = GDK_FOCUS_CHANGE;
-		ev.focus_change.window = SP_CANVAS_WINDOW (item->canvas);
-		ev.focus_change.send_event = FALSE;
-		ev.focus_change.in = TRUE;
-		
-		emit_event (item->canvas, &ev);
+		if (item->canvas->focused_item) {
+			GdkEvent ev;
+			ev.focus_change.type = GDK_FOCUS_CHANGE;
+			ev.focus_change.window = SP_CANVAS_WINDOW (item->canvas);
+			ev.focus_change.send_event = FALSE;
+			ev.focus_change.in = TRUE;
+			emit_event (item->canvas, &ev);
+		}
 	}
 }
 
@@ -823,10 +822,10 @@ sp_canvas_group_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	for (list = group->items; list; list = list->next) {
 		child = list->data;
 		if (child->object.flags & SP_CANVAS_ITEM_VISIBLE) {
-			if ((child->x1 < buf->rect.x1) &&
-			    (child->y1 < buf->rect.y1) &&
-			    (child->x2 > buf->rect.x0) &&
-			    (child->y2 > buf->rect.y0)) {
+			if ((child->x1 < buf->pixblock.area.x1) &&
+			    (child->y1 < buf->pixblock.area.y1) &&
+			    (child->x2 > buf->pixblock.area.x0) &&
+			    (child->y2 > buf->pixblock.area.y0)) {
 				if (SP_CANVAS_ITEM_GET_CLASS (child)->render)
 					SP_CANVAS_ITEM_GET_CLASS (child)->render (child, buf);
 			}
@@ -1560,25 +1559,16 @@ sp_canvas_paint_rect (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 
 			x1 = MIN (x0 + sw, draw_x2);
 
-			buf.buf = nr_pixelstore_64K_new (0, 0);
-			buf.buf_rowstride = sw * 3;
-			buf.rect.x0 = x0;
-			buf.rect.y0 = y0;
-			buf.rect.x1 = x1;
-			buf.rect.y1 = y1;
+			nr_pixblock_setup_fast (&buf.pixblock, NR_PIXBLOCK_MODE_R8G8B8, x0, y0, x1, y1, FALSE);
 			color = &widget->style->bg[GTK_STATE_NORMAL];
-			buf.bg_color = (((color->red & 0xff00) << 8)
-					| (color->green & 0xff00)
-					| (color->blue >> 8));
-			buf.is_bg = 1;
-			buf.is_buf = 0;
+			buf.bgcolor = (((color->red & 0xff00) << 8) | (color->green & 0xff00) | (color->blue >> 8));
 
 			if (canvas->root->object.flags & SP_CANVAS_ITEM_VISIBLE) {
 				SP_CANVAS_ITEM_GET_CLASS (canvas->root)->render (canvas->root, &buf);
 			}
 
-			if (buf.is_bg) {
-				gdk_rgb_gc_set_foreground (canvas->pixmap_gc, buf.bg_color);
+			if (buf.pixblock.empty) {
+				gdk_rgb_gc_set_foreground (canvas->pixmap_gc, buf.bgcolor);
 				gdk_draw_rectangle (SP_CANVAS_WINDOW (canvas),
 						    canvas->pixmap_gc,
 						    TRUE,
@@ -1590,11 +1580,11 @@ sp_canvas_paint_rect (SPCanvas *canvas, int x0, int y0, int x1, int y1)
 							      x0 - canvas->x0, y0 - canvas->y0,
 							      x1 - x0, y1 - y0,
 							      GDK_RGB_DITHER_MAX,
-							      buf.buf,
-							      sw * 3,
+							      NR_PIXBLOCK_PX (&buf.pixblock),
+							      buf.pixblock.rs,
 							      x0 - canvas->x0, y0 - canvas->y0);
 			}
-			nr_pixelstore_64K_free (buf.buf);
+			nr_pixblock_release (&buf.pixblock);
 	  	}
 	}
 }
@@ -1687,10 +1677,11 @@ sp_canvas_focus_out (GtkWidget *widget, GdkEventFocus *event)
 
 	canvas = SP_CANVAS (widget);
 
-	if (canvas->focused_item)
+	if (canvas->focused_item) {
 		return emit_event (canvas, (GdkEvent *) event);
-	else
+	} else {
 		return FALSE;
+	}
 }
 
 #ifdef SP_CANVAS_INTERRUPLTIBLE

@@ -100,121 +100,41 @@ sp_ctrlrect_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-#define RGBA_R(v) ((v) >> 24)
-#define RGBA_G(v) (((v) >> 16) & 0xff)
-#define RGBA_B(v) (((v) >> 8) & 0xff)
-#define RGBA_A(v) ((v) & 0xff)
-#define COMPOSE(b,f,a) (((255 - (a)) * b + (f * a) + 127) / 255)
-
-static void
-sp_ctrlrect_hline (SPCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
-{
-	if ((y >= buf->rect.y0) && (y < buf->rect.y1)) {
-		guint r, g, b, a;
-		gint x0, x1, x;
-		guchar *p;
-		r = RGBA_R (rgba);
-		g = RGBA_G (rgba);
-		b = RGBA_B (rgba);
-		a = RGBA_A (rgba);
-		x0 = MAX (buf->rect.x0, xs);
-		x1 = MIN (buf->rect.x1, xe + 1);
-		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x0 - buf->rect.x0) * 3;
-		for (x = x0; x < x1; x++) {
-			p[0] = COMPOSE (p[0], r, a);
-			p[1] = COMPOSE (p[1], g, a);
-			p[2] = COMPOSE (p[2], b, a);
-			p += 3;
-		}
-	}
-}
-
-static void
-sp_ctrlrect_vline (SPCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
-{
-	if ((x >= buf->rect.x0) && (x < buf->rect.x1)) {
-		guint r, g, b, a;
-		gint y0, y1, y;
-		guchar *p;
-		r = RGBA_R (rgba);
-		g = RGBA_G (rgba);
-		b = RGBA_B (rgba);
-		a = RGBA_A (rgba);
-		y0 = MAX (buf->rect.y0, ys);
-		y1 = MIN (buf->rect.y1, ye + 1);
-		p = buf->buf + (y0 - buf->rect.y0) * buf->buf_rowstride + (x - buf->rect.x0) * 3;
-		for (y = y0; y < y1; y++) {
-			p[0] = COMPOSE (p[0], r, a);
-			p[1] = COMPOSE (p[1], g, a);
-			p[2] = COMPOSE (p[2], b, a);
-			p += buf->buf_rowstride;
-		}
-	}
-}
-
-static void
-sp_ctrlrect_area (SPCanvasBuf *buf, gint xs, gint ys, gint xe, gint ye, guint32 rgba)
-{
-	guint r, g, b, a;
-	gint x0, x1, x;
-	gint y0, y1, y;
-	guchar *p;
-	r = RGBA_R (rgba);
-	g = RGBA_G (rgba);
-	b = RGBA_B (rgba);
-	a = RGBA_A (rgba);
-	x0 = MAX (buf->rect.x0, xs);
-	x1 = MIN (buf->rect.x1, xe + 1);
-	y0 = MAX (buf->rect.y0, ys);
-	y1 = MIN (buf->rect.y1, ye + 1);
-	for (y = y0; y < y1; y++) {
-		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x0 - buf->rect.x0) * 3;
-		for (x = x0; x < x1; x++) {
-			p[0] = COMPOSE (p[0], r, a);
-			p[1] = COMPOSE (p[1], g, a);
-			p[2] = COMPOSE (p[2], b, a);
-			p += 3;
-		}
-	}
-}
-
 static void
 sp_ctrlrect_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
 	SPCtrlRect *cr;
+	NRPixBlock *pb;
 
 	cr = SP_CTRLRECT (item);
+	pb = &buf->pixblock;
 	
-	if ((cr->area.x0 < buf->rect.x1) &&
-	    (cr->area.y0 < buf->rect.y1) &&
-	    ((cr->area.x1 + cr->shadow_size) >= buf->rect.x0) &&
-	    ((cr->area.y1 + cr->shadow_size) >= buf->rect.y0)) {
+	if ((cr->area.x0 < pb->area.x1) &&
+	    (cr->area.y0 < pb->area.y1) &&
+	    ((cr->area.x1 + cr->shadow_size) >= pb->area.x0) &&
+	    ((cr->area.y1 + cr->shadow_size) >= pb->area.y0)) {
 		/* Initialize buffer, if needed */
-		if (buf->is_bg) {
-			sp_canvas_clear_buffer (buf);
-			buf->is_bg = FALSE;
-			buf->is_buf = TRUE;
-		}
+		sp_canvas_buf_ensure_buf (buf);
 		/* Top */
-		sp_ctrlrect_hline (buf, cr->area.y0, cr->area.x0, cr->area.x1, cr->border_color);
+		sp_render_hline (pb, cr->area.y0, cr->area.x0, cr->area.x1, cr->border_color);
 		/* Bottom */
-		sp_ctrlrect_hline (buf, cr->area.y1, cr->area.x0, cr->area.x1, cr->border_color);
+		sp_render_hline (pb, cr->area.y1, cr->area.x0, cr->area.x1, cr->border_color);
 		/* Left */
-		sp_ctrlrect_vline (buf, cr->area.x0, cr->area.y0 + 1, cr->area.y1 - 1, cr->border_color);
+		sp_render_vline (pb, cr->area.x0, cr->area.y0 + 1, cr->area.y1 - 1, cr->border_color);
 		/* Right */
-		sp_ctrlrect_vline (buf, cr->area.x1, cr->area.y0 + 1, cr->area.y1 - 1, cr->border_color);
+		sp_render_vline (pb, cr->area.x1, cr->area.y0 + 1, cr->area.y1 - 1, cr->border_color);
 		if (cr->shadow_size > 0) {
 			/* Right shadow */
-			sp_ctrlrect_area (buf, cr->area.x1 + 1, cr->area.y0 + cr->shadow_size,
-					  cr->area.x1 + cr->shadow_size, cr->area.y1 + cr->shadow_size, cr->shadow_color);
+			sp_render_area (pb, cr->area.x1 + 1, cr->area.y0 + cr->shadow_size,
+					cr->area.x1 + cr->shadow_size, cr->area.y1 + cr->shadow_size, cr->shadow_color);
 			/* Bottom shadow */
-			sp_ctrlrect_area (buf, cr->area.x0 + cr->shadow_size, cr->area.y1 + 1,
-					  cr->area.x1, cr->area.y1 + cr->shadow_size, cr->shadow_color);
+			sp_render_area (pb, cr->area.x0 + cr->shadow_size, cr->area.y1 + 1,
+					cr->area.x1, cr->area.y1 + cr->shadow_size, cr->shadow_color);
 		}
 		if (cr->has_fill) {
 			/* Fill */
-			sp_ctrlrect_area (buf, cr->area.x0 + 1, cr->area.y0 + 1,
-					  cr->area.x1 - 1, cr->area.y1 - 1, cr->fill_color);
+			sp_render_area (pb, cr->area.x0 + 1, cr->area.y0 + 1,
+					cr->area.x1 - 1, cr->area.y1 - 1, cr->fill_color);
 		}
 	}
 }

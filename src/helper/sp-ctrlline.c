@@ -124,8 +124,10 @@ sp_ctrlline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 
 	if (ctrlline->svp) {
 		sp_canvas_buf_ensure_buf (buf);
-		art_rgb_svp_alpha (ctrlline->svp, buf->rect.x0, buf->rect.y0, buf->rect.x1, buf->rect.y1, ctrlline->rgba,
-				   buf->buf, buf->buf_rowstride,
+		art_rgb_svp_alpha (ctrlline->svp,
+				   buf->pixblock.area.x0, buf->pixblock.area.y0, buf->pixblock.area.x1, buf->pixblock.area.y1,
+				   ctrlline->rgba,
+				   NR_PIXBLOCK_PX (&buf->pixblock), buf->pixblock.rs,
 				   NULL);
 	}
 }

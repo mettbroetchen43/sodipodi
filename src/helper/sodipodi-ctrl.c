@@ -444,8 +444,9 @@ static void
 sp_ctrl_render (SPCanvasItem *item, SPCanvasBuf *buf)
 {
 	SPCtrl *ctrl;
-	gint y0, y1, y, x0,x1,x;
-	guchar * p, * q, a;
+	NRPixBlock *pb;
+	int y0, y1, y, x0,x1,x;
+	unsigned char *p, *q, a;
 	
 	ctrl = SP_CTRL (item);
 	
@@ -453,19 +454,19 @@ sp_ctrl_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	if ((!ctrl->filled) && (!ctrl->stroked)) return;
 	
 	sp_canvas_buf_ensure_buf (buf);
-	buf->is_bg = FALSE;
 	
-	// the control-image is rendered into ctrl->cache
+	/* the control-image is rendered into ctrl->cache */
 	if (!ctrl->build) sp_ctrl_build_cache (ctrl);
 	
-	// then we render from ctrl->cache
-	y0 = MAX (ctrl->box.y0, buf->rect.y0);
-	y1 = MIN (ctrl->box.y1, buf->rect.y1 - 1);
-	x0 = MAX (ctrl->box.x0, buf->rect.x0);
-	x1 = MIN (ctrl->box.x1, buf->rect.x1 - 1);
+	pb = &buf->pixblock;
+	/* then we render from ctrl->cache */
+	y0 = MAX (ctrl->box.y0, pb->area.y0);
+	y1 = MIN (ctrl->box.y1, pb->area.y1 - 1);
+	x0 = MAX (ctrl->box.x0, pb->area.x0);
+	x1 = MIN (ctrl->box.x1, pb->area.x1 - 1);
 	for (y = y0; y <= y1; y++) {
-		p = buf->buf +    (y - buf->rect.y0) * buf->buf_rowstride + (x0 - buf->rect.x0) * 3;
-		q = ctrl->cache + ((y - ctrl->box.y0) * (ctrl->span*2+1) + (x0 - ctrl->box.x0)) * 4;
+		p = NR_PIXBLOCK_PX (pb) + (y - pb->area.y0) * pb->rs + (x0 - pb->area.x0) * 3;
+		q = ctrl->cache + ((y - ctrl->box.y0) * (ctrl->span * 2 + 1) + (x0 - ctrl->box.x0)) * 4;
 		for (x = x0; x <= x1; x++) {
 			a = *(q + 3);
 			switch (ctrl->mode) {

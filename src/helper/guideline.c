@@ -97,7 +97,6 @@ sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	gl = SP_GUIDELINE (item);
 
 	sp_canvas_buf_ensure_buf (buf);
-	buf->is_bg = FALSE;
 
 	r = NR_RGBA32_R (gl->rgba);
 	g = NR_RGBA32_G (gl->rgba);
@@ -105,19 +104,19 @@ sp_guideline_render (SPCanvasItem *item, SPCanvasBuf *buf)
 	a = NR_RGBA32_A (gl->rgba);
 
 	if (gl->vertical) {
-		if (gl->position < buf->rect.x0) return;
-		if (gl->position >= buf->rect.x1) return;
-		p0 = buf->rect.y0;
-		p1 = buf->rect.y1;
-		step = buf->buf_rowstride;
-		d = buf->buf + 3 * (gl->position - buf->rect.x0);
+		if (gl->position < buf->pixblock.area.x0) return;
+		if (gl->position >= buf->pixblock.area.x1) return;
+		p0 = buf->pixblock.area.y0;
+		p1 = buf->pixblock.area.y1;
+		step = buf->pixblock.rs;
+		d = NR_PIXBLOCK_PX (&buf->pixblock) + 3 * (gl->position - buf->pixblock.area.x0);
 	} else {
-		if (gl->position < buf->rect.y0) return;
-		if (gl->position >= buf->rect.y1) return;
-		p0 = buf->rect.x0;
-		p1 = buf->rect.x1;
+		if (gl->position < buf->pixblock.area.y0) return;
+		if (gl->position >= buf->pixblock.area.y1) return;
+		p0 = buf->pixblock.area.x0;
+		p1 = buf->pixblock.area.x1;
 		step = 3;
-		d = buf->buf + (gl->position - buf->rect.y0) * buf->buf_rowstride;
+		d = NR_PIXBLOCK_PX (&buf->pixblock) + (gl->position - buf->pixblock.area.y0) * buf->pixblock.rs;
 	}
 
 	for (p = p0; p < p1; p++) {

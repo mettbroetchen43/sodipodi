@@ -19,12 +19,12 @@
 
 G_BEGIN_DECLS
 
-#include <libnr/nr-rect.h>
+#include <libnr/nr-pixblock.h>
+
 #include <libart_lgpl/art_misc.h>
-#include <libart_lgpl/art_rect.h>
 #include <libart_lgpl/art_uta.h>
-#include <gdk/gdk.h>
-#include <gtk/gtklayout.h>
+
+#include <gtk/gtkwidget.h>
 
 #include "helper-forward.h"
 
@@ -33,18 +33,14 @@ enum {
 	SP_CANVAS_UPDATE_AFFINE     = 1 << 1,
 };
 
-typedef struct {
-	guchar *buf;
-	int buf_rowstride;
-	ArtIRect rect;
-	/* Background color, given as 0xrrggbb */
-	guint32 bg_color;
-	/* Invariant: at least one of the following flags is true. */
-	/* Set when the render rectangle area is the solid color bg_color */
-	unsigned int is_bg : 1;
-	/* Set when the render rectangle area is represented by the buf */
-	unsigned int is_buf : 1;
-} SPCanvasBuf;
+typedef struct _SPCanvasBuf SPCanvasBuf;
+
+struct _SPCanvasBuf {
+	/* Currently R8G8B8 only */
+	NRPixBlock pixblock;
+	/* Background color, given as 0xRRGGBB */
+	NRULong bgcolor;
+};
 
 struct _SPCanvasItem {
 	GtkObject object;

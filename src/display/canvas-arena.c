@@ -13,7 +13,10 @@
  */
 
 #include <string.h>
+
 #include <libnr/nr-blit.h>
+#include <libnr/nr-matrix.h>
+
 #include <gtk/gtksignal.h>
 #include "../helper/sp-canvas.h"
 #include "../helper/sp-canvas-util.h"
@@ -225,14 +228,10 @@ sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 				     NR_ARENA_ITEM_STATE_BBOX | NR_ARENA_ITEM_STATE_RENDER,
 				     NR_ARENA_ITEM_STATE_NONE);
 
-	if (buf->is_bg) {
-		sp_canvas_clear_buffer (buf);
-		buf->is_bg = FALSE;
-		buf->is_buf = TRUE;
-	}
+	sp_canvas_buf_ensure_buf (buf);
 
-	bw = buf->rect.x1 - buf->rect.x0;
-	bh = buf->rect.y1 - buf->rect.y0;
+	bw = buf->pixblock.area.x1 - buf->pixblock.area.x0;
+	bh = buf->pixblock.area.y1 - buf->pixblock.area.y0;
 	if ((bw < 1) || (bh < 1)) return;
 
 	/* 65536 is max cached buffer and we need 4 channels */
@@ -257,18 +256,18 @@ sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 /* And even if it would be, unless it uses MMX there is little reason to go RGB */
 #define STRICT_RGBA
 
-	for (y = buf->rect.y0; y < buf->rect.y1; y += sh) {
-		for (x = buf->rect.x0; x < buf->rect.x1; x += sw) {
+	for (y = buf->pixblock.area.y0; y < buf->pixblock.area.y1; y += sh) {
+		for (x = buf->pixblock.area.x0; x < buf->pixblock.area.x1; x += sw) {
 			NRRectL area;
 #ifdef STRICT_RGBA
 			NRPixBlock pb;
 #endif
-			NRPixBlock cb;
+			/* NRPixBlock cb; */
 
 			area.x0 = x;
 			area.y0 = y;
-			area.x1 = MIN (x + sw, buf->rect.x1);
-			area.y1 = MIN (y + sh, buf->rect.y1);
+			area.x1 = MIN (x + sw, buf->pixblock.area.x1);
+			area.y1 = MIN (y + sh, buf->pixblock.area.y1);
 
 #ifdef STRICT_RGBA
 			nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8A8P, area.x0, area.y0, area.x1, area.y1, TRUE);
@@ -276,20 +275,26 @@ sp_canvas_arena_render (SPCanvasItem *item, SPCanvasBuf *buf)
 			pb.empty = FALSE;
 #endif
 
+#if 0
 			nr_pixblock_setup_extern (&cb, NR_PIXBLOCK_MODE_R8G8B8, area.x0, area.y0, area.x1, area.y1,
 						  buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + 3 * (x - buf->rect.x0),
 						  buf->buf_rowstride,
 						  FALSE, FALSE);
+#endif
 
 #ifdef STRICT_RGBA
 			nr_arena_item_invoke_render (arena->root, &area, &pb, 0);
+#if 0
 			nr_blit_pixblock_pixblock (&cb, &pb);
+#else
+			nr_blit_pixblock_pixblock (&buf->pixblock, &pb);
+#endif
 			nr_pixblock_release (&pb);
 #else
 			nr_arena_item_invoke_render (arena->root, &area, &cb, 0);
 #endif
 
-			nr_pixblock_release (&cb);
+			/* nr_pixblock_release (&cb); */
 		}
 	}
 }

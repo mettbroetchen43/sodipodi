@@ -1,3 +1,7 @@
+2003-11-18  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/sp-canvas.h: Use NRPixBlock in canvas buffer
+
 2003-11-16  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-types.h: Separate cases for HAVE_INTTYPES_H,

@@ -52,9 +52,9 @@ struct _SPCtrl {
 	guint32 fill_color;
 	guint32 stroke_color;
 
-	ArtIRect box;			/* NB! x1 & y1 are included */
+	NRRectL box; /* NB! x1 & y1 are included */
 	guchar *cache;
-	GdkPixbuf * pixbuf;
+	GdkPixbuf *pixbuf;
 };
 
 struct _SPCtrlClass {

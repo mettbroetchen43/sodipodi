@@ -134,58 +134,6 @@ sp_cgrid_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
 	}
 }
 
-#define RGBA_R(v) ((v) >> 24)
-#define RGBA_G(v) (((v) >> 16) & 0xff)
-#define RGBA_B(v) (((v) >> 8) & 0xff)
-#define RGBA_A(v) ((v) & 0xff)
-#define COMPOSE(b,f,a) (((255 - (a)) * b + (f * a) + 127) / 255)
-
-static void
-sp_grid_hline (SPCanvasBuf *buf, gint y, gint xs, gint xe, guint32 rgba)
-{
-	if ((y >= buf->rect.y0) && (y < buf->rect.y1)) {
-		guint r, g, b, a;
-		gint x0, x1, x;
-		guchar *p;
-		r = RGBA_R (rgba);
-		g = RGBA_G (rgba);
-		b = RGBA_B (rgba);
-		a = RGBA_A (rgba);
-		x0 = MAX (buf->rect.x0, xs);
-		x1 = MIN (buf->rect.x1, xe + 1);
-		p = buf->buf + (y - buf->rect.y0) * buf->buf_rowstride + (x0 - buf->rect.x0) * 3;
-		for (x = x0; x < x1; x++) {
-			p[0] = COMPOSE (p[0], r, a);
-			p[1] = COMPOSE (p[1], g, a);
-			p[2] = COMPOSE (p[2], b, a);
-			p += 3;
-		}
-	}
-}
-
-static void
-sp_grid_vline (SPCanvasBuf *buf, gint x, gint ys, gint ye, guint32 rgba)
-{
-	if ((x >= buf->rect.x0) && (x < buf->rect.x1)) {
-		guint r, g, b, a;
-		gint y0, y1, y;
-		guchar *p;
-		r = RGBA_R (rgba);
-		g = RGBA_G (rgba);
-		b = RGBA_B (rgba);
-		a = RGBA_A (rgba);
-		y0 = MAX (buf->rect.y0, ys);
-		y1 = MIN (buf->rect.y1, ye + 1);
-		p = buf->buf + (y0 - buf->rect.y0) * buf->buf_rowstride + (x - buf->rect.x0) * 3;
-		for (y = y0; y < y1; y++) {
-			p[0] = COMPOSE (p[0], r, a);
-			p[1] = COMPOSE (p[1], g, a);
-			p[2] = COMPOSE (p[2], b, a);
-			p += buf->buf_rowstride;
-		}
-	}
-}
-
 static void
 sp_cgrid_render (SPCanvasItem * item, SPCanvasBuf * buf)
 {
@@ -195,21 +143,20 @@ sp_cgrid_render (SPCanvasItem * item, SPCanvasBuf * buf)
 	grid = SP_CGRID (item);
 
 	sp_canvas_buf_ensure_buf (buf);
-	buf->is_bg = FALSE;
 
-	sxg = floor ((buf->rect.x0 - grid->ow.x) / grid->sw.x) * grid->sw.x + grid->ow.x;
-	syg = floor ((buf->rect.y0 - grid->ow.y) / grid->sw.y) * grid->sw.y + grid->ow.y;
+	sxg = floor ((buf->pixblock.area.x0 - grid->ow.x) / grid->sw.x) * grid->sw.x + grid->ow.x;
+	syg = floor ((buf->pixblock.area.y0 - grid->ow.y) / grid->sw.y) * grid->sw.y + grid->ow.y;
 
-	for (y = syg; y < buf->rect.y1; y += grid->sw.y) {
+	for (y = syg; y < buf->pixblock.area.y1; y += grid->sw.y) {
 		gint y0, y1;
 		y0 = (gint) floor (y + 0.5);
 		y1 = (gint) floor (y + grid->sw.y + 0.5);
-		sp_grid_hline (buf, y0, buf->rect.x0, buf->rect.x1 - 1, grid->color);
+		sp_render_hline (&buf->pixblock, y0, buf->pixblock.area.x0, buf->pixblock.area.x1 - 1, grid->color);
 
-		for (x = sxg; x < buf->rect.x1; x += grid->sw.x) {
+		for (x = sxg; x < buf->pixblock.area.x1; x += grid->sw.x) {
 			gint ix;
 			ix = (gint) floor (x + 0.5);
-			sp_grid_vline (buf, ix, y0 + 1, y1 - 1, grid->color);
+			sp_render_vline (&buf->pixblock, ix, y0 + 1, y1 - 1, grid->color);
 		}
 	}
 }
