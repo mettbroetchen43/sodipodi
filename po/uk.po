@@ -6,24 +6,26 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.17\n"
 "POT-Creation-Date: 2003-02-24 11:42+0200\n"
-"PO-Revision-Date: 2000-01-17 14:31+0200\n"
-"Last-Translator: Yuri Syrota <rasta@renome.rovno.ua>\n"
+"PO-Revision-Date: 2003-04-09 04:02--500\n"
+"Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: sodipodi.desktop.in.h:1 src/toolbox.c:109 src/toolbox.c:131
+#: sodipodi.desktop.in.h:1
+#: src/toolbox.c:109
+#: src/toolbox.c:131
 msgid "Sodipodi"
 msgstr "Sodipodi"
 
 #: sodipodi.desktop.in.h:2
 msgid "Vector illustrator"
-msgstr ""
+msgstr "Робота з векторною графікою"
 
 #: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
-msgstr "Не вдалося створити ґенератор sodipodi-svg-doc"
+msgstr "Не вдалося створити фабрику sodipodi-svg-doc"
 
 #. Sticky zoom
 #: src/desktop.c:726
@@ -33,14 +35,15 @@ msgstr ""
 #: src/desktop.c:806
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
-msgstr ""
+msgstr "Sodipodi: %s: %s: %d"
 
 #: src/desktop.c:935
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Документ %s має незебеережені зміни, зберегти їх?"
 
-#: src/dialogs/align.c:120 src/toolbox.c:384
+#: src/dialogs/align.c:120
+#: src/toolbox.c:384
 msgid "Align objects"
 msgstr "Вирівняти об'єкти"
 
@@ -71,7 +74,8 @@ msgstr ""
 msgid "Bottom of aligned objects to top of anchor"
 msgstr ""
 
-#: src/dialogs/align.c:151 src/dialogs/align.c:157
+#: src/dialogs/align.c:151
+#: src/dialogs/align.c:157
 #, fuzzy
 msgid "Top of aligned objects to top of anchor"
 msgstr "Вирівняти внутрішній об'єкт за верхньої границею"
@@ -103,19 +107,26 @@ msgid "Smallest item"
 msgstr "Найменший елемент"
 
 #. Page page
-#: src/dialogs/align.c:193 src/dialogs/desktop-properties.c:423
-#: src/dialogs/document-properties.c:164 src/dialogs/export.c:135
+#: src/dialogs/align.c:193
+#: src/dialogs/desktop-properties.c:423
+#: src/dialogs/document-properties.c:164
+#: src/dialogs/export.c:135
 #: src/interface.c:360
 msgid "Page"
 msgstr "Аркуш"
 
-#: src/dialogs/align.c:194 src/dialogs/export.c:140 src/interface.c:359
+#: src/dialogs/align.c:194
+#: src/dialogs/export.c:140
+#: src/interface.c:359
 msgid "Drawing"
 msgstr "Малюнок"
 
 #. Selection submenu
-#: src/dialogs/align.c:195 src/dialogs/export.c:145 src/interface.c:358
-#: src/interface.c:497 src/toolbox.c:423
+#: src/dialogs/align.c:195
+#: src/dialogs/export.c:145
+#: src/interface.c:358
+#: src/interface.c:497
+#: src/toolbox.c:423
 msgid "Selection"
 msgstr "Вибір"
 
@@ -158,11 +169,13 @@ msgstr "Інтервал по X:"
 msgid "Spacing Y:"
 msgstr "Інтервал по Y:"
 
-#: src/dialogs/desktop-properties.c:321 src/dialogs/desktop-properties.c:380
+#: src/dialogs/desktop-properties.c:321
+#: src/dialogs/desktop-properties.c:380
 msgid "Snap units:"
 msgstr "Одиниці приєднання:"
 
-#: src/dialogs/desktop-properties.c:333 src/dialogs/desktop-properties.c:392
+#: src/dialogs/desktop-properties.c:333
+#: src/dialogs/desktop-properties.c:392
 msgid "Snap distance:"
 msgstr "Відстань приєднання:"
 
@@ -276,24 +289,33 @@ msgid "Custom paper"
 msgstr "Нетиповий аркуш"
 
 #. Unit selector
-#: src/dialogs/document-properties.c:215 src/dialogs/export.c:153
-#: src/dialogs/object-properties.c:318 src/dialogs/transformation.c:402
+#: src/dialogs/document-properties.c:215
+#: src/dialogs/export.c:153
+#: src/dialogs/object-properties.c:318
+#: src/dialogs/transformation.c:402
 #: src/dialogs/transformation.c:577
 msgid "Units:"
 msgstr "Одиниці:"
 
 #. Stroke width
-#: src/dialogs/document-properties.c:224 src/dialogs/export.c:163
-#: src/dialogs/export.c:187 src/dialogs/object-attributes.c:68
-#: src/dialogs/object-attributes.c:76 src/dialogs/object-properties.c:360
-#: src/dialogs/stroke-style.c:558 src/dialogs/tool-attributes.c:120
+#: src/dialogs/document-properties.c:224
+#: src/dialogs/export.c:163
+#: src/dialogs/export.c:187
+#: src/dialogs/object-attributes.c:68
+#: src/dialogs/object-attributes.c:76
+#: src/dialogs/object-properties.c:360
+#: src/dialogs/stroke-style.c:558
+#: src/dialogs/tool-attributes.c:120
 #: src/dyna-draw-context.c:1075
 msgid "Width:"
 msgstr "Ширина:"
 
-#: src/dialogs/document-properties.c:239 src/dialogs/export.c:172
-#: src/dialogs/export.c:195 src/dialogs/object-attributes.c:69
-#: src/dialogs/object-attributes.c:77 src/dialogs/object-properties.c:375
+#: src/dialogs/document-properties.c:239
+#: src/dialogs/export.c:172
+#: src/dialogs/export.c:195
+#: src/dialogs/object-attributes.c:69
+#: src/dialogs/object-attributes.c:77
+#: src/dialogs/object-properties.c:375
 msgid "Height:"
 msgstr "Висота:"
 
@@ -329,12 +351,14 @@ msgstr "y1:"
 msgid "Bitmap size"
 msgstr "Розмір растру"
 
-#: src/dialogs/export.c:187 src/dialogs/export.c:195
+#: src/dialogs/export.c:187
+#: src/dialogs/export.c:195
 #, fuzzy
 msgid "pixels"
 msgstr "Пікселі\n"
 
-#: src/dialogs/export.c:191 src/dialogs/export.c:199
+#: src/dialogs/export.c:191
+#: src/dialogs/export.c:199
 msgid "dpi"
 msgstr ""
 
@@ -343,7 +367,8 @@ msgstr ""
 msgid "Export png file"
 msgstr "Експортувати файл"
 
-#: src/dialogs/export.c:235 src/interface.c:220
+#: src/dialogs/export.c:235
+#: src/interface.c:220
 msgid "Export"
 msgstr "Експорт"
 
@@ -394,7 +419,8 @@ msgstr "Діалог трансформації"
 msgid "Item is reference"
 msgstr ""
 
-#: src/dialogs/item-properties.c:246 src/dialogs/item-properties.c:300
+#: src/dialogs/item-properties.c:246
+#: src/dialogs/item-properties.c:300
 msgid "The SVG ID of item"
 msgstr ""
 
@@ -441,7 +467,8 @@ msgstr ""
 msgid "Title:"
 msgstr "Файл"
 
-#: src/dialogs/object-attributes.c:37 src/dialogs/tool-attributes.c:110
+#: src/dialogs/object-attributes.c:37
+#: src/dialogs/tool-attributes.c:110
 msgid "Show:"
 msgstr ""
 
@@ -455,12 +482,14 @@ msgstr "Атрибут:"
 msgid "Sides:"
 msgstr "Напрямні"
 
-#: src/dialogs/object-attributes.c:44 src/dialogs/object-attributes.c:54
+#: src/dialogs/object-attributes.c:44
+#: src/dialogs/object-attributes.c:54
 #, fuzzy
 msgid "Center X:"
 msgstr "Центр"
 
-#: src/dialogs/object-attributes.c:45 src/dialogs/object-attributes.c:55
+#: src/dialogs/object-attributes.c:45
+#: src/dialogs/object-attributes.c:55
 #, fuzzy
 msgid "Center Y:"
 msgstr "Центр"
@@ -482,12 +511,14 @@ msgid "ARG2:"
 msgstr "ARG2:"
 
 #. Expansion
-#: src/dialogs/object-attributes.c:56 src/spiral-context.c:362
+#: src/dialogs/object-attributes.c:56
+#: src/spiral-context.c:362
 msgid "Expansion:"
 msgstr ""
 
 #. Revolution
-#: src/dialogs/object-attributes.c:57 src/dialogs/tool-attributes.c:90
+#: src/dialogs/object-attributes.c:57
+#: src/dialogs/tool-attributes.c:90
 #: src/spiral-context.c:350
 #, fuzzy
 msgid "Revolution:"
@@ -509,12 +540,14 @@ msgstr "T0:"
 msgid "URL:"
 msgstr "URL:"
 
-#: src/dialogs/object-attributes.c:66 src/dialogs/object-attributes.c:74
+#: src/dialogs/object-attributes.c:66
+#: src/dialogs/object-attributes.c:74
 #: src/dialogs/object-properties.c:330
 msgid "X:"
 msgstr "X:"
 
-#: src/dialogs/object-attributes.c:67 src/dialogs/object-attributes.c:75
+#: src/dialogs/object-attributes.c:67
+#: src/dialogs/object-attributes.c:75
 #: src/dialogs/object-properties.c:345
 msgid "Y:"
 msgstr "Y:"
@@ -584,7 +617,8 @@ msgstr ""
 msgid "Calligraphic line"
 msgstr ""
 
-#: src/dialogs/object-properties.c:206 src/interface.c:390
+#: src/dialogs/object-properties.c:206
+#: src/interface.c:390
 msgid "Text"
 msgstr "Текст"
 
@@ -596,7 +630,8 @@ msgstr "Позіція і розмір об'єкта"
 msgid "Position and size"
 msgstr "Позиція і розмір"
 
-#: src/dialogs/stroke-style.c:545 src/toolbox.c:380
+#: src/dialogs/stroke-style.c:545
+#: src/toolbox.c:380
 msgid "Stroke settings"
 msgstr "Параметри обведення"
 
@@ -652,13 +687,16 @@ msgstr ""
 msgid "Inner radius"
 msgstr "Внутрішній радіус"
 
-#: src/dialogs/tool-attributes.c:94 src/dialogs/tool-attributes.c:104
-#: src/dialogs/tool-attributes.c:114 src/dialogs/tool-attributes.c:124
+#: src/dialogs/tool-attributes.c:94
+#: src/dialogs/tool-attributes.c:104
+#: src/dialogs/tool-attributes.c:114
+#: src/dialogs/tool-attributes.c:124
 msgid "Missing tool preferences"
 msgstr ""
 
 #. Magnitude
-#: src/dialogs/tool-attributes.c:100 src/star-context.c:355
+#: src/dialogs/tool-attributes.c:100
+#: src/star-context.c:355
 msgid "Corners:"
 msgstr ""
 
@@ -671,12 +709,14 @@ msgid "Transform:"
 msgstr "Перетворення:"
 
 #. Mass
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1039
+#: src/dialogs/tool-attributes.c:120
+#: src/dyna-draw-context.c:1039
 msgid "Mass:"
 msgstr ""
 
 #. Drag
-#: src/dialogs/tool-attributes.c:120 src/dyna-draw-context.c:1051
+#: src/dialogs/tool-attributes.c:120
+#: src/dyna-draw-context.c:1051
 #, fuzzy
 msgid "Drag:"
 msgstr "Малюнок"
@@ -689,7 +729,8 @@ msgstr "Кут"
 msgid "Tool has no attributes"
 msgstr "Інструмент не має ознак"
 
-#: src/dialogs/tool-attributes.c:130 src/dialogs/tool-options.c:89
+#: src/dialogs/tool-attributes.c:130
+#: src/dialogs/tool-options.c:89
 msgid "No active tool"
 msgstr ""
 
@@ -715,7 +756,8 @@ msgstr "Перенести"
 msgid "Relative move"
 msgstr "вертикальне перенесення"
 
-#: src/dialogs/transformation.c:540 src/interface.c:362
+#: src/dialogs/transformation.c:540
+#: src/interface.c:362
 msgid "Scale"
 msgstr "Шкала"
 
@@ -820,8 +862,10 @@ msgid "Angle:"
 msgstr "Кут:"
 
 #. Reset
-#: src/dyna-draw-context.c:1087 src/rect-context.c:420
-#: src/spiral-context.c:386 src/star-context.c:386
+#: src/dyna-draw-context.c:1087
+#: src/rect-context.c:420
+#: src/spiral-context.c:386
+#: src/star-context.c:386
 msgid "Defaults"
 msgstr ""
 
@@ -835,7 +879,8 @@ msgstr "Sodipodi (документ %s..): Перегляд друку"
 msgid "Select printer"
 msgstr "Вибране"
 
-#: src/print.c:395 src/print.c:406
+#: src/print.c:395
+#: src/print.c:406
 #, fuzzy
 msgid "Print destination"
 msgstr "Друкувати малюнок"
@@ -1073,11 +1118,13 @@ msgstr "Текст"
 msgid "Ex squares"
 msgstr "квадрат"
 
-#: src/interface.c:214 src/interface.c:415
+#: src/interface.c:214
+#: src/interface.c:415
 msgid "New"
 msgstr "Новий"
 
-#: src/interface.c:215 src/interface.c:416
+#: src/interface.c:215
+#: src/interface.c:416
 msgid "Open"
 msgstr "Відкрити"
 
@@ -1103,13 +1150,15 @@ msgstr "Перегляд друку"
 
 #: src/interface.c:226
 msgid "Close View"
-msgstr "Закрити відображення"
+msgstr "Закрити вигляд"
 
-#: src/interface.c:227 src/interface.c:421
+#: src/interface.c:227
+#: src/interface.c:421
 msgid "Exit Program"
 msgstr "Вийти з програми"
 
-#: src/interface.c:229 src/interface.c:419
+#: src/interface.c:229
+#: src/interface.c:419
 msgid "About Sodipodi"
 msgstr "Про Sodipodi"
 
@@ -1142,12 +1191,14 @@ msgid "Cleanup"
 msgstr ""
 
 #. Selection:Group
-#: src/interface.c:252 src/sp-item-group.c:516
+#: src/interface.c:252
+#: src/sp-item-group.c:516
 msgid "Group"
 msgstr "Згрупувати"
 
 #. Selection:Ungroup
-#: src/interface.c:257 src/sp-item-group.c:533
+#: src/interface.c:257
+#: src/sp-item-group.c:533
 msgid "Ungroup"
 msgstr "Розгрупувати"
 
@@ -1184,7 +1235,9 @@ msgid "Lower"
 msgstr "Опустити"
 
 #. View:Zoom
-#: src/interface.c:354 src/interface.c:391 src/toolbox.c:600
+#: src/interface.c:354
+#: src/interface.c:391
+#: src/toolbox.c:600
 msgid "Zoom"
 msgstr "Масштаб"
 
@@ -1240,12 +1293,14 @@ msgid "Arc"
 msgstr "Дуга"
 
 #. Create toplevel menuitem
-#: src/interface.c:386 src/sp-star.c:475
+#: src/interface.c:386
+#: src/sp-star.c:475
 msgid "Star"
 msgstr "Зірка"
 
 #. Create toplevel menuitem
-#: src/interface.c:387 src/sp-spiral.c:606
+#: src/interface.c:387
+#: src/sp-spiral.c:606
 msgid "Spiral"
 msgstr "Спіраль"
 
@@ -1313,12 +1368,15 @@ msgstr "Повторити"
 
 #. Generic menu
 #. File submenu
-#: src/interface.c:485 src/toolbox.c:304
+#: src/interface.c:485
+#: src/toolbox.c:304
 msgid "File"
 msgstr "Файл"
 
 #. Edit submenu
-#: src/interface.c:491 src/toolbox.c:341 src/widgets/gradient-selector.c:135
+#: src/interface.c:491
+#: src/toolbox.c:341
+#: src/widgets/gradient-selector.c:135
 msgid "Edit"
 msgstr "Виправити"
 
@@ -1349,7 +1407,10 @@ msgstr "Намагатися використати X Window, навіть як�
 msgid "Open specified document(s) (option string may be excluded)"
 msgstr ""
 
-#: src/main.c:116 src/main.c:119 src/main.c:122 src/main.c:136
+#: src/main.c:116
+#: src/main.c:119
+#: src/main.c:122
+#: src/main.c:136
 msgid "FILENAME"
 msgstr "НАЗВА_ФАЙЛА"
 
@@ -1370,9 +1431,7 @@ msgid "DPI"
 msgstr ""
 
 #: src/main.c:127
-msgid ""
-"Exported area in millimeters (default is full document, 0,0 is lower-left "
-"corner)"
+msgid "Exported area in millimeters (default is full document, 0,0 is lower-left corner)"
 msgstr ""
 
 #: src/main.c:128
@@ -1430,8 +1489,7 @@ msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 
 #: src/sodipodi.c:405
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 
 #: src/sodipodi.c:406
@@ -1607,7 +1665,8 @@ msgid "Image Properties"
 msgstr "Властивості зображення"
 
 #. Autotrace dialog
-#: src/sp-image.c:621 src/sp-image.c:817
+#: src/sp-image.c:621
+#: src/sp-image.c:817
 msgid "Trace"
 msgstr ""
 
@@ -1698,7 +1757,8 @@ msgid "Shape"
 msgstr "Шкала"
 
 #. Item dialog
-#: src/sp-shape.c:335 src/toolbox.c:381
+#: src/sp-shape.c:335
+#: src/toolbox.c:381
 msgid "Fill settings"
 msgstr "Властивості заповнення"
 
@@ -1866,8 +1926,7 @@ msgstr "Вузол ­ модифікація різних аспектів на�
 #. START COMPONENTS
 #. Rect
 #: src/toolbox.c:480
-msgid ""
-"Rectangle tool - create rectangles and squares with optional rounded corners"
+msgid "Rectangle tool - create rectangles and squares with optional rounded corners"
 msgstr "Прямокутник ­ створення прямокутників і квадратів"
 
 #: src/toolbox.c:481
@@ -1886,20 +1945,20 @@ msgstr "Спіраль ­ створення спіралей"
 #. Rect
 #: src/toolbox.c:498
 msgid "Pencil tool - draw freehand lines and straight segments"
-msgstr ""
+msgstr "Олівець - малювання від руки"
 
 #: src/toolbox.c:499
 msgid "Pen tool - draw exactly positioned curved lines"
-msgstr ""
+msgstr "Ручка - точне малювання кривих"
 
 #: src/toolbox.c:500
 msgid "Calligraphic tool - draw calligraphic lines"
-msgstr ""
+msgstr "Каліграфія - малювання кліграфічних ліній"
 
 #. Text
 #: src/toolbox.c:509
 msgid "Text tool - create editable text objects"
-msgstr ""
+msgstr "Текст - створенян текстових об'єктів"
 
 #. Zoom
 #: src/toolbox.c:515
@@ -1909,7 +1968,7 @@ msgstr "Масштабування ­ масштабування вибрано�
 #. Dropper
 #: src/toolbox.c:521
 msgid "Dropper tool - pick averaged colors from image"
-msgstr ""
+msgstr "Піпетка - отримання колорів із зображення"
 
 #. Todo:  Generalize all the toolbox routines to have general purpose
 #. routine for creating them
@@ -1945,15 +2004,15 @@ msgstr "Зменшити рисунок"
 
 #: src/toolbox.c:608
 msgid "Fit the whole page into window"
-msgstr ""
+msgstr "Підігнати сторінку під вікно"
 
 #: src/toolbox.c:609
 msgid "Fit the whole drawing into window"
-msgstr ""
+msgstr "Підігнати рисунок під вікно"
 
 #: src/toolbox.c:610
 msgid "Fit the whole selection into window"
-msgstr ""
+msgstr "Підігнати вибране під вікно"
 
 #: src/toolbox.c:634
 msgid "Nodes"
@@ -2032,7 +2091,7 @@ msgstr "Останній вибраний"
 
 #: src/widgets/gradient-vector.c:251
 msgid "No gradients in document"
-msgstr ""
+msgstr "У документі немає градієнтів"
 
 #: src/widgets/gradient-vector.c:257
 #, fuzzy
@@ -2074,7 +2133,8 @@ msgstr "Режим:"
 msgid "RGB"
 msgstr "RGB"
 
-#: src/widgets/paint-selector.c:748 src/widgets/paint-selector.c:749
+#: src/widgets/paint-selector.c:748
+#: src/widgets/paint-selector.c:749
 msgid "RGB Colorspace"
 msgstr ""
 
@@ -2120,7 +2180,8 @@ msgstr "Зелений:"
 msgid "Blue:"
 msgstr "Синій:"
 
-#: src/widgets/sp-color-selector.c:623 src/widgets/sp-color-selector.c:643
+#: src/widgets/sp-color-selector.c:623
+#: src/widgets/sp-color-selector.c:643
 #: src/widgets/sp-color-selector.c:665
 msgid "Alpha:"
 msgstr "Альфа"
@@ -2168,3 +2229,4 @@ msgstr ""
 #: src/draw-context.c:285
 msgid "Creating new curve. Press '+' to toggle Append/New."
 msgstr ""
+
