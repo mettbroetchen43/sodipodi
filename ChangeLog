@@ -1,5 +1,13 @@
 2002-09-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-object-repr.c (sp_object_type_lookup): Added <pattern>
+
+	* src/sp-pattern.h: New file
+
+	* src/sp-pattern.c: New file
+
+	* src/Makefile.am (sodipodi_SOURCES): Added sp-pattern.[c,h]
+
 	* src/sp-gradient.c (sp_rg_fill): Implement, seems correct although SLOW
 	(sp_radialgradient_painter_new): Implement, except viewport percentages
 	(sp_radialgradient_read_attr): Initialize right numbers

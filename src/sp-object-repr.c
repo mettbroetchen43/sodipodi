@@ -17,6 +17,7 @@
 #include "sp-polygon.h"
 #include "sp-text.h" 
 #include "sp-gradient.h"
+#include "sp-pattern.h"
 #include "sp-clippath.h"
 #include "sp-anchor.h"
 #include "sp-object-repr.h"
@@ -84,6 +85,7 @@ sp_object_type_lookup (const guchar * name)
 		g_hash_table_insert (dtable, "image", GINT_TO_POINTER (SP_TYPE_IMAGE));
 		g_hash_table_insert (dtable, "linearGradient", GINT_TO_POINTER (SP_TYPE_LINEARGRADIENT));
 		g_hash_table_insert (dtable, "radialGradient", GINT_TO_POINTER (SP_TYPE_RADIALGRADIENT));
+		g_hash_table_insert (dtable, "pattern", GINT_TO_POINTER (SP_TYPE_PATTERN));
 		g_hash_table_insert (dtable, "stop", GINT_TO_POINTER (SP_TYPE_STOP));
 		g_hash_table_insert (dtable, "clipPath", GINT_TO_POINTER (SP_TYPE_CLIPPATH));
 	}

@@ -55,6 +55,7 @@ sodipodi_SOURCES = \
 	sp-text.c sp-text.h \
 	sp-paint-server.c sp-paint-server.h \
 	sp-gradient.c sp-gradient.h \
+	sp-pattern.c sp-pattern.h \
 	sp-clippath.c sp-clippath.h \
 	\
 	color.c color.h \

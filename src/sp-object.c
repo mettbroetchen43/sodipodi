@@ -465,6 +465,8 @@ sp_object_private_write (SPObject *object, SPRepr *repr, guint flags)
 	} else {
 		sp_repr_set_attr (repr, "id", object->id);
 	}
+
+	return repr;
 }
 
 SPRepr *

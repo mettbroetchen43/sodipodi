@@ -14,6 +14,7 @@
 
 #include <math.h>
 #include <gtk/gtksignal.h>
+#include "helper/sp-canvas-util.h"
 #include "helper/sodipodi-ctrl.h"
 #include "desktop.h"
 #include "desktop-handles.h"
