@@ -188,33 +188,33 @@ sp_star_read_attr (SPObject * object, const gchar * attr)
 		sp_shape_set_shape (shape);
 	} else if (!strcmp (attr, "sodipodi:cx")) {
 		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->cx) ||
-		    (unit != SP_SVG_UNIT_EM) ||
-		    (unit != SP_SVG_UNIT_EX) ||
-		    (unit != SP_SVG_UNIT_PERCENT)) {
+		    (unit == SP_SVG_UNIT_EM) ||
+		    (unit == SP_SVG_UNIT_EX) ||
+		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->cx = 0.0;
 		}
 		sp_shape_set_shape (shape);
 	} else if (!strcmp (attr, "sodipodi:cy")) {
 		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->cy) ||
-		    (unit != SP_SVG_UNIT_EM) ||
-		    (unit != SP_SVG_UNIT_EX) ||
-		    (unit != SP_SVG_UNIT_PERCENT)) {
+		    (unit == SP_SVG_UNIT_EM) ||
+		    (unit == SP_SVG_UNIT_EX) ||
+		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->cy = 0.0;
 		}
 		sp_shape_set_shape (shape);
 	} else if (!strcmp (attr, "sodipodi:r1")) {
 		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->r1) ||
-		    (unit != SP_SVG_UNIT_EM) ||
-		    (unit != SP_SVG_UNIT_EX) ||
-		    (unit != SP_SVG_UNIT_PERCENT)) {
+		    (unit == SP_SVG_UNIT_EM) ||
+		    (unit == SP_SVG_UNIT_EX) ||
+		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->r1 = 0.0;
 		}
 		sp_shape_set_shape (shape);
 	} else if (!strcmp (attr, "sodipodi:r2")) {
 		if (!sp_svg_length_read_lff (str, &unit, NULL, &star->r2) ||
-		    (unit != SP_SVG_UNIT_EM) ||
-		    (unit != SP_SVG_UNIT_EX) ||
-		    (unit != SP_SVG_UNIT_PERCENT)) {
+		    (unit == SP_SVG_UNIT_EM) ||
+		    (unit == SP_SVG_UNIT_EX) ||
+		    (unit == SP_SVG_UNIT_PERCENT)) {
 			star->r2 = 0.0;
 		}
 		sp_shape_set_shape (shape);

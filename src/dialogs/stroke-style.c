@@ -56,7 +56,7 @@ sp_stroke_style_paint_widget_new (void)
 {
 	GtkWidget *spw, *psel;
 
-	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
+	spw = sp_widget_new_global (SODIPODI);
 
 	psel = sp_paint_selector_new ();
 	gtk_widget_show (psel);
@@ -266,7 +266,7 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "stroke-cmyk", NULL);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (spw->document);
+		sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_RGB:
 		css = sp_repr_css_attr_new ();
@@ -283,7 +283,7 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "stroke-cmyk", NULL);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (spw->document);
+		sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_CMYK:
 		css = sp_repr_css_attr_new ();
@@ -302,7 +302,7 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "stroke-cmyk", b);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (spw->document);
+		sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
 		items = sp_widget_get_item_list (spw);
@@ -310,7 +310,7 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 			vector = sp_paint_selector_get_gradient_vector (psel);
 			if (!vector) {
 				g_warning ("SPStrokeStyleWidget: Got linearGradient mode but NULL gradient in 'changed' handler\n");
-				vector = sp_document_default_gradient_vector (spw->document);
+				vector = sp_document_default_gradient_vector (SP_WIDGET_DOCUMENT (spw));
 			}
 			vector = sp_gradient_ensure_vector_normalized (vector);
 			for (i = items; i != NULL; i = i->next) {
@@ -324,7 +324,7 @@ sp_stroke_style_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 				sp_repr_set_double (SP_OBJECT_REPR (SP_OBJECT_STYLE_STROKE_SERVER (i->data)), "x2", p[2]);
 				sp_repr_set_double (SP_OBJECT_REPR (SP_OBJECT_STYLE_STROKE_SERVER (i->data)), "y2", p[3]);
 			}
-			sp_document_done (spw->document);
+			sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
@@ -352,7 +352,7 @@ sp_stroke_style_line_widget_new (void)
 	GtkWidget *spw, *f, *t, *l, *hb, *sb, *us, *tb, *px;
 	GtkObject *a;
 
-	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
+	spw = sp_widget_new_global (SODIPODI);
 
 	f = gtk_frame_new (_("Stroke settings"));
 	gtk_widget_show (f);
@@ -640,7 +640,7 @@ sp_stroke_style_width_changed (GtkAdjustment *adj, SPWidget *spw)
 	}
 
 	sp_repr_css_attr_unref (css);
-	sp_document_done (spw->document);
+	sp_document_done (SP_WIDGET_DOCUMENT (spw));
 }
 
 static void
@@ -675,7 +675,7 @@ sp_stroke_style_any_toggled (GtkToggleButton *tb, SPWidget *spw)
 		}
 
 		sp_repr_css_attr_unref (css);
-		sp_document_done (spw->document);
+		sp_document_done (SP_WIDGET_DOCUMENT (spw));
 	}
 }
 

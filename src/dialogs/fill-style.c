@@ -1,17 +1,21 @@
 #define __SP_FILL_STYLE_C__
 
 /*
- * Display settings dialog
+ * Fill style widget
  *
- * Author:
- *   Lauris Kaplinski <lauris@ximian.com>
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *   Frank Felfe <innerspace@iname.com>
  *
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <config.h>
 
+#include <string.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkwindow.h>
 
@@ -31,9 +35,12 @@
 
 #include "fill-style.h"
 
+static void sp_fill_style_widget_construct (SPWidget *spw, SPPaintSelector *psel);
 static void sp_fill_style_widget_modify_selection (SPWidget *spw, SPSelection *selection, guint flags, SPPaintSelector *psel);
 static void sp_fill_style_widget_change_selection (SPWidget *spw, SPSelection *selection, SPPaintSelector *psel);
+static void sp_fill_style_widget_attr_changed (SPWidget *spw, const guchar *key, const guchar *oldval, const guchar *newval);
 static void sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel);
+static void sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr);
 
 static void sp_fill_style_widget_paint_mode_changed (SPPaintSelector *psel, SPPaintSelectorMode mode, SPWidget *spw);
 static void sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw);
@@ -41,7 +48,7 @@ static void sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget 
 
 static void sp_fill_style_get_average_color_rgba (const GSList *objects, gfloat *c);
 static void sp_fill_style_get_average_color_cmyka (const GSList *objects, gfloat *c);
-static SPPaintSelectorMode sp_fill_style_determine_paint_selector_mode (SPObject *object);
+static SPPaintSelectorMode sp_fill_style_determine_paint_selector_mode (SPStyle *style);
 
 static GtkWidget *dialog = NULL;
 
@@ -55,13 +62,15 @@ void
 sp_fill_style_dialog (void)
 {
 	if (!dialog) {
-		GtkWidget *w;
+		GtkWidget *fs;
+
 		dialog = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 		gtk_window_set_title (GTK_WINDOW (dialog), _("Fill style"));
 		gtk_signal_connect (GTK_OBJECT (dialog), "destroy", GTK_SIGNAL_FUNC (sp_fill_style_dialog_destroy), NULL);
-		w = sp_fill_style_widget_new ();
-		gtk_widget_show (w);
-		gtk_container_add (GTK_CONTAINER (dialog), w);
+
+		fs = sp_fill_style_widget_new ();
+		gtk_widget_show (fs);
+		gtk_container_add (GTK_CONTAINER (dialog), fs);
 	}
 
 	gtk_widget_show (dialog);
@@ -72,15 +81,17 @@ sp_fill_style_widget_new (void)
 {
 	GtkWidget *spw, *psel;
 
-	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
+	spw = sp_widget_new_global (SODIPODI);
 
 	psel = sp_paint_selector_new ();
 	gtk_widget_show (psel);
 	gtk_container_add (GTK_CONTAINER (spw), psel);
 	gtk_object_set_data (GTK_OBJECT (spw), "paint-selector", psel);
 
+	gtk_signal_connect (GTK_OBJECT (spw), "construct", GTK_SIGNAL_FUNC (sp_fill_style_widget_construct), psel);
 	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection", GTK_SIGNAL_FUNC (sp_fill_style_widget_modify_selection), psel);
 	gtk_signal_connect (GTK_OBJECT (spw), "change_selection", GTK_SIGNAL_FUNC (sp_fill_style_widget_change_selection), psel);
+	gtk_signal_connect (GTK_OBJECT (spw), "attr_changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_attr_changed), psel);
 
 	gtk_signal_connect (GTK_OBJECT (psel), "mode_changed", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_mode_changed), spw);
 	gtk_signal_connect (GTK_OBJECT (psel), "dragged", GTK_SIGNAL_FUNC (sp_fill_style_widget_paint_dragged), spw);
@@ -89,6 +100,18 @@ sp_fill_style_widget_new (void)
 	sp_fill_style_widget_update (SP_WIDGET (spw), SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
 
 	return spw;
+}
+
+static void
+sp_fill_style_widget_construct (SPWidget *spw, SPPaintSelector *psel)
+{
+	g_print ("Fill style widget constructed: sodipodi %p repr %p\n", spw->sodipodi, spw->repr);
+
+	if (spw->sodipodi) {
+		sp_fill_style_widget_update (spw, SP_ACTIVE_DESKTOP ? SP_DT_SELECTION (SP_ACTIVE_DESKTOP) : NULL);
+	} else if (spw->repr) {
+		sp_fill_style_widget_update_repr (spw, spw->repr);
+	}
 }
 
 static void
@@ -103,6 +126,14 @@ static void
 sp_fill_style_widget_change_selection (SPWidget *spw, SPSelection *selection, SPPaintSelector *psel)
 {
 	sp_fill_style_widget_update (spw, selection);
+}
+
+static void
+sp_fill_style_widget_attr_changed (SPWidget *spw, const guchar *key, const guchar *oldval, const guchar *newval)
+{
+	if (!strcmp (key, "style")) {
+		/* This sounds interesting */
+	}
 }
 
 static void
@@ -132,11 +163,11 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 
 	objects = sp_selection_item_list (sel);
 	object = SP_OBJECT (objects->data);
-	pselmode = sp_fill_style_determine_paint_selector_mode (object);
+	pselmode = sp_fill_style_determine_paint_selector_mode (SP_OBJECT_STYLE (object));
 
 	for (l = objects->next; l != NULL; l = l->next) {
 		SPPaintSelectorMode nextmode;
-		nextmode = sp_fill_style_determine_paint_selector_mode (SP_OBJECT (l->data));
+		nextmode = sp_fill_style_determine_paint_selector_mode (SP_OBJECT_STYLE (l->data));
 		if (nextmode != pselmode) {
 			/* Multiple styles */
 			sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
@@ -191,81 +222,102 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
 }
 
+static SPStyle *
+sp_fill_style_repr_get_style (SPRepr *repr)
+{
+	SPStyle *style;
+
+	style = sp_style_new ();
+	sp_style_read_from_repr (style, repr);
+
+	if (sp_repr_parent (repr)) {
+		SPStyle *parent;
+		/* fixme: This is not the prettiest thing (Lauris) */
+		parent = sp_fill_style_repr_get_style (sp_repr_parent (repr));
+		sp_style_merge_from_parent (style, parent);
+		sp_style_unref (parent);
+	}
+
+	return style;
+}
+
+static void
+sp_fill_style_widget_update_repr (SPWidget *spw, SPRepr *repr)
+{
+	SPPaintSelector *psel;
+	SPPaintSelectorMode pselmode;
+	SPStyle *style;
+	gfloat c[5];
 #if 0
-	SPGradient *gradient;
-	GtkWidget *vectors, *position;
-#if 0
-	GtkWidget *menu;
-	gint pos;
-	GList *children, *l;
-#endif
-	const GSList *items, *i;
+	const GSList *objects, *l;
+	SPObject *object;
+	SPGradient *vector;
 	ArtDRect bbox;
 	SPLinearGradient *lg;
+#endif
 
-	if (!selection) return;
+	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
-	items = sp_selection_item_list (selection);
+	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (TRUE));
 
-	gradient = NULL;
-	for (i = items; i != NULL; i = i->next) {
-		SPStyle *style;
-		style = SP_OBJECT_STYLE (i->data);
-		if ((style->fill.type == SP_PAINT_TYPE_PAINTSERVER) && SP_IS_LINEARGRADIENT (style->fill.server)) {
-			gradient = SP_GRADIENT (style->fill.server);
-			while (gradient) {
-				/* Search vector gradient */
-				sp_gradient_ensure_vector (gradient);
-				if (gradient->has_stops) break;
-				gradient = gradient->href;
-			}
-			if (gradient) break;
-		}
-	}
-	/* Return if no vector gradient */
-	if (!gradient) return;
+	psel = gtk_object_get_data (GTK_OBJECT (spw), "paint-selector");
 
-	vectors = gtk_object_get_data (GTK_OBJECT (spw), "vectors");
+	style = sp_fill_style_repr_get_style (repr);
 
+	pselmode = sp_fill_style_determine_paint_selector_mode (style);
+
+	g_print ("FillStyleWidget: paint selector mode %d\n", pselmode);
+
+	switch (pselmode) {
+	case SP_PAINT_SELECTOR_MODE_NONE:
+		/* No paint at all */
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_NONE);
+		break;
+	case SP_PAINT_SELECTOR_MODE_COLOR_RGB:
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_RGB);
+		sp_color_get_rgb_floatv (&style->fill.value.color, c);
+		c[3] += SP_SCALE24_TO_FLOAT (style->fill_opacity.value);
+		sp_paint_selector_set_color_rgba_floatv (psel, c);
+		break;
+	case SP_PAINT_SELECTOR_MODE_COLOR_CMYK:
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_COLOR_CMYK);
+		sp_color_get_cmyk_floatv (&style->fill.value.color, c);
+		c[4] += SP_SCALE24_TO_FLOAT (style->fill_opacity.value);
+		sp_paint_selector_set_color_cmyka_floatv (psel, c);
+		break;
+	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
 #if 0
-	menu = gtk_option_menu_get_menu (GTK_OPTION_MENU (vectors));
-	children = gtk_container_children (GTK_CONTAINER (menu));
-
-	pos = 0;
-	for (l = children; l != NULL; l = l->next) {
-		SPGradient *gr;
-		gr = gtk_object_get_data (GTK_OBJECT (l->data), "gradient");
-		if (gr == gradient) break;
-		pos += 1;
-	}
-
-	g_list_free (children);
-
-	gtk_option_menu_set_history (GTK_OPTION_MENU (vectors), pos);
-#else
-	sp_gradient_vector_selector_set_gradient (SP_GRADIENT_VECTOR_SELECTOR (vectors), (gradient) ? SP_OBJECT_DOCUMENT (gradient) : NULL, gradient);
-#endif
-
-	gtk_object_set_data (GTK_OBJECT (spw), "gradient", gradient);
-
-	/* Update position */
-	position = gtk_object_get_data (GTK_OBJECT (spw), "position");
-	gradient = NULL;
-	for (i = items; i != NULL; i = i->next) {
-		SPStyle *style;
-		style = SP_OBJECT_STYLE (i->data);
-		if ((style->fill.type == SP_PAINT_TYPE_PAINTSERVER) && SP_IS_LINEARGRADIENT (style->fill.server)) {
-			gradient = SP_GRADIENT (style->fill.server);
-			break;
+		/* fixme: Think about it (Lauris) */
+		object = SP_OBJECT (objects->data);
+		/* We know that all objects have lineargradient fill style */
+		vector = sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object)), FALSE);
+		for (l = objects->next; l != NULL; l = l->next) {
+			SPObject *next;
+			next = SP_OBJECT (l->data);
+			if (sp_gradient_get_vector (SP_GRADIENT (SP_OBJECT_STYLE_FILL_SERVER (next)), FALSE) != vector) {
+				/* Multiple vectors */
+				sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_MULTIPLE);
+				gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+				return;
+			}
 		}
-	}
-	g_assert (gradient != NULL);
-	sp_gradient_position_set_gradient (SP_GRADIENT_POSITION (position), SP_GRADIENT (gradient));
-	sp_selection_bbox (selection, &bbox);
-	sp_gradient_position_set_bbox (SP_GRADIENT_POSITION (position), bbox.x0, bbox.y0, bbox.x1, bbox.y1);
-	lg = SP_LINEARGRADIENT (gradient);
-	sp_gradient_position_set_vector (SP_GRADIENT_POSITION (position), lg->x1.distance, lg->y1.distance, lg->x2.distance, lg->y2.distance);
+		/* fixme: Probably we should set multiple mode here too */
+		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
+		sp_paint_selector_set_gradient_linear (psel, vector);
+		sp_selection_bbox (sel, &bbox);
+		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
+		/* fixme: This is plain wrong */
+		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
+		/* fixme: Take units into account! */
+		sp_paint_selector_set_gradient_position (psel, lg->x1.computed, lg->y1.computed, lg->x2.computed, lg->y2.computed);
 #endif
+		break;
+	}
+
+	sp_style_unref (style);
+
+	gtk_object_set_data (GTK_OBJECT (spw), "update", GINT_TO_POINTER (FALSE));
+}
 
 static void
 sp_fill_style_widget_paint_mode_changed (SPPaintSelector *psel, SPPaintSelectorMode mode, SPWidget *spw)
@@ -285,6 +337,7 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 	SPGradient *vector;
 	gfloat c[5];
 
+	if (!spw->sodipodi) return;
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
 	g_print ("FillStyleWidget: paint dragged\n");
@@ -333,7 +386,8 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 static void
 sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 {
-	const GSList *items, *i;
+	const GSList *items, *i, *r;
+	GSList *reprs;
 	SPCSSAttr *css;
 	gfloat rgba[4], cmyka[5];
 	SPGradient *vector;
@@ -343,6 +397,17 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 
 	g_print ("FillStyleWidget: paint changed\n");
 
+	if (spw->sodipodi) {
+		reprs = NULL;
+		items = sp_widget_get_item_list (spw);
+		for (i = items; i != NULL; i = i->next) {
+			reprs = g_slist_prepend (reprs, SP_OBJECT_REPR (i->data));
+		}
+	} else {
+		reprs = g_slist_prepend (NULL, spw->repr);
+		items = NULL;
+	}
+
 	switch (psel->mode) {
 	case SP_PAINT_SELECTOR_MODE_EMPTY:
 	case SP_PAINT_SELECTOR_MODE_MULTIPLE:
@@ -351,13 +416,12 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 	case SP_PAINT_SELECTOR_MODE_NONE:
 		css = sp_repr_css_attr_new ();
 		sp_repr_css_set_property (css, "fill", "none");
-		items = sp_widget_get_item_list (spw);
-		for (i = items; i != NULL; i = i->next) {
-			sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
-			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "fill-cmyk", NULL);
+		for (r = reprs; r != NULL; r = r->next) {
+			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "fill-cmyk", NULL);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (spw->document);
+		if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_RGB:
 		css = sp_repr_css_attr_new ();
@@ -366,15 +430,12 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		sp_repr_css_set_property (css, "fill", b);
 		g_snprintf (b, 64, "%g", rgba[3]);
 		sp_repr_css_set_property (css, "fill-opacity", b);
-		items = sp_widget_get_item_list (spw);
-		for (i = items; i != NULL; i = i->next) {
-			g_print ("FillStyleWidget: Set RGBA fill style\n");
-			sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
-			g_print ("FillStyleWidget: Set RGBA fill-cmyk style\n");
-			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "fill-cmyk", NULL);
+		for (r = reprs; r != NULL; r = r->next) {
+			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "fill-cmyk", NULL);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (spw->document);
+		if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_CMYK:
 		css = sp_repr_css_attr_new ();
@@ -385,23 +446,19 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		g_snprintf (b, 64, "%g", cmyka[4]);
 		sp_repr_css_set_property (css, "fill-opacity", b);
 		g_snprintf (b, 64, "(%g %g %g %g)", cmyka[0], cmyka[1], cmyka[2], cmyka[3]);
-		items = sp_widget_get_item_list (spw);
-		for (i = items; i != NULL; i = i->next) {
-			g_print ("FillStyleWidget: Set CMYK fill style\n");
-			sp_repr_css_change_recursive (SP_OBJECT_REPR (i->data), css, "style");
-			g_print ("FillStyleWidget: Set CMYK fill-cmyk style\n");
-			sp_repr_set_attr_recursive (SP_OBJECT_REPR (i->data), "fill-cmyk", b);
+		for (r = reprs; r != NULL; r = r->next) {
+			sp_repr_css_change_recursive ((SPRepr *) r->data, css, "style");
+			sp_repr_set_attr_recursive ((SPRepr *) r->data, "fill-cmyk", b);
 		}
 		sp_repr_css_attr_unref (css);
-		sp_document_done (spw->document);
+		if (spw->sodipodi) sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:
-		items = sp_widget_get_item_list (spw);
 		if (items) {
 			vector = sp_paint_selector_get_gradient_vector (psel);
 			if (!vector) {
 				g_warning ("SPFillStyleWidget: Got linearGradient mode but NULL gradient in 'changed' handler\n");
-				vector = sp_document_default_gradient_vector (spw->document);
+				vector = sp_document_default_gradient_vector (SP_WIDGET_DOCUMENT (spw));
 			}
 			vector = sp_gradient_ensure_vector_normalized (vector);
 			for (i = items; i != NULL; i = i->next) {
@@ -415,7 +472,7 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 				sp_repr_set_double (SP_OBJECT_REPR (SP_OBJECT_STYLE_FILL_SERVER (i->data)), "x2", p[2]);
 				sp_repr_set_double (SP_OBJECT_REPR (SP_OBJECT_STYLE_FILL_SERVER (i->data)), "y2", p[3]);
 			}
-			sp_document_done (spw->document);
+			sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
@@ -495,15 +552,15 @@ sp_fill_style_get_average_color_cmyka (const GSList *objects, gfloat *c)
 }
 
 static SPPaintSelectorMode
-sp_fill_style_determine_paint_selector_mode (SPObject *object)
+sp_fill_style_determine_paint_selector_mode (SPStyle *style)
 {
 	SPColorSpaceType cstype;
 
-	switch (object->style->fill.type) {
+	switch (style->fill.type) {
 	case SP_PAINT_TYPE_NONE:
 		return SP_PAINT_SELECTOR_MODE_NONE;
 	case SP_PAINT_TYPE_COLOR:
-		cstype = sp_color_get_colorspace_type (&object->style->fill.value.color);
+		cstype = sp_color_get_colorspace_type (&style->fill.value.color);
 		switch (cstype) {
 		case SP_COLORSPACE_TYPE_RGB:
 			return SP_PAINT_SELECTOR_MODE_COLOR_RGB;
@@ -514,13 +571,13 @@ sp_fill_style_determine_paint_selector_mode (SPObject *object)
 			return SP_PAINT_SELECTOR_MODE_NONE;
 		}
 	case SP_PAINT_TYPE_PAINTSERVER:
-		if (SP_IS_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object))) {
+		if (SP_IS_LINEARGRADIENT (SP_STYLE_FILL_SERVER (style))) {
 			return SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR;
 		}
 		g_warning ("file %s: line %d: Unknown paintserver", __FILE__, __LINE__);
 		return SP_PAINT_SELECTOR_MODE_NONE;
 	default:
-		g_warning ("file %s: line %d: Unknown paint type %d", __FILE__, __LINE__, object->style->fill.type);
+		g_warning ("file %s: line %d: Unknown paint type %d", __FILE__, __LINE__, style->fill.type);
 		break;
 	}
 

@@ -516,7 +516,7 @@ sp_object_modified (SPObject *object, guint flags)
 	/* I think this is correct (Lauris) */
 	if (flags && SP_OBJECT_STYLE_MODIFIED_FLAG) {
 		if (object->style && object->parent) {
-			sp_style_merge_from_object_parent (object->style, object->parent);
+			sp_style_merge_from_parent (object->style, object->parent->style);
 		}
 	}
 

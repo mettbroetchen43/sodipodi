@@ -23,6 +23,7 @@ BEGIN_GNOME_DECLS
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 #include <libgnomeprint/gnome-font-face.h>
 #include "helper/units.h"
+#include "xml/repr.h"
 #include "color.h"
 #include "forward.h"
 
@@ -211,6 +212,7 @@ struct _SPStyle {
 	SPIEnum writing_mode;
 };
 
+SPStyle *sp_style_new (void);
 SPStyle *sp_style_new_from_object (SPObject *object);
 
 SPStyle *sp_style_ref (SPStyle *style);
@@ -223,7 +225,8 @@ SPStyle *sp_style_unref (SPStyle *style);
  */
 
 void sp_style_read_from_object (SPStyle *style, SPObject *object);
-void sp_style_merge_from_object_parent (SPStyle *style, SPObject *object);
+void sp_style_read_from_repr (SPStyle *style, SPRepr *repr);
+void sp_style_merge_from_parent (SPStyle *style, SPStyle *parent);
 
 guchar *sp_style_write_string (SPStyle *style);
 guchar *sp_style_write_difference (SPStyle *from, SPStyle *to);

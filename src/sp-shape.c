@@ -29,7 +29,6 @@
 #include "desktop-handles.h"
 #include "sp-paint-server.h"
 #include "style.h"
-#include "sp-path-component.h"
 #include "sp-shape.h"
 
 #define noSHAPE_VERBOSE

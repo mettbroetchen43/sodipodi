@@ -1,30 +1,51 @@
-#ifndef SP_PATH_H
-#define SP_PATH_H
+#ifndef __SP_PATH_H__
+#define __SP_PATH_H__
 
-#include "sp-path-component.h"
+/*
+ * SVG <path> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#define SP_TYPE_PATH (sp_path_get_type ())
+#define SP_PATH(o) (GTK_CHECK_CAST ((o), SP_TYPE_PATH, SPPath))
+#define SP_PATH_CLASS(k) (GTK_CHECK_CLASS_CAST ((k), SP_TYPE_PATH, SPPathClass))
+#define SP_IS_PATH(o) (GTK_CHECK_TYPE ((o), SP_TYPE_PATH))
+#define SP_IS_PATH_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_PATH))
+
+typedef struct _SPPathComp SPPathComp;
+
+#include "helper/curve.h"
 #include "sp-item.h"
 
-#define SP_TYPE_PATH            (sp_path_get_type ())
-#define SP_PATH(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_PATH, SPPath))
-#define SP_PATH_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_PATH, SPPathClass))
-#define SP_IS_PATH(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_PATH))
-#define SP_IS_PATH_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_PATH))
+struct _SPPathComp {
+	SPCurve *curve;
+	gboolean private;
+	double affine[6];
+};
+
+SPPathComp * sp_path_comp_new (SPCurve *curve, gboolean private, double affine[]);
+void sp_path_comp_destroy (SPPathComp *comp);
 
 struct _SPPath {
 	SPItem item;
-	GSList * comp;
+	GSList *comp;
 	gboolean independent;
 };
 
 struct _SPPathClass {
 	SPItemClass item_class;
-	void (* remove_comp) (SPPath * path, SPPathComp * comp);
-	void (* add_comp) (SPPath * path, SPPathComp * comp);
-	void (* change_bpath) (SPPath * path, SPPathComp * comp, SPCurve * curve);
+	void (* remove_comp) (SPPath *path, SPPathComp *comp);
+	void (* add_comp) (SPPath *path, SPPathComp *comp);
+	void (* change_bpath) (SPPath *path, SPPathComp *comp, SPCurve *curve);
 };
 
-
-/* Standard Gtk function */
 GtkType sp_path_get_type (void);
 
 #define sp_path_independent(p) (p->independent)

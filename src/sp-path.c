@@ -1,11 +1,25 @@
-#define SP_PATH_C
+#define __SP_PATH_C__
 
-#include <gnome.h>
+/*
+ * SVG <path> implementation
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
+#include <string.h>
+#include <libart_lgpl/art_misc.h>
+#include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libart_lgpl/art_vpath_bpath.h>
 #include "helper/art-utils.h"
 #include "svg/svg.h"
-#include "sp-path-component.h"
+#include "sp-root.h"
 #include "sp-path.h"
 
 #define noPATH_VERBOSE
@@ -28,30 +42,27 @@ static SPItemClass * parent_class;
 GtkType
 sp_path_get_type (void)
 {
-	static GtkType path_type = 0;
-
-	if (!path_type) {
-		GtkTypeInfo path_info = {
+	static GtkType type = 0;
+	if (!type) {
+		GtkTypeInfo info = {
 			"SPPath",
 			sizeof (SPPath),
 			sizeof (SPPathClass),
 			(GtkClassInitFunc) sp_path_class_init,
 			(GtkObjectInitFunc) sp_path_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		path_type = gtk_type_unique (sp_item_get_type (), &path_info);
+		type = gtk_type_unique (SP_TYPE_ITEM, &info);
 	}
-	return path_type;
+	return type;
 }
 
 static void
 sp_path_class_init (SPPathClass * klass)
 {
-	GtkObjectClass * gtk_object_class;
-	SPObjectClass * sp_object_class;
-	SPItemClass * item_class;
+	GtkObjectClass *gtk_object_class;
+	SPObjectClass *sp_object_class;
+	SPItemClass *item_class;
 
 	gtk_object_class = (GtkObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
@@ -97,11 +108,37 @@ sp_path_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
-static void
-sp_path_build (SPObject * object, SPDocument * document, SPRepr * repr)
+/* fixme: Better place (Lauris) */
+
+static guint
+sp_path_find_version (SPObject *object)
 {
+	while (object) {
+		if (SP_IS_ROOT (object)) {
+			return SP_ROOT (object)->sodipodi;
+		}
+		object = SP_OBJECT_PARENT (object);
+	}
+
+	return 0;
+}
+
+static void
+sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
+{
+	guint version;
+
+	version = sp_path_find_version (object);
+
 	if (SP_OBJECT_CLASS (parent_class)->build)
 		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+
+	if ((version > 0) && (version < 25)) {
+		const guchar *str;
+		str = sp_repr_attr (repr, "SODIPODI-PATH-NODE-TYPES");
+		sp_repr_set_attr (repr, "sodipodi:nodetypes", str);
+		sp_repr_set_attr (repr, "SODIPODI-PATH-NODE-TYPES", NULL);
+	}
 
 	sp_path_read_attr (object, "d");
 }
@@ -368,4 +405,36 @@ sp_path_bpath_modified (SPPath * path, SPCurve * curve)
 	g_return_if_fail (comp->private);
 
 	sp_path_change_bpath (path, comp, curve);
+}
+
+/* Old SPPathComp methods */
+
+SPPathComp *
+sp_path_comp_new (SPCurve * curve, gboolean private, double affine[])
+{
+	SPPathComp * comp;
+	gint i;
+
+	g_return_val_if_fail (curve != NULL, NULL);
+
+	comp = g_new (SPPathComp, 1);
+	comp->curve = curve;
+	sp_curve_ref (curve);
+	comp->private = private;
+	if (affine != NULL) {
+		for (i = 0; i < 6; i++) comp->affine[i] = affine[i];
+	} else {
+		art_affine_identity (comp->affine);
+	}
+	return comp;
+}
+
+void
+sp_path_comp_destroy (SPPathComp * comp)
+{
+	g_assert (comp != NULL);
+
+	sp_curve_unref (comp->curve);
+
+	g_free (comp);
 }

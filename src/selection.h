@@ -1,24 +1,26 @@
-#ifndef SP_SELECTION_H
-#define SP_SELECTION_H
+#ifndef __SP_SELECTION_H__
+#define __SP_SELECTION_H__
 
 /*
- * SPSelection
+ * Per-desktop selection container
  *
- * A collection of items
- * Produces signals, when changed
- * Will listen, if items destroyed & behave accordingly
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
+ * Copyright (C) 1999-2002 authors
+ * Copyright (C) 2001-2002 Ximian, Inc.
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
-
-#include <gtk/gtk.h>
-#include "forward.h"
-#include "sp-item.h"
 
 #define SP_TYPE_SELECTION            (sp_selection_get_type ())
 #define SP_SELECTION(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_SELECTION, SPSelection))
 #define SP_SELECTION_CLASS(klass)    (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SELECTION, SPSelectionClass))
 #define SP_IS_SELECTION(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_SELECTION))
 #define SP_IS_SELECTION_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SELECTION))
+
+#include "forward.h"
+#include "sp-item.h"
 
 struct _SPSelection {
 	GtkObject object;
@@ -37,8 +39,6 @@ struct _SPSelectionClass {
 	/* fixme: use fine granularity */
 	void (* modified) (SPSelection *selection, guint flags);
 };
-
-/* Standard Gtk function */
 
 GtkType sp_selection_get_type (void);
 

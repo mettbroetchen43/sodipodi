@@ -190,13 +190,13 @@ sp_document_destroy (GtkObject *object)
 }
 
 SPDocument *
-sp_document_new (const gchar * uri)
+sp_document_new (const gchar *uri)
 {
-	SPDocument * document;
-	SPReprDoc * rdoc;
-	SPRepr * rroot;
-	SPObject * object;
-	gchar * b;
+	SPDocument *document;
+	SPReprDoc *rdoc;
+	SPRepr *rroot;
+	guint version;
+	gchar *b;
 	gint len;
 
 	if (uri != NULL) {
@@ -234,11 +234,10 @@ sp_document_new (const gchar * uri)
 		document->private->uri = g_strdup_printf (_("Unnamed document %d"), ++doc_count);
 	}
 
-	object = sp_object_repr_build_tree (document, rroot);
-	g_return_val_if_fail (object != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ROOT (object), NULL);
-
-	document->root = object;
+	document->root = sp_object_repr_build_tree (document, rroot);
+	g_return_val_if_fail (document->root != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ROOT (document->root), NULL);
+	version = SP_ROOT (document->root)->sodipodi;
 
 	/* fixme: Not sure about this, but lets assume ::build updates */
 	sp_repr_set_attr (rroot, "sodipodi:version", VERSION);
@@ -259,6 +258,13 @@ sp_document_new (const gchar * uri)
 		sp_repr_set_attr (rroot, "sodipodi:docbase", document->private->base);
 	}
 	/* End of quick hack 3 */
+	if ((version > 0) && (version < 25)) {
+		/* Clear ancient spec violating attributes */
+		sp_repr_set_attr (rroot, "SP-DOCNAME", NULL);
+		sp_repr_set_attr (rroot, "SP-DOCBASE", NULL);
+		sp_repr_set_attr (rroot, "docname", NULL);
+		sp_repr_set_attr (rroot, "docbase", NULL);
+	}
 
 	/* Namedviews */
 	if (!SP_ROOT (document->root)->namedviews) {
@@ -289,12 +295,12 @@ sp_document_new (const gchar * uri)
 }
 
 SPDocument *
-sp_document_new_from_mem (const gchar * buffer, gint length)
+sp_document_new_from_mem (const gchar *buffer, gint length)
 {
-	SPDocument * document;
-	SPReprDoc * rdoc;
-	SPRepr * rroot;
-	SPObject * object;
+	SPDocument *document;
+	SPReprDoc *rdoc;
+	SPRepr *rroot;
+	guint version;
 
 	rdoc = sp_repr_read_mem (buffer, length);
 
@@ -315,11 +321,10 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 
 	document->private->uri = g_strdup_printf (_("Memory document %d"), ++doc_count);
 
-	object = sp_object_repr_build_tree (document, rroot);
-	g_return_val_if_fail (object != NULL, NULL);
-	g_return_val_if_fail (SP_IS_ROOT (object), NULL);
-
-	document->root = object;
+	document->root = sp_object_repr_build_tree (document, rroot);
+	g_return_val_if_fail (document->root != NULL, NULL);
+	g_return_val_if_fail (SP_IS_ROOT (document->root), NULL);
+	version = SP_ROOT (document->root)->sodipodi;
 
 	/* fixme: docbase */
 
@@ -335,6 +340,13 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	if (!sp_repr_attr (rroot, "width")) sp_repr_set_attr (rroot, "width", A4_WIDTH_STR);
 	if (!sp_repr_attr (rroot, "height")) sp_repr_set_attr (rroot, "height", A4_HEIGHT_STR);
 	/* End of quick hack 2 */
+	if ((version > 0) && (version < 25)) {
+		/* Clear ancient spec violating attributes */
+		sp_repr_set_attr (rroot, "SP-DOCNAME", NULL);
+		sp_repr_set_attr (rroot, "SP-DOCBASE", NULL);
+		sp_repr_set_attr (rroot, "docname", NULL);
+		sp_repr_set_attr (rroot, "docbase", NULL);
+	}
 
 	/* Namedviews */
 	if (!SP_ROOT (document->root)->namedviews) {

@@ -197,6 +197,23 @@ sp_style_object_destroyed (GtkObject *object, SPStyle *style)
 }
 
 SPStyle *
+sp_style_new (void)
+{
+	SPStyle *style;
+
+	style = g_new0 (SPStyle, 1);
+
+	style->refcount = 1;
+	style->object = NULL;
+	style->text = sp_text_style_new ();
+	style->text_private = TRUE;
+
+	sp_style_clear (style);
+
+	return style;
+}
+
+SPStyle *
 sp_style_new_from_object (SPObject *object)
 {
 	SPStyle *style;
@@ -204,17 +221,10 @@ sp_style_new_from_object (SPObject *object)
 	g_return_val_if_fail (object != NULL, NULL);
 	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
 
-	style = g_new0 (SPStyle, 1);
+	style = sp_style_new ();
 
-	style->refcount = 1;
 	style->object = object;
-
-	style->text = sp_text_style_new ();
-	style->text_private = TRUE;
-
 	gtk_signal_connect (GTK_OBJECT (object), "destroy", GTK_SIGNAL_FUNC (sp_style_object_destroyed), style);
-
-	sp_style_clear (style);
 
 	return style;
 }
@@ -252,35 +262,32 @@ sp_style_unref (SPStyle *style)
 	return NULL;
 }
 
-void
-sp_style_read_from_object (SPStyle *style, SPObject *object)
+static void
+sp_style_read (SPStyle *style, SPObject *object, SPRepr *repr)
 {
-	SPRepr *repr;
 	const guchar *val;
 
-	g_return_if_fail (style != NULL);
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_OBJECT (object));
-
-	repr = SP_OBJECT_REPR (object);
+	g_assert (style != NULL);
+	g_assert (repr != NULL);
+	g_assert (!object || (SP_OBJECT_REPR (object) == repr));
 
 	sp_style_clear (style);
 
 	/* 1. Presentation-only attributes */
 	/* CMYK has precedence and can only be presentation attribute */
-	val = sp_repr_attr (object->repr, "fill-cmyk");
+	val = sp_repr_attr (repr, "fill-cmyk");
 	if (val && sp_style_read_color_cmyk (&style->fill.value.color, val)) {
 		style->fill.set = TRUE;
 		style->fill.inherit = FALSE;
 	}
-	val = sp_repr_attr (object->repr, "stroke-cmyk");
+	val = sp_repr_attr (repr, "stroke-cmyk");
 	if (val && sp_style_read_color_cmyk (&style->stroke.value.color, val)) {
 		style->stroke.set = TRUE;
 		style->stroke.inherit = FALSE;
 	}
 
 	/* 2. Style itself */
-	val = sp_repr_attr (object->repr, "style");
+	val = sp_repr_attr (repr, "style");
 	if (val != NULL) {
 		sp_style_merge_from_style_string (style, val);
 	}
@@ -298,57 +305,40 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	SPS_READ_PENUM_IF_UNSET (&style->font_stretch, repr, "font-stretch", enum_font_stretch, TRUE);
 	/* opacity */
 	if (!style->opacity.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
+		val = sp_repr_attr (repr, "opacity");
 		if (val) {
 			sp_style_read_iscale24 (&style->opacity, val);
 		}
 	}
 	/* fill */
 	if (!style->fill.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill");
+		val = sp_repr_attr (repr, "fill");
 		if (val) {
-			sp_style_read_ipaint (&style->fill, val, style, SP_OBJECT_DOCUMENT (object));
+			sp_style_read_ipaint (&style->fill, val, style, (object) ? SP_OBJECT_DOCUMENT (object) : NULL);
 		}
 	}
 	/* fill-opacity */
 	if (!style->fill_opacity.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill-opacity");
+		val = sp_repr_attr (repr, "fill-opacity");
 		if (val) {
 			sp_style_read_iscale24 (&style->fill_opacity, val);
 		}
 	}
 	/* fill-rule */
-	if (!style->fill_rule.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "fill-rule");
-		if (val) {
-			sp_style_read_ienum (&style->fill_rule, val, enum_fill_rule, TRUE);
-		}
-	}
+	SPS_READ_PENUM_IF_UNSET (&style->fill_rule, repr, "fill-rule", enum_fill_rule, TRUE);
 	/* stroke */
 	if (!style->stroke.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke");
+		val = sp_repr_attr (repr, "stroke");
 		if (val) {
-			sp_style_read_ipaint (&style->stroke, val, style, SP_OBJECT_DOCUMENT (object));
+			sp_style_read_ipaint (&style->stroke, val, style, (object) ? SP_OBJECT_DOCUMENT (object) : NULL);
 		}
 	}
 	SPS_READ_PLENGTH_IF_UNSET (&style->stroke_width, repr, "stroke-width");
-	/* stroke-linecap */
-	if (!style->stroke_linecap.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke-linecap");
-		if (val) {
-			sp_style_read_ienum (&style->stroke_linecap, val, enum_stroke_linecap, TRUE);
-		}
-	}
-	/* stroke-linejoin */
-	if (!style->stroke_linejoin.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke-linejoin");
-		if (val) {
-			sp_style_read_ienum (&style->stroke_linejoin, val, enum_stroke_linejoin, TRUE);
-		}
-	}
+	SPS_READ_PENUM_IF_UNSET (&style->stroke_linecap, repr, "stroke-linecap", enum_stroke_linecap, TRUE);
+	SPS_READ_PENUM_IF_UNSET (&style->stroke_linejoin, repr, "stroke-linejoin", enum_stroke_linejoin, TRUE);
 	/* stroke-opacity */
 	if (!style->stroke_opacity.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "stroke-opacity");
+		val = sp_repr_attr (repr, "stroke-opacity");
 		if (val) {
 			sp_style_read_iscale24 (&style->stroke_opacity, val);
 		}
@@ -356,7 +346,7 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 
 	/* font-family */
 	if (!style->text_private || !style->text->font_family.set) {
-		val = sp_repr_attr (SP_OBJECT_REPR (object), "font-family");
+		val = sp_repr_attr (repr, "font-family");
 		if (val) {
 			if (!style->text_private) sp_style_privatize_text (style);
 			sp_style_read_istring (&style->text->font_family, val);
@@ -367,9 +357,39 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	SPS_READ_PENUM_IF_UNSET (&style->writing_mode, repr, "writing-mode", enum_writing_mode, TRUE);
 
 	/* 5. Merge from parent */
-	if (object->parent) {
-		sp_style_merge_from_object_parent (style, object->parent);
+	if (object) {
+		if (object->parent) {
+			sp_style_merge_from_parent (style, SP_OBJECT_STYLE (object->parent));
+		}
+	} else {
+		if (sp_repr_parent (repr)) {
+			SPStyle *parent;
+			/* fixme: This is not the prettiest thing (Lauris) */
+			parent = sp_style_new ();
+			sp_style_read (parent, NULL, sp_repr_parent (repr));
+			sp_style_merge_from_parent (style, parent);
+			sp_style_unref (parent);
+		}
 	}
+}
+
+void
+sp_style_read_from_object (SPStyle *style, SPObject *object)
+{
+	g_return_if_fail (style != NULL);
+	g_return_if_fail (object != NULL);
+	g_return_if_fail (SP_IS_OBJECT (object));
+
+	sp_style_read (style, object, SP_OBJECT_REPR (object));
+}
+
+void
+sp_style_read_from_repr (SPStyle *style, SPRepr *repr)
+{
+	g_return_if_fail (style != NULL);
+	g_return_if_fail (repr != NULL);
+
+	sp_style_read (style, NULL, repr);
 }
 
 static void
@@ -483,7 +503,7 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		break;
 	case SP_PROP_FILL:
 		if (!style->fill.set) {
-			sp_style_read_ipaint (&style->fill, val, style, SP_OBJECT_DOCUMENT (style->object));
+			sp_style_read_ipaint (&style->fill, val, style, (style->object) ? SP_OBJECT_DOCUMENT (style->object) : NULL);
 		}
 		break;
 	case SP_PROP_FILL_OPACITY:
@@ -506,7 +526,7 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 		break;
 	case SP_PROP_STROKE:
 		if (!style->stroke.set) {
-			sp_style_read_ipaint (&style->stroke, val, style, SP_OBJECT_DOCUMENT (style->object));
+			sp_style_read_ipaint (&style->stroke, val, style, (style->object) ? SP_OBJECT_DOCUMENT (style->object) : NULL);
 		}
 		break;
 	case SP_PROP_STROKE_WIDTH:
@@ -618,151 +638,144 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 }
 
 void
-sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
+sp_style_merge_from_parent (SPStyle *style, SPStyle *parent)
 {
 	g_return_if_fail (style != NULL);
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_OBJECT (object));
 
-	if (object->style) {
-		/* CSS2 */
-		/* Font */
-		/* 'font-size' */
-		if (!style->font_size.set || style->font_size.inherit) {
-			/* I think inheriting computed value is correct here */
-			style->font_size.type = SP_FONT_SIZE_LENGTH;
-			style->font_size.computed = object->style->font_size.computed;
-		} else if (style->font_size.type == SP_FONT_SIZE_LITERAL) {
-			static gfloat sizetable[] = {6.0, 8.0, 10.0, 12.0, 14.0, 18.0, 24.0};
-			/* fixme: SVG and CSS do no specify clearly, whether we should use user or screen coordinates (Lauris) */
-			if (style->font_size.value < SP_CSS_FONT_SIZE_SMALLER) {
-				style->font_size.computed = sizetable[style->font_size.value];
-			} else if (style->font_size.value == SP_CSS_FONT_SIZE_SMALLER) {
-				style->font_size.computed = object->style->font_size.computed / 1.2;
-			} else if (style->font_size.value == SP_CSS_FONT_SIZE_LARGER) {
-				style->font_size.computed = object->style->font_size.computed * 1.2;
-			} else {
-				/* Illegal value */
-			}
-		} else if (style->font_size.type == SP_FONT_SIZE_PERCENTAGE) {
-			/* fixme: SVG and CSS do no specify clearly, whether we should use parent or viewport values here (Lauris) */
-			g_print ("Parent %g PC %g own %g\n",
-				 object->style->font_size.computed,
-				 SP_F8_16_TO_FLOAT (style->font_size.value),
-				 style->font_size.computed);
-			style->font_size.computed = object->style->font_size.computed * SP_F8_16_TO_FLOAT (style->font_size.value);
-		}
-		/* 'font-style' */
-		if (!style->font_style.set || style->font_style.inherit) {
-			style->font_style.computed = object->style->font_style.computed;
-		}
-		/* 'font-variant' */
-		if (!style->font_variant.set || style->font_variant.inherit) {
-			style->font_variant.computed = object->style->font_variant.computed;
-		}
-		/* 'font-weight' */
-		if (!style->font_weight.set || style->font_weight.inherit) {
-			style->font_weight.computed = object->style->font_weight.computed;
-		} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_NORMAL) {
-			/* fixme: This is unconditional, i.e. happens even if parent not present */
-			style->font_weight.computed = SP_CSS_FONT_WEIGHT_400;
-		} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_BOLD) {
-			style->font_weight.computed = SP_CSS_FONT_WEIGHT_700;
-		} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_LIGHTER) {
-			style->font_weight.computed = CLAMP (object->style->font_weight.computed - 1,
-							     SP_CSS_FONT_WEIGHT_100,
-							     SP_CSS_FONT_WEIGHT_900);
-		} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_DARKER) {
-			style->font_weight.computed = CLAMP (object->style->font_weight.computed + 1,
-							     SP_CSS_FONT_WEIGHT_100,
-							     SP_CSS_FONT_WEIGHT_900);
-		}
-		/* 'font-stretch' */
-		if (!style->font_stretch.set || style->font_stretch.inherit) {
-			style->font_stretch.computed = object->style->font_stretch.computed;
-		} else if (style->font_stretch.value == SP_CSS_FONT_STRETCH_NARROWER) {
-			style->font_stretch.computed = CLAMP (object->style->font_stretch.computed - 1,
-							     SP_CSS_FONT_STRETCH_ULTRA_CONDENSED,
-							     SP_CSS_FONT_STRETCH_ULTRA_EXPANDED);
-		} else if (style->font_stretch.value == SP_CSS_FONT_STRETCH_WIDER) {
-			style->font_stretch.computed = CLAMP (object->style->font_stretch.computed + 1,
-							     SP_CSS_FONT_STRETCH_ULTRA_CONDENSED,
-							     SP_CSS_FONT_STRETCH_ULTRA_EXPANDED);
-		}
+	if (!parent) return;
 
-		if (style->opacity.inherit) {
-			style->opacity.value = object->style->opacity.value;
+	/* CSS2 */
+	/* Font */
+	/* 'font-size' */
+	if (!style->font_size.set || style->font_size.inherit) {
+		/* I think inheriting computed value is correct here */
+		style->font_size.type = SP_FONT_SIZE_LENGTH;
+		style->font_size.computed = parent->font_size.computed;
+	} else if (style->font_size.type == SP_FONT_SIZE_LITERAL) {
+		static gfloat sizetable[] = {6.0, 8.0, 10.0, 12.0, 14.0, 18.0, 24.0};
+		/* fixme: SVG and CSS do no specify clearly, whether we should use user or screen coordinates (Lauris) */
+		if (style->font_size.value < SP_CSS_FONT_SIZE_SMALLER) {
+			style->font_size.computed = sizetable[style->font_size.value];
+		} else if (style->font_size.value == SP_CSS_FONT_SIZE_SMALLER) {
+			style->font_size.computed = parent->font_size.computed / 1.2;
+		} else if (style->font_size.value == SP_CSS_FONT_SIZE_LARGER) {
+			style->font_size.computed = parent->font_size.computed * 1.2;
+		} else {
+			/* Illegal value */
 		}
-		if (!style->display_set && object->style->display_set) {
-			style->display = object->style->display;
-			style->display_set = TRUE;
+	} else if (style->font_size.type == SP_FONT_SIZE_PERCENTAGE) {
+		/* fixme: SVG and CSS do no specify clearly, whether we should use parent or viewport values here (Lauris) */
+		g_print ("Parent %g PC %g own %g\n",
+			 parent->font_size.computed,
+			 SP_F8_16_TO_FLOAT (style->font_size.value),
+			 style->font_size.computed);
+		style->font_size.computed = parent->font_size.computed * SP_F8_16_TO_FLOAT (style->font_size.value);
+	}
+	/* 'font-style' */
+	if (!style->font_style.set || style->font_style.inherit) {
+		style->font_style.computed = parent->font_style.computed;
+	}
+	/* 'font-variant' */
+	if (!style->font_variant.set || style->font_variant.inherit) {
+		style->font_variant.computed = parent->font_variant.computed;
+	}
+	/* 'font-weight' */
+	if (!style->font_weight.set || style->font_weight.inherit) {
+		style->font_weight.computed = parent->font_weight.computed;
+	} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_NORMAL) {
+		/* fixme: This is unconditional, i.e. happens even if parent not present */
+		style->font_weight.computed = SP_CSS_FONT_WEIGHT_400;
+	} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_BOLD) {
+		style->font_weight.computed = SP_CSS_FONT_WEIGHT_700;
+	} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_LIGHTER) {
+		style->font_weight.computed = CLAMP (parent->font_weight.computed - 1, SP_CSS_FONT_WEIGHT_100, SP_CSS_FONT_WEIGHT_900);
+	} else if (style->font_weight.value == SP_CSS_FONT_WEIGHT_DARKER) {
+		style->font_weight.computed = CLAMP (parent->font_weight.computed + 1, SP_CSS_FONT_WEIGHT_100, SP_CSS_FONT_WEIGHT_900);
+	}
+	/* 'font-stretch' */
+	if (!style->font_stretch.set || style->font_stretch.inherit) {
+		style->font_stretch.computed = parent->font_stretch.computed;
+	} else if (style->font_stretch.value == SP_CSS_FONT_STRETCH_NARROWER) {
+		style->font_stretch.computed = CLAMP (parent->font_stretch.computed - 1,
+						      SP_CSS_FONT_STRETCH_ULTRA_CONDENSED,
+						      SP_CSS_FONT_STRETCH_ULTRA_EXPANDED);
+	} else if (style->font_stretch.value == SP_CSS_FONT_STRETCH_WIDER) {
+		style->font_stretch.computed = CLAMP (parent->font_stretch.computed + 1,
+						      SP_CSS_FONT_STRETCH_ULTRA_CONDENSED,
+						      SP_CSS_FONT_STRETCH_ULTRA_EXPANDED);
+	}
+	if (style->opacity.inherit) {
+		style->opacity.value = parent->opacity.value;
+	}
+	if (!style->display_set && parent->display_set) {
+		style->display = parent->display;
+		style->display_set = TRUE;
+	}
+	if (!style->visibility_set && parent->visibility_set) {
+		style->visibility = parent->visibility;
+		style->visibility_set = TRUE;
+	}
+	if (!style->fill.set || style->fill.inherit) {
+		sp_style_merge_ipaint (style, &style->fill, &parent->fill);
+	}
+	if (!style->fill_opacity.set || style->fill_opacity.inherit) {
+		style->fill_opacity.value = parent->fill_opacity.value;
+	}
+	if (!style->fill_rule.set || style->fill_rule.inherit) {
+		style->fill_rule.value = parent->fill_rule.value;
+	}
+	/* Stroke */
+	if (!style->stroke.set || style->stroke.inherit) {
+		sp_style_merge_ipaint (style, &style->stroke, &parent->stroke);
+	}
+	if (!style->stroke_width.set || style->stroke_width.inherit) {
+		style->stroke_width.unit = parent->stroke_width.unit;
+		style->stroke_width.value = parent->stroke_width.value;
+		style->stroke_width.computed = parent->stroke_width.computed;
+	} else if (style->stroke_width.unit == SP_CSS_UNIT_EM) {
+		/* fixme: Must have sure font size is updated BEFORE us */
+		style->stroke_width.computed = style->font_size.computed;
+	} else if (style->stroke_width.unit == SP_CSS_UNIT_EX) {
+		/* fixme: Must have sure font size is updated BEFORE us */
+		/* fixme: Real x height - but should this go to item? (Lauris) */
+		style->stroke_width.computed = style->font_size.computed * 0.5;
+	}
+	if (!style->stroke_linecap.set || style->stroke_linecap.inherit) {
+		style->stroke_linecap.value = parent->stroke_linecap.value;
+	}
+	if (!style->stroke_linejoin.set || style->stroke_linejoin.inherit) {
+		style->stroke_linejoin.value = parent->stroke_linejoin.value;
+	}
+	if (!style->stroke_miterlimit.set || style->stroke_miterlimit.inherit) {
+		style->stroke_miterlimit.value = parent->stroke_miterlimit.value;
+	}
+	if (!style->stroke_dasharray_set && parent->stroke_dasharray_set) {
+		style->stroke_dash.n_dash = parent->stroke_dash.n_dash;
+		if (style->stroke_dash.n_dash > 0) {
+			style->stroke_dash.dash = g_new (gdouble, style->stroke_dash.n_dash);
+			memcpy (style->stroke_dash.dash, parent->stroke_dash.dash, style->stroke_dash.n_dash * sizeof (gdouble));
 		}
-		if (!style->visibility_set && object->style->visibility_set) {
-			style->visibility = object->style->visibility;
-			style->visibility_set = TRUE;
-		}
-		if (!style->fill.set || style->fill.inherit) {
-			sp_style_merge_ipaint (style, &style->fill, &object->style->fill);
-		}
-		if (!style->fill_opacity.set || style->fill_opacity.inherit) {
-			style->fill_opacity.value = object->style->fill_opacity.value;
-		}
-		if (!style->fill_rule.set || style->fill_rule.inherit) {
-			style->fill_rule.value = object->style->fill_rule.value;
-		}
-		/* Stroke */
-		if (!style->stroke.set || style->stroke.inherit) {
-			sp_style_merge_ipaint (style, &style->stroke, &object->style->stroke);
-		}
-		if (!style->stroke_width.set || object->style->stroke_width.inherit) {
-			style->stroke_width.unit = object->style->stroke_width.unit;
-			style->stroke_width.value = object->style->stroke_width.value;
-			style->stroke_width.computed = object->style->stroke_width.computed;
-		} else if (style->stroke_width.unit == SP_CSS_UNIT_EM) {
-			/* fixme: Must have sure font size is updated BEFORE us */
-			style->stroke_width.computed = style->font_size.computed;
-		} else if (style->stroke_width.unit == SP_CSS_UNIT_EX) {
-			/* fixme: Must have sure font size is updated BEFORE us */
-			/* fixme: Real x height - but should this go to item? (Lauris) */
-			style->stroke_width.computed = style->font_size.computed * 0.5;
-		}
-		if (!style->stroke_linecap.set || style->stroke_linecap.inherit) {
-			style->stroke_linecap.value = object->style->stroke_linecap.value;
-		}
-		if (!style->stroke_linejoin.set || style->stroke_linejoin.inherit) {
-			style->stroke_linejoin.value = object->style->stroke_linejoin.value;
-		}
-		if (!style->stroke_miterlimit.set || style->stroke_miterlimit.inherit) {
-			style->stroke_miterlimit.value = object->style->stroke_miterlimit.value;
-		}
-		if (!style->stroke_dasharray_set && object->style->stroke_dasharray_set) {
-			style->stroke_dash.n_dash = object->style->stroke_dash.n_dash;
-			if (style->stroke_dash.n_dash > 0) {
-				style->stroke_dash.dash = g_new (gdouble, style->stroke_dash.n_dash);
-				memcpy (style->stroke_dash.dash, object->style->stroke_dash.dash, style->stroke_dash.n_dash * sizeof (gdouble));
-			}
-			style->stroke_dasharray_set = TRUE;
-		}
-		if (!style->stroke_dashoffset_set && object->style->stroke_dashoffset_set) {
-			style->stroke_dash.offset = object->style->stroke_dash.offset;
-			style->stroke_dashoffset_set = TRUE;
-		}
-		if (!style->stroke_opacity.set || style->stroke_opacity.inherit) {
-			style->stroke_opacity.value = object->style->stroke_opacity.value;
-		}
-		/* 'text-anchor' */
-		if (!style->text_anchor.set || style->text_anchor.inherit) {
-			style->text_anchor.computed = object->style->text_anchor.computed;
-		}
-		if (!style->writing_mode.set || style->writing_mode.inherit) {
-			style->writing_mode.computed = object->style->writing_mode.computed;
-		}
+		style->stroke_dasharray_set = TRUE;
+	}
+	if (!style->stroke_dashoffset_set && parent->stroke_dashoffset_set) {
+		style->stroke_dash.offset = parent->stroke_dash.offset;
+		style->stroke_dashoffset_set = TRUE;
+	}
+	if (!style->stroke_opacity.set || style->stroke_opacity.inherit) {
+		style->stroke_opacity.value = parent->stroke_opacity.value;
+	}
+	/* 'text-anchor' */
+	if (!style->text_anchor.set || style->text_anchor.inherit) {
+		style->text_anchor.computed = parent->text_anchor.computed;
+	}
+	if (!style->writing_mode.set || style->writing_mode.inherit) {
+		style->writing_mode.computed = parent->writing_mode.computed;
+	}
 
-		if (style->text && object->style->text) {
-			if (!style->text->font_family.set || style->text->font_family.inherit) {
-				if (style->text->font_family.value) g_free (style->text->font_family.value);
-				style->text->font_family.value = g_strdup (object->style->text->font_family.value);
-			}
+	if (style->text && parent->text) {
+		if (!style->text->font_family.set || style->text->font_family.inherit) {
+			if (style->text->font_family.value) g_free (style->text->font_family.value);
+			style->text->font_family.value = g_strdup (parent->text->font_family.value);
 		}
 	}
 }
@@ -783,12 +796,16 @@ static void
 sp_style_paint_server_modified (SPPaintServer *server, guint flags, SPStyle *style)
 {
 	if ((style->fill.type == SP_PAINT_TYPE_PAINTSERVER) && (server == style->fill.value.server)) {
-		/* fixme: I do not know, whether it is optimal - we are forcing reread of everything (Lauris) */
-		/* fixme: We have to use object_modified flag, because parent flag is only available downstreams */
-		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+		if (style->object) {
+			/* fixme: I do not know, whether it is optimal - we are forcing reread of everything (Lauris) */
+			/* fixme: We have to use object_modified flag, because parent flag is only available downstreams */
+			sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+		}
 	} else if ((style->stroke.type == SP_PAINT_TYPE_PAINTSERVER) && (server == style->stroke.value.server)) {
-		/* fixme: */
-		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+		if (style->object) {
+			/* fixme: */
+			sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+		}
 	} else {
 		g_assert_not_reached ();
 	}
@@ -1050,7 +1067,9 @@ sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gflo
 	style->fill_opacity.inherit = FALSE;
 	style->fill_opacity.value = SP_SCALE24_FROM_FLOAT (a);
 
-	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	if (style->object) {
+		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	}
 }
 
 void
@@ -1068,7 +1087,9 @@ sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfl
 	style->fill_opacity.inherit = FALSE;
 	style->fill_opacity.value = SP_SCALE24_FROM_FLOAT (a);
 
-	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	if (style->object) {
+		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	}
 }
 
 void
@@ -1086,7 +1107,9 @@ sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gf
 	style->stroke_opacity.inherit = FALSE;
 	style->stroke_opacity.value = SP_SCALE24_FROM_FLOAT (a);
 
-	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	if (style->object) {
+		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	}
 }
 
 void
@@ -1104,7 +1127,9 @@ sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, g
 	style->stroke_opacity.inherit = FALSE;
 	style->stroke_opacity.value = SP_SCALE24_FROM_FLOAT (a);
 
-	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	if (style->object) {
+		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	}
 }
 
 void
@@ -1116,7 +1141,9 @@ sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set)
 	style->opacity.inherit = FALSE;
 	style->opacity.value = SP_SCALE24_FROM_FLOAT (opacity);
 
-	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	if (style->object) {
+		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+	}
 }
 
 /* SPTextStyle operations */
@@ -1465,22 +1492,27 @@ sp_style_read_ipaint (SPIPaint *paint, const guchar *str, SPStyle *style, SPDocu
 	} else {
 		guint32 color;
 		if (!strncmp (str, "url", 3)) {
-			SPObject *ps;
-			ps = sp_uri_reference_resolve (document, str);
-			if (!ps || !SP_IS_PAINT_SERVER (ps)) {
-				paint->type = SP_PAINT_TYPE_NONE;
+			if (document) {
+				SPObject *ps;
+				ps = sp_uri_reference_resolve (document, str);
+				if (!ps || !SP_IS_PAINT_SERVER (ps)) {
+					paint->type = SP_PAINT_TYPE_NONE;
+					return;
+				}
+				paint->type = SP_PAINT_TYPE_PAINTSERVER;
+				paint->value.server = SP_PAINT_SERVER (ps);
+				sp_object_href (SP_OBJECT (paint->value.server), style);
+				gtk_signal_connect (GTK_OBJECT (paint->value.server), "destroy",
+						    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
+				gtk_signal_connect (GTK_OBJECT (paint->value.server), "modified",
+						    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
+				paint->set = TRUE;
+				paint->inherit = FALSE;
+				return;
+			} else {
+				paint->set = FALSE;
 				return;
 			}
-			paint->type = SP_PAINT_TYPE_PAINTSERVER;
-			paint->value.server = SP_PAINT_SERVER (ps);
-			sp_object_href (SP_OBJECT (paint->value.server), style);
-			gtk_signal_connect (GTK_OBJECT (paint->value.server), "destroy",
-					    GTK_SIGNAL_FUNC (sp_style_paint_server_destroy), style);
-			gtk_signal_connect (GTK_OBJECT (paint->value.server), "modified",
-					    GTK_SIGNAL_FUNC (sp_style_paint_server_modified), style);
-			paint->set = TRUE;
-			paint->inherit = FALSE;
-			return;
 		} else if (!strncmp (str, "none", 4)) {
 			paint->type = SP_PAINT_TYPE_NONE;
 			paint->set = TRUE;

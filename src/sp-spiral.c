@@ -208,17 +208,17 @@ sp_spiral_read_attr (SPObject * object, const gchar * attr)
 	/* fixme: we should really collect updates */
 	if (!strcmp (attr, "sodipodi:cx")) {
 		if (!sp_svg_length_read_lff (str, &unit, NULL, &spiral->cx) ||
-		    (unit != SP_SVG_UNIT_EM) ||
-		    (unit != SP_SVG_UNIT_EX) ||
-		    (unit != SP_SVG_UNIT_PERCENT)) {
+		    (unit == SP_SVG_UNIT_EM) ||
+		    (unit == SP_SVG_UNIT_EX) ||
+		    (unit == SP_SVG_UNIT_PERCENT)) {
 			spiral->cx = 0.0;
 		}
 		sp_shape_set_shape (shape);
 	} else if (!strcmp (attr, "sodipodi:cy")) {
 		if (!sp_svg_length_read_lff (str, &unit, NULL, &spiral->cy) ||
-		    (unit != SP_SVG_UNIT_EM) ||
-		    (unit != SP_SVG_UNIT_EX) ||
-		    (unit != SP_SVG_UNIT_PERCENT)) {
+		    (unit == SP_SVG_UNIT_EM) ||
+		    (unit == SP_SVG_UNIT_EX) ||
+		    (unit == SP_SVG_UNIT_PERCENT)) {
 			spiral->cy = 0.0;
 		}
 		sp_shape_set_shape (shape);

@@ -41,7 +41,6 @@ sodipodi_SOURCES = \
 	sp-namedview.c sp-namedview.h \
 	sp-guide.c sp-guide.h \
 	sp-image.c sp-image.h \
-	sp-path-component.c sp-path-component.h \
 	sp-path.c sp-path.h \
 	sp-shape.c sp-shape.h \
 	sp-rect.c sp-rect.h \

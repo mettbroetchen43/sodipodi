@@ -605,6 +605,7 @@ sp_gradient_position_paint (GtkWidget *widget, GdkRectangle *area)
 	    (widget->allocation.width < 1) ||
 	    (widget->allocation.height < 1)) {
 		/* Draw empty thing */
+		if (!gp->gc) gp->gc = gdk_gc_new (widget->window);
 		nr_gdk_draw_gray_garbage (widget->window, gp->gc, area->x, area->y, area->width, area->height);
 		return;
 	}

@@ -61,7 +61,7 @@ sp_item_widget_new (void)
 	g_return_val_if_fail (xml != NULL, NULL);
 	itemw = glade_xml_get_widget (xml, "item_widget");
 	/* Create container widget */
-	spw = sp_widget_new (SODIPODI, SP_ACTIVE_DESKTOP, SP_ACTIVE_DOCUMENT);
+	spw = sp_widget_new_global (SODIPODI);
 	gtk_object_set_data (GTK_OBJECT (spw), "xml", xml);
 	gtk_signal_connect (GTK_OBJECT (spw), "destroy", GTK_SIGNAL_FUNC (sp_item_widget_destroy), NULL);
 	gtk_signal_connect (GTK_OBJECT (spw), "modify_selection", GTK_SIGNAL_FUNC (sp_item_widget_modify_selection), itemw);
@@ -200,7 +200,7 @@ sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw)
 
 	if (blocked) return;
 
-	item = sp_selection_item (SP_DT_SELECTION (spw->desktop));
+	item = sp_selection_item (SP_DT_SELECTION (SP_WIDGET_DESKTOP (spw)));
 	g_return_if_fail (item != NULL);
 
 	blocked = TRUE;
@@ -212,7 +212,7 @@ sp_item_widget_sensitivity_toggled (GtkWidget *widget, SPWidget *spw)
 		sp_object_setAttribute (SP_OBJECT (item), "sodipodi:insensitive", "true", &ex);
 	}
 
-	sp_document_maybe_done (spw->document, "ItemDialog:insensitive");
+	sp_document_maybe_done (SP_WIDGET_DOCUMENT (spw), "ItemDialog:insensitive");
 
 	blocked = FALSE;
 }
@@ -227,7 +227,7 @@ sp_item_widget_id_changed (GtkWidget *widget, SPWidget *spw)
 
 	if (blocked) return;
 
-	item = sp_selection_item (SP_DT_SELECTION (spw->desktop));
+	item = sp_selection_item (SP_WIDGET_SELECTION (spw));
 	g_return_if_fail (item != NULL);
 	xml = gtk_object_get_data (GTK_OBJECT (spw), "xml");
 	g_return_if_fail (xml != NULL);
@@ -241,14 +241,14 @@ sp_item_widget_id_changed (GtkWidget *widget, SPWidget *spw)
 		gtk_label_set_text (GTK_LABEL (w), _("The SVG ID of item"));
 	} else if (!*id || !isalnum (*id)) {
 		gtk_label_set_text (GTK_LABEL (w), _("The ID is not valid"));
-	} else if (sp_document_lookup_id (spw->document, id)) {
+	} else if (sp_document_lookup_id (SP_WIDGET_DOCUMENT (spw), id)) {
 		gtk_label_set_text (GTK_LABEL (w), _("The ID is already defined"));
 	} else {
 		SPException ex;
 		gtk_label_set_text (GTK_LABEL (w), _("The ID is valid"));
 		SP_EXCEPTION_INIT (&ex);
 		sp_object_setAttribute (SP_OBJECT (item), "id", id, &ex);
-		sp_document_maybe_done (spw->document, "ItemDialog:id");
+		sp_document_maybe_done (SP_WIDGET_DOCUMENT (spw), "ItemDialog:id");
 	}
 
 	blocked = FALSE;
@@ -261,7 +261,7 @@ sp_item_widget_opacity_changed (GtkWidget *widget, SPWidget *spw)
 
 	if (blocked) return;
 
-	item = sp_selection_item (SP_DT_SELECTION (spw->desktop));
+	item = sp_selection_item (SP_WIDGET_SELECTION (spw));
 	g_return_if_fail (item != NULL);
 
 	blocked = TRUE;
@@ -270,7 +270,7 @@ sp_item_widget_opacity_changed (GtkWidget *widget, SPWidget *spw)
 	/* fixme: This does not propagate to reprs - what to do? (Lauris) */
 	sp_style_set_opacity (SP_OBJECT_STYLE (item), gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (widget)), TRUE);
 
-	sp_document_maybe_done (spw->document, "ItemDialog:style");
+	sp_document_maybe_done (SP_WIDGET_DOCUMENT (spw), "ItemDialog:style");
 
 	blocked = FALSE;
 }
@@ -286,7 +286,7 @@ sp_item_widget_transform_changed (GtkWidget *widget, SPWidget *spw)
 
 	if (blocked) return;
 
-	item = sp_selection_item (SP_DT_SELECTION (spw->desktop));
+	item = sp_selection_item (SP_WIDGET_SELECTION (spw));
 	g_return_if_fail (item != NULL);
 	pos = GPOINTER_TO_INT (gtk_object_get_data (GTK_OBJECT (widget), "pos"));
 
@@ -300,7 +300,7 @@ sp_item_widget_transform_changed (GtkWidget *widget, SPWidget *spw)
 		SP_EXCEPTION_INIT (&ex);
 		sp_object_setAttribute (SP_OBJECT (item), "transform", c, &ex);
 
-		sp_document_maybe_done (spw->document, "ItemDialog:transform");
+		sp_document_maybe_done (SP_WIDGET_DOCUMENT (spw), "ItemDialog:transform");
 	}
 
 	blocked = FALSE;

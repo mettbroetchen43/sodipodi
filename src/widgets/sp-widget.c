@@ -1,28 +1,32 @@
 #define __SP_WIDGET_C__
 
 /*
- * SPWidget
- *
- * Abstract base class for sodipodi property control widgets
+ * Abstract base class for dynamic control widgets
  *
  * Authors:
- *  Lauris Kaplinski <lauris@ximian.com>
+ *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 2001 Ximian, Inc.
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
  *
+ * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
 #include <gtk/gtksignal.h>
+#include "../xml/repr-private.h"
 #include "../sodipodi.h"
 #include "../desktop.h"
+#include "../desktop-handles.h"
 #include "../selection.h"
 #include "../document.h"
 #include "sp-widget.h"
 
 enum {
+	CONSTRUCT,
 	MODIFY_SELECTION,
 	CHANGE_SELECTION,
 	SET_SELECTION,
+	ATTR_CHANGED,
 	SET_DIRTY,
 	LAST_SIGNAL
 };
@@ -46,12 +50,44 @@ static void sp_widget_set_selection (Sodipodi *sodipodi, SPSelection *selection,
 static GtkBinClass *parent_class;
 static guint signals[LAST_SIGNAL] = {0};
 
+static void
+spw_repr_destroy (SPRepr *repr, gpointer data)
+{
+	g_warning ("Oops! Repr destroyed while SPWidget still present");
+}
+
+static void
+spw_repr_attr_changed (SPRepr *repr, const guchar *key, const guchar *oldval, const guchar *newval, gpointer data)
+{
+	gtk_signal_emit (GTK_OBJECT (data), signals[ATTR_CHANGED], key, oldval, newval);
+}
+
+static void
+spw_repr_content_changed (SPRepr *repr, const guchar *oldval, const guchar *newval, gpointer data)
+{
+	/* Signalling goes here */
+}
+
+SPReprEventVector spw_event_vector = {
+	spw_repr_destroy,
+	NULL, /* Add child */
+	NULL, /* Child added */
+	NULL, /* Remove child */
+	NULL, /* Child removed */
+	NULL, /* Change attr */
+	spw_repr_attr_changed,
+	NULL, /* Change content */
+	spw_repr_content_changed,
+	NULL, /* Change_order */
+	NULL /* Order changed */
+};
+
 GtkType
 sp_widget_get_type (void)
 {
-	static GtkType widget_type = 0;
-	if (!widget_type) {
-		static const GtkTypeInfo widget_info = {
+	static GtkType type = 0;
+	if (!type) {
+		static const GtkTypeInfo info = {
 			"SPWidget",
 			sizeof (SPWidget),
 			sizeof (SPWidgetClass),
@@ -59,9 +95,9 @@ sp_widget_get_type (void)
 			(GtkObjectInitFunc) sp_widget_init,
 			NULL, NULL, NULL
 		};
-		widget_type = gtk_type_unique (GTK_TYPE_BIN, &widget_info);
+		type = gtk_type_unique (GTK_TYPE_BIN, &info);
 	}
-	return widget_type;
+	return type;
 }
 
 static void
@@ -77,6 +113,12 @@ sp_widget_class_init (SPWidgetClass *klass)
 
 	object_class->destroy = sp_widget_destroy;
 
+	signals[CONSTRUCT] =        gtk_signal_new ("construct",
+						    GTK_RUN_FIRST,
+						    object_class->type,
+						    GTK_SIGNAL_OFFSET (SPWidgetClass, construct),
+						    gtk_marshal_NONE__NONE,
+						    GTK_TYPE_NONE, 0);
 	signals[CHANGE_SELECTION] = gtk_signal_new ("change_selection",
 						    GTK_RUN_FIRST,
 						    object_class->type,
@@ -98,6 +140,13 @@ sp_widget_class_init (SPWidgetClass *klass)
 						    gtk_marshal_NONE__POINTER,
 						    GTK_TYPE_NONE, 1,
 						    GTK_TYPE_POINTER);
+	signals[ATTR_CHANGED] =     gtk_signal_new ("attr_changed",
+						    GTK_RUN_FIRST,
+						    object_class->type,
+						    GTK_SIGNAL_OFFSET (SPWidgetClass, attr_changed),
+						    gtk_marshal_NONE__POINTER_POINTER_POINTER,
+						    GTK_TYPE_NONE, 3,
+						    GTK_TYPE_POINTER, GTK_TYPE_POINTER, GTK_TYPE_POINTER);
 	signals[SET_DIRTY] =        gtk_signal_new ("set_dirty",
 						    GTK_RUN_FIRST,
 						    object_class->type,
@@ -118,11 +167,11 @@ sp_widget_class_init (SPWidgetClass *klass)
 static void
 sp_widget_init (SPWidget *spw)
 {
+	spw->sodipodi = NULL;
+	spw->repr = NULL;
+
 	spw->dirty = FALSE;
 	spw->autoupdate = TRUE;
-	spw->sodipodi = NULL;
-	spw->desktop = NULL;
-	spw->document = NULL;
 }
 
 static void
@@ -132,8 +181,25 @@ sp_widget_destroy (GtkObject *object)
 
 	spw = (SPWidget *) object;
 
-	/* Disconnect signals */
-	gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+	if (spw->sodipodi) {
+#if 1
+		/* This happens in ::hide (Lauris) */
+		/* It seems it does not (Lauris) */
+		/* Disconnect signals */
+		gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+#endif
+		spw->sodipodi = NULL;
+	}
+
+	if (spw->repr) {
+#if 1
+		/* This happens in ::hide (Lauris) */
+		/* It seems it does not (Lauris) */
+		sp_repr_remove_listener_by_data (spw->repr, spw);
+#endif
+		sp_repr_unref (spw->repr);
+		spw->repr = NULL;
+	}
 
 	if (((GtkObjectClass *) parent_class)->destroy)
 		(* ((GtkObjectClass *) parent_class)->destroy) (object);
@@ -146,10 +212,16 @@ sp_widget_show (GtkWidget *widget)
 
 	spw = SP_WIDGET (widget);
 
-	/* Connect signals */
-	gtk_signal_connect (GTK_OBJECT (sodipodi), "modify_selection", GTK_SIGNAL_FUNC (sp_widget_modify_selection), spw);
-	gtk_signal_connect (GTK_OBJECT (sodipodi), "change_selection", GTK_SIGNAL_FUNC (sp_widget_change_selection), spw);
-	gtk_signal_connect (GTK_OBJECT (sodipodi), "set_selection", GTK_SIGNAL_FUNC (sp_widget_set_selection), spw);
+	if (spw->sodipodi) {
+		/* Connect signals */
+		gtk_signal_connect (GTK_OBJECT (sodipodi), "modify_selection", GTK_SIGNAL_FUNC (sp_widget_modify_selection), spw);
+		gtk_signal_connect (GTK_OBJECT (sodipodi), "change_selection", GTK_SIGNAL_FUNC (sp_widget_change_selection), spw);
+		gtk_signal_connect (GTK_OBJECT (sodipodi), "set_selection", GTK_SIGNAL_FUNC (sp_widget_set_selection), spw);
+	}
+
+	if (spw->repr) {
+		sp_repr_add_listener (spw->repr, &spw_event_vector, spw);
+	}
 
 	if (((GtkWidgetClass *) parent_class)->show)
 		(* ((GtkWidgetClass *) parent_class)->show) (widget);
@@ -162,8 +234,14 @@ sp_widget_hide (GtkWidget *widget)
 
 	spw = SP_WIDGET (widget);
 
-	/* Disconnect signals */
-	gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+	if (spw->sodipodi) {
+		/* Disconnect signals */
+		gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+	}
+
+	if (spw->repr) {
+		sp_repr_remove_listener_by_data (spw->repr, spw);
+	}
 
 	if (((GtkWidgetClass *) parent_class)->hide)
 		(* ((GtkWidgetClass *) parent_class)->hide) (widget);
@@ -211,13 +289,16 @@ sp_widget_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
 /* Methods */
 
 GtkWidget *
-sp_widget_new (Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document)
+sp_widget_new_global (Sodipodi *sodipodi)
 {
 	SPWidget *spw;
 
+	g_return_val_if_fail (sodipodi != NULL, NULL);
+	g_return_val_if_fail (SP_IS_SODIPODI (sodipodi), NULL);
+
 	spw = gtk_type_new (SP_TYPE_WIDGET);
 
-	if (!sp_widget_construct (spw, sodipodi, desktop, document)) {
+	if (!sp_widget_construct_global (spw, sodipodi)) {
 		gtk_object_unref (GTK_OBJECT (spw));
 		return NULL;
 	}
@@ -226,21 +307,79 @@ sp_widget_new (Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document)
 }
 
 GtkWidget *
-sp_widget_construct (SPWidget *spw, Sodipodi *sodipodi, SPDesktop *desktop, SPDocument *document)
+sp_widget_new_repr (SPRepr *repr)
+{
+	SPWidget *spw;
+
+	g_return_val_if_fail (repr != NULL, NULL);
+
+	spw = gtk_type_new (SP_TYPE_WIDGET);
+
+	if (!sp_widget_construct_repr (spw, repr)) {
+		gtk_object_unref (GTK_OBJECT (spw));
+		return NULL;
+	}
+
+	return (GtkWidget *) spw;
+}
+
+GtkWidget *
+sp_widget_construct_global (SPWidget *spw, Sodipodi *sodipodi)
 {
 	g_return_val_if_fail (spw != NULL, NULL);
 	g_return_val_if_fail (SP_IS_WIDGET (spw), NULL);
-	g_return_val_if_fail ((sodipodi != NULL) || (desktop != NULL) || (document != NULL), NULL);
-	g_return_val_if_fail ((!sodipodi) || SP_IS_SODIPODI (sodipodi), NULL);
-	g_return_val_if_fail ((!desktop) || SP_IS_DESKTOP (desktop), NULL);
-	g_return_val_if_fail ((!document) || SP_IS_DOCUMENT (document), NULL);
-
-	/* fixme: support desktop and document */
 	g_return_val_if_fail (sodipodi != NULL, NULL);
+	g_return_val_if_fail (SP_IS_SODIPODI (sodipodi), NULL);
+	g_return_val_if_fail (!spw->sodipodi, NULL);
+
+	if (spw->repr) {
+		if (GTK_WIDGET_VISIBLE (spw)) {
+			sp_repr_remove_listener_by_data (spw->repr, spw);
+		}
+		sp_repr_unref (spw->repr);
+		spw->repr = NULL;
+	}
 
 	spw->sodipodi = sodipodi;
-	spw->desktop = SP_ACTIVE_DESKTOP;
-	spw->document = SP_ACTIVE_DOCUMENT;
+	if (GTK_WIDGET_VISIBLE (spw)) {
+		gtk_signal_connect (GTK_OBJECT (sodipodi), "modify_selection", GTK_SIGNAL_FUNC (sp_widget_modify_selection), spw);
+		gtk_signal_connect (GTK_OBJECT (sodipodi), "change_selection", GTK_SIGNAL_FUNC (sp_widget_change_selection), spw);
+		gtk_signal_connect (GTK_OBJECT (sodipodi), "set_selection", GTK_SIGNAL_FUNC (sp_widget_set_selection), spw);
+	}
+
+	gtk_signal_emit (GTK_OBJECT (spw), signals[CONSTRUCT]);
+
+	return (GtkWidget *) spw;
+}
+
+GtkWidget *
+sp_widget_construct_repr (SPWidget *spw, SPRepr *repr)
+{
+	g_return_val_if_fail (spw != NULL, NULL);
+	g_return_val_if_fail (SP_IS_WIDGET (spw), NULL);
+	g_return_val_if_fail (repr != NULL, NULL);
+
+	if (spw->repr) {
+		if (repr == spw->repr) return (GtkWidget *) spw;
+		if (GTK_WIDGET_VISIBLE (spw)) {
+			sp_repr_remove_listener_by_data (spw->repr, spw);
+		}
+		sp_repr_unref (spw->repr);
+		spw->repr = NULL;
+	}
+	if (spw->sodipodi) {
+		if (GTK_WIDGET_VISIBLE (spw)) {
+			gtk_signal_disconnect_by_data (GTK_OBJECT (sodipodi), spw);
+		}
+		spw->sodipodi = NULL;
+	}
+	spw->repr = repr;
+	sp_repr_ref (spw->repr);
+	if (GTK_WIDGET_VISIBLE (spw)) {
+		sp_repr_add_listener (spw->repr, &spw_event_vector, spw);
+	}
+
+	gtk_signal_emit (GTK_OBJECT (spw), signals[CONSTRUCT]);
 
 	return (GtkWidget *) spw;
 }
@@ -248,36 +387,21 @@ sp_widget_construct (SPWidget *spw, Sodipodi *sodipodi, SPDesktop *desktop, SPDo
 static void
 sp_widget_modify_selection (Sodipodi *sodipodi, SPSelection *selection, guint flags, SPWidget *spw)
 {
-#if 0
-	if (((SPWidgetClass *) ((GtkObject *) spw)->klass)->modify_selection)
-		(* ((SPWidgetClass *) ((GtkObject *) spw)->klass)->modify_selection) (spw, selection, flags);
-#endif
-
 	gtk_signal_emit (GTK_OBJECT (spw), signals[MODIFY_SELECTION], selection, flags);
 }
 
 static void
 sp_widget_change_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget *spw)
 {
-#if 0
-	if (((SPWidgetClass *) ((GtkObject *) spw)->klass)->change_selection)
-		(* ((SPWidgetClass *) ((GtkObject *) spw)->klass)->change_selection) (spw, selection);
-#endif
-
 	gtk_signal_emit (GTK_OBJECT (spw), signals[CHANGE_SELECTION], selection);
 }
 
 static void
 sp_widget_set_selection (Sodipodi *sodipodi, SPSelection *selection, SPWidget *spw)
 {
-	/* Set desktop and document members */
-	spw->desktop = SP_ACTIVE_DESKTOP;
-	spw->document = SP_ACTIVE_DOCUMENT;
-	/* Call virtual method */
-	if (((SPWidgetClass *) ((GtkObject *) spw)->klass)->change_selection)
-		(* ((SPWidgetClass *) ((GtkObject *) spw)->klass)->change_selection) (spw, selection);
 	/* Emit "set_selection" signal */
 	gtk_signal_emit (GTK_OBJECT (spw), signals[SET_SELECTION], selection);
+	/* Sodipodi will force "change_selection" anyways */
 }
 
 void
@@ -306,7 +430,14 @@ sp_widget_set_autoupdate (SPWidget *spw, gboolean autoupdate)
 const GSList *
 sp_widget_get_item_list (SPWidget *spw)
 {
-	return sp_selection_item_list (spw->desktop->selection);
+	g_return_val_if_fail (spw != NULL, NULL);
+	g_return_val_if_fail (SP_IS_WIDGET (spw), NULL);
+
+	if (spw->sodipodi) {
+		return sp_selection_item_list (SP_DT_SELECTION (SP_ACTIVE_DESKTOP));
+	}
+
+	return NULL;
 }
 
 

@@ -1,3 +1,28 @@
+2002-09-05  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/dialogs/object-properties.c (sp_object_properties_dialog): build
+	optionmenu for choosing between selection/tools
+
+	* src/dialogs/fill-style.c (sp_fill_style_widget_new): Attach attr_changed
+	(sp_fill_style_repr_get_style): Helper
+	(sp_fill_style_widget_update_repr): Repr-associated version updater
+	(sp_fill_style_widget_paint_changed): Write repr instead of item list if needed
+
+	* src/widgets/sp-widget.c (spw_repr_attr_changed): Repr callback
+	(sp_widget_new_global): Build from sodipodi
+	(sp_widget_new_repr): Build from repr
+	(sp_widget_construct_global): Constructor
+	(sp_widget_construct_repr): Ditto
+
+	* src/style.c (sp_style_new): New method
+	(sp_style_read): Move evrything here
+	(sp_style_read_from_object): Frontend
+	(sp_style_read_from_repr): Ditto
+
+2002-09-04  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-path.c (sp_path_build): Update SODIPODI-PATH-NODE-TYPES attribute
+
 2002-09-03  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/sp-text.c (sp_text_set_shape): Oooooooops, use MAX for bbox other corner
