@@ -86,7 +86,7 @@ void sp_repr_append_child (SPRepr * repr, SPRepr * child);
 
 const gchar * sp_repr_doc_attr (SPRepr * repr, const gchar * key);
 
-void sp_repr_unparent_and_destroy (SPRepr * repr);
+void sp_repr_unparent (SPRepr * repr);
 SPRepr * sp_repr_duplicate_and_parent (SPRepr * repr);
 
 void sp_repr_remove_signals (SPRepr * repr);

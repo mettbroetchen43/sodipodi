@@ -164,6 +164,7 @@ sp_text_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			sp_repr_set_double_attribute (text_context->text, "x", p.x);
 			sp_repr_set_double_attribute (text_context->text, "y", p.y);
 			item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), text_context->text);
+			sp_document_done (SP_DT_DOCUMENT (desktop));
 			sp_repr_unref (text_context->text);
 /* fixme: */
 			if (item != NULL) {
@@ -204,7 +205,7 @@ sp_text_complete (SPTextContext * text_context)
 		}
 	}
 	g_print ("empty text created - removing\n");
-	sp_repr_unparent_and_destroy (text_context->text);
+	sp_repr_unparent (text_context->text);
 #if 0
 	sp_selection_empty ();
 #endif

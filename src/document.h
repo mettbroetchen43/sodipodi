@@ -54,6 +54,9 @@ struct _SPDocument {
 	GHashTable * iddef;	/* id dictionary */
 	gchar * uri;		/* Document uri */
 	gchar * base;		/* Document base URI */
+	GSList * undo;		/* Undo stack of reprs */
+	GSList * redo;		/* Redo stack of reprs */
+	GList * actions;	/* List of current actions */
 };
 
 struct _SPDocumentClass {
@@ -89,41 +92,30 @@ void sp_document_undef_id (SPDocument * document, const gchar * id);
 SPObject * sp_document_lookup_id (SPDocument * document, const gchar * id);
 
 /*
+ * Undo & redo
+ */
+
+/* Save all previous actions to stack, as one undo step */
+
+void sp_document_done (SPDocument * document);
+
+void sp_document_undo (SPDocument * document);
+void sp_document_redo (SPDocument * document);
+
+/*
+ * Actions
+ */
+
+/* Adds repr to document, returning created item, if any */
+SPItem * sp_document_add_repr (SPDocument * document, SPRepr * repr);
+/* Deletes repr from document */
+void sp_document_del_repr (SPDocument * document, SPRepr * repr);
+
+/*
  * Misc
  */
 
 GSList * sp_document_items_in_box (SPDocument * document, ArtDRect * box);
-SPItem * sp_document_add_repr (SPDocument * document, SPRepr * repr);
 
-
-
-
-
-#if 0
-/* Old SPDocument */
-#ifndef SP_DOCUMENT_DEFINED
-#define SP_DOCUMENT_DEFINED
-#define SPDocument SPRoot
-#endif
-
-#define SP_DOCUMENT SP_ROOT
-#define SP_IS_DOCUMENT SP_IS_ROOT
-
-/* Destructor */
-
-void sp_document_destroy (SPDocument * document);
-
-/* Constructors */
-
-SPDocument * sp_document_new (void);
-SPDocument * sp_document_new_from_file (const gchar * filename);
-
-/* methods */
-
-
-gdouble sp_document_page_width (SPDocument * document);
-gdouble sp_document_page_height (SPDocument * document);
-
-#endif
 
 #endif

@@ -190,6 +190,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 		sp_repr_set_name (repr, "g");
 		sp_document_add_repr (doc, repr);
 		sp_repr_unref (repr);
+		sp_document_done (doc);
 		return;
 	}
 
@@ -206,6 +207,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 		sp_repr_set_attr (repr, "sp-absolute-path-name", filename);
 		sp_document_add_repr (doc, repr);
 		sp_repr_unref (repr);
+		sp_document_done (doc);
 	}
 }
 

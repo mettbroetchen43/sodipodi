@@ -137,7 +137,7 @@ sp_repr_append_child (SPRepr * repr, SPRepr * child)
 	sp_repr_add_child (repr, child, sp_repr_n_children (repr));
 }
 
-void sp_repr_unparent_and_destroy (SPRepr * repr)
+void sp_repr_unparent (SPRepr * repr)
 {
 	SPRepr * parent;
 
@@ -147,9 +147,6 @@ void sp_repr_unparent_and_destroy (SPRepr * repr)
 	g_assert (parent != NULL);
 
 	sp_repr_remove_child (parent, repr);
-#if 0
-	sp_repr_unref (repr);
-#endif
 }
 
 SPRepr * sp_repr_duplicate_and_parent (SPRepr * repr)

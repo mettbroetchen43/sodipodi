@@ -59,7 +59,7 @@ void sp_repr_unref (SPRepr * repr)
 
 	repr->ref_count--;
 
-	if (repr->ref_count == 0) {
+	if (repr->ref_count < 1) {
 
 		/*
 		 * parents have to do refcounting !!!
@@ -74,7 +74,6 @@ void sp_repr_unref (SPRepr * repr)
 		while (repr->children) {
 			child = (SPRepr *) repr->children->data;
 			sp_repr_remove_child (repr, child);
-			sp_repr_unref (child);
 			repr->children = g_list_remove (repr->children, child);
 		}
 
@@ -116,6 +115,7 @@ SPRepr * sp_repr_copy (SPRepr * repr)
 		newchild = sp_repr_copy (child);
 		g_assert (newchild != NULL);
 		sp_repr_add_child (new, newchild, n);
+		sp_repr_unref (newchild);
 		n++;
 	}
 

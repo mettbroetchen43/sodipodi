@@ -128,6 +128,7 @@ sp_path_read_attr (SPObject * object, const gchar * attr)
 			bpath = sp_svg_read_path (astr);
 			curve = sp_curve_new_from_bpath (bpath);
 			comp = sp_path_comp_new (curve, TRUE, affine);
+			sp_curve_unref (curve);
 			sp_path_add_comp (path, comp);
 		}
 		return;

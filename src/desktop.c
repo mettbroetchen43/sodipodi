@@ -209,6 +209,8 @@ sp_desktop_new (SPDocument * document)
 		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
 	desktop->main = (GnomeCanvasGroup *) gnome_canvas_item_new (root,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
+	gtk_signal_connect (GTK_OBJECT (desktop->main), "event",
+		GTK_SIGNAL_FUNC (sp_desktop_root_handler), desktop);
 	desktop->grid = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,
 		GNOME_TYPE_CANVAS_GROUP, NULL);
 	desktop->guides = (GnomeCanvasGroup *) gnome_canvas_item_new (desktop->main,

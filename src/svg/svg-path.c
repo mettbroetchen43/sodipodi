@@ -474,16 +474,19 @@ sp_svg_read_path (const gchar * str)
   }
 #endif
 
-  if (ctx.param)
-    svg_parse_path_do_cmd (&ctx, TRUE);
+	if (ctx.param)
+		svg_parse_path_do_cmd (&ctx, TRUE);
 
 	gnome_canvas_bpath_def_art_finish (ctx.bpath);
 
 	bpath = art_new (ArtBpath, ctx.bpath->n_bpath);
 	memcpy (bpath, ctx.bpath->bpath, ctx.bpath->n_bpath * sizeof (ArtBpath));
 	g_assert ((bpath + ctx.bpath->n_bpath - 1)->code == ART_END);
+#if 0
 	g_free (ctx.bpath);
-
+#else
+	gnome_canvas_bpath_def_unref (ctx.bpath);
+#endif
 	return bpath;
 }
 

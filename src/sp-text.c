@@ -9,6 +9,7 @@ static void sp_text_destroy (GtkObject *object);
 
 static void sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_text_read_attr (SPObject * object, const gchar * attr);
+static void sp_text_read_content (SPObject * object);
 
 static void sp_text_set_shape (SPText * text);
 
@@ -50,6 +51,7 @@ sp_text_class_init (SPTextClass *class)
 
 	sp_object_class->build = sp_text_build;
 	sp_object_class->read_attr = sp_text_read_attr;
+	sp_object_class->read_content = sp_text_read_content;
 }
 
 static void
@@ -91,17 +93,16 @@ sp_text_build (SPObject * object, SPDocument * document, SPRepr * repr)
 	if (SP_OBJECT_CLASS (parent_class)->build)
 		(SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
 
-	sp_text_read_attr (object, "SP-INTERNAL-CONTENT-ATTR");
 	sp_text_read_attr (object, "x");
 	sp_text_read_attr (object, "y");
 	sp_text_read_attr (object, "style");
+	sp_text_read_content (object);
 }
 
 static void
 sp_text_read_attr (SPObject * object, const gchar * attr)
 {
 	SPText * text;
-	const gchar * string;
 	SPCSSAttr * css;
 	const gchar * fontname;
 	gdouble size;
@@ -112,13 +113,6 @@ sp_text_read_attr (SPObject * object, const gchar * attr)
 
 	text = SP_TEXT (object);
 
-	if (strcmp (attr, "SP-INTERNAL-CONTENT-ATTR") == 0) {
-		if (text->text) g_free (text->text);
-		string = sp_repr_content (object->repr);
-		text->text = g_strdup (string);
-		sp_text_set_shape (text);
-		return;
-	}
 	if (strcmp (attr, "x") == 0) {
 		text->x = sp_repr_get_double_attribute (object->repr, attr, text->y);
 		sp_text_set_shape (text);
@@ -158,6 +152,24 @@ sp_text_read_attr (SPObject * object, const gchar * attr)
 
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		(SP_OBJECT_CLASS (parent_class)->read_attr) (object, attr);
+}
+
+static void
+sp_text_read_content (SPObject * object)
+{
+	SPText * text;
+	const gchar * t;
+
+	text = SP_TEXT (object);
+
+	if (text->text) g_free (text->text);
+	t = sp_repr_content (object->repr);
+	if (t != NULL) {
+		text->text = g_strdup (t);
+	} else {
+		text->text = NULL;
+	}
+	sp_text_set_shape (text);
 }
 
 static void

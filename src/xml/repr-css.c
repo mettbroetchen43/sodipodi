@@ -141,7 +141,7 @@ sp_repr_css_set (SPRepr * repr, SPCSSAttr * css, const gchar * attr)
 	GList * list;
 	const gchar * key;
 	gchar * val;
-	gchar * result;
+	gchar * r, * result;
 	char c[128];
 
 	g_assert (repr != NULL);
@@ -150,16 +150,20 @@ sp_repr_css_set (SPRepr * repr, SPCSSAttr * css, const gchar * attr)
 
 	list = sp_repr_attributes ((SPRepr *) css);
 	result = "";
+	r = g_strdup (result);
 
 	while (list) {
 		key = (const gchar *) list->data;
 		val = (gchar *) sp_repr_attr ((SPRepr *) css, key);
 		snprintf (c, 128, "%s:%s; ", key, val);
-		result = g_strconcat (result, c, NULL);
+		result = g_strconcat (r, c, NULL);
+		g_free (r);
+		r = result;
 		list = g_list_remove (list, (gpointer) key);
 	}
 g_print ("style: %s\n", result);
 	sp_repr_set_attr (repr, attr, result);
+	g_free (result);
 }
 
 static void

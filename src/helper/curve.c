@@ -238,7 +238,7 @@ sp_curve_unref (SPCurve * curve)
 	g_return_if_fail (curve != NULL);
 
 	if (--curve->refcount < 1) {
-		if (!curve->sbpath && curve->bpath) art_free (curve->bpath);
+		if ((!curve->sbpath) && (curve->bpath)) art_free (curve->bpath);
 		g_free (curve);
 	}
 }

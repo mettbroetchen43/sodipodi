@@ -114,7 +114,7 @@ sp_export_do_export (SPDesktop * desktop, gchar * filename,
 	art_affine_scale (a, width / (x1 - x0), -height / (y1 - y0));
 	art_affine_multiply (affine, affine, a);
 
-	sp_item_paint (SP_ITEM (doc), pixbuf, affine);
+	sp_item_paint (SP_ITEM (doc->root), pixbuf, affine);
 
 	sp_png_write_rgba (filename, pixbuf);
 
@@ -365,7 +365,7 @@ sp_export_drawing (GtkToggleButton * tb)
 
 	doc = SP_DT_DOCUMENT (desktop);
 
-	sp_item_bbox (SP_ITEM (doc), &bbox);
+	sp_item_bbox (SP_ITEM (doc->root), &bbox);
 
 	sp_export_set_area (xml, &bbox);
 }

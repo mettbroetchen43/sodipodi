@@ -177,6 +177,7 @@ sp_ellipse_context_root_handler (SPEventContext * event_context, GdkEvent * even
 			dragging = FALSE;
 			if (item != NULL)
 				sp_selection_set_item (SP_DT_SELECTION (desktop), item);
+			sp_document_done (SP_DT_DOCUMENT (desktop));
 			repr = NULL;
 			ret = TRUE;
 			break;

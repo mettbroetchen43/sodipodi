@@ -170,6 +170,7 @@ sp_draw_finish_item (SPDrawContext * draw_context)
 		g_free (str);
 		sp_repr_set_attr (repr, "style", "stroke:#000; stroke-width:1");
 		item = sp_document_add_repr (SP_DT_DOCUMENT (SP_EVENT_CONTEXT (draw_context)->desktop), repr);
+		sp_document_done (SP_DT_DOCUMENT (SP_EVENT_CONTEXT (draw_context)->desktop));
 		sp_repr_unref (repr);
 		sp_selection_set_item (SP_DT_SELECTION (SP_EVENT_CONTEXT (draw_context)->desktop), item);
 	}

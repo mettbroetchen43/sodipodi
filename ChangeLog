@@ -1,6 +1,11 @@
 2000-04-01  Lauris Kaplinski <lauris@ariman.ee>
 
+    * document.c: Some undoing/redoing works (duplicate & delete)
+
+2000-04-01  Lauris Kaplinski <lauris@ariman.ee>
+
     * sp-item-group.c: cleaned up signals, reordering should work now
+    * hunted memory leaks & removed most obvious ones
 
 2000-03-31  Lauris Kaplinski <lauris@ariman.ee>
 

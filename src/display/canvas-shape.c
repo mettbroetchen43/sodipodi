@@ -83,6 +83,12 @@ sp_canvas_shape_destroy (GtkObject *object)
 		shape->comp = g_list_remove (shape->comp, shape->comp->data);
 	}
 
+	if (shape->fill)
+		sp_fill_unref (shape->fill);
+
+	if (shape->stroke)
+		sp_stroke_unref (shape->stroke);
+
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
@@ -145,7 +151,11 @@ g_print ("sp_canvas_shape_update: entering\n");
 
 	for (l = shape->comp; l != NULL; l = l->next) {
 		comp = (SPCPathComp *) l->data;
-		comp->stroke_width = shape->stroke->width;
+		if (shape->stroke->type != SP_STROKE_NONE) {
+			comp->stroke_width = shape->stroke->width;
+		} else {
+			comp->stroke_width = 0.0;
+		}
 		comp->join = shape->stroke->join;
 		comp->cap = shape->stroke->cap;
 		sp_cpath_comp_update (comp, affine);

@@ -87,11 +87,15 @@ static void
 sp_group_destroy (GtkObject *object)
 {
 	SPGroup * group;
+	SPObject * spobject;
 
 	group = SP_GROUP (object);
 
 	while (group->children) {
-		gtk_object_destroy ((GtkObject *) group->children->data);
+		spobject = SP_OBJECT (group->children->data);
+		spobject->parent = NULL;
+		gtk_object_destroy ((GtkObject *) spobject);
+		group->children = g_slist_remove (group->children, spobject);
 	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)

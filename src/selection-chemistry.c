@@ -38,9 +38,10 @@ sp_selection_delete (GtkWidget * widget)
 	sp_selection_empty (selection);
 #endif
 	while (sel) {
-		sp_repr_unparent_and_destroy ((SPRepr *) sel->data);
+		sp_document_del_repr (SP_DT_DOCUMENT (desktop), (SPRepr *) sel->data);
 		sel = g_slist_remove (sel, sel->data);
 	}
+	sp_document_done (SP_DT_DOCUMENT (desktop));
 }
 
 /* fixme */
@@ -48,7 +49,9 @@ void sp_selection_duplicate (GtkWidget * widget)
 {
 	SPDesktop * desktop;
 	SPSelection * selection;
-	GSList * sel;
+	GSList * sel, * newsel;
+	SPRepr * copy;
+	SPItem * item;
 
 	g_return_if_fail (widget != NULL);
 	g_return_if_fail (GTK_IS_WIDGET (widget));
@@ -67,11 +70,22 @@ void sp_selection_duplicate (GtkWidget * widget)
 
 	sel = g_slist_sort (sel, (GCompareFunc) sp_repr_compare_position);
 
-	/* fixme: use sp_doc_add_repr */
+	newsel = NULL;
+
 	while (sel) {
-		sp_repr_duplicate_and_parent ((SPRepr *) sel->data);
+		copy = sp_repr_copy ((SPRepr *) sel->data);
+		item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), copy);
+		sp_repr_unref (copy);
+		g_assert (item != NULL);
+		newsel = g_slist_prepend (newsel, item);
 		sel = g_slist_remove (sel, sel->data);
 	}
+
+	sp_document_done (SP_DT_DOCUMENT (desktop));
+
+	sp_selection_set_item_list (SP_DT_SELECTION (desktop), newsel);
+
+	g_slist_free (newsel);
 }
 
 void
@@ -180,7 +194,7 @@ void sp_selection_ungroup (GtkWidget * widget)
 		sp_selection_add_item (selection, item);
 	}
 
-	sp_repr_unparent_and_destroy (current);
+	sp_repr_unparent (current);
 }
 
 void sp_selection_raise (GtkWidget * widget)
@@ -288,5 +302,42 @@ void sp_selection_lower_to_bottom (GtkWidget * widget)
 	}
 
 	g_slist_free (rl);
+}
+
+void
+sp_undo (GtkWidget * widget)
+{
+	SPDesktop * desktop;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop != NULL) {
+		sp_document_undo (SP_DT_DOCUMENT (desktop));
+	}
+}
+
+void
+sp_redo (GtkWidget * widget)
+{
+	SPDesktop * desktop;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	if (desktop != NULL) {
+		sp_document_redo (SP_DT_DOCUMENT (desktop));
+	}
+}
+
+void
+sp_selection_cut (GtkWidget * widget)
+{
+}
+
+void
+sp_selection_copy (GtkWidget * widget)
+{
+}
+
+void
+sp_selection_paste (GtkWidget * widget)
+{
 }
 

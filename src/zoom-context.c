@@ -141,8 +141,8 @@ sp_zoom_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			} else {
 				sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 				sp_desktop_zoom_relative (desktop, 2, p.x, p.y);
-				ret = TRUE;
 			}
+			ret = TRUE;
 			break;
 		case 3:
 			p.x = event->button.x;
