@@ -1,4 +1,8 @@
-2001-11-19  Lauris Kaplinski  <lauris@ximian.com>
+2001-11-25 Duarte Loreto <happyguy_pt@hotmail.com>
+
+        * Added Alvaro Lopes <alvieboy@alvie.com> portuguese translation to configure.in (ALL_LINGUAS)
+
+01-11-19  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/preferences-skeleton.h: Removed '%' from opacity
 
