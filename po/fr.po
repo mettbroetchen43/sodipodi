@@ -1,14 +1,15 @@
 # sodipodi fr.po.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Christophe Merlet (RedFox) <christophe@merlet.net>, 2000.
+#
+# Copyright (C) 2000-2001 Free Software Foundation, Inc.
+# Christophe Merlet (RedFox) <redfox@eikonex.org>, 2000-2001.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
-"POT-Creation-Date: 2000-10-18 15:25+0200\n"
-"PO-Revision-Date: 2000-10-18 14:45+0200\n"
-"Last-Translator: Christophe Merlet (RedFox) <christophe@merlet.net>\n"
+"POT-Creation-Date: 2001-01-09 18:45+0100\n"
+"PO-Revision-Date: 2001-01-09 18:46+0100\n"
+"Last-Translator: Christophe Merlet (RedFox) <redfox@eikonex.org>\n"
 "Language-Team: GNOME French Team <gnomefr@gnomefr.traduc.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
@@ -19,7 +20,7 @@ msgstr ""
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/align.c:7
+#: glade/align.c:7 glade/transformation.c:44 glade/transformation.c:57
 msgid "Align"
 msgstr "Aligner"
 
@@ -180,7 +181,7 @@ msgstr "Couleur des liugnes de guide"
 msgid "Show guides"
 msgstr "Afficher les guides"
 
-#: glade/desktop.c:42 glade/transformation.c:52
+#: glade/desktop.c:42
 msgid "Snap to guides"
 msgstr "Coller aux guides"
 
@@ -517,7 +518,7 @@ msgid "Zoom"
 msgstr "Zoom"
 
 #: glade/sodipodi-glade.c:21 glade/sodipodi-glade.c:151
-#: glade/transformation.c:35
+#: glade/transformation.c:16
 msgid "Scale"
 msgstr "Échelle"
 
@@ -641,7 +642,7 @@ msgstr "Imprimer"
 msgid "Undo"
 msgstr "Annuler"
 
-#: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:57 glade/toolbox.c:90
+#: glade/sodipodi-glade.c:56 glade/sodipodi-glade.c:57 glade/toolbox.c:80
 msgid "Redo"
 msgstr "Refaire"
 
@@ -775,47 +776,47 @@ msgstr ""
 "Un programme de dessin vectoriel.\n"
 "Distribué sous la GPL"
 
-#: glade/sodipodi-glade.c:93 glade/toolbox.c:50
+#: glade/sodipodi-glade.c:93 glade/toolbox.c:40
 msgid "Node Edit"
 msgstr "Édition de noeud"
 
-#: glade/sodipodi-glade.c:94 glade/toolbox.c:51
+#: glade/sodipodi-glade.c:94 glade/toolbox.c:41
 msgid "Include one node into selected segments"
 msgstr "Inclure un noeud dans le segment sélectionné"
 
-#: glade/sodipodi-glade.c:95 glade/toolbox.c:55
+#: glade/sodipodi-glade.c:95 glade/toolbox.c:45
 msgid "Break apart selected node"
 msgstr ""
 
-#: glade/sodipodi-glade.c:96 glade/toolbox.c:54
+#: glade/sodipodi-glade.c:96 glade/toolbox.c:44
 msgid "Convert selected segments to curves"
 msgstr "Convertir les segments sélectionnés en courbes"
 
-#: glade/sodipodi-glade.c:97 glade/toolbox.c:56
+#: glade/sodipodi-glade.c:97 glade/toolbox.c:46
 msgid "Join 2 selected endpoints"
 msgstr "Joindre les 2 points finaux sélectionnés"
 
-#: glade/sodipodi-glade.c:98 glade/toolbox.c:57
+#: glade/sodipodi-glade.c:98 glade/toolbox.c:47
 msgid "Cusp line at selected nodes"
 msgstr "Ligne cusp aux noeuds sélectionnés"
 
-#: glade/sodipodi-glade.c:99 glade/toolbox.c:58
+#: glade/sodipodi-glade.c:99 glade/toolbox.c:48
 msgid "Smooth line at selected nodes"
 msgstr "Ligne smooth aux noeuds sélectionnés"
 
-#: glade/sodipodi-glade.c:100 glade/toolbox.c:59
+#: glade/sodipodi-glade.c:100 glade/toolbox.c:49
 msgid "Symmetric "
 msgstr "Symétrique "
 
-#: glade/sodipodi-glade.c:101 glade/toolbox.c:61
+#: glade/sodipodi-glade.c:101 glade/toolbox.c:51
 msgid "Close dialog"
 msgstr "Fermer le dialogue"
 
-#: glade/sodipodi-glade.c:102 glade/toolbox.c:53
+#: glade/sodipodi-glade.c:102 glade/toolbox.c:43
 msgid "Convert selected segments to lines"
 msgstr "Convertir les éléments sélectionnés en lignes"
 
-#: glade/sodipodi-glade.c:103 glade/toolbox.c:52
+#: glade/sodipodi-glade.c:103 glade/toolbox.c:42
 msgid "Delete selected nodes"
 msgstr "Supprimer les noeuds sélectionnés"
 
@@ -833,7 +834,7 @@ msgid "Drawing"
 msgstr "Dessin"
 
 #: glade/sodipodi-glade.c:108 glade/sodipodi-glade.c:133
-#: glade/sodipodi-glade.c:137 glade/toolbox.c:41 src/dialogs/align.c:108
+#: glade/sodipodi-glade.c:137 glade/toolbox.c:31 src/dialogs/align.c:108
 msgid "Selection"
 msgstr "Sélection"
 
@@ -901,15 +902,15 @@ msgstr "1,0 Mo"
 msgid "Uncompressed file size:"
 msgstr "Taille du fichier décompressé :"
 
-#: glade/sodipodi-glade.c:129
-msgid "_Uus"
+#: glade/sodipodi-glade.c:129 glade/toolbox.c:9
+msgid "_New"
 msgstr "_Nouveau"
 
 #: glade/sodipodi-glade.c:130
 msgid "Import"
 msgstr "Importer"
 
-#: glade/sodipodi-glade.c:131 glade/toolbox.c:64
+#: glade/sodipodi-glade.c:131 glade/toolbox.c:54
 msgid "Export"
 msgstr "Exporter"
 
@@ -949,13 +950,13 @@ msgstr "Bureau"
 msgid "Document"
 msgstr "Document"
 
+#: glade/text-dialog.c:8
+msgid "Text Properties"
+msgstr "Propriétés du texte"
+
 #: glade/toolbox.c:8
 msgid "_File"
 msgstr "_Fichier"
-
-#: glade/toolbox.c:9
-msgid "_New"
-msgstr "_Nouveau"
 
 #: glade/toolbox.c:10
 msgid "_Open"
@@ -981,7 +982,7 @@ msgstr "Contexte du dessin"
 msgid "Edit nodes"
 msgstr "Édition des noeuds"
 
-#: glade/toolbox.c:16 glade/toolbox.c:36
+#: glade/toolbox.c:16 glade/toolbox.c:25
 msgid "Zoom in"
 msgstr "Zoom avant"
 
@@ -1001,220 +1002,189 @@ msgstr "Dessiner une ligne à main levée"
 msgid "Draw text"
 msgstr "Dessiner du texte"
 
-#: glade/toolbox.c:23
-msgid ""
-"10%\n"
-"25%\n"
-"50%\n"
-"75%\n"
-"100%\n"
-"150%\n"
-"200%\n"
-"300%\n"
-"500%\n"
-msgstr ""
-"10%\n"
-"25%\n"
-"50%\n"
-"75%\n"
-"100%\n"
-"150%\n"
-"200%\n"
-"300%\n"
-"500%\n"
-
-#: glade/toolbox.c:33
-msgid "Select zom factor"
-msgstr "Sélectionner le facteur de zoom"
-
-#: glade/toolbox.c:34
-#, c-format
-msgid "100%"
-msgstr "100%"
-
-#: glade/toolbox.c:35
-msgid "Zoom out"
-msgstr "Zoom arrière"
-
-#: glade/toolbox.c:37
-msgid "Zoom to drawing"
-msgstr "Zoom vers dessin"
-
-#: glade/toolbox.c:38
-msgid "Zoom to selection"
-msgstr "Zoom vers sélection"
-
-#: glade/toolbox.c:39
+#: glade/toolbox.c:23 glade/toolbox.c:29 glade/toolbox.c:30
 msgid "Zoom to 1:1"
 msgstr "Zoom à 1:1"
 
-#: glade/toolbox.c:40
+#: glade/toolbox.c:24
 msgid "Zoom to page"
 msgstr "Zoom vers page"
 
-#: glade/toolbox.c:42
+#: glade/toolbox.c:26
+msgid "Zoom out"
+msgstr "Zoom arrière"
+
+#: glade/toolbox.c:27
+msgid "Zoom to drawing"
+msgstr "Zoom vers dessin"
+
+#: glade/toolbox.c:28
+msgid "Zoom to selection"
+msgstr "Zoom vers sélection"
+
+#: glade/toolbox.c:32
 msgid "lower selection to bottom"
-msgstr ""
+msgstr "Descendre la sélection tout en bas"
 
-#: glade/toolbox.c:43
+#: glade/toolbox.c:33
 msgid "Raise selection to top"
-msgstr "Monter lea sélection en haut"
+msgstr "Monter la sélection tout en haut"
 
-#: glade/toolbox.c:44
+#: glade/toolbox.c:34
 msgid "Lower selection one layer"
 msgstr "Descendre la sélection d'un calque"
 
-#: glade/toolbox.c:45
+#: glade/toolbox.c:35
 msgid "Rise selection one layer"
 msgstr "Monter la sélection d'un calque"
 
-#: glade/toolbox.c:46
+#: glade/toolbox.c:36
 msgid "Break apart selected paths"
 msgstr ""
 
-#: glade/toolbox.c:47
+#: glade/toolbox.c:37
 msgid "Combine selected paths"
 msgstr "Combiner les chemins sélectionnés"
 
-#: glade/toolbox.c:48
+#: glade/toolbox.c:38
 msgid "Group selected objects"
 msgstr "Grouper les chemins sélectionnés"
 
-#: glade/toolbox.c:49
+#: glade/toolbox.c:39
 msgid "Ungroup selected objects"
 msgstr "Dégrouper les objets sélectionnés"
 
-#: glade/toolbox.c:60
+#: glade/toolbox.c:50
 msgid "Unsymmetric"
 msgstr "Asymétrique"
 
-#: glade/toolbox.c:62
+#: glade/toolbox.c:52
 msgid "File"
 msgstr "Fichier"
 
-#: glade/toolbox.c:63
+#: glade/toolbox.c:53
 msgid "New drawing"
 msgstr "Nouveau dessin"
 
-#: glade/toolbox.c:65
+#: glade/toolbox.c:55
 msgid "Open new drawing"
 msgstr "Ouvrir un nouveau dessin"
 
-#: glade/toolbox.c:66
+#: glade/toolbox.c:56
 msgid "Import "
 msgstr "Importer "
 
-#: glade/toolbox.c:67
+#: glade/toolbox.c:57
 msgid "Print drawing"
 msgstr ""
 
-#: glade/toolbox.c:68
+#: glade/toolbox.c:58
 msgid "Preview print drawing"
 msgstr ""
 
-#: glade/toolbox.c:69
+#: glade/toolbox.c:59
 msgid "Save drawing "
 msgstr "Enregistrer le dessin "
 
-#: glade/toolbox.c:70
+#: glade/toolbox.c:60
 msgid "Save drawing under new filename"
 msgstr "Enregsitrer le dessin sous un nouveau nom"
 
-#: glade/toolbox.c:71
+#: glade/toolbox.c:61
 msgid "Quit or not quit ?"
 msgstr "Quitter ou non ?"
 
-#: glade/toolbox.c:72
+#: glade/toolbox.c:62
 msgid "Yes quick! I want to leave sodipodi and come back later."
 msgstr "Oui vite ! Je veux quitter sodipodi et y revenir plustard."
 
-#: glade/toolbox.c:73
+#: glade/toolbox.c:63
 msgid "Yep !"
 msgstr "Ouaip !"
 
-#: glade/toolbox.c:74
+#: glade/toolbox.c:64
 msgid "No I'd rather do some more cool vector drawing with sodipodi."
 msgstr "Non, je préfère faire un peu de dessin vectoriel avec sodipodi."
 
-#: glade/toolbox.c:75
+#: glade/toolbox.c:65
 msgid "Nope !"
 msgstr "Non !"
 
-#: glade/toolbox.c:76
+#: glade/toolbox.c:66
 msgid "Really wanna quit sodipodi ?"
 msgstr "Voulez-vous vraiment quitter sodipodi ?"
 
-#: glade/toolbox.c:77
+#: glade/toolbox.c:67
 msgid "Object"
 msgstr "Objet"
 
-#: glade/toolbox.c:78
+#: glade/toolbox.c:68
 msgid "Align dialog"
-msgstr ""
+msgstr "Dialogue d'alignement"
 
-#: glade/toolbox.c:79
+#: glade/toolbox.c:69
 msgid "Transformation dialog"
 msgstr "Dialogue de transformation"
 
-#: glade/toolbox.c:80
+#: glade/toolbox.c:70
 msgid "Edit font style of selected objects"
 msgstr "Éditer le style de police des objets sélectionnés"
 
-#: glade/toolbox.c:81
+#: glade/toolbox.c:71
 msgid "Edit layout of selected objects"
 msgstr "Éditer l'agencement des objets sélectionnés"
 
-#: glade/toolbox.c:82
+#: glade/toolbox.c:72
 msgid "Edit fill style of selected objects"
 msgstr "Éditer le style de remplissage des objets sélectionnés"
 
-#: glade/toolbox.c:83
+#: glade/toolbox.c:73
 msgid "Edit stroke style of selected objects"
 msgstr ""
 
-#: glade/toolbox.c:84
+#: glade/toolbox.c:74
 msgid "Flip selected objects"
 msgstr "Retourner les objets sélectionnés"
 
-#: glade/toolbox.c:85
+#: glade/toolbox.c:75
 msgid "Rotate selected objects 90° clockwise"
 msgstr ""
 "Pivoter les objets sélectionnés de 90° dans le sens des aiguilles d'une "
 "montre"
 
-#: glade/toolbox.c:86
+#: glade/toolbox.c:76
 msgid "Remove transformation"
 msgstr "Supprimer la transformation"
 
-#: glade/toolbox.c:87
+#: glade/toolbox.c:77
 msgid "Convert selected objects to curves"
 msgstr "Convertir les objets sélectionnés en courbes"
 
-#: glade/toolbox.c:88
+#: glade/toolbox.c:78
 msgid "Edit"
 msgstr "Édition"
 
-#: glade/toolbox.c:89
+#: glade/toolbox.c:79
 msgid "Undo "
 msgstr "Annuler "
 
-#: glade/toolbox.c:91
+#: glade/toolbox.c:81
 msgid "Delete selection"
 msgstr "Supprimer la sélection"
 
-#: glade/toolbox.c:92
+#: glade/toolbox.c:82
 msgid "Paste from clipboard"
 msgstr "Coller depuis le presse-papiers"
 
-#: glade/toolbox.c:93
+#: glade/toolbox.c:83
 msgid "Copy selection to clipboard"
 msgstr "Copier la sélection dans le presse-papiers"
 
-#: glade/toolbox.c:94
+#: glade/toolbox.c:84
 msgid "Cut selection"
 msgstr "Couper la sélection"
 
-#: glade/toolbox.c:95
+#: glade/toolbox.c:85
 msgid "Duplicate selection"
 msgstr "Dupliquer la sélection"
 
@@ -1228,126 +1198,269 @@ msgid "Transform selection"
 msgstr "Transformer la sélection"
 
 #: glade/transformation.c:8
-msgid " Move "
-msgstr " Déplacer "
-
-#: glade/transformation.c:9 glade/transformation.c:29
-#: glade/transformation.c:37
-msgid "horizontal"
-msgstr "horizontal"
-
-#: glade/transformation.c:10 glade/transformation.c:30
-#: glade/transformation.c:38
-msgid "vertical"
-msgstr "vertical"
-
-#: glade/transformation.c:11
-msgid "move relative in"
-msgstr "déplacer relativement dans"
-
-#: glade/transformation.c:12 glade/transformation.c:46
-msgid ""
-"pixel\n"
-"points\n"
-"millimeter\n"
-"centimeter\n"
-"inch\n"
-msgstr ""
-"pixel\n"
-"points\n"
-"millimètre\n"
-"centimètre\n"
-"pouce\n"
-
-#: glade/transformation.c:18
 msgid "Move"
 msgstr "Déplacer"
 
+#: glade/transformation.c:9
+msgid "Y: "
+msgstr "Y : "
+
+#: glade/transformation.c:10
+msgid "Orig. X: "
+msgstr "Orig. X :"
+
+#: glade/transformation.c:11
+msgid "horizontal move"
+msgstr "déplacement horizontal"
+
+#: glade/transformation.c:12
+msgid "vertical move"
+msgstr "déplacement vertical"
+
+#: glade/transformation.c:13
+msgid "toggle absolute/relative move"
+msgstr "basculer le déplacement absolu/relatif"
+
+#: glade/transformation.c:14 glade/transformation.c:23
+msgid "absolute"
+msgstr "absolu"
+
+#: glade/transformation.c:15
+msgid "select metric for values"
+msgstr "sélectionner la métrique pour les valeurs"
+
+#: glade/transformation.c:17
+msgid "Orig. Width: "
+msgstr "Largeur orig. : "
+
+#: glade/transformation.c:18
+msgid "Height: "
+msgstr "Hauteur : "
+
 #: glade/transformation.c:19
-msgid " Rotate "
-msgstr " Pivoter "
+msgid "horizontal scale value"
+msgstr "valeur de l'échelle horizontale"
 
 #: glade/transformation.c:20
-msgid "90°"
-msgstr "90°"
+msgid "vertical scale value"
+msgstr "valeur de l'échelle verticale"
 
 #: glade/transformation.c:21
-msgid "180°"
-msgstr "180°"
+msgid "lock/unlock horizontal and vertical scale"
+msgstr ""
 
 #: glade/transformation.c:22
-msgid "270°"
-msgstr "270°"
+msgid "toggle absolute/relative scale"
+msgstr "basculer la mise à l'échelle absolue/relative"
 
-#: glade/transformation.c:23
-msgid "any"
-msgstr "n'importe"
-
-#: glade/transformation.c:24
-msgid "degree"
-msgstr "degré"
+#: glade/transformation.c:24 glade/transformation.c:38
+msgid "select metric for scale"
+msgstr "sélectionner la métrique pour la mise à l'échelle"
 
 #: glade/transformation.c:25
-msgid "right"
-msgstr "gauche"
+msgid "flip horizontal"
+msgstr "mirroir horizontal"
 
 #: glade/transformation.c:26
-msgid "left"
-msgstr "droite"
+msgid "flip vertical"
+msgstr "mirroir vertical"
 
 #: glade/transformation.c:27
 msgid "Rotate"
 msgstr "Pivoter"
 
 #: glade/transformation.c:28
-msgid " Scale "
-msgstr " Échelle"
+msgid "select direction"
+msgstr "sélectionner la direction"
 
-#: glade/transformation.c:31 glade/transformation.c:32
-#, c-format
-msgid "% "
-msgstr "% "
+#: glade/transformation.c:29
+msgid "angle"
+msgstr "angle"
 
-#: glade/transformation.c:33 glade/transformation.c:34
-msgid " flip "
-msgstr " retourner "
+#: glade/transformation.c:30 glade/transformation.c:104
+msgid "deg"
+msgstr "deg"
 
-#: glade/transformation.c:36
-msgid " Skew "
-msgstr ""
+#: glade/transformation.c:31
+msgid "Set angle to 0°"
+msgstr "Définir l'angle à 0°"
 
-#: glade/transformation.c:39 glade/transformation.c:40
-#, c-format
-msgid "%  "
-msgstr "%  "
+#: glade/transformation.c:32
+msgid "Set angle to 90°"
+msgstr "Définir l'angle à 90°"
 
-#: glade/transformation.c:41
+#: glade/transformation.c:33
+msgid "Set angle to 180°"
+msgstr "Définir l'angle à 180°"
+
+#: glade/transformation.c:34
+msgid "Set angle to 270°"
+msgstr "Définir l'angle à 270°"
+
+#: glade/transformation.c:35
 msgid "Skew"
 msgstr ""
 
-#: glade/transformation.c:42
-msgid "make copy"
-msgstr "Crée une copie"
-
-#: glade/transformation.c:43
-msgid "Guidelines setup"
+#: glade/transformation.c:36
+msgid "select direction (horizontal/vertical skew)"
 msgstr ""
 
-#: glade/transformation.c:44
-msgid "move horizontal"
-msgstr "déplacer horizontalement"
+#: glade/transformation.c:37
+msgid "skew"
+msgstr ""
+
+#: glade/transformation.c:39
+msgid "keep aspect"
+msgstr "garder les proportions"
+
+#: glade/transformation.c:40
+msgid "Start transformation - Ctl+a"
+msgstr "Démarrer la transformation - Ctl+a"
+
+#: glade/transformation.c:41
+msgid "Close dialog - Ctl+c"
+msgstr "Fermer le dialogue - Ctl+c"
+
+#: glade/transformation.c:42
+msgid "Expand dialog - Ctl+e"
+msgstr "Étendre le dialogue - Ctl+e"
+
+#: glade/transformation.c:43
+msgid "Use alignment during transformation"
+msgstr "Utiliser l'alignement durant la transformation"
 
 #: glade/transformation.c:45
-msgid "move vertival"
-msgstr "déplacer verticalement"
+msgid "Use center as transformation fixpoint"
+msgstr "Utiliser le centre comme point fixe de transformation"
+
+#: glade/transformation.c:46 glade/transformation.c:47
+msgid "Center"
+msgstr "Centrer"
+
+#: glade/transformation.c:48
+msgid "Horizontal center value"
+msgstr "Valeur de centrage horizontale"
+
+#: glade/transformation.c:49
+msgid "Vertical center value"
+msgstr "Valeur de centrage verticale"
+
+#: glade/transformation.c:50
+msgid "Toggle center given in selection/desktop coordiantes"
+msgstr ""
+
+#: glade/transformation.c:51
+msgid "desktop"
+msgstr "bureau"
+
+#: glade/transformation.c:52
+msgid "Choose metric for center"
+msgstr "Choisissez une métrique pour centrer"
 
 #: glade/transformation.c:53
-msgid "Start transformation"
-msgstr "Démarrer la transformation"
+msgid "Keep width of selection during transformation"
+msgstr "Garder la largeur de la sélection durant la transformation"
 
 #: glade/transformation.c:54
-msgid "close dialog"
-msgstr "fermer le dialogue"
+msgid "Keep height of selection during transformation"
+msgstr "Garder la hauteur de la sélection durant la transformation"
+
+#: glade/transformation.c:55
+msgid "Apply transformation to copy Ctl+m"
+msgstr "Appliquer la transformation à la copie Ctl+m"
+
+#: glade/transformation.c:56
+msgid "Reset dialog to default - Ctl+r"
+msgstr "R. à z. du dialogue aux valeurs par défaut - Ctl+r"
+
+#: glade/transformation.c:58
+msgid "Align to top middle"
+msgstr "Aligner au milieu haut"
+
+#: glade/transformation.c:59
+msgid "Align to bottom right"
+msgstr "Aligner au bas droit"
+
+#: glade/transformation.c:60
+msgid "Align to right middle"
+msgstr "Aligner au milieu droit"
+
+#: glade/transformation.c:61
+msgid "Align to top right"
+msgstr "Aligner au haut droite"
+
+#: glade/transformation.c:62
+msgid "Align to left middle"
+msgstr "Aligner au milieu gauche"
+
+#: glade/transformation.c:63
+msgid "Align to center"
+msgstr "Aligner au centre"
+
+#: glade/transformation.c:64
+msgid "Align to bottom middle"
+msgstr "Aligner au milieu bas"
+
+#: glade/transformation.c:65
+msgid "Align to bottom left"
+msgstr "Aligner au bas gauche"
+
+#: glade/transformation.c:66
+msgid "Align to top left"
+msgstr "Aligner au haut gauche"
+
+#: glade/transformation.c:67 glade/transformation.c:77
+#: glade/transformation.c:85 glade/transformation.c:95
+msgid "Points"
+msgstr "Points"
+
+#: glade/transformation.c:68 glade/transformation.c:78
+#: glade/transformation.c:86 glade/transformation.c:96
+msgid "pt"
+msgstr "pt"
+
+#: glade/transformation.c:69 glade/transformation.c:79
+#: glade/transformation.c:87 glade/transformation.c:97
+msgid "Millimeter"
+msgstr "Millimètre"
+
+#: glade/transformation.c:70 glade/transformation.c:80
+#: glade/transformation.c:88 glade/transformation.c:98
+msgid "mm"
+msgstr "mm"
+
+#: glade/transformation.c:71 glade/transformation.c:81
+#: glade/transformation.c:89 glade/transformation.c:99
+msgid "Centimeter"
+msgstr "Centimètre"
+
+#: glade/transformation.c:72 glade/transformation.c:82
+#: glade/transformation.c:90 glade/transformation.c:100
+msgid "cm"
+msgstr "cm"
+
+#: glade/transformation.c:73 glade/transformation.c:83
+#: glade/transformation.c:91 glade/transformation.c:101
+msgid "Inch"
+msgstr "Pouce"
+
+#: glade/transformation.c:74 glade/transformation.c:84
+#: glade/transformation.c:92 glade/transformation.c:102
+msgid "in"
+msgstr "in"
+
+#: glade/transformation.c:75 glade/transformation.c:93
+msgid "Percent"
+msgstr "Pourcentage"
+
+#: glade/transformation.c:76 glade/transformation.c:94
+#, c-format
+msgid "%"
+msgstr "%"
+
+#: glade/transformation.c:103
+msgid "Degree"
+msgstr "Degré"
 
 #: glade/xml-tree.c:8
 msgid "Hierarchy"
@@ -1425,33 +1538,35 @@ msgstr "Supprimer l'attribut"
 msgid "Do you want to delete attribute?"
 msgstr "Voulez-vous supprimer l'attribut ?"
 
-#: src/main.c:47
+#: src/main.c:48
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
 msgstr ""
 "Ne pas utiliser l'interface graphique. NB ! si elle existe, elle devrait "
 "être le PREMIER argument !"
 
-#: src/main.c:56
+#: src/main.c:57
 msgid "Open specified file (option string may be excluded)"
 msgstr "Ouvre le fichier spécifié (la chaîne d'option peut être exclu)"
 
-#: src/main.c:57 src/main.c:66
+#: src/main.c:58 src/main.c:67
 msgid "FILENAME"
 msgstr "NOMFICHIER"
 
-#: src/main.c:65
-msgid "Print files to specified file (use '| program' for pipe)"
-msgstr "Imprime les fichiers dans le fichier spécifié (utiliser | pour tuber)"
+#: src/main.c:66
+msgid "Print files to specified output file (use '| program' for pipe)"
+msgstr ""
+"Imprime les fichiers dans le fichier de sortie spécifié (utiliser | pour "
+"tuber)"
 
-#: src/main.c:161
+#: src/main.c:168
 msgid "Oaf options"
 msgstr "Options OAF"
 
-#: src/main.c:169
+#: src/main.c:176
 msgid "Could not initialize Bonobo"
 msgstr "Ne peut initialiser Bonobo"
 
-#: src/bonobo/svg-doc-factory.c:25
+#: src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Ne peut créer l'usine sodipodi-svg-doc"
 
@@ -1516,3 +1631,94 @@ msgstr "Élément le plus gros"
 #: src/dialogs/align.c:93
 msgid "Smallest item"
 msgstr "Élément le plus petit"
+
+#~ msgid "_Uus"
+#~ msgstr "_Nouveau"
+
+#~ msgid ""
+#~ "10%\n"
+#~ "25%\n"
+#~ "50%\n"
+#~ "75%\n"
+#~ "100%\n"
+#~ "150%\n"
+#~ "200%\n"
+#~ "300%\n"
+#~ "500%\n"
+#~ msgstr ""
+#~ "10%\n"
+#~ "25%\n"
+#~ "50%\n"
+#~ "75%\n"
+#~ "100%\n"
+#~ "150%\n"
+#~ "200%\n"
+#~ "300%\n"
+#~ "500%\n"
+
+#~ msgid "Select zom factor"
+#~ msgstr "Sélectionner le facteur de zoom"
+
+#~ msgid "100%"
+#~ msgstr "100%"
+
+#~ msgid " Move "
+#~ msgstr " Déplacer "
+
+#~ msgid "move relative in"
+#~ msgstr "déplacer relativement dans"
+
+#~ msgid ""
+#~ "pixel\n"
+#~ "points\n"
+#~ "millimeter\n"
+#~ "centimeter\n"
+#~ "inch\n"
+#~ msgstr ""
+#~ "pixel\n"
+#~ "points\n"
+#~ "millimètre\n"
+#~ "centimètre\n"
+#~ "pouce\n"
+
+#~ msgid " Rotate "
+#~ msgstr " Pivoter "
+
+#~ msgid "90°"
+#~ msgstr "90°"
+
+#~ msgid "180°"
+#~ msgstr "180°"
+
+#~ msgid "270°"
+#~ msgstr "270°"
+
+#~ msgid "any"
+#~ msgstr "n'importe"
+
+#~ msgid "right"
+#~ msgstr "gauche"
+
+#~ msgid "left"
+#~ msgstr "droite"
+
+#~ msgid " Scale "
+#~ msgstr " Échelle"
+
+#~ msgid " flip "
+#~ msgstr " retourner "
+
+#~ msgid "%  "
+#~ msgstr "%  "
+
+#~ msgid "make copy"
+#~ msgstr "Crée une copie"
+
+#~ msgid "move horizontal"
+#~ msgstr "déplacer horizontalement"
+
+#~ msgid "move vertival"
+#~ msgstr "déplacer verticalement"
+
+#~ msgid "close dialog"
+#~ msgstr "fermer le dialogue"
