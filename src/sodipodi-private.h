@@ -20,6 +20,8 @@ void sodipodi_eventcontext_set (SPEventContext * eventcontext);
 void sodipodi_add_desktop (SPDesktop * desktop);
 void sodipodi_remove_desktop (SPDesktop * desktop);
 void sodipodi_activate_desktop (SPDesktop * desktop);
+void sodipodi_add_document (SPDocument *document);
+void sodipodi_remove_document (SPDocument *document);
 
 #endif
 

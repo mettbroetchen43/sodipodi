@@ -11,13 +11,16 @@
 
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <signal.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgnomeui/gnome-messagebox.h>
 #include <xml/repr-private.h>
+#include "document.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "selection.h"
@@ -72,6 +75,8 @@ static GtkObjectClass * parent_class;
 static guint sodipodi_signals[LAST_SIGNAL] = {0};
 
 Sodipodi * sodipodi = NULL;
+
+static void (* segv_handler) (int) = NULL;
 
 GtkType
 sodipodi_get_type (void)
@@ -206,11 +211,66 @@ sodipodi_destroy (GtkObject * object)
 	gtk_main_quit ();
 }
 
+/* fixme: This is EVIL, and belongs to main after all */
+
+static void
+sodipodi_segv_handler (int signum)
+{
+	GSList *l;
+	gchar *home;
+	gint count, date;
+
+	g_warning ("Emergency save activated");
+
+	home = g_get_home_dir ();
+	date = time (NULL);
+
+	count = 0;
+	for (l = sodipodi->documents; l != NULL; l = l->next) {
+		SPDocument *doc;
+		SPRepr *repr;
+		doc = (SPDocument *) l->data;
+		repr = sp_document_repr_root (doc);
+		if (sp_repr_attr (repr, "sodipodi:modified")) {
+			gchar *path;
+			FILE *file;
+			path = g_strdup_printf ("%s/.sodipodi/emergency-%d-%d.svg", home, date, count);
+			file = fopen (path, "w");
+			g_free (path);
+			if (!file) {
+				path = g_strdup_printf ("%s/sodipodi-emergency-%d-%d.svg", home, date, count);
+				file = fopen (path, "w");
+				g_free (path);
+			}
+			if (!file) {
+				path = g_strdup_printf ("/tmp/sodipodi-emergency-%d-%d.svg", date, count);
+				file = fopen (path, "w");
+				g_free (path);
+			}
+			if (file) {
+				sp_repr_save_stream (sp_repr_document (repr), file);
+				fclose (file);
+			}
+			count++;
+		}
+	}
+
+	g_warning ("Emergency save completed, now crashing...");
+
+	(* segv_handler) (signum);
+}
+
 Sodipodi *
 sodipodi_application_new (void)
 {
-	return gtk_type_new (SP_TYPE_SODIPODI);
+	Sodipodi *sp;
+
+	sp = gtk_type_new (SP_TYPE_SODIPODI);
 	/* fixme: load application defaults */
+
+	segv_handler = signal (SIGSEGV, sodipodi_segv_handler);
+
+	return sp;
 }
 
 /* Preference management */
@@ -452,6 +512,32 @@ sodipodi_activate_desktop (SPDesktop * desktop)
 	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_EVENTCONTEXT], SP_DT_EVENTCONTEXT (desktop));
 	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[SET_SELECTION], SP_DT_SELECTION (desktop));
 	gtk_signal_emit (GTK_OBJECT (sodipodi), sodipodi_signals[CHANGE_SELECTION], SP_DT_SELECTION (desktop));
+}
+
+/* fixme: These need probably signals too */
+
+void
+sodipodi_add_document (SPDocument *document)
+{
+	g_return_if_fail (sodipodi != NULL);
+	g_return_if_fail (document != NULL);
+	g_return_if_fail (SP_IS_DOCUMENT (document));
+
+	g_assert (!g_slist_find (sodipodi->documents, document));
+
+	sodipodi->documents = g_slist_append (sodipodi->documents, document);
+}
+
+void
+sodipodi_remove_document (SPDocument *document)
+{
+	g_return_if_fail (sodipodi != NULL);
+	g_return_if_fail (document != NULL);
+	g_return_if_fail (SP_IS_DOCUMENT (document));
+
+	g_assert (g_slist_find (sodipodi->documents, document));
+
+	sodipodi->documents = g_slist_remove (sodipodi->documents, document);
 }
 
 SPDesktop *

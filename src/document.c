@@ -125,6 +125,8 @@ sp_document_destroy (GtkObject * object)
 	private = document->private;
 
 	if (private) {
+		sodipodi_remove_document (document);
+
 		if (private->actions) {
 			sp_action_free_list (document->private->actions);
 		}
@@ -238,6 +240,8 @@ sp_document_new (const gchar * uri)
 
 	sp_document_set_undo_sensitive (document, TRUE);
 
+	sodipodi_add_document (document);
+
 	return document;
 }
 
@@ -301,6 +305,8 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 	sodipodi_ref ();
 
 	sp_document_set_undo_sensitive (document, TRUE);
+
+	sodipodi_add_document (document);
 
 	return document;
 }

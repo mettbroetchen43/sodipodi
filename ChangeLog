@@ -1,3 +1,13 @@
+2001-09-19  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/document.c (sp_document_destroy): Remove document
+	(sp_document_new): Add document
+	(sp_document_new_from_mem): Ditto
+
+	* src/sodipodi.c (sodpodi_remove_document): New method
+	(sodpodi_add_document): Ditto
+	(sodipodi_segv_handler): Not very intelligent signal handler
+
 2001-09-18  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/dialogs/gradient-selector.c (sp_gradient_selector_add_vector_clicked): 
