@@ -167,6 +167,13 @@ static const SPStyleEnum enum_font_stretch[] = {
 	{NULL, -1}
 };
 
+static const SPStyleEnum enum_text_anchor[] = {
+	{"start", SP_CSS_TEXT_ANCHOR_START},
+	{"middle", SP_CSS_TEXT_ANCHOR_MIDDLE},
+	{"end", SP_CSS_TEXT_ANCHOR_END},
+	{NULL, -1}
+};
+
 static const SPStyleEnum enum_writing_mode[] = {
 	{"lr", SP_CSS_WRITING_MODE_LR},
 	{"rl", SP_CSS_WRITING_MODE_RL},
@@ -283,7 +290,6 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 	SPS_READ_PENUM_IF_UNSET (&style->font_variant, repr, "font-variant", enum_font_variant, TRUE);
 	SPS_READ_PENUM_IF_UNSET (&style->font_weight, repr, "font-weight", enum_font_weight, TRUE);
 	SPS_READ_PENUM_IF_UNSET (&style->font_stretch, repr, "font-stretch", enum_font_stretch, TRUE);
-
 	/* opacity */
 	if (!style->opacity.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "opacity");
@@ -349,6 +355,8 @@ sp_style_read_from_object (SPStyle *style, SPObject *object)
 			sp_style_read_istring (&style->text->font_family, val);
 		}
 	}
+	/* SVG */
+	SPS_READ_PENUM_IF_UNSET (&style->text_anchor, repr, "text-anchor", enum_text_anchor, TRUE);
 	/* writing-mode */
 	if (!style->text_private || !style->text->writing_mode.set) {
 		val = sp_repr_attr (SP_OBJECT_REPR (object), "writing-mode");
@@ -550,8 +558,10 @@ sp_style_merge_property (SPStyle *style, gint id, const guchar *val)
 	case SP_PROP_GLYPH_ORIENTATION_HORIZONTAL:
 	case SP_PROP_GLYPH_ORIENTATION_VERTICAL:
 	case SP_PROP_KERNING:
-	case SP_PROP_TEXT_ANCHOR:
 		g_warning ("Unimplemented style property id: %d value: %s", id, val);
+		break;
+	case SP_PROP_TEXT_ANCHOR:
+		SPS_READ_IENUM_IF_UNSET (&style->text_anchor, val, enum_text_anchor, TRUE);
 		break;
 	case SP_PROP_WRITING_MODE:
 		if (!style->text_private) sp_style_privatize_text (style);
@@ -737,6 +747,10 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 		if (!style->stroke_opacity.set || style->stroke_opacity.inherit) {
 			style->stroke_opacity.value = object->style->stroke_opacity.value;
 		}
+		/* 'text-anchor' */
+		if (!style->text_anchor.set || style->text_anchor.inherit) {
+			style->text_anchor.computed = object->style->text_anchor.computed;
+		}
 
 		if (style->text && object->style->text) {
 			if (!style->text->font_family.set || style->text->font_family.inherit) {
@@ -859,6 +873,8 @@ sp_style_write_string (SPStyle *style)
 	/* fixme: */
 	sp_text_style_write (p, c + BMAX - p, style->text);
 
+	p += sp_style_write_ienum (p, c + BMAX - p, "text-anchor", enum_text_anchor, &style->text_anchor, NULL, SP_STYLE_FLAG_IFSET);
+
 	return g_strdup (c);
 }
 
@@ -921,6 +937,8 @@ sp_style_write_difference (SPStyle *from, SPStyle *to)
 	/* fixme: */
 	sp_text_style_write (p, c + BMAX - p, from->text);
 
+	p += sp_style_write_ienum (p, c + BMAX - p, "text-anchor", enum_text_anchor, &from->text_anchor, &to->text_anchor, SP_STYLE_FLAG_IFDIFF);
+
 	return g_strdup (c);
 }
 
@@ -958,16 +976,12 @@ sp_style_clear (SPStyle *style)
 	style->font_size.type = SP_FONT_SIZE_LITERAL;
 	style->font_size.value = SP_CSS_FONT_SIZE_MEDIUM;
 	style->font_size.computed = 12.0;
-
 	style->font_style.set = FALSE;
 	style->font_style.computed = SP_CSS_FONT_STYLE_NORMAL;
-
 	style->font_variant.set = FALSE;
 	style->font_variant.value = SP_CSS_FONT_VARIANT_NORMAL;
-
 	style->font_weight.set = FALSE;
 	style->font_weight.value = SP_CSS_FONT_WEIGHT_400;
-
 	style->font_stretch.set = FALSE;
 	style->font_stretch.value = SP_CSS_FONT_STRETCH_NORMAL;
 
@@ -993,6 +1007,9 @@ sp_style_clear (SPStyle *style)
 	style->stroke_dash.dash = NULL;
 	style->stroke_dash.offset = 0.0;
 	style->stroke_opacity.value = SP_SCALE24_MAX;
+
+	style->text_anchor.set = FALSE;
+	style->text_anchor.computed = SP_CSS_TEXT_ANCHOR_START;
 }
 
 static void

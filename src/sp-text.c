@@ -48,7 +48,9 @@ static void sp_string_destroy (GtkObject *object);
 
 static void sp_string_build (SPObject *object, SPDocument *document, SPRepr *repr);
 static void sp_string_read_content (SPObject *object);
+static void sp_string_modified (SPObject *object, guint flags);
 
+static void sp_string_calculate_dimensions (SPString *string);
 static void sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean inspace);
 
 static SPCharsClass *string_parent_class;
@@ -88,12 +90,19 @@ sp_string_class_init (SPStringClass *class)
 
 	sp_object_class->build = sp_string_build;
 	sp_object_class->read_content = sp_string_read_content;
+	sp_object_class->modified = sp_string_modified;
 }
 
 static void
 sp_string_init (SPString *string)
 {
 	string->text = NULL;
+	string->start = 0;
+	string->length = 0;
+	string->bbox.x0 = string->bbox.y0 = 0.0;
+	string->bbox.x1 = string->bbox.y1 = 0.0;
+	string->initial.x = string->initial.y = 0.0;
+	string->advance.x = string->advance.y = 0.0;
 }
 
 static void
@@ -114,6 +123,9 @@ sp_string_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	SP_OBJECT_CLASS (string_parent_class)->build (object, doc, repr);
 
 	sp_string_read_content (object);
+
+	/* fixme: This can be waste here, but ensures loaded documents are up-to-date */
+	sp_string_calculate_dimensions (SP_STRING (object));
 }
 
 /* fixme: We have to notify parents that we changed */
@@ -135,6 +147,131 @@ sp_string_read_content (SPObject *object)
 	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 }
 
+/* This happen before parent does layouting but after styles have been set */
+/* So it is the right place to calculate untransformed string dimensions */
+
+static void
+sp_string_modified (SPObject *object, guint flags)
+{
+	if (flags & (SP_OBJECT_STYLE_MODIFIED_FLAG | SP_OBJECT_MODIFIED_FLAG)) {
+		/* Parent style or we ourselves changed, so recalculate */
+		sp_string_calculate_dimensions (SP_STRING (object));
+	}
+}
+
+static void
+sp_string_calculate_dimensions (SPString *string)
+{
+	SPStyle *style;
+	const GnomeFont *font;
+	gdouble size, spwidth, xdim, ydim;
+	gint spglyph;
+
+	string->bbox.x0 = string->bbox.y0 = 1e18;
+	string->bbox.x1 = string->bbox.y1 = -1e18;
+	string->initial.x = 0.0;
+	string->initial.y = 0.0;
+	string->advance.x = 0.0;
+	string->advance.y = 0.0;
+
+	style = SP_OBJECT_STYLE (string);
+	/* fixme: Adjusted value (Lauris) */
+	size = style->font_size.computed;
+	font = gnome_font_new_closest (style->text->font_family.value,
+				       sp_text_font_weight_to_gp (style->font_weight.computed),
+				       sp_text_font_italic_to_gp (style->font_style.computed),
+				       size);
+	spglyph = gnome_font_lookup_default (font, ' ');
+	spwidth = (spglyph > 0) ? gnome_font_get_glyph_width (font, spglyph) : size;
+
+	if (string->text) {
+		const guchar *p;
+		gboolean inspace, intext;
+
+		inspace = FALSE;
+		intext = FALSE;
+
+		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
+			gunichar unival;
+			
+			unival = g_utf8_get_char (p);
+
+			if (unival == ' ') {
+				if (intext) inspace = TRUE;
+			} else {
+				ArtDRect bbox;
+				gint glyph;
+
+				glyph = gnome_font_lookup_default (font, unival);
+
+				if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+					if (inspace) {
+						string->advance.y += size;
+						inspace = FALSE;
+					}
+					if (gnome_font_get_glyph_stdbbox (font, glyph, &bbox)) {
+						string->bbox.x0 = MIN (string->bbox.x0, bbox.x0 + string->advance.x);
+						string->bbox.y0 = MIN (string->bbox.y0, bbox.y0 + string->advance.y + size);
+						string->bbox.x1 = MAX (string->bbox.x1, bbox.x1 + string->advance.x);
+						string->bbox.y1 = MAX (string->bbox.y1, bbox.y1 + string->advance.y + size);
+					}
+					string->advance.y += size;
+				} else {
+					if (inspace) {
+						string->advance.x += spwidth;
+						inspace = FALSE;
+					}
+					if (gnome_font_get_glyph_stdbbox (font, glyph, &bbox)) {
+						string->bbox.x0 = MIN (string->bbox.x0, bbox.x0 + string->advance.x);
+						string->bbox.y0 = MIN (string->bbox.y0, bbox.y0 + string->advance.y);
+						string->bbox.x1 = MAX (string->bbox.x1, bbox.x1 + string->advance.x);
+						string->bbox.y1 = MAX (string->bbox.y1, bbox.y1 + string->advance.y);
+					}
+					string->advance.x += gnome_font_get_glyph_width (font, glyph);
+				}
+				intext = TRUE;
+			}
+		}
+	}
+
+	gnome_font_unref (font);
+
+	if (art_drect_empty (&string->bbox)) {
+		string->bbox.x0 = string->bbox.y0 = 0.0;
+		string->bbox.x1 = string->bbox.y1 = 0.0;
+	}
+
+	if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
+		xdim = 0.0;
+		ydim = string->bbox.y1 - string->bbox.y0;
+	} else {
+		xdim = string->bbox.x1 - string->bbox.x0;
+		ydim = 0.0;
+	}
+
+	switch (style->text_anchor.computed) {
+	case SP_CSS_TEXT_ANCHOR_START:
+		break;
+	case SP_CSS_TEXT_ANCHOR_MIDDLE:
+		string->initial.x = -xdim / 2;
+		string->initial.y = -ydim / 2;
+		break;
+	case SP_CSS_TEXT_ANCHOR_END:
+		string->initial.x = -xdim;
+		string->initial.y = -ydim;
+		break;
+	default:
+		break;
+	}
+
+	string->bbox.x0 -= string->initial.x;
+	string->bbox.y0 -= string->initial.y;
+	string->bbox.x1 -= string->initial.x;
+	string->bbox.y1 -= string->initial.y;
+	string->advance.x -= string->initial.x;
+	string->advance.y -= string->initial.y;
+}
+
 /* fixme: Should values be parsed by parent? */
 
 static void
@@ -142,64 +279,71 @@ sp_string_set_shape (SPString *string, SPLayoutData *ly, ArtPoint *cp, gboolean 
 {
 	SPChars *chars;
 	SPStyle *style;
-	const GnomeFontFace *face;
-	gdouble size;
+	const GnomeFont *font;
+	gdouble size, spwidth;
+	gint spglyph;
 	guint glyph;
 	gdouble x, y;
 	gdouble a[6];
 	gdouble w;
 	const guchar *p;
+	gboolean intext;
 
 	chars = SP_CHARS (string);
 	style = SP_OBJECT_STYLE (string);
 
 	sp_chars_clear (chars);
 
-	face = gnome_font_unsized_closest (style->text->font_family.value,
-					   sp_text_font_weight_to_gp (style->font_weight.computed),
-					   sp_text_font_italic_to_gp (style->font_style.computed));
 	/* fixme: Adjusted value (Lauris) */
 	size = style->font_size.computed;
+	font = gnome_font_new_closest (style->text->font_family.value,
+				       sp_text_font_weight_to_gp (style->font_weight.computed),
+				       sp_text_font_italic_to_gp (style->font_style.computed),
+				       size);
+	spglyph = gnome_font_lookup_default (font, ' ');
+	spwidth = (spglyph > 0) ? gnome_font_get_glyph_width (font, spglyph) : size;
 
 	/* fixme: Find a way how to manipulate these */
-	x = cp->x;
-	y = cp->y;
+	x = cp->x + string->initial.x;
+	y = cp->y + string->initial.y;
 	g_print ("Drawing string (%s) at %g %g\n", string->text, x, y);
 
 	art_affine_scale (a, size * 0.001, size * -0.001);
 
 	if (string->text) {
-		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
-			gunichar u;
-			u = g_utf8_get_char (p);
 
-			if (u == ' ') {
-				inspace = TRUE;
+		intext = FALSE;
+
+		for (p = string->text; p && *p; p = g_utf8_next_char (p)) {
+			gunichar unival;
+
+			unival = g_utf8_get_char (p);
+
+			if (unival == ' ') {
+				if (intext) inspace = TRUE;
 			} else {
-				glyph = gnome_font_face_lookup_default (face, u);
-				if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+				glyph = gnome_font_lookup_default (font, unival);
+				if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 					if (inspace) {
 						y += size;
 						inspace = FALSE;
 					}
 					a[4] = x;
-					a[5] = y;
-					sp_chars_add_element (chars, glyph, (GnomeFontFace *) face, a);
+					a[5] = y + size;
+					sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
 					y += size;
 				} else {
 					if (inspace) {
-						w = gnome_font_face_get_glyph_width (face, ' ');
-						w = w * size / 1000.0;
-						x += w;
+						x += spwidth;
 						inspace = FALSE;
 					}
-					w = gnome_font_face_get_glyph_width (face, glyph);
-					w = w * size / 1000.0;
+					w = gnome_font_get_glyph_width (font, glyph);
 					a[4] = x;
 					a[5] = y;
-					sp_chars_add_element (chars, glyph, (GnomeFontFace *) face, a);
+					sp_chars_add_element (chars, glyph, (GnomeFontFace *) gnome_font_get_face (font), a);
 					x += w;
 				}
+				intext = TRUE;
 			}
 		}
 	}
@@ -484,7 +628,7 @@ sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean fir
 		SPStyle *style;
 		style = SP_OBJECT_STYLE (tspan);
 		if (!firstline) {
-			if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+			if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 				cp->x -= style->font_size.computed;
 				cp->y = ly->y;
 			} else {
@@ -751,7 +895,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		}
 	}
 
-	sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
+	sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_CONTENT_MODIFIED_FLAG);
 	/* fixme: Instead of forcing it, do it when needed */
 	sp_text_update_immediate_state (text);
 }
@@ -780,7 +924,7 @@ sp_text_remove_child (SPObject *object, SPRepr *rch)
 		text->children = sp_object_detach_unref (object, och);
 	}
 
-	sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG);
+	sp_text_request_relayout (text, SP_OBJECT_MODIFIED_FLAG | SP_TEXT_CONTENT_MODIFIED_FLAG);
 	sp_text_update_immediate_state (text);
 }
 
@@ -1187,7 +1331,7 @@ sp_text_set_repr_text_multiline (SPText *text, const guchar *str)
 		rtspan = sp_repr_new ("tspan");
 		sp_repr_set_double (rtspan, "x", cp.x);
 		sp_repr_set_double (rtspan, "y", cp.y);
-		if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+		if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 			/* fixme: real line height */
 			/* fixme: What to do with mixed direction tspans? */
 			cp.x -= style->font_size.computed;
@@ -1272,7 +1416,7 @@ sp_text_append_line (SPText *text)
 
 	/* Create <tspan> */
 	rtspan = sp_repr_new ("tspan");
-	if (style->text->writing_mode.value == SP_CSS_WRITING_MODE_TB) {
+	if (style->text->writing_mode.computed == SP_CSS_WRITING_MODE_TB) {
 		/* fixme: real line height */
 		/* fixme: What to do with mixed direction tspans? */
 		sp_repr_set_double (rtspan, "x", cp.x - style->font_size.computed);
@@ -1309,9 +1453,8 @@ sp_text_update_immediate_state (SPText *text)
 			string = SP_STRING (child);
 		}
 		string->start = start;
-		if (string->text) {
-			start += g_utf8_strlen (string->text, -1);
-		}
+		string->length = (string->text) ? g_utf8_strlen (string->text, -1) : 0;
+		start += string->length;
 		/* Count newlines as well */
 		if (child->next) start += 1;
 	}
@@ -1347,7 +1490,7 @@ sp_text_get_length (SPText *text)
 		string = SP_TSPAN_STRING (child);
 	}
 
-	return string->start + g_utf8_strlen (string->text, -1);
+	return string->start + string->length;
 }
 
 gint
@@ -1439,14 +1582,12 @@ sp_text_get_child_by_position (SPText *text, gint pos)
 
 	for (child = text->children; child && child->next; child = child->next) {
 		SPString *string;
-		gint uchars;
 		if (SP_IS_STRING (child)) {
 			string = SP_STRING (child);
 		} else {
 			string = SP_TSPAN_STRING (child);
 		}
-		uchars = (string->text) ? g_utf8_strlen (string->text, -1) : 0;
-		if (pos <= (string->start + uchars)) return child;
+		if (pos <= (string->start + string->length)) return child;
 	}
 
 	return child;

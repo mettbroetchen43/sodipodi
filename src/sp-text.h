@@ -35,6 +35,9 @@ BEGIN_GNOME_DECLS
 #define SP_IS_STRING(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_STRING))
 #define SP_IS_STRING_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_STRING))
 
+/* Text specific flags */
+#define SP_TEXT_CONTENT_MODIFIED_FLAG SP_OBJECT_USER_MODIFIED_FLAG_A
+
 #define SP_TSPAN_STRING(t) ((SPString *) SP_TSPAN (t)->string)
 
 #include "sp-chars.h"
@@ -62,12 +65,17 @@ struct _SPLayoutData {
 
 struct _SPString {
 	SPChars chars;
-	/* fixme: We probably do not need it, as string cannot have attributes */
+	/* Link to parent layout */
 	SPLayoutData *ly;
 	/* Content */
 	guchar *text;
 	/* Bookkeeping */
 	guint start;
+	guint length;
+	/* These are from 0 taking anchoring into account */
+	ArtDRect bbox;
+	ArtPoint initial;
+	ArtPoint advance;
 };
 
 struct _SPStringClass {

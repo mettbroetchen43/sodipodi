@@ -188,6 +188,9 @@ struct _SPStyle {
 	gdouble absolute_stroke_width;
 	gdouble user_stroke_width;
 	guint real_stroke_width_set : 1;
+
+	/* SVG */
+	SPIEnum text_anchor;
 };
 
 SPStyle *sp_style_new_from_object (SPObject *object);
@@ -268,6 +271,12 @@ typedef enum {
 	SP_CSS_FONT_STRETCH_NARROWER,
 	SP_CSS_FONT_STRETCH_WIDER
 } SPCSSFontStretch;
+
+typedef enum {
+	SP_CSS_TEXT_ANCHOR_START,
+	SP_CSS_TEXT_ANCHOR_MIDDLE,
+	SP_CSS_TEXT_ANCHOR_END
+} SPTextAnchor;
 
 typedef enum {
 	SP_CSS_WRITING_MODE_LR,

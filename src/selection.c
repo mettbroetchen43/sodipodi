@@ -80,21 +80,16 @@ sp_selection_class_init (SPSelectionClass * klass)
 static void
 sp_selection_init (SPSelection * selection)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	selection->reprs = NULL;
 	selection->items = NULL;
 	selection->idle = 0;
-
-	sp_debug ("end", SP_SELECTION);
+	selection->flags = 0;
 }
 
 static void
-sp_selection_destroy (GtkObject * object)
+sp_selection_destroy (GtkObject *object)
 {
 	SPSelection * selection;
-
-	sp_debug ("start", SP_SELECTION);
 
 	selection = SP_SELECTION (object);
 
@@ -106,27 +101,18 @@ sp_selection_destroy (GtkObject * object)
 		selection->idle = 0;
 	}
 
-	if (((GtkObjectClass *) parent_class)->destroy)
-		(* ((GtkObjectClass *) parent_class)->destroy) (object);
-
-	sp_debug ("end", SP_SELECTION);
+	GTK_OBJECT_CLASS (parent_class)->destroy (object);
 }
 
 static void
 sp_selection_private_changed (SPSelection * selection)
 {
-     	sp_debug ("start", SP_SELECTION);
-
 	sodipodi_selection_set (selection);
-
-     	sp_debug ("end", SP_SELECTION);
 }
 
 static void
 sp_selection_selected_item_destroyed (SPItem * item, SPSelection * selection)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (sp_selection_item_selected (selection, item));
@@ -137,8 +123,6 @@ sp_selection_selected_item_destroyed (SPItem * item, SPSelection * selection)
 	selection->items = g_slist_remove (selection->items, item);
 
 	sp_selection_changed (selection);
-
-	sp_debug ("end", SP_SELECTION);
 }
 
 /* Handler for selected objects "modified" signal */
@@ -146,8 +130,6 @@ sp_selection_selected_item_destroyed (SPItem * item, SPSelection * selection)
 static void
 sp_selection_selected_item_modified (SPItem *item, guint flags, SPSelection *selection)
 {
-	sp_debug ("start", SP_SELECTION);
-
 	g_return_if_fail (selection != NULL);
 	g_return_if_fail (SP_IS_SELECTION (selection));
 	g_return_if_fail (sp_selection_item_selected (selection, item));
@@ -157,7 +139,8 @@ sp_selection_selected_item_modified (SPItem *item, guint flags, SPSelection *sel
 		selection->idle = gtk_idle_add (sp_selection_idle_handler, selection);
 	}
 
-	sp_debug ("end", SP_SELECTION);
+	/* Collect all flags */
+	selection->flags |= flags;
 }
 
 /* Our idle loop handler */
@@ -166,16 +149,19 @@ static gint
 sp_selection_idle_handler (gpointer data)
 {
 	SPSelection *selection;
+	guint flags;
 
 	selection = SP_SELECTION (data);
 
 	/* Clear our id, so next request will be rescheduled */
 	selection->idle = 0;
+	flags = selection->flags;
+	selection->flags = 0;
 	/* Emit our own "modified" signal */
-	gtk_signal_emit (GTK_OBJECT (selection), selection_signals [MODIFIED],
-			 SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_PARENT_MODIFIED_FLAG);
+	gtk_signal_emit (GTK_OBJECT (selection), selection_signals [MODIFIED], flags);
+
 	/* Request "selection_modified" signal on Sodipodi */
-	sodipodi_selection_changed (selection);
+	sodipodi_selection_modified (selection, flags);
 
 	return FALSE;
 }

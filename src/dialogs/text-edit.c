@@ -41,7 +41,7 @@ static void sp_text_edit_dialog_change_selection (Sodipodi *sodipodi, SPSelectio
 static void sp_text_edit_dialog_apply (GtkButton *button, GtkWidget *dlg);
 static void sp_text_edit_dialog_close (GtkButton *button, GtkWidget *dlg);
 
-static void sp_text_edit_dialog_read_selection (GtkWidget *dlg);
+static void sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean style, gboolean content);
 
 static void sp_text_edit_dialog_text_changed (GtkText *txt, GtkWidget *dlg);
 static void sp_text_edit_dialog_font_changed (GnomeFontSelection *fontsel, GnomeFont *font, GtkWidget *dlg);
@@ -133,7 +133,7 @@ sp_text_edit_dialog (void)
 	gtk_signal_connect (GTK_OBJECT (SODIPODI), "modify_selection", GTK_SIGNAL_FUNC (sp_text_edit_dialog_modify_selection), dlg);
 	gtk_signal_connect (GTK_OBJECT (SODIPODI), "change_selection", GTK_SIGNAL_FUNC (sp_text_edit_dialog_change_selection), dlg);
 
-	sp_text_edit_dialog_read_selection (dlg);
+	sp_text_edit_dialog_read_selection (dlg, TRUE, TRUE);
 
 	gtk_widget_show (dlg);
 }
@@ -141,13 +141,17 @@ sp_text_edit_dialog (void)
 static void
 sp_text_edit_dialog_modify_selection (Sodipodi *sodipodi, SPSelection *sel, guint flags, GtkWidget *dlg)
 {
-	sp_text_edit_dialog_read_selection (dlg);
+	gboolean style, content;
+
+	style = ((flags & (SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG )) != 0);
+	content = ((flags & (SP_OBJECT_CHILD_MODIFIED_FLAG | SP_TEXT_CONTENT_MODIFIED_FLAG)) != 0);
+	sp_text_edit_dialog_read_selection (dlg, style, content);
 }
 
 static void
 sp_text_edit_dialog_change_selection (Sodipodi *sodipodi, SPSelection *sel, GtkWidget *dlg)
 {
-	sp_text_edit_dialog_read_selection (dlg);
+	sp_text_edit_dialog_read_selection (dlg, TRUE, TRUE);
 }
 
 static void
@@ -225,7 +229,7 @@ sp_text_edit_dialog_close (GtkButton *button, GtkWidget *dlg)
 }
 
 static void
-sp_text_edit_dialog_read_selection (GtkWidget *dlg)
+sp_text_edit_dialog_read_selection (GtkWidget *dlg, gboolean style, gboolean content)
 {
 	GtkWidget *notebook, *apply;
 	SPItem *item;
@@ -240,7 +244,6 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg)
 	if (item && SP_IS_TEXT (item)) {
 		GtkWidget *textw, *fontsel, *preview;
 		SPStyle *style;
-		guchar *str;
 		GnomeFont *font;
 
 		gtk_object_set_data (GTK_OBJECT (dlg), "blocked", GINT_TO_POINTER (TRUE));
@@ -251,25 +254,31 @@ sp_text_edit_dialog_read_selection (GtkWidget *dlg)
 		fontsel = gtk_object_get_data (GTK_OBJECT (dlg), "fontsel");
 		preview = gtk_object_get_data (GTK_OBJECT (dlg), "preview");
 
-		str = sp_text_get_string_multiline (SP_TEXT (item));
-		if (str && *str) {
-			e_utf8_gtk_editable_set_text (GTK_EDITABLE (textw), str);
-			gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), str);
-			g_free (str);
-		} else {
-			gtk_editable_delete_text (GTK_EDITABLE (textw), 0, -1);
-			gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), NULL);
+		if (content) {
+			guchar *str;
+			str = sp_text_get_string_multiline (SP_TEXT (item));
+			if (str && *str) {
+				e_utf8_gtk_editable_set_text (GTK_EDITABLE (textw), str);
+				gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), str);
+				g_free (str);
+			} else {
+				gtk_editable_delete_text (GTK_EDITABLE (textw), 0, -1);
+				gnome_font_preview_set_phrase (GNOME_FONT_PREVIEW (preview), NULL);
+			}
 		}
 
-		font = gnome_font_new_closest (style->text->font_family.value,
-					       sp_text_font_weight_to_gp (style->font_weight.computed),
-					       sp_text_font_italic_to_gp (style->font_style.computed),
-					       style->font_size.computed);
-		if (font) {
-			gnome_font_selection_set_font (GNOME_FONT_SELECTION (fontsel), font);
-			gnome_font_preview_set_font (GNOME_FONT_PREVIEW (preview), font);
-			gnome_font_unref (font);
+		if (style) {
+			font = gnome_font_new_closest (style->text->font_family.value,
+						       sp_text_font_weight_to_gp (style->font_weight.computed),
+						       sp_text_font_italic_to_gp (style->font_style.computed),
+						       style->font_size.computed);
+			if (font) {
+				gnome_font_selection_set_font (GNOME_FONT_SELECTION (fontsel), font);
+				gnome_font_preview_set_font (GNOME_FONT_PREVIEW (preview), font);
+				gnome_font_unref (font);
+			}
 		}
+
 		gtk_widget_set_sensitive (notebook, TRUE);
 
 		gtk_object_set_data (GTK_OBJECT (dlg), "blocked", NULL);

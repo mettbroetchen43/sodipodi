@@ -26,6 +26,7 @@ struct _SPSelection {
 	GSList *reprs;
 	GSList *items;
 	guint idle;
+	guint flags;
 };
 
 struct _SPSelectionClass {

@@ -1,5 +1,15 @@
 2002-08-29  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/sp-text.c (sp_string_calculate_dimensions): New method
+
+	* configure.in: Rewind required gnome-print version to 0.29
+
+	* src/sp-object.h: Added viewport and user flags
+
+	* src/style.c: Added functional 'text-anchor' property
+
+	* src/style.h: Added functional 'text-anchor' property
+
 	* src/svg/svg-color.c (sp_svg_read_color): Read rgb(r,g,b) variants
 
 	* src/style.c: Created new IEnum type with immediate and computed members,
