@@ -222,7 +222,7 @@ sp_embeddable_document_print (GnomePrintContext * ctx,
 }
 
 BonoboObject *
-sp_embeddable_document_factory (BonoboEmbeddableFactory * this, gpointer data)
+sp_embeddable_document_new (void)
 {
 	SPEmbeddableDocument * document;
 	Bonobo_Embeddable corba_document;

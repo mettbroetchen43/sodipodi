@@ -40,6 +40,6 @@ GtkType sp_embeddable_document_get_type (void);
  * Constructor
  */
 
-BonoboObject * sp_embeddable_document_factory (BonoboEmbeddableFactory * this, gpointer data);
+BonoboObject * sp_embeddable_document_new (void);
 
 #endif

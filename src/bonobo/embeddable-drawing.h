@@ -38,7 +38,7 @@ GtkType sp_embeddable_drawing_get_type (void);
  */
 
 BonoboCanvasComponent * sp_embeddable_drawing_factory (BonoboEmbeddable * embeddable,
-	GnomeCanvas * canvas, gpointer data);
+						       GnomeCanvas * canvas, gpointer data);
 
 /*
  * Notify drawing, that underlying SPDocument has changed

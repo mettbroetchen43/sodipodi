@@ -4,22 +4,32 @@
 #include "embeddable-document.h"
 #include "svg-doc-factory.h"
 
+static BonoboObject *
+sp_svg_factory (BonoboGenericFactory *factory,
+		const char           *component_id,
+		gpointer              closure)
+{
+	if (!strcmp (component_id, "OAFIID:GNOME_Sodipodi_Embeddable"))
+		return sp_embeddable_document_new ();
+
+	else if (!strcmp (component_id, "OAFIID:GNOME_Sodipodi_CanvasItem"))
+		g_warning ("SodiPodi's canvas item code is dysfunctional");
+	
+	else
+		g_warning ("Sodipodi cannot activate unknown id '%s'",
+			   component_id);
+
+	return NULL;
+}
+
 void
 sp_svg_doc_factory_init (void)
 {
-	static BonoboEmbeddableFactory * doc_factory = NULL;
+	static BonoboGenericFactory *doc_factory = NULL;
 
-	if (doc_factory != NULL) return;
-
-#if USING_OAF
-	doc_factory = bonobo_embeddable_factory_new (
-		"OAFIID:embeddable-factory:sodipodi-svg-doc:4fda0c32-8996-4196-ac88-a79b5888e269",
-		sp_embeddable_document_factory, NULL);
-#else
-	doc_factory = bonobo_embeddable_factory_new (
-		"embeddable-factory:sodipodi-svg-doc",
-		sp_embeddable_document_factory, NULL);
-#endif
+	doc_factory = bonobo_generic_factory_new_multi (
+		"OAFIID:GNOME_Sodipodi_ComponentFactory",
+		sp_svg_factory, NULL);
 
 	if (doc_factory == NULL)
 		g_error (_("Could not create sodipodi-svg-doc factory"));

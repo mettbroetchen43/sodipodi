@@ -1,3 +1,16 @@
+2000-12-29  Michael Meeks  <michael@helixcode.com>
+
+	* src/bonobo/embeddable-document.c (sp_embeddable_document_factory): upd.
+
+	* Makefile.am (oafdir): kill gnorba bits, update naming.
+
+	* src/bonobo/svg-doc-factory.c (sp_svg_doc_factory_init): upd.
+	(sp_svg_factory): new multi factory.
+
+	* GNOME_Sodipodi.oafinfo: add, rename stuff.
+
+	* configure.in (have_bonobo): require bonobo >= 0.30
+
 2000-12-28  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
 
 	* configure.in (ALL_LINGUAS): 'it'
