@@ -543,8 +543,11 @@ static void sp_desktop_widget_realize (GtkWidget *widget);
 
 static gint sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dtw);
 
+static void sp_dtw_status_frame_size_request (GtkWidget *widget, GtkRequisition *req, gpointer data);
+
 static void sp_desktop_widget_view_position_set (SPView *view, gdouble x, gdouble y, SPDesktopWidget *dtw);
 static void sp_desktop_widget_view_status_set (SPView *view, const guchar *status, gboolean isdefault, SPDesktopWidget *dtw);
+
 static void sp_dtw_desktop_activate (SPDesktop *desktop, SPDesktopWidget *dtw);
 static void sp_dtw_desktop_desactivate (SPDesktop *desktop, SPDesktopWidget *dtw);
 
@@ -689,6 +692,7 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	dtw->select_status = gtk_label_new ("");
 	gtk_misc_set_alignment (GTK_MISC (dtw->select_status), 0.0, 0.5);
 	gtk_container_add (GTK_CONTAINER (w), dtw->select_status);
+	g_signal_connect (G_OBJECT (w), "size_request", G_CALLBACK (sp_dtw_status_frame_size_request), dtw);
 
 	w = gtk_frame_new (NULL);
 	gtk_widget_set_usize (w, 64, 0);
@@ -698,9 +702,9 @@ sp_desktop_widget_init (SPDesktopWidget *dtw)
 	gtk_misc_set_alignment (GTK_MISC (dtw->zoom_status), 0.0, 0.5);
 	gtk_container_add (GTK_CONTAINER (w), dtw->zoom_status);
 
-	// connecting canvas, scrollbars, rulers, statusbar
-	gtk_signal_connect (GTK_OBJECT (dtw->hadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_widget_adjustment_value_changed), dtw);
-	gtk_signal_connect (GTK_OBJECT (dtw->vadj), "value-changed", GTK_SIGNAL_FUNC (sp_desktop_widget_adjustment_value_changed), dtw);
+	/* connecting canvas, scrollbars, rulers, statusbar */
+	g_signal_connect (G_OBJECT (dtw->hadj), "value-changed", G_CALLBACK (sp_desktop_widget_adjustment_value_changed), dtw);
+	g_signal_connect (G_OBJECT (dtw->vadj), "value-changed", G_CALLBACK (sp_desktop_widget_adjustment_value_changed), dtw);
 
 #if 1
         gtk_widget_grab_focus (GTK_WIDGET (dtw->canvas));
@@ -823,6 +827,12 @@ sp_desktop_widget_event (GtkWidget *widget, GdkEvent *event, SPDesktopWidget *dt
 		return (* GTK_WIDGET_CLASS (dtw_parent_class)->event) (widget, event);
 
 	return FALSE;
+}
+
+static void
+sp_dtw_status_frame_size_request (GtkWidget *widget, GtkRequisition *req, gpointer data)
+{
+	req->width = 1;
 }
 
 void

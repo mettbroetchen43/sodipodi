@@ -409,21 +409,15 @@ sp_desktop_dialog_new (void)
 	gtk_widget_show (cp);
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 3, 4, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "guidecolor", cp);
-#if 0
-	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_guides_color_set), dialog);
-#endif
 
 	l = gtk_label_new (_("Highlight color:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	cp = sp_color_picker_new ("guidehicolor", "guidehiopacity", _("Highlihted gudeline color"), 0);
+	cp = sp_color_picker_new ("guidehicolor", "guidehiopacity", _("Highlighted guideline color"), 0);
 	gtk_widget_show (cp);
 	gtk_table_attach (GTK_TABLE (t), cp, 1, 2, 4, 5, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (dialog), "guidehicolor", cp);
-#if 0
-	gtk_signal_connect (GTK_OBJECT (cp), "color_set", GTK_SIGNAL_FUNC (sp_dtw_guides_hi_color_set), dialog);
-#endif
 
 	/* Page page */
 	l = gtk_label_new (_("Page"));

@@ -1,5 +1,9 @@
 2003-01-19  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/desktop.c (sp_dtw_status_frame_size_request): Always request minimum size
+
+	* configure.in: Define GETTEXT_PACKAGE properly (Thanks to Christian Rose)
+
 	* src/libnrtype/nr-type-xft.c (nr_type_xft_init): Removed CORE, so Xft fontlist
 	should now be read properly with Debian PPC and or fontconfig systems
 

@@ -14,9 +14,10 @@ TODO for 0.29
 - Test gnome-print support
 - Replacement for uri lists
 - Replacement for uri handler
-- Optional libgnome support?
+- Optional libgnome support? (POSTPONED)
 - Save on close dialog buttons (DONE)
 - Fix freehand (DONE)
+- Remove grab from buttons
 
 TODO for 0.28
 =============
