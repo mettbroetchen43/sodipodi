@@ -70,7 +70,8 @@ const GSList * sp_selection_repr_list (SPSelection * selection);
 SPItem * sp_selection_item (SPSelection * selection);
 SPRepr * sp_selection_repr (SPSelection * selection);
 
-ArtDRect * sp_selection_bbox (SPSelection * selection, ArtDRect * bbox);
+ArtDRect *sp_selection_bbox (SPSelection *selection, ArtDRect *bbox);
+ArtDRect *sp_selection_bbox_document (SPSelection *selection, ArtDRect *bbox);
 GSList * sp_selection_snappoints (SPSelection * selection);
 
 #endif

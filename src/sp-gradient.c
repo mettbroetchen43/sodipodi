@@ -20,6 +20,7 @@
 
 #include "svg/svg.h"
 #include "xml/repr-private.h"
+#include "helper/nr-plain-stuff.h"
 #include "document-private.h"
 #include "sp-object-repr.h"
 #include "sp-gradient.h"
@@ -27,6 +28,7 @@
 #define SP_MACROS_SILENT
 #include "macros.h"
 
+/* Has to be power of 2 */
 #define NCOLORS 1024
 
 static void sp_stop_class_init (SPStopClass * klass);
@@ -1049,7 +1051,7 @@ sp_lineargradient_init (SPLinearGradient * lg)
 {
 	sp_svg_length_unset (&lg->x1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
 	sp_svg_length_unset (&lg->y1, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
-	sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 100.0);
+	sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 	sp_svg_length_unset (&lg->y2, SP_SVG_UNIT_PERCENT, 0.0, 0.0);
 }
 
@@ -1102,7 +1104,7 @@ sp_lineargradient_read_attr (SPObject * object, const gchar * key)
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "x2")) {
 		if (!sp_svg_length_read (str, &lg->x2)) {
-			sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 100.0);
+			sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_PERCENT, 1.0, 1.0);
 		}
 		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
 	} else if (!strcmp (key, "y2")) {
@@ -1265,6 +1267,84 @@ sp_lineargradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set
 }
 
 void
+sp_lineargradient_from_position (SPLinearGradient *lg, gdouble *ctm, ArtDRect *bbox, ArtPoint *p)
+{
+	SPGradient *gr;
+	gdouble p2b[6];
+	gdouble x, y;
+
+	g_return_if_fail (lg != NULL);
+	g_return_if_fail (SP_IS_LINEARGRADIENT (lg));
+	g_return_if_fail (p != NULL);
+
+	gr = SP_GRADIENT (lg);
+
+	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
+		gdouble bbox2user[6];
+
+		/* BBox to user coordinate system */
+		bbox2user[0] = bbox->x1 - bbox->x0;
+		bbox2user[1] = 0.0;
+		bbox2user[2] = 0.0;
+		bbox2user[3] = bbox->y1 - bbox->y0;
+		bbox2user[4] = bbox->x0;
+		bbox2user[5] = bbox->y0;
+
+		/* CTM goes here */
+
+		art_affine_multiply (p2b, bbox2user, ctm);
+	} else {
+		memcpy (p2b, ctm, 6 * sizeof (gdouble));
+	}
+
+	x = p2b[0] * p->x + p2b[2] * p->y + p2b[4];
+	y = p2b[1] * p->x + p2b[3] * p->y + p2b[5];
+
+	p->x = x;
+	p->y = y;
+}
+
+void
+sp_lineargradient_to_position (SPLinearGradient *lg, gdouble *ctm, ArtDRect *bbox, ArtPoint *p)
+{
+	SPGradient *gr;
+	gdouble p2b[6], b2p[6];
+	gdouble x, y;
+
+	g_return_if_fail (lg != NULL);
+	g_return_if_fail (SP_IS_LINEARGRADIENT (lg));
+	g_return_if_fail (p != NULL);
+
+	gr = SP_GRADIENT (lg);
+
+	if (gr->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX) {
+		gdouble bbox2user[6];
+
+		/* BBox to user coordinate system */
+		bbox2user[0] = bbox->x1 - bbox->x0;
+		bbox2user[1] = 0.0;
+		bbox2user[2] = 0.0;
+		bbox2user[3] = bbox->y1 - bbox->y0;
+		bbox2user[4] = bbox->x0;
+		bbox2user[5] = bbox->y0;
+
+		/* CTM goes here */
+
+		art_affine_multiply (p2b, bbox2user, ctm);
+
+		art_affine_invert (b2p, p2b);
+	} else {
+		art_affine_invert (b2p, ctm);
+	}
+
+	x = b2p[0] * p->x + b2p[2] * p->y + b2p[4];
+	y = b2p[1] * p->x + b2p[3] * p->y + b2p[5];
+
+	p->x = x;
+	p->y = y;
+}
+
+void
 sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gdouble x2, gdouble y2)
 {
 	g_return_if_fail (lg != NULL);
@@ -1316,38 +1396,33 @@ sp_lg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 	g = (SPGradient *) lg;
 
 	if (!g->color) {
+#if 0
 		/* fixme: This is forbidden, so we should paint some mishmesh instead */
 		sp_gradient_ensure_colors (g);
+#else
+		nr_render_r8g8b8a8_gray_garbage (px, width, height, rowstride);
+		return;
+#endif
 	}
 
 	for (y = 0; y < height; y++) {
 		p = px + y * rowstride;
 		pos = (y + y0 - lgp->y0) * lgp->dy + (0 + x0 - lgp->x0) * lgp->dx;
-		g_print ("fill %d %d, pos %g\n", y0 + y, x0, pos);
 		for (x = 0; x < width; x++) {
-			gint ip, idx;
-			ip = (gint) pos;
-			switch (g->spread) {
-			case SP_GRADIENT_SPREAD_PAD:
-				idx = CLAMP (ip, 0, 1023);
-				break;
-			case SP_GRADIENT_SPREAD_REFLECT:
-				idx = ip & 0x3ff;
-				if (ip & 0x400) idx = 1023 - idx;
-				break;
-			case SP_GRADIENT_SPREAD_REPEAT:
-				idx = ip & 0x3ff;
-				break;
-			default:
-				g_assert_not_reached ();
-				idx = 0;
-				break;
+			gint idx;
+			if (g->spread == SP_GRADIENT_SPREAD_REFLECT) {
+				idx = ((gint) pos) & (2 * NCOLORS - 1);
+				if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
+			} else if (g->spread == SP_GRADIENT_SPREAD_REPEAT) {
+				idx = ((gint) pos) & (NCOLORS - 1);
+			} else {
+				idx = CLAMP (((gint) pos), 0, (NCOLORS - 1));
 			}
-			/* a * b / 255 = a * b * (256 * 256 / 255) / 256 / 256 */
-			*p++ = g->color[4 * idx];
-			*p++ = g->color[4 * idx + 1];
-			*p++ = g->color[4 * idx + 2];
-			*p++ = g->color[4 * idx + 3];
+			idx = idx * 4;
+			*p++ = g->color[idx];
+			*p++ = g->color[idx + 1];
+			*p++ = g->color[idx + 2];
+			*p++ = g->color[idx + 3];
 			pos += lgp->dx;
 		}
 	}

@@ -1,6 +1,18 @@
-#define SP_SELECT_CONTEXT_C
+#define __SP_SELECT_CONTEXT_C__
+
+/*
+ * Selection and transformation context
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 #include <math.h>
+#include <string.h>
 #include <gdk/gdkkeysyms.h>
 #include "rubberband.h"
 #include "sodipodi-private.h"
@@ -29,6 +41,7 @@ static void sp_select_context_init (SPSelectContext * select_context);
 static void sp_select_context_destroy (GtkObject * object);
 
 static void sp_select_context_setup (SPEventContext *ec);
+static void sp_select_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
 static gint sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
@@ -77,6 +90,7 @@ sp_select_context_class_init (SPSelectContextClass * klass)
 	object_class->destroy = sp_select_context_destroy;
 
 	event_context_class->setup = sp_select_context_setup;
+	event_context_class->set = sp_select_context_set;
 	event_context_class->root_handler = sp_select_context_root_handler;
 	event_context_class->item_handler = sp_select_context_item_handler;
 
@@ -137,6 +151,31 @@ sp_select_context_setup (SPEventContext *ec)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec);
 
 	sp_sel_trans_init (&select_context->seltrans, ec->desktop);
+
+	sp_event_context_read (ec, "show");
+	sp_event_context_read (ec, "transform");
+}
+
+static void
+sp_select_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
+{
+	SPSelectContext *sc;
+
+	sc = SP_SELECT_CONTEXT (ec);
+
+	if (!strcmp (key, "show")) {
+		if (val && !strcmp (val, "outline")) {
+			sc->seltrans.show = SP_SELTRANS_SHOW_OUTLINE;
+		} else {
+			sc->seltrans.show = SP_SELTRANS_SHOW_CONTENT;
+		}
+	} else if (!strcmp (key, "transform")) {
+		if (val && !strcmp (val, "keep")) {
+			sc->seltrans.transform = SP_SELTRANS_TRANSFORM_KEEP;
+		} else {
+			sc->seltrans.transform = SP_SELTRANS_TRANSFORM_OPTIMIZE;
+		}
+	}
 }
 
 static gint

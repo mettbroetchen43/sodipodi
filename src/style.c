@@ -1703,7 +1703,6 @@ sp_length_differ (SPILength *a, SPILength *b)
 		if (b->unit == SP_CSS_UNIT_EM) return TRUE;
 		if (b->unit == SP_CSS_UNIT_EX) return TRUE;
 		if (b->unit == SP_CSS_UNIT_PERCENT) return TRUE;
-		return FALSE;
 	}
 
 	return (a->computed != b->computed);

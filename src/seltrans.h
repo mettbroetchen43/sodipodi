@@ -1,34 +1,59 @@
 #ifndef __SP_SELTRANS_H__
 #define __SP_SELTRANS_H__
 
+/*
+ * Helper object for transforming selected items
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include "knot.h"
 #include "desktop-handles.h"
+#if 0
 #include "helper/sodipodi-ctrl.h"
+#endif
 
 typedef struct _SPSelTrans SPSelTrans;
 
-typedef enum {
-	SP_SELTRANS_OUTLINE,
-	SP_SELTRANS_CONTENT
-} SPSelTransShowType;
+enum {
+	SP_SELTRANS_SHOW_CONTENT,
+	SP_SELTRANS_SHOW_OUTLINE
+};
 
+enum {
+	SP_SELTRANS_TRANSFORM_OPTIMIZE,
+	SP_SELTRANS_TRANSFORM_KEEP
+};
+
+enum {
+	SP_SELTRANS_STATE_SCALE,
+	SP_SELTRANS_STATE_ROTATE
+};
+
+#if 0
 #ifndef __SP_SELTRANS_C__
 extern SPSelTransShowType SelTransViewMode;
 #else
 SPSelTransShowType SelTransViewMode = SP_SELTRANS_CONTENT;
 #endif
-
-typedef enum {
-	SP_SEL_TRANS_SCALE = 0,
-	SP_SEL_TRANS_ROTATE = 1
-} SPSelTransStateType;
+#endif
 
 struct _SPSelTrans {
-	SPDesktop * desktop;
-        GSList * snappoints;
+	SPDesktop *desktop;
+	SPSelection *selection;
+
+	guint state : 1;
+	guint show : 1;
+	guint transform : 1;
+
+	GSList *snappoints;
 	gboolean grabbed;
 	gboolean show_handles;
-	SPSelTransStateType state;
 	gboolean empty;
 	gboolean changed;
 	gboolean sel_changed;
@@ -38,12 +63,12 @@ struct _SPSelTrans {
         ArtPoint origin;
 	ArtPoint point;
 	ArtPoint center;
-	SPKnot * shandle[8];
-	SPKnot * rhandle[8];
-	SPKnot * chandle;
-        GnomeCanvasItem * norm;
-        GnomeCanvasItem * grip;;
-        GnomeCanvasItem * l1, * l2, * l3, * l4;
+	SPKnot *shandle[8];
+	SPKnot *rhandle[8];
+	SPKnot *chandle;
+        GnomeCanvasItem *norm;
+        GnomeCanvasItem *grip;;
+        GnomeCanvasItem *l1, *l2, *l3, *l4;
 	guint sel_changed_id;
 	guint sel_modified_id;
 };

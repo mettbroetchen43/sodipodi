@@ -29,7 +29,8 @@ struct _SPGradientPosition {
 	guint dragging : 1;
 	guint position : 2;
 	SPGradient *gradient;
-	ArtDRect bbox; /* BBox in format, expected by gradient */
+	ArtDRect bbox; /* BBox in document coordinates */
+	ArtPoint start, end; /* Start and end in document coordinates */
 	ArtDRect vbox; /* BBox in widget coordinates */
 	ArtPoint p0, p1, pold;
 	gdouble transform[6];

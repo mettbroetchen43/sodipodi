@@ -502,7 +502,7 @@ sp_ellipse_read_attr (SPObject * object, const gchar * attr)
 		}
 		sp_genericellipse_set_shape (ellipse);
 	} else if (!strcmp (attr, "cy")) {
-		if (sp_svg_length_read (str, &ellipse->cy)) {
+		if (!sp_svg_length_read (str, &ellipse->cy)) {
 			ellipse->cy.set = FALSE;
 			ellipse->cy.computed = 0.0;
 		}
@@ -674,7 +674,7 @@ sp_circle_read_attr (SPObject *object, const gchar * attr)
 		}
 		sp_genericellipse_set_shape (circle);
 	} else if (!strcmp (attr, "cy")) {
-		if (sp_svg_length_read (str, &circle->cy)) {
+		if (!sp_svg_length_read (str, &circle->cy)) {
 			circle->cy.set = FALSE;
 			circle->cy.computed = 0.0;
 		}

@@ -92,6 +92,16 @@ sp_tool_attributes_dialog_setup (SPEventContext *ec)
 			} else {
 				tbl = gtk_label_new (_("Missing tool preferences"));
 			}
+		} else if (!strcmp (typename, "SPSelectContext")) {
+			SPRepr *repr;
+			repr = sodipodi_get_repr (SODIPODI, "tools.select");
+			if (repr) {
+				guchar *labels[] = {N_("Show:"), N_("Transform:")};
+				guchar *attrs[] = {"show", "transform"};
+				tbl = sp_attribute_table_new_repr (repr, 2, (const guchar **) labels, (const guchar **) attrs);
+			} else {
+				tbl = gtk_label_new (_("Missing tool preferences"));
+			}
 		} else if (!strcmp (typename, "SPDynaDrawContext")) {
 			SPRepr *repr;
 			repr = sodipodi_get_repr (SODIPODI, "tools.calligraphic");

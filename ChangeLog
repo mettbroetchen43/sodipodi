@@ -1,4 +1,52 @@
+2002-09-08  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/display/nr-arena-shape.c (nr_arena_shape_update): Do not stroke,
+	if width < 0.125
+
+	* src/display/nr-arena-glyphs.c (nr_arena_glyphs_group_update): Use paintbox
+	(nr_arena_glyphs_group_set_paintbox): New method
+	(nr_arena_glyphs_update): Do not stroke if width < 0.125
+	(nr_arena_glyphs_render): Do not render here
+	(nr_arena_glyphs_fill_mask): New helper
+	(nr_arena_glyphs_stroke_mask): Ditto
+	(nr_arena_glyphs_group_update): Create painters here
+	(nr_arena_glyphs_group_render): Render here
+
+	* src/dialogs/tool-attributes.c (sp_tool_attributes_dialog_setup): Added
+	SPSelectContext
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_paint_update): Use new gradient
+	position widget logic
+	(sp_stroke_style_paint_dragged): Ditto
+	(sp_stroke_style_paint_changed): Ditto
+
+	* src/dialogs/fill-style.c (sp_fill_style_widget_update): Use new gradient
+	position widget logic
+	(sp_fill_style_widget_paint_dragged): Ditto
+	(sp_fill_style_widget_paint_changed): Ditto
+
+	* src/sp-shape.c (sp_shape_show): Calculate and set paintbox
+	(sp_shape_modified): Ditto
+
+	* src/sp-gradient.c (sp_lineargradient_from_position): New method
+	(sp_lineargradient_to_position): Ditto
+
+	* src/sp-chars.c (sp_chars_print_bpath): Implement via nr plain buffers
+	(sp_chars_set_paintbox): New method
+
+	* src/seltrans.c (sp_sel_trans_shutdown): Destroy handles and canvasitems
+
+	* src/seltrans.h: Added modifieable parameters
+
+	* src/selection.c (sp_selection_bbox_document): New method
+
+	* src/select-context.c (sp_select_context_set): Implement this
+
+	* src/arc-context.c (sp_arc_finish): Oops, set sodipodi namespace
+
 2002-09-07  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/style.c (sp_length_differ): Oops, if units differ check value
 
 	* src/sp-paint-server.h: painter contructor signature change
 

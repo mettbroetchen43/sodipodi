@@ -22,6 +22,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 
+#include "../helper/art-utils.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
 #include "../widgets/paint-selector.h"
@@ -148,6 +149,8 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 	gfloat c[5];
 	ArtDRect bbox;
 	SPLinearGradient *lg;
+	gdouble ctm[6];
+	ArtPoint p0, p1;
 
 	if (gtk_object_get_data (GTK_OBJECT (spw), "update")) return;
 
@@ -211,12 +214,19 @@ sp_fill_style_widget_update (SPWidget *spw, SPSelection *sel)
 		/* fixme: Probably we should set multiple mode here too */
 		sp_paint_selector_set_mode (psel, SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR);
 		sp_paint_selector_set_gradient_linear (psel, vector);
-		sp_selection_bbox (sel, &bbox);
+		sp_selection_bbox_document (sel, &bbox);
 		sp_paint_selector_set_gradient_bbox (psel, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
 		/* fixme: This is plain wrong */
 		lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (object));
-		/* fixme: Take units into account! */
-		sp_paint_selector_set_gradient_position (psel, lg->x1.computed, lg->y1.computed, lg->x2.computed, lg->y2.computed);
+		sp_item_invoke_bbox (SP_ITEM (object), &bbox, SP_MATRIX_D_IDENTITY);
+		sp_item_i2doc_affine (SP_ITEM (object), ctm);
+		p0.x = lg->x1.computed;
+		p0.y = lg->y1.computed;
+		sp_lineargradient_from_position (lg, ctm, &bbox, &p0);
+		p1.x = lg->x2.computed;
+		p1.y = lg->y2.computed;
+		sp_lineargradient_from_position (lg, ctm, &bbox, &p1);
+		sp_paint_selector_set_gradient_position (psel, p0.x, p0.y, p1.x, p1.y);
 		break;
 	}
 
@@ -318,11 +328,28 @@ sp_fill_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 		vector = sp_gradient_ensure_vector_normalized (vector);
 		items = sp_widget_get_item_list (spw);
 		for (i = items; i != NULL; i = i->next) {
+			SPLinearGradient *lg;
 			gfloat p[4];
+			ArtDRect bbox;
+			gdouble ctm[6];
+			ArtPoint p0, p1;
 			sp_item_force_fill_lineargradient_vector (SP_ITEM (i->data), vector);
+
+			/* This gives us position in document coordinates */
 			sp_paint_selector_get_gradient_position_floatv (psel, p);
-			sp_lineargradient_set_position (SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (i->data)), p[0], p[1], p[2], p[3]);
-			/* fixme: Managing selection bbox/item bbox stuff is big mess */
+
+			sp_item_invoke_bbox (SP_ITEM (i->data), &bbox, SP_MATRIX_D_IDENTITY);
+			sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
+
+			lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (i->data));
+			p0.x = p[0];
+			p0.y = p[1];
+			sp_lineargradient_to_position (lg, ctm, &bbox, &p0);
+			p1.x = p[2];
+			p1.y = p[3];
+			sp_lineargradient_to_position (lg, ctm, &bbox, &p1);
+
+			sp_lineargradient_set_position (lg, p0.x, p0.y, p1.x, p1.y);
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL:
@@ -408,20 +435,41 @@ sp_fill_style_widget_paint_changed (SPPaintSelector *psel, SPWidget *spw)
 		if (items) {
 			vector = sp_paint_selector_get_gradient_vector (psel);
 			if (!vector) {
-				g_warning ("SPFillStyleWidget: Got linearGradient mode but NULL gradient in 'changed' handler\n");
+				/* No vector in paint selector should mean that we just changed mode */
 				vector = sp_document_default_gradient_vector (SP_WIDGET_DOCUMENT (spw));
-			}
-			vector = sp_gradient_ensure_vector_normalized (vector);
-			for (i = items; i != NULL; i = i->next) {
-				gfloat p[4];
-				g_print ("FillStyleWidget: Set LinearGradient %s fill style\n", SP_OBJECT_ID (vector));
-				sp_item_force_fill_lineargradient_vector (SP_ITEM (i->data), vector);
-				/* fixme: Managing selection bbox/item bbox stuff is big mess */
-				sp_paint_selector_get_gradient_position_floatv (psel, p);
-				sp_repr_set_double (SP_OBJECT_REPR (SP_OBJECT_STYLE_FILL_SERVER (i->data)), "x1", p[0]);
-				sp_repr_set_double (SP_OBJECT_REPR (SP_OBJECT_STYLE_FILL_SERVER (i->data)), "y1", p[1]);
-				sp_repr_set_double (SP_OBJECT_REPR (SP_OBJECT_STYLE_FILL_SERVER (i->data)), "x2", p[2]);
-				sp_repr_set_double (SP_OBJECT_REPR (SP_OBJECT_STYLE_FILL_SERVER (i->data)), "y2", p[3]);
+				for (i = items; i != NULL; i = i->next) {
+					sp_item_force_fill_lineargradient_vector (SP_ITEM (i->data), vector);
+				}
+			} else {
+				vector = sp_gradient_ensure_vector_normalized (vector);
+				for (i = items; i != NULL; i = i->next) {
+					SPLinearGradient *lg;
+					gfloat p[4];
+					ArtDRect bbox;
+					gdouble ctm[6];
+					ArtPoint p0, p1;
+
+					sp_item_force_fill_lineargradient_vector (SP_ITEM (i->data), vector);
+
+					/* This gives us position in document coordinates */
+					sp_paint_selector_get_gradient_position_floatv (psel, p);
+
+					sp_item_invoke_bbox (SP_ITEM (i->data), &bbox, SP_MATRIX_D_IDENTITY);
+					sp_item_i2doc_affine (SP_ITEM (i->data), ctm);
+
+					lg = SP_LINEARGRADIENT (SP_OBJECT_STYLE_FILL_SERVER (i->data));
+					p0.x = p[0];
+					p0.y = p[1];
+					sp_lineargradient_to_position (lg, ctm, &bbox, &p0);
+					p1.x = p[2];
+					p1.y = p[3];
+					sp_lineargradient_to_position (lg, ctm, &bbox, &p1);
+
+					sp_repr_set_double (SP_OBJECT_REPR (lg), "x1", p0.x);
+					sp_repr_set_double (SP_OBJECT_REPR (lg), "y1", p0.y);
+					sp_repr_set_double (SP_OBJECT_REPR (lg), "x2", p1.x);
+					sp_repr_set_double (SP_OBJECT_REPR (lg), "y2", p1.y);
+				}
 			}
 			sp_document_done (SP_WIDGET_DOCUMENT (spw));
 		}

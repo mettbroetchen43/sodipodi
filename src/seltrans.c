@@ -1,5 +1,16 @@
 #define __SP_SELTRANS_C__
 
+/*
+ * Helper object for transforming selected items
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
+
 #include <math.h>
 #include "svg/svg.h"
 #include "sodipodi-private.h"
@@ -37,7 +48,6 @@ extern GdkPixbuf * handles[];
 void
 sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 {
-	SPSelection * selection;
 	gint i;
 
 	g_return_if_fail (seltrans != NULL);
@@ -45,9 +55,13 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 	g_return_if_fail (SP_IS_DESKTOP (desktop));
 
 	seltrans->desktop = desktop;
+
+	seltrans->state = SP_SELTRANS_STATE_SCALE;
+	seltrans->show = SP_SELTRANS_SHOW_CONTENT;
+	seltrans->transform = SP_SELTRANS_TRANSFORM_OPTIMIZE;
+
 	seltrans->grabbed = FALSE;
 	seltrans->show_handles = TRUE;
-	seltrans->state = SP_SEL_TRANS_SCALE;
 	for (i = 0; i < 8; i++) seltrans->shandle[i] = NULL;
 	for (i = 0; i < 8; i++) seltrans->rhandle[i] = NULL;
 	seltrans->chandle = NULL;
@@ -59,12 +73,9 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 
 	sp_sel_trans_update_handles (seltrans);
 
-	selection = SP_DT_SELECTION (desktop);
-
-	seltrans->sel_changed_id = gtk_signal_connect (GTK_OBJECT (selection), "changed",
-						       GTK_SIGNAL_FUNC (sp_sel_trans_sel_changed), seltrans);
-	seltrans->sel_modified_id = gtk_signal_connect (GTK_OBJECT (selection), "modified",
-							GTK_SIGNAL_FUNC (sp_sel_trans_sel_modified), seltrans);
+	seltrans->selection = SP_DT_SELECTION (desktop);
+	gtk_signal_connect (GTK_OBJECT (seltrans->selection), "changed", GTK_SIGNAL_FUNC (sp_sel_trans_sel_changed), seltrans);
+	gtk_signal_connect (GTK_OBJECT (seltrans->selection), "modified", GTK_SIGNAL_FUNC (sp_sel_trans_sel_modified), seltrans);
 
 	seltrans->norm = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
 		SP_TYPE_CTRL,
@@ -93,54 +104,86 @@ sp_sel_trans_init (SPSelTrans * seltrans, SPDesktop * desktop)
 	gnome_canvas_item_hide (seltrans->grip);
 	gnome_canvas_item_hide (seltrans->norm);
 
-	seltrans->l1 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
-					      SP_TYPE_CTRLLINE, 
-					      NULL);
+	seltrans->l1 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	gnome_canvas_item_hide (seltrans->l1);
-	seltrans->l2 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
-					      SP_TYPE_CTRLLINE, 
-					      NULL);
+	seltrans->l2 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	gnome_canvas_item_hide (seltrans->l2);
-	seltrans->l3 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
-					      SP_TYPE_CTRLLINE, 
-					      NULL);
+	seltrans->l3 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	gnome_canvas_item_hide (seltrans->l3);
-	seltrans->l4 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop),
-					      SP_TYPE_CTRLLINE, 
-					      NULL);
+	seltrans->l4 = gnome_canvas_item_new (SP_DT_CONTROLS (desktop), SP_TYPE_CTRLLINE, NULL);
 	gnome_canvas_item_hide (seltrans->l4);
 }
 
 void
-sp_sel_trans_shutdown (SPSelTrans * seltrans)
+sp_sel_trans_shutdown (SPSelTrans *seltrans)
 {
+	gint i;
+#if 0
 	seltrans->show_handles = FALSE;
 
 	sp_sel_trans_update_handles (seltrans);
+#else
+	for (i = 0; i < 8; i++) {
+		if (seltrans->shandle[i]) {
+			gtk_object_unref (GTK_OBJECT (seltrans->shandle[i]));
+			seltrans->shandle[i] = NULL;
+		}
+		if (seltrans->rhandle[i]) {
+			gtk_object_unref (GTK_OBJECT (seltrans->rhandle[i]));
+			seltrans->rhandle[i] = NULL;
+		}
+	}
+	if (seltrans->chandle) {
+		gtk_object_unref (GTK_OBJECT (seltrans->chandle));
+		seltrans->chandle = NULL;
+	}
+#endif
 
-	if (seltrans->sel_changed_id > 0)
-		gtk_signal_disconnect (GTK_OBJECT (SP_DT_SELECTION (seltrans->desktop)), seltrans->sel_changed_id);
-	if (seltrans->sel_modified_id > 0)
-		gtk_signal_disconnect (GTK_OBJECT (SP_DT_SELECTION (seltrans->desktop)), seltrans->sel_modified_id);
+	if (seltrans->norm) {
+		gtk_object_destroy (GTK_OBJECT (seltrans->norm));
+		seltrans->norm = NULL;
+	}
+	if (seltrans->grip) {
+		gtk_object_destroy (GTK_OBJECT (seltrans->grip));
+		seltrans->grip = NULL;
+	}
+	if (seltrans->l1) {
+		gtk_object_destroy (GTK_OBJECT (seltrans->l1));
+		seltrans->l1 = NULL;
+	}
+	if (seltrans->l2) {
+		gtk_object_destroy (GTK_OBJECT (seltrans->l2));
+		seltrans->l2 = NULL;
+	}
+	if (seltrans->l3) {
+		gtk_object_destroy (GTK_OBJECT (seltrans->l3));
+		seltrans->l3 = NULL;
+	}
+	if (seltrans->l4) {
+		gtk_object_destroy (GTK_OBJECT (seltrans->l4));
+		seltrans->l4 = NULL;
+	}
+
+	if (seltrans->selection) {
+		gtk_signal_disconnect_by_data (GTK_OBJECT (seltrans->selection), seltrans);
+	}
 }
 
 void
 sp_sel_trans_reset_state (SPSelTrans * seltrans)
 {
-	seltrans->state = SP_SEL_TRANS_SCALE;
+	seltrans->state = SP_SELTRANS_STATE_SCALE;
 }
 
 void
 sp_sel_trans_increase_state (SPSelTrans * seltrans)
 {
-	seltrans->state++;
-
-	if (seltrans->state > SP_SEL_TRANS_ROTATE)// {
-		seltrans->state = SP_SEL_TRANS_SCALE; /*
+	if (seltrans->state == SP_SELTRANS_STATE_SCALE) {
+		seltrans->state = SP_SELTRANS_STATE_ROTATE;
 	} else {
-		seltrans->center.x = (seltrans->box.x0 + seltrans->box.x1) / 2;
-		seltrans->center.y = (seltrans->box.y0 + seltrans->box.y1) / 2;
-		}*/
+		seltrans->state = SP_SELTRANS_STATE_SCALE;
+	}
+
 	sp_sel_trans_update_handles (seltrans);
 }
 
@@ -181,15 +224,15 @@ sp_sel_trans_grab (SPSelTrans * seltrans, ArtPoint * p, gdouble x, gdouble y, gb
 	seltrans->opposit.y = seltrans->box.y0 + (1 - y) * fabs (seltrans->box.y1 - seltrans->box.y0);
 
 	if ((x != -1) && (y != -1)) {
-	  gnome_canvas_item_show (seltrans->norm);
-	  gnome_canvas_item_show (seltrans->grip);
+		gnome_canvas_item_show (seltrans->norm);
+		gnome_canvas_item_show (seltrans->grip);
 	}
 
-	if (SelTransViewMode == SP_SELTRANS_OUTLINE) {
-	  gnome_canvas_item_show (seltrans->l1);
-	  gnome_canvas_item_show (seltrans->l2);
-	  gnome_canvas_item_show (seltrans->l3);
-	  gnome_canvas_item_show (seltrans->l4);
+	if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
+		gnome_canvas_item_show (seltrans->l1);
+		gnome_canvas_item_show (seltrans->l2);
+		gnome_canvas_item_show (seltrans->l3);
+		gnome_canvas_item_show (seltrans->l4);
 	}
 
 
@@ -214,7 +257,7 @@ sp_sel_trans_transform (SPSelTrans * seltrans, gdouble affine[], ArtPoint * norm
 	art_affine_multiply (affine, p2n, affine);
 	art_affine_multiply (affine, affine, n2p);
 
-	if (SelTransViewMode == SP_SELTRANS_CONTENT) {
+	if (seltrans->show == SP_SELTRANS_SHOW_CONTENT) {
 	        // update the content
 
          	/* We accept empty lists here, as something may well remove items */
@@ -274,20 +317,21 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 		while (l != NULL) {
 			item = SP_ITEM (l->data);
 			/* fixme: We do not have to set it here (Lauris) */
-			if (SelTransViewMode == SP_SELTRANS_OUTLINE) {
-			  sp_item_i2d_affine (item, i2d);
-			  art_affine_multiply (i2dnew, i2d, seltrans->current);
-			  sp_item_set_i2d_affine (item, i2dnew);
+			if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
+				sp_item_i2d_affine (item, i2d);
+				art_affine_multiply (i2dnew, i2d, seltrans->current);
+				sp_item_set_i2d_affine (item, i2dnew);
 			}
-#if 0
-			sp_svg_write_affine (tstr, 79, item->affine);
-			sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
-#else
-			sp_item_write_transform (item, SP_OBJECT_REPR (item), item->affine);
-			/* because item/repr affines may be out of sync, invoke reread */
-			/* fixme: We should test equality to avoid unnecessary rereads */
-			sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
-#endif
+			if (seltrans->transform == SP_SELTRANS_TRANSFORM_OPTIMIZE) {
+				sp_item_write_transform (item, SP_OBJECT_REPR (item), item->affine);
+				/* because item/repr affines may be out of sync, invoke reread */
+				/* fixme: We should test equality to avoid unnecessary rereads */
+				/* fixme: This probably is not needed (Lauris) */
+				sp_object_invoke_read_attr (SP_OBJECT (item), "transform");
+			} else {
+				sp_svg_write_affine (tstr, 79, item->affine);
+				sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
+			}
 			l = l->next;
 		}
 		p.x = seltrans->center.x;
@@ -303,10 +347,11 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	seltrans->grabbed = FALSE;
 	seltrans->show_handles = TRUE;
 	
-	// free snappoints
-	g_slist_free (seltrans->snappoints);
-	seltrans->snappoints = NULL;
-	
+	/* free snappoints */
+	while (seltrans->snappoints) {
+		g_free (seltrans->snappoints->data);
+		seltrans->snappoints = g_slist_remove (seltrans->snappoints, seltrans->snappoints->data);
+	}
 
 #if 0
 	if (seltrans->sel_changed) {
@@ -317,11 +362,11 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 	gnome_canvas_item_hide (seltrans->norm);
 	gnome_canvas_item_hide (seltrans->grip);
 
-        if (SelTransViewMode == SP_SELTRANS_OUTLINE) {
-	  gnome_canvas_item_hide (seltrans->l1);
-	  gnome_canvas_item_hide (seltrans->l2);
-	  gnome_canvas_item_hide (seltrans->l3);
-	  gnome_canvas_item_hide (seltrans->l4);
+        if (seltrans->show == SP_SELTRANS_SHOW_OUTLINE) {
+		gnome_canvas_item_hide (seltrans->l1);
+		gnome_canvas_item_hide (seltrans->l2);
+		gnome_canvas_item_hide (seltrans->l3);
+		gnome_canvas_item_hide (seltrans->l4);
 	}
 
 	sp_sel_trans_update_volatile_state (seltrans);
@@ -362,7 +407,7 @@ sp_sel_trans_update_handles (SPSelTrans * seltrans)
 		return;
 	}
 	
-	if (seltrans->state == SP_SEL_TRANS_SCALE) {
+	if (seltrans->state == SP_SELTRANS_STATE_SCALE) {
 		sp_remove_handles (seltrans->rhandle, 8);
 		sp_remove_handles (&seltrans->chandle, 1);
 		sp_show_handles (seltrans, seltrans->shandle, handles_scale, 8);

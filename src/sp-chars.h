@@ -35,6 +35,7 @@ struct _SPCharElement {
 struct _SPChars {
 	SPItem item;
 	SPCharElement *elements;
+	ArtDRect paintbox;
 };
 
 struct _SPCharsClass {
@@ -52,6 +53,7 @@ SPCurve *sp_chars_normalized_bpath (SPChars *chars);
 /* This is completely unrelated to SPItem::print */
 void sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm,
 			const ArtDRect *pbox, const ArtDRect *dbox, const ArtDRect *bbox);
+void sp_chars_set_paintbox (SPChars *chars, ArtDRect *paintbox);
 
 #endif
 

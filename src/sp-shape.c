@@ -41,7 +41,6 @@ static void sp_shape_destroy (GtkObject *object);
 
 static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_shape_write_repr (SPObject * object, SPRepr * repr);
-static void sp_shape_read_attr (SPObject * object, const gchar * attr);
 static void sp_shape_modified (SPObject *object, guint flags);
 static void sp_shape_style_modified (SPObject *object, guint flags);
 
@@ -96,7 +95,6 @@ sp_shape_class_init (SPShapeClass * klass)
 
 	sp_object_class->build = sp_shape_build;
 	sp_object_class->write_repr = sp_shape_write_repr;
-	sp_object_class->read_attr = sp_shape_read_attr;
 	sp_object_class->modified = sp_shape_modified;
 	sp_object_class->style_modified = sp_shape_style_modified;
 
@@ -129,11 +127,53 @@ sp_shape_destroy (GtkObject *object)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
 
+#if 0
+/* fixme: Better place (Lauris) */
+
+static guint
+sp_shape_find_version (SPObject *object)
+{
+
+	while (object) {
+		if (SP_IS_ROOT (object)) {
+			return SP_ROOT (object)->sodipodi;
+		}
+		object = SP_OBJECT_PARENT (object);
+	}
+
+	return 0;
+}
+#endif
+
 static void
 sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
+#if 0
+	guint version;
+#endif
+
 	if (((SPObjectClass *) (parent_class))->build)
 		(*((SPObjectClass *) (parent_class))->build) (object, document, repr);
+
+#if 0
+	version = sp_shape_find_version (object);
+
+	if ((version > 0) && (version < 25)) {
+		SPStyle *style;
+		/* Potential invalid gradient position */
+		style = object->style;
+		if (style->fill.type = SP_PAINT_TYPE_PAINTSERVER) {
+			if (SP_IS_LINEARGRADIENT (SP_STYLE_FILL_SERVER (style))) {
+				SPLinearGradient *lg;
+				lg = SP_LINEARGRADIENT (SP_STYLE_FILL_SERVER (style));
+				if (SP_GRADIENT (lg)->href && (SP_GRADIENT (lg)->units == SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX)) {
+					/* Let's assume it is normalized private gradient */
+					/* Item is built, so bbox should qualify */
+				}
+			}
+		}
+	}
+#endif
 }
 
 static void
@@ -158,17 +198,6 @@ sp_shape_write_repr (SPObject * object, SPRepr * repr)
 	if (((SPObjectClass *) (parent_class))->write_repr)
 		(*((SPObjectClass *) (parent_class))->write_repr) (object, repr);
 #endif
-}
-
-static void
-sp_shape_read_attr (SPObject * object, const gchar * attr)
-{
-	SPShape * shape;
-
-	shape = SP_SHAPE (object);
-
-	if (((SPObjectClass *) (parent_class))->read_attr)
-		(* ((SPObjectClass *) (parent_class))->read_attr) (object, attr);
 }
 
 static void
@@ -272,21 +301,26 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 					gnome_print_grestore (gpc);
 				} else if (object->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 					SPPainter *painter;
-					ArtDRect bbox;
-					sp_item_invoke_bbox (item, &bbox, SP_MATRIX_D_IDENTITY);
+					gdouble ctm[6];
+					ArtDRect pbox;
+					sp_item_i2d_affine (item, ctm);
+					sp_item_invoke_bbox (item, &pbox, SP_MATRIX_D_IDENTITY);
 					/* fixme: */
 					painter = sp_paint_server_painter_new (SP_OBJECT_STYLE_FILL_SERVER (object),
-									       SP_MATRIX_D_IDENTITY,
-									       &bbox);
+									       ctm,
+									       &pbox);
 					if (painter) {
-						ArtDRect dbox, cbox;
+						ArtDRect dbox, bbox, cbox;
 						ArtIRect ibox;
 						gdouble i2d[6], d2i[6];
 						gint x, y;
+						guchar *rgba;
+
 						dbox.x0 = 0.0;
 						dbox.y0 = 0.0;
 						dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
 						dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
+						sp_item_bbox_desktop (item, &bbox);
 						art_drect_intersect (&cbox, &dbox, &bbox);
 						art_drect_to_irect (&ibox, &cbox);
 						sp_item_i2d_affine (item, i2d);
@@ -301,18 +335,18 @@ sp_shape_print (SPItem *item, GnomePrintContext *gpc)
 						gnome_print_bpath (gpc, bpath, FALSE);
 						gnome_print_concat (gpc, d2i);
 						/* Now we are in desktop coordinates */
+						rgba = nr_buffer_4_4096_get (FALSE, 0x00000000);
 						for (y = ibox.y0; y < ibox.y1; y+= 64) {
 							for (x = ibox.x0; x < ibox.x1; x+= 64) {
-								static guchar *rgba = NULL;
-								if (!rgba) rgba = g_new (guchar, 4 * 64 * 64);
-								painter->fill (painter, rgba, x, ibox.y1 + ibox.y0 - y - 64, 64, 64, 4 * 64);
+								painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
 								gnome_print_gsave (gpc);
-								gnome_print_translate (gpc, x, y);
-								gnome_print_scale (gpc, 64, 64);
+								gnome_print_translate (gpc, x, y + 64);
+								gnome_print_scale (gpc, 64, -64);
 								gnome_print_rgbaimage (gpc, rgba, 64, 64, 4 * 64);
 								gnome_print_grestore (gpc);
 							}
 						}
+						nr_buffer_4_4096_free (rgba);
 						gnome_print_grestore (gpc);
 						sp_painter_free (painter);
 					}
@@ -352,31 +386,21 @@ sp_shape_show (SPItem *item, NRArena *arena)
 	SPPath *path;
 	NRArenaItem *arenaitem;
 	SPPathComp *comp;
-#if 0
-	GSList * l;
-#endif
 
 	object = SP_OBJECT (item);
 	shape = SP_SHAPE (item);
 	path = SP_PATH (item);
 
-#if 0
-	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_SHAPE_GROUP);
-
-	nr_arena_shape_group_set_style (NR_ARENA_SHAPE_GROUP (arenaitem), object->style);
-
-	for (l = path->comp; l != NULL; l = l->next) {
-		comp = (SPPathComp *) l->data;
-		nr_arena_shape_group_add_component (NR_ARENA_SHAPE_GROUP (arenaitem), comp->curve, comp->private, comp->affine);
-	}
-#else
 	arenaitem = nr_arena_item_new (arena, NR_TYPE_ARENA_SHAPE);
 	nr_arena_shape_set_style (NR_ARENA_SHAPE (arenaitem), object->style);
 	if (path->comp) {
+		ArtDRect paintbox;
 		comp = (SPPathComp *) path->comp->data;
-		if (path->comp) nr_arena_shape_set_path (NR_ARENA_SHAPE (arenaitem), comp->curve, comp->private, comp->affine);
+		nr_arena_shape_set_path (NR_ARENA_SHAPE (arenaitem), comp->curve, comp->private, comp->affine);
+		sp_item_invoke_bbox (SP_ITEM (object), &paintbox, SP_MATRIX_D_IDENTITY);
+		SP_PRINT_DRECT ("Shape paintbox:", &paintbox);
+		nr_arena_shape_set_paintbox (NR_ARENA_SHAPE (arenaitem), &paintbox);
 	}
-#endif
 
 	return arenaitem;
 }

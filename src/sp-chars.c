@@ -12,6 +12,8 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <string.h>
+
 #include "macros.h"
 #include "helper/art-utils.h"
 #include "display/nr-arena-glyphs.h"
@@ -72,6 +74,9 @@ static void
 sp_chars_init (SPChars *chars)
 {
 	chars->elements = NULL;
+
+	chars->paintbox.x0 = chars->paintbox.y0 = 0.0;
+	chars->paintbox.x1 = chars->paintbox.y1 = 1.0;
 }
 
 static void
@@ -161,6 +166,8 @@ sp_chars_show (SPItem *item, NRArena *arena)
 			sp_curve_unref (curve);
 		}
 	}
+
+	nr_arena_glyphs_group_set_paintbox (NR_ARENA_GLYPHS_GROUP (arenaitem), &chars->paintbox);
 
 	return arenaitem;
 }
@@ -285,7 +292,7 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 	} else if (style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
 		SPPainter *painter;
 		/* fixme: */
-		painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (style), SP_MATRIX_D_IDENTITY, pbox);
+		painter = sp_paint_server_painter_new (SP_STYLE_FILL_SERVER (style), ctm, pbox);
 		if (painter) {
 			ArtDRect cbox, pbox;
 			ArtIRect ibox;
@@ -323,10 +330,14 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 			rgba = nr_buffer_4_4096_get (FALSE, 0x00000000);
 			for (y = ibox.y0; y < ibox.y1; y+= 64) {
 				for (x = ibox.x0; x < ibox.x1; x+= 64) {
+#if 0
 					painter->fill (painter, rgba, x, ibox.y1 + ibox.y0 - y - 64, 64, 64, 4 * 64);
+#else
+					painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
+#endif
 					gnome_print_gsave (ctx);
-					gnome_print_translate (ctx, x, y);
-					gnome_print_scale (ctx, 64, 64);
+					gnome_print_translate (ctx, x, y + 64);
+					gnome_print_scale (ctx, 64, -64);
 					gnome_print_rgbaimage (ctx, rgba, 64, 64, 4 * 64);
 					gnome_print_grestore (ctx);
 				}
@@ -336,6 +347,25 @@ sp_chars_print_bpath (GnomePrintContext *ctx, const ArtBpath *bpath, const SPSty
 			sp_painter_free (painter);
 		}
 	}
+
+	if (style->stroke.type == SP_PAINT_TYPE_COLOR) {
+		gfloat rgb[3], opacity;
+		sp_color_get_rgb_floatv (&style->stroke.value.color, rgb);
+		/* fixme: This is not correct, we should fall back to bitmap here instead */
+		opacity = SP_SCALE24_TO_FLOAT (style->stroke_opacity.value) * SP_SCALE24_TO_FLOAT (style->opacity.value);
+		/* Printing code */
+		gnome_print_gsave (ctx);
+		gnome_print_setrgbcolor (ctx, rgb[0], rgb[1], rgb[2]);
+		gnome_print_setopacity (ctx, opacity);
+		gnome_print_setlinewidth (ctx, style->stroke_width.computed);
+		gnome_print_setlinejoin (ctx, style->stroke_linejoin.value);
+		gnome_print_setlinecap (ctx, style->stroke_linecap.value);
+		gnome_print_bpath (ctx, (ArtBpath *) bpath, FALSE);
+		gnome_print_stroke (ctx);
+		gnome_print_grestore (ctx);
+	}
+
+	/* fixme: Print gradient stroke (Lauris) */
 }
 
 /*
@@ -365,4 +395,15 @@ sp_chars_do_print (SPChars *chars, GnomePrintContext *gpc, const gdouble *ctm, c
 	}
 }
 
+void
+sp_chars_set_paintbox (SPChars *chars, ArtDRect *paintbox)
+{
+	SPItemView *v;
+
+	memcpy (&chars->paintbox, paintbox, sizeof (ArtDRect));
+
+	for (v = SP_ITEM (chars)->display; v != NULL; v = v->next) {
+		nr_arena_glyphs_group_set_paintbox (NR_ARENA_GLYPHS_GROUP (v->arenaitem), paintbox);
+	}
+}
 

@@ -29,9 +29,11 @@ struct _NRArenaGlyphs {
 	/* Glyphs data */
 	SPCurve *curve;
 	SPStyle *style;
+#if 0
 	/* State data */
 	SPPainter *fill_painter;
 	SPPainter *stroke_painter;
+#endif
 	ArtSVP *fill_svp;
 	ArtSVP *stroke_svp;
 };
@@ -61,6 +63,10 @@ typedef struct _NRArenaGlyphsGroupClass NRArenaGlyphsGroupClass;
 struct _NRArenaGlyphsGroup {
 	NRArenaGroup group;
 	SPStyle *style;
+	ArtDRect paintbox;
+	/* State data */
+	SPPainter *fill_painter;
+	SPPainter *stroke_painter;
 };
 
 struct _NRArenaGlyphsGroupClass {
@@ -76,5 +82,6 @@ void nr_arena_glyphs_group_set_style (NRArenaGlyphsGroup *group, SPStyle *style)
 void nr_arena_glyphs_group_clear (NRArenaGlyphsGroup *group);
 void nr_arena_glyphs_group_add_component (NRArenaGlyphsGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
 void nr_arena_glyphs_group_set_component (NRArenaGlyphsGroup *group, SPCurve *curve, gboolean private, const gdouble *affine);
+void nr_arena_glyphs_group_set_paintbox (NRArenaGlyphsGroup *group, const ArtDRect *pbox);
 
 #endif

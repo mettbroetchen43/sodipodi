@@ -574,11 +574,11 @@ sp_selection_repr (SPSelection * selection)
 }
 
 ArtDRect *
-sp_selection_bbox (SPSelection * selection, ArtDRect * bbox)
+sp_selection_bbox (SPSelection *selection, ArtDRect *bbox)
 {
-	SPItem * item;
+	SPItem *item;
 	ArtDRect b;
-	GSList * l;
+	GSList *l;
 
 	sp_debug ("start", SP_SELECTION);
 
@@ -604,6 +604,38 @@ sp_selection_bbox (SPSelection * selection, ArtDRect * bbox)
 	}
 
 	sp_debug ("end", SP_SELECTION);
+	return bbox;
+}
+
+ArtDRect *
+sp_selection_bbox_document (SPSelection *selection, ArtDRect *bbox)
+{
+	GSList *l;
+
+	g_return_val_if_fail (selection != NULL, NULL);
+	g_return_val_if_fail (SP_IS_SELECTION (selection), NULL);
+	g_return_val_if_fail (bbox != NULL, NULL);
+
+	if (sp_selection_is_empty (selection)) {
+		bbox->x0 = bbox->y0 = bbox->x1 = bbox->y1 = 0.0;
+		return bbox;
+	}
+
+	bbox->x0 = bbox->y0 = 1e18;
+	bbox->x1 = bbox->y1 = -1e18;
+
+	for (l = selection->items; l != NULL; l = l-> next) {
+		ArtDRect bb;
+		gdouble i2doc[6];
+
+		sp_item_i2doc_affine (SP_ITEM (l->data), i2doc);
+		sp_item_invoke_bbox (SP_ITEM (l->data), &bb, i2doc);
+		if (bb.x0 < bbox->x0) bbox->x0 = bb.x0;
+		if (bb.y0 < bbox->y0) bbox->y0 = bb.y0;
+		if (bb.x1 > bbox->x1) bbox->x1 = bb.x1;
+		if (bb.y1 > bbox->y1) bbox->y1 = bb.y1;
+	}
+
 	return bbox;
 }
 

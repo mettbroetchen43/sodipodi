@@ -133,6 +133,8 @@ sp_gradient_position_init (SPGradientPosition *pos)
 
 	pos->gradient = NULL;
 	pos->bbox.x0 = pos->bbox.y0 = pos->bbox.x1 = pos->bbox.y1 = 0.0;
+	pos->start.x = pos->start.y = 0.0;
+	pos->end.x = pos->end.y = 1.0;
 	pos->p0.x = pos->p0.y = 0.0;
 	pos->p1.x = pos->p1.y = 1.0;
 	art_affine_identity (pos->transform);
@@ -293,6 +295,8 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 				/* Write coords and emit "dragged" */
 				pos->p1.x = x;
 				pos->p1.y = y;
+				pos->end.x = pos->bbox.x0 + x * (pos->bbox.x1 - pos->bbox.x0);
+				pos->end.y = pos->bbox.y0 + y * (pos->bbox.y1 - pos->bbox.y0);
 				pos->need_update = TRUE;
 				if (GTK_WIDGET_DRAWABLE (pos)) {
 					gtk_widget_queue_draw (GTK_WIDGET (pos));
@@ -329,6 +333,8 @@ sp_gradient_position_button_press (GtkWidget *widget, GdkEventButton *event)
 			/* Write coords and emit "dragged" */
 			pos->p0.x = x;
 			pos->p0.y = y;
+			pos->start.x = pos->bbox.x0 + x * (pos->bbox.x1 - pos->bbox.x0);
+			pos->start.y = pos->bbox.y0 + y * (pos->bbox.y1 - pos->bbox.y0);
 			pos->need_update = TRUE;
 			if (GTK_WIDGET_DRAWABLE (pos)) {
 				gtk_widget_queue_draw (GTK_WIDGET (pos));
@@ -382,6 +388,8 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 			y = (event->y - pos->vbox.y0) / (pos->vbox.y1 - pos->vbox.y0);
 			pos->p0.x = x;
 			pos->p0.y = y;
+			pos->start.x = pos->bbox.x0 + x * (pos->bbox.x1 - pos->bbox.x0);
+			pos->start.y = pos->bbox.y0 + y * (pos->bbox.y1 - pos->bbox.y0);
 			pos->need_update = TRUE;
 			if (GTK_WIDGET_DRAWABLE (pos)) {
 				gtk_widget_queue_draw (GTK_WIDGET (pos));
@@ -395,6 +403,8 @@ sp_gradient_position_motion_notify (GtkWidget *widget, GdkEventMotion *event)
 			y = (event->y - pos->vbox.y0) / (pos->vbox.y1 - pos->vbox.y0);
 			pos->p1.x = x;
 			pos->p1.y = y;
+			pos->end.x = pos->bbox.x0 + x * (pos->bbox.x1 - pos->bbox.x0);
+			pos->end.y = pos->bbox.y0 + y * (pos->bbox.y1 - pos->bbox.y0);
 			pos->need_update = TRUE;
 			if (GTK_WIDGET_DRAWABLE (pos)) {
 				gtk_widget_queue_draw (GTK_WIDGET (pos));
@@ -458,10 +468,18 @@ sp_gradient_position_gradient_modified (SPGradient *gradient, guint flags, SPGra
 void
 sp_gradient_position_set_bbox (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
 {
+	g_return_if_fail (x1 > x0);
+	g_return_if_fail (y1 > y0);
+
 	pos->bbox.x0 = x0;
 	pos->bbox.y0 = y0;
 	pos->bbox.x1 = x1;
 	pos->bbox.y1 = y1;
+
+	pos->p0.x = (pos->start.x - x0) / (x1 - x0);
+	pos->p0.y = (pos->start.y - y0) / (y1 - y0);
+	pos->p1.x = (pos->end.x - x0) / (x1 - x0);
+	pos->p1.y = (pos->end.y - y0) / (y1 - y0);
 
 	pos->need_update = TRUE;
 	if (GTK_WIDGET_DRAWABLE (pos)) {
@@ -472,10 +490,15 @@ sp_gradient_position_set_bbox (SPGradientPosition *pos, gdouble x0, gdouble y0, 
 void
 sp_gradient_position_set_vector (SPGradientPosition *pos, gdouble x0, gdouble y0, gdouble x1, gdouble y1)
 {
-	pos->p0.x = x0;
-	pos->p0.y = y0;
-	pos->p1.x = x1;
-	pos->p1.y = y1;
+	pos->start.x = x0;
+	pos->start.y = y0;
+	pos->end.x = x1;
+	pos->end.y = y1;
+
+	pos->p0.x = (pos->start.x - pos->bbox.x0) / (pos->bbox.x1 - pos->bbox.x0);
+	pos->p0.y = (pos->start.y - pos->bbox.y0) / (pos->bbox.y1 - pos->bbox.y0);
+	pos->p1.x = (pos->end.x - pos->bbox.x0) / (pos->bbox.x1 - pos->bbox.x0);
+	pos->p1.y = (pos->end.y - pos->bbox.y0) / (pos->bbox.y1 - pos->bbox.y0);
 
 	pos->need_update = TRUE;
 	if (GTK_WIDGET_DRAWABLE (pos)) {
@@ -509,10 +532,10 @@ sp_gradient_position_set_spread (SPGradientPosition *pos, NRGradientSpreadType s
 void
 sp_gradient_position_get_position_floatv (SPGradientPosition *gp, gfloat *pos)
 {
-	pos[0] = gp->p0.x;
-	pos[1] = gp->p0.y;
-	pos[2] = gp->p1.x;
-	pos[3] = gp->p1.y;
+	pos[0] = gp->start.x;
+	pos[1] = gp->start.y;
+	pos[2] = gp->end.x;
+	pos[3] = gp->end.y;
 }
 
 static void

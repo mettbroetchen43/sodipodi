@@ -43,6 +43,7 @@
 #define SP_IS_RADIALGRADIENT(o) (GTK_CHECK_TYPE ((o), SP_TYPE_RADIALGRADIENT))
 #define SP_IS_RADIALGRADIENT_CLASS(k) (GTK_CHECK_CLASS_TYPE ((k), SP_TYPE_RADIALGRADIENT))
 
+#include <libart_lgpl/art_point.h>
 #include "svg/svg-types.h"
 #include "color.h"
 #include "sp-paint-server.h"
@@ -188,6 +189,10 @@ struct _SPLinearGradientClass {
 };
 
 GtkType sp_lineargradient_get_type (void);
+
+/* Transforms to/from gradient position space in given environment */
+void sp_lineargradient_from_position (SPLinearGradient *lg, gdouble *ctm, ArtDRect *bbox, ArtPoint *p);
+void sp_lineargradient_to_position (SPLinearGradient *lg, gdouble *ctm, ArtDRect *bbox, ArtPoint *p);
 
 void sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gdouble x2, gdouble y2);
 

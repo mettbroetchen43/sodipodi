@@ -191,9 +191,13 @@ nr_arena_shape_update (NRArenaItem *item, NRIRect *area, NRGC *gc, guint state, 
 	if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {
 		gdouble width;
 		width = sp_distance_d_matrix_d_transform (shape->style->stroke_width.computed, gc->affine);
-		shape->stroke_svp = art_svp_vpath_stroke (pvp, shape->style->stroke_linejoin.value, shape->style->stroke_linecap.value,
-							  width,
-							  shape->style->stroke_miterlimit.value, 0.25);
+		if (width > 0.125) {
+			shape->stroke_svp = art_svp_vpath_stroke (pvp,
+								  shape->style->stroke_linejoin.value,
+								  shape->style->stroke_linecap.value,
+								  width,
+								  shape->style->stroke_miterlimit.value, 0.25);
+		}
 	}
 
 	art_free (pvp);

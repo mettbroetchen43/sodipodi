@@ -1228,6 +1228,7 @@ sp_text_set_shape (SPText *text)
 	ArtPoint cp;
 	SPObject *child;
 	gboolean isfirstline, haslast, lastwastspan;
+	ArtDRect paintbox;
 
 	/* fixme: Maybe track, whether we have em,ex,% (Lauris) */
 	/* fixme: Alternately we can use ::modified to keep everything up-to-date (Lauris) */
@@ -1341,6 +1342,18 @@ sp_text_set_shape (SPText *text)
 		}
 		child = next;
 		isfirstline = FALSE;
+	}
+
+	sp_item_invoke_bbox (SP_ITEM (text), &paintbox, SP_MATRIX_D_IDENTITY);
+
+	for (child = text->children; child != NULL; child = child->next) {
+		SPString *string;
+		if (SP_IS_TSPAN (child)) {
+			string = SP_TSPAN_STRING (child);
+		} else {
+			string = SP_STRING (child);
+		}
+		sp_chars_set_paintbox (SP_CHARS (string), &paintbox);
 	}
 }
 
