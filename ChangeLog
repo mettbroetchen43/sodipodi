@@ -1,3 +1,28 @@
+2003-02-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/paint-selector.c (sp_paint_selector_system_color_set): New method
+	(sp_paint_selector_set_mode_color): Added 'get from dropper' checkbox
+
+	* src/dialogs/object-properties.c (sp_object_properties_color_set): Handler
+	of system 'color_set' signal, used for getting color value from dropper
+
+	* src/dialogs/stroke-style.c (sp_stroke_style_paint_system_color_set): New method
+
+	* src/dialogs/fill-style.c (sp_fill_style_widget_system_color_set): New method
+
+	* src/toolbox.c (sp_toolbox_draw_create): Added dropper tool
+
+	* src/sodipodi.c (sodipodi_class_init): Added 'color_set' signal
+	(sodipodi_set_color): Frontend to signal
+	(sodipodi_init_config): Use config_name instead of hardcoded 'preferences'
+
+	* src/dropper-context.c (sp_dropper_context_root_handler): Scale colors
+	to [0.0 - 1.0] range and signal hub
+
+	* src/widgets/menu.c: New file, implement sensible menu API
+
+	* src/widgets/menu.h: New file
+
 2003-02-13  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/dropper-context.h: New file

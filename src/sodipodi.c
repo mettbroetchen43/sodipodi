@@ -6,8 +6,7 @@
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
  *
- * Copyright (C) 1999-2002 authors
- * Copyright (C) 2001-2002 Ximian, Inc.
+ * Copyright (C) 1999-2003 authors
  *
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
@@ -58,6 +57,7 @@ enum {
 	DESACTIVATE_DESKTOP,
 	NEW_DOCUMENT,
 	DESTROY_DOCUMENT,
+	COLOR_SET,
 	LAST_SIGNAL
 };
 
@@ -92,7 +92,6 @@ struct _SodipodiClass {
 	GObjectClass object_class;
 
 	/* Signals */
-
 	void (* change_selection) (Sodipodi * sodipodi, SPSelection * selection);
 	void (* modify_selection) (Sodipodi * sodipodi, SPSelection * selection, guint flags);
 	void (* set_selection) (Sodipodi * sodipodi, SPSelection * selection);
@@ -103,6 +102,8 @@ struct _SodipodiClass {
 	void (* desactivate_desktop) (Sodipodi * sodipodi, SPDesktop * desktop);
 	void (* new_document) (Sodipodi *sodipodi, SPDocument *doc);
 	void (* destroy_document) (Sodipodi *sodipodi, SPDocument *doc);
+
+	void (* color_set) (Sodipodi *sodipodi, SPColor *color, double opacity);
 };
 
 static GObjectClass * parent_class;
@@ -112,7 +113,7 @@ Sodipodi *sodipodi = NULL;
 
 static void (* segv_handler) (int) = NULL;
 
-GtkType
+unsigned int
 sodipodi_get_type (void)
 {
 	static GType type = 0;
@@ -220,6 +221,14 @@ sodipodi_class_init (SodipodiClass * klass)
 							   sp_marshal_NONE__POINTER,
 							   G_TYPE_NONE, 1,
 							   G_TYPE_POINTER);
+	sodipodi_signals[COLOR_SET] =        g_signal_new ("color_set",
+							   G_TYPE_FROM_CLASS (klass),
+							   G_SIGNAL_RUN_FIRST,
+							   G_STRUCT_OFFSET (SodipodiClass, color_set),
+							   NULL, NULL,
+							   sp_marshal_NONE__POINTER_DOUBLE,
+							   G_TYPE_NONE, 2,
+							   G_TYPE_POINTER, G_TYPE_DOUBLE);
 
 	object_class->dispose = sodipodi_dispose;
 
@@ -796,6 +805,12 @@ sodipodi_remove_document (SPDocument *document)
 	}
 }
 
+void
+sodipodi_set_color (SPColor *color, float opacity)
+{
+	g_signal_emit (G_OBJECT (sodipodi), sodipodi_signals[COLOR_SET], 0, color, (double) opacity);
+}
+
 SPDesktop *
 sodipodi_active_desktop (void)
 {
@@ -861,10 +876,10 @@ sodipodi_init_config (SPReprDoc *doc, const gchar *config_name, const gchar *ske
 	g_free (dn);
 
 #ifdef WIN32
-	fn = g_strdup ("sodipodi/preferences");
+	fn = g_strdup_printf ("sodipodi/%s", config_name);
 	fh = creat (fn, S_IRUSR | S_IWUSR);
 #else
-	fn = g_build_filename (g_get_home_dir (), ".sodipodi/preferences", NULL);
+	fn = g_build_filename (g_get_home_dir (), ".sodipodi", config_name, NULL);
 	fh = creat (fn, S_IRUSR | S_IWUSR | S_IRGRP);
 #endif
 	if (fh < 0) {

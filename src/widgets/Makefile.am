@@ -15,6 +15,7 @@ noinst_LIBRARIES = libspwidgets.a
 libspwidgets_a_SOURCES = \
 	icon.c icon.h \
 	button.c button.h \
+	menu.c menu.h \
 	ruler.c ruler.h \
 	sp-toolbox.c sp-toolbox.h \
 	sp-color-preview.c sp-color-preview.h \

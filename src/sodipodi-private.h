@@ -13,9 +13,17 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#define SP_TYPE_SODIPODI (sodipodi_get_type ())
+#define SP_SODIPODI(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_SODIPODI, Sodipodi))
+#define SP_SODIPODI_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SODIPODI, SodipodiClass))
+#define SP_IS_SODIPODI(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SODIPODI))
+#define SP_IS_SODIPODI_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SODIPODI))
+
 #include "sodipodi.h"
 
-Sodipodi * sodipodi_new ();
+unsigned int sodipodi_get_type (void);
+
+Sodipodi *sodipodi_new ();
 
 #define sodipodi_ref() g_object_ref (G_OBJECT (SODIPODI))
 #define sodipodi_unref() g_object_unref (G_OBJECT (SODIPODI))
@@ -33,6 +41,8 @@ void sodipodi_remove_desktop (SPDesktop * desktop);
 void sodipodi_activate_desktop (SPDesktop * desktop);
 void sodipodi_add_document (SPDocument *document);
 void sodipodi_remove_document (SPDocument *document);
+
+void sodipodi_set_color (SPColor *color, float opacity);
 
 #endif
 

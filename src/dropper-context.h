@@ -6,7 +6,6 @@
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
- *   Frank Felfe <innerspace@iname.com>
  *
  * Copyright (C) 1999-2002 Authors
  *

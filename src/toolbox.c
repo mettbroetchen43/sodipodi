@@ -517,6 +517,12 @@ sp_toolbox_draw_create (void)
 	gtk_table_attach (GTK_TABLE (t), b, 1, 2, 1, 2, 0, 0, 0, 0);
 	gtk_object_set_data (GTK_OBJECT (tb), "SPZoomContext", b);
 	
+	/* Dropper */
+	b = sp_toolbox_toggle_button_new ("draw_dropper", tt, _("Dropper tool - pick averaged colors from image"));
+	gtk_signal_connect (GTK_OBJECT (b), "released", GTK_SIGNAL_FUNC (sp_event_context_set_dropper), NULL);
+	gtk_table_attach (GTK_TABLE (t), b, 2, 3, 1, 2, 0, 0, 0, 0);
+	gtk_object_set_data (GTK_OBJECT (tb), "SPDropperContext", b);
+	
 	repr = sodipodi_get_repr (SODIPODI, "toolboxes.draw");
 	if (repr) {
 		gint state;

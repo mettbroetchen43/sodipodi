@@ -1,5 +1,16 @@
-#ifndef SODIPODI_H
-#define SODIPODI_H
+#ifndef __SODIPODI_H__
+#define __SODIPODI_H__
+
+/*
+ * Interface to main application
+ *
+ * Authors:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 1999-2003 Authors
+ *
+ * Released under GNU GPL, read the file 'COPYING' for more information
+ */
 
 /*
  * sodipodi.h
@@ -16,25 +27,16 @@
  * "destroy_document"
  * "document_activate"
  * "document_desactivate"
+ * "color_set"
  *
  */
 
-#define SP_TYPE_SODIPODI (sodipodi_get_type ())
-#define SP_SODIPODI(obj) (GTK_CHECK_CAST ((obj), SP_TYPE_SODIPODI, Sodipodi))
-#define SP_SODIPODI_CLASS(klass) (GTK_CHECK_CLASS_CAST ((klass), SP_TYPE_SODIPODI, SodipodiClass))
-#define SP_IS_SODIPODI(obj) (GTK_CHECK_TYPE ((obj), SP_TYPE_SODIPODI))
-#define SP_IS_SODIPODI_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_SODIPODI))
-
-#include <gtk/gtktypeutils.h>
-#include <gtk/gtkobject.h>
 #include "xml/repr.h"
 #include "forward.h"
 
-GtkType sodipodi_get_type (void);
-
 #define SODIPODI sodipodi
 
-#ifndef SODIPODI_C
+#ifndef __SODIPODI_C__
 	extern Sodipodi * sodipodi;
 #endif
 

@@ -14,15 +14,14 @@
 
 #include <glib.h>
 
-G_BEGIN_DECLS
-
 #include <gtk/gtkwidget.h>
-#include "../forward.h"
+
+#include "forward.h"
 
 GtkWidget *sp_fill_style_widget_new (void);
 
 void sp_fill_style_dialog (void);
 
-G_END_DECLS
+void sp_fill_style_widget_system_color_set (GtkWidget *widget, SPColor *color, float opacity);
 
 #endif

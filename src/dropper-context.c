@@ -5,7 +5,6 @@
  *
  * Authors:
  *   Lauris Kaplinski <lauris@kaplinski.com>
- *   Frank Felfe <innerspace@iname.com>
  *
  * Copyright (C) 1999-2002 Authors
  *
@@ -18,6 +17,8 @@
 #include "helper/canvas-bpath.h"
 #include "display/canvas-arena.h"
 #include "enums.h"
+#include "color.h"
+#include "sodipodi-private.h"
 #include "desktop-affine.h"
 #include "desktop-handles.h"
 
@@ -145,7 +146,7 @@ sp_dropper_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			float rw, scale;
 			int x0, y0, x1, y1;
 			rw = hypot (event->button.x - dc->centre.x, event->button.y - dc->centre.y);
-			rw = MIN (rw, 48);
+			rw = MIN (rw, 32);
 			sp_desktop_w2d_xy_point (ec->desktop, &cd, dc->centre.x, dc->centre.y);
 			sp_desktop_w2dt_affine (ec->desktop, &w2dt);
 			scale = rw * NR_MATRIX_DF_EXPANSION (&w2dt);
@@ -162,6 +163,7 @@ sp_dropper_context_root_handler (SPEventContext *ec, GdkEvent *event)
 			if ((x1 > x0) && (y1 > y0)) {
 				double W, R, G, B, A;
 				NRPixBlock pb;
+				SPColor color;
 				int x, y;
 				nr_pixblock_setup_fast (&pb, NR_PIXBLOCK_MODE_R8G8B8A8P, x0, y0, x1, y1, TRUE);
 				/* fixme: (Lauris) */
@@ -183,10 +185,16 @@ sp_dropper_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					}
 				}
 				nr_pixblock_release (&pb);
-				R /= W;
-				G /= W;
-				B /= W;
-				A /= W;
+				R = (R + 0.001) / (255.0 * W);
+				G = (G + 0.001) / (255.0 * W);
+				B = (B + 0.001) / (255.0 * W);
+				A = (A + 0.001) / (255.0 * W);
+				R = CLAMP (R, 0.0, 1.0);
+				G = CLAMP (G, 0.0, 1.0);
+				B = CLAMP (B, 0.0, 1.0);
+				A = CLAMP (A, 0.0, 1.0);
+				sp_color_set_rgb_float (&color, R, G, B);
+				sodipodi_set_color (&color, A);
 			}
 			ret = TRUE;
 		}

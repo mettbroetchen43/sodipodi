@@ -298,9 +298,6 @@ sp_widget_new_global (Sodipodi *sodipodi)
 {
 	SPWidget *spw;
 
-	g_return_val_if_fail (sodipodi != NULL, NULL);
-	g_return_val_if_fail (SP_IS_SODIPODI (sodipodi), NULL);
-
 	spw = gtk_type_new (SP_TYPE_WIDGET);
 
 	if (!sp_widget_construct_global (spw, sodipodi)) {
@@ -331,10 +328,6 @@ sp_widget_new_repr (SPRepr *repr)
 GtkWidget *
 sp_widget_construct_global (SPWidget *spw, Sodipodi *sodipodi)
 {
-	g_return_val_if_fail (spw != NULL, NULL);
-	g_return_val_if_fail (SP_IS_WIDGET (spw), NULL);
-	g_return_val_if_fail (sodipodi != NULL, NULL);
-	g_return_val_if_fail (SP_IS_SODIPODI (sodipodi), NULL);
 	g_return_val_if_fail (!spw->sodipodi, NULL);
 
 	if (spw->repr) {

@@ -141,7 +141,7 @@ sp_event_context_set_zoom (gpointer data)
 }
 
 void
-sp_event_context_set_dropper (gpointer data)
+sp_event_context_set_dropper (gpointer object, gpointer data)
 {
 	if (SP_ACTIVE_DESKTOP) {
 		sp_desktop_set_event_context (SP_ACTIVE_DESKTOP, SP_TYPE_DROPPER_CONTEXT, "tools.dropper");

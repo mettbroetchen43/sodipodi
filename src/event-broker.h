@@ -26,5 +26,6 @@ void sp_event_context_set_pen (gpointer data);
 void sp_event_context_set_dynahand (gpointer data);
 void sp_event_context_set_text (gpointer data);
 void sp_event_context_set_zoom (gpointer data);
+void sp_event_context_set_dropper (gpointer object, gpointer data);
 
 #endif

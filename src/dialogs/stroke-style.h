@@ -13,18 +13,13 @@
 
 #include <glib.h>
 
-G_BEGIN_DECLS
-
 #include <gtk/gtkwidget.h>
-#include "../forward.h"
+
+#include "forward.h"
 
 GtkWidget *sp_stroke_style_paint_widget_new (void);
 GtkWidget *sp_stroke_style_line_widget_new (void);
 
-#if 0
-void sp_stroke_style_dialog (void);
-#endif
-
-G_END_DECLS
+void sp_stroke_style_paint_system_color_set (GtkWidget *widget, SPColor *color, float opacity);
 
 #endif

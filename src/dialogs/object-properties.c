@@ -79,6 +79,26 @@ sp_object_properties_style_activate (GtkMenuItem *menuitem, const guchar *key)
 	}
 }
 
+static void
+sp_object_properties_color_set (Sodipodi *sodipodi, SPColor *color, double opacity, GObject *dlg)
+{
+	GtkNotebook *nb;
+	int pnum;
+
+	nb = g_object_get_data (dlg, "notebook");
+	pnum = gtk_notebook_get_current_page (nb);
+
+	if (pnum == 0) {
+		GtkWidget *fs;
+		fs = g_object_get_data (dlg, "fill");
+		sp_fill_style_widget_system_color_set (fs, color, opacity);
+	} else if (pnum == 1) {
+		GtkWidget *ss;
+		ss = g_object_get_data (dlg, "stroke-paint");
+		sp_stroke_style_paint_system_color_set (ss, color, opacity);
+	}
+}
+
 void
 sp_object_properties_dialog (void)
 {
@@ -158,46 +178,40 @@ sp_object_properties_dialog (void)
 		gtk_box_pack_start (GTK_BOX (hb), om, TRUE, TRUE, 0);
 
 		m = gtk_menu_new ();
-		gtk_widget_show (m);
 
 		mi = gtk_menu_item_new_with_label (_("Selected objects"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), NULL);
 		mi = gtk_menu_item_new_with_label (_("All shape tools"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.shapes");
 		mi = gtk_menu_item_new_with_label (_("Rectangle tool"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.shapes.rect");
 		mi = gtk_menu_item_new_with_label (_("Arc tool"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.shapes.arc");
 		mi = gtk_menu_item_new_with_label (_("Star tool"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.shapes.star");
 		mi = gtk_menu_item_new_with_label (_("Spiral tool"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.shapes.spiral");
 		mi = gtk_menu_item_new_with_label (_("Freehand and pen"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.freehand");
 		mi = gtk_menu_item_new_with_label (_("Calligraphic line"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.calligraphic");
 		mi = gtk_menu_item_new_with_label (_("Text"));
-		gtk_widget_show (mi);
 		gtk_menu_append (GTK_MENU (m), mi);
 		gtk_signal_connect (GTK_OBJECT (mi), "activate", GTK_SIGNAL_FUNC (sp_object_properties_style_activate), "tools.text");
 
+		gtk_widget_show_all (m);
+
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (om), m);
+
+		g_signal_connect (G_OBJECT (SODIPODI), "color_set", G_CALLBACK (sp_object_properties_color_set), dlg);
 
 		gtk_widget_show (dlg);
 	} else {

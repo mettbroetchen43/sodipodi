@@ -27,7 +27,7 @@
 #include <gtk/gtkframe.h>
 #include <gtk/gtklabel.h>
 #include <gtk/gtkoptionmenu.h>
-#include <gtk/gtkmenu.h>
+#include "menu.h"
 #include <gtk/gtkmenuitem.h>
 #include <gtk/gtkimage.h>
 
@@ -583,6 +583,29 @@ sp_paint_selector_write_radialgradient (SPPaintSelector *psel, SPRadialGradient 
 	sp_radialgradient_set_position (rg, p[0], p[1], p[2], p[3], p[4]);
 }
 
+void
+sp_paint_selector_system_color_set (SPPaintSelector *psel, const SPColor *color, float opacity)
+{
+	if ((psel->mode == SP_PAINT_SELECTOR_MODE_COLOR_RGB) ||
+	    (psel->mode == SP_PAINT_SELECTOR_MODE_COLOR_CMYK)) {
+		GtkToggleButton *gd;
+		gd = g_object_get_data (G_OBJECT (psel->selector), "get_dropper");
+		if (gtk_toggle_button_get_active (gd)) {
+			if (psel->mode == SP_PAINT_SELECTOR_MODE_COLOR_RGB) {
+				float rgba[4];
+				sp_color_get_rgb_floatv (color, rgba);
+				rgba[3] = opacity;
+				sp_paint_selector_set_color_rgba_floatv (psel, rgba);
+			} else {
+				float cmyka[5];
+				sp_color_get_cmyk_floatv (color, cmyka);
+				cmyka[4] = opacity;
+				sp_paint_selector_set_color_cmyka_floatv (psel, cmyka);
+			}
+		}
+	}
+}
+
 static void
 sp_paint_selector_set_mode_empty (SPPaintSelector *psel)
 {
@@ -630,14 +653,12 @@ sp_paint_selector_set_mode_none (SPPaintSelector *psel)
 static SPColorSelectorMode default_rgb_mode = SP_COLOR_SELECTOR_MODE_RGB;
 
 static void
-sp_paint_selector_color_mode_activate (GtkWidget *widget, SPPaintSelector *psel)
+sp_paint_selector_color_mode_select (GtkWidget *menu, SPColorSelectorMode cselmode, SPPaintSelector *psel)
 {
 	SPColorSelector *csel;
-	SPColorSelectorMode cselmode;
 	SPPaintSelectorMode pselmode;
 
 	csel = gtk_object_get_data (GTK_OBJECT (psel->selector), "color-selector");
-	cselmode = GPOINTER_TO_UINT (gtk_object_get_data (GTK_OBJECT (widget), "mode"));
 	/* We have to set it manually here, because RGB/HSV is ignored by psel */
 	sp_color_selector_set_mode (csel, cselmode);
 
@@ -699,7 +720,7 @@ sp_paint_selector_set_mode_color (SPPaintSelector *psel, SPPaintSelectorMode mod
 		csel = gtk_object_get_data (GTK_OBJECT (psel->selector), "color-selector");
 		cselmode = gtk_object_get_data (GTK_OBJECT (psel->selector), "mode-menu");
 	} else {
-		GtkWidget *vb, *hb, *l, *m, *i;
+		GtkWidget *vb, *hb, *l, *m, *cb;
 		if (psel->selector) {
 			gtk_widget_destroy (psel->selector);
 			psel->selector = NULL;
@@ -708,6 +729,7 @@ sp_paint_selector_set_mode_color (SPPaintSelector *psel, SPPaintSelectorMode mod
 		/* Create vbox */
 		vb = gtk_vbox_new (FALSE, 4);
 		gtk_widget_show (vb);
+
 		/* Create hbox */
 		hb = gtk_hbox_new (FALSE, 4);
 		gtk_widget_show (hb);
@@ -716,34 +738,28 @@ sp_paint_selector_set_mode_color (SPPaintSelector *psel, SPPaintSelectorMode mod
 		l = gtk_label_new (_("Mode:"));
 		gtk_widget_show (l);
 		gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
-		gtk_box_pack_start (GTK_BOX (hb), l, TRUE, TRUE, 4);
+		gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 4);
 		/* Create option menu */
 		cselmode = gtk_option_menu_new ();
 		gtk_widget_show (cselmode);
 		/* Create menu */
-		m = gtk_menu_new ();
+		m = sp_menu_new ();
 		gtk_widget_show (m);
-		i = gtk_menu_item_new_with_label (_("RGB"));
-		gtk_widget_show (i);
-		gtk_object_set_data (GTK_OBJECT (i), "mode", GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_RGB));
-		gtk_signal_connect (GTK_OBJECT (i), "activate",
-				    GTK_SIGNAL_FUNC (sp_paint_selector_color_mode_activate), psel);
-		gtk_menu_append (GTK_MENU (m), i);
-		i = gtk_menu_item_new_with_label (_("HSV"));
-		gtk_widget_show (i);
-		gtk_object_set_data (GTK_OBJECT (i), "mode", GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_HSV));
-		gtk_signal_connect (GTK_OBJECT (i), "activate",
-				    GTK_SIGNAL_FUNC (sp_paint_selector_color_mode_activate), psel);
-		gtk_menu_append (GTK_MENU (m), i);
-		i = gtk_menu_item_new_with_label (_("CMYK"));
-		gtk_widget_show (i);
-		gtk_object_set_data (GTK_OBJECT (i), "mode", GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_CMYK));
-		gtk_signal_connect (GTK_OBJECT (i), "activate",
-				    GTK_SIGNAL_FUNC (sp_paint_selector_color_mode_activate), psel);
-		gtk_menu_append (GTK_MENU (m), i);
+		sp_menu_append (SP_MENU (m), _("RGB"), _("RGB Colorspace"), GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_RGB));
+		sp_menu_append (SP_MENU (m), _("HSV"), _("RGB Colorspace"), GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_HSV));
+		sp_menu_append (SP_MENU (m), _("CMYK"), _("CMYK colospace"), GUINT_TO_POINTER (SP_COLOR_SELECTOR_MODE_CMYK));
+		gtk_signal_connect (GTK_OBJECT (m), "selected",
+				    GTK_SIGNAL_FUNC (sp_paint_selector_color_mode_select), psel);
 		gtk_option_menu_set_menu (GTK_OPTION_MENU (cselmode), m);
 		gtk_object_set_data (GTK_OBJECT (vb), "mode-menu", cselmode);
 		gtk_box_pack_start (GTK_BOX (hb), cselmode, FALSE, FALSE, 0);
+		/* Use dropper */
+		cb = gtk_check_button_new_with_label (_("Get from dropper"));
+		gtk_widget_show (cb);
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (cb), TRUE);
+		gtk_box_pack_end (GTK_BOX (hb), cb, FALSE, FALSE, 4);
+		g_object_set_data (G_OBJECT (vb), "get_dropper", cb);
+
 		/* Color selector */
 		csel = sp_color_selector_new ();
 		gtk_widget_show (csel);

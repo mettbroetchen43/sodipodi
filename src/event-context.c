@@ -244,7 +244,7 @@ sp_event_context_private_root_handler (SPEventContext *event_context, GdkEvent *
 			break;
 
 		case GDK_F8:
-			sp_event_context_set_dropper(NULL);
+			sp_event_context_set_dropper (NULL, NULL);
 			ret = TRUE;
 			break;
 
