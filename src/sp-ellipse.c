@@ -729,9 +729,11 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 	sp_arc_get_xy (arc, ge->end, &p2);
 
 	dt = fmod (ge->end - ge->start, SP_2PI);
-	if (fabs (dt) < 1e-6) {
+	if (fabs (dt) < 1e-3) {
 		NRPointF ph;
-		int pos = 0;
+		int pos;
+		/* Full circle */
+		pos = 0;
 		sp_arc_get_xy (arc, (ge->start + ge->end) / 2.0, &ph);
 		c[pos++] = 'M';
 		c[pos++] = ' ';
@@ -749,7 +751,7 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 		c[pos++] = ' ';
 		c[pos++] = '1';
 		c[pos++] = ' ';
-		c[pos++] = (dt > 0) ? '1' : 0;
+		c[pos++] = (dt > 0) ? '1' : '0';
 		c[pos++] = ' ';
 		pos += sp_svg_number_write_d (c + pos, ph.x, 6, 0, FALSE);
 		c[pos++] = ' ';
@@ -765,7 +767,7 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 		c[pos++] = ' ';
 		c[pos++] = '1';
 		c[pos++] = ' ';
-		c[pos++] = (dt > 0) ? '1' : 0;
+		c[pos++] = (dt > 0) ? '1' : '0';
 		c[pos++] = ' ';
 		c[pos++] = ' ';
 		pos += sp_svg_number_write_d (c + pos, p2.x, 6, 0, FALSE);
@@ -806,9 +808,9 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 			c[pos++] = ' ';
 			c[pos++] = '0';
 			c[pos++] = ' ';
-			c[pos++] = (fabs (dt) > M_PI) ? 1 : 0;
+			c[pos++] = (fabs (dt) > M_PI) ? '1' : '0';
 			c[pos++] = ' ';
-			c[pos++] = (dt > 0) ? '1' : 0;
+			c[pos++] = (dt > 0) ? '1' : '0';
 			c[pos++] = ' ';
 			pos += sp_svg_number_write_d (c + pos, p2.x, 6, 0, FALSE);
 			c[pos++] = ' ';
@@ -839,9 +841,9 @@ sp_arc_set_elliptical_path_attribute (SPArc *arc, SPRepr *repr)
 			c[pos++] = ' ';
 			c[pos++] = '0';
 			c[pos++] = ' ';
-			c[pos++] = (fabs (dt) > M_PI) ? 1 : 0;
+			c[pos++] = (fabs (dt) > M_PI) ? '1' : '0';
 			c[pos++] = ' ';
-			c[pos++] = (dt > 0) ? '1' : 0;
+			c[pos++] = (dt > 0) ? '1' : '0';
 			c[pos++] = ' ';
 			pos += sp_svg_number_write_d (c + pos, p2.x, 6, 0, FALSE);
 			c[pos++] = ' ';
