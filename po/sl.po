@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
-"POT-Creation-Date: 2001-07-05 14:16+0200\n"
+"POT-Creation-Date: 2001-08-17 18:32+0200\n"
 "PO-Revision-Date: 2000-06-17 21:45+0200\n"
 "Last-Translator: Andraz Tori <andraz.tori@guest.arnes.si>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -203,7 +203,7 @@ msgstr "Vodni¹ke èrte"
 msgid "Millimeters"
 msgstr "Milimetri"
 
-#: glade/display.c:20 glade/display.c:32
+#: glade/display.c:20 glade/display.c:32 src/helper/unit-menu.c:94
 msgid "Pixels"
 msgstr "piksli"
 
@@ -282,7 +282,7 @@ msgstr "Stran"
 #. * Add this file to your project's POTFILES.in.
 #. * DO NOT compile it as part of your application.
 #.
-#: glade/item.c:7
+#: glade/item.c:7 src/dialogs/item-properties.c:339
 msgid "Item properties"
 msgstr "Lastnosti predmeta"
 
@@ -310,8 +310,8 @@ msgstr "ID:"
 msgid "Opacity:"
 msgstr "Prosojnost:"
 
-#: glade/item.c:14 src/dialogs/item-properties.c:99
-#: src/dialogs/item-properties.c:236
+#: glade/item.c:14 src/dialogs/item-properties.c:180
+#: src/dialogs/item-properties.c:250 src/dialogs/item-properties.c:489
 msgid "The SVG ID of item"
 msgstr "ID SVG predmeta"
 
@@ -335,7 +335,8 @@ msgstr "X +"
 msgid "Y +"
 msgstr "Y +"
 
-#: glade/item.c:22 src/sp-item.c:521
+#. Create toplevel menuitem
+#: glade/item.c:22 src/sp-item.c:534
 msgid "Item"
 msgstr "Predmet"
 
@@ -655,7 +656,7 @@ msgstr "Risanje"
 
 #: glade/sodipodi-glade.c:25 glade/sodipodi-glade.c:50
 #: glade/sodipodi-glade.c:54 glade/toolbox.c:31 src/dialogs/align.c:110
-#: src/toolbox.c:93
+#: src/toolbox.c:95
 msgid "Selection"
 msgstr "Izbira"
 
@@ -788,7 +789,7 @@ msgid "New View"
 msgstr "Nov pogled"
 
 #: glade/sodipodi-glade.c:67 glade/sodipodi-glade.c:85 glade/toolbox.c:22
-#: src/desktop.c:316 src/toolbox.c:126
+#: src/desktop.c:316 src/toolbox.c:128
 msgid "Zoom"
 msgstr "Poveèava"
 
@@ -865,7 +866,7 @@ msgstr "Prostoroèno"
 msgid "Text"
 msgstr "Besedilo"
 
-#: glade/sodipodi-glade.c:89 src/toolbox.c:130
+#: glade/sodipodi-glade.c:89 src/toolbox.c:132
 msgid "Nodes"
 msgstr "Kontrolne toèke"
 
@@ -1007,7 +1008,7 @@ msgstr "Odgrupiraj izbrane premete"
 msgid "Unsymmetric"
 msgstr "Nesimetrièno"
 
-#: glade/toolbox.c:52 src/toolbox.c:72
+#: glade/toolbox.c:52 src/toolbox.c:74
 msgid "File"
 msgstr "Datoteka"
 
@@ -1063,7 +1064,7 @@ msgstr "Ne !"
 msgid "Really wanna quit sodipodi ?"
 msgstr "Zares ¾eli¹ oditi iz sodipodija ?"
 
-#: glade/toolbox.c:67 src/event-context.c:431 src/toolbox.c:85
+#: glade/toolbox.c:67 src/event-context.c:432 src/toolbox.c:87
 msgid "Object"
 msgstr "Predmet"
 
@@ -1107,7 +1108,7 @@ msgstr "Odstrani preoblikovanje"
 msgid "Convert selected objects to curves"
 msgstr "Pretvori izbrane predmete v krivulje"
 
-#: glade/toolbox.c:78 src/toolbox.c:76
+#: glade/toolbox.c:78 src/toolbox.c:78
 msgid "Edit"
 msgstr "Uredi"
 
@@ -1519,19 +1520,19 @@ msgstr "16x16"
 msgid "Custom"
 msgstr "Poljubno"
 
-#: src/dialogs/item-properties.c:93
+#: src/dialogs/item-properties.c:174
 msgid "Item is reference"
 msgstr "Predmet je referenca"
 
-#: src/dialogs/item-properties.c:238
+#: src/dialogs/item-properties.c:252 src/dialogs/item-properties.c:491
 msgid "The ID is not valid"
 msgstr "ID ni veljaven"
 
-#: src/dialogs/item-properties.c:240
+#: src/dialogs/item-properties.c:254 src/dialogs/item-properties.c:493
 msgid "The ID is already defined"
 msgstr "ID je ¾e definiran"
 
-#: src/dialogs/item-properties.c:242
+#: src/dialogs/item-properties.c:257 src/dialogs/item-properties.c:495
 msgid "The ID is valid"
 msgstr "ID je veljaven"
 
@@ -1539,19 +1540,19 @@ msgstr "ID je veljaven"
 msgid "Select file to open"
 msgstr "Izberi datoteko za odprtje"
 
-#: src/file.c:177
+#: src/file.c:175
 msgid "Save file"
 msgstr "Shrani datoteko"
 
-#: src/file.c:285
+#: src/file.c:283
 msgid "Select file to import"
 msgstr "Izberi datoteko za uvoz"
 
-#: src/file.c:362
+#: src/file.c:360
 msgid "Export file"
 msgstr "Izvozi datoteko"
 
-#: src/file.c:422
+#: src/file.c:420
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
 msgstr "Sodipodi (ime dokumenta %s..): Predogled Tiskanja"
@@ -1571,10 +1572,6 @@ msgstr "\""
 #: src/helper/unit-menu.c:93
 msgid "Point"
 msgstr "Pika"
-
-#: src/helper/unit-menu.c:94
-msgid "Pixelss"
-msgstr "piksli"
 
 #: src/helper/unit-menu.c:94
 msgid "Pixel"
@@ -1612,7 +1609,7 @@ msgstr ""
 msgid "ex"
 msgstr ""
 
-#: src/interface.c:109
+#: src/interface.c:110
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s vsebuje neshranjene spremembe, naj jih shranim?"
@@ -1651,7 +1648,7 @@ msgid "Could not initialize Bonobo"
 msgstr "Nisem mogel inicializirati Bonoba"
 
 #. Not a regular file
-#: src/sodipodi.c:229
+#: src/sodipodi.c:238
 #, c-format
 msgid ""
 "%s is not regular file.\n"
@@ -1663,9 +1660,8 @@ msgstr ""
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev\n"
 
-
 #. Not an valid xml file
-#: src/sodipodi.c:242
+#: src/sodipodi.c:251
 #, c-format
 msgid ""
 "%s either is not valid xml file or\n"
@@ -1680,8 +1676,7 @@ msgstr ""
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
-
-#: src/sodipodi.c:256
+#: src/sodipodi.c:265
 #, c-format
 msgid ""
 "%s is not valid sodipodi preferences file.\n"
@@ -1695,7 +1690,7 @@ msgstr ""
 "shranjevati nastavitev."
 
 #. Cannot create directory
-#: src/sodipodi.c:474
+#: src/sodipodi.c:496
 #, c-format
 msgid ""
 "Cannot create directory %s.\n"
@@ -1708,9 +1703,8 @@ msgstr ""
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
-
 #. Not a directory
-#: src/sodipodi.c:486
+#: src/sodipodi.c:508
 #, c-format
 msgid ""
 "%s is not a valid directory.\n"
@@ -1723,9 +1717,8 @@ msgstr ""
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
-
 #. Cannot create file
-#: src/sodipodi.c:502
+#: src/sodipodi.c:524
 #, c-format
 msgid ""
 "Cannot create file %s.\n"
@@ -1738,9 +1731,8 @@ msgstr ""
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
-
 #. Cannot create file
-#: src/sodipodi.c:514
+#: src/sodipodi.c:536
 #, c-format
 msgid ""
 "Cannot write file %s.\n"
@@ -1753,47 +1745,52 @@ msgstr ""
 "boste mogli ne nalagati, ne\n"
 "shranjevati nastavitev."
 
-
-#: src/sp-image.c:272
+#: src/sp-image.c:276
 msgid "Broken bitmap"
 msgstr "Po¹kodovana rastrska slika"
 
-#: src/sp-image.c:273
+#: src/sp-image.c:277
 msgid "Color bitmap"
 msgstr "Barvna rastrska slika"
 
-#: src/sp-item.c:293
+#: src/sp-item.c:288
 msgid "Unknown item :-("
 msgstr "Neznan predmet :-("
 
 #. Item dialog
-#: src/sp-item.c:525
+#: src/sp-item.c:537
 msgid "Item Properties"
 msgstr "Lastnosti predmeta"
 
+#. Select item
+#: src/sp-item.c:547
+msgid "Select this"
+msgstr "Izberi to"
+
 #. Reset transformations
-#: src/sp-item.c:534
+#: src/sp-item.c:557
 msgid "Reset transformation"
 msgstr "Ponastavi preoblikovanje"
 
-#: src/sp-item.c:541
+#: src/sp-item.c:563
 msgid "Make sensitive"
 msgstr "Naredi obèutljivega"
 
-#: src/sp-item.c:541
+#: src/sp-item.c:563
 msgid "Make insensitive"
 msgstr "Naredi neobèutljivega"
 
-#: src/sp-item-group.c:375
+#: src/sp-item-group.c:432
 #, c-format
 msgid "Group of %d objects"
 msgstr "Skupina %d predmetov"
 
-#: src/sp-item-group.c:459
+#: src/sp-item-group.c:516
 msgid "Group"
 msgstr "Grupiraj"
 
-#: src/sp-item-group.c:462
+#. "Ungroup"
+#: src/sp-item-group.c:521
 msgid "Ungroup"
 msgstr "Odgrupiraj"
 
@@ -1801,13 +1798,16 @@ msgstr "Odgrupiraj"
 msgid "A path - whatever it means"
 msgstr "Pot - karkoli ¾e pomeni"
 
-#: src/sp-text.c:195
+#: src/sp-text.c:198
 msgid "Text object"
 msgstr "Predmet z besedilom"
 
-#: src/toolbox.c:97
+#: src/toolbox.c:99
 msgid "Draw"
 msgstr "Ri¹i"
+
+#~ msgid "Pixelss"
+#~ msgstr "piksli"
 
 #~ msgid "Stroke color : "
 #~ msgstr "Barva nagnjenja : "
