@@ -1,3 +1,15 @@
+2002-08-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/draw-context.c (sp_draw_context_setup): Read selection data
+	(sp_draw_context_root_handler): Use colors for freehand, place green anchor
+	(spdc_selection_changed): Use read_selection
+	(spdc_selection_modified): Ditto
+	(spdc_read_selection): New method
+	(spdc_add_freehand_point): Ditto
+	(spdc_concat_colors_and_flush): Check, whehter green anchor exist, do contiguous append
+	(fit_and_split): Use continious append
+	(sp_draw_anchor_destroy): Signature change
+
 2002-08-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/draw-context.c (sp_draw_context_destroy): Do not destroy start and end anchors

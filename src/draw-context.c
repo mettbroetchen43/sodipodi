@@ -34,21 +34,34 @@
 #include "draw-context.h"
 
 #define TOLERANCE 1.0
-#define hypot(a,b) sqrt ((a) * (a) + (b) * (b))
 
-static void sp_draw_context_class_init (SPDrawContextClass * klass);
-static void sp_draw_context_init (SPDrawContext * draw_context);
-static void sp_draw_context_destroy (GtkObject * object);
+/* Drawing anchors */
+
+struct _SPDrawAnchor {
+	SPDrawContext *dc;
+	SPCurve *curve;
+	guint start : 1;
+	guint active : 1;
+	ArtPoint dp, wp;
+	GnomeCanvasItem *ctrl;
+};
+
+static void sp_draw_context_class_init (SPDrawContextClass *klass);
+static void sp_draw_context_init (SPDrawContext *dc);
+static void sp_draw_context_finalize (GtkObject *object);
 
 static void sp_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop);
 static gint sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 
-static void sp_draw_context_selection_changed (SPSelection *sel, SPDrawContext *dc);
-static void sp_draw_context_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc);
+static void spdc_selection_changed (SPSelection *sel, SPDrawContext *dc);
+static void spdc_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc);
+static void spdc_read_selection (SPDrawContext *dc, SPSelection *sel);
 
 static void spdc_set_startpoint (SPDrawContext *dc, ArtPoint *p, guint state);
 static void spdc_set_endpoint (SPDrawContext *dc, ArtPoint *p, guint state);
 static void spdc_finish_endpoint (SPDrawContext *dc, ArtPoint *p, gboolean snap, guint state);
+static void spdc_add_freehand_point (SPDrawContext *dc, ArtPoint *p, guint state);
+
 static void spdc_concat_colors_and_flush (SPDrawContext *dc);
 static void spdc_flush_white (SPDrawContext *dc, SPCurve *gc);
 
@@ -59,81 +72,60 @@ static void spdc_clear_blue_data (SPDrawContext *dc);
 static SPDrawAnchor *test_inside (SPDrawContext * dc, gdouble wx, gdouble wy);
 static SPDrawAnchor *sp_draw_anchor_test (SPDrawAnchor *anchor, gdouble wx, gdouble wy, gboolean activate);
 
-static void clear_current (SPDrawContext * dc);
-static void set_to_accumulated (SPDrawContext * dc);
-static void concat_current (SPDrawContext * dc);
-
-static void move_ctrl (SPDrawContext * dc, double x, double y);
-static void remove_ctrl (SPDrawContext * dc);
-
 static void fit_and_split (SPDrawContext * dc);
+
+static SPDrawAnchor *sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble x, gdouble y);
+static SPDrawAnchor *sp_draw_anchor_destroy (SPDrawAnchor *anchor);
 
 static SPEventContextClass * parent_class;
 
 GtkType
 sp_draw_context_get_type (void)
 {
-	static GtkType draw_context_type = 0;
+	static GtkType type = 0;
 
-	if (!draw_context_type) {
-
-		static const GtkTypeInfo draw_context_info = {
+	if (!type) {
+		static const GtkTypeInfo info = {
 			"SPDrawContext",
 			sizeof (SPDrawContext),
 			sizeof (SPDrawContextClass),
 			(GtkClassInitFunc) sp_draw_context_class_init,
 			(GtkObjectInitFunc) sp_draw_context_init,
-			NULL,
-			NULL,
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-
-		draw_context_type = gtk_type_unique (sp_event_context_get_type (), &draw_context_info);
+		type = gtk_type_unique (SP_TYPE_EVENT_CONTEXT, &info);
 	}
 
-	return draw_context_type;
+	return type;
 }
 
 static void
-sp_draw_context_class_init (SPDrawContextClass * klass)
+sp_draw_context_class_init (SPDrawContextClass *klass)
 {
-	GtkObjectClass * object_class;
-	SPEventContextClass * event_context_class;
+	GtkObjectClass *object_class;
+	SPEventContextClass *event_context_class;
 
 	object_class = (GtkObjectClass *) klass;
 	event_context_class = (SPEventContextClass *) klass;
 
-	parent_class = gtk_type_class (sp_event_context_get_type ());
+	parent_class = gtk_type_class (SP_TYPE_EVENT_CONTEXT);
 
-	object_class->destroy = sp_draw_context_destroy;
+	object_class->finalize = sp_draw_context_finalize;
 
 	event_context_class->setup = sp_draw_context_setup;
 	event_context_class->root_handler = sp_draw_context_root_handler;
 }
 
 static void
-sp_draw_context_init (SPDrawContext * dc)
+sp_draw_context_init (SPDrawContext *dc)
 {
 	dc->state = SP_DRAW_CONTEXT_IDLE;
-
-	dc->white_item = NULL;
-	dc->white_cl = NULL;
-	dc->white_al = NULL;
-
-	dc->red_bpath = NULL;
-	dc->red_curve = NULL;
-
-	dc->blue_bpath = NULL;
-	dc->blue_curve = NULL;
-
-	dc->gl = NULL;
-	dc->gc = NULL;
 
 	dc->npoints = 0;
 }
 
 static void
-sp_draw_context_destroy (GtkObject *object)
+sp_draw_context_finalize (GtkObject *object)
 {
 	SPDrawContext *dc;
 
@@ -145,39 +137,23 @@ sp_draw_context_destroy (GtkObject *object)
 	spdc_clear_red_data (dc);
 	spdc_clear_blue_data (dc);
 
-	while (dc->gl) {
+	while (dc->green_bpaths) {
 		/* Destroy green list */
-		gtk_object_destroy (GTK_OBJECT (dc->gl->data));
-		dc->gl = g_slist_remove (dc->gl, dc->gl->data);
+		gtk_object_destroy (GTK_OBJECT (dc->green_bpaths->data));
+		dc->green_bpaths = g_slist_remove (dc->green_bpaths, dc->green_bpaths->data);
 	}
 
-	if (dc->gc) {
+	if (dc->green_curve) {
 		/* Destroy green curve */
-		dc->gc = sp_curve_unref (dc->gc);
+		dc->green_curve = sp_curve_unref (dc->green_curve);
 	}
 
-	if (dc->ga) {
+	if (dc->green_anchor) {
 		/* Destroy green anchor */
-		sp_draw_anchor_destroy (dc->ga);
-		dc->ga = NULL;
+		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
 	}
 
-#if 0
-	if (dc->sa) {
-		/* Destroy start anchor */
-		sp_draw_anchor_destroy (dc->sa);
-		dc->sa = NULL;
-	}
-
-	if (dc->ea) {
-		/* Destrou end anchor */
-		sp_draw_anchor_destroy (dc->ea);
-		dc->ea = NULL;
-	}
-#endif
-
-	if (GTK_OBJECT_CLASS (parent_class)->destroy)
-		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+	GTK_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
@@ -191,10 +167,8 @@ sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (ec, dt);
 
 	/* Connect signals to track selection changes */
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "changed",
-			    GTK_SIGNAL_FUNC (sp_draw_context_selection_changed), dc);
-	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "modified",
-			    GTK_SIGNAL_FUNC (sp_draw_context_selection_modified), dc);
+	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "changed", GTK_SIGNAL_FUNC (spdc_selection_changed), dc);
+	gtk_signal_connect (GTK_OBJECT (SP_DT_SELECTION (dt)), "modified", GTK_SIGNAL_FUNC (spdc_selection_modified), dc);
 
 	/* Create red bpath */
 	dc->red_bpath = sp_canvas_bpath_new (SP_DT_SKETCH (ec->desktop), NULL);
@@ -209,79 +183,11 @@ sp_draw_context_setup (SPEventContext *ec, SPDesktop *dt)
 	dc->blue_curve = sp_curve_new_sized (8);
 
 	/* Create green curve */
-	dc->gc = sp_curve_new_sized (64);
-	/* Create hidden green anchor */
-	dc->ga = sp_draw_anchor_new (dc, dc->gc, FALSE, 0, 0);
-	gnome_canvas_item_hide (dc->ga->ctrl);
+	dc->green_curve = sp_curve_new_sized (64);
+	/* No green anchor by default */
+	dc->green_anchor = NULL;
 
-	/* Attach existing selection */
-	/* fixme: fixme: fixme: (lauris) */
-}
-
-static void
-sp_draw_context_selection_changed (SPSelection *sel, SPDrawContext *dc)
-{
-	g_print ("Selection changed in draw context\n");
-}
-
-/* fixme: We have to ensure this is not delayed (Lauris) */
-
-static void
-sp_draw_context_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc)
-{
-	SPItem *item;
-
-	g_print ("Selection modified in draw context\n");
-
-	/* Clear white data */
-	spdc_clear_white_data (dc);
-	/* Reset red data */
-	sp_curve_reset (dc->red_curve);
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
-	/* Reset blue data */
-	sp_curve_reset (dc->blue_curve);
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->blue_bpath), NULL);
-
-	/* fixme: Think (Lauris) */
-	dc->sa = NULL;
-	dc->ea = NULL;
-
-	item = sp_selection_item (SP_DT_SELECTION (SP_EVENT_CONTEXT_DESKTOP (dc)));
-
-	if (item && SP_IS_PATH (item) && SP_PATH (item)->independent) {
-		SPCurve *norm;
-		gdouble i2dt[6];
-		GSList *l;
-		/* Create new white data */
-		/* Item */
-		dc->white_item = item;
-		/* Curve list */
-		/* We keep it in desktop coordinates to eliminate calculation errors */
-		norm = sp_path_normalized_bpath (SP_PATH (item));
-		sp_item_i2d_affine (dc->white_item, i2dt);
-		norm = sp_curve_transform (norm, i2dt);
-		g_return_if_fail (norm != NULL);
-		dc->white_cl = sp_curve_split (norm);
-		sp_curve_unref (norm);
-		/* Anchor list */
-		for (l = dc->white_cl; l != NULL; l = l->next) {
-			SPCurve *c;
-			c = l->data;
-			g_return_if_fail (c->end > 1);
-			if (c->bpath->code == ART_MOVETO_OPEN) {
-				ArtBpath *s, *e;
-				SPDrawAnchor *a;
-				s = sp_curve_first_bpath (c);
-				e = sp_curve_last_bpath (c);
-				a = sp_draw_anchor_new (dc, c, TRUE, s->x3, s->y3);
-				dc->white_al = g_slist_prepend (dc->white_al, a);
-				a = sp_draw_anchor_new (dc, c, FALSE, e->x3, e->y3);
-				dc->white_al = g_slist_prepend (dc->white_al, a);
-			}
-		}
-		/* fixme: recalculate active anchor, reset red (DONE), green and blue, release drags */
-		/* The latter is not needed, if we can ensure that 'modified' is not delayed */
-	}
+	spdc_read_selection (dc, SP_DT_SELECTION (dt));
 }
 
 gint
@@ -322,11 +228,6 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				}
 				dc->sa = anchor;
 				spdc_set_startpoint (dc, &p, event->motion.state);
-#if 0
-				/* fixme: Move to helper (Lauris) */
-				dc->npoints = 0;
-				dc->p[dc->npoints++] = p;
-#endif
 				ret = TRUE;
 				break;
 			}
@@ -351,17 +252,17 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			/* We may be idle or already freehand */
 			if (event->motion.state & GDK_BUTTON1_MASK) {
 				dc->state = SP_DRAW_CONTEXT_FREEHAND;
-				/* fixme: Cleanup following (Lauris) */
-				g_assert (dc->npoints > 0);
+				if (!dc->sa && !dc->green_anchor) {
+					/* Create green anchor */
+					dc->green_anchor = sp_draw_anchor_new (dc, dc->green_curve, TRUE, dc->p[0].x, dc->p[0].y);
+				}
+				/* fixme: I am not sure, whether we want to snap to anchors in middle of freehand (Lauris) */
 				if (anchor) {
 					p = anchor->dp;
 				} else {
 					sp_desktop_free_snap (desktop, &p);
 				}
-				if ((p.x != dc->p[dc->npoints - 1].x) || (p.y != dc->p[dc->npoints - 1].y)) {
-					dc->p[dc->npoints++] = p;
-					fit_and_split (dc);
-				}
+				spdc_add_freehand_point (dc, &p, event->motion.state);
 				ret = TRUE;
 			}
 			break;
@@ -398,42 +299,9 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 					p = anchor->dp;
 				}
 				dc->ea = anchor;
-				/* Remove all temporary line segments */
-				while (dc->gl) {
-					gtk_object_destroy (GTK_OBJECT (dc->gl->data));
-					dc->gl = g_slist_remove (dc->gl, dc->gl->data);
-				}
-				/* Create object */
-				concat_current (dc);
-				if (dc->ga && dc->ga->active) {
-					if (dc->gc->end > 3) {
-						sp_curve_closepath_current (dc->gc);
-					}
-				}
-				set_to_accumulated (dc);
-				if (dc->ga && dc->ga->active) {
-					/* reset accumulated curve */
-					sp_curve_reset (dc->gc);
-					clear_current (dc);
-					if (dc->repr) {
-						dc->repr = NULL;
-					}
-					remove_ctrl (dc);
-				}
-				/* fixme: We have to clean up everything, until we'll move to concat_colors */
-				/* Green */
-				sp_curve_reset (dc->gc);
-				while (dc->gl) {
-					gtk_object_destroy (GTK_OBJECT (dc->gl->data));
-					dc->gl = g_slist_remove (dc->gl, dc->gl->data);
-				}
-				/* Blue */
-				sp_curve_reset (dc->blue_curve);
-				sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->blue_bpath), NULL);
-				/* Red */
-				sp_curve_reset (dc->red_curve);
-				sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
-
+				/* Write curves to object */
+				g_print ("Finishing freehand\n");
+				spdc_concat_colors_and_flush (dc);
 				dc->state = SP_DRAW_CONTEXT_IDLE;
 				ret = TRUE;
 				break;
@@ -455,6 +323,94 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	}
 
 	return ret;
+}
+
+/*
+ * Selection handlers
+ */
+
+static void
+spdc_selection_changed (SPSelection *sel, SPDrawContext *dc)
+{
+	g_print ("Selection changed in draw context\n");
+	spdc_read_selection (dc, sel);
+}
+
+/* fixme: We have to ensure this is not delayed (Lauris) */
+
+static void
+spdc_selection_modified (SPSelection *sel, guint flags, SPDrawContext *dc)
+{
+	g_print ("Selection modified in draw context\n");
+	spdc_read_selection (dc, sel);
+}
+
+static void
+spdc_read_selection (SPDrawContext *dc, SPSelection *sel)
+{
+	SPItem *item;
+
+	/* Reset red data */
+	sp_curve_reset (dc->red_curve);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
+	/* Reset blue data */
+	sp_curve_reset (dc->blue_curve);
+	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->blue_bpath), NULL);
+	/* Reset green data */
+	while (dc->green_bpaths) {
+		gtk_object_destroy (GTK_OBJECT (dc->green_bpaths->data));
+		dc->green_bpaths = g_slist_remove (dc->green_bpaths, dc->green_bpaths->data);
+	}
+	sp_curve_reset (dc->green_curve);
+	/* fixme: green anchor */
+	/* fixme: Think (Lauris) */
+	if (dc->green_anchor) {
+		dc->green_anchor = sp_draw_anchor_destroy (dc->green_anchor);
+	}
+
+	/* Clear white data */
+	spdc_clear_white_data (dc);
+
+	/* fixme: Think (Lauris) */
+	dc->sa = NULL;
+	dc->ea = NULL;
+
+	item = sp_selection_item (SP_DT_SELECTION (SP_EVENT_CONTEXT_DESKTOP (dc)));
+
+	if (item && SP_IS_PATH (item) && SP_PATH (item)->independent) {
+		SPCurve *norm;
+		gdouble i2dt[6];
+		GSList *l;
+		/* Create new white data */
+		/* Item */
+		dc->white_item = item;
+		/* Curve list */
+		/* We keep it in desktop coordinates to eliminate calculation errors */
+		norm = sp_path_normalized_bpath (SP_PATH (item));
+		sp_item_i2d_affine (dc->white_item, i2dt);
+		norm = sp_curve_transform (norm, i2dt);
+		g_return_if_fail (norm != NULL);
+		dc->white_cl = sp_curve_split (norm);
+		sp_curve_unref (norm);
+		/* Anchor list */
+		for (l = dc->white_cl; l != NULL; l = l->next) {
+			SPCurve *c;
+			c = l->data;
+			g_return_if_fail (c->end > 1);
+			if (c->bpath->code == ART_MOVETO_OPEN) {
+				ArtBpath *s, *e;
+				SPDrawAnchor *a;
+				s = sp_curve_first_bpath (c);
+				e = sp_curve_last_bpath (c);
+				a = sp_draw_anchor_new (dc, c, TRUE, s->x3, s->y3);
+				dc->white_al = g_slist_prepend (dc->white_al, a);
+				a = sp_draw_anchor_new (dc, c, FALSE, e->x3, e->y3);
+				dc->white_al = g_slist_prepend (dc->white_al, a);
+			}
+		}
+		/* fixme: recalculate active anchor, reset red (DONE), green (DONE) and blue (DONE) , release drags */
+		/* The latter is not needed, if we can ensure that 'modified' is not delayed */
+	}
 }
 
 static void
@@ -555,6 +511,17 @@ spdc_finish_endpoint (SPDrawContext *dc, ArtPoint *p, gboolean snap, guint state
 	}
 }
 
+static void
+spdc_add_freehand_point (SPDrawContext *dc, ArtPoint *p, guint state)
+{
+	/* fixme: Cleanup following (Lauris) */
+	g_assert (dc->npoints > 0);
+	if ((p->x != dc->p[dc->npoints - 1].x) || (p->y != dc->p[dc->npoints - 1].y)) {
+		dc->p[dc->npoints++] = *p;
+		fit_and_split (dc);
+	}
+}
+
 /*
  * Concats red, blue and green
  * If any anchors are defined, process these, optionally removing curves from white list
@@ -568,38 +535,25 @@ spdc_concat_colors_and_flush (SPDrawContext *dc)
 	SPCurve *c;
 
 	/* Concat RBG */
-	c = dc->gc;
+	c = dc->green_curve;
 
 	/* Green */
-	dc->gc = sp_curve_new_sized (64);
-	while (dc->gl) {
-		gtk_object_destroy (GTK_OBJECT (dc->gl->data));
-		dc->gl = g_slist_remove (dc->gl, dc->gl->data);
+	dc->green_curve = sp_curve_new_sized (64);
+	while (dc->green_bpaths) {
+		gtk_object_destroy (GTK_OBJECT (dc->green_bpaths->data));
+		dc->green_bpaths = g_slist_remove (dc->green_bpaths, dc->green_bpaths->data);
 	}
 	/* Blue */
-	sp_curve_append (c, dc->blue_curve, TRUE);
+	sp_curve_append_continuous (c, dc->blue_curve, 1e-9);
 	sp_curve_reset (dc->blue_curve);
 	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->blue_bpath), NULL);
 	/* Red */
-	sp_curve_append (c, dc->red_curve, TRUE);
+	sp_curve_append_continuous (c, dc->red_curve, 1e-9);
 	sp_curve_reset (dc->red_curve);
 	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
 
-#if 0
-	/* What follows requires document coordinates */
-	if (dc->white_item) {
-		gdouble d2item[6];
-		sp_item_dt2i_affine (dc->white_item, SP_EVENT_CONTEXT_DESKTOP (dc), d2item);
-		c = sp_curve_transform (c, d2item);
-	} else {
-		gdouble d2item[6];
-		sp_desktop_d2doc_affine (SP_EVENT_CONTEXT_DESKTOP (dc), d2item);
-		c = sp_curve_transform (c, d2item);
-	}
-#endif
-
 	/* Step A - test, whether we ended on green anchor */
-	if (dc->ga->active) {
+	if (dc->green_anchor && dc->green_anchor->active) {
 		g_print ("We hit green anchor, closing Green-Blue-Red\n");
 		sp_curve_closepath_current (c);
 		/* Closed path, just flush */
@@ -742,81 +696,6 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 	sp_curve_unref (c);
 }
 
-static void
-clear_current (SPDrawContext * dc)
-{
-	sp_canvas_bpath_set_bpath (SP_CANVAS_BPATH (dc->red_bpath), NULL);
-	/* reset curve */
-	sp_curve_reset (dc->red_curve);
-	/* reset points */
-	dc->npoints = 0;
-}
-
-static void
-set_to_accumulated (SPDrawContext * dc)
-{
-	SPDesktop * desktop;
-
-	desktop = SP_EVENT_CONTEXT (dc)->desktop;
-
-	if (!sp_curve_empty (dc->gc)) {
-		ArtBpath *abp;
-		gdouble d2doc[6];
-		gchar * str;
-
-		if (!dc->repr) {
-			SPRepr * repr, * style;
-			SPCSSAttr * css;
-			/* Create object */
-			repr = sp_repr_new ("path");
-			/* Set style */
-			style = sodipodi_get_repr (SODIPODI, "paint.freehand");
-			if (style) {
-				css = sp_repr_css_attr_inherited (style, "style");
-				sp_repr_css_set (repr, css, "style");
-				sp_repr_css_attr_unref (css);
-			}
-			dc->repr = repr;
-			sp_document_add_repr (SP_DT_DOCUMENT (desktop), dc->repr);
-			sp_repr_unref (dc->repr);
-			sp_selection_set_repr (SP_DT_SELECTION (desktop), dc->repr);
-		}
-		sp_desktop_d2doc_affine (desktop, d2doc);
-		abp = art_bpath_affine_transform (sp_curve_first_bpath (dc->gc), d2doc);
-		str = sp_svg_write_path (abp);
-		g_assert (str != NULL);
-		art_free (abp);
-		sp_repr_set_attr (dc->repr, "d", str);
-		g_free (str);
-	} else {
-		if (dc->repr) sp_repr_unparent (dc->repr);
-		dc->repr = NULL;
-	}
-
-	sp_document_done (SP_DT_DOCUMENT (desktop));
-}
-
-static void
-concat_current (SPDrawContext * dc)
-{
-	if (!sp_curve_empty (dc->red_curve)) {
-		ArtBpath * bpath;
-		if (sp_curve_empty (dc->gc)) {
-			bpath = sp_curve_first_bpath (dc->red_curve);
-			g_assert (bpath->code == ART_MOVETO_OPEN);
-			sp_curve_moveto (dc->gc, bpath->x3, bpath->y3);
-		}
-		bpath = sp_curve_last_bpath (dc->red_curve);
-		if (bpath->code == ART_CURVETO) {
-			sp_curve_curveto (dc->gc, bpath->x1, bpath->y1, bpath->x2, bpath->y2, bpath->x3, bpath->y3);
-		} else if (bpath->code == ART_LINETO) {
-			sp_curve_lineto (dc->gc, bpath->x3, bpath->y3);
-		} else {
-			g_assert_not_reached ();
-		}
-	}
-}
-
 /*
  * Returns FIRST active anchor (the activated one)
  */
@@ -830,8 +709,8 @@ test_inside (SPDrawContext *dc, gdouble wx, gdouble wy)
 	active = NULL;
 
 	/* Test green anchor */
-	if (dc->ga) {
-		active = sp_draw_anchor_test (dc->ga, wx, wy, TRUE);
+	if (dc->green_anchor) {
+		active = sp_draw_anchor_test (dc->green_anchor, wx, wy, TRUE);
 	}
 
 	for (l = dc->white_al; l != NULL; l = l->next) {
@@ -841,29 +720,6 @@ test_inside (SPDrawContext *dc, gdouble wx, gdouble wy)
 	}
 
 	return active;
-}
-
-
-static void
-move_ctrl (SPDrawContext *dc, gdouble x, gdouble y)
-{
-	if (dc->ga) {
-		gnome_canvas_item_show (dc->ga->ctrl);
-		sp_ctrl_moveto (SP_CTRL (dc->ga->ctrl), x, y);
-		sp_desktop_d2w_xy_point (SP_EVENT_CONTEXT (dc)->desktop, &dc->ga->wp, x, y);
-	}
-#if 0
-	dc->cinside = -1;
-#endif
-}
-
-static void
-remove_ctrl (SPDrawContext * dc)
-{
-	if (dc->ga) {
-		sp_draw_anchor_destroy (dc->ga);
-		dc->ga = NULL;
-	}
 }
 
 static void
@@ -877,21 +733,8 @@ fit_and_split (SPDrawContext * dc)
 	tolerance = SP_EVENT_CONTEXT (dc)->desktop->w2d[0] * TOLERANCE;
 	tolerance = tolerance * tolerance;
 
-	if (sp_bezier_fit_cubic (b, dc->p, dc->npoints, tolerance) > 0 && dc->npoints < 16) {
+	if (sp_bezier_fit_cubic (b, dc->p, dc->npoints, tolerance) > 0 && dc->npoints < SP_DRAW_POINTS_MAX) {
 		/* Fit and draw and reset state */
-#ifdef DRAW_VERBOSE
-		g_print ("%d", dc->npoints);
-#endif
-#if 0
-		g_assert ((b[0].x > -8000.0) && (b[0].x < 8000.0));
-		g_assert ((b[0].y > -8000.0) && (b[0].y < 8000.0));
-		g_assert ((b[1].x > -8000.0) && (b[1].x < 8000.0));
-		g_assert ((b[1].y > -8000.0) && (b[1].y < 8000.0));
-		g_assert ((b[2].x > -8000.0) && (b[2].x < 8000.0));
-		g_assert ((b[2].y > -8000.0) && (b[2].y < 8000.0));
-		g_assert ((b[3].x > -8000.0) && (b[3].x < 8000.0));
-		g_assert ((b[3].y > -8000.0) && (b[3].y < 8000.0));
-#endif
 		sp_curve_reset (dc->red_curve);
 		sp_curve_moveto (dc->red_curve, b[0].x, b[0].y);
 		sp_curve_curveto (dc->red_curve, b[1].x, b[1].y, b[2].x, b[2].y, b[3].x, b[3].y);
@@ -900,11 +743,8 @@ fit_and_split (SPDrawContext * dc)
 		SPCurve *curve;
 		GnomeCanvasItem *cshape;
 		/* Fit and draw and copy last point */
-#ifdef DRAW_VERBOSE
-		g_print("[%d]Yup\n", dc->npoints);
-#endif
 		g_assert (!sp_curve_empty (dc->red_curve));
-		concat_current (dc);
+		sp_curve_append_continuous (dc->green_curve, dc->red_curve, 1e-9);
 		curve = sp_curve_copy (dc->red_curve);
 
 		/* fixme: */
@@ -912,16 +752,11 @@ fit_and_split (SPDrawContext * dc)
 		sp_curve_unref (curve);
 		sp_canvas_bpath_set_stroke (SP_CANVAS_BPATH (cshape), 0x00bf00ff, 1.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 
-#if 0
-		gtk_signal_connect (GTK_OBJECT (cshape), "event",
-				    GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
-#endif
-
-		dc->gl = g_slist_prepend (dc->gl, cshape);
+		dc->green_bpaths = g_slist_prepend (dc->green_bpaths, cshape);
 
 		dc->p[0] = dc->p[dc->npoints - 2];
 		dc->p[1] = dc->p[dc->npoints - 1];
-		dc->npoints = 1;
+		dc->npoints = 2;
 	}
 }
 
@@ -995,7 +830,7 @@ spdc_clear_blue_data (SPDrawContext *dc)
  * Anchors
  */
 
-SPDrawAnchor *
+static SPDrawAnchor *
 sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble dx, gdouble dy)
 {
 	SPDrawAnchor *a;
@@ -1016,22 +851,20 @@ sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble d
 					 "stroked", 1,
 					 "stroke_color", 0x000000ff,
 					 NULL);
-#if 0
-	gtk_signal_connect (GTK_OBJECT (dc->citem), "event",
-			    GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
-#endif
+
 	sp_ctrl_moveto (SP_CTRL (a->ctrl), dx, dy);
 
 	return a;
 }
 
-void
+static SPDrawAnchor *
 sp_draw_anchor_destroy (SPDrawAnchor *anchor)
 {
 	if (anchor->ctrl) {
 		gtk_object_destroy (GTK_OBJECT (anchor->ctrl));
 	}
 	g_free (anchor);
+	return NULL;
 }
 
 #define A_SNAP 4.0

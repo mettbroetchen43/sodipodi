@@ -1,7 +1,19 @@
-#ifndef SP_RECT_CONTEXT_H
-#define SP_RECT_CONTEXT_H
+#ifndef __SP_RECT_CONTEXT_H__
+#define __SP_RECT_CONTEXT_H__
 
-#include "knot.h"
+/*
+ * Rectangle drawing context
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL
+ */
+
 #include "event-context.h"
 
 #define SP_TYPE_RECT_CONTEXT            (sp_rect_context_get_type ())
@@ -15,7 +27,7 @@ typedef struct _SPRectContextClass SPRectContextClass;
 
 struct _SPRectContext {
 	SPEventContext event_context;
-	SPItem * item;
+	SPItem *item;
 	ArtPoint center;
 };
 

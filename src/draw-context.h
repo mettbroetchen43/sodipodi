@@ -27,6 +27,8 @@ typedef struct _SPDrawContext SPDrawContext;
 typedef struct _SPDrawContextClass SPDrawContextClass;
 typedef struct _SPDrawAnchor SPDrawAnchor;
 
+#define SP_DRAW_POINTS_MAX 16
+
 enum {
 	SP_DRAW_CONTEXT_IDLE,
 	SP_DRAW_CONTEXT_ADDLINE,
@@ -38,7 +40,9 @@ struct _SPDrawContext {
 
 	guint state : 2;
 
+#if 0
 	guint addline : 1;
+#endif
 
 	/* Current item */
 	SPItem *white_item;
@@ -58,29 +62,19 @@ struct _SPDrawContext {
 	SPCurve *blue_curve;
 
 	/* Green list */
-	GSList *gl;
+	GSList *green_bpaths;
 	/* Green curve */
-	SPCurve *gc;
+	SPCurve *green_curve;
 	/* Green anchor */
-	SPDrawAnchor *ga;
+	SPDrawAnchor *green_anchor;
 
 	/* Start anchor */
 	SPDrawAnchor *sa;
 	/* End anchor */
 	SPDrawAnchor *ea;
 
-	ArtPoint p[16];
+	ArtPoint p[SP_DRAW_POINTS_MAX];
 	gint npoints;
-
-	SPRepr * repr;
-#if 0
-	guint destroyid;
-
-	GnomeCanvasItem * citem;
-	ArtPoint cpos;
-	guint32 ccolor;
-	gboolean cinside;
-#endif
 };
 
 struct _SPDrawContextClass {
@@ -88,19 +82,5 @@ struct _SPDrawContextClass {
 };
 
 GtkType sp_draw_context_get_type (void);
-
-/* Drawing anchors */
-
-struct _SPDrawAnchor {
-	SPDrawContext *dc;
-	SPCurve *curve;
-	guint start : 1;
-	guint active : 1;
-	ArtPoint dp, wp;
-	GnomeCanvasItem *ctrl;
-};
-
-SPDrawAnchor *sp_draw_anchor_new (SPDrawContext *dc, SPCurve *curve, gboolean start, gdouble x, gdouble y);
-void sp_draw_anchor_destroy (SPDrawAnchor *anchor);
 
 #endif

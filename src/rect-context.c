@@ -1,4 +1,17 @@
-#define SP_RECT_CONTEXT_C
+#define __SP_RECT_CONTEXT_C__
+
+/*
+ * Rectangle drawing context
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@kaplinski.com>
+ *
+ * Copyright (C) 2000 Lauris Kaplinski
+ * Copyright (C) 2000-2001 Ximian, Inc.
+ * Copyright (C) 2002 Lauris Kaplinski
+ *
+ * Released under GNU GPL
+ */
 
 #include <math.h>
 #include "sp-rect.h"
