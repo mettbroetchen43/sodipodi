@@ -227,26 +227,48 @@ void sp_file_import (GtkWidget * widget)
 	gtk_widget_show (w);
 }
 
+void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
+{
+        GnomePrintContext * gpc;
+
+        gpc = gnome_print_context_new (printer);
+
+        sp_item_print (SP_ITEM (doc), gpc);
+
+        gnome_print_showpage (gpc);
+
+        gnome_print_context_close (gpc);
+#if 0
+        gnome_print_context_free (gpc);
+#endif
+}
+
+void sp_do_file_print (SPDocument * doc)
+{
+        GnomePrinter * printer;
+
+        printer = gnome_printer_dialog_new_modal ();
+        if (printer == NULL) return;
+
+        sp_do_file_print_to_printer (doc, printer);
+}
+
+void sp_do_file_print_to_file (SPDocument * doc, gchar *filename)
+{
+        GnomePrinter * printer;
+
+        printer = gnome_printer_new_generic_ps (filename);
+        if (printer == NULL) return;
+
+        sp_do_file_print_to_printer (doc, printer);
+}
+
 void sp_file_print (GtkWidget * widget)
 {
-	GnomePrinter * printer;
-	GnomePrintContext * gpc;
 	SPDocument * doc;
 
 	doc = SP_ACTIVE_DOCUMENT;
 	g_return_if_fail (doc != NULL);
 
-	printer = gnome_printer_dialog_new_modal ();
-	if (printer == NULL) return;
-
-	gpc = gnome_print_context_new (printer);
-
-	sp_item_print (SP_ITEM (doc), gpc);
-
-	gnome_print_showpage (gpc);
-
-	gnome_print_context_close (gpc);
-#if 0
-	gnome_print_context_free (gpc);
-#endif
+	sp_do_file_print (doc);
 }

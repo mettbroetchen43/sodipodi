@@ -1,8 +1,12 @@
-2000-01-18  Lauris Kaplinski <lauris@ariman.ee>
+2000-01-18 David Metcalfe (crdjm@sgi.com)
 
-    * helper/curve.*: It is refcounted path constructor/container with
-      handful of useful creating methods.
-    * draw-context.*: Hacked to use SPCurve interface
+    * Added command line options:
+     . [ -f ] file  to load file at startup
+     . -p file      to print the file without the GUI starting
+     . -t file      to send the print output to the named file
+    * -t is currently required for -p as I couldn't find a way of creating
+        a GnomePrinter that goes to the default printer. ??
+    * Printing doesn't require that X be started
 
 2000-01-16  Lauris Kaplinski <lauris@ariman.ee>
 

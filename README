@@ -30,6 +30,11 @@ Some demo pictures could have absolute paths for imported images. So if they
 do not display correctly, tune them with a good text editor.
 
 Some guidelines:
+
+Command line:
+-f filename                 opens file in windows
+-p filename -t outputfile   prints file - this does not require X
+
 Node editing does not update xml objects correctly yet. So before saving
 anything switch to selection mode.
 Ctrl & Shift modify dragging behaviour in some modes
