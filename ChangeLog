@@ -1,5 +1,13 @@
 2003-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/widgets/sp-xmlview-content.c: Port to GtkTextView
+
+	* src/dialogs/xml-tree.c: Port to GtkTextView
+
+	* src/text-context.c (sp_text_context_root_handler): Consume xdigits in unicode mode
+
+	* configure.in: Removed GTK_ENABLE_BROKEN
+
 	* src/dialogs/text-edit.c: Use GtkTextView/Buffer
 
 	* src/xml/repr-util.c (sp_repr_transfer_ids): Helper by MenTaLguY

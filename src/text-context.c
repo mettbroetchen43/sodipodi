@@ -393,6 +393,7 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 						return TRUE;
 					} else {
 						tc->unipos += 1;
+						return TRUE;
 					}
 				} else if (tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
 					return TRUE;

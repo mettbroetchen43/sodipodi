@@ -52,7 +52,7 @@ typedef struct _EditableDest {
 static GtkWidget * dialog = NULL;
 static GtkTooltips * tooltips = NULL;
 static GtkEditable * attr_name = NULL;
-static GtkEditable * attr_value = NULL;
+static GtkTextView *attr_value = NULL;
 static SPXMLViewTree * tree = NULL;
 static SPXMLViewAttrList * attributes = NULL;
 static SPXMLViewContent * content = NULL;
@@ -349,12 +349,12 @@ sp_xml_tree_dialog (void)
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 		gtk_box_pack_start (GTK_BOX (toolbar), sw, TRUE, TRUE, 0);
 
-		attr_value = GTK_EDITABLE (gtk_text_new (NULL, NULL));
+		attr_value = (GtkTextView *) gtk_text_view_new ();
 		gtk_tooltips_set_tip (tooltips, GTK_WIDGET (attr_value), _("Attribute value"), NULL);
 		gtk_signal_connect (GTK_OBJECT (attributes), "select_row", (GCallback) on_attr_select_row_set_value_content, attr_value);
 		gtk_signal_connect (GTK_OBJECT (attributes), "unselect_row", (GCallback) on_attr_unselect_row_clear_text, attr_value);
 		gtk_signal_connect (GTK_OBJECT (tree), "tree_unselect_row", (GCallback) on_tree_unselect_row_clear_text, attr_value);
-		gtk_editable_set_editable (GTK_EDITABLE (attr_value), TRUE);
+		gtk_text_view_set_editable (attr_value, TRUE);
 		gtk_container_add (GTK_CONTAINER (sw), GTK_WIDGET (attr_value));
 
 		gtk_paned_pack2 (GTK_PANED(attr_subpaned_container), GTK_WIDGET (toolbar), FALSE, TRUE);
@@ -653,7 +653,13 @@ on_tree_unselect_row_hide (GtkCTree * tree, GtkCTreeNode * node, gint column, gp
 void
 on_tree_unselect_row_clear_text (GtkCTree * tree, GtkCTreeNode * node, gint column, gpointer data)
 {
-	gtk_editable_delete_text (GTK_EDITABLE (data), 0, -1);
+	if (GTK_IS_EDITABLE (data)) {
+		gtk_editable_delete_text (GTK_EDITABLE (data), 0, -1);
+	} else if (GTK_IS_TEXT_VIEW (data)) {
+		GtkTextBuffer *tb;
+		tb = gtk_text_view_get_buffer (GTK_TEXT_VIEW (data));
+		gtk_text_buffer_set_text (tb, "", 0);
+	}
 }
 
 void
@@ -695,15 +701,12 @@ on_attr_select_row_set_name_content (GtkCList *list, gint row, gint column, GdkE
 void
 on_attr_select_row_set_value_content (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
 {
-	GtkEditable * editable;
-	const guchar * name, * value;
-	gint pos;
-	editable = GTK_EDITABLE (data);
+	GtkTextBuffer *tb;
+	const guchar *name, *value;
+	tb = gtk_text_view_get_buffer (GTK_TEXT_VIEW (data));
 	name = g_quark_to_string (sp_xmlview_attr_list_get_row_key (list, row));
 	value = sp_repr_attr (selected_repr, name);
-	gtk_editable_delete_text (editable, 0, -1);
-	pos = 0;
-	gtk_editable_insert_text (editable, value, strlen(value), &pos);
+	gtk_text_buffer_set_text (tb, value, strlen (value));
 }
 
 void
@@ -774,7 +777,13 @@ on_attr_unselect_row_disable (GtkCList *list, gint row, gint column, GdkEventBut
 void
 on_attr_unselect_row_clear_text (GtkCList *list, gint row, gint column, GdkEventButton *event, gpointer data)
 {
-	gtk_editable_delete_text (GTK_EDITABLE (data), 0, -1);
+	if (GTK_IS_EDITABLE (data)) {
+		gtk_editable_delete_text (GTK_EDITABLE (data), 0, -1);
+	} else if (GTK_IS_TEXT_VIEW (data)) {
+		GtkTextBuffer *tb;
+		tb = gtk_text_view_get_buffer (GTK_TEXT_VIEW (data));
+		gtk_text_buffer_set_text (tb, "", 0);
+	}
 }
 
 void
@@ -947,6 +956,7 @@ cmd_delete_attr (GtkObject * object, gpointer data)
 void
 cmd_set_attr (GtkObject * object, gpointer data)
 {
+	GtkTextIter start, end;
 	gchar * name;
 	gchar * value;
 	gint row;
@@ -954,7 +964,8 @@ cmd_set_attr (GtkObject * object, gpointer data)
 	g_assert (selected_repr != NULL);
 
 	name = gtk_editable_get_chars (attr_name, 0, -1);
-	value = gtk_editable_get_chars (attr_value, 0, -1);
+	gtk_text_buffer_get_bounds (gtk_text_view_get_buffer (attr_value), &start, &end);
+	value = gtk_text_buffer_get_text (gtk_text_view_get_buffer (attr_value), &start, &end, TRUE);
 
 	sp_repr_set_attr (selected_repr, name, value);
 

@@ -12,8 +12,6 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
-/* fixme: Without that GtkText does not work in Win32 */
-
 #include <config.h>
 
 #include <string.h>

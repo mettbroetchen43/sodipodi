@@ -2,7 +2,7 @@
 #define __SP_XMLVIEW_CONTENT_H__
 
 /*
- * Specialization of GtkText for editing XML node text
+ * Specialization of GtkTextView for editing XML node text
  *
  * Authors:
  *   MenTaLguY <mental@rydia.net>
@@ -16,7 +16,7 @@
 
 #include <stdio.h>
 
-#include <gtk/gtktext.h>
+#include <gtk/gtktextview.h>
 #include "../xml/repr.h"
 
 #define SP_TYPE_XMLVIEW_CONTENT (sp_xmlview_content_get_type ())
@@ -29,7 +29,7 @@ typedef struct _SPXMLViewContentClass SPXMLViewContentClass;
 
 struct _SPXMLViewContent
 {
-	GtkText text;
+	GtkTextView textview;
 
 	SPRepr * repr;
 	gint blocked;
@@ -37,7 +37,7 @@ struct _SPXMLViewContent
 
 struct _SPXMLViewContentClass
 {
-	GtkTextClass parent_class;
+	GtkTextViewClass parent_class;
 };
 
 GtkType sp_xmlview_content_get_type (void);
