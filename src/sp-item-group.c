@@ -2,18 +2,24 @@
 
 #include <gnome.h>
 #include "display/canvas-bgroup.h"
+#include "sp-object-repr.h"
 #include "sp-item.h"
+
+/* fixme: */
+#include "desktop-events.h"
 
 static void sp_group_class_init (SPGroupClass *klass);
 static void sp_group_init (SPGroup *group);
 static void sp_group_destroy (GtkObject *object);
 
+static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_group_add_child (SPObject * object, SPRepr * child);
+static void sp_group_remove_child (SPObject * object, SPRepr * child);
+
 static void sp_group_update (SPItem *item, gdouble affine[]);
 static void sp_group_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_group_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_group_description (SPItem * item);
-static void sp_group_read (SPItem * item, SPRepr * repr);
-static void sp_group_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
 static GnomeCanvasItem * sp_group_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static void sp_group_hide (SPItem * item, GnomeCanvas * canvas);
 static void sp_group_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);
@@ -43,22 +49,26 @@ sp_group_get_type (void)
 static void
 sp_group_class_init (SPGroupClass *klass)
 {
-	GtkObjectClass *object_class;
+	GtkObjectClass * gtk_object_class;
+	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	object_class = (GtkObjectClass *) klass;
+	gtk_object_class = (GtkObjectClass *) klass;
+	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
 	parent_class = gtk_type_class (sp_item_get_type ());
 
-	object_class->destroy = sp_group_destroy;
+	gtk_object_class->destroy = sp_group_destroy;
+
+	sp_object_class->build = sp_group_build;
+	sp_object_class->add_child = sp_group_add_child;
+	sp_object_class->remove_child = sp_group_remove_child;
 
 	item_class->update = sp_group_update;
 	item_class->bbox = sp_group_bbox;
 	item_class->print = sp_group_print;
 	item_class->description = sp_group_description;
-	item_class->read = sp_group_read;
-	item_class->read_attr = sp_group_read_attr;
 	item_class->show = sp_group_show;
 	item_class->hide = sp_group_hide;
 	item_class->paint = sp_group_paint;
@@ -84,6 +94,90 @@ sp_group_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void sp_group_build (SPObject * object, SPDocument * document, SPRepr * repr)
+{
+	SPGroup * group;
+	const GList * l;
+	gint order;
+	SPRepr * crepr;
+	const gchar * name;
+	GtkType type;
+	SPObject * child;
+
+	group = SP_GROUP (object);
+
+	if (SP_OBJECT_CLASS (parent_class)->build)
+		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+
+	l = sp_repr_children (repr);
+	order = 0;
+
+	while (l != NULL) {
+		crepr = (SPRepr *) l->data;
+		name = sp_repr_name (crepr);
+		g_assert (name != NULL);
+		type = sp_object_type_lookup (name);
+		if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
+			child = gtk_type_new (type);
+			g_assert (child != NULL);
+			child->parent = object;
+			child->order = order;
+			group->children = g_slist_append (group->children, child);
+			sp_object_invoke_build (child, document, crepr);
+		}
+		l = l->next;
+		order++;
+	}
+}
+
+static void
+sp_group_add_child (SPObject * object, SPRepr * child)
+{
+	SPGroup * group;
+	const gchar * name;
+	GtkType type;
+	SPObject * childobject;
+	GSList * l;
+	GnomeCanvasItem * ci;
+
+	group = SP_GROUP (object);
+
+	if (SP_OBJECT_CLASS (parent_class)->add_child)
+		(* SP_OBJECT_CLASS (parent_class)->add_child) (object, child);
+
+	name = sp_repr_name (child);
+	g_assert (name != NULL);
+	type = sp_object_type_lookup (name);
+	if (gtk_type_is_a (type, SP_TYPE_ITEM)) {
+		childobject = gtk_type_new (type);
+		g_assert (childobject != NULL);
+		childobject->parent = object;
+		childobject->order = sp_repr_position (child);
+		group->children = g_slist_append (group->children, childobject);
+		sp_object_invoke_build (childobject, object->document, child);
+
+		g_print ("sp-item-group.c: Please fix signals\n");
+
+		for (l = SP_ITEM (object)->display; l != NULL; l = l->next) {
+			ci = sp_item_show (SP_ITEM (childobject),
+				GNOME_CANVAS_GROUP (l->data),
+				sp_desktop_item_handler);
+			if (ci != NULL) {
+				SP_ITEM (childobject)->display =
+					g_slist_append (SP_ITEM (childobject)->display,
+					ci);
+			}
+		}
+	}
+}
+
+static void
+sp_group_remove_child (SPObject * object, SPRepr * child)
+{
+	if (SP_OBJECT_CLASS (parent_class)->remove_child)
+		(* SP_OBJECT_CLASS (parent_class)->remove_child) (object, child);
 }
 
 static void
@@ -156,18 +250,6 @@ static gchar * sp_group_description (SPItem * item)
 	snprintf (c, 128, _("Group of %d items"), n);
 
 	return g_strdup (c);
-}
-
-static void sp_group_read (SPItem * item, SPRepr * repr)
-{
-	if (SP_ITEM_CLASS (parent_class)->read)
-		(* SP_ITEM_CLASS (parent_class)->read) (item, repr);
-}
-
-static void sp_group_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
-{
-	if (SP_ITEM_CLASS (parent_class)->read_attr)
-		(* SP_ITEM_CLASS (parent_class)->read_attr) (item, repr, attr);
 }
 
 static GnomeCanvasItem *

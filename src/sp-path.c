@@ -13,9 +13,10 @@ static void sp_path_class_init (SPPathClass *class);
 static void sp_path_init (SPPath *path);
 static void sp_path_destroy (GtkObject *object);
 
+static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_path_read_attr (SPObject * object, const gchar * key);
+
 static void sp_path_bbox (SPItem * item, ArtDRect * bbox);
-static void sp_path_read (SPItem * item, SPRepr * repr);
-static void sp_path_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
 
 static void sp_path_private_remove_comp (SPPath * path, SPPathComp * comp);
 static void sp_path_private_add_comp (SPPath * path, SPPathComp * comp);
@@ -47,19 +48,22 @@ sp_path_get_type (void)
 static void
 sp_path_class_init (SPPathClass * klass)
 {
-	GtkObjectClass *object_class;
-	SPItemClass *item_class;
+	GtkObjectClass * gtk_object_class;
+	SPObjectClass * sp_object_class;
+	SPItemClass * item_class;
 
-	object_class = (GtkObjectClass *) klass;
+	gtk_object_class = (GtkObjectClass *) klass;
+	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
 	parent_class = gtk_type_class (sp_item_get_type ());
 
-	object_class->destroy = sp_path_destroy;
+	gtk_object_class->destroy = sp_path_destroy;
+
+	sp_object_class->build = sp_path_build;
+	sp_object_class->read_attr = sp_path_read_attr;
 
 	item_class->bbox = sp_path_bbox;
-	item_class->read = sp_path_read;
-	item_class->read_attr = sp_path_read_attr;
 
 	klass->remove_comp = sp_path_private_remove_comp;
 	klass->add_comp = sp_path_private_add_comp;
@@ -90,6 +94,48 @@ sp_path_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_path_build (SPObject * object, SPDocument * document, SPRepr * repr)
+{
+	if (SP_OBJECT_CLASS (parent_class)->build)
+		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+
+	sp_path_read_attr (object, "d");
+}
+
+static void
+sp_path_read_attr (SPObject * object, const gchar * attr)
+{
+	SPPath * path;
+	gchar * astr;
+	ArtBpath * bpath;
+	SPCurve * curve;
+	SPPathComp * comp;
+	double affine[6];
+
+	path = SP_PATH (object);
+
+	art_affine_identity (affine);
+
+	astr = (char *) sp_repr_attr (object->repr, attr);
+
+	if (strcmp (attr, "d") == 0) {
+		if (astr != NULL) {
+			/* fixme: */
+			sp_path_clear (path);
+			bpath = sp_svg_read_path (astr);
+			curve = sp_curve_new_from_bpath (bpath);
+			comp = sp_path_comp_new (curve, TRUE, affine);
+			sp_path_add_comp (path, comp);
+		}
+		return;
+	}
+
+	if (SP_OBJECT_CLASS (parent_class)->read_attr)
+		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+
 }
 
 static void
@@ -178,48 +224,6 @@ sp_path_bbox (SPItem * item, ArtDRect * bbox)
 		bbox->x1 = affine[4];
 		bbox->y1 = affine[5];
 	}
-}
-
-static void
-sp_path_read (SPItem * item, SPRepr * repr)
-{
-	if (SP_ITEM_CLASS (parent_class)->read)
-		(* SP_ITEM_CLASS (parent_class)->read) (item, repr);
-
-	sp_path_read_attr (item, repr, "d");
-}
-
-static void
-sp_path_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
-{
-	SPPath * path;
-	gchar * astr;
-	ArtBpath * bpath;
-	SPCurve * curve;
-	SPPathComp * comp;
-	double affine[6];
-
-	path = SP_PATH (item);
-
-	art_affine_identity (affine);
-
-	astr = (char *) sp_repr_attr (repr, attr);
-
-	if (strcmp (attr, "d") == 0) {
-		if (astr != NULL) {
-			/* fixme: */
-			sp_path_clear (path);
-			bpath = sp_svg_read_path (astr);
-			curve = sp_curve_new_from_bpath (bpath);
-			comp = sp_path_comp_new (curve, TRUE, affine);
-			sp_path_add_comp (path, comp);
-		}
-		return;
-	}
-
-	if (SP_ITEM_CLASS (parent_class)->read_attr)
-		SP_ITEM_CLASS (parent_class)->read_attr (item, repr, attr);
-
 }
 
 void

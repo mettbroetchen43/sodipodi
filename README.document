@@ -1,3 +1,18 @@
+31.03.2000
+
+Well, we end with 2 basic objects:
+
+SPDocument - the base of all nongraphical wizardry.
+Although you can well do all things via repr tree, Document will have some
+neat features:
+Undo stack managing: start_undo_step, end_undo_step
+Selection grabbing - we can select via reprs, which is otherwise impossible
+NB! SPDocument is SPRepr ref holder NB!
+
+SPDesktop - the base of all graphical wizardry
+
+What follows, is outdated...
+
 Document hierarchy
 
 This is currently in active rewrite. Structure should be something like:

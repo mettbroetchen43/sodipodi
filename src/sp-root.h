@@ -20,8 +20,11 @@ BEGIN_GNOME_DECLS
 #define SP_IS_ROOT(obj)         (GTK_CHECK_TYPE ((obj), SP_TYPE_ROOT))
 #define SP_IS_ROOT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ROOT))
 
+#ifndef SP_ROOT_DEFINED
+#define SP_ROOT_DEFINED
 typedef struct _SPRoot SPRoot;
 typedef struct _SPRootClass SPRootClass;
+#endif
 
 struct _SPRoot {
 	SPGroup group;

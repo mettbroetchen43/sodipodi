@@ -100,7 +100,7 @@ sp_desktop_destroy (GtkObject * object)
 
 	if (desktop->document) {
 		if (desktop->canvas)
-			sp_item_hide (SP_ITEM (desktop->document), desktop->canvas);
+			sp_item_hide (SP_ITEM (desktop->document->root), desktop->canvas);
 		gtk_object_unref (GTK_OBJECT (desktop->document));
 	}
 
@@ -226,8 +226,8 @@ sp_desktop_new (SPDocument * document)
 
 	/* fixme: Setup display rectangle */
 
-	dw = sp_document_page_width (document);
-	dh = sp_document_page_height (document);
+	dw = sp_document_width (document);
+	dh = sp_document_height (document);
 
 	gnome_canvas_item_new (desktop->grid, GNOME_TYPE_CANVAS_RECT,
 		"x1", 0.0, "y1", 0.0, "x2", dw, "y2", dh,
@@ -251,7 +251,7 @@ sp_desktop_new (SPDocument * document)
 	gtk_layout_set_hadjustment (GTK_LAYOUT (desktop->canvas), hadj);
 	gtk_layout_set_vadjustment (GTK_LAYOUT (desktop->canvas), vadj);
 
-	ci = sp_item_show (SP_ITEM (desktop->document), desktop->drawing, sp_desktop_item_handler);
+	ci = sp_item_show (SP_ITEM (desktop->document->root), desktop->drawing, sp_desktop_item_handler);
 
 	return desktop;
 }

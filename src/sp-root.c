@@ -16,9 +16,10 @@ static void sp_root_class_init (SPRootClass * klass);
 static void sp_root_init (SPRoot * root);
 static void sp_root_destroy (GtkObject * object);
 
+static void sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_root_read_attr (SPObject * object, const gchar * key);
+
 static void sp_root_print (SPItem * item, GnomePrintContext * gpc);
-static void sp_root_read (SPItem * item, SPRepr * repr);
-static void sp_root_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
 
 static SPGroupClass * parent_class;
 
@@ -45,19 +46,22 @@ sp_root_get_type (void)
 static void
 sp_root_class_init (SPRootClass *klass)
 {
-	GtkObjectClass *object_class;
-	SPItemClass *item_class;
+	GtkObjectClass * gtk_object_class;
+	SPObjectClass * sp_object_class;
+	SPItemClass * item_class;
 
-	object_class = (GtkObjectClass *) klass;
+	gtk_object_class = (GtkObjectClass *) klass;
+	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 
 	parent_class = gtk_type_class (sp_group_get_type ());
 
-	object_class->destroy = sp_root_destroy;
+	gtk_object_class->destroy = sp_root_destroy;
+
+	sp_object_class->build = sp_root_build;
+	sp_object_class->read_attr = sp_root_read_attr;
 
 	item_class->print = sp_root_print;
-	item_class->read = sp_root_read;
-	item_class->read_attr = sp_root_read_attr;
 }
 
 static void
@@ -81,6 +85,39 @@ sp_root_destroy (GtkObject *object)
 
 
 static void
+sp_root_build (SPObject * object, SPDocument * document, SPRepr * repr)
+{
+	if (((SPObjectClass *) parent_class)->build)
+		(* ((SPObjectClass *) parent_class)->build) (object, document, repr);
+
+	sp_root_read_attr (object, "width");
+	sp_root_read_attr (object, "height");
+}
+
+static void
+sp_root_read_attr (SPObject * object, const gchar * key)
+{
+	SPRoot * root;
+
+	root = SP_ROOT (object);
+
+	if (strcmp (key, "width") == 0) {
+		root->width = sp_repr_get_double_attribute (object->repr, key, root->width);
+		return;
+	}
+	if (strcmp (key, "height") == 0) {
+		root->height = sp_repr_get_double_attribute (object->repr, key, root->height);
+		/* fixme: */
+		art_affine_scale (SP_ITEM (root)->affine, 1.0, -1.0);
+		SP_ITEM (root)->affine[5] = root->height;
+		return;
+	}
+
+	if (((SPObjectClass *) parent_class)->read_attr)
+		(* ((SPObjectClass *) parent_class)->read_attr) (object, key);
+}
+
+static void
 sp_root_print (SPItem * item, GnomePrintContext * gpc)
 {
 	/* We translate here from SVG to PS coordinates */
@@ -92,36 +129,5 @@ sp_root_print (SPItem * item, GnomePrintContext * gpc)
 		(* ((SPItemClass *) parent_class)->print) (item, gpc);
 
 	gnome_print_grestore (gpc);
-}
-
-static void
-sp_root_read (SPItem * item, SPRepr * repr)
-{
-	if (((SPItemClass *) parent_class)->read)
-		(* ((SPItemClass *) parent_class)->read) (item, repr);
-	sp_root_read_attr (item, repr, "width");
-	sp_root_read_attr (item, repr, "height");
-}
-
-static void
-sp_root_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
-{
-	SPRoot * root;
-
-	root = (SPRoot *) item;
-
-	if (strcmp (attr, "width") == 0) {
-		root->width = sp_repr_get_double_attribute (repr, attr, root->width);
-		return;
-	}
-	if (strcmp (attr, "height") == 0) {
-		root->height = sp_repr_get_double_attribute (repr, attr, root->height);
-		/* fixme: */
-		art_affine_scale (item->affine, 1.0, -1.0);
-		item->affine[5] = root->height;
-		return;
-	}
-	if (((SPItemClass *) parent_class)->read_attr)
-		(* ((SPItemClass *) parent_class)->read_attr) (item, repr, attr);
 }
 

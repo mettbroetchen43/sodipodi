@@ -30,7 +30,7 @@ void sp_file_new (void)
 	SPDocument * doc;
 	SPMDIChild * child;
 
-	doc = sp_document_new ();
+	doc = sp_document_new (NULL);
 	g_return_if_fail (doc != NULL);
 
 	child = sp_mdi_child_new (doc);
@@ -56,7 +56,7 @@ file_open_ok (GtkWidget * widget, GtkFileSelection * fs)
 	open_path = g_dirname (filename);
 	if (open_path) open_path = g_strconcat (open_path, "/", NULL);
 
-	doc = sp_document_new_from_file (filename);
+	doc = sp_document_new (filename);
 	g_return_if_fail (doc != NULL);
 
 	child = sp_mdi_child_new (doc);
@@ -95,7 +95,7 @@ void sp_file_save (GtkWidget * widget)
 	g_return_if_fail (doc != NULL);
 
 	/* fixme: */
-	repr = SP_ITEM (doc)->repr;
+	repr = SP_OBJECT (doc->root)->repr;
 
 	fn = sp_repr_attr (repr, "SP-DOCNAME");
 	if (fn == NULL) {
@@ -120,7 +120,7 @@ file_save_ok (GtkWidget * widget, GtkFileSelection * fs)
 	doc = SP_ACTIVE_DOCUMENT;
 	g_return_if_fail (doc != NULL);
 
-	repr = SP_ITEM (doc)->repr;
+	repr = SP_OBJECT (doc->root)->repr;
 
 	if (save_path) g_free (save_path);
 	save_path = g_dirname (filename);
@@ -177,7 +177,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 	if (import_path) import_path = g_strconcat (import_path, "/", NULL);
 
 	doc = SP_ACTIVE_DOCUMENT;
-	rdoc = SP_ITEM (doc)->repr;
+	rdoc = SP_OBJECT (doc->root)->repr;
 
 	docbase = sp_repr_attr (rdoc, "SP-DOCBASE");
 	relname = sp_relative_path_from_path (filename, docbase);
@@ -252,7 +252,7 @@ file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 	doc = SP_ACTIVE_DOCUMENT;
 	g_return_if_fail (doc != NULL);
 
-	sp_item_bbox (SP_ITEM (doc), &bbox);
+	sp_item_bbox (SP_ITEM (doc->root), &bbox);
 
 	width = bbox.x1 - bbox.x0 + 2;
 	height = bbox.y1 - bbox.y0 + 2;
@@ -263,7 +263,7 @@ file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 	memset (pixels, 0, width * height * 4);
 	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
 
-	sp_item_i2d_affine (SP_ITEM (doc), affine);
+	sp_item_i2d_affine (SP_ITEM (doc->root), affine);
 	affine[4] -= bbox.x0;
 	affine[5] -= bbox.y0;
 	art_affine_scale (a, 1.0, -1.0);
@@ -271,7 +271,7 @@ file_export_ok (GtkWidget * widget, GtkFileSelection * fs)
 	art_affine_translate (a, 0.0, height);
 	art_affine_multiply (affine, affine, a);
 
-	sp_item_paint (SP_ITEM (doc), pixbuf, affine);
+	sp_item_paint (SP_ITEM (doc->root), pixbuf, affine);
 
 	sp_png_write_rgba (filename, pixbuf);
 
@@ -306,7 +306,7 @@ void sp_do_file_print_to_printer (SPDocument * doc, GnomePrinter * printer)
 
         gpc = gnome_print_context_new (printer);
 
-        sp_item_print (SP_ITEM (doc), gpc);
+        sp_item_print (SP_ITEM (doc->root), gpc);
 
         gnome_print_showpage (gpc);
 

@@ -190,7 +190,7 @@ sp_zoom_drawing (GtkWidget * widget)
 	SPItem * docitem;
 	ArtDRect d;
 
-	docitem = SP_ITEM (SP_ACTIVE_DOCUMENT);
+	docitem = SP_ITEM (sp_document_root (SP_ACTIVE_DOCUMENT));
 
 	g_return_if_fail (docitem != NULL);
 
@@ -208,8 +208,8 @@ sp_zoom_page (GtkWidget * widget)
 
 	d.x0 = 0.0;
 	d.y0 = 0.0;
-	d.x1 = sp_document_page_width (SP_ACTIVE_DOCUMENT);
-	d.y1 = sp_document_page_height (SP_ACTIVE_DOCUMENT);
+	d.x1 = sp_document_width (SP_ACTIVE_DOCUMENT);
+	d.y1 = sp_document_height (SP_ACTIVE_DOCUMENT);
 
 	if ((fabs (d.x1 - d.x0) < 1.0) || (fabs (d.y1 - d.y0) < 1.0)) return;
 

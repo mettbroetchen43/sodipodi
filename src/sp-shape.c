@@ -22,10 +22,11 @@ static void sp_shape_class_init (SPShapeClass *class);
 static void sp_shape_init (SPShape *shape);
 static void sp_shape_destroy (GtkObject *object);
 
+static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_shape_read_attr (SPObject * object, const gchar * attr);
+
 static void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
-static void sp_shape_read (SPItem * item, SPRepr * repr);
-static void sp_shape_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
 static GnomeCanvasItem * sp_shape_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static void sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine);
 
@@ -59,22 +60,25 @@ sp_shape_get_type (void)
 static void
 sp_shape_class_init (SPShapeClass * klass)
 {
-	GtkObjectClass * object_class;
+	GtkObjectClass * gtk_object_class;
+	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 	SPPathClass * path_class;
 
-	object_class = (GtkObjectClass *) klass;
+	gtk_object_class = (GtkObjectClass *) klass;
+	sp_object_class = (SPObjectClass *) klass;
 	item_class = (SPItemClass *) klass;
 	path_class = (SPPathClass *) klass;
 
 	parent_class = gtk_type_class (sp_path_get_type ());
 
-	object_class->destroy = sp_shape_destroy;
+	gtk_object_class->destroy = sp_shape_destroy;
+
+	sp_object_class->build = sp_shape_build;
+	sp_object_class->read_attr = sp_shape_read_attr;
 
 	item_class->print = sp_shape_print;
 	item_class->description = sp_shape_description;
-	item_class->read = sp_shape_read;
-	item_class->read_attr = sp_shape_read_attr;
 	item_class->show = sp_shape_show;
 	item_class->paint = sp_shape_paint;
 
@@ -106,6 +110,55 @@ sp_shape_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr)
+{
+	if (SP_OBJECT_CLASS (parent_class)->build)
+		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
+
+	sp_shape_read_attr (object, "style");
+}
+
+static void
+sp_shape_read_attr (SPObject * object, const gchar * attr)
+{
+	SPShape * shape;
+	SPCSSAttr * css;
+	SPFill * fill;
+	SPStroke * stroke;
+	SPCanvasShape * cs;
+	GSList * l;
+
+	shape = SP_SHAPE (object);
+
+#ifdef SHAPE_VERBOSE
+g_print ("sp_shape_read_attr: %s\n", attr);
+#endif
+
+	if (strcmp (attr, "style") == 0) {
+		css = sp_repr_css_attr_inherited (object->repr, attr);
+		fill = sp_fill_new ();
+		stroke = sp_stroke_new ();
+		sp_fill_read (fill, css);
+		sp_stroke_read (stroke, css);
+		sp_repr_css_attr_unref (css);
+		sp_fill_unref (shape->fill);
+		shape->fill = fill;
+		sp_stroke_unref (shape->stroke);
+		shape->stroke = stroke;
+
+		for (l = SP_ITEM (shape)->display; l != NULL; l = l->next) {
+			cs = SP_CANVAS_SHAPE (l->data);
+			sp_canvas_shape_set_fill (cs, shape->fill);
+			sp_canvas_shape_set_stroke (cs, shape->stroke);
+		}
+		return;
+	}
+
+	if (SP_OBJECT_CLASS (parent_class)->read_attr)
+		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
 }
 
 static void
@@ -206,55 +259,6 @@ static gchar *
 sp_shape_description (SPItem * item)
 {
 	return g_strdup (_("A path - whatever it means"));
-}
-
-static void
-sp_shape_read (SPItem * item, SPRepr * repr)
-{
-	if (SP_ITEM_CLASS (parent_class)->read)
-		SP_ITEM_CLASS (parent_class)->read (item, repr);
-
-	sp_shape_read_attr (item, repr, "style");
-}
-
-static void
-sp_shape_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
-{
-	SPShape * shape;
-	SPCSSAttr * css;
-	SPFill * fill;
-	SPStroke * stroke;
-	SPCanvasShape * cs;
-	GSList * l;
-
-	shape = SP_SHAPE (item);
-
-#ifdef SHAPE_VERBOSE
-g_print ("sp_shape_read_attr: %s\n", attr);
-#endif
-
-	if (strcmp (attr, "style") == 0) {
-		css = sp_repr_css_attr_inherited (repr, attr);
-		fill = sp_fill_new ();
-		stroke = sp_stroke_new ();
-		sp_fill_read (fill, css);
-		sp_stroke_read (stroke, css);
-		sp_repr_css_attr_unref (css);
-		sp_fill_unref (shape->fill);
-		shape->fill = fill;
-		sp_stroke_unref (shape->stroke);
-		shape->stroke = stroke;
-
-		for (l = item->display; l != NULL; l = l->next) {
-			cs = SP_CANVAS_SHAPE (l->data);
-			sp_canvas_shape_set_fill (cs, shape->fill);
-			sp_canvas_shape_set_stroke (cs, shape->stroke);
-		}
-		return;
-	}
-
-	if (SP_ITEM_CLASS (parent_class)->read_attr)
-		SP_ITEM_CLASS (parent_class)->read_attr (item, repr, attr);
 }
 
 static GnomeCanvasItem *

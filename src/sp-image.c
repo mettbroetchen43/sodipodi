@@ -14,12 +14,13 @@ static void sp_image_class_init (SPImageClass * class);
 static void sp_image_init (SPImage * image);
 static void sp_image_destroy (GtkObject * object);
 
+static void sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_image_read_attr (SPObject * object, const gchar * key);
+
 static void sp_image_update (SPItem * item, gdouble affine[]);
 static void sp_image_bbox (SPItem * item, ArtDRect * bbox);
 static void sp_image_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_image_description (SPItem * item);
-static void sp_image_read (SPItem * item, SPRepr * repr);
-static void sp_image_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
 static GnomeCanvasItem * sp_image_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 static void sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
@@ -52,24 +53,27 @@ sp_image_get_type (void)
 }
 
 static void
-sp_image_class_init (SPImageClass *class)
+sp_image_class_init (SPImageClass * klass)
 {
-	GtkObjectClass *object_class;
+	GtkObjectClass * gtk_object_class;
+	SPObjectClass * sp_object_class;
 	SPItemClass * item_class;
 
-	object_class = (GtkObjectClass *) class;
-	item_class = (SPItemClass *) class;
+	gtk_object_class = (GtkObjectClass *) klass;
+	sp_object_class = (SPObjectClass *) klass;
+	item_class = (SPItemClass *) klass;
 
 	parent_class = gtk_type_class (sp_item_get_type ());
 
-	object_class->destroy = sp_image_destroy;
+	gtk_object_class->destroy = sp_image_destroy;
+
+	sp_object_class->build = sp_image_build;
+	sp_object_class->read_attr = sp_image_read_attr;
 
 	item_class->update = sp_image_update;
 	item_class->bbox = sp_image_bbox;
 	item_class->print = sp_image_print;
 	item_class->description = sp_image_description;
-	item_class->read = sp_image_read;
-	item_class->read_attr = sp_image_read_attr;
 	item_class->show = sp_image_show;
 	item_class->paint = sp_image_paint;
 }
@@ -91,6 +95,43 @@ sp_image_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_image_build (SPObject * object, SPDocument * document, SPRepr * repr)
+{
+	if (SP_OBJECT_CLASS (parent_class)->build)
+		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
+
+	sp_image_read_attr (object, "src");
+}
+
+static void
+sp_image_read_attr (SPObject * object, const gchar * key)
+{
+	SPImage * image;
+	GdkPixbuf * pixbuf;
+
+	image = SP_IMAGE (object);
+
+	pixbuf = NULL;
+
+	if (strcmp (key, "src") == 0) {
+		pixbuf = sp_image_repr_read_image (object->repr);
+		pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
+		g_return_if_fail (pixbuf != NULL);
+
+		if (image->pixbuf != NULL)
+			gdk_pixbuf_unref (image->pixbuf);
+		image->pixbuf = pixbuf;
+
+		sp_item_request_canvas_update (SP_ITEM (image));
+		return;
+	}
+
+	if (SP_OBJECT_CLASS (parent_class)->read_attr)
+		SP_OBJECT_CLASS (parent_class)->read_attr (object, key);
+
 }
 
 static void
@@ -198,43 +239,6 @@ sp_image_description (SPItem * item)
 	if (image->pixbuf == NULL)
 		return g_strdup (_("Broken bitmap"));
 	return g_strdup (_("Color bitmap"));
-}
-
-static void
-sp_image_read (SPItem * item, SPRepr * repr)
-{
-	if (SP_ITEM_CLASS (parent_class)->read)
-		SP_ITEM_CLASS (parent_class)->read (item, repr);
-
-	sp_image_read_attr (item, repr, "src");
-}
-
-static void
-sp_image_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
-{
-	SPImage * image;
-	GdkPixbuf * pixbuf;
-
-	image = SP_IMAGE (item);
-
-	pixbuf = NULL;
-
-	if (strcmp (attr, "src") == 0) {
-		pixbuf = sp_image_repr_read_image (repr);
-		pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
-		g_return_if_fail (pixbuf != NULL);
-
-		if (image->pixbuf != NULL)
-			gdk_pixbuf_unref (image->pixbuf);
-		image->pixbuf = pixbuf;
-
-		sp_item_request_canvas_update (SP_ITEM (image));
-		return;
-	}
-
-	if (SP_ITEM_CLASS (parent_class)->read_attr)
-		SP_ITEM_CLASS (parent_class)->read_attr (item, repr, attr);
-
 }
 
 static GnomeCanvasItem *

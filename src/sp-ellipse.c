@@ -12,8 +12,8 @@ static void sp_ellipse_class_init (SPEllipseClass *class);
 static void sp_ellipse_init (SPEllipse *ellipse);
 static void sp_ellipse_destroy (GtkObject *object);
 
-static void sp_ellipse_read (SPItem * item, SPRepr * repr);
-static void sp_ellipse_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
+static void sp_ellipse_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_ellipse_read_attr (SPObject * object, const gchar * attr);
 
 static void sp_ellipse_set_shape (SPEllipse * ellipse);
 
@@ -43,18 +43,20 @@ sp_ellipse_get_type (void)
 static void
 sp_ellipse_class_init (SPEllipseClass *class)
 {
-	GtkObjectClass *object_class;
+	GtkObjectClass * gtk_object_class;
+	SPObjectClass * sp_object_class;
 	SPItemClass *item_class;
 
-	object_class = (GtkObjectClass *) class;
+	gtk_object_class = (GtkObjectClass *) class;
+	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
-	object_class->destroy = sp_ellipse_destroy;
+	gtk_object_class->destroy = sp_ellipse_destroy;
 
-	item_class->read = sp_ellipse_read;
-	item_class->read_attr = sp_ellipse_read_attr;
+	sp_object_class->build = sp_ellipse_build;
+	sp_object_class->read_attr = sp_ellipse_read_attr;
 }
 
 static void
@@ -80,6 +82,82 @@ sp_ellipse_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_ellipse_build (SPObject * object, SPDocument * document, SPRepr * repr)
+{
+	if (SP_OBJECT_CLASS(parent_class)->build)
+		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+
+	sp_ellipse_read_attr (object, "x");
+	sp_ellipse_read_attr (object, "y");
+	sp_ellipse_read_attr (object, "rx");
+	sp_ellipse_read_attr (object, "ry");
+	sp_ellipse_read_attr (object, "start");
+	sp_ellipse_read_attr (object, "end");
+	sp_ellipse_read_attr (object, "closed");
+}
+
+static void
+sp_ellipse_read_attr (SPObject * object, const gchar * attr)
+{
+	SPEllipse * ellipse;
+	double n;
+
+	ellipse = SP_ELLIPSE (object);
+
+#ifdef ELLIPSE_VERBOSE
+g_print ("sp_ellipse_read_attr: attr %s\n", attr);
+#endif
+
+	if (strcmp (attr, "x") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->x);
+		ellipse->x = n;
+		sp_ellipse_set_shape (ellipse);
+		return;
+	}
+	if (strcmp (attr, "y") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->y);
+		ellipse->y = n;
+		sp_ellipse_set_shape (ellipse);
+		return;
+	}
+	if (strcmp (attr, "rx") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->rx);
+		ellipse->rx = n;
+		sp_ellipse_set_shape (ellipse);
+		return;
+	}
+	if (strcmp (attr, "ry") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->ry);
+		ellipse->ry = n;
+		sp_ellipse_set_shape (ellipse);
+		return;
+	}
+	if (strcmp (attr, "start") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->start);
+		ellipse->start = n;
+		sp_ellipse_set_shape (ellipse);
+		return;
+	}
+	if (strcmp (attr, "end") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, ellipse->end);
+		ellipse->end = n;
+		sp_ellipse_set_shape (ellipse);
+		return;
+	}
+	if (strcmp (attr, "closed") == 0) {
+		if (sp_repr_attr_is_set (object->repr, attr))
+			ellipse->closed = TRUE;
+		else
+			ellipse->closed = FALSE;
+		sp_ellipse_set_shape (ellipse);
+		return;
+	}
+
+	if (SP_OBJECT_CLASS(parent_class)->read_attr)
+		(* SP_OBJECT_CLASS (parent_class)->read_attr) (object, attr);
 }
 
 #define C1 0.552
@@ -182,82 +260,6 @@ g_print ("step %d s %f e %f coords %f %f %f %f %f %f\n",
 	sp_path_clear (SP_PATH (ellipse));
 	sp_path_add_bpath (SP_PATH (ellipse), c, TRUE, NULL);
 	sp_curve_unref (c);
-}
-
-static void
-sp_ellipse_read (SPItem * item, SPRepr * repr)
-{
-	if (SP_ITEM_CLASS(parent_class)->read)
-		(* SP_ITEM_CLASS(parent_class)->read) (item, repr);
-
-	sp_ellipse_read_attr (item, repr, "x");
-	sp_ellipse_read_attr (item, repr, "y");
-	sp_ellipse_read_attr (item, repr, "rx");
-	sp_ellipse_read_attr (item, repr, "ry");
-	sp_ellipse_read_attr (item, repr, "start");
-	sp_ellipse_read_attr (item, repr, "end");
-	sp_ellipse_read_attr (item, repr, "closed");
-}
-
-static void
-sp_ellipse_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
-{
-	SPEllipse * ellipse;
-	double n;
-
-	ellipse = SP_ELLIPSE (item);
-
-#ifdef ELLIPSE_VERBOSE
-g_print ("sp_ellipse_read_attr: attr %s\n", attr);
-#endif
-
-	if (strcmp (attr, "x") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, ellipse->x);
-		ellipse->x = n;
-		sp_ellipse_set_shape (ellipse);
-		return;
-	}
-	if (strcmp (attr, "y") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, ellipse->y);
-		ellipse->y = n;
-		sp_ellipse_set_shape (ellipse);
-		return;
-	}
-	if (strcmp (attr, "rx") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, ellipse->rx);
-		ellipse->rx = n;
-		sp_ellipse_set_shape (ellipse);
-		return;
-	}
-	if (strcmp (attr, "ry") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, ellipse->ry);
-		ellipse->ry = n;
-		sp_ellipse_set_shape (ellipse);
-		return;
-	}
-	if (strcmp (attr, "start") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, ellipse->start);
-		ellipse->start = n;
-		sp_ellipse_set_shape (ellipse);
-		return;
-	}
-	if (strcmp (attr, "end") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, ellipse->end);
-		ellipse->end = n;
-		sp_ellipse_set_shape (ellipse);
-		return;
-	}
-	if (strcmp (attr, "closed") == 0) {
-		if (sp_repr_attr_is_set (repr, attr))
-			ellipse->closed = TRUE;
-		else
-			ellipse->closed = FALSE;
-		sp_ellipse_set_shape (ellipse);
-		return;
-	}
-
-	if (SP_ITEM_CLASS(parent_class)->read_attr)
-		(* SP_ITEM_CLASS(parent_class)->read_attr) (item, repr, attr);
 }
 
 #if 0

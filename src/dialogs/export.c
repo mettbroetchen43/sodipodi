@@ -386,8 +386,8 @@ sp_export_page (GtkToggleButton * tb)
 
 	bbox.x0 = 0.0;
 	bbox.y0 = 0.0;
-	bbox.x1 = sp_document_page_width (doc);
-	bbox.y1 = sp_document_page_height (doc);
+	bbox.x1 = sp_document_width (doc);
+	bbox.y1 = sp_document_height (doc);
 
 	sp_export_set_area (xml, &bbox);
 }

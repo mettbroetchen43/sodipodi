@@ -186,7 +186,7 @@ sp_sel_trans_ungrab (SPSelTrans * seltrans)
 		while (l != NULL) {
 			item = SP_ITEM (l->data);
 			sp_svg_write_affine (tstr, 79, item->affine);
-			sp_repr_set_attr (item->repr, "transform", tstr);
+			sp_repr_set_attr (SP_OBJECT (item)->repr, "transform", tstr);
 			l = l->next;
 		}
 	}

@@ -1732,13 +1732,13 @@ sp_nodepath_set_selection (SPNodePath * nodepath)
 	typestr = g_new (gchar, n_bpaths);
 	for (i = 0; i < n_bpaths; i++) typestr[i] = 'c';
 	typestr[n_bpaths] = '\0';
-	rtstr = sp_repr_attr (item->repr, "SODIPODI-PATH-NODE-TYPES");
+	rtstr = sp_repr_attr (SP_OBJECT (item)->repr, "SODIPODI-PATH-NODE-TYPES");
 	if (rtstr != NULL) {
 		len = strlen (rtstr);
 		for (i = 0; (i < len) && (i < n_bpaths); i++) typestr[i] = rtstr[i];
 	}
 
-	nodepath->repr = item->repr;
+	nodepath->repr = SP_OBJECT (item)->repr;
 	nodepath->path = path;
 	/* fixme: */
 	sp_item_i2d_affine (SP_ITEM (path), nodepath->i2d);

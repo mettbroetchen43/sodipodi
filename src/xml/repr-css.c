@@ -93,7 +93,7 @@ sp_repr_css_add_components (SPCSSAttr * css, SPRepr * repr, const gchar * attr)
 			if (*val == '\0') break;
 
 			if (!sp_repr_attr_is_set ((SPRepr *) css, key))
-				sp_repr_set_attr ((SPRepr *) css, g_strdup (key), val);
+				sp_repr_set_attr ((SPRepr *) css, key, val);
 		}
 		g_strfreev (token);
 		g_free (new_str);

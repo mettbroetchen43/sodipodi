@@ -63,7 +63,7 @@ sp_sm_create_child_from_config (const gchar * config)
 	SPDocument * doc;
 	SPMDIChild * child;
 
-	doc = sp_document_new_from_file (config);
+	doc = sp_document_new (config);
 	g_return_val_if_fail (doc != NULL, NULL);
 
 	child = sp_mdi_child_new (doc);

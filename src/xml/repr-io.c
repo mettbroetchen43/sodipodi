@@ -35,13 +35,11 @@ static SPRepr * sp_repr_svg_read_node (xmlNodePtr node)
 
 	g_return_val_if_fail (node != NULL, NULL);
 
-	repr = sp_repr_new ();
-
-	sp_repr_set_name (repr, g_strdup (node->name));
+	repr = sp_repr_new_with_name (node->name);
 
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
 		if (prop->val) {
-			sp_repr_set_attr (repr, g_strdup (prop->name), prop->val->content);
+			sp_repr_set_attr (repr, prop->name, prop->val->content);
 		}
 	}
 

@@ -131,7 +131,7 @@ sp_mdi_child_get_config_string (GnomeMDIChild * mdi_child, gpointer data)
 	spchild = SP_MDI_CHILD (mdi_child);
 
 	/* fixme: */
-	repr = SP_ITEM (spchild->document)->repr;
+	repr = SP_OBJECT (sp_document_root (spchild->document))->repr;
 	docname = sp_repr_attr (repr, "SP-DOCNAME");
 
 	if (docname != NULL) return g_strdup (docname);

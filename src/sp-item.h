@@ -27,13 +27,19 @@
 #include <libgnomeprint/gnome-print.h>
 #include <libgnomeui/gnome-canvas.h>
 #include <libart_lgpl/art_pixbuf.h>
-#include "xml/repr.h"
+#include "sp-object.h"
 
+#ifndef SP_ITEM_DEFINED
+#define SP_ITEM_DEFINED
 typedef struct _SPItem SPItem;
 typedef struct _SPItemClass SPItemClass;
+#endif
 
+#ifndef SP_GROUP_DEFINED
+#define SP_GROUP_DEFINED
 typedef struct _SPGroup SPGroup;
 typedef struct _SPGroupClass SPGroupClass;
+#endif
 
 #define SP_TYPE_ITEM            (sp_item_get_type ())
 #define SP_ITEM(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_ITEM, SPItem))
@@ -42,15 +48,13 @@ typedef struct _SPGroupClass SPGroupClass;
 #define SP_IS_ITEM_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_ITEM))
 
 struct _SPItem {
-	GtkObject object;
-	SPGroup * parent;
-	SPRepr * repr;
+	SPObject object;
 	double affine[6];
 	GSList * display;
 };
 
 struct _SPItemClass {
-	GtkObjectClass parent_class;
+	SPObjectClass parent_class;
 
 	void (* update) (SPItem * item, gdouble affine[]);
 
@@ -63,11 +67,6 @@ struct _SPItemClass {
 	/* Give short description of item (for status display) */
 
 	gchar * (* description) (SPItem * item);
-
-	/* Read item settings from SPRepr item */
-
-	void (* read) (SPItem * item, SPRepr * repr);
-	void (* read_attr) (SPItem * item, SPRepr * repr, const gchar * key);
 
 	/* Silly, silly. We should assign handlers a more intelligent way */
 	GnomeCanvasItem * (* show) (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
@@ -86,10 +85,12 @@ struct _SPItemClass {
 
 GtkType sp_item_get_type (void);
 
+#if 0
 /* Constructors */
 
 SPItem * sp_item_new_root (SPRepr * repr);
 SPItem * sp_item_new (SPRepr * repr, SPGroup * parent);
+#endif
 
 /* Methods */
 
@@ -97,8 +98,12 @@ void sp_item_update (SPItem * item, gdouble affine[]);
 void sp_item_bbox (SPItem * item, ArtDRect * bbox);
 gchar * sp_item_description (SPItem * item);
 void sp_item_print (SPItem * item, GnomePrintContext * gpc);
+
+#if 0
 void sp_item_read (SPItem * item, SPRepr * repr);
 void sp_item_read_attr (SPItem * item, SPRepr * repr, const gchar * key);
+#endif
+
 GnomeCanvasItem * sp_item_show (SPItem * item, GnomeCanvasGroup * canvas_group, gpointer handler);
 void sp_item_hide (SPItem * item, GnomeCanvas * canvas);
 void sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[]);

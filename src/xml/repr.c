@@ -34,9 +34,10 @@ SPRepr * sp_repr_new (void)
 	repr->data = NULL;
 	repr->destroy = NULL;
 	repr->child_added = NULL;
-	repr->unparented = NULL;
+	repr->child_removed = NULL;
 	repr->attr_changed = NULL;
 	repr->content_changed = NULL;
+	repr->order_changed = NULL;
 
 	return repr;
 }
@@ -253,8 +254,8 @@ void sp_repr_remove_child (SPRepr * repr, SPRepr * child)
 	g_return_if_fail (child != NULL);
 	g_return_if_fail (child->parent == repr);
 
-	if (child->unparented)
-		child->unparented (child, child->unparented_data);
+	if (repr->child_removed)
+		repr->child_removed (repr, child, repr->child_removed_data);
 
 	repr->children = g_list_remove (repr->children, child);
 	child->parent = NULL;
@@ -277,9 +278,9 @@ sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer d
 		repr->child_added_data = data;
 		return;
 	}
-	if (strcmp (name, "unparented") == 0) {
-		repr->unparented = (void (*)(SPRepr *, gpointer)) func;
-		repr->unparented_data = data;
+	if (strcmp (name, "child_removed") == 0) {
+		repr->child_removed = (void (*)(SPRepr *, SPRepr *, gpointer)) func;
+		repr->child_removed_data = data;
 		return;
 	}
 	if (strcmp (name, "attr_changed") == 0) {
@@ -290,6 +291,11 @@ sp_repr_set_signal (SPRepr * repr, const gchar * name, gpointer func, gpointer d
 	if (strcmp (name, "content_changed") == 0) {
 		repr->content_changed = (void (*)(SPRepr *, gpointer)) func;
 		repr->content_changed_data = data;
+		return;
+	}
+	if (strcmp (name, "order_changed") == 0) {
+		repr->order_changed = (void (*)(SPRepr *, gpointer)) func;
+		repr->order_changed_data = data;
 		return;
 	}
 	g_assert_not_reached ();

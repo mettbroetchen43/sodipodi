@@ -15,12 +15,14 @@ struct _SPRepr {
 	gpointer destroy_data;
 	void (* child_added)(SPRepr *, SPRepr *, gpointer);
 	gpointer child_added_data;
-	void (* unparented)(SPRepr *, gpointer);
-	gpointer unparented_data;
+	void (* child_removed)(SPRepr *, SPRepr *, gpointer);
+	gpointer child_removed_data;
 	void (* attr_changed)(SPRepr *, const gchar *, gpointer);
 	gpointer attr_changed_data;
 	void (* content_changed)(SPRepr *, gpointer);
 	gpointer content_changed_data;
+	void (* order_changed)(SPRepr *, gpointer);
+	gpointer order_changed_data;
 };
 
 /* Returns list of attribute strings

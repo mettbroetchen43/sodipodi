@@ -118,7 +118,7 @@ main (int argc, char *argv[])
 		setlocale (LC_NUMERIC, "C");
 
 		while (fl) {
-			doc = sp_document_new_from_file ((gchar *) fl->data);
+			doc = sp_document_new ((gchar *) fl->data);
 			if (doc == NULL) {
 				g_log ("Sodipodi",
 					G_LOG_LEVEL_MESSAGE,
@@ -175,7 +175,7 @@ main (int argc, char *argv[])
 
 			child = NULL;
 			while (fl) {
-				doc = sp_document_new_from_file ((gchar *) fl->data);
+				doc = sp_document_new ((gchar *) fl->data);
 				if (doc == NULL) {
 					g_log ("Sodipodi",
 						G_LOG_LEVEL_MESSAGE,
@@ -192,7 +192,7 @@ main (int argc, char *argv[])
 
 			if (child == NULL) {
 				/* No files were loaded */
-				doc = sp_document_new ();
+				doc = sp_document_new (NULL);
 				g_return_val_if_fail (doc != NULL, 1);
 				child = sp_mdi_child_new (doc);
 				g_return_val_if_fail (child != NULL, 1);
@@ -240,8 +240,10 @@ sp_process_args (poptContext ctx)
 
 	args = poptGetArgs (ctx);
 
-	for (i = 0; args[i] != NULL; i++) {
-		fl = g_slist_append (fl, (gpointer) args[i]);
+	if (args != NULL) {
+		for (i = 0; args[i] != NULL; i++) {
+			fl = g_slist_append (fl, (gpointer) args[i]);
+		}
 	}
 
 	return fl;

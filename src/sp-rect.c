@@ -9,10 +9,11 @@ static void sp_rect_class_init (SPRectClass *class);
 static void sp_rect_init (SPRect *rect);
 static void sp_rect_destroy (GtkObject *object);
 
+static void sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr);
+static void sp_rect_read_attr (SPObject * object, const gchar * attr);
+
 static void sp_rect_bbox (SPItem * item, ArtDRect * bbox);
 static gchar * sp_rect_description (SPItem * item);
-static void sp_rect_read (SPItem * item, SPRepr * repr);
-static void sp_rect_read_attr (SPItem * item, SPRepr * repr, const gchar * attr);
 
 static void sp_rect_set_shape (SPRect * rect);
 
@@ -42,20 +43,23 @@ sp_rect_get_type (void)
 static void
 sp_rect_class_init (SPRectClass *class)
 {
-	GtkObjectClass *object_class;
-	SPItemClass *item_class;
+	GtkObjectClass * gtk_object_class;
+	SPObjectClass * sp_object_class;
+	SPItemClass * item_class;
 
-	object_class = (GtkObjectClass *) class;
+	gtk_object_class = (GtkObjectClass *) class;
+	sp_object_class = (SPObjectClass *) class;
 	item_class = (SPItemClass *) class;
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
-	object_class->destroy = sp_rect_destroy;
+	gtk_object_class->destroy = sp_rect_destroy;
+
+	sp_object_class->build = sp_rect_build;
+	sp_object_class->read_attr = sp_rect_read_attr;
 
 	item_class->bbox = sp_rect_bbox;
 	item_class->description = sp_rect_description;
-	item_class->read = sp_rect_read;
-	item_class->read_attr = sp_rect_read_attr;
 }
 
 static void
@@ -79,6 +83,77 @@ sp_rect_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr)
+{
+
+	if (SP_OBJECT_CLASS(parent_class)->build)
+		(* SP_OBJECT_CLASS(parent_class)->build) (object, document, repr);
+
+	sp_rect_read_attr (object, "x");
+	sp_rect_read_attr (object, "y");
+	sp_rect_read_attr (object, "width");
+	sp_rect_read_attr (object, "height");
+	sp_rect_read_attr (object, "rx");
+	sp_rect_read_attr (object, "ry");
+}
+
+static void
+sp_rect_read_attr (SPObject * object, const gchar * attr)
+{
+	SPRect * rect;
+	double n;
+
+	rect = SP_RECT (object);
+
+#ifdef RECT_VERBOSE
+g_print ("sp_rect_read_attr: attr %s\n", attr);
+#endif
+
+	/* fixme: we should really collect updates */
+
+	if (strcmp (attr, "x") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, rect->x);
+		rect->x = n;
+		sp_rect_set_shape (rect);
+		return;
+	}
+	if (strcmp (attr, "y") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, rect->y);
+		rect->y = n;
+		sp_rect_set_shape (rect);
+		return;
+	}
+	if (strcmp (attr, "width") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, rect->width);
+		rect->width = n;
+		sp_rect_set_shape (rect);
+		return;
+	}
+	if (strcmp (attr, "height") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, rect->height);
+		rect->height = n;
+		sp_rect_set_shape (rect);
+		return;
+	}
+	if (strcmp (attr, "rx") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, rect->rx);
+		rect->rx = n;
+		sp_rect_set_shape (rect);
+		return;
+	}
+	if (strcmp (attr, "ry") == 0) {
+		n = sp_repr_get_double_attribute (object->repr, attr, rect->ry);
+		rect->ry = n;
+		sp_rect_set_shape (rect);
+		return;
+	}
+
+	if (SP_OBJECT_CLASS (parent_class)->read_attr)
+		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+
 }
 
 static gchar *
@@ -134,77 +209,6 @@ sp_rect_set_shape (SPRect * rect)
 	sp_curve_closepath_current (c);
 	sp_path_add_bpath (SP_PATH (rect), c, TRUE, NULL);
 	sp_curve_unref (c);
-}
-
-static void
-sp_rect_read (SPItem * item, SPRepr * repr)
-{
-
-	if (SP_ITEM_CLASS(parent_class)->read)
-		(* SP_ITEM_CLASS(parent_class)->read) (item, repr);
-
-	sp_rect_read_attr (item, repr, "x");
-	sp_rect_read_attr (item, repr, "y");
-	sp_rect_read_attr (item, repr, "width");
-	sp_rect_read_attr (item, repr, "height");
-	sp_rect_read_attr (item, repr, "rx");
-	sp_rect_read_attr (item, repr, "ry");
-}
-
-static void
-sp_rect_read_attr (SPItem * item, SPRepr * repr, const gchar * attr)
-{
-	SPRect * rect;
-	double n;
-
-	rect = SP_RECT (item);
-
-#ifdef RECT_VERBOSE
-g_print ("sp_rect_read_attr: attr %s\n", attr);
-#endif
-
-	/* fixme: we should really collect updates */
-
-	if (strcmp (attr, "x") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, rect->x);
-		rect->x = n;
-		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "y") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, rect->y);
-		rect->y = n;
-		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "width") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, rect->width);
-		rect->width = n;
-		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "height") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, rect->height);
-		rect->height = n;
-		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "rx") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, rect->rx);
-		rect->rx = n;
-		sp_rect_set_shape (rect);
-		return;
-	}
-	if (strcmp (attr, "ry") == 0) {
-		n = sp_repr_get_double_attribute (repr, attr, rect->ry);
-		rect->ry = n;
-		sp_rect_set_shape (rect);
-		return;
-	}
-
-	if (SP_ITEM_CLASS (parent_class)->read_attr)
-		SP_ITEM_CLASS (parent_class)->read_attr (item, repr, attr);
-
 }
 
 static void

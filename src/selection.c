@@ -159,7 +159,7 @@ sp_selection_repr_selected (SPSelection * selection, SPRepr * repr)
 	g_return_val_if_fail (repr != NULL, FALSE);
 
 	for (l = selection->items; l != NULL; l = l->next) {
-		if (((SPItem *)l->data)->repr == repr) return TRUE;
+		if (((SPObject *)l->data)->repr == repr) return TRUE;
 	}
 	return FALSE;
 }
@@ -259,7 +259,7 @@ sp_selection_repr_list (SPSelection * selection)
 
 	for (l = selection->items; l != NULL; l = l->next) {
 		i = (SPItem *) l->data;
-		selection->reprs = g_slist_prepend (selection->reprs, i->repr);
+		selection->reprs = g_slist_prepend (selection->reprs, SP_OBJECT (i)->repr);
 	}
 
 	return selection->reprs;
@@ -301,7 +301,7 @@ sp_selection_repr (SPSelection * selection)
 	if (selection->items == NULL) return NULL;
 	if (selection->items->next != NULL) return NULL;
 
-	return SP_ITEM (selection->items->data)->repr;
+	return SP_OBJECT (selection->items->data)->repr;
 }
 
 ArtDRect *

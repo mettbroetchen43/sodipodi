@@ -16,8 +16,9 @@ bin_PROGRAMS = sodipodi
 sodipodi_SOURCES = \
 	sodipodi.h \
 	\
+	sp-object.c sp-object.h \
+	sp-object-repr.c sp-object-repr.h \
 	sp-item.c sp-item.h \
-	sp-item-repr.c \
 	sp-item-group.c \
 	sp-root.c sp-root.h \
 	sp-image.c sp-image.h \
@@ -29,8 +30,6 @@ sodipodi_SOURCES = \
 	sp-ellipse.c sp-ellipse.h \
 	sp-chars.c sp-chars.h \
 	sp-text.c sp-text.h \
-	\
-	repr-item.c repr-item.h \
 	\
 	document.c document.h \
 	mdi.c mdi.h \
