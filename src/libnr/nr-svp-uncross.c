@@ -335,7 +335,7 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 						/* Create continuation svp */
 						newvertex = nr_vertex_new_xy (s->x, s->y);
 						newvertex->next = s->vertex->next;
-						newsvp = nr_svp_new_vertex_wind (newvertex, s->svp->wind);
+						newsvp = nr_svp_new_vertex_wind (newvertex, s->svp->dir);
 						/* Trim starting svp */
 						newvertex = nr_vertex_new_xy (s->x, s->y);
 						s->vertex->next = newvertex;
@@ -356,7 +356,7 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 						/* Create continuation svp */
 						newvertex = nr_vertex_new_xy (s->x, s->y);
 						newvertex->next = s->vertex->next;
-						newsvp = nr_svp_new_vertex_wind (newvertex, s->svp->wind);
+						newsvp = nr_svp_new_vertex_wind (newvertex, s->svp->dir);
 						/* Trim starting svp */
 						s->vertex->next = NULL;
 						nr_svp_calculate_bbox (s->svp);
@@ -383,7 +383,7 @@ nr_svp_uncross_full (NRSVP *svp, NRFlat *flats)
 		/* Calculate winds */
 		wind = 0;
 		for (s = slices; s != NULL; s = s->next) {
-			wind += s->svp->wind;
+			wind += s->svp->dir;
 			if (s->y == s->svp->vertex->y) {
 				/* Starting SVP */
 				/* fixme: winding rules */
@@ -438,7 +438,7 @@ nr_svp_slice_break (NRSVPSlice *s, double x, double y, NRSVP *svp)
 		/* Create continuation svp */
 		newvx = nr_vertex_new_xy (x, y);
 		newvx->next = s->vertex->next;
-		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->wind);
+		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->dir);
 		assert (newsvp->vertex->y < newsvp->vertex->next->y);
 		/* Trim starting svp */
 		newvx = nr_vertex_new_xy (x, y);
@@ -461,7 +461,7 @@ nr_svp_slice_break (NRSVPSlice *s, double x, double y, NRSVP *svp)
 		/* Create continuation svp */
 		newvx = nr_vertex_new_xy (x, y);
 		newvx->next = s->vertex->next;
-		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->wind);
+		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->dir);
 		assert (newsvp->vertex->y < newsvp->vertex->next->y);
 		/* Trim starting svp */
 		s->vertex->next = NULL;
@@ -496,7 +496,7 @@ nr_svp_slice_break_y_and_continue_x (NRSVPSlice *s, double y, double x, NRSVP *s
 		/* Create continuation svp */
 		newvx = nr_vertex_new_xy (x, y);
 		newvx->next = s->vertex->next;
-		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->wind);
+		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->dir);
 		assert (newsvp->vertex->y < newsvp->vertex->next->y);
 		assert (newsvp->vertex->y > s->y);
 		assert (newsvp->vertex->y > ytest);
@@ -537,7 +537,7 @@ nr_svp_slice_break_y_and_continue_x (NRSVPSlice *s, double y, double x, NRSVP *s
 		/* Create continuation svp */
 		newvx = nr_vertex_new_xy (x, y);
 		newvx->next = s->vertex->next->next;
-		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->wind);
+		newsvp = nr_svp_new_vertex_wind (newvx, s->svp->dir);
 		assert (newsvp->vertex->y < newsvp->vertex->next->y);
 		assert (newsvp->vertex->y > s->y);
 		assert (newsvp->vertex->y > ytest);

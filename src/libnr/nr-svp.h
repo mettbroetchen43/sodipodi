@@ -28,7 +28,8 @@ struct _NRSVP {
 	NRSVP *next;
 	NRVertex *vertex;
 	NRRectF bbox;
-	int wind;
+	NRShort dir;
+	NRShort wind;
 };
 
 struct _NRFlat {

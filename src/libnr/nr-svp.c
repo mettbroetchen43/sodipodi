@@ -174,7 +174,8 @@ nr_svp_from_art_svp (ArtSVP *asvp)
 			vx->next = svp->vertex;
 			svp->vertex = vx;
 		}
-		svp->wind = seg->dir ? 1 : -1;
+		svp->dir = seg->dir ? 1 : -1;
+		svp->wind = svp->dir;
 		svp->bbox.x0 = seg->bbox.x0;
 		svp->bbox.y0 = seg->bbox.y0;
 		svp->bbox.x1 = seg->bbox.x1;
@@ -358,7 +359,7 @@ nr_svp_new (void)
 }
 
 NRSVP *
-nr_svp_new_full (NRVertex *vertex, NRRectF *bbox, int wind)
+nr_svp_new_full (NRVertex *vertex, NRRectF *bbox, int dir)
 {
 	NRSVP *svp;
 
@@ -366,20 +367,22 @@ nr_svp_new_full (NRVertex *vertex, NRRectF *bbox, int wind)
 
 	svp->vertex = vertex;
 	svp->bbox = *bbox;
-	svp->wind = wind;
+	svp->dir = dir;
+	svp->wind = svp->dir;
 
 	return svp;
 }
 
 NRSVP *
-nr_svp_new_vertex_wind (NRVertex *vertex, int wind)
+nr_svp_new_vertex_wind (NRVertex *vertex, int dir)
 {
 	NRSVP * svp;
 
 	svp = nr_svp_new ();
 
 	svp->vertex = vertex;
-	svp->wind = wind;
+	svp->dir = dir;
+	svp->wind = svp->wind;
 	nr_svp_calculate_bbox (svp);
 
 	return svp;
@@ -578,17 +581,44 @@ nr_flat_insert_sorted (NRFlat *start, NRFlat *flat)
 	if (!start) return flat;
 	if (!flat) return start;
 
-	if ((flat->y < start->y) || ((flat->y == start->y) && (flat->x0 <= start->x0))) {
+	if (flat->y < start->y) {
+		flat->next = start;
+		return flat;
+	}
+
+	if ((flat->y == start->y) && (flat->x0 <= start->x0)) {
+		if (flat->x1 > start->x0) {
+			start->x0 = flat->x0;
+			start->x1 = MAX (flat->x1, start->x1);
+			nr_flat_free_one (flat);
+			return start;
+		}
 		flat->next = start;
 		return flat;
 	}
 
 	s = start;
 	for (l = start->next; l != NULL; l = l->next) {
-		if ((flat->y < l->y) || ((flat->y == l->y) && (flat->x0 <= l->x0))) {
+		if (flat->y < l->y) {
 			flat->next = l;
 			s->next = flat;
 			return start;
+		} else if (flat->y == l->y) {
+			if ((s->y == flat->y) && (s->x1 > flat->x0)) {
+				s->x1 = MAX (flat->x1, s->x1);
+				nr_flat_free_one (flat);
+				return start;
+			} else if (flat->x0 <= l->x0) {
+				if (flat->x1 > l->x0) {
+					l->x0 = flat->x0;
+					l->x1 = MAX (flat->x1, l->x1);
+					nr_flat_free_one (flat);
+					return start;
+				}
+				flat->next = l;
+				s->next = flat;
+				return start;
+			}
 		}
 		s = l;
 	}

@@ -14,13 +14,13 @@
 #include "nr-svp-render.h"
 
 static void nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs, int x0, int y0, int x1, int y1,
-			   void (* run) (unsigned char *px, int len, unsigned int c0_24, int s0_24, void *data), void *data);
+			   void (* run) (unsigned char *px, int len, int c0_24, int s0_24, void *data), void *data);
 
-static void nr_svp_run_A8_OR (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
-static void nr_svp_run_R8G8B8 (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
-static void nr_svp_run_R8G8B8A8P_EMPTY (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
-static void nr_svp_run_R8G8B8A8P_R8G8B8A8P (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
-static void nr_svp_run_R8G8B8A8N_R8G8B8A8N (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data);
+static void nr_svp_run_A8_OR (unsigned char *d, int len, int c0_24, int s0_24, void *data);
+static void nr_svp_run_R8G8B8 (unsigned char *d, int len, int c0_24, int s0_24, void *data);
+static void nr_svp_run_R8G8B8A8P_EMPTY (unsigned char *d, int len, int c0_24, int s0_24, void *data);
+static void nr_svp_run_R8G8B8A8P_R8G8B8A8P (unsigned char *d, int len, int c0_24, int s0_24, void *data);
+static void nr_svp_run_R8G8B8A8N_R8G8B8A8N (unsigned char *d, int len, int c0_24, int s0_24, void *data);
 
 /* Renders graymask of svp into buffer */
 
@@ -105,7 +105,7 @@ static void nr_run_free_list (NRRun *run);
 static NRRun *nr_run_insert_sorted (NRRun *start, NRRun *run);
 
 static void
-nr_svp_run_A8_OR (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+nr_svp_run_A8_OR (unsigned char *d, int len, int c0_24, int s0_24, void *data)
 {
 	if ((c0_24 >= 0xff0000) && (s0_24 == 0x0)) {
 		/* Simple copy */
@@ -123,14 +123,14 @@ nr_svp_run_A8_OR (unsigned char *d, int len, unsigned int c0_24, int s0_24, void
 			d[0] = (da + 127) / 255;
 			d += 1;
 			c0_24 += s0_24;
-			/* c24 = CLAMP (c24, 0, 16777216); */
+			c0_24 = CLAMP (c0_24, 0, 16777216);
 			len -= 1;
 		}
 	}
 }
 
 static void
-nr_svp_run_R8G8B8 (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+nr_svp_run_R8G8B8 (unsigned char *d, int len, int c0_24, int s0_24, void *data)
 {
 	unsigned char *c;
 
@@ -172,7 +172,7 @@ nr_svp_run_R8G8B8 (unsigned char *d, int len, unsigned int c0_24, int s0_24, voi
 }
 
 static void
-nr_svp_run_R8G8B8A8P_EMPTY (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+nr_svp_run_R8G8B8A8P_EMPTY (unsigned char *d, int len, int c0_24, int s0_24, void *data)
 {
 	unsigned char *c;
 
@@ -214,7 +214,7 @@ nr_svp_run_R8G8B8A8P_EMPTY (unsigned char *d, int len, unsigned int c0_24, int s
 }
 
 static void
-nr_svp_run_R8G8B8A8P_R8G8B8A8P (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+nr_svp_run_R8G8B8A8P_R8G8B8A8P (unsigned char *d, int len, int c0_24, int s0_24, void *data)
 {
 	unsigned char *c;
 
@@ -260,7 +260,7 @@ nr_svp_run_R8G8B8A8P_R8G8B8A8P (unsigned char *d, int len, unsigned int c0_24, i
 }
 
 static void
-nr_svp_run_R8G8B8A8N_R8G8B8A8N (unsigned char *d, int len, unsigned int c0_24, int s0_24, void *data)
+nr_svp_run_R8G8B8A8N_R8G8B8A8N (unsigned char *d, int len, int c0_24, int s0_24, void *data)
 {
 	unsigned char *c;
 
@@ -309,7 +309,7 @@ nr_svp_run_R8G8B8A8N_R8G8B8A8N (unsigned char *d, int len, unsigned int c0_24, i
 
 static void
 nr_svp_render (NRSVP *svp, unsigned char *px, unsigned int bpp, unsigned int rs, int x0, int y0, int x1, int y1,
-	       void (* run) (unsigned char *px, int len, unsigned int c0_24, int s0_24, void *data), void *data)
+	       void (* run) (unsigned char *px, int len, int c0_24, int s0_24, void *data), void *data)
 {
 	NRSVP *nsvp;
 	NRSlice *slices;
