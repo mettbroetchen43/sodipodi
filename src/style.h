@@ -163,6 +163,7 @@ SPStyle *sp_style_unref (SPStyle *style);
  */
 
 void sp_style_read_from_object (SPStyle *style, SPObject *object);
+void sp_style_merge_from_object_parent (SPStyle *style, SPObject *object);
 
 guchar *sp_style_write_string (SPStyle *style);
 

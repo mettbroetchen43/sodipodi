@@ -503,20 +503,32 @@ sp_object_modified (SPObject *object, guint flags)
 {
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
-	g_return_if_fail (!flags || (flags == SP_OBJECT_PARENT_MODIFIED_FLAG));
+	g_return_if_fail (!(flags & ~SP_OBJECT_MODIFIED_CASCADE));
 
 	flags |= (GTK_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
 
 	g_return_if_fail (flags != 0);
 
+	/* Merge style if we have good reasons to think that parent style is changed */
+	/* I am not sure, whether we should check only propagated flag */
 	if (flags && SP_OBJECT_STYLE_MODIFIED_FLAG) {
-		if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified)
-			(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified) (object, flags);
+		if (object->style && object->parent) {
+			sp_style_merge_from_object_parent (object->style, object->parent);
+		}
 	}
 
 	gtk_object_ref (GTK_OBJECT (object));
 	gtk_signal_emit (GTK_OBJECT (object), object_signals[MODIFIED], flags);
 	gtk_object_unref (GTK_OBJECT (object));
+
+	/* If style is modified, invoke style_modified virtual method */
+	/* It is pure convenience, and should be used with caution */
+	/* The cascade is created solely by modified method plus appropriate flag */
+	/* Also, it merely signals, that actual style object has changed */
+	if (flags && SP_OBJECT_STYLE_MODIFIED_FLAG) {
+		if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified)
+			(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified) (object, flags);
+	}
 
 	/*
 	 * fixme: I am not sure - it was before class method, but moved it here

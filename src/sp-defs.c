@@ -201,6 +201,7 @@ sp_defs_modified (SPObject *object, guint flags)
 	defs = SP_DEFS (object);
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	/* fixme: Not sure, whether we should cascade style modification here (Lauris) */
 	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
 
 	l = NULL;

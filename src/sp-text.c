@@ -157,7 +157,7 @@ sp_string_read_content (SPObject *object)
 static void
 sp_string_modified (SPObject *object, guint flags)
 {
-#if 0
+#if 1
 	if ((flags & SP_OBJECT_MODIFIED_FLAG) || (flags & SP_OBJECT_STYLE_MODIFIED_FLAG)) {
 		sp_string_set_shape (SP_STRING (object));
 	}
@@ -443,7 +443,7 @@ sp_tspan_modified (SPObject *object, guint flags)
 	tspan = SP_TSPAN (object);
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
-	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	if (tspan->string) {
 		sp_object_modified (tspan->string, flags);
@@ -788,7 +788,8 @@ sp_text_modified (SPObject *object, guint flags)
 	text = SP_TEXT (object);
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
-	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	/* fixme: I added style modfication here - not sure (Lauris) */
+	flags &= (SP_OBJECT_MODIFIED_CASCADE);
 
 	l = NULL;
 	for (child = text->children; child != NULL; child = child->next) {
@@ -804,6 +805,9 @@ sp_text_modified (SPObject *object, guint flags)
 		}
 		gtk_object_unref (GTK_OBJECT (child));
 	}
+
+
+	sp_text_set_shape (text);
 }
 
 static void
@@ -814,10 +818,10 @@ sp_text_style_modified (SPObject *object, guint flags)
 	text = SP_TEXT (object);
 
 	/* Item class reads style */
+	/* I think we can remove this method at all (Lauris) */
+	/* It is always associated with modified + flag anyways */
 	if (((SPObjectClass *) (text_parent_class))->style_modified)
 		(* ((SPObjectClass *) (text_parent_class))->style_modified) (object, flags);
-
-	sp_text_set_shape (text);
 }
 
 static void

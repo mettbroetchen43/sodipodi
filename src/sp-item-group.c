@@ -301,7 +301,7 @@ sp_group_modified (SPObject *object, guint flags)
 	group = SP_GROUP (object);
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
-	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
 	for (child = group->children; child != NULL; child = child->next) {

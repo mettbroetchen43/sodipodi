@@ -27,7 +27,6 @@ typedef struct _SPStyleEnum SPStyleEnum;
 static void sp_style_clear (SPStyle *style);
 
 static void sp_style_merge_from_style_string (SPStyle *style, const guchar *p);
-static void sp_style_merge_from_object_parent (SPStyle *style, SPObject *object);
 static void sp_style_merge_property (SPStyle *style, gint id, const guchar *val);
 
 static void sp_style_merge_inherited_paint (SPStyle *style, SPInheritedPaint *paint, SPInheritedPaint *parent);
@@ -528,7 +527,7 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 	}
 }
 
-static void
+void
 sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 {
 	g_return_if_fail (style != NULL);
@@ -588,6 +587,12 @@ sp_style_merge_from_object_parent (SPStyle *style, SPObject *object)
 		}
 		if (!style->stroke_opacity.set || style->stroke_opacity.inherit) {
 			style->stroke_opacity.value = object->style->stroke_opacity.value;
+		}
+
+		if (style->text && object->style->text) {
+			if (!style->text->writing_mode.set || style->text->writing_mode.inherit) {
+				style->text->writing_mode.value = object->style->text->writing_mode.value;
+			}
 		}
 	}
 

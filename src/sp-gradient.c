@@ -101,7 +101,7 @@ sp_stop_read_attr (SPObject * object, const gchar * key)
 		p = sp_object_get_style_property (object, "stop-opacity", "1");
 		opacity = sp_svg_read_percentage (p, 1.0);
 		stop->opacity = opacity;
-		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 		return;
 	}
 	if (strcmp (key, "offset") == 0) {
@@ -454,7 +454,7 @@ sp_gradient_modified (SPObject *object, guint flags)
 	}
 
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
-	flags &= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
 	l = NULL;
 	for (child = gr->stops; child != NULL; child = child->next) {

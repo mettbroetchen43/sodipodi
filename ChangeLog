@@ -1,3 +1,18 @@
+2002-07-24  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/sp-object.c (sp_object_modified): Merge style with parent if needed,
+	moved style_modified after signal
+
+	* src/sp-text.c (sp_tspan_modified): Include style flag in cascade
+	(sp_text_modified): Ditto
+	(sp_string_modified): Re-enable it (although this is probably not correct)
+
+	* src/style.c (sp_style_merge_from_object_parent): Merge writing mode
+
+	* src/sp-item-group.c (sp_group_modified): Include style flag in cascade
+
+	* src/sp-gradient.c (sp_gradient_modified): Include style flag in cascade
+
 2002-07-22  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/style.c (sp_style_new_from_object): Renamed sp_style_new
