@@ -18,20 +18,22 @@
 /* #include <glib.h> */
 
 void
-nr_pixblock_draw_line_rgba32 (NRPixBlock *d, long x0, long y0, long x1, long y1, short first, unsigned long rgba)
+nr_pixblock_draw_line_rgba32 (NRPixBlock *pb, int x0, int y0, int x1, int y1,
+			      unsigned int first, unsigned int rgba)
 {
-	long deltax, deltay, xinc1, xinc2, yinc1, yinc2;
-	long den, num0, num, numadd, numpixels;
-	long x, y, curpixel;
+	int deltax, deltay;
+	int xinc1, xinc2, yinc1, yinc2, dstep1, dstep2;
+	int den, num0, num, numadd, numpixels;
+	int x, y, curpixel;
 	/* Pixblock */
 	int dbpp;
 	NRPixBlock spb;
-	unsigned char *spx;
+	unsigned char *dpx, *spx;
 
-	if ((x0 < d->area.x0) && (x1 < d->area.x0)) return;
-	if ((x0 >= d->area.x1) && (x1 >= d->area.x1)) return;
-	if ((y0 < d->area.y0) && (y1 < d->area.y0)) return;
-	if ((y0 >= d->area.y1) && (y1 >= d->area.y1)) return;
+	if ((x0 < pb->area.x0) && (x1 < pb->area.x0)) return;
+	if ((x0 >= pb->area.x1) && (x1 >= pb->area.x1)) return;
+	if ((y0 < pb->area.y0) && (y1 < pb->area.y0)) return;
+	if ((y0 >= pb->area.y1) && (y1 >= pb->area.y1)) return;
 
 	if (x1 < x0) {
 		int t;
@@ -78,117 +80,93 @@ nr_pixblock_draw_line_rgba32 (NRPixBlock *d, long x0, long y0, long x1, long y1,
 	/* v = v0 + ((num + pixels * numadd) / den) * vinc1 + pixels * vinc2 */
 	/* pixels = ((v - v0) * den - num + (numadd - 1)) / numadd */
 
-	if ((x0 < d->area.x0) && (x1 >= d->area.x0)) {
+	if ((x0 < pb->area.x0) && (x1 >= pb->area.x0)) {
 		int pixels;
 		if (xinc1) {
-			/* xinc1 = 1 */
-			/* yinc1 = 0 */
-			/* deltax <= deltay */
-			/* numadd <= den */
-			/* alpha = numinitial + pixels * numadd;
-			 * area.x0 = x0 + (numinitial + pixels * numadd) / den;
-			 * (numinitial + pixels * numadd) / den = area.x0 - x0;
-			 * numinitial + pixels * numadd = (area.x0 - x0) * den [+ (alpha % den)];
-			 * pixels * numadd = (area.x0 - x0) * den - numinitial + (numadd - 1);
-			 * pixels = ((area.x0 - x0) * den - numinitial + (numadd - 1)) / numadd;
-			 *
-			 * num <- alpha % den;
-			 */
-			pixels = ((d->area.x0 - x0) * den - num + (numadd - 1)) / numadd;
+			pixels = ((pb->area.x0 - x0) * den - num + (numadd - 1)) / numadd;
 		} else {
-			/* area.x0 = x0 + pixels;
-			 */
-			pixels = d->area.x0 - x0;
+			pixels = pb->area.x0 - x0;
 		}
 		x0 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
 		y0 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
-		if (x0 >= d->area.x1) return;
+		if (x0 >= pb->area.x1) return;
 		num = (num + pixels * numadd) % den;
 		numpixels -= pixels;
 	}
 
-	/* g_print ("line B %d %d %d %d\n", x0, y0, x1, y1); */
-
-	if ((x0 < d->area.x1) && (x1 >= d->area.x1)) {
+	if ((x0 < pb->area.x1) && (x1 >= pb->area.x1)) {
 		int pixels;
 		if (xinc1) {
 			/* We need LAST pixel before step here */
-			pixels = ((d->area.x1 - x0) * den - num + (numadd - 1)) / numadd - 1;
+			pixels = ((pb->area.x1 - x0) * den - num + (numadd - 1)) / numadd - 1;
 		} else {
-			pixels = d->area.x1 - x0 - 1;
+			pixels = pb->area.x1 - x0 - 1;
 		}
 		x1 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
 		y1 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
-		if (x1 <= d->area.x0) return;
-		/* num = (num + pixels * numadd) % den; */
+		if (x1 <= pb->area.x0) return;
 		numpixels = pixels;
 	}
 
-	/* g_print ("line C %d %d %d %d\n", x0, y0, x1, y1); */
-
-	if ((y0 < d->area.y0) && (y1 < d->area.y0)) return;
-	if ((y0 >= d->area.y1) && (y1 >= d->area.y1)) return;
+	if ((y0 < pb->area.y0) && (y1 < pb->area.y0)) return;
+	if ((y0 >= pb->area.y1) && (y1 >= pb->area.y1)) return;
 
 	if (y1 >= y0) {
-		if ((y0 < d->area.y0) && (y1 >= d->area.y0)) {
+		if ((y0 < pb->area.y0) && (y1 >= pb->area.y0)) {
 			int pixels;
 			if (yinc1) {
-				pixels = ((d->area.y0 - y0) * den - num + (numadd - 1)) / numadd;
+				pixels = ((pb->area.y0 - y0) * den - num + (numadd - 1)) / numadd;
 			} else {
-				pixels = d->area.y0 - y0;
+				pixels = pb->area.y0 - y0;
 			}
 			x0 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
 			y0 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
-			if (x0 >= d->area.x1) return;
-			if (y0 >= d->area.y1) return;
+			if (x0 >= pb->area.x1) return;
+			if (y0 >= pb->area.y1) return;
 			num = (num + pixels * numadd) % den;
 			numpixels -= pixels;
 		}
-		/* g_print ("line D %d %d %d %d\n", x0, y0, x1, y1); */
-		if ((y0 < d->area.y1) && (y1 >= d->area.y1)) {
+		if ((y0 < pb->area.y1) && (y1 >= pb->area.y1)) {
 			int pixels;
 			if (yinc1) {
 				/* We need LAST pixel before step here */
-				pixels = ((d->area.y1 - y0) * den - num + (numadd - 1)) / numadd - 1;
+				pixels = ((pb->area.y1 - y0) * den - num + (numadd - 1)) / numadd - 1;
 			} else {
-				pixels = d->area.y1 - y0 - 1;
+				pixels = pb->area.y1 - y0 - 1;
 			}
 			x1 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
 			y1 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
-			if (x1 <= d->area.x0) return;
-			if (y1 <= d->area.y0) return;
-			/* num = (num + pixels * numadd) % den; */
+			if (x1 <= pb->area.x0) return;
+			if (y1 <= pb->area.y0) return;
 			numpixels = pixels;
 		}
-		/* g_print ("line E %d %d %d %d\n", x0, y0, x1, y1); */
 	} else {
-		if ((y0 >= d->area.y1) && (y1 < d->area.y1)) {
+		if ((y0 >= pb->area.y1) && (y1 < pb->area.y1)) {
 			int pixels;
 			if (yinc1) {
-				pixels = ((y0 - (d->area.y1 - 1)) * den - num + (numadd - 1)) / numadd;
+				pixels = ((y0 - (pb->area.y1 - 1)) * den - num + (numadd - 1)) / numadd;
 			} else {
-				pixels = y0 - (d->area.y1 - 1);
+				pixels = y0 - (pb->area.y1 - 1);
 			}
 			x0 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
 			y0 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
-			if (x0 >= d->area.x1) return;
-			if (y0 < d->area.y0) return;
+			if (x0 >= pb->area.x1) return;
+			if (y0 < pb->area.y0) return;
 			num = (num + pixels * numadd) % den;
 			numpixels -= pixels;
 		}
-		if ((y0 >= d->area.y0) && (y1 < d->area.y0)) {
+		if ((y0 >= pb->area.y0) && (y1 < pb->area.y0)) {
 			int pixels;
 			if (yinc1) {
 				/* We need LAST pixel before step here */
-				pixels = ((y0 - (d->area.y0 - 1)) * den - num + (numadd - 1)) / numadd - 1;
+				pixels = ((y0 - (pb->area.y0 - 1)) * den - num + (numadd - 1)) / numadd - 1;
 			} else {
-				pixels = y0 - (d->area.y0 - 1) - 1;
+				pixels = y0 - (pb->area.y0 - 1) - 1;
 			}
 			x1 = x0 + ((num + pixels * numadd) / den) * xinc1 + pixels * xinc2;
 			y1 = y0 + ((num + pixels * numadd) / den) * yinc1 + pixels * yinc2;
-			if (x1 < d->area.x0) return;
-			if (y1 >= d->area.y1) return;
-			/* num = (num + pixels * numadd) % den; */
+			if (x1 < pb->area.x0) return;
+			if (y1 >= pb->area.y1) return;
 			numpixels = pixels;
 		}
 	}
@@ -202,12 +180,15 @@ nr_pixblock_draw_line_rgba32 (NRPixBlock *d, long x0, long y0, long x1, long y1,
 	spx[2] = NR_RGBA32_B (rgba);
 	spx[3] = NR_RGBA32_A (rgba);
 
-	dbpp = NR_PIXBLOCK_BPP (d);
+	dbpp = NR_PIXBLOCK_BPP (pb);
 
 	x = x0;
 	y = y0;
 
 	num0 = num;
+	dpx = NR_PIXBLOCK_PX (pb) + (y0 - pb->area.y0) * pb->rs + (x0 - pb->area.x0) * NR_PIXBLOCK_BPP (pb);
+	dstep1 = yinc1 * pb->rs + xinc1 * NR_PIXBLOCK_BPP (pb);
+	dstep2 = yinc2 * pb->rs + xinc2 * NR_PIXBLOCK_BPP (pb);
 	for (curpixel = 0; curpixel <= numpixels; curpixel++) {
 		int cx, cy;
 		if (den != 0) {
@@ -221,19 +202,21 @@ nr_pixblock_draw_line_rgba32 (NRPixBlock *d, long x0, long y0, long x1, long y1,
 		}
 		assert (cx == x);
 		assert (cy == y);
-		assert (x >= d->area.x0);
-		assert (x < d->area.x1);
-		assert (y >= d->area.y0);
-		assert (y < d->area.y1);
-		nr_compose_pixblock_pixblock_pixel (d, NR_PIXBLOCK_PX (d) + (y - d->area.y0) * d->rs + (x - d->area.x0) * dbpp, &spb, spx);
+		assert (x >= pb->area.x0);
+		assert (x < pb->area.x1);
+		assert (y >= pb->area.y0);
+		assert (y < pb->area.y1);
+		nr_compose_pixblock_pixblock_pixel (pb, dpx, &spb, spx);
 		num += numadd;
 		if (num >= den) {
 			num -= den;
 			x += xinc1;
 			y += yinc1;
+			dpx += dstep1;
 		}
 		x += xinc2;
 		y += yinc2;
+		dpx += dstep2;
 	}
 
 	nr_pixblock_release (&spb);

@@ -64,11 +64,28 @@ static void sp_export_value_set_pt (GtkObject *base, const unsigned char *key, f
 static float sp_export_value_get (GtkObject *base, const unsigned char *key);
 static float sp_export_value_get_pt (GtkObject *base, const unsigned char *key);
 
+typedef struct {
+  GtkToggleButton *tb;
+  GtkObject *base;
+  SPSelection* selection;
+  guint changedId;
+} ActiveSelection;
+
+static ActiveSelection activeSelection={0,0,0,0};
+
 static GtkWidget *dlg = NULL;
 
 static void
 sp_export_dialog_destroy (GtkObject *object, gpointer data)
 {
+  if (activeSelection.selection && (activeSelection.changedId>0))
+    {
+      if (activeSelection.selection)
+        g_signal_handler_disconnect( G_OBJECT(activeSelection.selection),
+                                     activeSelection.changedId);
+      activeSelection.changedId=0;
+    }
+
 	dlg = NULL;
 }
 
@@ -258,11 +275,27 @@ sp_export_dialog (void)
 }
 
 static void
+selection_modified (GObject* sodipodiOrSelection, void* data)
+{
+  if (activeSelection.tb && activeSelection.base)
+    sp_export_area_toggled(activeSelection.tb,activeSelection.base);
+}
+
+static void
 sp_export_area_toggled (GtkToggleButton *tb, GtkObject *base)
 {
+  if (activeSelection.selection && (activeSelection.changedId>0))
+    {
+      if (activeSelection.selection)
+        g_signal_handler_disconnect( G_OBJECT(activeSelection.selection),
+                                     activeSelection.changedId);
+      activeSelection.changedId=0;
+    }
+
 	if (gtk_toggle_button_get_active (tb)) {
 		const unsigned char *key;
 		key = gtk_object_get_data (GTK_OBJECT (tb), "key");
+
 		if (strcmp (key, "page")) {
 			gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (gtk_object_get_data (base, "page")), FALSE);
 		}
@@ -285,11 +318,17 @@ sp_export_area_toggled (GtkToggleButton *tb, GtkObject *base)
 			} else if (!strcmp (key, "drawing")) {
 				sp_item_bbox_desktop_full (SP_ITEM (SP_DOCUMENT_ROOT (doc)), &bbox, SP_ITEM_BBOX_VISUAL);
 			} else {
-				sp_selection_bbox_full (SP_DT_SELECTION (SP_ACTIVE_DESKTOP), &bbox, SP_ITEM_BBOX_VISUAL);
+                                SPSelection* selection=SP_DT_SELECTION (SP_ACTIVE_DESKTOP);
+                                activeSelection.tb=tb;
+                                activeSelection.base=base;
+                                activeSelection.selection=selection;
+                                
+				sp_selection_bbox_full (selection, &bbox, SP_ITEM_BBOX_VISUAL);
+                                activeSelection.changedId=g_signal_connect (G_OBJECT (selection), "changed", GTK_SIGNAL_FUNC (selection_modified), 0);
 			}
 			sp_export_set_area (base, bbox.x0, bbox.y0, bbox.x1, bbox.y1);
 		}
-	}
+        }
 }
 
 static gint
