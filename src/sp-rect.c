@@ -5,9 +5,12 @@
 
 #define noRECT_VERBOSE
 
+enum {ARG_0, ARG_X, ARG_Y, ARG_WIDTH, ARG_HEIGHT, ARG_RX, ARG_RY};
+
 static void sp_rect_class_init (SPRectClass *class);
 static void sp_rect_init (SPRect *rect);
 static void sp_rect_destroy (GtkObject *object);
+static void sp_rect_set_arg (GtkObject * object, GtkArg * arg, guint arg_id);
 
 static void sp_rect_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_rect_read_attr (SPObject * object, const gchar * attr);
@@ -53,7 +56,15 @@ sp_rect_class_init (SPRectClass *class)
 
 	parent_class = gtk_type_class (sp_shape_get_type ());
 
+	gtk_object_add_arg_type ("SPRect::x", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_X);
+	gtk_object_add_arg_type ("SPRect::y", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_Y);
+	gtk_object_add_arg_type ("SPRect::width", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_WIDTH);
+	gtk_object_add_arg_type ("SPRect::height", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_HEIGHT);
+	gtk_object_add_arg_type ("SPRect::rx", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_RX);
+	gtk_object_add_arg_type ("SPRect::ry", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_RY);
+
 	gtk_object_class->destroy = sp_rect_destroy;
+	gtk_object_class->set_arg = sp_rect_set_arg;
 
 	sp_object_class->build = sp_rect_build;
 	sp_object_class->read_attr = sp_rect_read_attr;
@@ -83,6 +94,41 @@ sp_rect_destroy (GtkObject *object)
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
+}
+
+static void
+sp_rect_set_arg (GtkObject * object, GtkArg * arg, guint arg_id)
+{
+	SPRect * rect;
+
+	rect = SP_RECT (object);
+
+	switch (arg_id) {
+	case ARG_X:
+		rect->x = GTK_VALUE_DOUBLE (*arg);
+		sp_rect_set_shape (rect);
+		break;
+	case ARG_Y:
+		rect->y = GTK_VALUE_DOUBLE (*arg);
+		sp_rect_set_shape (rect);
+		break;
+	case ARG_WIDTH:
+		rect->width = GTK_VALUE_DOUBLE (*arg);
+		sp_rect_set_shape (rect);
+		break;
+	case ARG_HEIGHT:
+		rect->height = GTK_VALUE_DOUBLE (*arg);
+		sp_rect_set_shape (rect);
+		break;
+	case ARG_RX:
+		rect->rx = GTK_VALUE_DOUBLE (*arg);
+		sp_rect_set_shape (rect);
+		break;
+	case ARG_RY:
+		rect->ry = GTK_VALUE_DOUBLE (*arg);
+		sp_rect_set_shape (rect);
+		break;
+	}
 }
 
 static void

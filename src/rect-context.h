@@ -1,6 +1,7 @@
 #ifndef SP_RECT_CONTEXT_H
 #define SP_RECT_CONTEXT_H
 
+#include "knot.h"
 #include "event-context.h"
 
 #define SP_TYPE_RECT_CONTEXT            (sp_rect_context_get_type ())
@@ -14,6 +15,8 @@ typedef struct _SPRectContextClass SPRectContextClass;
 
 struct _SPRectContext {
 	SPEventContext event_context;
+	SPItem * item;
+	ArtPoint center;
 };
 
 struct _SPRectContextClass {

@@ -1,3 +1,19 @@
+2000-09-13  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* desktop-snap.c, desktop-snap.h (sp_desktop_horizontal_snap):
+	Implemented
+	(sp_desktop_vertical_snap): Ditto
+	(sp_desktop_free_snap): Rewrote, using horiz. and vert. snapping
+	(sp-desktop_vector_snap): Implemented
+
+	* rect-context.c, rect-context.h: Rewrote event handling stuff,
+	so it now supports (hopefully) all snapping chemistry
+
+	* sp-namedview.c (sp_namedview_build, sp_namedview_read_arg):
+	Implemented arguments "snaptoguides" and "guidetolerance"
+
+	* sp-rect.c (sp_rect_set_arg): Implemented Gtk+ argument setting
+
 2000-09-12  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/*.c, glade/desktop.*, src/dialog/desktop-properties.*:

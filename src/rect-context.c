@@ -6,6 +6,7 @@
 #include "selection.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
+#include "desktop-snap.h"
 #include "pixmaps/cursor-rect.xpm"
 #include "rect-context.h"
 
@@ -17,7 +18,8 @@ static void sp_rect_context_setup (SPEventContext * event_context, SPDesktop * d
 static gint sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event);
 static gint sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
-static void sp_rect_finish (SPRect * rect);
+static void sp_rect_drag (SPRectContext * rc, double x, double y, guint state);
+static void sp_rect_finish (SPRectContext * rc);
 
 static SPEventContextClass * parent_class;
 
@@ -73,11 +75,17 @@ sp_rect_context_init (SPRectContext * rect_context)
 	event_context->cursor_shape = cursor_rect_xpm;
 	event_context->hot_x = 4;
 	event_context->hot_y = 4;
+
+	rect_context->item = NULL;
 }
 
 static void
 sp_rect_context_destroy (GtkObject * object)
 {
+	SPRectContext * rc;
+
+	rc = SP_RECT_CONTEXT (object);
+
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
@@ -85,6 +93,10 @@ sp_rect_context_destroy (GtkObject * object)
 static void
 sp_rect_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 {
+	SPRectContext * rc;
+
+	rc = SP_RECT_CONTEXT (event_context);
+
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
 }
@@ -105,86 +117,37 @@ sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 static gint
 sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 {
-	static int dragging;
-	static SPRepr * repr;
-	static SPItem * item;
-	static double xs, ys;
-	SPDesktop * desktop;
-	ArtPoint s, c;
+	static gboolean dragging;
+	SPRectContext * rc;
 	gint ret;
 
+	rc = SP_RECT_CONTEXT (event_context);
 	ret = FALSE;
-
-	desktop = event_context->desktop;
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-		switch (event->button.button) {
-		case 1:
-			s.x = xs = event->button.x;
-			s.y = ys = event->button.y;
+		if (event->button.button == 1) {
 			dragging = TRUE;
-			repr = NULL;
-			item = NULL;
+			/* Position center */
+			sp_desktop_w2d_xy_point (event_context->desktop, &rc->center, event->button.x, event->button.y);
+			/* Snap center to nearest magnetic point */
+			sp_desktop_free_snap (event_context->desktop, &rc->center);
 			ret = TRUE;
-			break;
-		default:
-			break;
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
-		if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
-			double x0, y0, x1, y1, dx, dy;
-			x0 = xs;
-			y0 = ys;
-			c.x = x1 = event->button.x;
-			c.y = y1 = event->button.y;
-			dx = x1 - xs;
-			dy = y1 - ys;
-			if (event->button.state & GDK_CONTROL_MASK) {
-				if (fabs (dx) > fabs (dy)) {
-					dx = fabs (dy) * dx / fabs (dx);
-					x1 = xs + dx;
-				} else {
-					dy = fabs (dx) * dy / fabs (dy);
-					y1 = ys + dy;
-				}
-			}
-			if (event->button.state & GDK_SHIFT_MASK) {
-				x0 = xs - dx;
-				y0 = ys - dy;
-			}
-			sp_desktop_w2doc_xy_point (desktop, &s, x0, y0);
-			c.x = x1;
-			c.y = y1;
-			sp_desktop_w2doc_xy_point (desktop, &c, x1, y1);
-			x0 = MIN (s.x, c.x);
-			y0 = MIN (s.y, c.y);
-			x1 = MAX (s.x, c.x);
-			y1 = MAX (s.y, c.y);
-			if (repr == NULL) {
-				repr = sp_repr_new ("rect");
-				item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
-				sp_repr_unref (repr);
-			}
-			sp_rect_set (SP_RECT (item), x0, y0, x1 - x0, y1 - y0);
+		if (dragging && event->motion.state && GDK_BUTTON1_MASK) {
+			ArtPoint p;
+			sp_desktop_w2d_xy_point (event_context->desktop, &p, event->motion.x, event->motion.y);
+			sp_rect_drag (rc, p.x, p.y, event->motion.state);
 			ret = TRUE;
 		}
 		break;
 	case GDK_BUTTON_RELEASE:
-		switch (event->button.button) {
-		case 1:
+		if (event->button.button == 1) {
 			dragging = FALSE;
-			if (item != NULL) {
-				sp_rect_finish (SP_RECT (item));
-				sp_selection_set_item (SP_DT_SELECTION (desktop), item);
-			}
-			sp_document_done (SP_DT_DOCUMENT (desktop));
-			repr = NULL;
+			sp_rect_finish (rc);
 			ret = TRUE;
-			break;
-		default:
-			break;
 		}
 		break;
 	default:
@@ -200,15 +163,117 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 }
 
 static void
-sp_rect_finish (SPRect * rect)
+sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 {
-	SPRepr * repr;
+	SPDesktop * desktop;
+	ArtPoint p0, p1;
+	gdouble x0, y0, x1, y1;
 
-	repr = SP_OBJECT (rect)->repr;
+	desktop = SP_EVENT_CONTEXT (rc)->desktop;
 
-	sp_repr_set_double_attribute (repr, "x", rect->x);
-	sp_repr_set_double_attribute (repr, "y", rect->y);
-	sp_repr_set_double_attribute (repr, "width", rect->width);
-	sp_repr_set_double_attribute (repr, "height", rect->height);
+	if (!rc->item) {
+		SPRepr * repr;
+		repr = sp_repr_new ("rect");
+		rc->item = sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
+		sp_repr_unref (repr);
+	}
+
+	/* This is bit ugly, but so we are */
+
+	if (state & GDK_CONTROL_MASK) {
+		gdouble dx, dy;
+		/* fixme: Snapping */
+		dx = x - rc->center.x;
+		dy = y - rc->center.y;
+		if ((fabs (dx) > fabs (dy)) && (dy != 0.0)) {
+			dx = floor (dx/dy + 0.5) * dy;
+		} else if (dx != 0.0) {
+			dy = floor (dy/dx + 0.5) * dx;
+		}
+		p1.x = rc->center.x + dx;
+		p1.y = rc->center.y + dy;
+		if (state & GDK_SHIFT_MASK) {
+			gdouble l0, l1;
+			p0.x = rc->center.x - dx;
+			p0.y = rc->center.y - dy;
+			l0 = sp_desktop_vector_snap (desktop, &p0, p0.x - p1.x, p0.y - p1.y);
+			l1 = sp_desktop_vector_snap (desktop, &p1, p1.x - p0.x, p1.y - p0.y);
+			if (l0 < l1) {
+				p1.x = 2 * rc->center.x - p0.x;
+				p1.y = 2 * rc->center.y - p0.y;
+			} else {
+				p0.x = 2 * rc->center.x - p1.x;
+				p0.y = 2 * rc->center.y - p1.y;
+			}
+		} else {
+			p0.x = rc->center.x;
+			p0.y = rc->center.y;
+			sp_desktop_vector_snap (desktop, &p1, p1.x - p0.x, p1.y - p0.y);
+		}
+	} else if (state & GDK_SHIFT_MASK) {
+		double p0h, p0v, p1h, p1v;
+		/* Corner point movements are bound */
+		p0.x = 2 * rc->center.x - x;
+		p0.y = 2 * rc->center.y - y;
+		p1.x = x;
+		p1.y = y;
+		p0h = sp_desktop_horizontal_snap (desktop, &p0);
+		p0v = sp_desktop_vertical_snap (desktop, &p0);
+		p1h = sp_desktop_horizontal_snap (desktop, &p1);
+		p1v = sp_desktop_vertical_snap (desktop, &p1);
+		if (p0h < p1h) {
+			/* Use Point 0 horizontal position */
+			p1.x = 2 * rc->center.x - p0.x;
+		} else {
+			p0.x = 2 * rc->center.x - p1.x;
+		}
+		if (p0v < p1v) {
+			/* Use Point 0 vertical position */
+			p1.y = 2 * rc->center.y - p0.y;
+		} else {
+			p0.y = 2 * rc->center.y - p1.y;
+		}
+	} else {
+		/* Free movement for corner point */
+		p0.x = rc->center.x;
+		p0.y = rc->center.y;
+		p1.x = x;
+		p1.y = y;
+		sp_desktop_free_snap (desktop, &p1);
+	}
+
+	sp_desktop_d2doc_xy_point (desktop, &p0, p0.x, p0.y);
+	sp_desktop_d2doc_xy_point (desktop, &p1, p1.x, p1.y);
+
+	x0 = MIN (p0.x, p1.x);
+	y0 = MIN (p0.y, p1.y);
+	x1 = MAX (p0.x, p1.x);
+	y1 = MAX (p0.y, p1.y);
+
+	sp_rect_set (SP_RECT (rc->item), x0, y0, x1 - x0, y1 - y0);
+}
+
+static void
+sp_rect_finish (SPRectContext * rc)
+{
+	if (rc->item != NULL) {
+		SPDesktop * desktop;
+		SPRect * rect;
+		SPRepr * repr;
+
+		desktop = SP_EVENT_CONTEXT (rc)->desktop;
+		rect = SP_RECT (rc->item);
+		repr = SP_OBJECT (rc->item)->repr;
+
+		sp_repr_set_double_attribute (repr, "x", rect->x);
+		sp_repr_set_double_attribute (repr, "y", rect->y);
+		sp_repr_set_double_attribute (repr, "width", rect->width);
+		sp_repr_set_double_attribute (repr, "height", rect->height);
+
+		sp_selection_set_item (SP_DT_SELECTION (desktop), rc->item);
+		sp_document_done (SP_DT_DOCUMENT (desktop));
+
+		rc->item = NULL;
+	}
 }
 

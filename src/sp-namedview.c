@@ -61,6 +61,8 @@ static void
 sp_namedview_init (SPNamedView * namedview)
 {
 	namedview->editable = TRUE;
+	namedview->snaptoguides = TRUE;
+	namedview->guidetolerance = 5.0;
 	namedview->hguides = NULL;
 	namedview->vguides = NULL;
 }
