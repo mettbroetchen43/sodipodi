@@ -1,3 +1,17 @@
+2001-10-29 Mitsuru Oka <oka326@parkcity.ne.jp>
+
+	* src/desktop.c:
+	Added gtk_object_unref() after *_add_child to fix memory leaks.
+
+	* src/document: Ditto
+
+	* src/selection-chemistry.c: Ditto
+
+	* src/sp-item-group.c: Ditto
+
+	* src/sp-clippath.c, src/sp-use.c: Ditto
+	Missing to add ChangeLog before commiting.
+
 2001-10-23  Mitsuru Oka <oka326@parkcity.ne.jp>
 
 	* src/sp-star.*, src/sp-spiral.*, src/star-context.* and

@@ -244,6 +244,7 @@ sp_document_new (const gchar * uri)
 		r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, NULL);
+		sp_repr_unref (r);
 		g_assert (document->private->root->namedviews);
 	}
 
@@ -252,6 +253,7 @@ sp_document_new (const gchar * uri)
 		SPRepr *r;
 		r = sp_repr_new ("defs");
 		sp_repr_add_child (rroot, r, NULL);
+		sp_repr_unref (r);
 		g_assert (document->private->root->defs);
 	}
 
@@ -315,6 +317,7 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 		r = sp_repr_new ("sodipodi:namedview");
 		sp_repr_set_attr (r, "id", "base");
 		sp_repr_add_child (rroot, r, 0);
+		sp_repr_unref (r);
 		g_assert (document->private->root->namedviews);
 	}
 
@@ -323,6 +326,7 @@ sp_document_new_from_mem (const gchar * buffer, gint length)
 		SPRepr *r;
 		r = sp_repr_new ("defs");
 		sp_repr_add_child (rroot, r, NULL);
+		sp_repr_unref (r);
 		g_assert (document->private->root->defs);
 	}
 

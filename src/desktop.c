@@ -306,7 +306,10 @@ sp_desktop_new (SPDesktopWidget *widget)
 								 GTK_SIGNAL_FUNC (sp_desktop_update_scrollbars),NULL);
 
 	ai = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
-	if (ai) nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
+	if (ai) {
+		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
+		gtk_object_unref (GTK_OBJECT(ai));
+	}
 
 	sp_namedview_show (desktop->namedview, desktop);
 	/* Ugly hack */
@@ -401,7 +404,10 @@ sp_desktop_change_document (SPDesktop * desktop, SPDocument * document)
 	desktop->namedview = sp_document_namedview (document, NULL);
 
 	ai = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), SP_CANVAS_ARENA (desktop->drawing)->arena);
-	if (ai) nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
+	if (ai) {
+		nr_arena_item_add_child (SP_CANVAS_ARENA (desktop->drawing)->root, ai, NULL);
+		gtk_object_unref (GTK_OBJECT(ai));
+	}
 	sp_namedview_show (desktop->namedview, desktop);
 	/* Ugly hack */
 	sp_desktop_activate_guides (desktop, TRUE);
