@@ -193,6 +193,7 @@ sp_desktop_new (SPDocument * document)
 	desktop->vruler = (GtkRuler *) glade_xml_get_widget (xml, "vruler");
 
 	desktop->canvas = (GnomeCanvas *) glade_xml_get_widget (xml, "canvas");
+	gtk_object_set_data (GTK_OBJECT (desktop->canvas), "SPDesktop", desktop);
 
 	root = gnome_canvas_root (desktop->canvas);
 
@@ -518,10 +519,24 @@ sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data
 	sp_event_context_root_handler (SP_DESKTOP (data)->event_context, event);
 }
 
+/*
+ * fixme: this conatins a hack, to deal with deleting a view, which is
+ * completely on another view, in which case active_desktop will not be updated
+ *
+ */
+
 void
 sp_desktop_item_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data)
 {
-	sp_event_context_item_handler ((SP_ACTIVE_DESKTOP)->event_context, SP_ITEM (data), event);
+	gpointer ddata;
+	SPDesktop * desktop;
+
+	ddata = gtk_object_get_data (GTK_OBJECT (item->canvas), "SPDesktop");
+	g_return_if_fail (ddata != NULL);
+
+	desktop = SP_DESKTOP (ddata);
+
+	sp_event_context_item_handler (desktop->event_context, SP_ITEM (data), event);
 }
 
 #if 0

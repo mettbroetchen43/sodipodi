@@ -6,6 +6,8 @@
 
 #include "dialogs/object-fill.h"
 #include "dialogs/object-stroke.h"
+#include "dialogs/text-edit.h"
+#include "dialogs/export.h"
 
 /* Unreachable code, which guarantees that reqd functions are linked */
 
@@ -51,4 +53,5 @@ sp_mdi_dialog_handles (void)
 	sp_object_fill_dialog ();
 	sp_object_stroke_dialog ();
 	sp_text_edit_dialog ();
+	sp_export_dialog ();
 }

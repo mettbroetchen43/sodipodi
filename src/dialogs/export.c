@@ -1,0 +1,471 @@
+#define SP_EXPORT_C
+
+#include <gnome.h>
+#include <glade/glade.h>
+#include "../helper/png-write.h"
+#include "../document.h"
+#include "../selection.h"
+#include "../mdi-desktop.h"
+#include "../desktop-units.h"
+#include "../desktop-handles.h"
+#include "../desktop-affine.h"
+#include "export.h"
+
+#define SP_EXPORT_MIN_SIZE 16.0
+
+static GladeXML * xml = NULL;
+static GtkWidget * dialog = NULL;
+static gboolean spin = TRUE;
+static SPDesktop * desktop = NULL;
+
+void sp_export_drawing (GtkToggleButton * tb);
+void sp_export_page (GtkToggleButton * tb);
+void sp_export_selection (GtkToggleButton * tb);
+
+void sp_export_area_x0_changed (GtkSpinButton * sb);
+void sp_export_area_y0_changed (GtkSpinButton * sb);
+void sp_export_area_x1_changed (GtkSpinButton * sb);
+void sp_export_area_y1_changed (GtkSpinButton * sb);
+void sp_export_area_width_changed (GtkSpinButton * sb);
+void sp_export_area_height_changed (GtkSpinButton * sb);
+
+void sp_export_image_width_changed (GtkSpinButton * sb);
+void sp_export_image_height_changed (GtkSpinButton * sb);
+void sp_export_image_xdpi_changed (GtkSpinButton * sb);
+void sp_export_image_ydpi_changed (GtkSpinButton * sb);
+
+static void sp_export_set_image_y (void);
+
+static void sp_export_do_export (SPDesktop * desktop, gchar * filename,
+	gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint width, gint height);
+
+static void sp_export_set_area (GladeXML * xml, ArtDRect * bbox);
+static void sp_spin_button_set (GladeXML * xml, const gchar * name, gdouble value);
+static gdouble sp_spin_button_get (GladeXML * xml, const gchar * name);
+
+void sp_export_dialog (void)
+{
+	GtkWidget * tb;
+	GtkWidget * fe;
+	gint b;
+	gdouble x0, y0, x1, y1, width, height;
+	gchar * filename;
+
+	if (SP_ACTIVE_DESKTOP == NULL) return;
+	desktop = SP_ACTIVE_DESKTOP;
+
+	if (xml == NULL) {
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "export");
+		g_return_if_fail (xml != NULL);
+		glade_xml_signal_autoconnect (xml);
+		dialog = glade_xml_get_widget (xml, "export");
+		g_return_if_fail (dialog != NULL);
+	}
+
+	tb = glade_xml_get_widget (xml, "export_drawing");
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (tb), TRUE);
+	sp_export_drawing (GTK_TOGGLE_BUTTON (tb));
+
+	if (!GTK_WIDGET_VISIBLE (dialog))
+		gtk_widget_show (dialog);
+
+	b = gnome_dialog_run (GNOME_DIALOG (dialog));
+
+	fe = glade_xml_get_widget (xml, "export_filename");
+	filename = gnome_file_entry_get_full_path (GNOME_FILE_ENTRY (fe), FALSE);
+
+	if (b == 0) {
+		x0 = sp_spin_button_get (xml, "export_area_x0");
+		y0 = sp_spin_button_get (xml, "export_area_y0");
+		x1 = sp_spin_button_get (xml, "export_area_x1");
+		y1 = sp_spin_button_get (xml, "export_area_y1");
+		width = sp_spin_button_get (xml, "export_image_width");
+		height = sp_spin_button_get (xml, "export_image_height");
+		sp_export_do_export (desktop, filename, x0, y0, x1, y1, width, height);
+	}
+
+	if (GTK_WIDGET_VISIBLE (dialog))
+		gtk_widget_hide (dialog);
+}
+
+static void
+sp_export_do_export (SPDesktop * desktop, gchar * filename,
+	gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint width, gint height)
+{
+	SPDocument * doc;
+	ArtPixBuf * pixbuf;
+	art_u8 * pixels;
+	gdouble affine[6], a[6];
+
+	g_return_if_fail (desktop != NULL);
+	g_return_if_fail (filename != NULL);
+	g_return_if_fail (width >= 16);
+	g_return_if_fail (height >= 16);
+
+	doc = SP_DT_DOCUMENT (desktop);
+
+	pixels = art_new (art_u8, width * height * 4);
+	memset (pixels, 0, width * height * 4);
+	pixbuf = art_pixbuf_new_rgba (pixels, width, height, width * 4);
+
+	sp_desktop_doc2d_affine (desktop, affine);
+	art_affine_translate (a, -x0, -y1);
+	art_affine_multiply (affine, affine, a);
+	art_affine_scale (a, width / (x1 - x0), -height / (y1 - y0));
+	art_affine_multiply (affine, affine, a);
+
+	sp_item_paint (SP_ITEM (doc), pixbuf, affine);
+
+	sp_png_write_rgba (filename, pixbuf);
+
+	art_pixbuf_free (pixbuf);
+}
+
+void
+sp_export_area_x0_changed (GtkSpinButton * sb)
+{
+	gdouble x0, x1, xdpi, width;
+
+	if (!spin) return;
+
+	spin = FALSE;
+
+	x0 = sp_spin_button_get (xml, "export_area_x0");
+	x1 = sp_spin_button_get (xml, "export_area_x1");
+	xdpi = sp_spin_button_get (xml, "export_image_xdpi");
+	width = (x1 - x0) / POINTS_PER_INCH * xdpi;
+
+	if (width < SP_EXPORT_MIN_SIZE) {
+		width = SP_EXPORT_MIN_SIZE;
+		x1 = x0 + width * POINTS_PER_INCH / xdpi;
+		sp_spin_button_set (xml, "export_area_x1", x1);
+	}
+
+	sp_spin_button_set (xml, "export_area_width", x1 - x0);
+	sp_spin_button_set (xml, "export_image_width", width);
+
+	spin = TRUE;
+}
+
+void
+sp_export_area_y0_changed (GtkSpinButton * sb)
+{
+	gdouble y0, y1, ydpi, height;
+
+	if (!spin) return;
+
+	spin = FALSE;
+
+	y0 = sp_spin_button_get (xml, "export_area_y0");
+	y1 = sp_spin_button_get (xml, "export_area_y1");
+	ydpi = sp_spin_button_get (xml, "export_image_ydpi");
+	height = (y1 - y0) / POINTS_PER_INCH * ydpi;
+
+	if (height < SP_EXPORT_MIN_SIZE) {
+		height = SP_EXPORT_MIN_SIZE;
+		y1 = y0 + height * POINTS_PER_INCH / ydpi;
+		sp_spin_button_set (xml, "export_area_y1", y1);
+	}
+
+	sp_spin_button_set (xml, "export_area_width", y1 - y0);
+	sp_spin_button_set (xml, "export_image_width", height);
+
+	spin = TRUE;
+}
+
+void
+sp_export_area_x1_changed (GtkSpinButton * sb)
+{
+	gdouble x0, x1, xdpi, width;
+
+	if (!spin) return;
+
+	spin = FALSE;
+
+	x0 = sp_spin_button_get (xml, "export_area_x0");
+	x1 = sp_spin_button_get (xml, "export_area_x1");
+	xdpi = sp_spin_button_get (xml, "export_image_xdpi");
+	width = (x1 - x0) / POINTS_PER_INCH * xdpi;
+
+	if (width < SP_EXPORT_MIN_SIZE) {
+		width = SP_EXPORT_MIN_SIZE;
+		x0 = x1 - width * POINTS_PER_INCH / xdpi;
+		sp_spin_button_set (xml, "export_area_x0", x0);
+	}
+
+	sp_spin_button_set (xml, "export_area_width", x1 - x0);
+	sp_spin_button_set (xml, "export_image_width", width);
+
+	spin = TRUE;
+}
+
+void
+sp_export_area_y1_changed (GtkSpinButton * sb)
+{
+	gdouble y0, y1, ydpi, height;
+
+	if (!spin) return;
+
+	spin = FALSE;
+
+	y0 = sp_spin_button_get (xml, "export_area_y0");
+	y1 = sp_spin_button_get (xml, "export_area_y1");
+	ydpi = sp_spin_button_get (xml, "export_image_ydpi");
+	height = (y1 - y0) / POINTS_PER_INCH * ydpi;
+
+	if (height < SP_EXPORT_MIN_SIZE) {
+		height = SP_EXPORT_MIN_SIZE;
+		y0 = y1 - height * POINTS_PER_INCH / ydpi;
+		sp_spin_button_set (xml, "export_area_y0", y0);
+	}
+
+	sp_spin_button_set (xml, "export_area_width", y1 - y0);
+	sp_spin_button_set (xml, "export_image_width", height);
+
+	spin = TRUE;
+}
+
+void
+sp_export_area_width_changed (GtkSpinButton * sb)
+{
+	gdouble width, x0, x1, xdpi, iw;
+
+	if (!spin) return;
+
+	spin = FALSE;
+
+	width = sp_spin_button_get (xml, "export_area_width");
+	x0 = sp_spin_button_get (xml, "export_area_x0");
+	x1 = sp_spin_button_get (xml, "export_area_x1");
+	xdpi = sp_spin_button_get (xml, "export_image_xdpi");
+	iw = width / POINTS_PER_INCH * xdpi;
+
+	if (iw < SP_EXPORT_MIN_SIZE) {
+		iw = SP_EXPORT_MIN_SIZE;
+		width = iw * POINTS_PER_INCH / xdpi;
+		sp_spin_button_set (xml, "export_area_width", width);
+	}
+
+	sp_spin_button_set (xml, "export_area_x1", x0 + width);
+	sp_spin_button_set (xml, "export_image_width", iw);
+
+	spin = TRUE;
+}
+
+void
+sp_export_area_height_changed (GtkSpinButton * sb)
+{
+	gdouble height, y0, y1, ydpi, ih;
+
+	if (!spin) return;
+
+	spin = FALSE;
+
+	height = sp_spin_button_get (xml, "export_area_height");
+	y0 = sp_spin_button_get (xml, "export_area_y0");
+	y1 = sp_spin_button_get (xml, "export_area_y1");
+	ydpi = sp_spin_button_get (xml, "export_image_ydpi");
+	ih = height / POINTS_PER_INCH * ydpi;
+
+	if (ih < SP_EXPORT_MIN_SIZE) {
+		ih = SP_EXPORT_MIN_SIZE;
+		height = ih * POINTS_PER_INCH / ydpi;
+		sp_spin_button_set (xml, "export_area_height", height);
+	}
+
+	sp_spin_button_set (xml, "export_area_y1", y0 + height);
+	sp_spin_button_set (xml, "export_image_height", ih);
+
+	spin = TRUE;
+}
+
+void
+sp_export_image_width_changed (GtkSpinButton * sb)
+{
+	gdouble x0, x1, xdpi, width;
+
+	if (!spin) return;
+
+	spin = FALSE;
+
+	width = sp_spin_button_get (xml, "export_image_width");
+	x0 = sp_spin_button_get (xml, "export_area_x0");
+	x1 = sp_spin_button_get (xml, "export_area_x1");
+
+	if (width < SP_EXPORT_MIN_SIZE) {
+		width = SP_EXPORT_MIN_SIZE;
+		sp_spin_button_set (xml, "export_image_width", width);
+	}
+
+	xdpi = width * POINTS_PER_INCH / (x1 - x0);
+
+	sp_spin_button_set (xml, "export_image_xdpi", xdpi);
+
+	sp_export_set_image_y ();
+
+	spin = TRUE;
+}
+
+void
+sp_export_image_xdpi_changed (GtkSpinButton * sb)
+{
+	gdouble x0, x1, xdpi, width;
+
+	if (!spin) return;
+
+	spin = FALSE;
+
+	xdpi = sp_spin_button_get (xml, "export_image_xdpi");
+	x0 = sp_spin_button_get (xml, "export_area_x0");
+	x1 = sp_spin_button_get (xml, "export_area_x1");
+
+	width = (x1 - x0) / POINTS_PER_INCH * xdpi;
+
+	if (width < SP_EXPORT_MIN_SIZE) {
+		width = SP_EXPORT_MIN_SIZE;
+		xdpi = width * POINTS_PER_INCH / (x1 - x0);
+		sp_spin_button_set (xml, "export_image_xdpi", xdpi);
+	}
+
+	sp_spin_button_set (xml, "export_image_width", width);
+
+	sp_export_set_image_y ();
+
+	spin = TRUE;
+}
+
+static void
+sp_export_set_image_y (void)
+{
+	gdouble xdpi, y0, y1;
+
+	spin = FALSE;
+
+	xdpi = sp_spin_button_get (xml, "export_image_xdpi");
+	y0 = sp_spin_button_get (xml, "export_area_y0");
+	y1 = sp_spin_button_get (xml, "export_area_y1");
+
+	sp_spin_button_set (xml, "export_image_ydpi", xdpi);
+	sp_spin_button_set (xml, "export_image_height", (y1 - y0) / POINTS_PER_INCH * xdpi);
+
+	spin = TRUE;
+}
+
+void
+sp_export_drawing (GtkToggleButton * tb)
+{
+	SPDesktop * desktop;
+	SPDocument * doc;
+	ArtDRect bbox;
+
+	if (!gtk_toggle_button_get_active (tb)) return;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	g_return_if_fail (desktop != NULL);
+
+	doc = SP_DT_DOCUMENT (desktop);
+
+	sp_item_bbox (SP_ITEM (doc), &bbox);
+
+	sp_export_set_area (xml, &bbox);
+}
+
+void
+sp_export_page (GtkToggleButton * tb)
+{
+	SPDesktop * desktop;
+	SPDocument * doc;
+	ArtDRect bbox;
+
+	if (!gtk_toggle_button_get_active (tb)) return;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	g_return_if_fail (desktop != NULL);
+
+	doc = SP_DT_DOCUMENT (desktop);
+
+	bbox.x0 = 0.0;
+	bbox.y0 = 0.0;
+	bbox.x1 = sp_document_page_width (doc);
+	bbox.y1 = sp_document_page_height (doc);
+
+	sp_export_set_area (xml, &bbox);
+}
+
+void
+sp_export_selection (GtkToggleButton * tb)
+{
+	SPDesktop * desktop;
+	SPSelection * sel;
+	ArtDRect bbox;
+
+	if (!gtk_toggle_button_get_active (tb)) return;
+
+	desktop = SP_ACTIVE_DESKTOP;
+	g_return_if_fail (desktop != NULL);
+
+	sel = SP_DT_SELECTION (desktop);
+
+	sp_selection_bbox (sel, &bbox);
+
+	sp_export_set_area (xml, &bbox);
+}
+
+static void
+sp_export_set_area (GladeXML * xml, ArtDRect * bbox)
+{
+	gdouble xdpi, ydpi;
+
+	g_return_if_fail (xml != NULL);
+	g_return_if_fail (bbox != NULL);
+
+	spin = FALSE;
+
+	sp_spin_button_set (xml, "export_area_x0", bbox->x0);
+	sp_spin_button_set (xml, "export_area_y0", bbox->y0);
+	sp_spin_button_set (xml, "export_area_x1", bbox->x1);
+	sp_spin_button_set (xml, "export_area_y1", bbox->y1);
+	sp_spin_button_set (xml, "export_area_width", bbox->x1 - bbox->x0);
+	sp_spin_button_set (xml, "export_area_height", bbox->y1 - bbox->y0);
+
+	xdpi = sp_spin_button_get (xml, "export_image_xdpi");
+	ydpi = sp_spin_button_get (xml, "export_image_ydpi");
+
+	sp_spin_button_set (xml, "export_image_width", (bbox->x1 - bbox->x0) / 72.0 * xdpi);
+	sp_spin_button_set (xml, "export_image_height", (bbox->y1 - bbox->y0) / 72.0 * ydpi);
+
+	spin = TRUE;
+}
+
+static void
+sp_spin_button_set (GladeXML * xml, const gchar * name, gdouble value)
+{
+
+	GtkWidget * sb;
+
+	g_return_if_fail (xml != NULL);
+	g_return_if_fail (name != NULL);
+
+	sb = glade_xml_get_widget (xml, name);
+	g_return_if_fail (sb != NULL);
+	g_return_if_fail (GTK_IS_SPIN_BUTTON (sb));
+
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (sb), value);
+}
+
+static gdouble
+sp_spin_button_get (GladeXML * xml, const gchar * name)
+{
+
+	GtkWidget * sb;
+
+	g_return_val_if_fail (xml != NULL, 1.0);
+	g_return_val_if_fail (name != NULL, 1.0);
+
+	sb = glade_xml_get_widget (xml, name);
+	g_return_val_if_fail (sb != NULL, 1.0);
+	g_return_val_if_fail (GTK_IS_SPIN_BUTTON (sb), 1.0);
+
+	return gtk_spin_button_get_value_as_float (GTK_SPIN_BUTTON (sb));
+}
+

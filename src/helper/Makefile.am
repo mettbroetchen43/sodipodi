@@ -14,6 +14,7 @@ noinst_LIBRARIES = libspchelp.a libspgt1.a
 libspchelp_a_SOURCES = \
 	art-utils.c art-utils.h \
 	art-rgba-svp.c art-rgba-svp.h \
+	art_rgb_affine_private.h \
 	art-rgba-rgba-affine.c art-rgba-rgba-affine.h \
 	sp-canvas-util.c sp-canvas-util.h \
 	curve.c curve.h \

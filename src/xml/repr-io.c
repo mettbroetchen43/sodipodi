@@ -118,7 +118,7 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 		attrlist = g_list_remove (attrlist, (gpointer) key);
 	}
 
-	fprintf (file, ">\n");
+	fprintf (file, ">");
 
 	childrenlist = sp_repr_children (repr);
 
@@ -134,6 +134,6 @@ repr_write (SPRepr * repr, FILE * file, gint level)
 	}
 
 	for (i = 0; i < level; i++) fputs ("  ", file);
-	fprintf (file, "</%s>\n", sp_repr_name (repr));
+	fprintf (file, "</%s>", sp_repr_name (repr));
 }
 

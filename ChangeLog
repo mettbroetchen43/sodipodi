@@ -1,5 +1,9 @@
 2000-01-25  Lauris Kaplinski <lauris@ariman.ee>
 
+    * dialogs/export.*: a bit better png exporting, still sucks
+
+2000-01-25  Lauris Kaplinski <lauris@ariman.ee>
+
     * sp-image.c: Cleanups here and there
     * display/canvas-image.c: point method uses alpha, removed SVP-s
 
