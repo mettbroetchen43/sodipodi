@@ -47,7 +47,6 @@ SPRepr *sp_repr_get_next (SPRepr *repr);
 const unsigned char *sp_repr_get_name (SPRepr *repr);
 const unsigned char *sp_repr_get_content (SPRepr *repr);
 const unsigned char *sp_repr_get_attr (SPRepr *repr, const unsigned char *key);
-const unsigned char *sp_repr_get_inherited_attr (SPRepr *repr, const unsigned char *key);
 
 unsigned int sp_repr_is_element (SPRepr *repr);
 unsigned int sp_repr_is_text (SPRepr *repr);

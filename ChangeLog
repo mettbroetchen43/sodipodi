@@ -1,5 +1,15 @@
 2004-02-01  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
+	* src/xml/repr.c (sp_repr_get_inherited_attr): Removed duplicated
+	function
+
+	* src/xml/repr.h: Ditto
+
+	* src/xml/repr-util.c (sp_repr_get_xml_space): Use
+	sp_repr_attr_inherited instead
+
+2004-02-01  Mitsuru Oka  <oka326@parkcity.ne.jp>
+	
 	* src/api.h: KDE building bug reported by Luciano (#883553)
 
 	* src/document.h (sp_document_set_timer): Ditto

@@ -267,7 +267,7 @@ sp_repr_get_xml_space (SPRepr *repr)
 {
 	const unsigned char *space;
 
-	space = sp_repr_get_inherited_attr (repr, "xml:space");
+	space = sp_repr_attr_inherited (repr, "xml:space");
 
 	if (space && !strcmp(space, "preserve"))
 		return SP_REPR_XML_SPACE_PRESERVE;
