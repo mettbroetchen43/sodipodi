@@ -1,3 +1,7 @@
+Sat Jul 13 19:47:16 2002 Davide Puricelli <evo@debian.org>
+	
+	* po/ja.po: Updated, thanks Junichi Uekawa <dancer@netfort.gr.jp>
+
 Sat Jul 13 05:52:15 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-item-group.c (sp_group_bbox): Fixed group selection bug -
