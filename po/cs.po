@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-06-27 05:11+0200\n"
-"PO-Revision-Date: 2003-06-27 23:42+0200\n"
+"POT-Creation-Date: 2003-06-29 13:14+0200\n"
+"PO-Revision-Date: 2003-06-29 13:56+0200\n"
 "Last-Translator: Miloslav Trmac <mitr@volny.cz>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,34 +28,34 @@ msgstr "Sodipodi"
 msgid "Could not create sodipodi-svg-doc factory"
 msgstr "Nelze vytvořit generátor sodipodi-svg-doc"
 
-#: src/desktop.c:748
+#: src/desktop.c:750
 msgid "Zoom drawing if window size changes"
 msgstr "Zvětšit či zmenšit kresbu při změně velikosti okna"
 
-#: src/desktop.c:828
+#: src/desktop.c:830
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
 msgstr "Sodipodi: %s: %s: %d"
 
-#: src/desktop.c:957
+#: src/desktop.c:959
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
 msgstr "Dokument %s obsahuje neuložené změny, chcete je uložit?"
 
 #. Page page
-#: src/desktop.c:1479 src/dialogs/align.c:286
+#: src/desktop.c:1481 src/dialogs/align.c:286
 #: src/dialogs/desktop-properties.c:385 src/dialogs/document-properties.c:163
 #: src/dialogs/export.c:135 src/verbs.c:478
 msgid "Page"
 msgstr "Strana"
 
-#: src/desktop.c:1483 src/dialogs/align.c:287 src/dialogs/export.c:140
+#: src/desktop.c:1485 src/dialogs/align.c:287 src/dialogs/export.c:140
 #: src/verbs.c:479
 msgid "Drawing"
 msgstr "Kresba"
 
 #. Selection submenu
-#: src/desktop.c:1487 src/dialogs/align.c:288 src/dialogs/export.c:145
+#: src/desktop.c:1489 src/dialogs/align.c:288 src/dialogs/export.c:145
 #: src/interface.c:553 src/toolbox.c:485 src/verbs.c:480
 msgid "Selection"
 msgstr "Výběr"
@@ -638,7 +638,7 @@ msgstr "Víčko:"
 msgid "Pattern:"
 msgstr "Vzorek:"
 
-#: src/dialogs/text-edit.c:87
+#: src/dialogs/text-edit.c:93
 msgid "Text properties"
 msgstr "Vlastnosti textu"
 
@@ -647,19 +647,23 @@ msgstr "Vlastnosti textu"
 msgid "Layout"
 msgstr "Rozložení"
 
-#: src/dialogs/text-edit.c:142
+#: src/dialogs/text-edit.c:140
 msgid "Alignment:"
 msgstr "Zarovnání:"
 
-#: src/dialogs/text-edit.c:174
+#: src/dialogs/text-edit.c:165
 msgid "Orientation:"
 msgstr "Orientace:"
 
-#: src/dialogs/text-edit.c:202
+#: src/dialogs/text-edit.c:183
+msgid "Line spacing:"
+msgstr "Mezery mezi řádky:"
+
+#: src/dialogs/text-edit.c:208
 msgid "Text and font"
 msgstr "Text a písmo"
 
-#: src/dialogs/text-edit.c:216
+#: src/dialogs/text-edit.c:219
 msgid "Set as default"
 msgstr "Nastavit jako výchozí"
 
@@ -1685,7 +1689,7 @@ msgid "Unknown item :-("
 msgstr "Neznámá položka :-("
 
 #. fixme:
-#: src/sp-text.c:1296
+#: src/sp-text.c:1305
 msgid "Text object"
 msgstr "Textový objekt"
 
@@ -2415,6 +2419,3 @@ msgstr "Hodnota"
 
 #~ msgid "Whether zoom follows window size"
 #~ msgstr "Zda-li zvětšení sleduje velikost okna"
-
-#~ msgid "A path - whatever it means"
-#~ msgstr "Cesta - cokoli to znamená"
