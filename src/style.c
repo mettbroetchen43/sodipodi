@@ -950,7 +950,7 @@ sp_style_write_difference (SPStyle *from, SPStyle *to)
 	p += sp_style_write_iscale24 (p, c + BMAX - p, "stroke-opacity", &from->stroke_opacity, &to->stroke_opacity, SP_STYLE_FLAG_IFDIFF);
 
 	/* fixme: */
-	sp_text_style_write (p, c + BMAX - p, from->text);
+	p += sp_text_style_write (p, c + BMAX - p, from->text);
 
 	p += sp_style_write_ienum (p, c + BMAX - p, "text-anchor", enum_text_anchor, &from->text_anchor, &to->text_anchor, SP_STYLE_FLAG_IFDIFF);
 	p += sp_style_write_ienum (p, c + BMAX - p, "writing-mode", enum_writing_mode, &from->writing_mode, &to->writing_mode, SP_STYLE_FLAG_IFDIFF);

@@ -5,6 +5,7 @@
 
 INCLUDES = \
 	-I$(includedir) \
+	$(SODIPODI_BONOBO_CFLAGS) \
 	$(SODIPODI_CFLAGS)
 
 noinst_LIBRARIES = libspbonobo.a

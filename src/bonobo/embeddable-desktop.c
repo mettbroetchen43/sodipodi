@@ -64,7 +64,7 @@ sp_embeddable_desktop_factory (BonoboEmbeddable * embeddable,
 	namedview = sp_document_namedview (desktop->document->document, NULL);
 	g_assert (namedview != NULL);
 
-	desktop->desktop = (SPDesktopWidget *) sp_desktop_widget_new (desktop->document->document, namedview);
+	desktop->desktop = (SPDesktopWidget *) sp_desktop_widget_new (namedview);
 
 	/* Hide scrollbars and rulers */
 
@@ -137,8 +137,8 @@ sp_embeddable_desktop_size_allocate (GtkWidget * widget, GtkAllocation * allocat
 	g_assert (ed->desktop == dtw);
 	
 	sp_desktop_show_region (dtw->desktop, 0.0, 0.0,
-		sp_document_width (dtw->document),
-		sp_document_height (dtw->document),
+		sp_document_width (ed->document->document),
+		sp_document_height (ed->document->document),
 				10);
 }
 

@@ -86,7 +86,7 @@ sp_embeddable_document_pf_load (BonoboPersistFile *pfile,
 
 	document = SP_EMBEDDABLE_DOCUMENT (closure);
 
-	newdocument = sp_document_new (filename);
+	newdocument = sp_document_new (filename, FALSE);
 
 	if (newdocument == NULL)
 		return -1;
@@ -170,7 +170,7 @@ sp_embeddable_document_ps_load (BonoboPersistStream *ps, const Bonobo_Stream str
 		return;
 	}
 
-	newdocument = sp_document_new_from_mem (buffer, len);
+	newdocument = sp_document_new_from_mem (buffer, len, FALSE);
 
 	g_free (buffer);
 
@@ -305,7 +305,7 @@ sp_embeddable_document_new (void)
 
 	document = gtk_type_new (SP_EMBEDDABLE_DOCUMENT_TYPE);
 
-	document->document = sp_document_new (NULL);
+	document->document = sp_document_new (NULL, FALSE);
 
 	bonobo_embeddable_construct_full (BONOBO_EMBEDDABLE (document),
 		sp_embeddable_desktop_factory, NULL,

@@ -678,9 +678,14 @@ sp_repr_merge (SPRepr *repr, const SPRepr *src, const guchar *key)
 		SPRepr *rch;
 		const guchar *id;
 		id = sp_repr_attr (child, key);
-		rch = sp_repr_lookup_child (repr, key, id);
-		if (rch) {
-			sp_repr_merge (rch, child, key);
+		if (id) {
+			rch = sp_repr_lookup_child (repr, key, id);
+			if (rch) {
+				sp_repr_merge (rch, child, key);
+			} else {
+				rch = sp_repr_duplicate (child);
+				sp_repr_append_child (repr, rch);
+			}
 		} else {
 			rch = sp_repr_duplicate (child);
 			sp_repr_append_child (repr, rch);

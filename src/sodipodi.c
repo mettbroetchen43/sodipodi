@@ -710,8 +710,6 @@ sodipodi_remove_document (SPDocument *document)
 					while (child->next) sp_repr_unparent (child->next);
 				}
 				child = sp_repr_new ("document");
-				/* fixme: */
-				sp_repr_set_attr (child, "id", SP_DOCUMENT_NAME (document));
 				sp_repr_set_attr (child, "uri", SP_DOCUMENT_URI (document));
 				sp_repr_add_child (recent, child, NULL);
 			}

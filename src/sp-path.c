@@ -126,12 +126,12 @@ sp_path_find_version (SPObject *object)
 static void
 sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 {
+	SPPath *path;
 	guint version;
 
-	version = sp_path_find_version (object);
+	path = SP_PATH (object);
 
-	if (SP_OBJECT_CLASS (parent_class)->build)
-		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
+	version = sp_path_find_version (object);
 
 	if ((version > 0) && (version < 25)) {
 		const guchar *str;
@@ -141,6 +141,43 @@ sp_path_build (SPObject *object, SPDocument *document, SPRepr *repr)
 	}
 
 	sp_path_read_attr (object, "d");
+
+	if (path->independent && (version > 0) && (version < 25)) {
+		GSList *l;
+		gboolean open;
+		open = FALSE;
+		for (l = path->comp; l != NULL; l = l->next) {
+			SPPathComp *comp;
+			comp = (SPPathComp *) l->data;
+			if (comp->curve && comp->curve->bpath) {
+				ArtBpath *bp;
+				for (bp = comp->curve->bpath; bp->code != ART_END; bp++) {
+					if (bp->code == ART_MOVETO_OPEN) {
+						open = TRUE;
+						break;
+					}
+				}
+			}
+		}
+		if (open) {
+			SPCSSAttr *css;
+			const guchar *val;
+			gboolean changed;
+			css = sp_repr_css_attr (repr, "style");
+			/* We foce style rewrite at moment (Lauris) */
+			changed = TRUE;
+			val = sp_repr_css_property (css, "fill", NULL);
+			if (val && strcmp (val, "none")) {
+				sp_repr_css_set_property (css, "fill", "none");
+				changed = TRUE;
+			}
+			if (changed) sp_repr_css_set (repr, css, "style");
+			sp_repr_css_attr_unref (css);
+		}
+	}
+
+	if (SP_OBJECT_CLASS (parent_class)->build)
+		(* SP_OBJECT_CLASS (parent_class)->build) (object, document, repr);
 }
 
 static void

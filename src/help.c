@@ -18,7 +18,7 @@
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-i18n.h>
 #include "document.h"
-#include "sp-object.h"
+#include "sp-text.h"
 #include "svg-view.h"
 #include "help.h"
 
@@ -38,16 +38,10 @@ sp_help_about (void)
 	doc = sp_document_new (SODIPODI_GLADEDIR "/about.svg", FALSE);
 	g_return_if_fail (doc != NULL);
 	title = sp_document_lookup_id (doc, "title");
-	if (title) {
-		SPXMLText *text;
+	if (title && SP_IS_TEXT (title)) {
 		gchar *t;
-		sp_repr_set_content (SP_OBJECT_REPR (title), NULL);
-		while (sp_repr_children (SP_OBJECT_REPR (title))) {
-			sp_repr_unparent (sp_repr_children (SP_OBJECT_REPR (title)));
-		}
 		t = g_strdup_printf ("Sodipodi %s", SODIPODI_VERSION);
-		text = sp_xml_document_createTextNode (sp_repr_document (SP_OBJECT_REPR (title)), t);
-		sp_repr_add_child (SP_OBJECT_REPR (title), text, NULL);
+		sp_text_set_repr_text_multiline (SP_TEXT (title), t);
 		g_free (t);
 	}
 

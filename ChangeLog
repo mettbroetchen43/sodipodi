@@ -1,5 +1,18 @@
 2002-09-21  Lauris Kaplinski  <lauris@kaplinski.com>
 
+	* src/xml/repr.c (sp_repr_merge): Duplicate node without id key
+
+	* src/sp-path.c (sp_path_build): Set fill to none for old version open path
+
+	* src/bonobo/embeddable-document.c (sp_embeddable_document_pf_load): New
+	document constructor signature, thanks to Ted Gould
+	(sp_embeddable_document_ps_load): Ditto
+	(sp_embeddable_document_new): Ditto
+
+	* src/help.c (sp_help_about): use sp_text_set_repr_multiline
+
+	* src/style.c (sp_style_write_difference): Rewind pointer
+
 	* src/sp-ellipse.c (sp_genericellipse_set_shape): Request modified
 	(sp_arc_modified): Implement, write path attribute
 
