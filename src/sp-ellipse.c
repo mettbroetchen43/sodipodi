@@ -18,7 +18,6 @@
 #include <math.h>
 #include <string.h>
 
-#include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "attributes.h"
 #include "style.h"

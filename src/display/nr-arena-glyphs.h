@@ -19,6 +19,8 @@
 
 #include <libnrtype/nr-rasterfont.h>
 
+#include <libart_lgpl/art_svp.h>
+
 #include "helper/curve.h"
 #include "forward.h"
 #include "sp-paint-server.h"

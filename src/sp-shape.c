@@ -23,7 +23,6 @@
 
 #include "macros.h"
 #include "helper/sp-intl.h"
-#include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "dialogs/fill-style.h"
 #include "display/nr-arena-shape.h"

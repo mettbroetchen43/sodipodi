@@ -1,3 +1,18 @@
+2003-05-03  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/helper/Makefile.am: Removed art-utils.h
+
+	* src/libnr/nr-svp.c (nr_svl_build_finish_segment): New helper
+	(nr_svl_build_moveto): Ditto
+	(nr_svl_build_lineto): Ditto
+	(nr_svl_build_curveto): New helper
+	(nr_svl_from_art_vpath): Use NRSVLBuild
+	(nr_svl_from_art_bpath): New method
+
+2003-05-02  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* sodipodi.desktop.in: Updated by Michael Terry
+
 2003-05-01  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/svg/svg-length.c (sp_svg_number_write_d): Fixed rounding overflow

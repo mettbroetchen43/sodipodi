@@ -38,7 +38,6 @@
 #include <gtk/gtkimage.h>
 
 #include "../helper/sp-intl.h"
-#include "../helper/art-utils.h"
 #include "../helper/unit-menu.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"

@@ -20,7 +20,6 @@
 #include <libnr/nr-pixblock.h>
 
 #include "macros.h"
-#include "helper/art-utils.h"
 #include "display/nr-arena-glyphs.h"
 #include "print.h"
 #include "style.h"

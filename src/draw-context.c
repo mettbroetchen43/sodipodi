@@ -25,7 +25,6 @@
 #include "xml/repr.h"
 #include "svg/svg.h"
 #include "helper/sp-intl.h"
-#include "helper/art-utils.h"
 #include "helper/curve.h"
 #include "helper/bezier-utils.h"
 #include "helper/sodipodi-ctrl.h"

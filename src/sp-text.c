@@ -34,7 +34,6 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include "helper/art-utils.h"
 #include "helper/sp-intl.h"
 #include "xml/repr-private.h"
 #include "svg/svg.h"

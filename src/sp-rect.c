@@ -19,7 +19,6 @@
 #include <glib.h>
 #include <gtk/gtksignal.h>
 #include <gtk/gtkmenuitem.h>
-#include "helper/art-utils.h"
 #include "svg/svg.h"
 #include "attributes.h"
 #include "style.h"

@@ -16,6 +16,7 @@
 
 #include "nr-values.h"
 #include "nr-macros.h"
+#include "nr-matrix.h"
 #include "nr-svp-uncross.h"
 #include "nr-svp.h"
 
@@ -248,100 +249,251 @@ nr_svp_point_distance (NRSVP *svp, float x, float y)
 #define NR_COORD_Y_FROM_ART(v) (floor (NR_QUANT_Y * (v) + 0.5) / NR_QUANT_Y)
 #define NR_COORD_TO_ART(v) (v)
 
+typedef struct _NRSVLBuild NRSVLBuild;
+
+struct _NRSVLBuild {
+	NRSVL *svl;
+	NRFlat *flats;
+	NRVertex *refvx;
+	NRRectF bbox;
+	int dir;
+	NRCoord sx, sy;
+};
+
+static void
+nr_svl_build_finish_segment (NRSVLBuild *svlb)
+{
+	if (svlb->refvx) {
+		NRSVL *new;
+		/* We have running segment */
+		if (svlb->dir > 0) {
+			/* We are upwards, prepended, so reverse */
+			svlb->refvx = nr_vertex_reverse_list (svlb->refvx);
+		}
+		new = nr_svl_new_full (svlb->refvx, &svlb->bbox, svlb->dir);
+		svlb->svl = nr_svl_insert_sorted (svlb->svl, new);
+	}
+	svlb->refvx = NULL;
+}
+
+static void
+nr_svl_build_moveto (NRSVLBuild *svlb, float x, float y)
+{
+	svlb->sx = NR_COORD_X_FROM_ART (x);
+	svlb->sy = NR_COORD_Y_FROM_ART (y);
+	nr_svl_build_finish_segment (svlb);
+	svlb->dir = 0;
+}
+
+static void
+nr_svl_build_lineto (NRSVLBuild *svlb, float x, float y)
+{
+	x = NR_COORD_X_FROM_ART (x);
+	y = NR_COORD_Y_FROM_ART (y);
+	if (y != svlb->sy) {
+		NRVertex *vertex;
+		int newdir;
+		/* We have valid line */
+		newdir = (y > svlb->sy) ? 1 : -1;
+		if (newdir != svlb->dir) {
+			/* We have either start or turn */
+			nr_svl_build_finish_segment (svlb);
+			svlb->dir = newdir;
+		}
+		if (!svlb->refvx) {
+			svlb->refvx = nr_vertex_new_xy (svlb->sx, svlb->sy);
+			svlb->bbox.x0 = svlb->bbox.x1 = svlb->sx;
+			svlb->bbox.y0 = svlb->bbox.y1 = svlb->sy;
+		}
+		/* Add vertex to list */
+		vertex = nr_vertex_new_xy (x, y);
+		vertex->next = svlb->refvx;
+		svlb->refvx = vertex;
+		/* Stretch bbox */
+		svlb->bbox.x0 = MIN (svlb->bbox.x0, x);
+		svlb->bbox.y0 = MIN (svlb->bbox.y0, y);
+		svlb->bbox.x1 = MAX (svlb->bbox.x1, x);
+		svlb->bbox.y1 = MAX (svlb->bbox.y1, y);
+		svlb->sx = x;
+		svlb->sy = y;
+	} else if (x != svlb->sx) {
+		NRFlat *flat;
+		/* Horizontal line ends running segment */
+		nr_svl_build_finish_segment (svlb);
+		svlb->dir = 0;
+		/* Add horizontal lines to flat list */
+		flat = nr_flat_new_full (y, MIN (svlb->sx, x), MAX (svlb->sx, x));
+		svlb->flats = nr_flat_insert_sorted (svlb->flats, flat);
+		svlb->sx = x;
+		/* sy = y ;-) */
+	}
+}
+
+static void
+nr_svl_build_curveto (NRSVLBuild *svlb, double x0, double y0, double x1, double y1, double x2, double y2, double x3, double y3, float flatness)
+{
+	double dx1_0, dy1_0, dx2_0, dy2_0, dx3_0, dy3_0, dx2_3, dy2_3, d3_0_2;
+	double s1_q, t1_q, s2_q, t2_q, v2_q;
+	double f2, f2_q;
+	double x00t, y00t, x0tt, y0tt, xttt, yttt, x1tt, y1tt, x11t, y11t;
+
+	dx1_0 = x1 - x0;
+	dy1_0 = y1 - y0;
+	dx2_0 = x2 - x0;
+	dy2_0 = y2 - y0;
+	dx3_0 = x3 - x0;
+	dy3_0 = y3 - y0;
+	dx2_3 = x3 - x2;
+	dy2_3 = y3 - y2;
+	f2 = flatness * flatness;
+	d3_0_2 = dx3_0 * dx3_0 + dy3_0 * dy3_0;
+	if (d3_0_2 < f2) {
+		double d1_0_2, d2_0_2;
+		d1_0_2 = dx1_0 * dx1_0 + dy1_0 * dy1_0;
+		d2_0_2 = dx2_0 * dx2_0 + dy2_0 * dy2_0;
+		if ((d1_0_2 < f2) && (d2_0_2 < f2)) {
+			goto nosubdivide;
+		} else {
+			goto subdivide;
+		}
+	}
+	f2_q = flatness * flatness * d3_0_2;
+	s1_q = dx1_0 * dx3_0 + dy1_0 * dy3_0;
+	t1_q = dy1_0 * dx3_0 - dx1_0 * dy3_0;
+	s2_q = dx2_0 * dx3_0 + dy2_0 * dy3_0;
+	t2_q = dy2_0 * dx3_0 - dx2_0 * dy3_0;
+	v2_q = dx2_3 * dx3_0 + dy2_3 * dy3_0;
+	if ((t1_q * t1_q) > f2_q) goto subdivide;
+	if ((t2_q * t2_q) > f2_q) goto subdivide;
+	if ((s1_q < 0.0) && ((s1_q * s1_q) > f2_q)) goto subdivide;
+	if ((v2_q < 0.0) && ((v2_q * v2_q) > f2_q)) goto subdivide;
+	if (s1_q >= s2_q) goto subdivide;
+
+ nosubdivide:
+	nr_svl_build_lineto (svlb, x3, y3);
+	return;
+
+ subdivide:
+	x00t = (x0 + x1) * 0.5;
+	y00t = (y0 + y1) * 0.5;
+	x0tt = (x0 + 2 * x1 + x2) * 0.25;
+	y0tt = (y0 + 2 * y1 + y2) * 0.25;
+	x1tt = (x1 + 2 * x2 + x3) * 0.25;
+	y1tt = (y1 + 2 * y2 + y3) * 0.25;
+	x11t = (x2 + x3) * 0.5;
+	y11t = (y2 + y3) * 0.5;
+	xttt = (x0tt + x1tt) * 0.5;
+	yttt = (y0tt + y1tt) * 0.5;
+
+	nr_svl_build_curveto (svlb, x0, y0, x00t, y00t, x0tt, y0tt, xttt, yttt, flatness);
+	nr_svl_build_curveto (svlb, xttt, yttt, x1tt, y1tt, x11t, y11t, x3, y3, flatness);
+}
+
 NRSVL *
 nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule)
 {
-	NRSVL * svl;
-	NRVertex * start, * vertex;
-	NRFlat * flats, * flat;
-	NRRectF bbox;
-	int dir, newdir;
-	NRCoord sx, sy, x, y;
-	ArtVpath * s;
+	NRSVLBuild svlb;
+	ArtVpath *s;
 
-	svl = NULL;
-	start = NULL;
-	flats = NULL;
-	dir = 0;
-	/* Kill warning */
-	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
-	sx = sy = 0;
+	/* Initialize NRSVLBuild */
+	svlb.svl = NULL;
+	svlb.flats = NULL;
+	svlb.refvx = NULL;
+	svlb.bbox.x0 = svlb.bbox.y0 = NR_HUGE_F;
+	svlb.bbox.x1 = svlb.bbox.y1 = -NR_HUGE_F;
+	svlb.dir = 0;
+	svlb.sx = svlb.sy = 0.0;
 
 	for (s = vpath; s->code != ART_END; s++) {
 		switch (s->code) {
 		case ART_MOVETO:
 		case ART_MOVETO_OPEN:
-			sx = NR_COORD_X_FROM_ART (s->x);
-			sy = NR_COORD_Y_FROM_ART (s->y);
-			if (start) {
-				NRSVL *new;
-				/* We have running segment */
-				if (dir > 0) {
-					/* We are upwards, prepended, so reverse */
-					start = nr_vertex_reverse_list (start);
-				}
-				new = nr_svl_new_full (start, &bbox, dir);
-				svl = nr_svl_insert_sorted (svl, new);
-			}
-			start = NULL;
-			dir = 0;
+			nr_svl_build_moveto (&svlb, s->x, s->y);
 			break;
 		case ART_LINETO:
-			x = NR_COORD_X_FROM_ART (s->x);
-			y = NR_COORD_Y_FROM_ART (s->y);
-			if (y != sy) {
-				/* We have valid line */
-				newdir = (y > sy) ? 1 : -1;
-				if (newdir != dir) {
-					/* We have either start or turn */
-					if (start) {
-						NRSVL * new;
-						/* We have running segment */
-						if (dir > 0) {
-							/* We are upwards, prepended, so reverse */
-							start = nr_vertex_reverse_list (start);
-						}
-						new = nr_svl_new_full (start, &bbox, dir);
-						svl = nr_svl_insert_sorted (svl, new);
-					}
-					start = NULL;
-					dir = newdir;
-				}
-				if (!start) {
-					start = nr_vertex_new_xy (sx, sy);
-					bbox.x0 = bbox.x1 = sx;
-					bbox.y0 = bbox.y1 = sy;
-				}
-				/* Add vertex to list */
-				vertex = nr_vertex_new_xy (x, y);
-				vertex->next = start;
-				start = vertex;
-				/* Stretch bbox */
-				bbox.x0 = MIN (bbox.x0, x);
-				bbox.y0 = MIN (bbox.y0, y);
-				bbox.x1 = MAX (bbox.x1, x);
-				bbox.y1 = MAX (bbox.y1, y);
-				sx = x;
-				sy = y;
-			} else if (x != sx) {
-				/* Horizontal line ends running segment */
-				if (start) {
-					NRSVL * new;
-					/* We have running segment */
-					if (dir > 0) {
-						/* We are upwards, prepended, so reverse */
-						start = nr_vertex_reverse_list (start);
-					}
-					new = nr_svl_new_full (start, &bbox, dir);
-					svl = nr_svl_insert_sorted (svl, new);
-				}
-				start = NULL;
-				dir = 0;
-				/* Add horizontal lines to flat list */
-				flat = nr_flat_new_full (y, MIN (sx, x), MAX (sx, x));
-				flats = nr_flat_insert_sorted (flats, flat);
-				sx = x;
-				/* sy = y ;-) */
+			nr_svl_build_lineto (&svlb, s->x, s->y);
+			break;
+		default:
+			/* fixme: free lists */
+			return NULL;
+			break;
+		}
+	}
+	nr_svl_build_finish_segment (&svlb);
+	if (svlb.svl) {
+		/* NRSVL *s; */
+		svlb.svl = nr_svl_uncross_full (svlb.svl, svlb.flats, windrule);
+	} else {
+		nr_flat_free_list (svlb.flats);
+	}
+	/* This happnes in uncross */
+	/* nr_flat_free_list (flats); */
+
+	return svlb.svl;
+}
+
+NRSVL *
+nr_svl_from_art_bpath (ArtBpath *bpath, NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness)
+{
+	NRSVLBuild svlb;
+	ArtBpath *bp;
+	double x, y, sx, sy;
+
+	/* Initialize NRSVLBuild */
+	svlb.svl = NULL;
+	svlb.flats = NULL;
+	svlb.refvx = NULL;
+	svlb.bbox.x0 = svlb.bbox.y0 = NR_HUGE_F;
+	svlb.bbox.x1 = svlb.bbox.y1 = -NR_HUGE_F;
+	svlb.dir = 0;
+	svlb.sx = svlb.sy = 0.0;
+
+	x = y = 0.0;
+	sx = sy = 0.0;
+
+	for (bp = bpath; bp->code != ART_END; bp++) {
+		switch (bp->code) {
+		case ART_MOVETO:
+		case ART_MOVETO_OPEN:
+			if (close && ((x != sx) || (y != sy))) {
+				/* Add closepath */
+				nr_svl_build_moveto (&svlb, sx, sy);
+			}
+			if (transform) {
+				sx = x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				sy = y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				sx = x = bp->x3;
+				sy = y = bp->y3;
+			}
+			nr_svl_build_moveto (&svlb, x, y);
+			break;
+		case ART_LINETO:
+			if (transform) {
+				x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+			} else {
+				x = bp->x3;
+				y = bp->y3;
+			}
+			nr_svl_build_lineto (&svlb, x, y);
+			break;
+		case ART_CURVETO:
+			if (transform) {
+				x = NR_MATRIX_DF_TRANSFORM_X (transform, bp->x3, bp->y3);
+				y = NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x3, bp->y3);
+				nr_svl_build_curveto (&svlb,
+						      svlb.sx, svlb.sy,
+						      NR_MATRIX_DF_TRANSFORM_X (transform, bp->x1, bp->y1),
+						      NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x1, bp->y1),
+						      NR_MATRIX_DF_TRANSFORM_X (transform, bp->x2, bp->y2),
+						      NR_MATRIX_DF_TRANSFORM_Y (transform, bp->x2, bp->y2),
+						      x, y,
+						      flatness);
+			} else {
+				x = bp->x3;
+				y = bp->y3;
+				nr_svl_build_curveto (&svlb, svlb.sx, svlb.sy, bp->x1, bp->y1, bp->x2, bp->y2, x, y, flatness);
 			}
 			break;
 		default:
@@ -350,34 +502,21 @@ nr_svl_from_art_vpath (ArtVpath *vpath, unsigned int windrule)
 			break;
 		}
 	}
-	if (start) {
-		NRSVL * new;
-		/* We have running segment */
-		if (dir > 0) {
-			/* We are upwards, prepended, so reverse */
-			start = nr_vertex_reverse_list (start);
-		}
-		new = nr_svl_new_full (start, &bbox, dir);
-		svl = nr_svl_insert_sorted (svl, new);
+	if ((x != sx) || (y != sy)) {
+		/* Add closepath */
+		nr_svl_build_moveto (&svlb, sx, sy);
 	}
-
-	if (svl) {
+	nr_svl_build_finish_segment (&svlb);
+	if (svlb.svl) {
 		/* NRSVL *s; */
-		svl = nr_svl_uncross_full (svl, flats, windrule);
-#if 0
-		for (s = svl; s != NULL; s = s->next) {
-			if ((s->wind != 1) && (s->wind != -1)) {
-				printf ("Weird wind %d\n", s->wind);
-			}
-		}
-#endif
+		svlb.svl = nr_svl_uncross_full (svlb.svl, svlb.flats, windrule);
 	} else {
-		nr_flat_free_list (flats);
+		nr_flat_free_list (svlb.flats);
 	}
 	/* This happnes in uncross */
 	/* nr_flat_free_list (flats); */
 
-	return svl;
+	return svlb.svl;
 }
 
 NRSVL *

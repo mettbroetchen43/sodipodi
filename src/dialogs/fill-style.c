@@ -40,7 +40,6 @@
 #include <libart_lgpl/art_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
 
-#include "../helper/art-utils.h"
 #include "../helper/sp-intl.h"
 #include "../svg/svg.h"
 #include "../widgets/sp-widget.h"
