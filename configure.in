@@ -32,13 +32,6 @@ else
   AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale")
 fi
 
-dnl Subst PACKAGE_PIXMAPS_DIR.
-dnl PACKAGE_PIXMAPS_DIR="`gnome-config --datadir`/pixmaps/${PACKAGE}"
-PACKAGE_PIXMAPS_DIR="`gnome-config --datadir`/${PACKAGE}"
-AC_SUBST(PACKAGE_PIXMAPS_DIR)
-PACKAGE_GLADE_DIR="`gnome-config --datadir`/${PACKAGE}"
-AC_SUBST(PACKAGE_GLADE_DIR)
-
 dnl ******************************
 dnl Check for Bonobo
 dnl ******************************
@@ -91,6 +84,7 @@ src/helper/Makefile
 src/dialogs/Makefile
 src/display/Makefile
 src/bonobo/Makefile
+glade/Makefile
 intl/Makefile
 po/Makefile.in
 sodipodi.spec

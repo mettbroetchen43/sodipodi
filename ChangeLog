@@ -1,3 +1,17 @@
+2000-04-27  Miguel de Icaza  <miguel@helixcode.com>
+
+	* glade/Makefile.am: New file.
+
+	* src/dialogs/Makefile.am (gladedir): Define gladedir based on
+	$datadir
+
+	* Makefile.am: Remove the local install hack stuff.  And process
+	the glade directory.
+	
+	* configure.in: Do not define PACKAGE_GLADEDIR based on the output
+	of gnome-config.  Let the Makefile.am compute that value from the
+	various $prefix settings.
+
 2000-04-27  Lauris Kaplinski  <lauris@ariman.ee>
 
 	* src/dialogs/xml-tree.c: Attribute deletion mostly work

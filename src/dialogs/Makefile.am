@@ -7,7 +7,7 @@
 # replaced by selection 'changed' signal handlers
 #
 
-gladedir = $(PACKAGE_GLADE_DIR)
+gladedir = $(datadir)/sodipodi
 
 INCLUDES = \
 	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \

@@ -209,7 +209,6 @@ static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
 	art_affine_translate (affine, 0.0, -1.0);
 	gnome_print_concat (gpc, affine);
 
-	gnome_print_rgbaimage (gpc, pixels, width, height, rowstride);
 
 	gnome_print_grestore (gpc);
 }

@@ -10,10 +10,11 @@ SUBDIRS = xml svg helper dialogs display $(bonobo_subdirs)
 gladedir = $(PACKAGE_GLADE_DIR)
 
 INCLUDES = \
-	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" \
-	-I$(srcdir/xml) \
-	-I$(srcdir/svg) \
-	-I$(top_srcdir)/intl \
+	-DSODIPODI_GLADEDIR=\""$(gladedir)"\" 	\
+	-DSODIPODI_PIXMAPDIR=\""$(pixmapdir)"\" \
+	-I$(srcdir/xml) 			\
+	-I$(srcdir/svg) 			\
+	-I$(top_srcdir)/intl 			\
 	$(GNOME_INCLUDEDIR)
 
 bin_PROGRAMS = sodipodi
@@ -85,7 +86,7 @@ sodipodi_libs = \
 	svg/libspsvg.a \
 	display/libspdisplay.a \
 	helper/libspchelp.a
-	
+
 
 sodipodi_LDADD = \
 	$(sodipodi_libs) \

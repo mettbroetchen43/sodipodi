@@ -1,0 +1,9 @@
+
+gladedir = $(datadir)/sodipodi
+
+glade_DATA = 			\
+	sodipodi.glade 		\
+	stroke-dialog.glade	\
+	text-dialog.glade
+
+EXTRA_DIST = *.xpm $(glade_DATA)
