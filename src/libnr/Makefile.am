@@ -1,6 +1,8 @@
 
 noinst_LIBRARIES = libnr.a
 
+noinst_PROGRAMS = testnr
+
 CPPFLAGS = \
 	$(cppflags)
 
@@ -37,3 +39,9 @@ libnr_a_SOURCES = \
 	nr-gradient.c nr-gradient.h \
 	nr-path.h \
 	$(mmx_sources)
+
+testnr_SOURCES = \
+	testnr.c
+
+testnr_LDADD = \
+	libnr.a
