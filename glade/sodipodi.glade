@@ -1152,7 +1152,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>4.44444</position>
+	<position>9.94709</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>0</left_attach>
@@ -1328,7 +1328,7 @@
 	<metric>GTK_CENTIMETERS</metric>
 	<lower>0</lower>
 	<upper>10</upper>
-	<position>3.20574</position>
+	<position>3.70813</position>
 	<max_size>10</max_size>
 	<child>
 	  <left_attach>1</left_attach>
@@ -3817,11 +3817,11 @@ inches
 
 <widget>
   <class>GtkMenu</class>
-  <name>menu1</name>
+  <name>popup_main</name>
 
   <widget>
     <class>GtkMenuItem</class>
-    <name>menu_file</name>
+    <name>fail1</name>
     <stock_item>GNOMEUIINFO_MENU_FILE_TREE</stock_item>
 
     <widget>
@@ -3834,7 +3834,7 @@ inches
 	<signal>
 	  <name>activate</name>
 	  <handler>sp_file_new</handler>
-	  <last_modification_time>Mon, 17 Apr 2000 14:39:27 GMT</last_modification_time>
+	  <last_modification_time>Fri, 21 Apr 2000 22:49:22 GMT</last_modification_time>
 	</signal>
 	<stock_item>GNOMEUIINFO_MENU_NEW_ITEM</stock_item>
 	<label>_Uus</label>
@@ -3846,7 +3846,7 @@ inches
 	<signal>
 	  <name>activate</name>
 	  <handler>sp_file_open</handler>
-	  <last_modification_time>Mon, 17 Apr 2000 14:39:44 GMT</last_modification_time>
+	  <last_modification_time>Fri, 21 Apr 2000 22:49:39 GMT</last_modification_time>
 	</signal>
 	<stock_item>GNOMEUIINFO_MENU_OPEN_ITEM</stock_item>
       </widget>
@@ -3857,7 +3857,7 @@ inches
 	<signal>
 	  <name>activate</name>
 	  <handler>sp_file_save</handler>
-	  <last_modification_time>Mon, 17 Apr 2000 14:39:56 GMT</last_modification_time>
+	  <last_modification_time>Fri, 21 Apr 2000 22:49:54 GMT</last_modification_time>
 	</signal>
 	<stock_item>GNOMEUIINFO_MENU_SAVE_ITEM</stock_item>
       </widget>
@@ -3868,9 +3868,698 @@ inches
 	<signal>
 	  <name>activate</name>
 	  <handler>sp_file_save_as</handler>
-	  <last_modification_time>Mon, 17 Apr 2000 14:40:14 GMT</last_modification_time>
+	  <last_modification_time>Fri, 21 Apr 2000 22:50:06 GMT</last_modification_time>
 	</signal>
 	<stock_item>GNOMEUIINFO_MENU_SAVE_AS_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>sulge1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_mdi_close_view</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:50:29 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_CLOSE_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator5</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>import1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_file_import</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:50:49 GMT</last_modification_time>
+	</signal>
+	<label>Import</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>export1</name>
+	<label>Export</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>export1_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>drawing1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_export_dialog</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:51:06 GMT</last_modification_time>
+	    </signal>
+	    <label>Drawing</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>selection1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_export_dialog</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:51:15 GMT</last_modification_time>
+	    </signal>
+	    <label>Selection</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>page1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_export_dialog</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:51:23 GMT</last_modification_time>
+	    </signal>
+	    <label>Page</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator6</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>trüki1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_file_print</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:52:02 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_PRINT_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator13</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>lõpeta1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_file_exit</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:52:11 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_EXIT_ITEM</stock_item>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>redaktor1</name>
+    <stock_item>GNOMEUIINFO_MENU_EDIT_TREE</stock_item>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>redaktor1_menu</name>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>taasta1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_undo</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:52:30 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_UNDO_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>uuesti1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_redo</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:52:36 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_REDO_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator7</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>lõika1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selection_cut</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:52:58 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_CUT_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>kopeeri1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selection_copy</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:53:06 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_COPY_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>lisa1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selection_paste</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:53:14 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_PASTE_ITEM</stock_item>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator8</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>duplicate1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selection_duplicate</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:53:43 GMT</last_modification_time>
+	</signal>
+	<label>Duplicate</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>delete1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selection_delete</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:53:57 GMT</last_modification_time>
+	</signal>
+	<label>Delete</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>selection2</name>
+    <label>Selection</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>selection2_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>order1</name>
+	<label>Order</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>order1_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>bring_to_front1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_selection_raise_to_top</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:54:36 GMT</last_modification_time>
+	    </signal>
+	    <label>Bring to _Front</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>send_to_back1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_selection_lower_to_bottom</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:54:55 GMT</last_modification_time>
+	    </signal>
+	    <label>Send to _Back</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>forward_one1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_selection_raise</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:55:07 GMT</last_modification_time>
+	    </signal>
+	    <label>Forward One</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>back_one1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_selection_lower</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:55:17 GMT</last_modification_time>
+	    </signal>
+	    <label>Back One</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator9</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>group1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selection_group</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:55:32 GMT</last_modification_time>
+	</signal>
+	<label>_Group</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>ungroup1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selection_ungroup</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:55:41 GMT</last_modification_time>
+	</signal>
+	<label>_Ungroup</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator10</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>combine1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selected_path_combine</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:56:07 GMT</last_modification_time>
+	</signal>
+	<label>_Combine</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>break_apart1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selected_path_break_apart</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:56:21 GMT</last_modification_time>
+	</signal>
+	<label>_Break Apart</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>convert_to_curves1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_selected_path_to_curves</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:56:32 GMT</last_modification_time>
+	</signal>
+	<label>Convert to Cu_rves</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>esitus1</name>
+    <stock_item>GNOMEUIINFO_MENU_VIEW_TREE</stock_item>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>esitus1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>new_view1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_mdi_new_view</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:56:51 GMT</last_modification_time>
+	</signal>
+	<label>New View</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator11</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>zoom1</name>
+	<label>Zoom</label>
+	<right_justify>False</right_justify>
+
+	<widget>
+	  <class>GtkMenu</class>
+	  <name>zoom1_menu</name>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>scale1</name>
+	    <label>Scale</label>
+	    <right_justify>False</right_justify>
+
+	    <widget>
+	      <class>GtkMenu</class>
+	      <name>scale1_menu</name>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>menu_1_2</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>sp_zoom_1_to_2</handler>
+		  <last_modification_time>Fri, 21 Apr 2000 22:57:24 GMT</last_modification_time>
+		</signal>
+		<label>1:2</label>
+		<right_justify>False</right_justify>
+	      </widget>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>menu_1_1</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>sp_zoom_1_to_1</handler>
+		  <last_modification_time>Fri, 21 Apr 2000 22:58:04 GMT</last_modification_time>
+		</signal>
+		<label>1:1</label>
+		<right_justify>False</right_justify>
+	      </widget>
+
+	      <widget>
+		<class>GtkMenuItem</class>
+		<name>menu_2_1</name>
+		<signal>
+		  <name>activate</name>
+		  <handler>sp_zoom_2_to_1</handler>
+		  <last_modification_time>Fri, 21 Apr 2000 22:58:20 GMT</last_modification_time>
+		</signal>
+		<label>2:1</label>
+		<right_justify>False</right_justify>
+	      </widget>
+	    </widget>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>interactive1</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_event_context_set_zoom</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:58:44 GMT</last_modification_time>
+	    </signal>
+	    <label>_Interactive</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>selection3</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_zoom_selection</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:58:55 GMT</last_modification_time>
+	    </signal>
+	    <label>_Selection</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>drawing2</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_zoom_drawing</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:59:02 GMT</last_modification_time>
+	    </signal>
+	    <label>_Drawing</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+
+	  <widget>
+	    <class>GtkMenuItem</class>
+	    <name>page2</name>
+	    <signal>
+	      <name>activate</name>
+	      <handler>sp_zoom_page</handler>
+	      <last_modification_time>Fri, 21 Apr 2000 22:59:09 GMT</last_modification_time>
+	    </signal>
+	    <label>_Page</label>
+	    <right_justify>False</right_justify>
+	  </widget>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>separator12</name>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>toggle_borders2</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_desktop_toggle_borders</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:59:25 GMT</last_modification_time>
+	</signal>
+	<label>Toggle Borders</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>drawing_context1</name>
+    <label>Drawing Context</label>
+    <right_justify>False</right_justify>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>drawing_context1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>select1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_select</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 22:59:38 GMT</last_modification_time>
+	</signal>
+	<label>Select</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>node1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_node_edit</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:15:55 GMT</last_modification_time>
+	</signal>
+	<label>Node</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>rectangle1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_rect</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:00:00 GMT</last_modification_time>
+	</signal>
+	<label>Rectangle</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>ellipse1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_ellipse</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:00:14 GMT</last_modification_time>
+	</signal>
+	<label>Ellipse</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>freehand1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_freehand</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:00:43 GMT</last_modification_time>
+	</signal>
+	<label>Freehand</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>text2</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_text</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:00:53 GMT</last_modification_time>
+	</signal>
+	<label>Text</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>zoom2</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_event_context_set_zoom</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:01:04 GMT</last_modification_time>
+	</signal>
+	<label>Zoom</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkPixmapMenuItem</class>
+    <name>omadused1</name>
+    <stock_item>GNOMEUIINFO_MENU_PROPERTIES_ITEM</stock_item>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>omadused1_menu</name>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>fill1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_object_fill_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:01:35 GMT</last_modification_time>
+	</signal>
+	<label>Fill</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>stroke1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_object_stroke_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:01:46 GMT</last_modification_time>
+	</signal>
+	<label>Stroke</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>text1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_text_edit_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:01:57 GMT</last_modification_time>
+	</signal>
+	<label>Text</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
+	<name>nodes1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_node_path_edit_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:02:15 GMT</last_modification_time>
+	</signal>
+	<label>Nodes</label>
+	<right_justify>False</right_justify>
+      </widget>
+    </widget>
+  </widget>
+
+  <widget>
+    <class>GtkMenuItem</class>
+    <name>abimees1</name>
+    <stock_item>GNOMEUIINFO_MENU_HELP_TREE</stock_item>
+
+    <widget>
+      <class>GtkMenu</class>
+      <name>abimees1_menu</name>
+
+      <widget>
+	<class>GtkPixmapMenuItem</class>
+	<name>info1</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_help_about</handler>
+	  <last_modification_time>Fri, 21 Apr 2000 23:02:29 GMT</last_modification_time>
+	</signal>
+	<stock_item>GNOMEUIINFO_MENU_ABOUT_ITEM</stock_item>
       </widget>
     </widget>
   </widget>

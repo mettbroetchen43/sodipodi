@@ -1,5 +1,21 @@
 2000-04-21  Lauris Kaplinski  <lauris@ariman.ee>
 
+	* src/mdi-document.c: extract ACTIVE_DOCUMENT for ACTIVE_DESKTOP
+	  instead of MDIChild
+
+	* glade/sodipodi.glade: Popup menu
+
+	* src/event-context.c: (sp_event_context_private_root_handler)
+	  Popup menu on button 3, if event is not consumed
+
+	* src/zoom-context.c: (sp_zoom_context_root_handler)
+	  Assign zoom_out to Shift+Button1 to free Button3 for popup
+
+	* src/draw-context.c: (sp_draw_context_root_handler)
+	  Invoke parent handler, if event is not consumed
+
+2000-04-21  Lauris Kaplinski  <lauris@ariman.ee>
+
 	* configure.in: removed plugins/Makefile (not yet folks!)
 
 	* src/bonobo/embeddable-document.c (sp_embeddable_document_factory):

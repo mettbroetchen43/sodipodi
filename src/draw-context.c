@@ -265,6 +265,11 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 		break;
 	}
 
+	if (!ret) {
+		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
+			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+	}
+
 	return ret;
 }
 

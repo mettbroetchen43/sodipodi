@@ -1,20 +1,17 @@
 #define SP_MDI_DOCUMENT_C
 
-#include "mdi-child.h"
 #include "mdi-document.h"
+#include "mdi-desktop.h"
+#include "desktop-handles.h"
 
 SPDocument *
 sp_active_document (GnomeMDI * mdi)
 {
-	GnomeMDIChild * active_child;
+	SPDesktop * desktop;
 
-	g_return_val_if_fail (mdi != NULL, NULL);
-	g_return_val_if_fail (GNOME_IS_MDI (mdi), NULL);
+	desktop = SP_ACTIVE_DESKTOP;
 
-	active_child = gnome_mdi_get_active_child (mdi);
+	if (desktop == NULL) return NULL;
 
-	g_return_val_if_fail (active_child != NULL, NULL);
-	g_return_val_if_fail (SP_IS_MDI_CHILD (active_child), NULL);
-
-	return SP_MDI_CHILD (active_child)->document;
+	return SP_DT_DOCUMENT (desktop);
 }

@@ -1,5 +1,6 @@
 #define SP_EVENT_CONTEXT_C
 
+#include <glade/glade.h>
 #include "sp-cursor.h"
 #include "desktop.h"
 #include "desktop-handles.h"
@@ -15,6 +16,8 @@ static gint sp_event_context_private_root_handler (SPEventContext * event_contex
 static gint sp_event_context_private_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
 static void set_event_location (SPDesktop * desktop, GdkEvent * event);
+
+static void sp_event_root_menu_popup (GdkEventButton * event);
 
 static GtkObjectClass * parent_class;
 
@@ -115,11 +118,18 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 
 	switch (event->type) {
 	case GDK_BUTTON_PRESS:
-		if (event->button.button == 2) {
+		switch (event->button.button) {
+		case 2:
 			s.x = event->button.x;
 			s.y = event->button.y;
 			panning = TRUE;
 			ret = TRUE;
+			break;
+		case 3:
+			sp_event_root_menu_popup (&event->button);
+			break;
+		default:
+			break;
 		}
 		break;
 	case GDK_MOTION_NOTIFY:
@@ -140,6 +150,8 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 
 	return ret;
 }
+
+/* fixme: do context sensitive popup menu on items */
 
 static gint
 sp_event_context_private_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
@@ -202,3 +214,21 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 	sp_desktop_set_position (desktop, p.x, p.y);
 }
 
+static void
+sp_event_root_menu_popup (GdkEventButton * event)
+{
+	static GtkMenu * menu = NULL;
+	GladeXML * xml;
+
+	if (menu == NULL) {
+		xml = glade_xml_new (SODIPODI_GLADEDIR "/sodipodi.glade", "popup_main");
+		g_return_if_fail (xml != NULL);
+
+		glade_xml_signal_autoconnect (xml);
+
+		menu = GTK_MENU (glade_xml_get_widget (xml, "popup_main"));
+		g_return_if_fail (menu != NULL);
+	}
+
+	gtk_menu_popup (menu, NULL, NULL, 0, NULL, event->button, event->time);
+}
