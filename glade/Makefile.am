@@ -161,7 +161,8 @@ pixmaps = \
 	zoom_in.xpm \
 	zoom_out.xpm \
 	zoom_page.xpm \
-	zoom_select.xpm
+	zoom_select.xpm \
+	guide_dialog.png
 
 glade_DATA = 					\
 	align.glade align.c			\

@@ -1429,6 +1429,8 @@ node_ctrl_moved (SPKnot * knot, ArtPoint * p, guint state, gpointer data)
 	me->pos.y = p->y;
 
 	update_object (n->subpath->nodepath);
+
+	sp_desktop_coordinate_status (knot->desktop, p->x, p->y, 4);
 }
 
 /*

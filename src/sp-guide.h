@@ -44,6 +44,8 @@ void sp_guide_hide (SPGuide * guide, GnomeCanvas * canvas);
 void sp_guide_sensitize (SPGuide * guide, GnomeCanvas * canvas, gboolean sensitive);
 
 void sp_guide_moveto (SPGuide * guide, gdouble x, gdouble y);
+void sp_guide_set (SPGuide * guide, gdouble x, gdouble y);
+void sp_guide_remove (SPGuide * guide);
 
 gint sp_guide_compare (gconstpointer a, gconstpointer b);
 

@@ -25,6 +25,8 @@ static GtkWidget * dialog = NULL;
 
 static void sp_desktop_dialog_setup (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
 
+static gint sp_desktop_dialog_delete (GtkWidget *widget, GdkEvent *event);
+
 #if 0
 static void grid_unit_set (SPUnitMenu * menu, SPSVGUnit system, SPMetric metric, gpointer data);
 #endif
@@ -41,6 +43,8 @@ sp_desktop_dialog (void)
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/desktop.glade", "desktop_dialog");
 		glade_xml_signal_autoconnect (xml);
 		dialog = glade_xml_get_widget (xml, "desktop_dialog");
+		gtk_signal_connect (GTK_OBJECT (dialog), "delete_event",
+				    GTK_SIGNAL_FUNC (sp_desktop_dialog_delete), NULL);
 #if 0		
 		/* fixme: experimental */
 		t = glade_xml_get_widget (xml, "grid_table");
@@ -159,6 +163,13 @@ sp_desktop_dialog_close (GtkWidget * widget)
 		gtk_widget_hide (dialog);
 }
 
+static gint
+sp_desktop_dialog_delete (GtkWidget *widget, GdkEvent *event)
+{
+	sp_desktop_dialog_close (widget);
+
+	return TRUE;
+}
 
 void
 sp_desktop_dialog_apply (GtkWidget * widget)

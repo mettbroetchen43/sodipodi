@@ -39,10 +39,17 @@ struct _SPUnitMenuClass {
 };
 
 
+typedef enum {
+	SP_UNIT_SINGULAR,
+	SP_UNIT_PLURAL,
+	SP_UNIT_ABBREVIATION
+} SPUnitLabelType;
+
+
 /* Standard Gtk function */
 GtkType sp_unitmenu_get_type (void);
 
-GtkWidget * sp_unitmenu_new (guint systems, SPSVGUnit defaultsystem, SPMetric defaultmetric, gboolean plural);
+GtkWidget * sp_unitmenu_new (guint systems, SPSVGUnit defaultsystem, SPMetric defaultmetric, SPUnitLabelType label);
 SPSVGUnit sp_unitmenu_get_system (SPUnitMenu * unitmenu);
 SPMetric sp_unitmenu_get_metric (SPUnitMenu * unitmenu);
 

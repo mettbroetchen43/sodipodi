@@ -81,26 +81,26 @@ sp_unitmenu_destroy (GtkObject * object)
 }
 
 typedef struct {
-	const gchar * plural, * singular;
+	const gchar * plural, * singular, * abbreviation;
 	SPSVGUnit system;
 	SPMetric metric;
 } SPUnitDesc;
 
 SPUnitDesc unitdesc[] = {
-	{N_("Millimeters"), N_("Millimeter"), SP_SVG_UNIT_ABSOLUTE, SP_MM},
-	{N_("Centimeters"), N_("Centimeter"), SP_SVG_UNIT_ABSOLUTE, SP_CM},
-	{N_("Inches"), N_("Inch"), SP_SVG_UNIT_ABSOLUTE, SP_IN},
-	{N_("Points"), N_("Point"), SP_SVG_UNIT_ABSOLUTE, SP_PT},
-	{N_("Pixelss"), N_("Pixel"), SP_SVG_UNIT_PIXELS, NONE},
-	{N_("Userspace"), N_("Userspace"), SP_SVG_UNIT_USER, NONE},
-	{N_("Percent"), N_("Percent"), SP_SVG_UNIT_PERCENT, NONE},
-	{N_("Em squares"), N_("Em square"), SP_SVG_UNIT_EM, NONE},
-	{N_("Ex squares"), N_("Ex square"), SP_SVG_UNIT_EX, NONE},
+	{N_("Millimeters"), N_("Millimeter"), N_("mm"), SP_SVG_UNIT_ABSOLUTE, SP_MM},
+	{N_("Centimeters"), N_("Centimeter"), N_("cm"), SP_SVG_UNIT_ABSOLUTE, SP_CM},
+	{N_("Inches"), N_("Inch"), N_("\""), SP_SVG_UNIT_ABSOLUTE, SP_IN},
+	{N_("Points"), N_("Point"), N_("pt"), SP_SVG_UNIT_ABSOLUTE, SP_PT},
+	{N_("Pixelss"), N_("Pixel"), N_("px"), SP_SVG_UNIT_PIXELS, NONE},
+	{N_("Userspace"), N_("Userspace"), N_("us"), SP_SVG_UNIT_USER, NONE},
+	{N_("Percent"), N_("Percent"), N_("%"), SP_SVG_UNIT_PERCENT, NONE},
+	{N_("Em squares"), N_("Em square"), N_("em"), SP_SVG_UNIT_EM, NONE},
+	{N_("Ex squares"), N_("Ex square"), N_("ex"), SP_SVG_UNIT_EX, NONE},
 };
 #define n_unitdesc (sizeof (unitdesc) / sizeof (unitdesc[0]))
 
 GtkWidget *
-sp_unitmenu_new (guint systems, SPSVGUnit defaultsystem, SPMetric defaultmetric, gboolean plural)
+sp_unitmenu_new (guint systems, SPSVGUnit defaultsystem, SPMetric defaultmetric, SPUnitLabelType label)
 {
 	SPUnitMenu * u;
 	GtkWidget * m;
@@ -114,8 +114,18 @@ sp_unitmenu_new (guint systems, SPSVGUnit defaultsystem, SPMetric defaultmetric,
 
 	for (i = 0; i < n_unitdesc; i++) {
 		if (systems & unitdesc[i].system) {
-			GtkWidget * item;
-			item = gtk_menu_item_new_with_label (plural ? unitdesc[i].plural : unitdesc[i].singular);
+		        GtkWidget * item = NULL;
+			switch (label) {
+			case SP_UNIT_SINGULAR:
+			  item = gtk_menu_item_new_with_label (unitdesc[i].singular);
+			  break;
+			case SP_UNIT_PLURAL:
+			  item = gtk_menu_item_new_with_label (unitdesc[i].plural);
+			  break;
+			case SP_UNIT_ABBREVIATION:
+			  item = gtk_menu_item_new_with_label (unitdesc[i].abbreviation);
+			  break;
+			}
 			gtk_widget_show (item);
 			gtk_signal_connect (GTK_OBJECT (item), "activate",
 					    GTK_SIGNAL_FUNC (units_chosen), GUINT_TO_POINTER (unitdesc[i].system | unitdesc[i].metric));
@@ -170,7 +180,3 @@ units_chosen (GtkMenuItem * menuitem, gpointer data)
 	u->system = GPOINTER_TO_UINT (data) & SP_SVG_UNIT_MASK;
 	u->metric = GPOINTER_TO_UINT (data) & 0x0f;
 }
-
-
-
-

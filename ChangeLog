@@ -1,3 +1,43 @@
+2001-03-21  Lauris Kaplinski  <lauris@ximian.com>
+
+	* glade/Makefile.am (pixmaps): Added guide_dialog.png
+
+	* src/dialogs/document-properties.c (sp_document_dialog_delete): New function, or
+	we crash if user closes dialog
+
+	* src/dialogs/desktop-properties.c (sp_desktop_dialog_delete): New function, or
+	we crash if user closes window
+
+	* src/draw-context.c (sp_draw_context_root_handler): Do not crash for zero
+	length lines PLEEAAAASSSSEEEEE!
+
+	* src/selection-chemistry.c (sp_selection_group): Use copy/del/add to make
+	undo system happy
+
+2001-03-20  Frank Felfe  <innerspace@iname.com>
+
+	* src/nodepath.c (node_ctrl_moved) : set coorinate status
+
+	* src/seltrans.c (sp_sel_trans_handle_new_event) : set coordinate status
+
+	* src/sp-guide.* : new functions sp_guide_set, sp_guide_remove
+
+	* src/helper/unit-menu.h : add abbreviation string into unitdesc
+
+	* src/event-context.c (set_event_location) : set coordinate status
+	popup desktop-properties on double click
+
+	* src/desktop.* : new functions for statusbars
+	(sp_desktop_indicator_*) : make indicator only show when decorations are visible
+
+	* src/desktop-events.* : new guideline dialog
+	small changes in sp_dt_ruler_event, sp_dt_guide_event
+
+	* src/*_context.c (sp_*_context_root_handler) : make desktop->acetate
+	grab mouse events during drawing
+
+	* glade/guide_dialog.png: New file
+
 2001-03-20  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/sp-item-group.c (sp_group_menu): Add "Ungroup" item (does nothing at moment)

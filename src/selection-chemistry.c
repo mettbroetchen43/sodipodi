@@ -104,7 +104,6 @@ sp_selection_group (GtkWidget * widget)
 	SPDesktop * desktop;
 	SPSelection * selection;
 	SPRepr * current;
-	SPRepr * parent;
 	SPRepr * group;
 	SPItem * new;
 	const GSList * l;
@@ -131,12 +130,12 @@ sp_selection_group (GtkWidget * widget)
 	group = sp_repr_new ("g");
 
 	while (p) {
+		SPRepr *new;
 		current = (SPRepr *) p->data;
-		parent = sp_repr_parent (current);
-		sp_repr_ref (current);
-		sp_repr_remove_child (parent, current);
-		sp_repr_append_child (group, current);
-		sp_repr_unref (current);
+		new = sp_repr_copy (current);
+		sp_document_del_repr (SP_DT_DOCUMENT (desktop), current);
+		sp_repr_append_child (group, new);
+		sp_repr_unref (new);
 		p = g_slist_remove (p, current);
 	}
 

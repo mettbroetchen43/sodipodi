@@ -20,6 +20,8 @@ static GladeXML  * xml = NULL;
 static GtkWidget * dialog = NULL;
 
 static void sp_document_dialog_setup (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data);
+static gint sp_document_dialog_delete (GtkWidget *widget, GdkEvent *event);
+
 static void paper_selected (GtkWidget * widget, gpointer data);
 
 void
@@ -35,6 +37,8 @@ sp_document_dialog (void)
 		xml = glade_xml_new (SODIPODI_GLADEDIR "/document.glade", "document_dialog");
 		glade_xml_signal_autoconnect (xml);
 		dialog = glade_xml_get_widget (xml, "document_dialog");
+		gtk_signal_connect (GTK_OBJECT (dialog), "delete_event",
+				    GTK_SIGNAL_FUNC (sp_document_dialog_delete), NULL);
 		
 		papermenu = glade_xml_get_widget (xml, "paper_size");
 
@@ -106,6 +110,14 @@ sp_document_dialog_close (GtkWidget * widget)
 		gtk_widget_hide (dialog);
 }
 
+
+static gint
+sp_document_dialog_delete (GtkWidget *widget, GdkEvent *event)
+{
+	sp_document_dialog_close (widget);
+
+	return TRUE;
+}
 
 void
 sp_document_dialog_apply (GtkWidget * widget)

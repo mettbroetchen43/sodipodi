@@ -357,7 +357,8 @@ sp_show_handles (SPSelTrans * seltrans, SPKnot * knot[], SPSelTransHandle handle
 		if (knot[i] == NULL) {
 			knot[i] = sp_knot_new (seltrans->desktop);
 			gtk_object_set (GTK_OBJECT (knot[i]),
-				"anchor", handle[i].anchor, NULL);
+					"anchor", handle[i].anchor, 
+					NULL);
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "request",
 				GTK_SIGNAL_FUNC (sp_sel_trans_handle_request), &handle[i]);
 			gtk_signal_connect (GTK_OBJECT (knot[i]), "moved",
@@ -423,6 +424,8 @@ sp_sel_trans_handle_new_event (SPKnot * knot, ArtPoint * position, guint state, 
 	handle = (SPSelTransHandle *) data;
 
 	handle->action (seltrans, handle, position->x, position->y, state);
+
+	sp_desktop_coordinate_status (desktop, position->x, position->y, 4);
 }
 
 /* fixme: Highly experimental test :) */

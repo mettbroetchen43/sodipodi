@@ -16,7 +16,7 @@
 #include "file.h"
 #include "interface.h"
 #include "selection-chemistry.h"
-
+#include "dialogs/desktop-properties.h"
 
 static void sp_event_context_class_init (SPEventContextClass * klass);
 static void sp_event_context_init (SPEventContext * event_context);
@@ -124,16 +124,25 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 	static ArtPoint s;
 	static gboolean panning = FALSE;
 	gint ret;
-
+	SPDesktop * desktop;
 	ret = FALSE;
 
+       	desktop = event_context->desktop;
+
 	switch (event->type) {
+	case GDK_2BUTTON_PRESS:
+	  sp_desktop_dialog ();
+	  break;
 	case GDK_BUTTON_PRESS:
 		switch (event->button.button) {
 		case 2:
 			s.x = event->button.x;
 			s.y = event->button.y;
 			panning = TRUE;
+			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+						NULL, event->button.time);
+
 			ret = TRUE;
 			break;
 		case 3:
@@ -153,6 +162,7 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 	case GDK_BUTTON_RELEASE:
 		if (event->button.button == 2) {
 			panning = FALSE;
+			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
 			ret = TRUE;
 		}
 		break;
@@ -399,6 +409,7 @@ set_event_location (SPDesktop * desktop, GdkEvent * event)
 
 	sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 	sp_desktop_set_position (desktop, p.x, p.y);
+	sp_desktop_coordinate_status (desktop, p.x, p.y, 0);
 }
 
 void

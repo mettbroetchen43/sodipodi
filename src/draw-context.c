@@ -199,12 +199,14 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			test_inside (dc, p.x, p.y);
 			if (!dc->cinside) {
 				sp_desktop_free_snap (desktop, &p);
-			} else {
+			} else if (dc->accumulated->end > 1) {
 				ArtBpath * bp;
-				g_assert (dc->accumulated->end > 1);
 				bp = sp_curve_last_bpath (dc->accumulated);
 				p.x = bp->x3;
 				p.y = bp->y3;
+			} else {
+				ret = TRUE;
+				break;
 			}
 
 			if (addline) {
@@ -231,7 +233,7 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 						dc->repr = NULL;
 					}
 					remove_ctrl (dc);
-				} else {
+				} else if (dc->currentcurve->end > 1) {
 					move_ctrl (dc, dc->accumulated->bpath->x3, dc->accumulated->bpath->y3);
 				}
 			} else {
@@ -250,7 +252,9 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			/* initialize first point */
 			dc->npoints = 0;
 			dc->p[dc->npoints++] = p;
-
+			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+						NULL, event->button.time);
 			ret = TRUE;
 		}
 		break;
@@ -328,6 +332,7 @@ sp_draw_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 				}
 			}
 
+			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
 			ret = TRUE;
 		}
 		break;

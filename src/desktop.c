@@ -494,11 +494,6 @@ sp_desktop_new (SPDocument * document, SPNamedView * namedview)
 	gtk_signal_connect (GTK_OBJECT (desktop->canvas), "size-allocate", GTK_SIGNAL_FUNC (sp_desktop_resized), desktop);
 	if (select_set_id<1) select_set_id = gtk_signal_connect (GTK_OBJECT (SODIPODI), "change_selection", 
 								 GTK_SIGNAL_FUNC (sp_desktop_update_scrollbars),NULL);
-	/* fixme!
-	 * i wonder why this doesn't work with canvas
-	 * mouse coordinate handler should be called before all other handlers */
-	gtk_signal_connect (GTK_OBJECT (gnome_canvas_root (desktop->canvas)), "event",
-			    GTK_SIGNAL_FUNC (sp_canvas_root_handler), desktop);
 
 	ci = sp_item_show (SP_ITEM (sp_document_root (desktop->document)), desktop, desktop->drawing);
 
@@ -550,8 +545,10 @@ sp_desktop_indicator_on (Sodipodi * sodipodi, SPDesktop * desktop, gpointer data
 	g_assert (desktop != NULL);
 	g_assert (SP_IS_DESKTOP (desktop));
 	
-	gtk_widget_show (GTK_WIDGET (desktop->active));		
-	gtk_widget_hide (GTK_WIDGET (desktop->inactive));		
+	if (desktop->decorations) {
+	  gtk_widget_show (GTK_WIDGET (desktop->active));		
+	  gtk_widget_hide (GTK_WIDGET (desktop->inactive));		
+	}
 }
 
 void
@@ -560,8 +557,10 @@ sp_desktop_indicator_off (Sodipodi * sodipodi, SPDesktop * desktop, gpointer dat
 	g_assert (desktop != NULL);
 	g_assert (SP_IS_DESKTOP (desktop));
 	
-	gtk_widget_hide (GTK_WIDGET (desktop->active));		
-	gtk_widget_show (GTK_WIDGET (desktop->inactive));		
+	if (desktop->decorations) {
+	  gtk_widget_hide (GTK_WIDGET (desktop->active));		
+	  gtk_widget_show (GTK_WIDGET (desktop->inactive));		
+	}
 }
 
 void
@@ -971,9 +970,20 @@ sp_desktop_set_title (const gchar * title)
 #endif
 
 
-// set the select status bar 
+/*
+ * the statusbars
+ *
+ * we have 
+ * - coordinate status   set with sp_desktop_coordinate_status which is currently not unset
+ * - selection status    which is used in two ways:
+ *    * sp_desktop_default_status sets the default status text which is visible
+ *      if no other text is displayed
+ *    * sp_desktop_set_status sets the status text and can be cleared
+        with sp_desktop_clear_status making the default visible
+ */
+
 void 
-sp_desktop_set_status (SPDesktop *desktop, const gchar * stat)
+sp_desktop_default_status (SPDesktop *desktop, const gchar * stat)
 {
   gint b =0;
   GString * text;
@@ -983,8 +993,49 @@ sp_desktop_set_status (SPDesktop *desktop, const gchar * stat)
   text = g_string_new(stat);
   // remove newlines 
   for (b=0; text->str[b]!=0; b+=1) if (text->str[b]=='\n') text->str[b]=' ';
-  gnome_appbar_set_status (desktop->select_status, text->str);
+  gnome_appbar_set_default (desktop->select_status, text->str);
   g_string_free(text,FALSE);
+}
+
+void
+sp_desktop_set_status (SPDesktop * desktop, const gchar * stat)
+{
+  gnome_appbar_set_status (desktop->select_status, stat);
+}
+
+void
+sp_desktop_clear_status(SPDesktop * desktop)
+{
+  gnome_appbar_clear_stack (desktop->select_status);
+}
+
+/* set the coordinate statusbar underline single coordinates with undeline-mask 
+ * x and y are document coordinates
+ * underline :
+ *   0 - don't underline, 1 - underlines x, 2 - underlines y
+ *   3 - underline both, 4 - underline none  */
+void
+sp_desktop_coordinate_status (SPDesktop * desktop, gdouble x, gdouble y, gint8 underline)
+{
+  static gchar coord_str[40];
+  gchar coord_pattern [20]= "                    ";
+  GString * x_str, * y_str;
+  gint i=0,j=0;
+
+  x_str = SP_PT_TO_STRING (x, SP_DEFAULT_METRIC);
+  y_str = SP_PT_TO_STRING (y, SP_DEFAULT_METRIC);
+  sprintf (coord_str, "%s, %s",
+	     x_str->str,
+	     y_str->str);
+  gnome_appbar_set_status (desktop->coord_status, coord_str);
+  // set underline
+  if (underline & 0x01) for (; i<x_str->len; i++) coord_pattern[i]='_';
+  i = x_str->len + 2;
+  if (underline & 0x02) for (; j<y_str->len; j++,i++) coord_pattern[i]='_';
+  if (underline) gtk_label_set_pattern(GTK_LABEL(desktop->coord_status->status), coord_pattern);
+
+  g_string_free (x_str, FALSE);
+  g_string_free (y_str, FALSE);
 }
 
 

@@ -10,6 +10,7 @@
 #include "desktop-snap.h"
 #include "pixmaps/cursor-ellipse.xpm"
 #include "ellipse-context.h"
+#include "sp-metrics.h"
 
 static void sp_ellipse_context_class_init (SPEllipseContextClass * klass);
 static void sp_ellipse_context_init (SPEllipseContext * ellipse_context);
@@ -120,7 +121,9 @@ sp_ellipse_context_root_handler (SPEventContext * event_context, GdkEvent * even
 	static gboolean dragging;
 	SPEllipseContext * ec;
 	gint ret;
+	SPDesktop * desktop;
 
+	desktop = event_context->desktop;
 	ec = SP_ELLIPSE_CONTEXT (event_context);
 	ret = FALSE;
 
@@ -132,6 +135,9 @@ sp_ellipse_context_root_handler (SPEventContext * event_context, GdkEvent * even
 			sp_desktop_w2d_xy_point (event_context->desktop, &ec->center, event->button.x, event->button.y);
 			/* Snap center to nearest magnetic point */
 			sp_desktop_free_snap (event_context->desktop, &ec->center);
+			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+						NULL, event->button.time);
 			ret = TRUE;
 		}
 		break;
@@ -149,6 +155,7 @@ sp_ellipse_context_root_handler (SPEventContext * event_context, GdkEvent * even
 			sp_ellipse_finish (ec);
 			ret = TRUE;
 		}
+		gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
 		break;
 	default:
 		break;
@@ -168,6 +175,8 @@ sp_ellipse_drag (SPEllipseContext * ec, double x, double y, guint state)
 	SPDesktop * desktop;
 	ArtPoint p0, p1;
 	gdouble x0, y0, x1, y1;
+	GString * xs, * ys;
+	gchar status[80];
 
 	desktop = SP_EVENT_CONTEXT (ec)->desktop;
 
@@ -260,6 +269,14 @@ sp_ellipse_drag (SPEllipseContext * ec, double x, double y, guint state)
 	y1 = MAX (p0.y, p1.y);
 
 	sp_ellipse_set (SP_ELLIPSE (ec->item), (x0 + x1) / 2, (y0 + y1) / 2, (x1 - x0) / 2, (y1 - y0) / 2);
+
+	// status text
+	xs = SP_PT_TO_METRIC_STRING (fabs(x1-x0), SP_DEFAULT_METRIC);
+	ys = SP_PT_TO_METRIC_STRING (fabs(y1-y0), SP_DEFAULT_METRIC);
+	sprintf (status, "Draw ellipse  %s x %s", xs->str, ys->str);
+	sp_desktop_set_status (desktop, status);
+	g_string_free (xs, FALSE);
+	g_string_free (ys, FALSE);
 }
 
 static void

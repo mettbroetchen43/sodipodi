@@ -25,7 +25,7 @@
 
 struct _SPDesktop {
 	GtkEventBox eventbox;
-	guint decorations : 1;
+	gint decorations : 1;
 	guint guides_active : 1;
 	GtkBox * table;
 	GtkScrollbar * hscrollbar;
@@ -102,7 +102,12 @@ void sp_desktop_set_title (const gchar * title);
 
 #endif
 
-void sp_desktop_set_status (SPDesktop *desktop, const gchar * text);
+// statusbars
+void sp_desktop_default_status (SPDesktop *desktop, const gchar * text);
+void sp_desktop_set_status (SPDesktop * desktop, const gchar * stat);
+void sp_desktop_clear_status (SPDesktop * desktop);
+void sp_desktop_coordinate_status (SPDesktop * desktop, gdouble x, gdouble y, gint8 underline);
+
 
 void sp_desktop_connect_item (SPDesktop * desktop, SPItem * item, GnomeCanvasItem * canvasitem);
 

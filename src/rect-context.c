@@ -10,6 +10,7 @@
 #include "desktop-snap.h"
 #include "pixmaps/cursor-rect.xpm"
 #include "rect-context.h"
+#include "sp-metrics.h"
 
 static void sp_rect_context_class_init (SPRectContextClass * klass);
 static void sp_rect_context_init (SPRectContext * rect_context);
@@ -124,7 +125,9 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 	static gboolean dragging;
 	SPRectContext * rc;
 	gint ret;
+	SPDesktop * desktop;
 
+	desktop = event_context->desktop;
 	rc = SP_RECT_CONTEXT (event_context);
 	ret = FALSE;
 
@@ -136,6 +139,9 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			sp_desktop_w2d_xy_point (event_context->desktop, &rc->center, event->button.x, event->button.y);
 			/* Snap center to nearest magnetic point */
 			sp_desktop_free_snap (event_context->desktop, &rc->center);
+			gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+						NULL, event->button.time);
 			ret = TRUE;
 		}
 		break;
@@ -152,6 +158,7 @@ sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event)
 			dragging = FALSE;
 			sp_rect_finish (rc);
 			ret = TRUE;
+			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
 		}
 		break;
 	default:
@@ -172,6 +179,8 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	SPDesktop * desktop;
 	ArtPoint p0, p1;
 	gdouble x0, y0, x1, y1;
+	GString * xs, * ys;
+	gchar status[80];
 
 	desktop = SP_EVENT_CONTEXT (rc)->desktop;
 
@@ -264,6 +273,14 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	y1 = MAX (p0.y, p1.y);
 
 	sp_rect_set (SP_RECT (rc->item), x0, y0, x1 - x0, y1 - y0);
+
+	// status text
+	xs = SP_PT_TO_METRIC_STRING (fabs(x1-x0), SP_DEFAULT_METRIC);
+	ys = SP_PT_TO_METRIC_STRING (fabs(y1-y0), SP_DEFAULT_METRIC);
+	sprintf (status, "Draw rectangle  %s x %s", xs->str, ys->str);
+	sp_desktop_set_status (desktop, status);
+	g_string_free (xs, FALSE);
+	g_string_free (ys, FALSE);
 }
 
 static void

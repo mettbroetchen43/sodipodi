@@ -7,7 +7,6 @@
 
 /* Item handlers */
 
-gboolean sp_canvas_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * desktop);
 void sp_desktop_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * desktop);
 void sp_desktop_item_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data);
 
@@ -25,7 +24,7 @@ gint sp_dt_vruler_event (GtkWidget * widget, GdkEvent * event, gpointer data);
 
 /* Guides */
 
-void sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data);
+gint sp_dt_guide_event (GnomeCanvasItem * item, GdkEvent * event, gpointer data);
 
 #endif
 

@@ -11,6 +11,9 @@
 #include "select-context.h"
 #include "selection-chemistry.h"
 #include "path-chemistry.h"
+#include "desktop.h"
+#include "dialogs/object-properties.h"
+#include "sp-metrics.h"
 
 static void sp_select_context_class_init (SPSelectContextClass * klass);
 static void sp_select_context_init (SPSelectContext * select_context);
@@ -115,6 +118,9 @@ sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, G
 	selection = SP_DT_SELECTION (desktop);
 
 	switch (event->type) {
+	case GDK_2BUTTON_PRESS:
+	  ret = TRUE;
+	  break;
 	case GDK_BUTTON_PRESS:
 		switch (event->button.button) {
 		case 1:
@@ -143,6 +149,9 @@ sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, G
 				sp_sel_trans_grab (seltrans, NULL, p.x, p.y, FALSE);
 				dragging = TRUE;
 			}
+			gnome_canvas_item_grab (sp_item_canvas_item (item, desktop), 
+						GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+						NULL, event->button.time);
 			ret = TRUE;
 			break;
 		default:
@@ -153,6 +162,8 @@ sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, G
 		if (dragging && (event->motion.state & GDK_BUTTON1_MASK)) {
 			sp_desktop_w2d_xy_point (desktop, &p, event->motion.x, event->motion.y);
 			sp_selection_moveto (seltrans, p.x, p.y, event->button.state);
+			// status message
+
 			ret = TRUE;
 		}
 		break;
@@ -161,8 +172,10 @@ sp_select_context_item_handler (SPEventContext * event_context, SPItem * item, G
 		case 1:
 			sp_sel_trans_ungrab (seltrans);
 			dragging = FALSE;
-			ret = TRUE;
 			sp_selection_changed (SP_DT_SELECTION (seltrans->desktop));
+			gnome_canvas_item_ungrab (sp_item_canvas_item (item, desktop), event->button.time);
+			sp_desktop_clear_status (desktop);
+			ret = TRUE;
 			break;
 		default:
 			break;
@@ -213,6 +226,10 @@ sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event
 				sp_desktop_w2d_xy_point (desktop, &p, event->button.x, event->button.y);
 				sp_sel_trans_grab (seltrans, NULL, p.x, p.y, FALSE);
 				sp_rubberband_start (desktop, p.x, p.y);
+				gnome_canvas_item_grab (GNOME_CANVAS_ITEM (desktop->acetate),
+						  GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_BUTTON_PRESS_MASK,
+							NULL, event->button.time);
+				ret = TRUE;
 				break;
 			default:
 				break;
@@ -251,6 +268,8 @@ sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event
 				}
 			}
 			sp_sel_trans_ungrab (seltrans);
+			gnome_canvas_item_ungrab (GNOME_CANVAS_ITEM (desktop->acetate), event->button.time);
+			ret = TRUE;
 			break;
 		default:
 			break;
@@ -377,6 +396,7 @@ sp_handle_stretch (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, d
 {
 	ArtPoint p;
 	double stretch[6], n2p[6], p2n[6];
+	gchar status[80];
 
 	sp_sel_trans_d2n_xy_point (seltrans, &p, x, y);
 	p.x = 1.0;
@@ -406,12 +426,16 @@ sp_handle_stretch (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, d
 
 	sp_sel_trans_transform (seltrans, stretch);
 
+	// status text
+	sprintf (status, "Scale  %0.2f%c, %0.2f%c", 100 * stretch[0], '%', 100 * stretch[3], '%');
+	sp_desktop_set_status (seltrans->desktop, status);
 }
 
 void
 sp_handle_scale (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state) {
 	ArtPoint p;
 	double scale[6], n2p[6], p2n[6];
+	gchar status[80];
 
 	sp_sel_trans_d2n_xy_point (seltrans, &p, x, y);
 
@@ -438,6 +462,10 @@ sp_handle_scale (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, dou
 	art_affine_multiply (scale, scale, p2n);
 
 	sp_sel_trans_transform (seltrans, scale);
+
+	// status text
+	sprintf (status, "Scale  %0.2f%c, %0.2f%c", 100 * scale[0], '%', 100 * scale[0], '%');
+	sp_desktop_set_status (seltrans->desktop, status);
 }
 
 void
@@ -445,6 +473,7 @@ sp_handle_skew (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, doub
 {
   ArtPoint p;
   double skew[6], n2p[6], p2n[6];
+  gchar status[80];
 
   sp_sel_trans_d2n_xy_point (seltrans, &p, x, y);
 
@@ -483,15 +512,20 @@ sp_handle_skew (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, doub
   art_affine_multiply (skew, skew, p2n);
   
   sp_sel_trans_transform (seltrans, skew);
+
+  // status text
+  sprintf (status, "Skew  %0.2f%c", 100 * fabs(skew[2]), '%');
+  sp_desktop_set_status (seltrans->desktop, status);
 }
 
 void
 sp_handle_rotate (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state)
 {
-  ArtPoint p;
+  ArtPoint p, q;
   double s[6], rotate[6];
-  double d;
-  
+  double d, angle, dx1, dy1, dx2, dy2, hyp1, hyp2, a1, a2;
+  gchar status[80];
+ 
   sp_sel_trans_point_normal (seltrans, &p);
   d = sqrt (p.x * p.x + p.y * p.y);
   if (d < 1e-15) return;
@@ -518,12 +552,38 @@ sp_handle_rotate (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, do
   rotate[5] = 0.0;
 
   sp_sel_trans_transform (seltrans, rotate);
+
+  // status text
+  // uh, this is ugly find a more elegant way to compute the angle  
+  sp_sel_trans_point_desktop (seltrans, &q);
+  dx1 = q.x - seltrans->center.x;
+  dy1 = q.y - seltrans->center.y;
+  dx2 = x   - seltrans->center.x;
+  dy2 = y   - seltrans->center.y;
+  hyp1 = hypot (dx1, dy1);
+  hyp2 = hypot (dx2, dy2);
+  a1 = (dx1>=0) ? acos (dy1 / hyp1) : 2*M_PI - acos (dy1 / hyp1);
+  a2 = (dx2>=0) ? acos (dy2 / hyp2) : 2*M_PI - acos (dy2 / hyp2);
+  angle = fabs ((a2-a1) * 180 / M_PI);
+  if (angle >180) angle = fabs (360 - angle);
+
+  sprintf (status, "Rotate by %0.2f deg", angle);
+  sp_desktop_set_status (seltrans->desktop, status);
 }
 
 void
 sp_handle_center (SPSelTrans * seltrans, SPSelTransHandle * handle, double x, double y, guint state)
 {
+	gchar status[80];
+	GString * xs, * ys;
 	sp_sel_trans_set_center (seltrans, x, y);
+	// status text
+	xs = SP_PT_TO_METRIC_STRING (x, SP_DEFAULT_METRIC);
+	ys = SP_PT_TO_METRIC_STRING (y, SP_DEFAULT_METRIC);
+	sprintf (status, "Center  %s, %s", xs->str, ys->str);
+	sp_desktop_set_status (seltrans->desktop, status);
+	g_string_free (xs, FALSE);
+	g_string_free (ys, FALSE);
 }
 
 static void
@@ -532,6 +592,8 @@ sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state)
 	double dx, dy;
 	double move[6];
 	ArtPoint p;
+	GString * xs, * ys;
+	gchar status[80];
 
 	sp_sel_trans_point_desktop (seltrans, &p);
 	dx = x - p.x;
@@ -545,5 +607,12 @@ sp_selection_moveto (SPSelTrans * seltrans, double x, double y, guint state)
 	art_affine_translate (move, dx, dy);
 	sp_sel_trans_transform (seltrans, move);
 	sp_sel_trans_reset_state (seltrans);
+	// status text
+	xs = SP_PT_TO_METRIC_STRING (dx, SP_DEFAULT_METRIC);
+	ys = SP_PT_TO_METRIC_STRING (dy, SP_DEFAULT_METRIC);
+	sprintf (status, "Move  %s, %s", xs->str, ys->str);
+	sp_desktop_set_status (seltrans->desktop, status);
+	g_string_free (xs, FALSE);
+	g_string_free (ys, FALSE);
 }
 
