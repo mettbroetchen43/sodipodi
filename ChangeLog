@@ -1,3 +1,8 @@
+2002-09-26  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/sp-gradient.c (sp_rg_fill): Oops, moved declaration before statements
+	(sp_rg_fill): Ditto
+
 2002-09-25  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnr/nr-compose.c (nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P): Oops, evil bug

@@ -1741,13 +1741,14 @@ sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 			for (x = 0; x < width; x++) {
 				double gx, gy;
 				double r, pos;
+				gint idx;
+
 				gx = rgp->px2gs.c[0] * (x + x0) + rgp->px2gs.c[2] * (y + y0) + rgp->px2gs.c[4];
 				gy = rgp->px2gs.c[1] * (x + x0) + rgp->px2gs.c[3] * (y + y0) + rgp->px2gs.c[5];
 
 				r = MAX (rg->r.computed, 1e-9);
 				pos = hypot (gx - rg->cx.computed, gy - rg->cy.computed) * NCOLORS / r;
 
-				gint idx;
 				if (gr->spread == SP_GRADIENT_SPREAD_REFLECT) {
 					idx = ((gint) pos) & (2 * NCOLORS - 1);
 					if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
@@ -1770,6 +1771,7 @@ sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 				double gx, gy;
 				double r, pos;
 				double D, N, A, B, C;
+				gint idx;
 
 				gx = rgp->px2gs.c[0] * (x + x0) + rgp->px2gs.c[2] * (y + y0) + rgp->px2gs.c[4];
 				gy = rgp->px2gs.c[1] * (x + x0) + rgp->px2gs.c[3] * (y + y0) + rgp->px2gs.c[5];
@@ -1822,7 +1824,6 @@ sp_rg_fill (SPPainter *painter, guchar *px, gint x0, gint y0, gint width, gint h
 					}
 				}
 
-				gint idx;
 				if (gr->spread == SP_GRADIENT_SPREAD_REFLECT) {
 					idx = ((gint) pos) & (2 * NCOLORS - 1);
 					if (idx & NCOLORS) idx = (2 * NCOLORS) - idx;
