@@ -113,6 +113,9 @@ sp_text_context_item_handler (SPEventContext * event_context, SPItem * item, Gdk
 
 	switch (event->type) {
 	case GDK_KEY_PRESS:
+                // filter control-modifier for desktop shortcuts
+                if (event->key.state & GDK_CONTROL_MASK) return;
+                                
 		if (!SP_TEXT_CONTEXT (event_context)->text) {
 			ret = FALSE;
 			break;

@@ -9,6 +9,7 @@
 #include "seltrans-handles.h"
 #include "pixmaps/cursor-select.xpm"
 #include "select-context.h"
+#include "selection-chemistry.h"
 
 static void sp_select_context_class_init (SPSelectContextClass * klass);
 static void sp_select_context_init (SPSelectContext * select_context);
@@ -254,18 +255,63 @@ sp_select_context_root_handler (SPEventContext * event_context, GdkEvent * event
 			break;
 		}
 		break;
-	case GDK_KEY_PRESS:
-		g_print ("key %d pressed\n", event->key.keyval);
-		break;
+	case GDK_KEY_PRESS: // keybindings for select context
+          switch (event->key.keyval) {  
+          case 120: // Ctrl x - cut
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_selection_cut(event_context->desktop);
+	      ret = TRUE;
+	    }
+	    break;
+	  case 99:  // Ctrl c - copy
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_selection_copy(event_context->desktop);
+	      ret = TRUE;
+	    }
+	    break;
+	  case 118: // Ctrl v - paste
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_selection_paste(event_context->desktop);
+	      ret = TRUE;
+	    }
+	    break;
+	  case 65360: // Home - raise selection to top
+	    sp_selection_raise_to_top (NULL);
+            ret = TRUE;
+            break;
+	  case 65367: // End - lower selection to bottom
+	    sp_selection_lower_to_bottom (NULL);
+            ret = TRUE;
+            break;
+	  case 65365: // PageUp - raise selection one layer
+	    sp_selection_raise (NULL);
+            ret = TRUE;
+            break;
+	  case 65366: // PageDown - lower selection one layer
+	    sp_selection_lower (NULL);
+            ret = TRUE;
+            break;
+	  case 65535: // Del - delete selection
+	    sp_selection_delete (event_context->desktop);
+	    ret = TRUE;
+	    break;
+	  case 100: // Ctrl d - duplicate selection
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_selection_duplicate (event_context->desktop);
+	      ret = TRUE;
+	    }
+	    break;
+          }
+	  break;
 	default:
-		break;
+	  break;
 	}
-
+	
 	if (!ret) {
-		if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
-			ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
+	  if (SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler)
+	    ret = SP_EVENT_CONTEXT_CLASS (parent_class)->root_handler (event_context, event);
 	}
-
+	
 	return ret;
 }
 

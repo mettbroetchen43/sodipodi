@@ -1,3 +1,22 @@
+2001-01-08  Frank Felfe  <innerspace@iname.com>
+	
+	* desktop.*: use gnomeappbar in desktop-window,
+	use gtk_combo_text widget from libgal
+
+	* src/desktop-events.c: use gnomeappbar
+
+	* src/event-context.c: global keybindings
+
+	* src/select-context.c: keybindings
+
+	* src/text-context.c: filter Ctrl-keys for keybindings
+
+	* src/interface.c: connect to focus-in-event from desktop-window
+
+	* glade/toolbox.glade: keybindings for the maintoolbox-menu
+
+	* doc/keybindings.txt
+
 2001-01-08  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/selection-chemistry.c (sp_selection_rotate_90): Brought

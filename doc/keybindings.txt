@@ -1,0 +1,122 @@
+#
+# current keybindings for sodipodi
+#
+#
+
+
+#------------------------------
+# desktop window
+#------------------------------
+
+
+- global bindings in event-context.c
+------------------------------------
+
+F1	- select context
+F2	- node exit context
+F3	- zoom context
+F4	- rect context
+F5	- ellipse context
+F6	- freehand context
+F7	- text context
+
+=/+	- zoom in
+-	- zoom out
+0	- zoom page
+1	+ zoom 1:1
+
+Ctrl z	- undo
+Ctrl r	- redo
+
+Ctrl w	- close view
+Ctrl n	- new document
+Ctrl N	- new view
+Ctrl o	- open file
+Ctrl e	- export file
+Ctrl i	- import file
+Ctrl p	- print file
+Ctrl P	- print preview
+Ctrl s	- save file
+Ctrl S	- save file as
+Ctrl q	- exit sodipodi
+
+
+- keybindings in select context
+--------------------------------
+
+Ctrl x	- cut
+Ctrl c	- copy
+Ctrl v	- paste
+Ctrl d	- duplicate
+Del	- delete
+
+Home	- raise selection to top
+End	- lower selection to bottom
+PageUp	- raise selection one layer
+PageDown- lower selection one layer 
+
+
+* modifier for mouse drag
+
+	Shift + drag - add to selection
+
+strech:	Ctrl	- keep aspect
+	Shift	- fix selection center
+
+scale:	Ctrl	- only smaler
+	Shift	- fix selection center
+
+skew:	Ctrl	- strech
+	Shift	- fix selection center
+
+move:	Ctrl	- move either horizontal or vertical
+
+
+- keybindings for rect context
+------------------------------
+
+* modifier for mouse drag
+
+	Ctrl	- 1:n
+	Shift	- fix center
+
+
+- keybindings for ellipse context
+---------------------------------
+
+* modifier for mouse drag
+
+	Ctrl	- 1:n
+	Shift	- fix center
+
+
+- keybindings for zoom context
+------------------------------
+
+* modifier
+	
+	Shift + right click - zoom out  
+
+
+- keybindings for node edit context
+-----------------------------------
+
+* modifier
+	
+	Shift + drag - add to selection  
+
+
+#----------------------------
+# transformation dialog
+#---------------------------
+
+Ctrl 1	- move
+Ctrl 2	- scale
+Ctrl 3	- rotate
+Ctrl 4	- skew
+
+Ctrl e	- toggle expand
+Ctrl m	- make a copy
+Ctrl r	- reset to default
+Ctrl a	- apply
+Ctrl c	- close

@@ -42,9 +42,10 @@ struct _SPDesktop {
         GtkWidget * active;
         GtkWidget * inactive;
         GtkWidget * menubutton;   
-        GtkStatusbar * select_status, * coord_status;
+        GnomeAppBar * select_status, * coord_status;
+
         gint coord_status_id, select_status_id;
-        GtkCombo * zoom;
+        GtkWidget * zoom;
 
 	SPDocument * document;
 	SPNamedView * namedview;
@@ -94,6 +95,7 @@ ArtDRect * sp_desktop_get_visible_area (SPDesktop * desktop, ArtDRect * area);
 void sp_desktop_show_region (SPDesktop * desktop, gdouble x0, gdouble y0, gdouble x1, gdouble y1, gint border);
 void sp_desktop_zoom_relative (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
 void sp_desktop_zoom_absolute (SPDesktop * desktop, gdouble zoom, gdouble cx, gdouble cy);
+gint sp_desktop_set_focus (GtkWidget * widget, GtkWidget * widget2, SPDesktop * desktop);
 
 /* Context */
 

@@ -27,6 +27,11 @@ sp_create_window (SPDesktop * desktop, gboolean editable)
 	gtk_object_set_data (GTK_OBJECT (desktop), "window", w);
 	gtk_object_set_data (GTK_OBJECT (w), "desktop", desktop);
 
+        gtk_signal_connect (GTK_OBJECT (w),
+                            "focus-in-event",
+                            GTK_SIGNAL_FUNC (sp_desktop_set_focus),
+                            desktop);
+
 	vb = gtk_vbox_new (FALSE, 0);
 	gtk_widget_show (vb);
 	gtk_container_add (GTK_CONTAINER (w), vb);

@@ -22,7 +22,6 @@ sp_canvas_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * de
  
   switch (event->type) {
   case GDK_MOTION_NOTIFY:
-    gtk_statusbar_pop (desktop->coord_status, desktop->coord_status_id);
   case GDK_ENTER_NOTIFY:
     p0.x = event->motion.x;
     p0.y = event->motion.y;
@@ -32,10 +31,10 @@ sp_canvas_root_handler (GnomeCanvasItem * item, GdkEvent * event, SPDesktop * de
 	     SP_PT_TO_STRING (p0.x,SP_DEFAULT_METRIC)->str,
 	     SP_PT_TO_STRING (p0.y,SP_DEFAULT_METRIC)->str
 	     );
-    gtk_statusbar_push (desktop->coord_status, desktop->coord_status_id, coord_str);
+    gnome_appbar_set_status (desktop->coord_status, coord_str);
     break;
   case GDK_LEAVE_NOTIFY:
-    gtk_statusbar_pop (desktop->coord_status, desktop->coord_status_id);
+    gnome_appbar_clear_stack (desktop->coord_status);
     break;
   default:
     break;
@@ -70,10 +69,12 @@ sp_desktop_item_handler (GnomeCanvasItem * item, GdkEvent * event, gpointer data
 	sp_event_context_item_handler (desktop->event_context, SP_ITEM (data), event);
 }
 
+
+// not needed 
 gint
 sp_desktop_enter_notify (GtkWidget * widget, GdkEventCrossing * event)
 {
-	sodipodi_activate_desktop (SP_DESKTOP (widget));
+  	sodipodi_activate_desktop (SP_DESKTOP (widget));
 	return FALSE;
 }
 

@@ -15,9 +15,12 @@ INCLUDES = \
 	-DGNOME_ICONDIR=\""$(datadir)/pixmaps"\" 	\
 	-I$(srcdir/xml) 				\
 	-I$(srcdir/svg) 				\
-	-I$(top_srcdir)/intl 				\
-	$(GNOME_INCLUDEDIR)				\
-	$(SODIPODI_XML_CFLAGS)
+	$(SODIPODI_CFLAGS)				\
+	$(SODIPODI_BONOBO_CFLAGS)
+
+#	-I$(top_srcdir)/intl 				\
+#	$(GNOME_INCLUDEDIR)				\
+#	$(SODIPODI_XML_CFLAGS)
 
 bin_PROGRAMS = sodipodi
 
@@ -93,7 +96,7 @@ sodipodi_SOURCES = \
 
 #	font-wrapper.c font-wrapper.h \
 
-sodipodi_libs = \
+sodipodi_private_libs = \
 	dialogs/libspdialogs.a \
 	xml/libspxml.a \
 	svg/libspsvg.a \
@@ -103,17 +106,20 @@ sodipodi_libs = \
 
 
 sodipodi_LDADD = \
-	$(sodipodi_libs) \
+	$(sodipodi_private_libs) \
 	$(bonobo_libs) \
-	$(GNOME_LIBDIR) \
-	-lpng \
-	-lglade-gnome \
-	-lglade \
-	-lgdk_pixbuf \
-	$(GNOMEUI_LIBS) \
-	$(GNOME_PRINT_LIBS) \
-	$(EXTRA_BONOBO_GNOME_LIBS) \
-	$(INTLLIBS)
+	$(SODIPODI_LIBS) \
+	$(SODIPODI_BONOBO_LIBS)
+
+#	$(GNOME_LIBDIR) \
+#	-lpng \
+#	-lglade-gnome \
+#	-lglade \
+#	-lgdk_pixbuf \
+#	$(GNOMEUI_LIBS) \
+#	$(GNOME_PRINT_LIBS) \
+#	$(EXTRA_BONOBO_GNOME_LIBS) \
+#	$(INTLLIBS)
 
 EXTRA_DIST = \
 	brokenimage.xpm

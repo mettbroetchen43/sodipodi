@@ -6,6 +6,8 @@
 #include "desktop-handles.h"
 #include "desktop-affine.h"
 #include "event-context.h"
+#include "event-broker.h"
+#include "zoom-context.h"
 
 static void sp_event_context_class_init (SPEventContextClass * klass);
 static void sp_event_context_init (SPEventContext * event_context);
@@ -143,6 +145,143 @@ sp_event_context_private_root_handler (SPEventContext * event_context, GdkEvent 
 			ret = TRUE;
 		}
 		break;
+        case GDK_KEY_PRESS:
+          switch (event->key.keyval) {  
+          case 65289: // disable cursor keys and tab/shift-tab which cycle widget focus
+          case 65056: // they will get different functions
+          case 65361:
+          case 65362:
+          case 65363: 
+          case 65364: 
+            //g_print ("stop ");
+            ret = TRUE;
+            break;
+	  case 65470: // F1 - select context 
+	    sp_event_context_set_select(NULL);
+	    ret = TRUE;
+	    break;
+	  case 65471: // F2 - node edit context 
+	    sp_event_context_set_node_edit(NULL);	    
+	    ret = TRUE;
+	    break;
+	  case 65472: // F3 - zoom context
+	    sp_event_context_set_zoom(NULL);	    
+	    ret = TRUE;
+	    break;
+	  case 65473: // F4 - rect context
+	    sp_event_context_set_rect(NULL);	    
+	    ret = TRUE;
+	    break;
+	  case 65474: // F5 - ellipse context
+	    sp_event_context_set_ellipse(NULL);	    
+	    ret = TRUE;
+	    break;
+	  case 65475: // F6 - frehand line context
+	    sp_event_context_set_freehand(NULL);	    
+	    ret = TRUE;
+	    break;
+	  case 65476: // F7 - text context
+	    sp_event_context_set_text(NULL);	    
+	    ret = TRUE;
+	    break;
+	  case 61: // = 
+      	  case 43: // + - zoom in
+	    sp_zoom_in(NULL);
+	    ret = TRUE;
+	    break;
+	  case 45: // - - zoom out
+	    sp_zoom_out(NULL);
+	    ret = TRUE;
+	    break;
+	  case 48: // 0 - zoom entire page
+	    sp_zoom_page(NULL);
+	    ret = TRUE;
+	    break;
+	  case 49: // 1 - zoom 1 to 1
+	    sp_zoom_1_to_1(NULL);
+	    ret = TRUE;
+	    break;
+	  case 122: // Ctrl z - undo
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_undo (NULL);
+	      ret = TRUE;
+	    }
+	    break;
+	  case 114: // Ctrl r - redo
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_redo (NULL);
+	      ret = TRUE;
+	    }
+	    break;
+	  case 119: // Crtl w - close view
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_ui_close_view ();
+	      ret = TRUE;
+	    }
+	    break;
+	  case 110: // Crtl n - new document
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      ret = TRUE;
+	      sp_file_new ();
+	    }
+	    break;
+	  case 78: // Ctrl N - new view
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_ui_new_view ();
+	      ret = TRUE;
+	    }
+	    break;
+	  case 111: // Ctrl o - open file
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_file_open ();
+	      ret = TRUE;
+	    }
+	    break;
+	  case 101: // Ctrl e - export file
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_file_export ();
+	      ret = TRUE;
+	    }
+	    break;
+	  case 105: // Ctrl i - import file
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_file_import ();
+	      ret = TRUE;
+	    }
+	    break;
+	  case 112: // Crtl p - print document
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      ret = TRUE;
+	      sp_file_print ();
+	    }
+	    break;
+	  case 80: // Crtl P - print preview
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      ret = TRUE;
+	      sp_file_print_preview ();
+	    }
+	    break;
+	  case 115: // Crtl s - save file
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      ret = TRUE;
+	      sp_file_save ();
+	    }
+	    break;
+	  case 83: // Crtl S - save file as
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      ret = TRUE;
+	      sp_file_save_as ();
+	    }
+	    break;
+	  case 113: // Ctrl q - quit
+	    if (event->key.state & GDK_CONTROL_MASK) {
+	      sp_file_exit ();
+	      ret = TRUE;
+	    }
+	    break;
+          }
+          g_print ("What a funny key: %d \n", event->key.keyval);
+          break;
 	default:
 		break;
 	}
