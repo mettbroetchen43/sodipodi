@@ -28,7 +28,7 @@
 #include "sp-object-repr.h"
 #include "sp-gradient.h"
 
-#define noSP_MACROS_SILENT
+#define SP_MACROS_SILENT
 #include "macros.h"
 
 /* Has to be power of 2 */

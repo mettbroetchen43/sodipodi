@@ -105,10 +105,10 @@ nr_lgradient_render_block (NRLGradientRenderer *lgr, NRPixBlock *pb)
 			nr_lgradient_render_generic (lgr, pb);
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8:
-			nr_lgradient_render_R8G8B8 (lgr, pb->px, pb->area.x0, pb->area.y0, width, height, pb->rs);
+			nr_lgradient_render_R8G8B8 (lgr, NR_PIXBLOCK_PX (pb), pb->area.x0, pb->area.y0, width, height, pb->rs);
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8A8N:
-			nr_lgradient_render_R8G8B8A8N (lgr, pb->px, pb->area.x0, pb->area.y0, width, height, pb->rs);
+			nr_lgradient_render_R8G8B8A8N (lgr, NR_PIXBLOCK_PX (pb), pb->area.x0, pb->area.y0, width, height, pb->rs);
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8A8P:
 			nr_lgradient_render_generic (lgr, pb);
@@ -228,7 +228,7 @@ nr_lgradient_render_generic (NRLGradientRenderer *lgr, NRPixBlock *pb)
 	bpp = (pb->mode == NR_PIXBLOCK_MODE_A8) ? 1 : (pb->mode == NR_PIXBLOCK_MODE_R8G8B8) ? 3 : 4;
 
 	for (y = 0; y < height; y++) {
-		d = pb->px + y * rs;
+		d = NR_PIXBLOCK_PX (pb) + y * rs;
 		pos = (y + y0 - lgr->y0) * lgr->dy + (0 + x0 - lgr->x0) * lgr->dx;
 		for (x = 0; x < width; x++) {
 			int ip, idx;
@@ -255,6 +255,8 @@ nr_lgradient_render_generic (NRLGradientRenderer *lgr, NRPixBlock *pb)
 			pos += lgr->dx;
 		}
 	}
+
+	nr_pixblock_release (&spb);
 }
 
 /* Radial */
@@ -330,7 +332,7 @@ nr_rgradient_render_generic (NRRGradientRenderer *rgr, NRPixBlock *pb)
 	if (NR_DF_TEST_CLOSE (rgr->cx, rgr->fx, NR_EPSILON_D) &&
 	    NR_DF_TEST_CLOSE (rgr->cy, rgr->fy, NR_EPSILON_D)) {
 		for (y = 0; y < height; y++) {
-			d = pb->px + y * rs;
+			d = NR_PIXBLOCK_PX (pb) + y * rs;
 			for (x = 0; x < width; x++) {
 				double gx, gy;
 				double r, pos;
@@ -356,7 +358,7 @@ nr_rgradient_render_generic (NRRGradientRenderer *rgr, NRPixBlock *pb)
 		}
 	} else {
 		for (y = 0; y < height; y++) {
-			d = pb->px + y * rs;
+			d = NR_PIXBLOCK_PX (pb) + y * rs;
 			for (x = 0; x < width; x++) {
 				double gx, gy;
 				double r, pos;
@@ -427,4 +429,6 @@ nr_rgradient_render_generic (NRRGradientRenderer *rgr, NRPixBlock *pb)
 			}
 		}
 	}
+
+	nr_pixblock_release (&spb);
 }

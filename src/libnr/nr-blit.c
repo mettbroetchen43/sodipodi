@@ -56,8 +56,8 @@ nr_blit_pixblock_pixblock (NRPixBlock *d, NRPixBlock *s)
 	nr_rect_s_intersect (&clip, &d->area, &s->area);
 
 	/* Pointers */
-	dpx = d->px + (clip.y0 - d->area.y0) * d->rs + 4 * (clip.x0 - d->area.x0);
-	spx = s->px + (clip.y0 - s->area.y0) * s->rs + 4 * (clip.x0 - s->area.x0);
+	dpx = NR_PIXBLOCK_PX (d) + (clip.y0 - d->area.y0) * d->rs + 4 * (clip.x0 - d->area.x0);
+	spx = NR_PIXBLOCK_PX (s) + (clip.y0 - s->area.y0) * s->rs + 4 * (clip.x0 - s->area.x0);
 	w = clip.x1 - clip.x0;
 	h = clip.y1 - clip.y0;
 
