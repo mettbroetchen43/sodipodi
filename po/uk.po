@@ -675,9 +675,8 @@ msgid "Delete"
 msgstr "Видалити"
 
 #: glade/sodipodi-glade.c:66
-#, fuzzy
 msgid "Duplicate selected object(s)"
-msgstr "В╕ддзеркалити вибран╕ об'╓кти"
+msgstr "Дублювати вибран╕ об'╓кти"
 
 #: glade/sodipodi-glade.c:67
 #, fuzzy
@@ -685,39 +684,36 @@ msgid "Duplic\t"
 msgstr "Дублювати"
 
 #: glade/sodipodi-glade.c:68
-#, fuzzy
 msgid "Raise selected object(s) to top"
-msgstr "п╕дняти вибране на гору"
+msgstr "П╕дняти вибране на верх"
 
 #: glade/sodipodi-glade.c:69
 msgid "To Front"
-msgstr ""
+msgstr "На верх"
 
 #: glade/sodipodi-glade.c:70
-#, fuzzy
 msgid "Lower selected object(s) to bottom"
-msgstr "опустити вибране на низ"
+msgstr "Опустити вибране на низ"
 
 #: glade/sodipodi-glade.c:71
 msgid "To Back"
-msgstr ""
+msgstr "На низ"
 
 #: glade/sodipodi-glade.c:72
-#, fuzzy
 msgid "Raise one position"
-msgstr "п╕дняти вибране на гору"
+msgstr "П╕дняти на одну позиц╕ю"
 
 #: glade/sodipodi-glade.c:73
 msgid "Up"
-msgstr ""
+msgstr "Вгору"
 
 #: glade/sodipodi-glade.c:74
 msgid "Lower one position"
-msgstr ""
+msgstr "Опустити на одну позиц╕ю"
 
 #: glade/sodipodi-glade.c:75
 msgid "Down"
-msgstr ""
+msgstr "Вниз"
 
 #: glade/sodipodi-glade.c:76
 msgid "Select and transform objects and groups"
@@ -763,9 +759,8 @@ msgid "Draw\t"
 msgstr "Рисунок"
 
 #: glade/sodipodi-glade.c:86
-#, fuzzy
 msgid "Write text"
-msgstr "Малювати текст"
+msgstr "Писати текст"
 
 #: glade/sodipodi-glade.c:88
 msgid "Left button zooms in, right out"
@@ -780,6 +775,8 @@ msgid ""
 "A Vector Drawing Program.\n"
 "Released under GPL"
 msgstr ""
+"Векторна програма малювання.\n"
+"Випущено п╕д GPL"
 
 #: glade/sodipodi-glade.c:93 glade/toolbox.c:40
 msgid "Node Edit"
@@ -814,7 +811,7 @@ msgstr "Стерти вибран╕ вузли"
 
 #: glade/sodipodi-glade.c:100 glade/toolbox.c:49
 msgid "Symmetric "
-msgstr ""
+msgstr "Симетрично"
 
 #: glade/sodipodi-glade.c:101 glade/toolbox.c:51
 msgid "Close dialog"
@@ -833,14 +830,13 @@ msgid "Export picture to png"
 msgstr "Експортувати зображення в PNG"
 
 #: glade/sodipodi-glade.c:105
-#, fuzzy
 msgid "Set dimensions"
-msgstr "Розм╕ри"
+msgstr "Встановити розм╕ри"
 
 #: glade/sodipodi-glade.c:106 glade/sodipodi-glade.c:132
 #: src/dialogs/align.c:103
 msgid "Drawing"
-msgstr "Рисунок"
+msgstr "Малюнок"
 
 #: glade/sodipodi-glade.c:108 glade/sodipodi-glade.c:133
 #: glade/sodipodi-glade.c:137 glade/toolbox.c:31 src/dialogs/align.c:108
@@ -849,7 +845,7 @@ msgstr "Вибране"
 
 #: glade/sodipodi-glade.c:109
 msgid "Where to export"
-msgstr ""
+msgstr "Куди експортувати"
 
 #: glade/sodipodi-glade.c:110
 msgid "Filename:"
@@ -903,7 +899,7 @@ msgstr "т/д"
 
 #: glade/sodipodi-glade.c:126
 msgid "Lock aspect ratio"
-msgstr ""
+msgstr "Ф╕ксован╕ пропорц╕╖"
 
 #: glade/sodipodi-glade.c:127
 msgid "1.0MB"
@@ -938,9 +934,8 @@ msgid "Toggle Borders"
 msgstr ""
 
 #: glade/sodipodi-glade.c:160
-#, fuzzy
 msgid "Drawing Context"
-msgstr "Контекст рисунку"
+msgstr "Вм╕ст малюнка"
 
 #: glade/sodipodi-glade.c:163
 msgid "Rectangle"
@@ -988,7 +983,7 @@ msgstr "Про..."
 
 #: glade/toolbox.c:14
 msgid "Drawing context"
-msgstr "Контекст рисунку"
+msgstr "Вм╕ст малюнка"
 
 #: glade/toolbox.c:15 glade/toolbox.c:21
 msgid "Edit nodes"
@@ -1068,7 +1063,7 @@ msgstr "Розгрупувати вибран╕ об'╓кти"
 
 #: glade/toolbox.c:50
 msgid "Unsymmetric"
-msgstr ""
+msgstr "Асиметрично"
 
 #: glade/toolbox.c:52
 msgid "File"
@@ -1076,11 +1071,11 @@ msgstr "Файл"
 
 #: glade/toolbox.c:53
 msgid "New drawing"
-msgstr "Новий рисунок"
+msgstr "Новий малюнок"
 
 #: glade/toolbox.c:55
 msgid "Open new drawing"
-msgstr "В╕дкрити новий рисунок"
+msgstr "В╕дкрити новий малюнок"
 
 #: glade/toolbox.c:56
 msgid "Import "
@@ -1088,19 +1083,19 @@ msgstr "╤мпорт "
 
 #: glade/toolbox.c:57
 msgid "Print drawing"
-msgstr "Друкувати рисунок"
+msgstr "Друкувати малюнок"
 
 #: glade/toolbox.c:58
 msgid "Preview print drawing"
-msgstr "Перегляд друку рисунка"
+msgstr "Перегляд друку малюнка"
 
 #: glade/toolbox.c:59
 msgid "Save drawing "
-msgstr "Зберегти рисунок "
+msgstr "Зберегти малюнок "
 
 #: glade/toolbox.c:60
 msgid "Save drawing under new filename"
-msgstr "Зберегти рисунок п╕д новою назвою"
+msgstr "Зберегти малюнок з новою назвою"
 
 #: glade/toolbox.c:61
 msgid "Quit or not quit ?"
