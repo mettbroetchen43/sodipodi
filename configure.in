@@ -46,7 +46,7 @@ AC_ARG_WITH(bonobo,
 
 if $try_bonobo; then
 	AC_MSG_CHECKING(for Bonobo > 0.9)
-	if $GNOME_CONFIG --libs bonobo > /dev/null 2>&1; then
+	if $GNOME_CONFIG --libs bonobox_print > /dev/null 2>&1; then
 		vers=`$GNOME_CONFIG --modversion bonobo`
 		case $vers
 		in
@@ -61,8 +61,8 @@ if $try_bonobo; then
 		AC_MSG_RESULT(found)
 		AC_DEFINE(ENABLE_BONOBO)
 		have_bonobo=true
-		EXTRA_BONOBO_GNOME_LIBS="`$GNOME_CONFIG --libs bonobo` -lbonobo-print"
-		EXTRA_BONOBO_GNOME_CFLAGS=`$GNOME_CONFIG --cflags bonobo`
+		EXTRA_BONOBO_GNOME_LIBS=`$GNOME_CONFIG --libs bonobox_print`
+		EXTRA_BONOBO_GNOME_CFLAGS=`$GNOME_CONFIG --cflags bonobox_print`
 
 		dnl Check if Bonobo is OAFized
 
