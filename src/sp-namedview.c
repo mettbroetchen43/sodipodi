@@ -190,7 +190,7 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	}
 	if (strcmp (key, "gridtolerance") == 0) {
 		if (astr) {
-			namedview->gridtolerance = sp_svg_read_length (&unit, astr);
+			namedview->gridtolerance = sp_svg_read_length (&unit, astr, 5.0);
 		} else {
 			namedview->gridtolerance = DEFAULTTOLERANCE;
 		}
@@ -198,25 +198,25 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	}
 	if (strcmp (key, "guidetolerance") == 0) {
 		if (astr) {
-			namedview->guidetolerance = sp_svg_read_length (&unit, astr);
+			namedview->guidetolerance = sp_svg_read_length (&unit, astr, 5.0);
 		} else {
 			namedview->guidetolerance = DEFAULTTOLERANCE;
 		}
 		return;
 	}
 	if (strcmp (key, "gridoriginx") == 0) {
-		namedview->gridorigin.x = sp_svg_read_length (&unit, astr);
+		namedview->gridorigin.x = sp_svg_read_length (&unit, astr, 0.0);
 		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "gridoriginy") == 0) {
-		namedview->gridorigin.y = sp_svg_read_length (&unit, astr);
+		namedview->gridorigin.y = sp_svg_read_length (&unit, astr, 0.0);
 		sp_namedview_setup_grid (namedview);
 		return;
 	}
 	if (strcmp (key, "gridspacingx") == 0) {
 		if (astr) {
-			namedview->gridspacing.x = sp_svg_read_length (&unit, astr);
+			namedview->gridspacing.x = sp_svg_read_length (&unit, astr, 16.0);
 		} else {
 			namedview->gridspacing.x = PTPERMM;
 		}
@@ -225,7 +225,7 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	}
 	if (strcmp (key, "gridspacingy") == 0) {
 		if (astr) {
-			namedview->gridspacing.y = sp_svg_read_length (&unit, astr);
+			namedview->gridspacing.y = sp_svg_read_length (&unit, astr, 16.0);
 		} else {
 			namedview->gridspacing.y = PTPERMM;
 		}
@@ -234,7 +234,7 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	}
 	if (strcmp (key, "gridcolor") == 0) {
 		if (astr) {
-			namedview->gridcolor = (namedview->gridcolor & 0xff) | sp_svg_read_color (astr);
+			namedview->gridcolor = (namedview->gridcolor & 0xff) | sp_svg_read_color (astr, 0x0000ff00);
 		}
 		sp_namedview_setup_grid (namedview);
 		return;
@@ -248,7 +248,7 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	}
 	if (strcmp (key, "guidecolor") == 0) {
 		if (astr) {
-			namedview->guidecolor = (namedview->guidecolor & 0xff) | sp_svg_read_color (astr);
+			namedview->guidecolor = (namedview->guidecolor & 0xff) | sp_svg_read_color (astr, 0xff000000);
 			for (l = namedview->hguides; l != NULL; l = l->next) {
 				gtk_object_set (GTK_OBJECT (l->data), "color", namedview->guidecolor, NULL);
 			}
@@ -272,7 +272,7 @@ sp_namedview_read_attr (SPObject * object, const gchar * key)
 	}
 	if (strcmp (key, "guidehicolor") == 0) {
 		if (astr) {
-			namedview->guidehicolor = (namedview->guidehicolor & 0xff) | sp_svg_read_color (astr);
+			namedview->guidehicolor = (namedview->guidehicolor & 0xff) | sp_svg_read_color (astr, 0x7f7fff00);
 			for (l = namedview->hguides; l != NULL; l = l->next) {
 				gtk_object_set (GTK_OBJECT (l->data), "hicolor", namedview->guidehicolor, NULL);
 			}

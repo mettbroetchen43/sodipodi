@@ -39,9 +39,7 @@ sp_group_get_type (void)
 			sizeof (SPGroupClass),
 			(GtkClassInitFunc) sp_group_class_init,
 			(GtkObjectInitFunc) sp_group_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		group_type = gtk_type_unique (sp_item_get_type (), &group_info);
 	}
@@ -96,9 +94,9 @@ sp_group_destroy (GtkObject *object)
 	while (group->children) {
 		SPObject * child;
 		child = group->children;
+		group->children = child->next;
 		child->parent = NULL;
 		child->next = NULL;
-		group->children = child->next;
 		gtk_object_unref (GTK_OBJECT (child));
 	}
 
@@ -143,14 +141,7 @@ sp_group_read_attr (SPObject * object, const gchar * attr)
 
 	group = SP_GROUP (object);
 
-	/* fixme: We are hardcoding "style" attribute here, but I do not know another way */
-
-	if (strcmp (attr, "style") == 0) {
-		SPObject * child;
-		for (child = group->children; child != NULL; child = child->next) {
-			sp_object_invoke_read_attr (child, attr);
-		}
-	} else if (strcmp (attr, "insensitive") == 0) {
+	if (strcmp (attr, "insensitive") == 0) {
 		const gchar * val;
 		gboolean sensitive;
 		SPItemView * v;
@@ -166,6 +157,13 @@ sp_group_read_attr (SPObject * object, const gchar * attr)
 
 	if (SP_OBJECT_CLASS (parent_class)->read_attr)
 		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+
+	if (strcmp (attr, "style") == 0) {
+		SPObject * child;
+		for (child = group->children; child != NULL; child = child->next) {
+			sp_object_invoke_read_attr (child, attr);
+		}
+	}
 }
 
 static void

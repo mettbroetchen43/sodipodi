@@ -19,13 +19,13 @@ sp_fill_read (SPFill * fill, SPCSSAttr * css)
 		} else {
 			fill->type = SP_FILL_COLOR;
 			fill->color = (fill->color & 0xff) |
-				sp_svg_read_color (prop);
+				sp_svg_read_color (prop, 0x00000000);
 		}
 	}
 	prop = sp_repr_css_property (css, "fill-opacity", NULL);
 	if (prop != NULL) {
 		fill->color = (fill->color & 0xffffff00) |
-			(guint) (255.0 * sp_svg_read_percentage (prop) + 0.5);
+			(guint) (255.0 * sp_svg_read_percentage (prop, 1.0) + 0.5);
 	}
 
 	return fill;
@@ -47,13 +47,13 @@ sp_stroke_read (SPStroke * stroke, SPCSSAttr * css)
 		} else {
 			stroke->type = SP_STROKE_COLOR;
 			stroke->color = (stroke->color & 0xff) |
-				sp_svg_read_color (prop);
+				sp_svg_read_color (prop, 0x00000000);
 		}
 	}
 	prop = sp_repr_css_property (css, "stroke-opacity", NULL);
 	if (prop != NULL) {
 		stroke->color = (stroke->color & 0xffffff00) |
-			(guint) (255.0 * sp_svg_read_percentage (prop) + 0.5);
+			(guint) (255.0 * sp_svg_read_percentage (prop, 1.0) + 0.5);
 	}
 	prop = sp_repr_css_property (css, "stroke-linecap", NULL);
 	if (prop != NULL) {
@@ -78,7 +78,7 @@ sp_stroke_read (SPStroke * stroke, SPCSSAttr * css)
 	/* fixme: implement units */
 	prop = sp_repr_css_property (css, "stroke-width", NULL);
 	if (prop != NULL) {
-		stroke->width = sp_svg_read_length (&unit, prop);
+		stroke->width = sp_svg_read_length (&unit, prop, 1.0);
 		stroke->scaled = (unit != SP_SVG_UNIT_PIXELS);
 	}
 

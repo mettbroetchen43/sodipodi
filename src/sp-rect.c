@@ -166,37 +166,37 @@ sp_rect_read_attr (SPObject * object, const gchar * attr)
 	/* fixme: we should really collect updates */
 
 	if (strcmp (attr, "x") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		rect->x = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "y") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		rect->y = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "width") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		rect->width = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "height") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		rect->height = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "rx") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		rect->rx = n;
 		sp_rect_set_shape (rect);
 		return;
 	}
 	if (strcmp (attr, "ry") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		rect->ry = n;
 		sp_rect_set_shape (rect);
 		return;

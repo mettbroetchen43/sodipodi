@@ -13,6 +13,7 @@
 #include <string.h>
 #include "xml/repr-private.h"
 #include "document.h"
+#include "style.h"
 #include "sp-object-repr.h"
 #include "sp-object.h"
 
@@ -95,6 +96,7 @@ sp_object_init (SPObject * object)
 	object->parent = object->next = NULL;
 	object->repr = NULL;
 	object->id = NULL;
+	object->style = NULL;
 	object->title = NULL;
 	object->description = NULL;
 }
@@ -111,6 +113,11 @@ sp_object_destroy (GtkObject * object)
 	g_assert (!spobject->next);
 	g_assert (spobject->document);
 	g_assert (spobject->repr);
+
+	if (spobject->style) {
+		sp_style_unref (spobject->style);
+		spobject->style = NULL;
+	}
 
 	if (!SP_OBJECT_IS_CLONED (object)) {
 		g_assert (spobject->id);
@@ -416,3 +423,35 @@ sp_object_get_unique_id (SPObject * object, const gchar * id)
 
 	return realid;
 }
+
+/* Style */
+
+const guchar *
+sp_object_get_style_property (SPObject *object, const gchar *key, const gchar *def)
+{
+	const gchar *style;
+
+	g_return_val_if_fail (object != NULL, NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (key != NULL, NULL);
+
+	style = sp_repr_attr (object->repr, "style");
+	if (style) {
+		gchar *p;
+		gint len;
+		len = strlen (key);
+		for (p = strstr (style, key); p; p = strstr (style, key)) {
+			p += len;
+			while ((*p <= ' ') && *p) p++;
+			if (*p++ != ':') break;
+			while ((*p <= ' ') && *p) p++;
+			if (*p) return p;
+		}
+	}
+	if (object->parent) {
+		return sp_object_get_style_property (object->parent, key, def);
+	}
+
+	return def;
+}
+

@@ -1,7 +1,17 @@
-#define SP_GRADIENT_C
+#define __SP_GRADIENT_C__
 
 /*
- * Gradient stops
+ * SPGradient
+ *
+ * TODO: Implement radial & other fancy gradients
+ * TODO: Implement linking attributes
+ *
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 200-2001 Lauris Kaplinski and Ximian, Inc.
+ *
+ * Released under GNU GPL
  */
 
 #include <string.h>
@@ -29,9 +39,7 @@ sp_stop_get_type (void)
 			sizeof (SPStop),
 			(GtkClassInitFunc) sp_stop_class_init,
 			(GtkObjectInitFunc) sp_stop_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		stop_type = gtk_type_unique (sp_object_get_type (), &stop_info);
 	}
@@ -54,6 +62,7 @@ sp_stop_class_init (SPStopClass * klass)
 static void
 sp_stop_init (SPStop * stop)
 {
+	stop->next = NULL;
 	stop->offset = 0.0;
 	stop->color = 0x000000ff;
 }
@@ -72,38 +81,20 @@ static void
 sp_stop_read_attr (SPObject * object, const gchar * key)
 {
 	SPStop * stop;
-	SPCSSAttr * cssr, * csso;
-	const gchar * cstr, * ostr;
 	guint32 color;
 	gdouble opacity;
 
 	stop = SP_STOP (object);
 
 	if (strcmp (key, "style") == 0) {
-		cssr = sp_repr_css_attr (object->repr, key);
-		csso = sp_repr_css_attr_inherited (object->parent->repr, key);
-		cstr = sp_repr_css_property (cssr, "stop-color", NULL);
-		if (cstr == NULL) {
-			cstr = sp_repr_css_property (csso, "stop-color", NULL);
-		}
-		ostr = sp_repr_css_property (cssr, "stop-opacity", NULL);
-		if (ostr == NULL) {
-			ostr = sp_repr_css_property (csso, "stop-opacity", NULL);
-		}
-		if (cstr != NULL) {
-			color = sp_svg_read_color (cstr);
-		} else {
-			color = 0x00000000;
-		}
-		if (ostr != NULL) {
-			opacity = sp_svg_read_percentage (ostr);
-		} else {
-			opacity = 1.0;
-		}
-		color = (color & 0xffffff00) | ((gint) (opacity * 255.0));
+		const guchar *p;
+		p = sp_object_get_style_property (object, "stop-color", "black");
+		color = sp_svg_read_color (p, 0x00000000);
+		p = sp_object_get_style_property (object, "stop-opacity", "1");
+		opacity = sp_svg_read_percentage (p, 1.0);
+
+		color = (color & 0xffffff00) | ((guint32) (opacity * 255));
 		stop->color = color;
-		sp_repr_css_attr_unref (cssr);
-		sp_repr_css_attr_unref (csso);
 		return;
 	}
 	if (strcmp (key, "offset") == 0) {
@@ -126,7 +117,7 @@ static void sp_lineargradient_destroy (GtkObject * object);
 static void sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_lineargradient_read_attr (SPObject * object, const gchar * key);
 
-static SPObjectClass * lg_parent_class;
+static SPPaintServerClass * lg_parent_class;
 
 GtkType
 sp_lineargradient_get_type (void)
@@ -139,11 +130,9 @@ sp_lineargradient_get_type (void)
 			sizeof (SPLinearGradientClass),
 			(GtkClassInitFunc) sp_lineargradient_class_init,
 			(GtkObjectInitFunc) sp_lineargradient_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
-		lineargradient_type = gtk_type_unique (sp_object_get_type (), &lineargradient_info);
+		lineargradient_type = gtk_type_unique (SP_TYPE_PAINT_SERVER, &lineargradient_info);
 	}
 	return lineargradient_type;
 }
@@ -157,7 +146,7 @@ sp_lineargradient_class_init (SPLinearGradientClass * klass)
 	gtk_object_class = (GtkObjectClass *) klass;
 	sp_object_class = (SPObjectClass *) klass;
 
-	lg_parent_class = gtk_type_class (sp_object_get_type ());
+	lg_parent_class = gtk_type_class (SP_TYPE_PAINT_SERVER);
 
 	gtk_object_class->destroy = sp_lineargradient_destroy;
 
@@ -168,10 +157,10 @@ sp_lineargradient_class_init (SPLinearGradientClass * klass)
 static void
 sp_lineargradient_init (SPLinearGradient * lg)
 {
-	lg->units = SP_GRADIENT_UNITS_USERSPACE;
+	lg->units = SP_GRADIENT_UNITS_USERSPACEONUSE;
 	art_affine_identity (lg->transform);
-	lg->box.x0 = lg->box.y0 = lg->box.y1 = 0.0;
-	lg->box.x1 = 1.0;
+	lg->vector.x0 = lg->vector.y0 = lg->vector.y1 = 0.0;
+	lg->vector.x1 = 1.0;
 	lg->spread = SP_GRADIENT_SPREAD_PAD;
 	lg->stops = NULL;
 }
@@ -185,10 +174,10 @@ sp_lineargradient_destroy (GtkObject * object)
 	lg = (SPLinearGradient *) object;
 
 	while (lg->stops) {
-		spobject = SP_OBJECT (lg->stops->data);
+		spobject = SP_OBJECT (lg->stops);
+		lg->stops = lg->stops->next;
 		spobject->parent = NULL;
 		gtk_object_unref (GTK_OBJECT (spobject));
-		lg->stops = g_slist_remove_link (lg->stops, lg->stops);
 	}
 
 	if (GTK_OBJECT_CLASS (lg_parent_class)->destroy)
@@ -199,9 +188,11 @@ static void
 sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
 	SPLinearGradient * lg;
+#if 0
 	SPRepr * crepr;
 	SPObject * child;
 	const gchar * cname;
+#endif
 
 	lg = SP_LINEARGRADIENT (object);
 
@@ -216,6 +207,8 @@ sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr
 	sp_lineargradient_read_attr (object, "y2");
 	sp_lineargradient_read_attr (object, "spreadMethod");
 
+#if 0
+	/* fixme: build list */
 	for (crepr = repr->children; crepr != NULL; crepr = crepr->next) {
 		cname = sp_repr_name (crepr);
 		if (strcmp (cname, "stop") == 0) {
@@ -225,6 +218,7 @@ sp_lineargradient_build (SPObject * object, SPDocument * document, SPRepr * repr
 			sp_object_invoke_build (child, document, crepr, SP_OBJECT_IS_CLONED (object));
 		}
 	}
+#endif
 }
 
 static void

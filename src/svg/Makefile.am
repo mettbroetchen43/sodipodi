@@ -15,7 +15,7 @@ noinst_LIBRARIES = libspsvg.a
 libspsvg_a_SOURCES = \
 	svg.h \
 	svg-length.c \
-	svg-color.c \
+	svg-color.c svg-color.h \
 	svg-affine.c \
 	svg-path.c \
 	gnome-canvas-bpath-util.c gnome-canvas-bpath-util.h \

@@ -4,13 +4,16 @@
 #include <glib.h>
 #include <libart_lgpl/art_bpath.h>
 #include <libgnomeprint/gnome-font.h>
+#include "../style.h"
 #include "../display/fill.h"
 #include "../display/stroke.h"
 
+/* fixme: Currently we copy SPUnit, but this should be removed */
+
 typedef enum {
-	SP_SVG_UNIT_ABSOLUTE = (1 << 4),
-	SP_SVG_UNIT_USER     = (1 << 5),
-	SP_SVG_UNIT_PIXELS   = (1 << 6),
+	SP_SVG_UNIT_PIXELS   = (1 << 4),
+	SP_SVG_UNIT_ABSOLUTE = (1 << 5),
+	SP_SVG_UNIT_USER     = (1 << 6),
 	SP_SVG_UNIT_PERCENT  = (1 << 7),
 	SP_SVG_UNIT_EM       = (1 << 8),
 	SP_SVG_UNIT_EX       = (1 << 9)
@@ -21,13 +24,13 @@ typedef enum {
 /* General CSS Properties */
 /* length */
 
-gdouble sp_svg_read_length (SPSVGUnit * unit, const gchar * str);
+gdouble sp_svg_read_length (SPSVGUnit * unit, const gchar * str, gdouble def);
 gint sp_svg_write_length (gchar * buf, gint buflen, gdouble val, SPSVGUnit unit);
 
-gdouble sp_svg_read_percentage (const gchar * str);
+gdouble sp_svg_read_percentage (const gchar * str, gdouble def);
 gint sp_svg_write_percentage (gchar * buf, gint buflen, gdouble val);
 
-guint32 sp_svg_read_color (const gchar * str);
+guint32 sp_svg_read_color (const guchar * str, guint32 def);
 gint sp_svg_write_color (gchar * buf, gint buflen, guint32 color);
 
 gdouble * sp_svg_read_affine (gdouble affine[], const gchar * str);

@@ -1,5 +1,5 @@
-#ifndef SP_GRADIENT_H
-#define SP_GRADIENT_H
+#ifndef __SP_GRADIENT_H__
+#define __SP_GRADIENT_H__
 
 /*
  * SPGradient
@@ -7,14 +7,17 @@
  * TODO: Implement radial & other fancy gradients
  * TODO: Implement linking attributes
  *
- * Copyright (C) Lauris Kaplinski 2000
+ * Author:
+ *   Lauris Kaplinski <lauris@ximian.com>
+ *
+ * Copyright (C) 200-2001 Lauris Kaplinski and Ximian, Inc.
+ *
  * Released under GNU GPL
  */
 
-#include "sp-object.h"
+#include "sp-paint-server.h"
 
 typedef enum {
-	SP_GRADIENT_UNITS_USERSPACE,
 	SP_GRADIENT_UNITS_USERSPACEONUSE,
 	SP_GRADIENT_UNITS_OBJECTBOUNDINGBOX
 } SPGradientUnits;
@@ -40,6 +43,7 @@ typedef struct _SPStopClass SPStopClass;
 
 struct _SPStop {
 	SPObject object;
+	SPStop *next;
 	gdouble offset;
 	guint32 color;
 };
@@ -64,16 +68,22 @@ typedef struct _SPLinearGradientClass SPLinearGradientClass;
 #define SP_IS_LINEARGRADIENT_CLASS(klass) (GTK_CHECK_CLASS_TYPE ((klass), SP_TYPE_LINEARGRADIENT))
 
 struct _SPLinearGradient {
-	SPObject object;
+	SPPaintServer paint_server;
 	SPGradientUnits units;
+	guint units_set : 1;
 	gdouble transform[6];
-	ArtDRect box;
+	guint transform_set : 1;
+	ArtDRect vector;
+	guint vector_set : 1;
 	SPGradientSpread spread;
-	GSList * stops;
+	guint spread_set : 1;
+	SPLinearGradient *href;
+	/* Gradient stops */
+	SPStop *stops;
 };
 
 struct _SPLinearGradientClass {
-	SPObjectClass parent_class;
+	SPPaintServerClass parent_class;
 };
 
 GtkType sp_lineargradient_get_type (void);

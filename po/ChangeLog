@@ -1,3 +1,11 @@
+2001-05-17  Lauris Kaplinski  <lauris@ximian.com>
+
+	* POTFILES.in: Added glade/item.c
+
+2001-05-16  Lauris Kaplinski  <lauris@ximian.com>
+
+	* POTFILES.in: Added glade/display.c
+
 2001-04-16  Jesus Bravo Alvarez  <jba@pobox.com>
 
 	* gl.po: Added Galician translation from

@@ -187,13 +187,13 @@ sp_root_read_attr (SPObject * object, const gchar * key)
 	astr = sp_repr_attr (object->repr, key);
 
 	if (strcmp (key, "width") == 0) {
-		len = sp_svg_read_length (&unit, astr);
+		len = sp_svg_read_length (&unit, astr, 0.0);
 		if (len >= 1.0) root->width = len;
 		set_page (root);
 		return;
 	}
 	if (strcmp (key, "height") == 0) {
-		len = sp_svg_read_length (&unit, astr);
+		len = sp_svg_read_length (&unit, astr, 0.0);
 		if (len >= 1.0) root->height = len;
 		/* fixme: */
 		art_affine_scale (item->affine, 1.0, -1.0);

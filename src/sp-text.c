@@ -134,7 +134,7 @@ sp_text_read_attr (SPObject * object, const gchar * attr)
 		css = sp_repr_css_attr_inherited (object->repr, attr);
 		fontname = sp_repr_css_property (css, "font-family", "Helvetica");
 		str = sp_repr_css_property (css, "font-size", "12pt");
-		size = sp_svg_read_length (&unit, str);
+		size = sp_svg_read_length (&unit, str, 12.0);
 		str = sp_repr_css_property (css, "font-weight", "normal");
 		weight = sp_svg_read_font_weight (str);
 		str = sp_repr_css_property (css, "font-style", "normal");

@@ -3580,6 +3580,18 @@ Released under GPL</comments>
 
       <widget>
 	<class>GtkMenuItem</class>
+	<name>menuitem_display_dialog</name>
+	<signal>
+	  <name>activate</name>
+	  <handler>sp_display_dialog</handler>
+	  <last_modification_time>Fri, 21 Apr 2001 23:02:15 GMT</last_modification_time>
+	</signal>
+	<label>Display</label>
+	<right_justify>False</right_justify>
+      </widget>
+
+      <widget>
+	<class>GtkMenuItem</class>
 	<name>menuitem_xml_dialog</name>
 	<signal>
 	  <name>activate</name>

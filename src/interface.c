@@ -20,6 +20,7 @@
 #include "dialogs/object-properties.h"
 #include "dialogs/desktop-properties.h"
 #include "dialogs/document-properties.h"
+#include "dialogs/display-settings.h"
 
 void fake_dialogs (void);
 
@@ -139,6 +140,7 @@ fake_dialogs (void)
 	sp_transformation_dialog ();
 	sp_desktop_dialog ();
 	sp_document_dialog ();
+	sp_display_dialog ();
 }
 
 

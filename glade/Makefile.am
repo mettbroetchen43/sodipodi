@@ -166,8 +166,10 @@ pixmaps = \
 
 glade_DATA = 					\
 	align.glade align.c			\
+	display.glade display.c			\
 	desktop.glade desktop.c			\
 	document.glade document.c		\
+	item.glade item.c			\
 	object_props.glade object_props.c	\
 	sodipodi.glade sodipodi-glade.c		\
 	text-dialog.glade text-dialog.c		\

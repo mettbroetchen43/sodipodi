@@ -19,7 +19,7 @@ typedef struct _SPImageClass SPImageClass;
 
 struct _SPImage {
 	SPItem item;
-	GdkPixbuf * pixbuf;
+	GdkPixbuf *pixbuf;
 	gboolean sensitive;
 };
 

@@ -1,7 +1,9 @@
 # List of source files containing translatable strings.
 glade/align.c
+glade/display.c
 glade/desktop.c
 glade/document.c
+glade/item.c
 glade/object_props.c
 glade/sodipodi-glade.c
 glade/text-dialog.c

@@ -45,8 +45,7 @@ struct _SPItemView {
 struct _SPItem {
 	SPObject object;
 	guint stop_paint: 1;	/* If set, ::paint returns TRUE */
-	double affine[6];
-	double opacity;
+	gdouble affine[6];
 	SPItemView * display;
 };
 

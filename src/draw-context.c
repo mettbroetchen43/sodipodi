@@ -144,7 +144,7 @@ static void
 sp_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 {
 	SPDrawContext * dc;
-	SPStroke * stroke;
+	SPStyle *style;
 
 	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
 		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
@@ -154,11 +154,18 @@ sp_draw_context_setup (SPEventContext * event_context, SPDesktop * desktop)
 	dc->accumulated = sp_curve_new_sized (32);
 	dc->currentcurve = sp_curve_new_sized (4);
 
-	stroke = sp_stroke_new_colored (0xff0000ff, 1.0, FALSE);
+	/* fixme: */
+	style = sp_style_new ();
+	style->fill.type = SP_PAINT_TYPE_NONE;
+	style->stroke.type = SP_PAINT_TYPE_COLOR;
+	style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+	style->stroke_width.distance = 1.0;
+	style->absolute_stroke_width = 1.0;
+	style->user_stroke_width = 1.0;
 	dc->currentshape = (SPCanvasShape *) gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
 								    SP_TYPE_CANVAS_SHAPE, NULL);
-	sp_canvas_shape_set_stroke (dc->currentshape, stroke);
-	sp_stroke_unref (stroke);
+	sp_canvas_shape_set_style (dc->currentshape, style);
+	sp_style_unref (style);
 	gtk_signal_connect (GTK_OBJECT (dc->currentshape), "event",
 			    GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
 }
@@ -573,7 +580,7 @@ fit_and_split (SPDrawContext * dc)
 		sp_canvas_shape_change_bpath (dc->currentshape, dc->currentcurve);
 	} else {
 		SPCurve * curve;
-		SPStroke * stroke;
+		SPStyle *style;
 		SPCanvasShape * cshape;
 		/* Fit and draw and copy last point */
 #ifdef DRAW_VERBOSE
@@ -582,11 +589,18 @@ fit_and_split (SPDrawContext * dc)
 		g_assert (!sp_curve_empty (dc->currentcurve));
 		concat_current (dc);
 		curve = sp_curve_copy (dc->currentcurve);
-		stroke = sp_stroke_new_colored (0x000000ff, 1.0, FALSE);
+		/* fixme: */
+		style = sp_style_new ();
+		style->fill.type = SP_PAINT_TYPE_NONE;
+		style->stroke.type = SP_PAINT_TYPE_COLOR;
+		style->stroke_width.unit = SP_UNIT_ABSOLUTE;
+		style->stroke_width.distance = 1.0;
+		style->absolute_stroke_width = 1.0;
+		style->user_stroke_width = 1.0;
 		cshape = (SPCanvasShape *) gnome_canvas_item_new (SP_DT_SKETCH (SP_EVENT_CONTEXT (dc)->desktop),
 								  SP_TYPE_CANVAS_SHAPE, NULL);
-		sp_canvas_shape_set_stroke (cshape, stroke);
-		sp_stroke_unref (stroke);
+		sp_canvas_shape_set_style (cshape, style);
+		sp_style_unref (style);
 		gtk_signal_connect (GTK_OBJECT (cshape), "event",
 				    GTK_SIGNAL_FUNC (sp_desktop_root_handler), SP_EVENT_CONTEXT (dc)->desktop);
 

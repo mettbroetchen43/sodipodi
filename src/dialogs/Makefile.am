@@ -1,6 +1,6 @@
 #
 # Several object property dialogs
-# Author: Lauris Kaplinski <lauris@ariman.ee>
+# Author: Lauris Kaplinski <lauris@ximian.com>
 #
 # Here should be things, that use only xml interface, not objects themselves
 # Currently we still have selection_changed functions, but these will be
@@ -23,7 +23,9 @@ libspdialogs_a_SOURCES = \
 	xml-tree.c xml-tree.h \
 	align.c align.h	\
 	transformation.c transformation.h \
+	display-settings.c display-settings.h \
 	desktop-properties.c desktop-properties.h \
 	document-properties.c document-properties.h \
-	object-properties.c object-properties.h
+	object-properties.c object-properties.h \
+	item-properties.c item-properties.h
 

@@ -4,6 +4,7 @@
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 #include "helper/art-rgba-rgba-affine.h"
 #include "display/canvas-image.h"
+#include "style.h"
 #include "brokenimage.xpm"
 #include "sp-image.h"
 
@@ -26,7 +27,8 @@ static GnomeCanvasItem * sp_image_show (SPItem * item, SPDesktop * desktop, Gnom
 static gboolean sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine);
 
 GdkPixbuf * sp_image_repr_read_image (SPRepr * repr);
-static GdkPixbuf * sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
+static GdkPixbuf *sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf);
+static void sp_image_update_canvas_image (SPImage *image);
 
 static SPItemClass *parent_class;
 
@@ -93,7 +95,10 @@ sp_image_destroy (GtkObject *object)
 
 	image = SP_IMAGE (object);
 
-	if (image->pixbuf) gdk_pixbuf_unref (image->pixbuf);
+	if (image->pixbuf) {
+		gdk_pixbuf_unref (image->pixbuf);
+		image->pixbuf = NULL;
+	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
@@ -120,15 +125,15 @@ sp_image_read_attr (SPObject * object, const gchar * key)
 	pixbuf = NULL;
 
 	if (strcmp (key, "xlink:href") == 0) {
+		/* Free old pixbuf */
+		if (image->pixbuf) {
+			gdk_pixbuf_unref (image->pixbuf);
+			image->pixbuf = NULL;
+		}
 		pixbuf = sp_image_repr_read_image (object->repr);
 		pixbuf = sp_image_pixbuf_force_rgba (pixbuf);
-		g_return_if_fail (pixbuf != NULL);
-
-		if (image->pixbuf != NULL)
-			gdk_pixbuf_unref (image->pixbuf);
 		image->pixbuf = pixbuf;
-
-		sp_item_request_canvas_update (SP_ITEM (image));
+		sp_image_update_canvas_image (image);
 		return;
 	} else if (strcmp (key, "insensitive") == 0) {
 		const gchar * val;
@@ -144,9 +149,13 @@ sp_image_read_attr (SPObject * object, const gchar * key)
 		return;
 	}
 
-	if (SP_OBJECT_CLASS (parent_class)->read_attr)
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, key);
+	if (((SPObjectClass *) (parent_class))->read_attr)
+		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
 
+
+	if (!strcmp (key, "style")) {
+		sp_image_update_canvas_image (image);
+	}
 }
 
 static void
@@ -200,16 +209,19 @@ sp_image_bbox (SPItem * item, ArtDRect * bbox)
 	bbox->y1 = MAX (bbox->y1, p.y);
 }
 
-static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
+static void
+sp_image_print (SPItem * item, GnomePrintContext * gpc)
 {
-	SPImage * image;
+	SPObject *object;
+	SPImage *image;
 	double affine[6];
 	guchar * pixels;
 	gint width, height, rowstride;
 
+	object = SP_OBJECT (item);
 	image = SP_IMAGE (item);
 
-	if (image->pixbuf == NULL) return;
+	if (!image->pixbuf) return;
 
 	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
 	width = gdk_pixbuf_get_width (image->pixbuf);
@@ -223,7 +235,27 @@ static void sp_image_print (SPItem * item, GnomePrintContext * gpc)
 	art_affine_translate (affine, 0.0, -1.0);
 	gnome_print_concat (gpc, affine);
 
-	gnome_print_rgbaimage (gpc, pixels, width, height, rowstride);
+	if (object->style->opacity != 1.0) {
+		guchar *px, *d, *s;
+		gint x, y;
+		guint32 alpha;
+		alpha = (guint32) floor (object->style->opacity * 255.9999);
+		px = g_new (guchar, width * height * 4);
+		for (y = 0; y < height; y++) {
+			s = pixels + y * rowstride;
+			d = px + y * width * 4;
+			memcpy (d, s, width * 4);
+			for (x = 0; x < width; x++) {
+				d[3] = (s[3] * alpha) / 255;
+				s += 4;
+				d += 4;
+			}
+		}
+		gnome_print_rgbaimage (gpc, px, width, height, width * 4);
+		g_free (px);
+	} else {
+		gnome_print_rgbaimage (gpc, pixels, width, height, rowstride);
+	}
 
 	gnome_print_grestore (gpc);
 }
@@ -235,23 +267,24 @@ sp_image_description (SPItem * item)
 
 	image = SP_IMAGE (item);
 
-	if (image->pixbuf == NULL)
-		return g_strdup (_("Broken bitmap"));
+	if (image->pixbuf == NULL) return g_strdup (_("Broken bitmap"));
 	return g_strdup (_("Color bitmap"));
 }
 
 static GnomeCanvasItem *
 sp_image_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
+	SPObject *object;
 	SPImage * image;
 	SPCanvasImage * ci;
 
+	object = SP_OBJECT (item);
 	image = (SPImage *) item;
 
 	ci = (SPCanvasImage *) gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_IMAGE, NULL);
 	g_return_val_if_fail (ci != NULL, NULL);
 
-	sp_canvas_image_set_pixbuf (ci, image->pixbuf);
+	sp_canvas_image_set_pixbuf (ci, image->pixbuf, object->style->opacity);
 
 	return (GnomeCanvasItem *) ci;
 }
@@ -259,31 +292,49 @@ sp_image_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_gro
 static gboolean
 sp_image_paint (SPItem * item, ArtPixBuf * pixbuf, gdouble * affine)
 {
+	SPObject *object;
 	SPImage * image;
 	guchar * pixels;
 	gint width, height, rowstride;
 
+	object = SP_OBJECT (item);
 	image = SP_IMAGE (item);
+
+	if (!image->pixbuf) return FALSE;
 
 	pixels = gdk_pixbuf_get_pixels (image->pixbuf);
 	width = gdk_pixbuf_get_width (image->pixbuf);
 	height = gdk_pixbuf_get_height (image->pixbuf);
 	rowstride = gdk_pixbuf_get_rowstride (image->pixbuf);
 
-	if (gdk_pixbuf_get_n_channels (image->pixbuf) != 4) return FALSE;
-
-	if (pixbuf->n_channels == 3) {
-		art_rgb_rgba_affine (pixbuf->pixels,
-			0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
-			pixels, width, height, rowstride,
-			affine,
-			ART_FILTER_NEAREST, NULL);
+	if (object->style->opacity != 1.0) {
+		guchar *px, *d, *s;
+		gint x, y;
+		guint32 alpha;
+		alpha = (guint32) floor (object->style->opacity * 255.9999);
+		px = g_new (guchar, width * height * 4);
+		for (y = 0; y < height; y++) {
+			s = pixels + y * rowstride;
+			d = px + y * width * 4;
+			memcpy (d, s, width * 4);
+			for (x = 0; x < width; x++) {
+				d[3] = (s[3] * alpha) / 255;
+				s += 4;
+				d += 4;
+			}
+		}
+		art_rgba_rgba_affine (pixbuf->pixels,
+				      0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
+				      px, width, height, width * 4,
+				      affine,
+				      ART_FILTER_NEAREST, NULL);
+		g_free (px);
 	} else {
 		art_rgba_rgba_affine (pixbuf->pixels,
-			0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
-			pixels, width, height, rowstride,
-			affine,
-			ART_FILTER_NEAREST, NULL);
+				      0, 0, pixbuf->width, pixbuf->height, pixbuf->rowstride,
+				      pixels, width, height, rowstride,
+				      affine,
+				      ART_FILTER_NEAREST, NULL);
 	}
 
 	return FALSE;
@@ -343,12 +394,30 @@ sp_image_pixbuf_force_rgba (GdkPixbuf * pixbuf)
 {
 	GdkPixbuf * newbuf;
 
-	if (gdk_pixbuf_get_has_alpha (pixbuf))
-		return pixbuf;
+	if (gdk_pixbuf_get_has_alpha (pixbuf)) return pixbuf;
 
 	newbuf = gdk_pixbuf_add_alpha (pixbuf, FALSE, 0, 0, 0);
 	gdk_pixbuf_unref (pixbuf);
 
 	return newbuf;
+}
+
+/* We assert that realpixbuf is either NULL or identical size to pixbuf */
+
+static void
+sp_image_update_canvas_image (SPImage *image)
+{
+	SPObject *object;
+	SPItem *item;
+	SPItemView *v;
+
+	object = SP_OBJECT (image);
+	item = SP_ITEM (image);
+
+	if (!image->pixbuf) return;
+
+	for (v = item->display; v != NULL; v = v->next) {
+		sp_canvas_image_set_pixbuf (SP_CANVAS_IMAGE (v->canvasitem), image->pixbuf, object->style->real_opacity);
+	}
 }
 

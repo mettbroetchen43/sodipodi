@@ -5,6 +5,7 @@
 #include <gnome.h>
 #include <libart_lgpl/art_alphagamma.h>
 #include "../helper/canvas-helper.h"
+#include "../style.h"
 #include "canvas-bgroup.h"
 #include "canvas-shape.h"
 
@@ -16,8 +17,6 @@
 #include "nr-svp-render.h"
 #endif
 
-enum {ARG_0, ARG_OPACITY};
-
 /* fixme: This should go to common header */
 #define SP_CANVAS_STICKY_FLAG (1 << 16)
 
@@ -26,12 +25,11 @@ enum {ARG_0, ARG_OPACITY};
 static void sp_canvas_shape_class_init (SPCanvasShapeClass *class);
 static void sp_canvas_shape_init (SPCanvasShape *path);
 static void sp_canvas_shape_destroy (GtkObject *object);
-static void sp_canvas_shape_set_arg (GtkObject *object, GtkArg *arg, guint arg_id);
 
 static void sp_canvas_shape_update (GnomeCanvasItem *item, double *affine, ArtSVP *clip_canvas_shape, int flags);
 static void sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf);
 static double sp_canvas_shape_point (GnomeCanvasItem * item, double x, double y,
-	int cx, int cy, GnomeCanvasItem ** actual_item);
+				     int cx, int cy, GnomeCanvasItem ** actual_item);
  
 static GnomeCanvasItemClass * parent_class;
 
@@ -67,10 +65,7 @@ sp_canvas_shape_class_init (SPCanvasShapeClass *class)
 
 	parent_class = gtk_type_class (gnome_canvas_item_get_type ());
 
-	gtk_object_add_arg_type ("SPCanvasShape::opacity", GTK_TYPE_DOUBLE, GTK_ARG_WRITABLE, ARG_OPACITY);
-
 	object_class->destroy = sp_canvas_shape_destroy;
-	object_class->set_arg = sp_canvas_shape_set_arg;
 
 	item_class->update = sp_canvas_shape_update;
 	item_class->render = sp_canvas_shape_render;
@@ -80,11 +75,7 @@ sp_canvas_shape_class_init (SPCanvasShapeClass *class)
 static void
 sp_canvas_shape_init (SPCanvasShape * shape)
 {
-	shape->opacity = 1.0;
-	shape->fill = sp_fill_default ();
-	sp_fill_ref (shape->fill);
-	shape->stroke = sp_stroke_default ();
-	sp_stroke_ref (shape->stroke);
+	shape->style = NULL;
 	shape->comp = NULL;
 	shape->sensitive = TRUE;
 }
@@ -101,29 +92,13 @@ sp_canvas_shape_destroy (GtkObject *object)
 		shape->comp = g_list_remove (shape->comp, shape->comp->data);
 	}
 
-	if (shape->fill)
-		sp_fill_unref (shape->fill);
-
-	if (shape->stroke)
-		sp_stroke_unref (shape->stroke);
+	if (shape->style) {
+		sp_style_unref (shape->style);
+		shape->style = NULL;
+	}
 
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
-}
-
-static void
-sp_canvas_shape_set_arg (GtkObject *object, GtkArg *arg, guint arg_id)
-{
-	SPCanvasShape *shape;
-
-	shape = SP_CANVAS_SHAPE (object);
-
-	switch (arg_id) {
-	case ARG_OPACITY:
-		shape->opacity = GTK_VALUE_DOUBLE (*arg);
-		gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (object));
-		break;
-	}
 }
 
 static void
@@ -182,21 +157,20 @@ g_print ("sp_canvas_shape_update: entering\n");
 
 	sp_canvas_shape_request_redraw (shape);
 
+	if (!shape->style) return;
+
 	for (l = shape->comp; l != NULL; l = l->next) {
 		comp = (SPCPathComp *) l->data;
-		if (shape->stroke->type != SP_STROKE_NONE) {
-			comp->stroke_width = shape->stroke->width;
-			if (shape->stroke->scaled) {
-				gdouble wx, wy;
-				wx = affine[0] + affine[1];
-				wy = affine[2] + affine[3];
-				comp->stroke_width *= sqrt (wx * wx + wy * wy) / 1.414213562;
-			}
+		if (shape->style->stroke.type != SP_PAINT_TYPE_NONE) {
+			gdouble wx, wy;
+			wx = affine[0] + affine[2];
+			wy = affine[1] + affine[3];
+			comp->stroke_width = sqrt (wx * wx + wy * wy) * 0.707106781;
 		} else {
 			comp->stroke_width = 0.0;
 		}
-		comp->join = shape->stroke->join;
-		comp->cap = shape->stroke->cap;
+		comp->join = shape->style->stroke_linejoin;
+		comp->cap = shape->style->stroke_linecap;
 		sp_cpath_comp_update (comp, affine);
 	}
 
@@ -229,30 +203,29 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 {
 	SPCanvasShape * shape;
 	SPCPathComp * comp;
+	SPStyle *style;
 	GList * l;
-	gdouble opacity, fo;
-	guint32 rc;
-
+#if 0
 	int x, y, width, height;
 	guint32 * rgba, src;
 	guchar * b;
+#endif
 
 #ifdef CANVAS_SHAPE_VERBOSE
 	g_print ("sp_canvas_shape_render: entering\n");
 #endif
 
 	shape = (SPCanvasShape *) item;
-
-	g_assert (SP_IS_CANVAS_BGROUP (item->parent));
-	opacity = shape->opacity * SP_CANVAS_BGROUP (item->parent)->realopacity;
+	if (!shape->style) return;
+	style = shape->style;
 
 	for (l = shape->comp; l != NULL; l = l->next) {
 		comp = (SPCPathComp *) l->data;
-
 		if (comp->closed) {
-			switch (shape->fill->type) {
-
-			case SP_FILL_COLOR:
+			guint32 rgba;
+			switch (style->fill.type) {
+			case SP_PAINT_TYPE_COLOR:
+				rgba = SP_RGBA_FROM_COLOR (&style->fill.color, style->fill_opacity * style->real_opacity);
 				/* Experimental */
 #ifdef NEW_RENDER
 				if (buf->is_bg) {
@@ -292,17 +265,16 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 				art_render_invoke (render);
 			}
 #else
-			fo = ((gdouble) (shape->fill->color & 0xff) / 255.0) * opacity;
-			rc = (shape->fill->color & 0xffffff00) | ((int) floor (fo * 255.9999));
-			gnome_canvas_render_svp_translated (buf, comp->archetype->svp, rc, comp->cx, comp->cy);
+			gnome_canvas_render_svp_translated (buf, comp->archetype->svp, rgba, comp->cx, comp->cy);
 #endif
 #endif
 				break;
 
+#if 0
 			case SP_FILL_IND:
 				if (buf->is_bg) {
-				  gnome_canvas_clear_buffer (buf);
-				  buf->is_bg = FALSE;
+					gnome_canvas_clear_buffer (buf);
+					buf->is_bg = FALSE;
 				}
 
 				width = buf->rect.x1 - buf->rect.x0;
@@ -364,7 +336,7 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 
 				g_free (rgba);
 				break;
-
+#endif
 			default:
 				if (buf->is_bg) {
 				  gnome_canvas_clear_buffer (buf);
@@ -374,10 +346,12 @@ sp_canvas_shape_render (GnomeCanvasItem * item, GnomeCanvasBuf * buf)
 			}
 		}
 
-		switch (shape->stroke->type) {
-			case SP_STROKE_COLOR:
+		switch (style->stroke.type) {
+			guint32 rgba;
+			case SP_PAINT_TYPE_COLOR:
+				rgba = SP_RGBA_FROM_COLOR (&style->stroke.color, style->stroke_opacity * style->real_opacity);
 				if (comp->archetype->stroke) {
-					gnome_canvas_render_svp_translated (buf, comp->archetype->stroke, shape->stroke->color,
+					gnome_canvas_render_svp_translated (buf, comp->archetype->stroke, rgba,
 									    comp->cx, comp->cy);
 				}
 				break;
@@ -414,7 +388,7 @@ sp_canvas_shape_point (GnomeCanvasItem * item, double x, double y,
 		comp = l->data;
 
 		if (comp->archetype != NULL) {
-		if ((comp->archetype->svp != NULL) && (comp->closed) && (shape->fill->type != SP_FILL_NONE)) {
+		if ((comp->archetype->svp != NULL) && (comp->closed) && (shape->style->fill.type != SP_PAINT_TYPE_NONE)) {
 				wind = art_svp_point_wind (comp->archetype->svp, cx - comp->cx, cy - comp->cy);
 
 				if (wind) {
@@ -425,7 +399,7 @@ sp_canvas_shape_point (GnomeCanvasItem * item, double x, double y,
 				dist = art_svp_point_dist (comp->archetype->svp, cx - comp->cx, cy - comp->cy);
 				if (dist < best) best = dist;
 		}
-		if ((comp->archetype->stroke != NULL) && (shape->stroke->type != SP_STROKE_NONE)) {
+		if ((comp->archetype->stroke != NULL) && (shape->style->stroke.type != SP_PAINT_TYPE_NONE)) {
 			wind = art_svp_point_wind (comp->archetype->stroke, cx - comp->cx, cy - comp->cy);
 
 			if (wind) {
@@ -467,7 +441,7 @@ sp_canvas_shape_add_component (SPCanvasShape * shape, SPCurve * curve, gboolean 
 	g_return_if_fail (SP_IS_CANVAS_SHAPE (shape));
 	g_return_if_fail (curve != NULL);
 
-	comp = sp_cpath_comp_new (curve, private, affine, shape->stroke->width, shape->stroke->join, shape->stroke->cap);
+	comp = sp_cpath_comp_new (curve, private, affine, 0.0, ART_PATH_STROKE_JOIN_MITER, ART_PATH_STROKE_CAP_BUTT);
 	g_assert (comp != NULL);
 	shape->comp = g_list_prepend (shape->comp, comp);
 
@@ -516,35 +490,18 @@ sp_canvas_shape_change_bpath (SPCanvasShape * shape, SPCurve * curve)
 }
 
 void
-sp_canvas_shape_set_fill (SPCanvasShape * shape, SPFill * fill)
+sp_canvas_shape_set_style (SPCanvasShape *shape, SPStyle *style)
 {
-	SPFill * old;
+	SPStyle *old;
 
 	g_return_if_fail (shape != NULL);
 	g_return_if_fail (SP_IS_CANVAS_SHAPE (shape));
-	g_return_if_fail (fill != NULL);
+	g_return_if_fail (style != NULL);
 
-	old = shape->fill;
-	shape->fill = fill;
-	sp_fill_ref (shape->fill);
-	sp_fill_unref (old);
-
-	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (shape));
-}
-
-void
-sp_canvas_shape_set_stroke (SPCanvasShape * shape, SPStroke * stroke)
-{
-	SPStroke * old;
-
-	g_return_if_fail (shape != NULL);
-	g_return_if_fail (SP_IS_CANVAS_SHAPE (shape));
-	g_return_if_fail (stroke != NULL);
-
-	old = shape->stroke;
-	shape->stroke = stroke;
-	sp_stroke_ref (shape->stroke);
-	sp_stroke_unref (old);
+	old = shape->style;
+	shape->style = style;
+	sp_style_ref (shape->style);
+	if (old) sp_style_unref (old);
 
 	gnome_canvas_item_request_update (GNOME_CANVAS_ITEM (shape));
 }

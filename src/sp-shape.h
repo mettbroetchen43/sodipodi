@@ -14,8 +14,6 @@
 
 struct _SPShape {
 	SPPath path;
-	SPFill * fill;
-	SPStroke * stroke;
 };
 
 struct _SPShapeClass {
@@ -36,10 +34,6 @@ void sp_shape_add_bpath_identity (SPShape * shape, ArtBpath * bpath);
 
 void sp_shape_set_bpath (SPShape * shape, ArtBpath * bpath, double affine[]);
 void sp_shape_set_bpath_identity (SPShape * shape, ArtBpath * bpath);
-#endif
-
-#if 1
-void sp_shape_set_stroke (SPShape * shape, SPStroke * stroke);
 #endif
 
 #endif

@@ -6,6 +6,7 @@
  */
 
 #include "xml/repr-private.h"
+#include "sp-object-repr.h"
 #include "sp-defs.h"
 
 static void sp_defs_class_init (SPDefsClass * klass);
@@ -32,9 +33,7 @@ sp_defs_get_type (void)
 			sizeof (SPDefsClass),
 			(GtkClassInitFunc) sp_defs_class_init,
 			(GtkObjectInitFunc) sp_defs_init,
-			NULL, /* reserved_1 */
-			NULL, /* reserved_2 */
-			(GtkClassInitFunc) NULL
+			NULL, NULL, NULL
 		};
 		defs_type = gtk_type_unique (sp_object_get_type (), &defs_info);
 	}
@@ -99,8 +98,10 @@ static void sp_defs_build (SPObject * object, SPDocument * document, SPRepr * re
 
 	last = NULL;
 	for (rchild = repr->children; rchild != NULL; rchild = rchild->next) {
+		GtkType type;
 		SPObject * child;
-		child = gtk_type_new (SP_TYPE_DEFS);
+		type = sp_object_type_lookup (sp_repr_name (rchild));
+		child = gtk_type_new (type);
 		child->parent = object;
 		if (last) {
 			last->next = child;
@@ -117,13 +118,15 @@ sp_defs_child_added (SPObject * object, SPRepr * child, SPRepr * ref)
 {
 	SPDefs * defs;
 	SPObject * ochild, * prev;
+	GtkType type;
 
 	defs = SP_DEFS (object);
 
 	if (((SPObjectClass *) (parent_class))->child_added)
 		(* ((SPObjectClass *) (parent_class))->child_added) (object, child, ref);
 
-	ochild = gtk_type_new (SP_TYPE_DEFS);
+	type = sp_object_type_lookup (sp_repr_name (child));
+	ochild = gtk_type_new (type);
 	ochild->parent = object;
 
 	prev = sp_defs_get_child_by_repr (defs, ref);

@@ -160,20 +160,12 @@ void sp_selection_ungroup (GtkWidget * widget)
 	gchar affinestr[80];
 
 	desktop = SP_ACTIVE_DESKTOP;
-
 	if (desktop == NULL) return;
-
 	selection = SP_DT_SELECTION (desktop);
-
 	if (sp_selection_is_empty (selection)) return;
-
 	current = sp_selection_repr (selection);
-
 	if (current == NULL) return;
-
-	if (strcmp (sp_repr_name (current), "g") != 0)
-		return;
-
+	if (strcmp (sp_repr_name (current), "g") != 0) return;
 	sp_selection_empty (selection);
 
 	art_affine_identity (pa);

@@ -1,9 +1,17 @@
 #define SP_ITEM_C
 
-#include <gnome.h>
+#include <math.h>
+#include <string.h>
+#include <glib.h>
+#include <libgnome/gnome-defs.h>
+#include <libgnome/gnome-i18n.h>
 #include "svg/svg.h"
 #include "helper/sp-canvas-util.h"
+#include "document.h"
 #include "desktop.h"
+#include "style.h"
+/* fixme: I do not like that (Lauris) */
+#include "dialogs/item-properties.h"
 #include "sp-item.h"
 
 static void sp_item_class_init (SPItemClass * klass);
@@ -19,6 +27,7 @@ static GnomeCanvasItem * sp_item_private_show (SPItem * item, SPDesktop * deskto
 static void sp_item_private_hide (SPItem * item, SPDesktop * desktop);
 
 static void sp_item_private_menu (SPItem * item, GtkMenu * menu);
+void sp_item_properties (GtkMenuItem * menuitem, SPItem * item);
 void sp_item_reset_transformation (GtkMenuItem * menuitem, SPItem * item);
 void sp_item_toggle_sensitivity (GtkMenuItem * menuitem, SPItem * item);
 
@@ -69,9 +78,14 @@ sp_item_class_init (SPItemClass * klass)
 static void
 sp_item_init (SPItem * item)
 {
+	SPObject *object;
+
+	object = SP_OBJECT (item);
+
 	art_affine_identity (item->affine);
-	item->opacity = 1.0;
 	item->display = NULL;
+
+	if (!object->style) object->style = sp_style_new ();
 }
 
 static void
@@ -125,24 +139,65 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 			art_affine_multiply (a, a, i->affine);
 		sp_item_update (item, a);
 		return;
-	} else if (strcmp (key, "style") == 0) {
-		SPCSSAttr *css;
-		const gchar *ostr;
-		char *estr;
-		gdouble opacity;
-		css = sp_repr_css_attr_inherited (object->repr, key);
-		ostr = sp_repr_css_property (css, "opacity", "1.0");
-		opacity = sp_svg_read_percentage (ostr);
-		if (estr != ostr) {
-			item->opacity = opacity;
-			for (v = item->display; v != NULL; v = v->next) {
-				gtk_object_set (GTK_OBJECT (v->canvasitem), "opacity", item->opacity, NULL);
-			}
-		}
 	}
 
 	if (((SPObjectClass *) (parent_class))->read_attr)
 		(* ((SPObjectClass *) (parent_class))->read_attr) (object, key);
+
+	if (strcmp (key, "style") == 0) {
+		SPStyle *style;
+		style = object->style;
+		sp_style_read_from_object (style, object);
+		if (!style->real_opacity_set) {
+			SPObject *parent;
+			style->real_opacity = style->opacity;
+			parent = object->parent;
+			while (parent && !parent->style) parent = parent->parent;
+			/* fixme: Currently it does not work, if parent has not set real_opacity (but it shouldn't happen) */
+			if (parent) style->real_opacity = style->real_opacity * parent->style->real_opacity;
+			style->real_opacity_set = TRUE;
+		}
+		if (!style->real_stroke_width_set) {
+			gdouble i2doc[6], dx, dy;
+			gdouble a2u, u2a;
+			sp_item_i2doc_affine (item, i2doc);
+			dx = i2doc[0] + i2doc[2];
+			dy = i2doc[1] + i2doc[3];
+			u2a = sqrt (dx * dx + dy * dy) * 0.707106781;
+			a2u = u2a > 1e-9 ? 1 / u2a : 1e9;
+			switch (style->stroke_width.unit) {
+			case SP_UNIT_PIXELS:
+				style->absolute_stroke_width = style->stroke_width.distance * 1.25;
+				style->user_stroke_width = style->absolute_stroke_width * a2u;
+				break;
+			case SP_UNIT_ABSOLUTE:
+				style->absolute_stroke_width = style->stroke_width.distance;
+				style->user_stroke_width = style->absolute_stroke_width * a2u;
+				break;
+			case SP_UNIT_USER:
+				style->user_stroke_width = style->stroke_width.distance;
+				style->absolute_stroke_width = style->user_stroke_width * u2a;
+				break;
+			case SP_UNIT_PERCENT:
+				dx = sp_document_width (object->document);
+				dy = sp_document_height (object->document);
+				style->absolute_stroke_width = sqrt (dx * dx + dy * dy) * 0.707106781;
+				style->user_stroke_width = style->absolute_stroke_width * a2u;
+				break;
+			case SP_UNIT_EM:
+				/* fixme: */
+				style->user_stroke_width = style->stroke_width.distance * 12.0;
+				style->absolute_stroke_width = style->user_stroke_width * u2a;
+				break;
+			case SP_UNIT_EX:
+				/* fixme: */
+				style->user_stroke_width = style->stroke_width.distance * 10.0;
+				style->absolute_stroke_width = style->user_stroke_width * u2a;
+				break;
+			}
+			style->real_stroke_width_set = TRUE;
+		}
+	}
 }
 
 /* Update indicates that affine is changed */
@@ -171,7 +226,8 @@ void sp_item_bbox (SPItem * item, ArtDRect * bbox)
 		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->bbox) (item, bbox);
 }
 
-void sp_item_print (SPItem * item, GnomePrintContext * gpc)
+void
+sp_item_print (SPItem * item, GnomePrintContext * gpc)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
@@ -187,7 +243,8 @@ sp_item_private_description (SPItem * item)
 	return g_strdup (_("Unknown item :-("));
 }
 
-gchar * sp_item_description (SPItem * item)
+gchar *
+sp_item_description (SPItem * item)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
@@ -208,6 +265,7 @@ sp_item_private_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * can
 GnomeCanvasItem *
 sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
+	SPObject *object;
 	GnomeCanvasItem * canvasitem;
 
 	g_assert (item != NULL);
@@ -217,6 +275,7 @@ sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_grou
 	g_assert (canvas_group != NULL);
 	g_assert (GNOME_IS_CANVAS_GROUP (canvas_group));
 
+	object = SP_OBJECT (item);
 	canvasitem = NULL;
 
 	if (SP_ITEM_CLASS (((GtkObject *)(item))->klass)->show) {
@@ -228,7 +287,6 @@ sp_item_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_grou
 	if (canvasitem != NULL) {
 		item->display = sp_item_view_new_prepend (item->display, item, desktop, canvasitem);
 		gnome_canvas_item_affine_absolute (canvasitem, item->affine);
-		gtk_object_set (GTK_OBJECT (canvasitem), "opacity", item->opacity, NULL);
 		sp_desktop_connect_item (desktop, item, canvasitem);
 	}
 
@@ -251,7 +309,8 @@ sp_item_private_hide (SPItem * item, SPDesktop * desktop)
 	g_assert_not_reached ();
 }
 
-void sp_item_hide (SPItem * item, SPDesktop * desktop)
+void
+sp_item_hide (SPItem * item, SPDesktop * desktop)
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
@@ -262,7 +321,8 @@ void sp_item_hide (SPItem * item, SPDesktop * desktop)
 		(* SP_ITEM_CLASS (((GtkObject *)(item))->klass)->hide) (item, desktop);
 }
 
-gboolean sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
+gboolean
+sp_item_paint (SPItem * item, ArtPixBuf * buf, gdouble affine[])
 {
 	g_assert (item != NULL);
 	g_assert (SP_IS_ITEM (item));
@@ -410,8 +470,17 @@ sp_item_private_menu (SPItem * item, GtkMenu * menu)
 
 	i = gtk_menu_item_new_with_label (_("Item"));
 
-	/* Reset transformations */
 	m = gtk_menu_new ();
+	/* Item dialog */
+	w = gtk_menu_item_new_with_label (_("Item Properties"));
+	gtk_signal_connect (GTK_OBJECT (w), "activate",
+			    GTK_SIGNAL_FUNC (sp_item_properties), item);
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	w = gtk_menu_item_new ();
+	gtk_widget_show (w);
+	gtk_menu_append (GTK_MENU (m), w);
+	/* Reset transformations */
 	w = gtk_menu_item_new_with_label (_("Reset transformation"));
 	gtk_signal_connect (GTK_OBJECT (w), "activate",
 			    GTK_SIGNAL_FUNC (sp_item_reset_transformation), item);
@@ -441,6 +510,14 @@ sp_item_menu (SPItem * item, GtkMenu * menu)
 
 	if (SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu)
 		(* SP_ITEM_CLASS (((GtkObject *) (item))->klass)->menu) (item, menu);
+}
+
+void
+sp_item_properties (GtkMenuItem * menuitem, SPItem * item)
+{
+	g_assert (SP_IS_ITEM (item));
+
+	sp_item_dialog (item);
 }
 
 void

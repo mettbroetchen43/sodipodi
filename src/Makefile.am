@@ -50,7 +50,10 @@ sodipodi_SOURCES = \
 	sp-polygon.c sp-polygon.h \
 	sp-chars.c sp-chars.h \
 	sp-text.c sp-text.h \
+	sp-paint-server.c sp-paint-server.h \
 	sp-gradient.c sp-gradient.h \
+	\
+	style.c style.h \
 	\
 	document.c document.h document-private.h \
 	document-undo.c \

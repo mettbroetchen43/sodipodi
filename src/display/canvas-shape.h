@@ -11,8 +11,7 @@
 #include <libgnomeui/gnome-canvas.h>
 #include "path-archetype.h"
 #include "cpath-component.h"
-#include "fill.h"
-#include "stroke.h"
+#include "../forward.h"
 
 #define SP_TYPE_CANVAS_SHAPE            (sp_canvas_shape_get_type ())
 #define SP_CANVAS_SHAPE(obj)            (GTK_CHECK_CAST ((obj), SP_TYPE_CANVAS_SHAPE, SPCanvasShape))
@@ -25,9 +24,7 @@ typedef struct _SPCanvasShapeClass SPCanvasShapeClass;
 
 struct _SPCanvasShape {
 	GnomeCanvasItem item;
-	gdouble opacity;
-	SPFill * fill;
-	SPStroke * stroke;
+	SPStyle *style;
 	GList * comp;
 	gboolean sensitive;
 };
@@ -48,8 +45,12 @@ void sp_canvas_shape_set_component (SPCanvasShape * canvas_shape, SPCurve * curv
 /* NB! This works only for single component private shapes */
 void sp_canvas_shape_change_bpath (SPCanvasShape * canvas_shape, SPCurve * curve);
 
+#if 0
 void sp_canvas_shape_set_fill (SPCanvasShape * shape, SPFill * fill);
 void sp_canvas_shape_set_stroke (SPCanvasShape * shape, SPStroke * stroke);
+#endif
+
+void sp_canvas_shape_set_style (SPCanvasShape *shape, SPStyle *style);
 
 void sp_canvas_shape_set_sensitive (SPCanvasShape * shape, gboolean sensitive);
 

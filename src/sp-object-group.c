@@ -73,9 +73,9 @@ sp_objectgroup_destroy (GtkObject *object)
 	while (og->children) {
 		SPObject * child;
 		child = og->children;
+		og->children = child->next;
 		child->parent = NULL;
 		child->next = NULL;
-		og->children = child->next;
 		gtk_object_unref (GTK_OBJECT (child));
 	}
 

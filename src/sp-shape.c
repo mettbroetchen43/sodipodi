@@ -15,8 +15,8 @@
 
 #include "helper/art-rgba-svp.h"
 #include "display/canvas-shape.h"
+#include "style.h"
 #include "sp-path-component.h"
-#include "sp-shape-style.h"
 #include "sp-shape.h"
 
 #define noSHAPE_VERBOSE
@@ -93,10 +93,7 @@ sp_shape_class_init (SPShapeClass * klass)
 static void
 sp_shape_init (SPShape *shape)
 {
-	shape->fill = sp_fill_default ();
-	sp_fill_ref (shape->fill);
-	shape->stroke = sp_stroke_default ();
-	sp_stroke_ref (shape->stroke);
+	/* Nothing here */
 }
 
 static void
@@ -106,11 +103,6 @@ sp_shape_destroy (GtkObject *object)
 
 	shape = SP_SHAPE (object);
 
-	if (shape->fill)
-		sp_fill_unref (shape->fill);
-	if (shape->stroke)
-		sp_stroke_unref (shape->stroke);
-
 	if (GTK_OBJECT_CLASS (parent_class)->destroy)
 		(* GTK_OBJECT_CLASS (parent_class)->destroy) (object);
 }
@@ -118,8 +110,8 @@ sp_shape_destroy (GtkObject *object)
 static void
 sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr)
 {
-	if (SP_OBJECT_CLASS (parent_class)->build)
-		SP_OBJECT_CLASS (parent_class)->build (object, document, repr);
+	if (((SPObjectClass *) (parent_class))->build)
+		(*((SPObjectClass *) (parent_class))->build) (object, document, repr);
 
 	sp_shape_read_attr (object, "style");
 	sp_shape_read_attr (object, "insensitive");
@@ -129,37 +121,12 @@ static void
 sp_shape_read_attr (SPObject * object, const gchar * attr)
 {
 	SPShape * shape;
-	SPCSSAttr * css;
-	SPFill * fill;
-	SPStroke * stroke;
 	SPCanvasShape * cs;
 	SPItemView * v;
 
 	shape = SP_SHAPE (object);
 
-#ifdef SHAPE_VERBOSE
-g_print ("sp_shape_read_attr: %s\n", attr);
-#endif
-
-	if (strcmp (attr, "style") == 0) {
-		css = sp_repr_css_attr_inherited (object->repr, attr);
-		fill = sp_fill_new ();
-		stroke = sp_stroke_new ();
-		sp_fill_read (fill, css);
-		sp_stroke_read (stroke, css);
-		sp_repr_css_attr_unref (css);
-		sp_fill_unref (shape->fill);
-		shape->fill = fill;
-		sp_stroke_unref (shape->stroke);
-		shape->stroke = stroke;
-
-		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
-			cs = SP_CANVAS_SHAPE (v->canvasitem);
-			sp_canvas_shape_set_fill (cs, shape->fill);
-			sp_canvas_shape_set_stroke (cs, shape->stroke);
-		}
-		return;
-	} else if (strcmp (attr, "insensitive") == 0) {
+	if (strcmp (attr, "insensitive") == 0) {
 		const gchar * val;
 		gboolean sensitive;
 		SPItemView * v;
@@ -174,28 +141,39 @@ g_print ("sp_shape_read_attr: %s\n", attr);
 	}
 
 
-	if (SP_OBJECT_CLASS (parent_class)->read_attr)
-		SP_OBJECT_CLASS (parent_class)->read_attr (object, attr);
+	if (((SPObjectClass *) (parent_class))->read_attr)
+		(* ((SPObjectClass *) (parent_class))->read_attr) (object, attr);
+
+	if (!strcmp (attr, "style")) {
+		/* Style was read by item */
+		for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
+			cs = SP_CANVAS_SHAPE (v->canvasitem);
+			sp_canvas_shape_set_style (cs, object->style);
+		}
+	}
 }
 
 void
 sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 {
 
-	double r, g, b, opacity;
-
+	gdouble r, g, b, opacity;
+	SPObject *object;
 	SPPath *path;
 	SPShape * shape;
 	SPPathComp * comp;
 	GSList * l;
 	ArtBpath * bpath;
 
+	object = SP_OBJECT (item);
 	path = SP_PATH (item);
 	shape = SP_SHAPE (item);
 
 #ifndef ENABLE_FRGBA
 
-	if ((shape->fill->type == SP_FILL_COLOR) && ((shape->fill->color & 0xff) != 255)) {
+	opacity = object->style->fill_opacity * object->style->real_opacity;
+
+	if ((object->style->fill.type == SP_FILL_COLOR) && (opacity != 1.0)) {
 		gdouble i2d[6], doc2d[6], doc2buf[6], d2buf[6], i2buf[6], d2i[6];
 		ArtDRect box, bbox, dbbox;
 		gint bx, by, bw, bh;
@@ -255,28 +233,28 @@ sp_shape_print (SPItem * item, GnomePrintContext * gpc)
 
 			gnome_print_bpath (gpc, bpath, FALSE);
 
-			if (shape->fill->type == SP_FILL_COLOR) {
-				r = (double) ((shape->fill->color >> 24) & 0xff) / 255.0;
-				g = (double) ((shape->fill->color >> 16) & 0xff) / 255.0;
-				b = (double) ((shape->fill->color >>  8) & 0xff) / 255.0;
-				opacity = (double) ((shape->fill->color) & 0xff) / 255.0;
+			if (object->style->fill.type == SP_PAINT_TYPE_COLOR) {
+				r = object->style->fill.color.r;
+				g = object->style->fill.color.g;
+				b = object->style->fill.color.b;
+				opacity = object->style->fill_opacity * object->style->real_opacity;
 				gnome_print_gsave (gpc);
 				gnome_print_setrgbcolor (gpc, r, g, b);
 				gnome_print_setopacity (gpc, opacity);
 				gnome_print_eofill (gpc);
 				gnome_print_grestore (gpc);
 			}
-			if (shape->stroke->type == SP_STROKE_COLOR) {
-				r = (double) ((shape->stroke->color >> 24) & 0xff) / 255.0;
-				g = (double) ((shape->stroke->color >> 16) & 0xff) / 255.0;
-				b = (double) ((shape->stroke->color >>  8) & 0xff) / 255.0;
-				opacity = (double) ((shape->stroke->color) & 0xff) / 255.0;
+			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
+				r = object->style->stroke.color.r;
+				g = object->style->stroke.color.g;
+				b = object->style->stroke.color.b;
+				opacity = object->style->stroke_opacity * object->style->real_opacity;
 				gnome_print_gsave (gpc);
 				gnome_print_setrgbcolor (gpc, r, g, b);
 				gnome_print_setopacity (gpc, opacity);
-				gnome_print_setlinewidth (gpc, shape->stroke->width);
-				gnome_print_setlinejoin (gpc, shape->stroke->join);
-				gnome_print_setlinecap (gpc, shape->stroke->cap);
+				gnome_print_setlinewidth (gpc, object->style->user_stroke_width);
+				gnome_print_setlinejoin (gpc, object->style->stroke_linejoin);
+				gnome_print_setlinecap (gpc, object->style->stroke_linecap);
 				gnome_print_stroke (gpc);
 				gnome_print_grestore (gpc);
 			}
@@ -295,20 +273,21 @@ sp_shape_description (SPItem * item)
 static GnomeCanvasItem *
 sp_shape_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_group)
 {
+	SPObject *object;
 	SPShape * shape;
 	SPPath * path;
 	SPCanvasShape * cs;
 	SPPathComp * comp;
 	GSList * l;
 
+	object = SP_OBJECT (item);
 	shape = SP_SHAPE (item);
 	path = SP_PATH (item);
 
 	cs = (SPCanvasShape *) gnome_canvas_item_new (canvas_group, SP_TYPE_CANVAS_SHAPE, NULL);
 	g_return_val_if_fail (cs != NULL, NULL);
 
-	sp_canvas_shape_set_fill (cs, shape->fill);
-	sp_canvas_shape_set_stroke (cs, shape->stroke);
+	sp_canvas_shape_set_style (cs, object->style);
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
@@ -321,8 +300,10 @@ sp_shape_show (SPItem * item, SPDesktop * desktop, GnomeCanvasGroup * canvas_gro
 static gboolean
 sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 {
+	SPObject *object;
 	SPPath *path;
 	SPShape * shape;
+	SPStyle *style;
 	SPPathComp * comp;
 	GSList * l;
 	gdouble a[6];
@@ -330,8 +311,10 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 	ArtVpath * vp, * perturbed_vpath;
 	ArtSVP * svp, * svpa, * svpb;
 
+	object = SP_OBJECT (item);
 	path = SP_PATH (item);
 	shape = SP_SHAPE (item);
+	style = object->style;
 
 	for (l = path->comp; l != NULL; l = l->next) {
 		comp = (SPPathComp *) l->data;
@@ -350,44 +333,49 @@ sp_shape_paint (SPItem * item, ArtPixBuf * buf, gdouble * affine)
 				svp = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
 				art_svp_free (svpb);
 
-				if (shape->fill->type == SP_FILL_COLOR) {
+				if (style->fill.type == SP_PAINT_TYPE_COLOR) {
+					guint32 rgba;
+					rgba = SP_RGBA_FROM_COLOR (&style->fill.color, style->fill_opacity * style->real_opacity);
 					if (buf->n_channels == 3) {
 						art_rgb_svp_alpha (svp,
 							0, 0, buf->width, buf->height,
-							shape->fill->color,
+							rgba,
 							buf->pixels, buf->rowstride, NULL);
 					} else {
 						art_rgba_svp_alpha (svp,
 							0, 0, buf->width, buf->height,
-							shape->fill->color,
+							rgba,
 							buf->pixels, buf->rowstride, NULL);
 					}
 				}
 				art_svp_free (svp);
 			}
 
-			if (shape->stroke->type == SP_STROKE_COLOR) {
+			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
 				gdouble width, wx, wy;
-				width = shape->stroke->width;
-				if (shape->stroke->scaled) {
-					wx = affine[0] + affine[1];
-					wy = affine[2] + affine[3];
-					width *= sqrt (wx * wx + wy * wy) / 1.414213562;
-				}
+				guint32 rgba;
+
+				width = object->style->user_stroke_width;
+				wx = affine[0] + affine[1];
+				wy = affine[2] + affine[3];
+				width *= sqrt (wx * wx + wy * wy) * 0.707106781;
+
 				svp = art_svp_vpath_stroke (vp,
-					shape->stroke->join,
-					shape->stroke->cap,
-					width,
-					4, 0.25);
+							    object->style->stroke_linejoin,
+							    object->style->stroke_linecap,
+							    width,
+							    object->style->stroke_miterlimit,
+							    0.25);
+				rgba = SP_RGBA_FROM_COLOR (&style->stroke.color, style->stroke_opacity * style->real_opacity);
 				if (buf->n_channels == 3) {
 					art_rgb_svp_alpha (svp,
 						0, 0, buf->width, buf->height,
-						shape->stroke->color,
+						rgba,
 						buf->pixels, buf->rowstride, NULL);
 				} else {
 					art_rgba_svp_alpha (svp,
 						0, 0, buf->width, buf->height,
-						shape->stroke->color,
+						rgba,
 						buf->pixels, buf->rowstride, NULL);
 				}
 				art_svp_free (svp);
@@ -461,10 +449,3 @@ sp_shape_change_bpath (SPPath * path, SPPathComp * comp, SPCurve * curve)
 		SP_PATH_CLASS (parent_class)->change_bpath (path, comp, curve);
 }
 
-/* Unimplemented */
-
-void
-sp_shape_set_stroke (SPShape * shape, SPStroke * stroke)
-{
-	g_print ("unimplemented: sp_shape_set_stroke\n");
-}

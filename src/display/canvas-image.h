@@ -27,9 +27,7 @@ struct _SPCanvasImage {
 	GnomeCanvasItem item;
 
 	GdkPixbuf * pixbuf;
-	GdkPixbuf * realpixbuf;
 	gdouble opacity;
-	gdouble realpixbufopacity;
 	double affine[6];
 	ArtVpath * vpath;
 	gboolean sensitive;
@@ -44,7 +42,7 @@ struct _SPCanvasImageClass {
 GtkType sp_canvas_image_get_type (void);
 
 /* Utility */
-void sp_canvas_image_set_pixbuf (SPCanvasImage * image, GdkPixbuf * pixbuf);
+void sp_canvas_image_set_pixbuf (SPCanvasImage * image, GdkPixbuf * pixbuf, gdouble opacity);
 void sp_canvas_image_set_sensitive (SPCanvasImage * image, gboolean sensitive);
 
 #endif

@@ -59,6 +59,7 @@ struct _SPObject {
 	SPObject * next; /* Next object in linked list */
 	SPRepr * repr;			/* Our xml representation */
 	gchar * id;			/* Our very own unique id */
+	SPStyle * style;
 	const gchar * title;		/* Our title, if any */
 	const gchar * description;	/* Our description, if any */
 };
@@ -87,5 +88,9 @@ void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 const gchar * sp_object_getAttribute (SPObject * object, const gchar * key, SPException * ex);
 void sp_object_setAttribute (SPObject * object, const gchar * key, const gchar * value, SPException * ex);
 void sp_object_removeAttribute (SPObject * object, const gchar * key, SPException * ex);
+
+/* Style */
+
+const guchar *sp_object_get_style_property (SPObject *object, const gchar *key, const gchar *def);
 
 #endif

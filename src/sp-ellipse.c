@@ -120,25 +120,25 @@ sp_ellipse_read_attr (SPObject * object, const gchar * attr)
 	astr = sp_repr_attr (object->repr, attr);
 
 	if (strcmp (attr, "cx") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		ellipse->x = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
 	if (strcmp (attr, "cy") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		ellipse->y = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
 	if (strcmp (attr, "rx") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		ellipse->rx = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
 	}
 	if (strcmp (attr, "ry") == 0) {
-		n = sp_svg_read_length (&unit, astr);
+		n = sp_svg_read_length (&unit, astr, 0.0);
 		ellipse->ry = n;
 		sp_ellipse_set_shape (ellipse);
 		return;
