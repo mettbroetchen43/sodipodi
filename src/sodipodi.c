@@ -224,7 +224,7 @@ sodipodi_init (SPObject * object)
 		g_assert_not_reached ();
 	}
 
-	sodipodi->preferences = sp_repr_read_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE);
+	sodipodi->preferences = sp_repr_read_mem (preferences_skeleton, PREFERENCES_SKELETON_SIZE, NULL);
 
 	sodipodi->documents = NULL;
 	sodipodi->desktops = NULL;
@@ -479,7 +479,7 @@ sodipodi_load_preferences (Sodipodi * sodipodi)
 		return;
 	}
 
-	doc = sp_repr_read_file (fn);
+	doc = sp_repr_read_file (fn, NULL);
 	if (doc == NULL) {
 		/* Not an valid xml file */
 		w = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_OK,

@@ -124,35 +124,6 @@ sp_text_context_init (SPTextContext *tc)
 	tc->phase = 0;
 }
 
-/* fixme: Move this into ::finish (Lauris) */
-
-static void
-sp_text_context_finalize (SPTextContext *tc)
-{
-	SPEventContext *ec;
-	ec = SP_EVENT_CONTEXT (tc);
-
-	if (tc->imc) {
-		g_object_unref (G_OBJECT (tc->imc));
-		tc->imc = NULL;
-	}
-	
-	if (tc->timeout) {
-		gtk_timeout_remove (tc->timeout);
-		tc->timeout = 0;
-	}
-
-	if (tc->cursor) {
-		gtk_object_destroy (GTK_OBJECT (tc->cursor));
-		tc->cursor = NULL;
-	}
-
-	if (ec->desktop) {
-  		sp_signal_disconnect_by_data (SP_DT_CANVAS (ec->desktop), tc);
-  		sp_signal_disconnect_by_data (SP_DT_SELECTION (ec->desktop), ec);
-	}
-}
-
 #if 0
 static void
 sp_text_context_dispose (GObject *object)
@@ -208,8 +179,30 @@ sp_text_context_setup (SPEventContext *ec)
 static void
 sp_text_context_finish (SPEventContext *ec)
 {
-	sp_text_context_finalize (SP_TEXT_CONTEXT (ec));
+	SPTextContext *tc;
+	tc = SP_TEXT_CONTEXT (ec);
+
 	sp_text_context_forget_text (SP_TEXT_CONTEXT (ec));
+
+	if (tc->imc) {
+		g_object_unref (G_OBJECT (tc->imc));
+		tc->imc = NULL;
+	}
+	
+	if (tc->timeout) {
+		gtk_timeout_remove (tc->timeout);
+		tc->timeout = 0;
+	}
+
+	if (tc->cursor) {
+		gtk_object_destroy (GTK_OBJECT (tc->cursor));
+		tc->cursor = NULL;
+	}
+
+	if (ec->desktop) {
+  		sp_signal_disconnect_by_data (SP_DT_CANVAS (ec->desktop), tc);
+  		sp_signal_disconnect_by_data (SP_DT_SELECTION (ec->desktop), ec);
+	}
 }
 
 static gint
@@ -305,6 +298,10 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 		}
 		break;
 	case GDK_KEY_PRESS:
+		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
+			return TRUE;
+		}
+
 		if (!tc->text) sp_text_context_setup_text (tc);
 		g_assert (tc->text != NULL);
 		style = SP_OBJECT_STYLE (tc->text);
@@ -324,11 +321,11 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					tc->unimode = TRUE;
 					tc->unipos = 0;
 				}
-				return TRUE;
-			default:
-				if (tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
-					return TRUE;
+				if (tc->imc) {
+					gtk_im_context_reset (tc->imc);
 				}
+                                return TRUE;				return TRUE;
+			default:
 				break;
 			}
 		} else {
@@ -348,8 +345,6 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 					tc->unipos += 1;
 					return TRUE;
 				}
-			} else if (tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
-				return TRUE;
 			}
 
 			/* Neither unimode nor IM consumed key */
@@ -403,6 +398,11 @@ sp_text_context_root_handler (SPEventContext *ec, GdkEvent *event)
 				break;
 			}
 		}
+	case GDK_KEY_RELEASE:
+		if (!tc->unimode && tc->imc && gtk_im_context_filter_keypress (tc->imc, &event->key)) {
+			return TRUE;
+		}
+		break;
 	default:
 		break;
 	}

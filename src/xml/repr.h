@@ -16,6 +16,10 @@
 #include <glib.h>
 #include <stdio.h>
 
+#define SP_SODIPODI_NS_URI "http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+#define SP_XLINK_NS_URI "http://www.w3.org/1999/xlink"
+#define SP_SVG_NS_URI "http://www.w3.org/2000/svg"
+
 /*
  * NB! Unless explicitly stated all methods are noref/nostrcpy
  */
@@ -25,6 +29,7 @@ typedef struct _SPRepr SPXMLText;
 typedef struct _SPRepr SPXMLElement;
 typedef struct _SPReprAttr SPXMLAttribute;
 typedef struct _SPReprDoc SPXMLDocument;
+
 
 /* SPXMLDocument */
 
@@ -109,8 +114,8 @@ gint sp_repr_n_children (SPRepr * repr);
 
 /* IO */
 
-SPReprDoc * sp_repr_read_file (const gchar * filename);
-SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length);
+SPReprDoc * sp_repr_read_file (const gchar * filename, const gchar *default_ns);
+SPReprDoc * sp_repr_read_mem (const gchar * buffer, gint length, const gchar *default_ns);
 void sp_repr_save_stream (SPReprDoc * doc, FILE * to_file);
 void sp_repr_save_file (SPReprDoc * doc, const gchar * filename);
 

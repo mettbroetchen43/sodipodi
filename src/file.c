@@ -312,7 +312,7 @@ file_import_ok (GtkWidget * widget, GtkFileSelection * fs)
 		const gchar * style;
 		SPRepr * child;
 
-		rnewdoc = sp_repr_read_file (filename);
+		rnewdoc = sp_repr_read_file (filename, SP_SVG_NS_URI);
 		if (rnewdoc == NULL) return;
 		repr = sp_repr_document_root (rnewdoc);
 		style = sp_repr_attr (repr, "style");

@@ -58,7 +58,6 @@ nr_type_xft_build_def (NRTypeFaceDefFT2 *dft2, const unsigned char *name, const 
 		int index;
 		XftPatternGetString (pat, XFT_FILE, 0, &file);
 		XftPatternGetInteger (pat, XFT_INDEX, 0, &index);
-		g_print ("Name: %s file %s\n", name, file);
 		if (file) {
 			nr_type_ft2_build_def (dft2, name, family, file, index);
 		}
@@ -82,7 +81,7 @@ nr_type_xft_init (void)
 
 	/* Get typeface list */
 	NRXftPatterns = XftListFonts (GDK_DISPLAY (), 0,
-				      XFT_SCALABLE, XftTypeBool, 1, XFT_OUTLINE, XftTypeBool, 1, 0,
+				      XFT_SCALABLE, XftTypeBool, 1, XFT_OUTLINE, XftTypeBool, 1, XFT_CORE, XftTypeBool, 0, 0,
 				      XFT_FAMILY, XFT_WEIGHT, XFT_SLANT, XFT_FILE, XFT_INDEX, 0);
 	NRXftTypefaces.length = NRXftPatterns->nfont;
 	NRXftTypefaces.names = nr_new (unsigned char *, NRXftTypefaces.length);
@@ -155,7 +154,6 @@ nr_type_xft_init (void)
 						g_hash_table_insert (NRXftFamilydict, NRXftFamilies.names[fpos++], (void *) TRUE);
 					}
 					NRXftTypefaces.names[pos++] = name;
-					g_print ("Registering %s\n", name);
 					g_hash_table_insert (NRXftNamedict, name, NRXftPatterns->fonts[i]);
 				} else {
 					g_free (name);

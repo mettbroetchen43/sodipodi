@@ -446,13 +446,13 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
 	    break;
 	  case GDK_g: // Ctrl g - group
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_group(NULL);
+	      sp_selection_group (NULL, NULL);
 	      ret = TRUE;
 	    }
 	    break;
 	  case GDK_G: // Ctrl G - ungroup
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_ungroup(NULL);
+	      sp_selection_ungroup (NULL, NULL);
 	      ret = TRUE;
 	    }
 	    break;
@@ -485,12 +485,12 @@ sp_select_context_root_handler (SPEventContext *event_context, GdkEvent * event)
             ret = TRUE;
             break;
 	  case GDK_Delete: // Del - delete selection
-	    sp_selection_delete (NULL);
+	    sp_selection_delete (NULL, NULL);
 	    ret = TRUE;
 	    break;
 	  case GDK_d: // Ctrl d - duplicate selection
 	    if (event->key.state & GDK_CONTROL_MASK) {
-	      sp_selection_duplicate (NULL);
+	      sp_selection_duplicate (NULL, NULL);
 	      ret = TRUE;
 	    }
 	    break;

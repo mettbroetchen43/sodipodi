@@ -33,25 +33,16 @@
 GSList *clipboard = NULL;
 
 void
-sp_selection_delete (GtkWidget * widget)
+sp_selection_delete (gpointer object, gpointer data)
 {
-	SPDesktop * desktop;
-	SPSelection * selection;
-	GSList * selected;
-
-	/*
-	  do we really need this ?
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-	*/
+	SPDesktop *desktop;
+	SPSelection *selection;
+	GSList *selected;
 
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
-	g_assert (SP_IS_DESKTOP (desktop));
 
 	selection = SP_DT_SELECTION (desktop);
-	g_assert (selection != NULL);
-	g_assert (SP_IS_SELECTION (selection));
 
 	if (sp_selection_is_empty (selection)) return;
 
@@ -67,7 +58,7 @@ sp_selection_delete (GtkWidget * widget)
 }
 
 /* fixme: sequencing */
-void sp_selection_duplicate (GtkWidget * widget)
+void sp_selection_duplicate (gpointer object, gpointer data)
 {
 	SPDesktop * desktop;
 	SPSelection * selection;
@@ -75,16 +66,10 @@ void sp_selection_duplicate (GtkWidget * widget)
 	SPRepr * copy;
 	SPItem * item;
 
-	g_return_if_fail (widget != NULL);
-	g_return_if_fail (GTK_IS_WIDGET (widget));
-
 	desktop = SP_ACTIVE_DESKTOP;
 	if (desktop == NULL) return;
-	g_assert (SP_IS_DESKTOP (desktop));
 
 	selection = SP_DT_SELECTION (desktop);
-	g_assert (selection != NULL);
-	g_assert (SP_IS_SELECTION (selection));
 
 	if (sp_selection_is_empty (selection)) return;
 
@@ -112,7 +97,7 @@ void sp_selection_duplicate (GtkWidget * widget)
 }
 
 void
-sp_edit_clear_all (gpointer data)
+sp_edit_clear_all (gpointer object, gpointer data)
 {
 	SPDesktop *dt;
 	SPDocument *doc;
@@ -169,7 +154,7 @@ sp_group_cleanup (SPGroup *group)
 }
 
 void
-sp_edit_cleanup (gpointer data)
+sp_edit_cleanup (gpointer object, gpointer data)
 {
 	SPDocument *doc;
 	SPGroup *root;
@@ -190,7 +175,7 @@ sp_edit_cleanup (gpointer data)
 /* fixme: sequencing */
 
 void
-sp_selection_group (GtkWidget * widget)
+sp_selection_group (gpointer object, gpointer data)
 {
 	SPDesktop * desktop;
 	SPSelection * selection;
@@ -238,7 +223,7 @@ sp_selection_group (GtkWidget * widget)
 }
 
 void
-sp_selection_ungroup (gpointer data)
+sp_selection_ungroup (gpointer object, gpointer data)
 {
 	SPDesktop *dt;
 	SPItem *group;
@@ -504,7 +489,7 @@ void
 sp_selection_cut (GtkWidget * widget)
 {
 	sp_selection_copy (widget);
-	sp_selection_delete (widget);
+	sp_selection_delete (NULL, NULL);
 }
 
 void

@@ -87,7 +87,7 @@ enum {
 int sp_main_gui (int argc, const char **argv);
 int sp_main_console (int argc, const char **argv);
 static void sp_do_export_png (SPDocument *doc);
-static GSList *sp_process_args (poptContext ctx);
+#endif
 
 static guchar *sp_global_printer = NULL;
 static gboolean sp_global_slideshow = FALSE;
@@ -99,6 +99,8 @@ static guchar *sp_export_height = NULL;
 static guchar *sp_export_background = NULL;
 static guchar *sp_export_svg = NULL;
 
+#ifdef WITH_POPT
+static GSList *sp_process_args (poptContext ctx);
 struct poptOption options[] = {
 	{"without-gui", 'z', POPT_ARG_NONE, NULL, SP_ARG_NOGUI,
 	 N_("Do not use X server (only process files from console)"),
@@ -210,8 +212,10 @@ main (int argc, const char **argv)
 int
 sp_main_gui (int argc, const char **argv)
 {
+#if WITH_POPT
 	poptContext ctx;
-	GSList *fl;
+#endif
+	GSList *fl = NULL;
 
 	gtk_init (&argc, (char ***) &argv);
 
@@ -220,11 +224,13 @@ sp_main_gui (int argc, const char **argv)
 
 	setlocale (LC_NUMERIC, "C");
 
+#if WITH_POPT
 	ctx = poptGetContext (NULL, argc, argv, options, 0);
 	g_return_val_if_fail (ctx != NULL, 1);
-
 	/* Collect own arguments */
 	fl = sp_process_args (ctx);
+	poptFreeContext (ctx);
+#endif
 
 #if 0
 	/* Set default icon */
@@ -284,8 +290,6 @@ sp_main_gui (int argc, const char **argv)
 		sodipodi_unref ();
 	}
 
-	poptFreeContext (ctx);
-
 	gtk_main ();
 
 	return 0;
@@ -294,8 +298,10 @@ sp_main_gui (int argc, const char **argv)
 int
 sp_main_console (int argc, const char **argv)
 {
+#ifdef WITH_POPT
 	poptContext ctx = NULL;
-	GSList * fl;
+#endif
+	GSList * fl = NULL;
 	guchar *printer;
 
 	/* We are started in text mode */
@@ -305,12 +311,12 @@ sp_main_console (int argc, const char **argv)
 
 	setlocale (LC_NUMERIC, "C");
 
+#ifdef WITH_POPT
 	ctx = poptGetContext (NULL, argc, argv, options, 0);
 	g_return_val_if_fail (ctx != NULL, 1);
-
 	fl = sp_process_args (ctx);
-
 	poptFreeContext (ctx);
+#endif
 
 	if (fl == NULL) {
 		g_print ("Nothing to do!\n");
@@ -511,7 +517,9 @@ sp_do_export_png (SPDocument *doc)
 		g_warning ("Calculated bitmap dimensions %d %d out of range (16 - 65535)", width, height);
 	}
 }
+#endif /* NOT WIN32 */
 
+#ifdef WITH_POPT
 static GSList *
 sp_process_args (poptContext ctx)
 {
@@ -521,20 +529,18 @@ sp_process_args (poptContext ctx)
 
 	fl = NULL;
 
-#if 1
 	while ((a = poptGetNextOpt (ctx)) >= 0) {
 		switch (a) {
 		case SP_ARG_FILE:
 			fn = poptGetOptArg (ctx);
 			if (fn != NULL) {
-				fl = g_slist_append (fl, (gpointer) fn);
+				fl = g_slist_append (fl, g_strdup (fn));
 			}
 			break;
 		default:
 			break;
 		}
 	}
-#endif
 	args = poptGetArgs (ctx);
 	if (args != NULL) {
 		for (i = 0; args[i] != NULL; i++) {

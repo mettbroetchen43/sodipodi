@@ -1,3 +1,31 @@
+2003-01-12  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/main.c: Made --without-popt working
+
+2003-01-11  MenTaLguY  <mental@rydia.net>
+
+	* src/xml/repr-io.c: removed bogus ATTLIST from DOCTYPE
+	(sp_repr_read_file): factored out duplicated code into sp_repr_do_read + added parameter for default namespace
+	(sp_repr_read_mem): factored out duplicated code into sp_repr_do_read + added parameter for default namespace
+	(sp_repr_do_read): merged duplicated code from sp_repr_read_* family
+	(sp_repr_do_read): insert xmlns decls for common namespaces
+	(sp_repr_qualified_name): basic namespace handling for SVG, XLink, and Sodipodi namespaces
+	(sp_repr_read_node): added parameter for default namespace
+	(sp_repr_read_node): removed dead code and broken re-addition of xmlns declarations (xlink?)
+	(repr_quote_write): UTF8 is ASCII-compatible -- removed inaccurate comment
+
+	* src/xml/repr.h: added SP_*_NS_URI macros
+
+	* src/document.c (sp_document_new): SVG is default NS
+	(sp_document_new_from_mem): SVG is default NS
+
+	* src/file.c (file_import_ok): SVG is default NS
+
+	* src/interface.c (sp_ui_import_one_file): SVG is default NS
+
+	* src/sodipodi.c (sodipodi_init): no default NS
+	(sodipodi_load_preferences): no default NS
+
 2003-01-11  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* configure.in: Check for xft
@@ -13,6 +41,15 @@
 2003-01-10  MenTaLguY  <mental@rydia.net>
 
 	* src/dialogs/item-properties.c (sp_item_widget_new): made unimplemented controls insensitive
+
+2003-01-04  MenTaLguY  <mental@rydia.net>
+
+        * src/text-context.c (sp_text_context_finalize): folded back
+	into sp_text_context_finish
+        (sp_text_context_root_handler): Gtk IM now gets first refusal of
+	key press _and_ release events; toggling "unicode mode" now triggers an
+	IM reset; "unicode mode" bypasses IM entirely
+
 
 2003-01-04  Lauris Kaplinski  <lauris@kaplinski.com>
 

@@ -23,15 +23,12 @@
 
 static const guchar *sp_svg_doctype_str =
 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 20010904//EN\"\n"
-"\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\"\n"
-"[\n"
-" <!ATTLIST svg\n"
-"  xmlns:xlink CDATA #FIXED \"http://www.w3.org/1999/xlink\">\n"
-"]>\n";
+"\"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">\n";
 static const guchar *sp_comment_str =
 "<!-- Created with Sodipodi (\"http://www.sodipodi.com/\") -->\n";
 
-static SPRepr * sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node);
+static SPReprDoc *sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns);
+static SPRepr * sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default_ns);
 static void repr_write (SPRepr * repr, FILE * file, gint level);
 
 #ifdef HAVE_LIBWMF
@@ -40,12 +37,10 @@ static char * sp_wmf_image_name (void * context);
 #endif /* HAVE_LIBWMF */
 
 SPReprDoc *
-sp_repr_read_file (const gchar * filename)
+sp_repr_read_file (const gchar * filename, const gchar *default_ns)
 {
 	xmlDocPtr doc;
-	xmlNodePtr node;
 	SPReprDoc * rdoc;
-	SPRepr * repr;
 
 	g_return_val_if_fail (filename != NULL, NULL);
 
@@ -63,89 +58,104 @@ sp_repr_read_file (const gchar * filename)
 #else /* HAVE_LIBWMF */
 	doc = xmlParseFile (filename);
 #endif /* HAVE_LIBWMF */
-	if (doc == NULL) return NULL;
 
-	rdoc = sp_repr_document_new ("void");
-
-	repr = NULL;
-
-	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
-		if (node->type == XML_ELEMENT_NODE) {
-			repr = sp_repr_svg_read_node (rdoc, node);
-			break;
-		}
+	rdoc = sp_repr_do_read (doc, default_ns);
+	if (doc) {
+		xmlFreeDoc (doc);
 	}
-
-	if (repr != NULL) {
-		sp_repr_document_set_root (rdoc, repr);
-		/* fixme: Another quick hack (Lauris) */
-		if (!strcmp (sp_repr_name (repr), "svg")) {
-			sp_repr_set_attr ((SPRepr *) rdoc, "doctype", sp_svg_doctype_str);
-			sp_repr_set_attr ((SPRepr *) rdoc, "comment", sp_comment_str);
-		}
-	}
-
-	xmlFreeDoc (doc);
-
 	return rdoc;
 }
 
 SPReprDoc *
-sp_repr_read_mem (const gchar * buffer, gint length)
+sp_repr_read_mem (const gchar * buffer, gint length, const gchar *default_ns)
 {
 	xmlDocPtr doc;
-	xmlNodePtr node;
 	SPReprDoc * rdoc;
-	SPRepr * repr;
 
 	g_return_val_if_fail (buffer != NULL, NULL);
 
 	doc = xmlParseMemory ((gchar *) buffer, length);
-	if (doc == NULL) return NULL;
 
-	if ((node = xmlDocGetRootElement(doc)) == NULL)
-	{
-		xmlFreeDoc(doc);
-		return NULL;
+	rdoc = sp_repr_do_read (doc, default_ns);
+	if (doc) {
+		xmlFreeDoc (doc);
 	}
+	return rdoc;
+}
 
+SPReprDoc *
+sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns)
+{
+	SPReprDoc * rdoc;
+	SPRepr * repr;
+	xmlNodePtr node;
+
+	if (doc == NULL) return NULL;
+	node = xmlDocGetRootElement (doc);
+	if (node == NULL) return NULL;
 	rdoc = sp_repr_document_new ("void");
 
 	repr = NULL;
 
 	for (node = xmlDocGetRootElement(doc); node != NULL; node = node->next) {
 		if (node->type == XML_ELEMENT_NODE) {
-			repr = sp_repr_svg_read_node (rdoc, node);
+			repr = sp_repr_svg_read_node (rdoc, node, default_ns);
 			break;
 		}
 	}
 
 	if (repr != NULL) {
+		if (default_ns) {
+			sp_repr_set_attr (repr, "xmlns", default_ns);
+		}
+		if (!default_ns || strcmp(default_ns, SP_SVG_NS_URI)) {
+			sp_repr_set_attr (repr, "xmlns:svg", SP_SVG_NS_URI);
+		}
+		sp_repr_set_attr (repr, "xmlns:xlink", SP_XLINK_NS_URI);
+		sp_repr_set_attr (repr, "xmlns:sodipodi", SP_SODIPODI_NS_URI);
+
 		sp_repr_document_set_root (rdoc, repr);
-		/* fixme: Another quick hack (Lauris) */
-		if (!strcmp (sp_repr_name (repr), "svg")) {
+		if (!strcmp (sp_repr_name (repr), "svg") && default_ns && !strcmp (default_ns, SP_SVG_NS_URI)) {
 			sp_repr_set_attr ((SPRepr *) rdoc, "doctype", sp_svg_doctype_str);
 			sp_repr_set_attr ((SPRepr *) rdoc, "comment", sp_comment_str);
 		}
 	}
-
-	xmlFreeDoc (doc);
 
 	return rdoc;
 }
 
 static gint
-sp_repr_qualified_name (guchar *p, gint len, xmlNsPtr ns, const xmlChar *name)
+sp_repr_qualified_name (guchar *p, gint len, xmlNsPtr ns, const xmlChar *name, const gchar *default_ns)
 {
-	if (ns && ns->prefix && strcmp (ns->prefix, "svg")) {
-		return g_snprintf (p, len, "%s:%s", ns->prefix, name);
+	const gchar *prefix;
+	if (ns) {
+		if (!ns->href) {
+			prefix = ns->prefix;
+		} else if (default_ns && !strcmp (ns->href, default_ns)) {
+			prefix = NULL;
+		} else if (!strcmp (ns->href, SP_SVG_NS_URI)) {
+			prefix = "svg";
+		} else if (!strcmp (ns->href, SP_XLINK_NS_URI)) {
+			prefix = "xlink";
+		} else if (!strcmp (ns->href, SP_SODIPODI_NS_URI)) {
+			prefix = "sodipodi";
+		} else {
+			/* fixme: handle other namespaces */
+			prefix = ns->prefix;
+		}
+	} else {
+		prefix = NULL;
 	}
 
-	return g_snprintf (p, len, "%s", name);
+	if (prefix) {
+		return g_snprintf (p, len, "%s:%s", prefix, name);
+	} else {
+		return g_snprintf (p, len, "%s", name);
+	}
 }
 
 static SPRepr *
-sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
+sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node, const gchar *default_ns)
 {
 	SPRepr *repr, *crepr;
 	xmlAttrPtr prop;
@@ -177,48 +187,25 @@ sp_repr_svg_read_node (SPXMLDocument *doc, xmlNodePtr node)
 
 	if (node->type == XML_COMMENT_NODE) return NULL;
 
-	sp_repr_qualified_name (c, 256, node->ns, node->name);
+	sp_repr_qualified_name (c, 256, node->ns, node->name, default_ns);
 	repr = sp_repr_new (c);
 
 	for (prop = node->properties; prop != NULL; prop = prop->next) {
 		if (prop->children) {
-			sp_repr_qualified_name (c, 256, prop->ns, prop->name);
+			sp_repr_qualified_name (c, 256, prop->ns, prop->name, default_ns);
 			sp_repr_set_attr (repr, c, prop->children->content);
 		}
 	}
-
-	/* This is fuzzy piece of code, that adds namespaces back to tree */
-	/* We really should go more serious with XML */
-        for (ns = node->nsDef; ns; ns = ns->next) {
-                if (ns->prefix && strcmp (ns->prefix, "sodipodi") &&
-                                strcmp (ns->prefix, "xlink")) {
-                        g_snprintf (c, 256, "xlink:%s", ns->prefix);
-                        sp_repr_set_attr (repr, c, ns->href);
-                }
-        }
 
 	if (node->content)
 		sp_repr_set_content (repr, node->content);
 
 	child = node->xmlChildrenNode;
-#if 0
-	if ((child != NULL) &&
-        (child->name != NULL) &&
-		(strcmp (child->name, node->name) == 0) &&
-		(child->properties == NULL) &&
-		(child->content != NULL)) {
-
-		sp_repr_set_content (repr, child->content);
-
-	} else {
-#endif
 	for (child = node->xmlChildrenNode; child != NULL; child = child->next) {
-		crepr = sp_repr_svg_read_node (doc, child);
+		crepr = sp_repr_svg_read_node (doc, child, default_ns);
 		if (crepr) sp_repr_append_child (repr, crepr);
 	}
-#if 0
-	}
-#endif
+
 	return repr;
 }
 
@@ -269,13 +256,6 @@ sp_repr_print (SPRepr * repr)
 static void
 repr_quote_write (FILE * file, const gchar * val)
 {
-	/* TODO: Presumably VAL is actually encoded in UTF8, no?
-	 * [Actually, preliminary tests suggest that this is not the
-	 * case; can sodipodi encode big charsets at all?]  If VAL is
-	 * UTF8, then this code will be buggy if e.g. `&' is the
-	 * second byte of a single utf8 "character".
-	 */
-
 	for (; *val != '\0'; val++) {
 		switch (*val) {
 		case '"': fputs ("&quot;", file); break;

@@ -313,7 +313,7 @@ sp_document_new (const gchar *uri, unsigned int advertize, unsigned int keepaliv
 		SPRepr *rroot;
 		unsigned char *s, *p;
 		/* Try to fetch repr from file */
-		rdoc = sp_repr_read_file (uri);
+		rdoc = sp_repr_read_file (uri, SP_SVG_NS_URI);
 		/* If file cannot be loaded, return NULL without warning */
 		if (rdoc == NULL) return NULL;
 		rroot = sp_repr_document_root (rdoc);
@@ -353,7 +353,7 @@ sp_document_new_from_mem (const gchar *buffer, gint length, unsigned int adverti
 	SPRepr *rroot;
 	unsigned char *name;
 
-	rdoc = sp_repr_read_mem (buffer, length);
+	rdoc = sp_repr_read_mem (buffer, length, SP_SVG_NS_URI);
 
 	/* If it cannot be loaded, return NULL without warning */
 	if (rdoc == NULL) return NULL;
