@@ -32,6 +32,8 @@ static void sp_use_build (SPObject * object, SPDocument * document, SPRepr * rep
 static void sp_use_release (SPObject *object);
 static void sp_use_set (SPObject *object, unsigned int key, const unsigned char *value);
 static SPRepr *sp_use_write (SPObject *object, SPRepr *repr, guint flags);
+static void sp_use_update (SPObject *object, SPCtx *ctx, guint flags);
+static void sp_use_modified (SPObject *object, guint flags);
 
 static void sp_use_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned int flags);
 static void sp_use_print (SPItem *item, SPPrintContext *ctx);
@@ -81,6 +83,8 @@ sp_use_class_init (SPUseClass *class)
 	sp_object_class->release = sp_use_release;
 	sp_object_class->set = sp_use_set;
 	sp_object_class->write = sp_use_write;
+	sp_object_class->update = sp_use_update;
+	sp_object_class->modified = sp_use_modified;
 
 	item_class->bbox = sp_use_bbox;
 	item_class->description = sp_use_description;
@@ -335,5 +339,56 @@ sp_use_href_changed (SPUse * use)
 				}
 			}
 		}
+	}
+}
+static void
+sp_use_update (SPObject *object, SPCtx *ctx, unsigned int flags)
+{
+	SPUse *use_obj;
+	SPObject *child;
+	SPItemCtx *ictx, cctx;
+
+	use_obj = SP_USE (object);
+	ictx = (SPItemCtx *) ctx;
+	cctx = *ictx;
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	child = use_obj->child;
+	if (child) {
+		g_object_ref (G_OBJECT (child));
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			if (SP_IS_ITEM (child)) {
+				SPItem *chi;
+				chi = SP_ITEM (child);
+				nr_matrix_multiply_dfd (&cctx.ctm, &chi->transform, &ictx->ctm);
+				sp_object_invoke_update (child, (SPCtx *) &cctx, flags);
+			} else {
+				sp_object_invoke_update (child, ctx, flags);
+			}
+		}
+		g_object_unref (G_OBJECT (child));
+	}
+}
+
+static void
+sp_use_modified (SPObject *object, guint flags)
+{
+	SPUse *use_obj;
+	SPObject *child;
+
+	use_obj = SP_USE (object);
+
+	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
+	flags &= SP_OBJECT_MODIFIED_CASCADE;
+
+	child = use_obj->child;
+	if (child) {
+		g_object_ref (G_OBJECT (child));
+		if (flags || (SP_OBJECT_FLAGS (child) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG))) {
+			sp_object_invoke_modified (child, flags);
+		}
+		g_object_unref (G_OBJECT (child));
 	}
 }

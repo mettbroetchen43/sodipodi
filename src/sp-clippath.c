@@ -93,6 +93,9 @@ sp_clippath_show (SPClipPath *cp, NRArena *arena)
 	g_return_val_if_fail (arena != NULL, NULL);
 	g_return_val_if_fail (NR_IS_ARENA (arena), NULL);
 
+	/* fixme: is show needed for clipPaths at all?  the disabled code below will eventually result in a crash as the children are never subsequently hidden properly */
+	if (0) {
+
 	ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 
 	ar = NULL;
@@ -105,6 +108,8 @@ sp_clippath_show (SPClipPath *cp, NRArena *arena)
 				ar = ac;
 			}
 		}
+	}
+
 	}
 
 	return ai;
