@@ -338,11 +338,11 @@ msgstr ""
 
 #: glade/object_props.c:29
 msgid " Cap "
-msgstr ""
+msgstr " Zaèetek"
 
 #: glade/object_props.c:30
 msgid "butt"
-msgstr ""
+msgstr "konec"
 
 #: glade/object_props.c:32
 msgid "sqare"
@@ -481,15 +481,15 @@ msgstr "Nagnjen spoj"
 
 #: glade/sodipodi-glade.c:22
 msgid "Round join"
-msgstr "Zaokro¾en spoj"
+msgstr "Zaobljen spoj"
 
 #: glade/sodipodi-glade.c:23
 msgid "Mitter join"
-msgstr ""
+msgstr "Spoj pod kotom"
 
 #: glade/sodipodi-glade.c:24
 msgid "Butt endpoints"
-msgstr ""
+msgstr "Konène toèke"
 
 #: glade/sodipodi-glade.c:25
 msgid "Round endpoints"
