@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi.HEAD.es\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2003-07-10 21:24+0200\n"
-"PO-Revision-Date: 2003-07-10 23:35+0200\n"
+"POT-Creation-Date: 2003-07-22 21:11+0200\n"
+"PO-Revision-Date: 2003-07-23 04:51+0200\n"
 "Last-Translator: Francisco Javier F. Serrador <serrador@arrakis.es>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
@@ -1385,7 +1385,7 @@ msgid "Image Properties"
 msgstr "Propiedades de la imagen"
 
 #. Autotrace dialog
-#: src/object-ui.c:408 src/sp-image.c:776
+#: src/object-ui.c:408 src/sp-image.c:780
 msgid "Trace"
 msgstr "Traza"
 
@@ -1665,24 +1665,24 @@ msgstr "Imagen con referencia incorrecta: %s"
 msgid "Color image %d x %d: %s"
 msgstr "Imagen de color  %d x %d : %s"
 
-#: src/sp-image.c:922
+#: src/sp-image.c:926
 #, c-format
 msgid "Error to write %s: %s"
 msgstr "Ha ocurrido un error al escribir %s: %s"
 
-#: src/sp-image.c:956
+#: src/sp-image.c:960
 msgid "Untitled"
 msgstr "Sin título"
 
-#: src/sp-image.c:961
+#: src/sp-image.c:965
 msgid "Document Name:"
 msgstr "Nombre del documento:"
 
-#: src/sp-image.c:974
+#: src/sp-image.c:978
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: src/sp-image.c:980
+#: src/sp-image.c:984
 msgid "Image URI:"
 msgstr "URI de la imagen:"
 
@@ -2084,8 +2084,8 @@ msgid "Create and edit text objects"
 msgstr "Crear y editar objetos de texto"
 
 #: src/verbs.c:476
-msgid "Zoom into preciely selected area"
-msgstr "Aumentar precisamente el área seleccionada"
+msgid "Zoom into precisely selected area"
+msgstr "Ampliar precisamente el área seleccionada"
 
 #: src/verbs.c:477
 msgid "Dropper"
@@ -2305,7 +2305,7 @@ msgid "CMYK"
 msgstr "CMYK"
 
 #: src/widgets/paint-selector.c:750
-msgid "CMYK colospace"
+msgid "CMYK Colorspace"
 msgstr "Espacio de colores CMYK"
 
 #. Use dropper
