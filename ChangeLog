@@ -1,3 +1,7 @@
+2002-02-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* glade/object_props.glade: Fix a typo. s/Mitter/Miter/
+	
 2002-01-27  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/bonobo/Makefile.am (INCLUDES): Remove excess -I

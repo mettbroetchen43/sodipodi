@@ -424,7 +424,7 @@ in
 	      <widget>
 		<class>GtkRadioButton</class>
 		<name>stroke_dialog_join_miter</name>
-		<tooltip>Mitter join</tooltip>
+		<tooltip>Miter join</tooltip>
 		<can_focus>True</can_focus>
 		<signal>
 		  <name>toggled</name>
