@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.17\n"
 "POT-Creation-Date: 2003-02-24 11:42+0200\n"
-"PO-Revision-Date: 2003-04-10 11:31--500\n"
+"PO-Revision-Date: 2003-04-10 11:59--500\n"
 "Last-Translator: Yuriy Syrota <yuri@renome.rovno.ua>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -926,7 +926,7 @@ msgstr ""
 #. T0
 #: src/spiral-context.c:374
 msgid "Inner radius:"
-msgstr "Внутрішній радіус"
+msgstr "Внутрішній радіус:"
 
 #. Proportion
 #: src/star-context.c:367
