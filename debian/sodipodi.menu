@@ -1,2 +1,2 @@
 ?package(sodipodi): needs=X11 section="Apps/Graphics" title="Sodipodi" \
-  longtitle="Vector based drawing program" command="sodipodi"
+  hints="Vector" longtitle="Vector based drawing program" command="sodipodi"

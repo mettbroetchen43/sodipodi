@@ -1,3 +1,76 @@
+sodipodi (0.23.0.20010923-2) unstable; urgency=high
+
+  * Fixed Build-Depends, closes: #113410.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Tue, 25 Sep 2001 11:41:25 +0200
+
+sodipodi (0.23.0.20010923-1) unstable; urgency=medium
+
+  * CVS sync as of 2001-09-23, closes: #113211.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sun, 23 Sep 2001 22:55:26 +0200
+
+sodipodi (0.23-4) unstable; urgency=high
+
+  * Recompiled against libgal11; closes: #110754.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Fri, 31 Aug 2001 17:56:16 +0200
+
+sodipodi (0.23-3) unstable; urgency=medium
+
+  * Recompiled against libgal9.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Mon,  6 Aug 2001 15:47:03 +0200
+
+sodipodi (0.23-2) unstable; urgency=medium
+
+  * Recompiled against libgal8.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat, 21 Jul 2001 18:07:33 +0200
+
+sodipodi (0.23-1) unstable; urgency=high
+
+  * New upstream version.
+  * Compiled against libgal7, closes: #96519.
+  * Depends on libxml1 (>= 1:1.8.9-1), closes: #93617.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat, 19 May 2001 18:52:14 +0200
+
+sodipodi (0.22-2) unstable; urgency=high
+
+  * Recompiled against libgnomeprint15; closes: #94426.
+  * Added a manpage.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Thu, 19 Apr 2001 23:10:52 +0200
+
+sodipodi (0.22-1) unstable; urgency=low
+
+  * New upstream version.
+  * Bonobo support is still here.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat, 10 Mar 2001 15:10:02 +0100
+
+sodipodi (0.21-2) unstable; urgency=high
+
+  * Compiled against libgal4 and libgnomeui32. closes: #86514, #86520.
+  * Removed bonobo support, sodipodi 0.21 doesn't compile against bonobo 0.36
+    and cvs snapshot is too broken to be packaged.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Wed, 21 Feb 2001 22:53:27 +0100
+
+sodipodi (0.21-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat, 27 Jan 2001 13:58:09 +0100
+
+sodipodi (0.20.0.20001230-1) unstable; urgency=low
+
+  * CVS sync as of 2000-12-30.
+  * Fixed sodipodi.menu; closes: #80246.
+
+ -- Davide Puricelli (evo) <evo@debian.org>  Sat, 30 Dec 2000 19:15:51 +0100
+
 sodipodi (0.20-1) unstable; urgency=low
 
   * Initial Release.
@@ -6,5 +79,4 @@ sodipodi (0.20-1) unstable; urgency=low
 
 Local variables:
 mode: debian-changelog
-add-log-mailing-address "evo@debian.org"
 End:
