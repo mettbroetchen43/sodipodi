@@ -1,3 +1,11 @@
+2002-09-28  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/widgets/paint-selector.c (sp_paint_selector_init): Added radial button
+	(sp_paint_selector_set_style_buttons): Set radial
+	(sp_paint_selector_set_mode_gradient): Set correct button
+
+	* glade/Makefile.am (pixmaps): Added fill_radial.xpm
+
 2002-09-27  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/widgets/paint-selector.c (sp_paint_selector_get_gradient_position_floatv): Set radial

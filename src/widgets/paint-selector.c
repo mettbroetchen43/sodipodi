@@ -157,12 +157,14 @@ sp_paint_selector_init (SPPaintSelector *psel)
 							  SP_PAINT_SELECTOR_MODE_COLOR_RGB, GTK_RADIO_BUTTON (psel->none));
 	psel->gradient = sp_paint_selector_style_button_add (psel, "fill_gradient.xpm",
 							     SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR, GTK_RADIO_BUTTON (psel->solid));
+	psel->radial = sp_paint_selector_style_button_add (psel, "fill_radial.xpm",
+							   SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL, GTK_RADIO_BUTTON (psel->gradient));
 	psel->pattern = sp_paint_selector_style_button_add (psel, "fill_pattern.xpm",
-							    SP_PAINT_SELECTOR_MODE_PATTERN, GTK_RADIO_BUTTON (psel->gradient));
-	gtk_widget_set_sensitive (psel->pattern, FALSE);
+							    SP_PAINT_SELECTOR_MODE_PATTERN, GTK_RADIO_BUTTON (psel->radial));
+	gtk_widget_hide (psel->pattern);
 	psel->fractal = sp_paint_selector_style_button_add (psel, "fill_fractal.xpm",
 							    SP_PAINT_SELECTOR_MODE_FRACTAL, GTK_RADIO_BUTTON (psel->pattern));
-	gtk_widget_set_sensitive (psel->fractal, FALSE);
+	gtk_widget_hide (psel->fractal);
 
 	/* Horizontal separator */
 	w = gtk_hseparator_new ();
@@ -650,7 +652,11 @@ sp_paint_selector_set_mode_gradient (SPPaintSelector *psel, SPPaintSelectorMode 
 
 	/* fixme: We do not need function-wide gsel at all */
 
-	sp_paint_selector_set_style_buttons (psel, psel->gradient);
+	if (mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) {
+		sp_paint_selector_set_style_buttons (psel, psel->gradient);
+	} else {
+		sp_paint_selector_set_style_buttons (psel, psel->radial);
+	}
 	gtk_widget_set_sensitive (psel->style, TRUE);
 
 	if ((psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR) || (psel->mode == SP_PAINT_SELECTOR_MODE_GRADIENT_RADIAL)) {
@@ -710,13 +716,15 @@ sp_paint_selector_set_mode_gradient (SPPaintSelector *psel, SPPaintSelectorMode 
 		GtkWidget *om;
 		om = gtk_object_get_data (GTK_OBJECT (psel->selector), "mode-menu");
 		gtk_option_menu_set_history (GTK_OPTION_MENU (om), 0);
+
+		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Linear gradient"));
 	} else {
 		GtkWidget *om;
 		om = gtk_object_get_data (GTK_OBJECT (psel->selector), "mode-menu");
 		gtk_option_menu_set_history (GTK_OPTION_MENU (om), 1);
-	}
 
-	gtk_frame_set_label (GTK_FRAME (psel->frame), _("Gradient paint"));
+		gtk_frame_set_label (GTK_FRAME (psel->frame), _("Radial gradient"));
+	}
 
 	g_print ("Gradient req\n");
 }
@@ -739,6 +747,7 @@ sp_paint_selector_set_style_buttons (SPPaintSelector *psel, GtkWidget *active)
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->none), (active == psel->none));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->solid), (active == psel->solid));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->gradient), (active == psel->gradient));
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->radial), (active == psel->radial));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->pattern), (active == psel->pattern));
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (psel->fractal), (active == psel->fractal));
 }

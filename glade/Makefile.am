@@ -78,6 +78,7 @@ pixmaps = \
 	fill.xpm \
 	fill_fractal.xpm \
 	fill_gradient.xpm \
+	fill_radial.xpm \
 	fill_none.xpm \
 	fill_pattern.xpm \
 	fill_solid.xpm \
