@@ -156,7 +156,7 @@ sp_doc_dialog_new (void)
 	GtkWidget *dialog, *nb, *vb, *hb, *l, *om, *m, *i, *f, *t, *us, *sb;
 	GtkObject *a;
 
-	dialog = sp_window_new (_("Document settings"), FALSE);
+	dialog = sp_window_new (_("Document settings"), FALSE, TRUE);
 
 	nb = gtk_notebook_new ();
 	gtk_widget_show (nb);

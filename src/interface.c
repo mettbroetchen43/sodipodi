@@ -83,7 +83,7 @@ sp_create_window (SPViewWidget *vw, gboolean editable)
 	g_return_if_fail (vw != NULL);
 	g_return_if_fail (SP_IS_VIEW_WIDGET (vw));
 
-	w = sp_window_new ("", TRUE);
+	w = sp_window_new ("", TRUE, FALSE);
 	g_object_set_data (G_OBJECT (vw), "window", w);
 	g_object_set_data (G_OBJECT (SP_VIEW_WIDGET_VIEW (vw)), "window", w);
 

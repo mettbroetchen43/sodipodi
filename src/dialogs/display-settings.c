@@ -85,7 +85,7 @@ sp_display_dialog_new (void)
 	GtkWidget *dialog, *nb, *l, *vb, *hb, *om, *m, *i, *sb;
 	GtkObject *a;
 
-	dialog = sp_window_new (_("Display settings"), FALSE);
+	dialog = sp_window_new (_("Display settings"), FALSE, TRUE);
 
 	nb = gtk_notebook_new ();
 	gtk_widget_show (nb);

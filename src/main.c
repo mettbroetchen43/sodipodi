@@ -330,7 +330,6 @@ int
 sp_main_console (int argc, const char **argv)
 {
 	GSList * fl = NULL;
-	guchar *printer;
 
 	/* We are started in text mode */
 	g_type_init ();

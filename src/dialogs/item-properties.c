@@ -433,7 +433,7 @@ sp_item_dialog (void)
 {
 	if (dlg == NULL) {
 		GtkWidget *itemw;
-		dlg = sp_window_new (_("Item properties"), TRUE);
+		dlg = sp_window_new (_("Item properties"), TRUE, TRUE);
 		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_item_dialog_destroy), NULL);
 		itemw = sp_item_widget_new ();
 		gtk_widget_show (itemw);

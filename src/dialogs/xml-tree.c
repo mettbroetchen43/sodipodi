@@ -139,7 +139,7 @@ sp_xml_tree_dialog (void)
 		tooltips = gtk_tooltips_new ();
 		gtk_tooltips_enable (tooltips);
 
-		dialog = sp_window_new ("", TRUE);
+		dialog = sp_window_new ("", TRUE, FALSE);
 		gtk_container_set_border_width (GTK_CONTAINER (dialog), 0);
 		gtk_window_set_default_size (GTK_WINDOW (dialog), 640, 384);
 		g_signal_connect (G_OBJECT (dialog), "destroy", G_CALLBACK (on_destroy), NULL);

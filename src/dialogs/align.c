@@ -152,7 +152,7 @@ sp_quick_align_dialog (void)
 		GtkWidget *nb, *vb, *om, *t, *l;
 		GtkTooltips * tt = gtk_tooltips_new ();
 
-		dlg = sp_window_new (_("Align objects"), FALSE);
+		dlg = sp_window_new (_("Align objects"), FALSE, TRUE);
 		g_signal_connect ((GObject *) dlg, "destroy", (GCallback) sp_quick_align_dialog_destroy, NULL);
 
 		nb = gtk_notebook_new ();

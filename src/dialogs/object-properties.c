@@ -110,7 +110,7 @@ sp_object_properties_dialog (void)
 	if (!dlg) {
 		GtkWidget *vb, *nb, *hb, *l, *px, *page, *hs, *om, *m, *mi;
 
-		dlg = sp_window_new (_("Object style"), TRUE);
+		dlg = sp_window_new (_("Object style"), TRUE, TRUE);
 		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_object_properties_dialog_destroy), dlg);
 
 		vb = gtk_vbox_new (FALSE, 0);
@@ -286,16 +286,16 @@ sp_object_properties_layout (void)
 
 	if (!layout_dialog) {
 		GtkWidget *w;
-		layout_dialog = sp_window_new (_("Object Size and Position"), TRUE);
+		layout_dialog = sp_window_new (_("Object Size and Position"), TRUE, TRUE);
 		gtk_signal_connect (GTK_OBJECT (layout_dialog), "destroy",
 				    GTK_SIGNAL_FUNC (sp_object_layout_dialog_destroy), NULL);
 		w = sp_selection_layout_widget_new ();
 		gtk_widget_show (w);
 		gtk_container_add (GTK_CONTAINER (layout_dialog), w);
 		gtk_widget_show (layout_dialog);
-	} else {
-		gtk_window_present (GTK_WINDOW (layout_dialog));
 	}
+
+	gtk_window_present (GTK_WINDOW (layout_dialog));
 }
 
 GtkWidget *

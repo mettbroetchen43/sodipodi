@@ -45,7 +45,7 @@ sp_tool_attributes_dialog (void)
 	ec = SP_DT_EVENTCONTEXT (SP_ACTIVE_DESKTOP);
 
 	if (!dlg) {
-		dlg = sp_window_new (_("Tool attributes"), TRUE);
+		dlg = sp_window_new (_("Tool attributes"), TRUE, TRUE);
 		g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_tool_attributes_dialog_destroy), NULL);
 
 		sp_tool_attributes_dialog_setup (ec);

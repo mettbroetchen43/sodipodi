@@ -102,7 +102,7 @@ sp_maintoolbox_create_toplevel (void)
 	GtkWidget *window, *toolbox;
 
 	/* Create window */
-	window = sp_window_new (_("Sodipodi"), FALSE);
+	window = sp_window_new (_("Sodipodi"), FALSE, FALSE);
 	g_signal_connect (G_OBJECT (window), "destroy", G_CALLBACK (sp_maintoolbox_window_destroy), NULL);
 
 	toolbox = sp_maintoolbox_new ();

@@ -84,7 +84,7 @@ sp_fill_style_dialog (void)
 	if (!dialog) {
 		GtkWidget *fs;
 
-		dialog = sp_window_new (_("Fill style"), TRUE);
+		dialog = sp_window_new (_("Fill style"), TRUE, TRUE);
 		g_signal_connect (G_OBJECT (dialog), "destroy", G_CALLBACK (sp_fill_style_dialog_destroy), NULL);
 
 		fs = sp_fill_style_widget_new ();
@@ -93,6 +93,8 @@ sp_fill_style_dialog (void)
 
 		gtk_widget_show (dialog);
 	}
+
+	gtk_window_present ((GtkWindow *) dialog);
 }
 
 GtkWidget *

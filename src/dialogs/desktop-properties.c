@@ -192,7 +192,7 @@ sp_desktop_dialog_new (void)
 	GCallback cb;
 	int row;
 
-	dialog = sp_window_new (_("Desktop settings"), FALSE);
+	dialog = sp_window_new (_("Desktop settings"), FALSE, TRUE);
 
 	nb = gtk_notebook_new ();
 	gtk_widget_show (nb);

@@ -115,7 +115,7 @@ sp_object_attr_show_dialog (SPObject *object, const SPAttrDesc *desc, const guch
 	}
 
 	title = g_strdup_printf (_("%s attributes"), tag);
-	w = sp_window_new (title, TRUE);
+	w = sp_window_new (title, TRUE, FALSE);
 	g_free (title);
 
 	t = sp_attribute_table_new (object, len, labels, attrs);

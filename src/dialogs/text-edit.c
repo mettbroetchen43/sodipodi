@@ -99,7 +99,7 @@ sp_text_edit_dialog (void)
 		GList *sl;
 		int i;
 
-		dlg = sp_window_new (_("Text properties"), TRUE);
+		dlg = sp_window_new (_("Text properties"), TRUE, TRUE);
 		gtk_window_set_policy (GTK_WINDOW (dlg), TRUE, TRUE, FALSE);
 		g_signal_connect (G_OBJECT (dlg), "destroy", G_CALLBACK (sp_text_edit_dialog_destroy), dlg);
 		g_signal_connect (G_OBJECT (dlg), "delete_event", G_CALLBACK (sp_text_edit_dialog_delete), dlg);

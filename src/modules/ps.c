@@ -494,6 +494,9 @@ sp_module_print_plain_finish (SPModulePrint *mod)
 
 	res = fprintf (pmod->stream, "showpage\n");
 
+	/* Flush stream to be sure */
+	(void) fflush (pmod->stream);
+
 	/* fixme: should really use pclose for popen'd streams */
 	fclose (pmod->stream);
 	pmod->stream = 0;

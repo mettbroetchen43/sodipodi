@@ -192,7 +192,7 @@ sp_transformation_dialog_new (void)
 	GtkWidget *hb, *vb, *nbook, *page, *img, *cb, *bb, *b;
 	SPSelection *sel;
 
-	dlg = sp_window_new (_("Transform selection"), FALSE);
+	dlg = sp_window_new (_("Transform selection"), FALSE, TRUE);
 
 	/* Toplevel hbox */
 	hb = gtk_hbox_new (FALSE, 0);

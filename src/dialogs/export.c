@@ -137,7 +137,7 @@ sp_export_dialog (void)
 	if (!dlg) {
 		GtkWidget *vb, *f, *t, *hb, *us, *l, *cpicker, *fe, *hs, *b;
 
-		dlg = sp_window_new (_("Export bitmap"), FALSE);
+		dlg = sp_window_new (_("Export bitmap"), FALSE, TRUE);
 		gtk_signal_connect (GTK_OBJECT (dlg), "destroy", GTK_SIGNAL_FUNC (sp_export_dialog_destroy), NULL);
 
 		vb = gtk_vbox_new (FALSE, 4);
