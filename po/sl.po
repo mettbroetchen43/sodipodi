@@ -63,7 +63,7 @@ msgstr "Pod_voji"
 
 #: glade/sodipodi-glade.c:17
 msgid "_Delete"
-msgstr "Izbri¹i"
+msgstr "_Zbri¹i"
 
 #: glade/sodipodi-glade.c:18
 msgid "Node Editing..."
@@ -232,12 +232,12 @@ msgstr "Besedilo"
 
 #: glade/sodipodi-glade.c:62
 msgid "Delete selected object(s)"
-msgstr "Izbri¹i izbran(e) predmet(e)"
+msgstr "Zbri¹i izbran(e) predmet(e)"
 
 #: glade/sodipodi-glade.c:63 glade/sodipodi-glade.c:118
 #: glade/sodipodi-glade.c:185 glade/xml-tree.c:18
 msgid "Delete"
-msgstr "Izbri¹i"
+msgstr "Zbri¹i"
 
 #: glade/sodipodi-glade.c:64
 msgid "Duplicate selected object(s)"
@@ -426,7 +426,7 @@ msgstr "Dodaj"
 
 #: glade/sodipodi-glade.c:117
 msgid "Delete selected nodes"
-msgstr "Izbri¹i izbrane toèke"
+msgstr "Zbri¹i izbrane toèke"
 
 #: glade/sodipodi-glade.c:119
 msgid "Break"
@@ -724,11 +724,11 @@ msgstr "Dodaj atribut"
 
 #: glade/xml-tree.c:30
 msgid "Delete attribute"
-msgstr "Izbri¹i atribut"
+msgstr "Zbri¹i atribut"
 
 #: glade/xml-tree.c:31
 msgid "Do you want to delete attribute?"
-msgstr "®elite izbrisati atribut?"
+msgstr "®elite zbrisati atribut?"
 
 #: src/main.c:51
 msgid "Do not use GUI. NB! if exist, should be FIRST argument!"
