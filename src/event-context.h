@@ -64,6 +64,10 @@ void sp_event_context_desactivate (SPEventContext *ec);
 gint sp_event_context_root_handler (SPEventContext *ec, GdkEvent *event);
 gint sp_event_context_item_handler (SPEventContext *ec, SPItem *item, GdkEvent *event);
 
+SPItem *sp_event_context_create_item (SPEventContext *ec,
+				      const unsigned char *name, const unsigned char *truename,
+				      const unsigned char *stylepath);
+
 GtkWidget *sp_event_context_config_widget (SPEventContext *ec);
 
 void sp_event_root_menu_popup (SPDesktop *desktop, SPItem *item, GdkEvent *event);

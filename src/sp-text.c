@@ -414,7 +414,6 @@ sp_tspan_init (SPTSpan *tspan)
 	sp_svg_length_unset (&tspan->ly.dx, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	sp_svg_length_unset (&tspan->ly.dy, SP_SVG_UNIT_NONE, 0.0, 0.0);
 	tspan->ly.linespacing = 1.0;
-	tspan->string = NULL;
 }
 
 static void
@@ -448,9 +447,9 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 
 	/* fixme: We should really pick up first child always */
 	string = g_object_new (SP_TYPE_STRING, NULL);
-	tspan->string = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
+	object->children = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
 	string->ly = &tspan->ly;
-	sp_object_invoke_build (tspan->string, doc, rch, SP_OBJECT_IS_CLONED (object));
+	sp_object_invoke_build (object->children, doc, rch, SP_OBJECT_IS_CLONED (object));
 }
 
 static void
@@ -460,8 +459,8 @@ sp_tspan_release (SPObject *object)
 
 	tspan = SP_TSPAN (object);
 
-	if (tspan->string) {
-		tspan->string = sp_object_detach_unref (SP_OBJECT (object), tspan->string);
+	if (object->children) {
+		object->children = sp_object_detach_unref (SP_OBJECT (object), object->children);
 	} else {
 		g_print ("NULL tspan content\n");
 	}
@@ -535,13 +534,13 @@ sp_tspan_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 	if (((SPObjectClass *) tspan_parent_class)->child_added)
 		((SPObjectClass *) tspan_parent_class)->child_added (object, rch, ref);
 
-	if (!tspan->string && (sp_repr_is_text (rch) || sp_repr_is_cdata (rch))) {
+	if (!object->children && (sp_repr_is_text (rch) || sp_repr_is_cdata (rch))) {
 		SPString *string;
 		/* fixme: We should really pick up first child always */
 		string = g_object_new (SP_TYPE_STRING, 0);
-		tspan->string = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
+		object->children = sp_object_attach_reref (object, SP_OBJECT (string), NULL);
 		string->ly = &tspan->ly;
-		sp_object_invoke_build (tspan->string, SP_OBJECT_DOCUMENT (object), rch, SP_OBJECT_IS_CLONED (object));
+		sp_object_invoke_build (object->children, SP_OBJECT_DOCUMENT (object), rch, SP_OBJECT_IS_CLONED (object));
 	}
 }
 
@@ -558,8 +557,8 @@ sp_tspan_remove_child (SPObject *object, SPRepr *rch)
 		if (!ret) return ret;
 	}
 
-	if (tspan->string && (SP_OBJECT_REPR (tspan->string) == rch)) {
-		tspan->string = sp_object_detach_unref (object, tspan->string);
+	if (object->children && (SP_OBJECT_REPR (object->children) == rch)) {
+		object->children = sp_object_detach_unref (object, object->children);
 	}
 
 	return TRUE;
@@ -590,9 +589,9 @@ sp_tspan_update (SPObject *object, SPCtx *ctx, guint flags)
 	sp_text_update_length (&tspan->ly.dx, style->font_size.computed, style->font_size.computed * 0.5, d);
 	sp_text_update_length (&tspan->ly.dy, style->font_size.computed, style->font_size.computed * 0.5, d);
 
-	if (tspan->string) {
-		if (flags || (tspan->string->uflags & SP_OBJECT_MODIFIED_FLAG)) {
-			sp_object_invoke_update (tspan->string, ctx, flags);
+	if (object->children) {
+		if (flags || (object->children->uflags & SP_OBJECT_MODIFIED_FLAG)) {
+			sp_object_invoke_update (object->children, ctx, flags);
 		}
 	}
 }
@@ -612,9 +611,9 @@ sp_tspan_modified (SPObject *object, unsigned int flags)
 	if (flags & SP_OBJECT_MODIFIED_FLAG) flags |= SP_OBJECT_PARENT_MODIFIED_FLAG;
 	flags &= SP_OBJECT_MODIFIED_CASCADE;
 
-	if (tspan->string) {
-		if (flags || (tspan->string->mflags & SP_OBJECT_MODIFIED_FLAG)) {
-			sp_object_invoke_modified (tspan->string, flags);
+	if (object->children) {
+		if (flags || (object->children->mflags & SP_OBJECT_MODIFIED_FLAG)) {
+			sp_object_invoke_modified (object->children, flags);
 		}
 	}
 }
@@ -642,7 +641,7 @@ sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 	if (flags & SP_OBJECT_WRITE_BUILD) {
 		SPRepr *rstr;
 		char *text;
-		text = g_utf16_to_utf8 (SP_STRING_UCHARS (tspan->string), -1, NULL, NULL, NULL);
+		text = g_utf16_to_utf8 (SP_STRING_UCHARS (object->children), -1, NULL, NULL, NULL);
 		/* TEXT element */
 		rstr = sp_xml_document_createTextNode (sp_repr_get_doc (repr), text);
 		g_free (text);
@@ -650,7 +649,7 @@ sp_tspan_write (SPObject *object, SPRepr *repr, guint flags)
 		sp_repr_append_child (repr, rstr);
 		sp_repr_unref (rstr);
 	} else {
-		sp_repr_set_content_ucs2 (SP_OBJECT_REPR (tspan->string), SP_STRING_UCHARS (tspan->string));
+		sp_repr_set_content_ucs2 (SP_OBJECT_REPR (object->children), SP_STRING_UCHARS (object->children));
 	}
 
 	/* fixme: Strictly speaking, item class write 'transform' too */
@@ -668,8 +667,8 @@ sp_tspan_bbox (SPItem *item, NRRectF *bbox, const NRMatrixD *transform, unsigned
 
 	tspan = SP_TSPAN (item);
 
-	if (tspan->string) {
-		sp_item_invoke_bbox_full (SP_ITEM (tspan->string), bbox, transform, flags, FALSE);
+	if (((SPObject *) tspan)->children) {
+		sp_item_invoke_bbox_full (SP_ITEM (((SPObject *) tspan)->children), bbox, transform, flags, FALSE);
 	}
 }
 
@@ -680,11 +679,11 @@ sp_tspan_show (SPItem *item, NRArena *arena, unsigned int key, unsigned int flag
 
 	tspan = SP_TSPAN (item);
 
-	if (tspan->string) {
+	if (((SPObject *) tspan)->children) {
 		NRArenaItem *ai, *ac;
 		ai = nr_arena_item_new (arena, NR_TYPE_ARENA_GROUP);
 		nr_arena_group_set_transparent (NR_ARENA_GROUP (ai), FALSE);
-		ac = sp_item_invoke_show (SP_ITEM (tspan->string), arena, key, flags);
+		ac = sp_item_invoke_show (SP_ITEM (((SPObject *) tspan)->children), arena, key, flags);
 		if (ac) {
 			nr_arena_item_add_child (ai, ac, NULL);
 			nr_arena_item_unref (ac);
@@ -702,7 +701,7 @@ sp_tspan_hide (SPItem *item, unsigned int key)
 
 	tspan = SP_TSPAN (item);
 
-	if (tspan->string) sp_item_invoke_hide (SP_ITEM (tspan->string), key);
+	if (((SPObject *) tspan)->children) sp_item_invoke_hide (SP_ITEM (((SPObject *) tspan)->children), key);
 
 	if (((SPItemClass *) tspan_parent_class)->hide)
 		((SPItemClass *) tspan_parent_class)->hide (item, key);
@@ -715,7 +714,7 @@ sp_tspan_set_shape (SPTSpan *tspan, SPLayoutData *ly, ArtPoint *cp, gboolean fir
 
 	style = SP_OBJECT_STYLE (tspan);
 
-	sp_string_set_shape (SP_STRING (tspan->string), &tspan->ly, cp, inspace);
+	sp_string_set_shape (SP_STRING (((SPObject *) tspan)->children), &tspan->ly, cp, inspace);
 }
 
 /* SPText */
@@ -1610,7 +1609,7 @@ sp_text_print (SPItem *item, SPPrintContext *ctx)
 
 	for (ch = ((SPObject *) text)->children; ch != NULL; ch = ch->next) {
 		if (SP_IS_TSPAN (ch)) {
-			sp_chars_do_print (SP_CHARS (SP_TSPAN (ch)->string), ctx, &ctm, &pbox, &dbox, &bbox);
+			sp_chars_do_print (SP_CHARS (((SPObject *) ch)->children), ctx, &ctm, &pbox, &dbox, &bbox);
 		} else if (SP_IS_STRING (ch)) {
 			sp_chars_do_print (SP_CHARS (ch), ctx, &ctm, &pbox, &dbox, &bbox);
 		}
@@ -1651,10 +1650,11 @@ sp_text_get_string_multiline (SPText *text)
 			SPTSpan *tspan;
 			tspan = SP_TSPAN (ch);
 
-			if (tspan->string && SP_STRING_UCHARS (tspan->string)) {
+			if (((SPObject *) tspan)->children && SP_STRING_UCHARS (((SPObject *) tspan)->children)) {
 				char *text;
 				/* Memory allocated, it should be freed later */
-				text = g_utf16_to_utf8 (SP_STRING_UCHARS (tspan->string), -1, NULL, NULL, NULL);
+				text = g_utf16_to_utf8 (SP_STRING_UCHARS (((SPObject *) tspan)->children), -1,
+							NULL, NULL, NULL);
 				strs = g_slist_prepend (strs, text);
 			}
 		} else if (SP_IS_STRING (ch) && SP_STRING_UCHARS (ch)) {
@@ -1765,7 +1765,7 @@ sp_text_normalized_bpath_list (SPText *text)
 		} else if (SP_IS_TSPAN (child)) {
 			SPTSpan *tspan;
 			tspan = SP_TSPAN (child);
-			c = sp_chars_normalized_bpath_list (SP_CHARS (tspan->string));
+			c = sp_chars_normalized_bpath_list (SP_CHARS (((SPObject *) tspan)->children));
 		} else {
 			c = NULL;
 		}

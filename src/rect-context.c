@@ -44,7 +44,6 @@ static void sp_rect_context_setup (SPEventContext *ec);
 static void sp_rect_context_set (SPEventContext *ec, const guchar *key, const guchar *val);
 
 static gint sp_rect_context_root_handler (SPEventContext * event_context, GdkEvent * event);
-static gint sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 static GtkWidget *sp_rect_context_config_widget (SPEventContext *ec);
 
 static void sp_rect_drag (SPRectContext * rc, double x, double y, guint state);
@@ -89,7 +88,6 @@ sp_rect_context_class_init (SPRectContextClass * klass)
 	event_context_class->set = sp_rect_context_set;
 #endif
 	event_context_class->root_handler  = sp_rect_context_root_handler;
-	event_context_class->item_handler  = sp_rect_context_item_handler;
 	event_context_class->config_widget = sp_rect_context_config_widget;
 }
 
@@ -139,25 +137,12 @@ sp_rect_context_set (SPEventContext *ec, const guchar *key, const guchar *val)
 	rc = SP_RECT_CONTEXT (ec);
 
 	if (!strcmp (key, "rx_ratio")) {
-		rc->rx_ratio = (val) ? sp_svg_atof (val) : 0.0;
+		if (!sp_svg_number_read_d (val, &rc->rx_ratio)) rc->rx_ratio = 0.0;
 		rc->rx_ratio = CLAMP (rc->rx_ratio, 0.0, 1.0);
 	} else if (!strcmp (key, "ry_ratio")) {
-		rc->ry_ratio = (val) ? sp_svg_atof (val) : 0.0;
+		if (!sp_svg_number_read_d (val, &rc->ry_ratio)) rc->ry_ratio = 0.0;
 		rc->ry_ratio = CLAMP (rc->ry_ratio, 0.0, 1.0);
 	}
-}
-
-static gint
-sp_rect_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
-{
-	gint ret;
-
-	ret = FALSE;
-
-	if (((SPEventContextClass *) parent_class)->item_handler)
-		ret = ((SPEventContextClass *) parent_class)->item_handler (event_context, item, event);
-
-	return ret;
 }
 
 static gint
@@ -224,33 +209,12 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	SPDesktop * desktop;
 	NRPointF p0, p1;
 	gdouble x0, y0, x1, y1, w, h;
-	GString * xs, * ys;
-	gchar status[80];
-	NRPointF fp;
+	unsigned char c0[32], c1[32], c[256];
 
 	desktop = SP_EVENT_CONTEXT (rc)->desktop;
 
 	if (!rc->item) {
-		SPRepr * repr, * style;
-		SPCSSAttr * css;
-		NRMatrixF i2root, root2i;
-		/* Create object */
-		repr = sp_repr_new ("rect");
-		/* Set style */
-		style = sodipodi_get_repr (SODIPODI, "tools.shapes.rect");
-		if (style) {
-			css = sp_repr_css_attr_inherited (style, "style");
-			sp_repr_css_set (repr, css, "style");
-			sp_repr_css_attr_unref (css);
-		}
-		/* rc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr); */
-		sp_repr_append_child (SP_OBJECT_REPR (desktop->base), repr);
-		rc->item = (SPItem *) sp_document_lookup_id (SP_DT_DOCUMENT (desktop), sp_repr_get_attr (repr, "id"));
-		sp_repr_unref (repr);
-		/* Set item coordinate system identical to root, regardless of base */
-		sp_item_i2root_affine (rc->item, &i2root);
-		nr_matrix_f_invert (&root2i, &i2root);
-		sp_item_set_item_transform (rc->item, &root2i);
+		rc->item = sp_event_context_create_item ((SPEventContext *) rc, "rect", NULL, "tools.shapes.rect");
 	}
 
 	/* This is bit ugly, but so we are */
@@ -317,12 +281,8 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 		sp_desktop_free_snap (desktop, &p1);
 	}
 
-	sp_desktop_dt2root_xy_point (desktop, &fp, p0.x, p0.y);
-	p0.x = fp.x;
-	p0.y = fp.y;
-	sp_desktop_dt2root_xy_point (desktop, &fp, p1.x, p1.y);
-	p1.x = fp.x;
-	p1.y = fp.y;
+	sp_desktop_dt2root_xy_point (desktop, &p0, p0.x, p0.y);
+	sp_desktop_dt2root_xy_point (desktop, &p1, p1.x, p1.y);
 
 	x0 = MIN (p0.x, p1.x);
 	y0 = MIN (p0.y, p1.y);
@@ -335,13 +295,10 @@ sp_rect_drag (SPRectContext * rc, double x, double y, guint state)
 	if (rc->rx_ratio != 0.0) sp_rect_set_rx ((SPRect *) rc->item, TRUE, 0.5 * rc->rx_ratio * w); 
 	if (rc->ry_ratio != 0.0) sp_rect_set_ry ((SPRect *) rc->item, TRUE, 0.5 * rc->ry_ratio * h); 
 
-	/* status text */
-	xs = SP_PT_TO_METRIC_STRING (fabs (x1-x0), SP_DEFAULT_METRIC);
-	ys = SP_PT_TO_METRIC_STRING (fabs (y1-y0), SP_DEFAULT_METRIC);
-	g_snprintf (status, 80, "Draw rectangle  %s x %s", xs->str, ys->str);
-	sp_view_set_status (SP_VIEW (desktop), status, FALSE);
-	g_string_free (xs, TRUE);
-	g_string_free (ys, TRUE);
+	sp_desktop_write_length (desktop, c0, 32, fabs (x1 - x0));
+	sp_desktop_write_length (desktop, c1, 32, fabs (y1 - y0));
+	g_snprintf (c, 80, "Draw rectangle  %s x %s", c0, c1);
+	sp_view_set_status (SP_VIEW (desktop), c, FALSE);
 }
 
 static void

@@ -27,6 +27,8 @@
 
 #include "shortcuts.h"
 
+#include "sodipodi.h"
+#include "document.h"
 #include "desktop.h"
 #include "desktop-handles.h"
 #include "desktop-affine.h"
@@ -503,6 +505,35 @@ sp_event_context_item_handler (SPEventContext * event_context, SPItem * item, Gd
 	}
 
 	return ret;
+}
+
+SPItem *
+sp_event_context_create_item (SPEventContext *ec, const unsigned char *name, const unsigned char *truename,
+			      const unsigned char *stylepath)
+{
+	SPRepr *repr, *style;
+	SPCSSAttr *css;
+	SPItem *item;
+	NRMatrixF i2root, root2i;
+	/* Create object */
+	repr = sp_repr_new (name);
+	if (truename) sp_repr_set_attr (repr, "sodipodi:type", truename);
+	/* Set style */
+	style = sodipodi_get_repr (SODIPODI, stylepath);
+	if (style) {
+		css = sp_repr_css_attr_inherited (style, "style");
+		sp_repr_css_set (repr, css, "style");
+		sp_repr_css_attr_unref (css);
+	}
+	/* rc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr); */
+	sp_repr_append_child (SP_OBJECT_REPR (ec->desktop->base), repr);
+	item = (SPItem *) sp_document_lookup_id (SP_DT_DOCUMENT (ec->desktop), sp_repr_get_attr (repr, "id"));
+	sp_repr_unref (repr);
+	/* Set item coordinate system identical to root, regardless of base */
+	sp_item_i2root_affine (item, &i2root);
+	nr_matrix_f_invert (&root2i, &i2root);
+	sp_item_set_item_transform (item, &root2i);
+	return item;
 }
 
 GtkWidget *

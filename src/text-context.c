@@ -270,6 +270,8 @@ sp_text_context_setup_text (SPTextContext *tc)
 {
 	SPRepr *rtext, *rtspan, *rstring, *style;
 	SPEventContext *ec;
+	SPItem *item;
+	NRMatrixF i2root, root2i;
 
 	ec = SP_EVENT_CONTEXT (tc);
 
@@ -293,7 +295,15 @@ sp_text_context_setup_text (SPTextContext *tc)
 	rstring = sp_xml_document_createTextNode (sp_repr_get_doc (rtext), "");
 	sp_repr_add_child (rtspan, rstring, NULL);
 	sp_repr_unref (rstring);
-	sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), rtext);
+
+	/* sp_document_add_repr (SP_DT_DOCUMENT (ec->desktop), rtext); */
+	sp_repr_append_child (SP_OBJECT_REPR (ec->desktop->base), rtext);
+	item = (SPItem *) sp_document_lookup_id (SP_DT_DOCUMENT (ec->desktop), sp_repr_get_attr (rtext, "id"));
+	/* Set item coordinate system identical to root, regardless of base */
+	sp_item_i2root_affine (item, &i2root);
+	nr_matrix_f_invert (&root2i, &i2root);
+	sp_item_set_item_transform (item, &root2i);
+
 	/* fixme: Is selection::changed really immediate? */
 	sp_selection_set_repr (SP_DT_SELECTION (ec->desktop), rtext);
 	sp_repr_unref (rtext);

@@ -36,11 +36,7 @@ static void sp_arc_context_class_init (SPArcContextClass *klass);
 static void sp_arc_context_init (SPArcContext *arc_context);
 static void sp_arc_context_dispose (GObject *object);
 
-#if 0
-static void sp_arc_context_setup (SPEventContext *ec);
-#endif
 static gint sp_arc_context_root_handler (SPEventContext * event_context, GdkEvent * event);
-static gint sp_arc_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event);
 
 static void sp_arc_drag (SPArcContext * ec, double x, double y, guint state);
 static void sp_arc_finish (SPArcContext * ec);
@@ -79,11 +75,7 @@ sp_arc_context_class_init (SPArcContextClass *klass)
 
 	object_class->dispose = sp_arc_context_dispose;
 
-#if 0
-	event_context_class->setup = sp_arc_context_setup;
-#endif
 	event_context_class->root_handler = sp_arc_context_root_handler;
-	event_context_class->item_handler = sp_arc_context_item_handler;
 }
 
 static void
@@ -108,28 +100,6 @@ sp_arc_context_dispose (GObject *object)
 	if (ac->item) sp_arc_finish (ac);
 
 	G_OBJECT_CLASS (parent_class)->dispose (object);
-}
-
-#if 0
-static void
-sp_arc_context_setup (SPEventContext *ec)
-{
-	if (SP_EVENT_CONTEXT_CLASS (parent_class)->setup)
-		SP_EVENT_CONTEXT_CLASS (parent_class)->setup (event_context, desktop);
-}
-#endif
-
-static gint
-sp_arc_context_item_handler (SPEventContext * event_context, SPItem * item, GdkEvent * event)
-{
-	gint ret;
-
-	ret = FALSE;
-
-	if (((SPEventContextClass *) parent_class)->item_handler)
-		ret = ((SPEventContextClass *) parent_class)->item_handler (event_context, item, event);
-
-	return ret;
 }
 
 static gint
@@ -198,25 +168,11 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 	NRPointF p0, p1;
 	gdouble x0, y0, x1, y1;
 	unsigned char c0[32], c1[32], c[256];
-	NRPointF fp;
 
 	desktop = SP_EVENT_CONTEXT (ac)->desktop;
 
 	if (!ac->item) {
-		SPRepr * repr, * style;
-		SPCSSAttr * css;
-		/* Create object */
-		repr = sp_repr_new ("path");
-		sp_repr_set_attr (repr, "sodipodi:type", "arc");
-		/* Set style */
-		style = sodipodi_get_repr (SODIPODI, "tools.shapes.arc");
-		if (style) {
-			css = sp_repr_css_attr_inherited (style, "style");
-			sp_repr_css_set (repr, css, "style");
-			sp_repr_css_attr_unref (css);
-		}
-		ac->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
-		sp_repr_unref (repr);
+		ac->item = sp_event_context_create_item ((SPEventContext *) ac, "path", "arc", "tools.shapes.arc");
 	}
 
 	/* This is bit ugly, but so we are */
@@ -227,9 +183,9 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 		dx = x - ac->center.x;
 		dy = y - ac->center.y;
 		if ((fabs (dx) > fabs (dy)) && (dy != 0.0)) {
-			dx = floor (dx/dy + 0.5) * dy;
+			dx = floor (dx / dy + 0.5) * dy;
 		} else if (dx != 0.0) {
-			dy = floor (dy/dx + 0.5) * dx;
+			dy = floor (dy / dx + 0.5) * dx;
 		}
 		p1.x = ac->center.x + dx;
 		p1.y = ac->center.y + dy;
@@ -283,12 +239,8 @@ sp_arc_drag (SPArcContext * ac, double x, double y, guint state)
 		sp_desktop_free_snap (desktop, &p1);
 	}
 
-	sp_desktop_dt2root_xy_point (desktop, &fp, p0.x, p0.y);
-	p0.x = fp.x;
-	p0.y = fp.y;
-	sp_desktop_dt2root_xy_point (desktop, &fp, p1.x, p1.y);
-	p1.x = fp.x;
-	p1.y = fp.y;
+	sp_desktop_dt2root_xy_point (desktop, &p0, p0.x, p0.y);
+	sp_desktop_dt2root_xy_point (desktop, &p1, p1.x, p1.y);
 
 	x0 = MIN (p0.x, p1.x);
 	y0 = MIN (p0.y, p1.y);

@@ -41,7 +41,7 @@ G_BEGIN_DECLS
 #define SP_TEXT_CONTENT_MODIFIED_FLAG SP_OBJECT_USER_MODIFIED_FLAG_A
 #define SP_TEXT_LAYOUT_MODIFIED_FLAG SP_OBJECT_USER_MODIFIED_FLAG_A
 
-#define SP_TSPAN_STRING(t) ((SPString *) SP_TSPAN (t)->string)
+#define SP_TSPAN_STRING(t) ((SPString *) ((SPObject *) (t))->children)
 
 #include <libnr/nr-types.h>
 #include <libnrtype/nr-glyphs.h>
@@ -113,7 +113,7 @@ struct _SPTSpan {
 
 	SPLayoutData ly;
 
-	SPObject *string;
+	/* SPObject *string; */
 };
 
 struct _SPTSpanClass {

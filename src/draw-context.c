@@ -580,29 +580,16 @@ spdc_flush_white (SPDrawContext *dc, SPCurve *gc)
 		if (dc->white_item) {
 			repr = SP_OBJECT_REPR (dc->white_item);
 		} else {
-			SPRepr *style;
-			repr = sp_repr_new ("path");
+			SPItem *item;
 			/* fixme: Pen and pencil need separate style (Lauris) */
-			style = sodipodi_get_repr (SODIPODI, "tools.freehand");
-			if (style) {
-				SPCSSAttr *css;
-				css = sp_repr_css_attr_inherited (style, "style");
-				sp_repr_css_set (repr, css, "style");
-				sp_repr_css_attr_unref (css);
-			}
+			item = sp_event_context_create_item ((SPEventContext *) dc, "path", NULL, "tools.freehand");
+			repr = SP_OBJECT_REPR (item);
 		}
 
 		str = sp_svg_write_path (SP_CURVE_BPATH (c));
 		g_assert (str != NULL);
 		sp_repr_set_attr (repr, "d", str);
 		g_free (str);
-
-		if (!dc->white_item) {
-			/* Attach repr */
-			sp_document_add_repr (SP_DT_DOCUMENT (dt), repr);
-			sp_selection_set_repr (dc->selection, repr);
-			sp_repr_unref (repr);
-		}
 
 		sp_document_done (doc);
 	}

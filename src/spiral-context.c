@@ -220,28 +220,11 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 	gdouble dx, dy, rad, arg;
 	GString *xs, *ys;
 	gchar status[80];
-	NRPointF fp;
 
 	desktop = SP_EVENT_CONTEXT (sc)->desktop;
 
 	if (!sc->item) {
-		SPRepr * repr, * style;
-		SPCSSAttr * css;
-		/* Create object */
-		repr = sp_repr_new ("path");
-                sp_repr_set_attr (repr, "sodipodi:type", "spiral");
-		/* Set style */
-		style = sodipodi_get_repr (SODIPODI, "tools.shapes.spiral");
-		if (style) {
-			css = sp_repr_css_attr_inherited (style, "style");
-			sp_repr_css_set (repr, css, "style");
-			sp_repr_css_attr_unref (css);
-		}
-                else
-                  g_print ("sp_spiral_drag: cant get style\n");
-
-		sc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
-		sp_repr_unref (repr);
+		sc->item = sp_event_context_create_item ((SPEventContext *) sc, "path", "spiral", "tools.shapes.spiral");
 	}
 
 	/* This is bit ugly, but so we are */
@@ -250,12 +233,9 @@ sp_spiral_drag (SPSpiralContext * sc, double x, double y, guint state)
 /*  	} else if (state & GDK_SHIFT_MASK) { */
 
 	/* Free movement for corner point */
-	sp_desktop_dt2root_xy_point (desktop, &fp, sc->center.x, sc->center.y);
-	p0.x = fp.x;
-	p0.y = fp.y;
-	sp_desktop_dt2root_xy_point (desktop, &fp, x, y);
-	p1.x = fp.x;
-	p1.y = fp.y;
+	sp_desktop_dt2root_xy_point (desktop, &p0, sc->center.x, sc->center.y);
+	sp_desktop_dt2root_xy_point (desktop, &p1, x, y);
+
 	sp_desktop_free_snap (desktop, &p1);
 	
 	spiral = SP_SPIRAL (sc->item);

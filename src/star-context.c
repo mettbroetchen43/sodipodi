@@ -220,20 +220,7 @@ sp_star_drag (SPStarContext * sc, double x, double y, guint state)
 	desktop = SP_EVENT_CONTEXT (sc)->desktop;
 
 	if (!sc->item) {
-		SPRepr * repr, * style;
-		SPCSSAttr * css;
-		/* Create object */
-		repr = sp_repr_new ("polygon");
-                sp_repr_set_attr (repr, "sodipodi:type", "star");
-		/* Set style */
-		style = sodipodi_get_repr (SODIPODI, "tools.shapes.star");
-		if (style) {
-			css = sp_repr_css_attr_inherited (style, "style");
-			sp_repr_css_set (repr, css, "style");
-			sp_repr_css_attr_unref (css);
-		}
-		sc->item = (SPItem *) sp_document_add_repr (SP_DT_DOCUMENT (desktop), repr);
-		sp_repr_unref (repr);
+		sc->item = sp_event_context_create_item ((SPEventContext *) sc, "polygon", "star", "tools.shapes.star");
 	}
 
 	/* This is bit ugly, but so we are */
