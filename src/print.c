@@ -200,6 +200,12 @@ sp_print_stroke (SPPrintContext *ctx, const NRBPath *bpath, const NRMatrixF *ctm
 		gnome_print_setlinejoin (ctx->gpc, style->stroke_linejoin.value);
 		gnome_print_setlinecap (ctx->gpc, style->stroke_linecap.value);
 
+		if (style->stroke_dash.n_dash > 0) {
+			gnome_print_setdash (ctx->gpc, style->stroke_dash.n_dash, style->stroke_dash.dash, style->stroke_dash.offset);
+		} else {
+			gnome_print_setdash (ctx->gpc, 0, NULL, 0.0);
+		}
+
 		gnome_print_bpath (ctx->gpc, bpath->path, FALSE);
 
 		gnome_print_stroke (ctx->gpc);

@@ -1,3 +1,7 @@
+2002-11-15  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/print.c (sp_print_stroke): Print dash
+
 2002-11-14  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/file.c (sp_file_exit): Close all views before exiting

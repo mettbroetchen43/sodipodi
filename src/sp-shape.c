@@ -272,7 +272,6 @@ sp_shape_style_modified (SPObject *object, guint flags)
 void
 sp_shape_print (SPItem *item, SPPrintContext *ctx)
 {
-#if 1
 	SPPath *path;
 	SPPathComp *comp;
 	NRRectF pbox, dbox, bbox;
@@ -317,129 +316,6 @@ sp_shape_print (SPItem *item, SPPrintContext *ctx)
 		bp.path = comp->curve->bpath;
 		sp_print_stroke (ctx, &bp, &ctm, SP_OBJECT_STYLE (item), &pbox, &dbox, &bbox);
 	}
-#else
-	gfloat rgb[3], opacity;
-	SPObject *object;
-	SPPath *path;
-	SPShape * shape;
-	SPPathComp * comp;
-	GSList * l;
-	ArtBpath * bpath;
-
-	object = SP_OBJECT (item);
-	path = SP_PATH (item);
-	shape = SP_SHAPE (item);
-
-	gnome_print_gsave (gpc);
-
-	for (l = path->comp; l != NULL; l = l->next) {
-		comp = (SPPathComp *) l->data;
-		if (comp->curve != NULL) {
-			const ArtBpath *bp;
-			gboolean closed;
-
-			gnome_print_gsave (gpc);
-			gnome_print_concat (gpc, comp->affine);
-			bpath = comp->curve->bpath;
-
-			closed = TRUE;
-			for (bp = bpath; bp->code != ART_END; bp++) {
-				if (bp->code == ART_MOVETO_OPEN) {
-					closed = FALSE;
-					break;
-				}
-			}
-
-			gnome_print_bpath (gpc, bpath, FALSE);
-
-			if (closed) {
-				if (object->style->fill.type == SP_PAINT_TYPE_COLOR) {
-					sp_color_get_rgb_floatv (&object->style->fill.value.color, rgb);
-					/* fixme: */
-					opacity = SP_SCALE24_TO_FLOAT (object->style->fill_opacity.value)
-						* SP_SCALE24_TO_FLOAT (object->style->opacity.value);
-					gnome_print_gsave (gpc);
-					gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
-					gnome_print_setopacity (gpc, opacity);
-					if (object->style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
-						gnome_print_eofill (gpc);
-					} else {
-						gnome_print_fill (gpc);
-					}
-					gnome_print_grestore (gpc);
-				} else if (object->style->fill.type == SP_PAINT_TYPE_PAINTSERVER) {
-					SPPainter *painter;
-					gdouble ctm[6];
-					ArtDRect pbox;
-					sp_item_i2d_affine (item, ctm);
-					sp_item_invoke_bbox (item, &pbox, NR_MATRIX_D_IDENTITY.c);
-					/* fixme: */
-					painter = sp_paint_server_painter_new (SP_OBJECT_STYLE_FILL_SERVER (object),
-									       ctm,
-									       &pbox);
-					if (painter) {
-						ArtDRect dbox, bbox, cbox;
-						ArtIRect ibox;
-						gdouble i2d[6], d2i[6];
-						gint x, y;
-						guchar *rgba;
-
-						dbox.x0 = 0.0;
-						dbox.y0 = 0.0;
-						dbox.x1 = sp_document_width (SP_OBJECT_DOCUMENT (item));
-						dbox.y1 = sp_document_height (SP_OBJECT_DOCUMENT (item));
-						sp_item_bbox_desktop (item, &bbox);
-						art_drect_intersect (&cbox, &dbox, &bbox);
-						art_drect_to_irect (&ibox, &cbox);
-						sp_item_i2d_affine (item, i2d);
-						art_affine_invert (d2i, i2d);
-
-						gnome_print_gsave (gpc);
-						if (object->style->fill_rule.value == ART_WIND_RULE_ODDEVEN) {
-							gnome_print_eoclip (gpc);
-						} else {
-							gnome_print_clip (gpc);
-						}
-						gnome_print_bpath (gpc, bpath, FALSE);
-						gnome_print_concat (gpc, d2i);
-						/* Now we are in desktop coordinates */
-						rgba = nr_pixelstore_16K_new (FALSE, 0x0);
-						for (y = ibox.y0; y < ibox.y1; y+= 64) {
-							for (x = ibox.x0; x < ibox.x1; x+= 64) {
-								memset (rgba, 0x0, 4 * 64 * 64);
-								painter->fill (painter, rgba, x, y, 64, 64, 4 * 64);
-								gnome_print_gsave (gpc);
-								gnome_print_translate (gpc, x, y + 64);
-								gnome_print_scale (gpc, 64, -64);
-								gnome_print_rgbaimage (gpc, rgba, 64, 64, 4 * 64);
-								gnome_print_grestore (gpc);
-							}
-						}
-						nr_pixelstore_16K_free (rgba);
-						gnome_print_grestore (gpc);
-						sp_painter_free (painter);
-					}
-				}
-			}
-			if (object->style->stroke.type == SP_PAINT_TYPE_COLOR) {
-				sp_color_get_rgb_floatv (&object->style->stroke.value.color, rgb);
-				/* fixme: */
-				opacity = SP_SCALE24_TO_FLOAT (object->style->stroke_opacity.value)
-					* SP_SCALE24_TO_FLOAT (object->style->opacity.value);
-				gnome_print_gsave (gpc);
-				gnome_print_setrgbcolor (gpc, rgb[0], rgb[1], rgb[2]);
-				gnome_print_setopacity (gpc, opacity);
-				gnome_print_setlinewidth (gpc, object->style->stroke_width.computed);
-				gnome_print_setlinejoin (gpc, object->style->stroke_linejoin.value);
-				gnome_print_setlinecap (gpc, object->style->stroke_linecap.value);
-				gnome_print_stroke (gpc);
-				gnome_print_grestore (gpc);
-			}
-		}
-		gnome_print_grestore (gpc);
-	}
-	gnome_print_grestore (gpc);
-#endif
 }
 
 static gchar *
@@ -530,11 +406,7 @@ sp_shape_remove_comp (SPPath *path, SPPathComp *comp)
 
 	/* fixme: */
 	for (v = item->display; v != NULL; v = v->next) {
-#if 0
-		nr_arena_shape_group_clear (NR_ARENA_SHAPE_GROUP (v->arenaitem));
-#else
 		nr_arena_shape_set_path (NR_ARENA_SHAPE (v->arenaitem), NULL, FALSE, NULL);
-#endif
 	}
 
 	if (SP_PATH_CLASS (parent_class)->remove_comp)
@@ -552,11 +424,7 @@ sp_shape_add_comp (SPPath *path, SPPathComp *comp)
 	shape = SP_SHAPE (path);
 
 	for (v = item->display; v != NULL; v = v->next) {
-#if 0
-		nr_arena_shape_group_add_component (NR_ARENA_SHAPE_GROUP (v->arenaitem), comp->curve, comp->private, comp->affine);
-#else
 		nr_arena_shape_set_path (NR_ARENA_SHAPE (v->arenaitem), comp->curve, comp->private, comp->affine);
-#endif
 	}
 
 	if (SP_PATH_CLASS (parent_class)->add_comp)
