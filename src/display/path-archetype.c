@@ -119,6 +119,7 @@ sp_path_at_new (SPCurve * curve,
 	gdouble fa[6];
 #ifdef NEW_RENDER
 	NRSVP * nrsvp0, * nrsvp1;
+	ArtSVP * svpb;
 #else
 	ArtSVP * svpb;
 #endif
@@ -146,10 +147,18 @@ sp_path_at_new (SPCurve * curve,
 	at->vpath = vpath;
 	art_vpath_bbox_drect (at->vpath, &at->bbox);
 	nrsvp0 = nr_svp_from_art_vpath (at->vpath);
+#if 0
 	nrsvp1 = nr_svp_rewind (nrsvp0);
 	nr_svp_free (nrsvp0);
 	svpa = nr_art_svp_from_svp (nrsvp1);
-	at->nrsvp = nrsvp1;
+#else
+	svpa = nr_art_svp_from_svp (nrsvp0);
+	svpb = art_svp_uncross (svpa);
+	art_svp_free (svpa);
+	svpa = art_svp_rewind_uncrossed (svpb, ART_WIND_RULE_ODDEVEN);
+	art_svp_free (svpb);
+#endif
+	at->nrsvp = nrsvp0;
 #else
 	at->vpath = art_vpath_perturb (vpath);
 	art_free (vpath);
@@ -184,7 +193,7 @@ sp_pat_free_state (SPPathAT * at)
 	g_assert (at != NULL);
 #ifdef NEW_RENDER
 	if (at->nrsvp) {
-		nr_svp_free (at->nrsvp);
+		nr_svp_free_list (at->nrsvp);
 		at->nrsvp = NULL;
 	}
 #endif

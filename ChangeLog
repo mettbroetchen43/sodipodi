@@ -1,3 +1,14 @@
+2000-12-25  Lauris Kaplinski  <lauris@helixcode.com>
+
+	* src/display/nr-primitives.h: Move NRCoord and NRPoint here
+	* src/display/nr-primitives.c: NRDRect methods
+
+	* src/display/nr-svp.*: Rewrite. NRSVP is now simple ordered
+	segment and we use linked (sorted) lists for describing more
+	complex geometries
+	* src/display/nr-svp-uncross.*: Ditto, partial implementation
+	* src/display/nr-svp-render.* Ditto. Works.
+
 2000-12-21  Lauris Kaplinski  <lauris@helixcode.com>
 
 	* src/display/nr-svp-render.c: Lot's of cleanup

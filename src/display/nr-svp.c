@@ -8,28 +8,23 @@
 #include "nr-svp-uncross.h"
 #include "nr-svp.h"
 
-#define NR_NEXT(v,l) if (++(v) >= (l)) (v) = 0
-#define NR_PREV(v,l) if (--(v) < 0) (v) = l
-
-static NRLine * nr_svp_merge_segments (GSList * segments);
-static void nr_svp_split_segments_flat (GSList * segments, NRLine * flat);
-static void nr_svp_split_flat (NRLine * l, NRLine * flat);
-static NRLine * nr_lines_sort (NRLine * l);
-static NRLine * nr_lines_sort_merge (NRLine * l1, NRLine * l2);
-
 NRSVP *
 nr_svp_from_art_vpath (ArtVpath * vpath)
 {
 	NRSVP * svp;
-	ArtVpath * s;
-	NRLine * line, * start, * flat;
-	NRCoord sx, sy, x, y;
+	NRVertex * start, * vertex;
+	NRFlat * flats, * flat;
+	NRDRect bbox;
 	gint dir, newdir;
-	GSList * segments;
+	NRCoord sx, sy, x, y;
+	ArtVpath * s;
 
-	start = flat = NULL;
+	svp = NULL;
+	start = NULL;
+	flats = NULL;
 	dir = 0;
-	segments = NULL;
+	/* Kill warning */
+	bbox.x0 = bbox.y0 = bbox.x1 = bbox.y1 = 0.0;
 	sx = sy = 0;
 
 	for (s = vpath; s->code != ART_END; s++) {
@@ -39,8 +34,14 @@ nr_svp_from_art_vpath (ArtVpath * vpath)
 			sx = NR_COORD_FROM_ART (s->x);
 			sy = NR_COORD_FROM_ART (s->y);
 			if (start) {
-				if (dir > 0) start = nr_lines_reverse_list (start);
-				segments = g_slist_prepend (segments, start);
+				NRSVP * new;
+				/* We have running segment */
+				if (dir > 0) {
+					/* We are upwards, prepended, so reverse */
+					start = nr_vertex_reverse_list (start);
+				}
+				new = nr_svp_new_full (start, &bbox, dir);
+				svp = nr_svp_insert_sorted (svp, new);
 			}
 			start = NULL;
 			dir = 0;
@@ -49,32 +50,54 @@ nr_svp_from_art_vpath (ArtVpath * vpath)
 			x = NR_COORD_FROM_ART (s->x);
 			y = NR_COORD_FROM_ART (s->y);
 			if (y != sy) {
+				/* We have valid line */
 				newdir = (y > sy) ? 1 : -1;
 				if (newdir != dir) {
+					/* We have either start or turn */
 					if (start) {
-						if (dir > 0) start = nr_lines_reverse_list (start);
-						segments = g_slist_prepend (segments, start);
+						NRSVP * new;
+						/* We have running segment */
+						if (dir > 0) {
+							/* We are upwards, prepended, so reverse */
+							start = nr_vertex_reverse_list (start);
+						}
+						new = nr_svp_new_full (start, &bbox, dir);
+						svp = nr_svp_insert_sorted (svp, new);
 					}
 					start = NULL;
 					dir = newdir;
 				}
-				/* Add line to lines list */
-				line = nr_line_new_xyxy (sx, sy, x, y);
-				line->next = start;
-				start = line;
+				if (!start) {
+					start = nr_vertex_new_xy (sx, sy);
+					bbox.x0 = bbox.x1 = sx;
+					bbox.y0 = bbox.y1 = sy;
+				}
+				/* Add vertex to list */
+				vertex = nr_vertex_new_xy (x, y);
+				vertex->next = start;
+				start = vertex;
+				nr_drect_stretch_xy (&bbox, x, y);
 				sx = x;
 				sy = y;
 			} else if (x != sx) {
+				/* Horizontal line ends running segment */
+				if (start) {
+					NRSVP * new;
+					/* We have running segment */
+					if (dir > 0) {
+						/* We are upwards, prepended, so reverse */
+						start = nr_vertex_reverse_list (start);
+					}
+					new = nr_svp_new_full (start, &bbox, dir);
+					svp = nr_svp_insert_sorted (svp, new);
+				}
+				start = NULL;
+				dir = 0;
 				/* Add horizontal lines to flat list */
-				line = nr_line_new ();
-				line->next = flat;
-				line->direction = 0;
-				line->s.x = MIN (sx, x);
-				line->s.y = y;
-				line->e.x = MAX (sx, x);
-				line->e.y = y;
-				flat = line;
+				flat = nr_flat_new_full (y, MIN (sx, x), MAX (sx, x));
+				flats = nr_flat_insert_sorted (flats, flat);
 				sx = x;
+				/* sy = y ;-) */
 			}
 			break;
 		default:
@@ -84,122 +107,46 @@ nr_svp_from_art_vpath (ArtVpath * vpath)
 		}
 	}
 	if (start) {
-		if (dir > 0) start = nr_lines_reverse_list (start);
-		segments = g_slist_prepend (segments, start);
+		NRSVP * new;
+		/* We have running segment */
+		if (dir > 0) {
+			/* We are upwards, prepended, so reverse */
+			start = nr_vertex_reverse_list (start);
+		}
+		new = nr_svp_new_full (start, &bbox, dir);
+		svp = nr_svp_insert_sorted (svp, new);
 	}
 
-	if (!segments) return NULL;
+	/* Test for empty SVP */
+	if (!svp) {
+		nr_flat_free_list (flats);
+		return NULL;
+	}
 
+#if 0
 	/* Now split all lines crossing flats */
-
-	if (flat != NULL) {
-		flat = nr_lines_sort (flat);
-		nr_svp_split_segments_flat (segments, flat);
-		nr_line_free_list (flat);
+	if (flats) {
+		nr_svp_split_flat_list (svp, flats);
+		nr_flat_free_list (flats);
 	}
 
-	/* Merge segments */
-
-	svp = nr_svp_new ();
-	svp->lines = nr_svp_merge_segments (segments);
-	g_slist_free (segments);
-
+#if 0
 	nr_svp_uncross (svp);
+#endif
+#else
+	svp = nr_svp_uncross_full (svp, flats);
+	if (flats) nr_flat_free_list (flats);
+#endif
 
 	return svp;
-}
-
-static NRLine *
-nr_svp_merge_segments (GSList * segments)
-{
-	NRLine ** lines, * start, * ln;
-	GSList * l;
-	gint len, c, i;
-
-	len = 0;
-	for (l = segments; l != NULL; l = l->next) len++;
-	lines = alloca (len * sizeof (NRLine *));
-	i = 0;
-	for (l = segments; l != NULL; l = l->next) lines[i++] = (NRLine *) l->data;
-
-	c = 0;
-	for (i = 1; i < len; i++) {
-		if (nr_lines_compare (lines[i], lines[c]) < 0) c = i;
-	}
-
-	start = ln = lines[c];
-	lines[c] = lines[c]->next;
-	if (lines[c] == NULL) lines[c] = lines[--len];
-
-	while (len > 0) {
-		c = 0;
-		for (i = 1; i < len; i++) if (nr_lines_compare (lines[i], lines[c]) < 0) c = i;
-		ln->next = lines[c];
-		ln = ln->next;
-		lines[c] = lines[c]->next;
-		if (lines[c] == NULL) lines[c] = lines[--len];
-	}
-
-	return start;
-}
-
-static void
-nr_svp_split_segments_flat (GSList * segments, NRLine * flat)
-{
-	GSList * l;
-
-	for (l = segments; l != NULL; l = l->next) {
-		nr_svp_split_flat ((NRLine *) l->data, flat);
-	}
-}
-
-static void
-nr_svp_split_flat (NRLine * l, NRLine * flat)
-{
-	NRLine * fstart, * f, * new;
-
-	fstart = flat;
-
-	while (l != NULL) {
-		NRCoord xmin, xmax;
-		/* Find first flat > ystart */
-		while ((fstart) && (fstart->s.y <= l->s.y)) fstart = fstart->next;
-		if (!fstart) return;
-		xmin = MIN (l->s.x, l->e.x);
-		xmax = MAX (l->s.x, l->e.x);
-		f = fstart;
-		while ((f) && (f->s.y < l->e.y)) {
-			/* Y overlap */
-			if ((f->s.x <= xmax) && (f->e.x >= xmin)) {
-				NRCoord x;
-				/* Bounding boxes intersect */
-				/* x = x0 + (x1 - x0)(y - y0)/(y1 - y0) */
-				x = NR_COORD_SNAP (l->s.x + (l->e.x - l->s.x) * (f->s.y - l->s.y) / (l->e.y - l->s.y));
-				if ((x >= f->s.x) && (x <= f->e.x)) {
-					/* We intersect */
-					new = nr_line_new_xyxyd (x, f->s.y, l->e.x, l->e.y, l->direction);
-					l->e.x = x;
-					l->e.y = f->s.y;
-					new->next = l->next;
-					l->next = new;
-					/* We can be sure that this line does not intersect more, so break */
-					break;
-				}
-			}
-			/* We do not intersect, so try next flat */
-			f = f->next;
-		}
-		l = l->next;
-	}
 }
 
 ArtSVP *
 nr_art_svp_from_svp (NRSVP * svp)
 {
 	ArtSVP * asvp;
-	NRLine * l;
-	gint size;
-	gint sn;
+	NRSVP * s;
+	gint n_segs, sn;
 
 	if (!svp) {
 		asvp = art_alloc (sizeof (ArtSVP));
@@ -207,35 +154,414 @@ nr_art_svp_from_svp (NRSVP * svp)
 		return asvp;
 	}
 
-	size = 0;
-	for (l = svp->lines; l != NULL; l = l->next) size++;
+	n_segs = 0;
+	for (s = svp; s != NULL; s = s->next) n_segs++;
 
-	asvp = art_alloc (sizeof (ArtSVP) + (size - 1) * sizeof (ArtSVPSeg));
-	asvp->n_segs = size;
+	asvp = art_alloc (sizeof (ArtSVP) + (n_segs - 1) * sizeof (ArtSVPSeg));
+	asvp->n_segs = n_segs;
 
 	sn = 0;
-	for (l = svp->lines; l != NULL; l = l->next) {
+	for (s = svp; s != NULL; s = s->next) {
 		ArtSVPSeg * aseg;
+		NRVertex * v;
+		gint n_points, pn;
 
 		aseg = &asvp->segs[sn];
 
-		aseg->n_points = 2;
-		aseg->dir = (l->direction == -1);
-		aseg->points = art_new (ArtPoint, 2);
-		aseg->points[0].x = NR_COORD_TO_ART (l->s.x);
-		aseg->points[0].y = NR_COORD_TO_ART (l->s.y);
-		aseg->points[1].x = NR_COORD_TO_ART (l->e.x);
-		aseg->points[1].y = NR_COORD_TO_ART (l->e.y);
-		aseg->bbox.x0 = MIN (aseg->points[0].x, aseg->points[1].x);
-		aseg->bbox.y0 = aseg->points[0].y;
-		aseg->bbox.x1 = MAX (aseg->points[0].x, aseg->points[1].x);
-		aseg->bbox.y1 = aseg->points[1].y;
+		n_points = 0;
+		for (v = s->vertex; v != NULL; v = v->next) n_points++;
+		aseg->n_points = n_points;
+
+		aseg->dir = (s->wind == -1);
+
+		aseg->points = art_new (ArtPoint, n_points);
+
+		pn = 0;
+		for (v = s->vertex; v != NULL; v = v->next) {
+			aseg->points[pn].x = NR_COORD_TO_ART (v->x);
+			aseg->points[pn].y = NR_COORD_TO_ART (v->y);
+			pn++;
+		}
+
+		aseg->bbox.x0 = NR_COORD_TO_ART (s->bbox.x0);
+		aseg->bbox.y0 = NR_COORD_TO_ART (s->bbox.y0);
+		aseg->bbox.x1 = NR_COORD_TO_ART (s->bbox.x1);
+		aseg->bbox.y1 = NR_COORD_TO_ART (s->bbox.y1);
 
 		sn++;
 	}
 
 	return asvp;
 }
+
+/*
+ * Memory management stuff follows (remember goals?)
+ */
+
+#define NR_VERTEX_ALLOC_SIZE 256
+static NRVertex * ffvertex = NULL;
+
+NRVertex *
+nr_vertex_new (void)
+{
+	NRVertex * v;
+
+	v = ffvertex;
+
+	if (v == NULL) {
+		gint i;
+		v = g_new (NRVertex, NR_VERTEX_ALLOC_SIZE);
+		for (i = 1; i < (NR_VERTEX_ALLOC_SIZE - 1); i++) v[i].next = &v[i + 1];
+		v[NR_VERTEX_ALLOC_SIZE - 1].next = NULL;
+		ffvertex = v + 1;
+	} else {
+		ffvertex = v->next;
+	}
+
+	/* fixme: remove this */
+	v->next = NULL;
+
+	return v;
+}
+
+NRVertex *
+nr_vertex_new_xy (NRCoord x, NRCoord y)
+{
+	NRVertex * v;
+
+	v = nr_vertex_new ();
+
+	v->x = x;
+	v->y = y;
+
+	return v;
+}
+
+void
+nr_vertex_free_one (NRVertex * v)
+{
+	v->next = ffvertex;
+	ffvertex = v;
+}
+
+void
+nr_vertex_free_list (NRVertex * v)
+{
+	NRVertex * l;
+
+	for (l = v; l->next != NULL; l = l->next);
+	l->next = ffvertex;
+	ffvertex = v;
+}
+
+NRVertex *
+nr_vertex_reverse_list (NRVertex * v)
+{
+	NRVertex * p;
+
+	p = NULL;
+
+	while (v) {
+		NRVertex * n;
+		n = v->next;
+		v->next = p;
+		p = v;
+		v = n;
+	}
+
+	return p;
+}
+
+#define NR_SVP_ALLOC_SIZE 32
+static NRSVP * ffsvp = NULL;
+
+NRSVP *
+nr_svp_new (void)
+{
+	NRSVP * s;
+
+	s = ffsvp;
+
+	if (s == NULL) {
+		gint i;
+		s = g_new (NRSVP, NR_SVP_ALLOC_SIZE);
+		for (i = 1; i < (NR_SVP_ALLOC_SIZE - 1); i++) s[i].next = &s[i + 1];
+		s[NR_SVP_ALLOC_SIZE - 1].next = NULL;
+		ffsvp = s + 1;
+	} else {
+		ffsvp = s->next;
+	}
+
+	/* fixme: remove this */
+	s->next = NULL;
+	s->vertex = NULL;
+
+	return s;
+}
+
+NRSVP *
+nr_svp_new_full (NRVertex * vertex, NRDRect * bbox, gint wind)
+{
+	NRSVP * svp;
+
+	svp = nr_svp_new ();
+
+	svp->vertex = vertex;
+	svp->bbox = *bbox;
+	svp->wind = wind;
+
+	return svp;
+}
+
+NRSVP *
+nr_svp_new_vertex_wind (NRVertex * vertex, gint wind)
+{
+	NRSVP * svp;
+
+	svp = nr_svp_new ();
+
+	svp->vertex = vertex;
+	svp->wind = wind;
+	nr_svp_calculate_bbox (svp);
+
+	return svp;
+}
+
+void
+nr_svp_free_one (NRSVP * svp)
+{
+	g_assert (svp);
+
+	svp->next = ffsvp;
+	ffsvp = svp;
+}
+
+void
+nr_svp_free_list (NRSVP * svp)
+{
+	NRSVP * l;
+
+	if (svp) {
+		for (l = svp; l->next != NULL; l = l->next);
+		l->next = ffsvp;
+		ffsvp = svp;
+	}
+}
+
+
+NRSVP *
+nr_svp_remove (NRSVP * start, NRSVP * svp)
+{
+	NRSVP * s, * l;
+
+	g_assert (start);
+	g_assert (svp);
+
+	s = NULL;
+	l = start;
+	while (l != svp) {
+		s = l;
+		l = l->next;
+		g_assert (l != NULL);
+	}
+
+	if (s) {
+		s->next = l->next;
+		return start;
+	}
+
+	return svp->next;
+}
+
+NRSVP *
+nr_svp_insert_sorted (NRSVP * start, NRSVP * svp)
+{
+	NRSVP * s, * l;
+
+	if (!start) return svp;
+	if (!svp) return start;
+
+	if (nr_svp_compare (svp, start) <= 0) {
+		svp->next = start;
+		return svp;
+	}
+
+	s = start;
+	for (l = start->next; l != NULL; l = l->next) {
+		if (nr_svp_compare (svp, l) <= 0) {
+			svp->next = l;
+			s->next = svp;
+			return start;
+		}
+		s = l;
+	}
+
+	svp->next = NULL;
+	s->next = svp;
+
+	return start;
+}
+
+NRSVP *
+nr_svp_move_sorted (NRSVP * start, NRSVP * svp)
+{
+	NRSVP * s, * l;
+
+	g_assert (start);
+	g_assert (svp);
+
+	s = 0;
+	l = start;
+	while (l != svp) {
+		s = l;
+		l = l->next;
+		g_assert (l != NULL);
+	}
+
+	if (s) {
+		s->next = nr_svp_insert_sorted (svp->next, svp);
+		return start;
+	}
+
+	return nr_svp_insert_sorted (start, svp);
+}
+
+gint
+nr_svp_compare (NRSVP * l, NRSVP * r)
+{
+	float xx0, yy0, x1x0, y1y0;
+	float d;
+
+	g_assert (l->vertex);
+	g_assert (l->vertex->next);
+	g_assert (r->vertex);
+	g_assert (r->vertex->next);
+
+	if (l->vertex->y < r->vertex->y) return -1;
+	if (l->vertex->y > r->vertex->y) return 1;
+	if (l->vertex->x < r->vertex->x) return -1;
+	if (l->vertex->x > r->vertex->x) return 1;
+
+	/* Y is same, X is same, checking for line orders */
+
+	xx0 = l->vertex->next->x - r->vertex->x;
+	yy0 = l->vertex->next->y - r->vertex->y;
+	x1x0 = r->vertex->next->x - r->vertex->x;
+	y1y0 = r->vertex->next->y - r->vertex->y;
+
+	d = xx0 * y1y0 - yy0 * x1x0;
+
+	/* fixme: test almost zero cases */
+	if (d < 0.0) return -1;
+	if (d > 0.0) return 1;
+
+	return 0;
+}
+
+void
+nr_svp_calculate_bbox (NRSVP * svp)
+{
+	NRVertex * v;
+
+	svp->bbox.x0 = svp->bbox.y0 = 1e18;
+	svp->bbox.x1 = svp->bbox.y1 = -1e18;
+
+	for (v = svp->vertex; v != NULL; v = v->next) {
+		svp->bbox.x0 = MIN (svp->bbox.x0, v->x);
+		svp->bbox.y0 = MIN (svp->bbox.y0, v->y);
+		svp->bbox.x1 = MAX (svp->bbox.x1, v->x);
+		svp->bbox.y1 = MAX (svp->bbox.y1, v->y);
+	}
+}
+
+#define NR_FLAT_ALLOC_SIZE 32
+static NRFlat * ffflat = NULL;
+
+NRFlat *
+nr_flat_new_full (NRCoord y, NRCoord x0, NRCoord x1)
+{
+	NRFlat * f;
+
+	g_assert (x0 < x1);
+
+	f = ffflat;
+
+	if (f == NULL) {
+		gint i;
+		f = g_new (NRFlat, NR_FLAT_ALLOC_SIZE);
+		for (i = 1; i < (NR_FLAT_ALLOC_SIZE - 1); i++) f[i].next = &f[i + 1];
+		f[NR_FLAT_ALLOC_SIZE - 1].next = NULL;
+		ffflat = f + 1;
+	} else {
+		ffflat = f->next;
+	}
+
+	f->next = NULL;
+	f->y = y;
+	f->x0 = x0;
+	f->x1 = x1;
+
+	return f;
+}
+
+void
+nr_flat_free_one (NRFlat * flat)
+{
+	g_assert (flat);
+
+	flat->next = ffflat;
+	ffflat = flat;
+}
+
+void
+nr_flat_free_list (NRFlat * flat)
+{
+	NRFlat * l;
+
+	if (flat) {
+		for (l = flat; l->next != NULL; l = l->next);
+		l->next = ffflat;
+		ffflat = flat;
+	}
+}
+
+NRFlat *
+nr_flat_insert_sorted (NRFlat * start, NRFlat * flat)
+{
+	NRFlat * s, * l;
+
+	if (!start) return flat;
+	if (!flat) return start;
+
+	if ((flat->y < start->y) || ((flat->y == start->y) && (flat->x0 <= start->x0))) {
+		flat->next = start;
+		return flat;
+	}
+
+	s = start;
+	for (l = start->next; l != NULL; l = l->next) {
+		if ((flat->y < l->y) || ((flat->y == l->y) && (flat->x0 <= l->x0))) {
+			flat->next = l;
+			s->next = flat;
+			return start;
+		}
+		s = l;
+	}
+
+	flat->next = NULL;
+	s->next = flat;
+
+	return start;
+}
+
+/*
+ * Old stuff
+ */
+
+#if 0
+
+static NRLine * nr_lines_sort (NRLine * l);
+static NRLine * nr_lines_sort_merge (NRLine * l1, NRLine * l2);
 
 static NRLine *
 nr_lines_sort (NRLine * l)
@@ -281,188 +607,84 @@ nr_lines_sort_merge (NRLine * l1, NRLine * l2)
 	return line.next;
 }
 
-gint
-nr_lines_compare (NRLine * l0, NRLine * l1)
+static NRLine *
+nr_svp_merge_segments (GSList * segments)
 {
-	float xx0, yy0, x1x0, y1y0;
-	float d;
+	NRLine ** lines, * start, * ln;
+	GSList * l;
+	gint len, c, i;
 
-	if (l0->s.y < l1->s.y) return -1;
-	if (l0->s.y > l1->s.y) return 1;
-	if (l0->s.x < l1->s.x) return -1;
-	if (l0->s.x > l1->s.x) return 1;
+	len = 0;
+	for (l = segments; l != NULL; l = l->next) len++;
+	lines = alloca (len * sizeof (NRLine *));
+	i = 0;
+	for (l = segments; l != NULL; l = l->next) lines[i++] = (NRLine *) l->data;
 
-	/* Y is same, X is same, checking for line orders */
-
-	xx0 = l0->e.x - l1->s.x;
-	yy0 = l0->e.y - l1->s.y;
-	x1x0 = l1->e.x - l1->s.x;
-	y1y0 = l1->e.y - l1->s.y;
-
-	d = xx0 * y1y0 - yy0 * x1x0;
-
-	/* fixme: test almost zero cases */
-	if (d < 0.0) return -1;
-	if (d > 0.0) return 1;
-
-	return 0;
-}
-
-
-/*
- * Memory management stuff follows (remember goals?)
- */
-
-#define NR_LINE_ALLOC_SIZE 32
-static NRLine * firstfreeline = NULL;
-
-NRLine *
-nr_line_new (void)
-{
-	NRLine * l;
-
-	l = firstfreeline;
-
-	if (l == NULL) {
-		gint i;
-		l = g_new (NRLine, NR_LINE_ALLOC_SIZE);
-		for (i = 1; i < (NR_LINE_ALLOC_SIZE - 1); i++) (l + i)->next = (l + i + 1);
-		(l + NR_LINE_ALLOC_SIZE - 1)->next = NULL;
-		firstfreeline = l + 1;
-	} else {
-		firstfreeline = l->next;
+	c = 0;
+	for (i = 1; i < len; i++) {
+		if (nr_lines_compare (lines[i], lines[c]) < 0) c = i;
 	}
 
-	l->next = NULL;
+	start = ln = lines[c];
+	lines[c] = lines[c]->next;
+	if (lines[c] == NULL) lines[c] = lines[--len];
 
-	return l;
-}
-
-NRLine *
-nr_line_new_xyxy (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1)
-{
-	NRLine * l;
-
-	g_assert (y0 != y1);
-
-	l = nr_line_new ();
-
-	if (y1 > y0) {
-		l->direction = 1;
-		l->s.x = x0;
-		l->s.y = y0;
-		l->e.x = x1;
-		l->e.y = y1;
-	} else {
-		l->direction = -1;
-		l->s.x = x1;
-		l->s.y = y1;
-		l->e.x = x0;
-		l->e.y = y0;
+	while (len > 0) {
+		c = 0;
+		for (i = 1; i < len; i++) if (nr_lines_compare (lines[i], lines[c]) < 0) c = i;
+		ln->next = lines[c];
+		ln = ln->next;
+		lines[c] = lines[c]->next;
+		if (lines[c] == NULL) lines[c] = lines[--len];
 	}
-
-	return l;
-}
-
-NRLine *
-nr_line_new_xyxyd (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, gint direction)
-{
-	NRLine * l;
-
-	g_assert (y0 < y1);
-
-	l = nr_line_new ();
-
-	l->direction = direction;
-	l->s.x = x0;
-	l->s.y = y0;
-	l->e.x = x1;
-	l->e.y = y1;
-
-	return l;
-}
-
-void
-nr_line_free (NRLine * line)
-{
-	line->next = firstfreeline;
-	firstfreeline = line;
-}
-
-void
-nr_line_free_list (NRLine * line)
-{
-	NRLine * l;
-
-	for (l = line; l->next != NULL; l = l->next);
-	l->next = firstfreeline;
-	firstfreeline = line;
-}
-
-NRLine *
-nr_lines_reverse_list (NRLine * line)
-{
-	NRLine * prev;
-
-	prev = NULL;
-
-	while (line) {
-		NRLine * next;
-		next = line->next;
-		line->next = prev;
-		prev = line;
-		line = next;
-	}
-
-	return prev;
-}
-
-NRLine *
-nr_lines_insert_sorted (NRLine * start, NRLine * line)
-{
-	NRLine * s, * l;
-
-	if (!start) return line;
-	if (!line) return start;
-
-	if (nr_lines_compare (line, start) < 0) {
-		line->next = start;
-		return line;
-	}
-
-	s = start;
-	for (l = start->next; l != NULL; l = l->next) {
-		if (nr_lines_compare (line, l) < 0) {
-			line->next = l;
-			s->next = line;
-			return start;
-		}
-		s = l;
-	}
-
-	s->next = line;
 
 	return start;
 }
 
-NRSVP *
-nr_svp_new (void)
+static void nr_svp_segment_split_flat_list (NRVertex * vertex, NRFlat * flat);
+
+static void
+nr_svp_segment_split_flat_list (NRVertex * vertex, NRFlat * flat)
 {
-	NRSVP * svp;
+	NRLine * fstart, * f, * new;
 
-	svp = g_new (NRSVP, 1);
-	svp->lines = NULL;
+	fstart = flat;
 
-	return svp;
+	while (l != NULL) {
+		NRCoord xmin, xmax;
+		/* Find first flat > ystart */
+		while ((fstart) && (fstart->s.y <= l->s.y)) fstart = fstart->next;
+		if (!fstart) return;
+		xmin = MIN (l->s.x, l->e.x);
+		xmax = MAX (l->s.x, l->e.x);
+		f = fstart;
+		while ((f) && (f->s.y < l->e.y)) {
+			/* Y overlap */
+			if ((f->s.x <= xmax) && (f->e.x >= xmin)) {
+				NRCoord x;
+				/* Bounding boxes intersect */
+				/* x = x0 + (x1 - x0)(y - y0)/(y1 - y0) */
+				x = NR_COORD_SNAP (l->s.x + (l->e.x - l->s.x) * (f->s.y - l->s.y) / (l->e.y - l->s.y));
+				if ((x >= f->s.x) && (x <= f->e.x)) {
+					/* We intersect */
+					new = nr_line_new_xyxyd (x, f->s.y, l->e.x, l->e.y, l->direction);
+					l->e.x = x;
+					l->e.y = f->s.y;
+					new->next = l->next;
+					l->next = new;
+					/* We can be sure that this line does not intersect more, so break */
+					break;
+				}
+			}
+			/* We do not intersect, so try next flat */
+			f = f->next;
+		}
+		l = l->next;
+	}
 }
 
-void
-nr_svp_free (NRSVP * svp)
-{
-	g_return_if_fail (svp != NULL);
+#endif
 
-	if (svp->lines) nr_line_free_list (svp->lines);
-	g_free (svp);
-}
+
 
 

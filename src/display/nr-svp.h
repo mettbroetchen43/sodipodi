@@ -11,48 +11,60 @@
 #include <glib.h>
 #include <libart_lgpl/art_vpath.h>
 #include <libart_lgpl/art_svp.h>
+#include "nr-primitives.h"
 
-typedef float NRCoord;
-
-typedef struct _NRPoint NRPoint;
-
-struct _NRPoint {
-	float x;
-	float y;
-};
-
-typedef struct _NRLine NRLine;
-
-struct _NRLine {
-	NRLine * next;
-	gint direction;
-	NRPoint s;
-	NRPoint e;
-};
-
+typedef struct _NRFlat NRFlat;
+typedef struct _NRVertex NRVertex;
 typedef struct _NRSVP NRSVP;
 
-struct _NRSVP {
-	NRLine * lines;
+struct _NRVertex {
+	NRVertex * next;
+	NRCoord x, y;
 };
 
-#define NR_COORD_FROM_ART(v) (rint ((v) * 16.0) / 16.0)
-#define NR_COORD_SNAP(v) (rint ((v) * 16.0) / 16.0)
-#define NR_COORD_TO_ART(v) (v)
-
-NRLine * nr_line_new (void);
-NRLine * nr_line_new_xyxy (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1);
-NRLine * nr_line_new_xyxyd (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, gint direction);
-void nr_line_free (NRLine * line);
-void nr_line_free_list (NRLine * line);
-NRLine * nr_lines_reverse_list (NRLine * line);
-NRLine * nr_lines_insert_sorted (NRLine * start, NRLine * line);
-gint nr_lines_compare (NRLine * l1, NRLine * l2);
-
-NRSVP * nr_svp_new (void);
-void nr_svp_free (NRSVP * svp);
+struct _NRSVP {
+	NRSVP * next;
+	NRVertex * vertex;
+	NRDRect bbox;
+	int wind;
+};
 
 NRSVP * nr_svp_from_art_vpath (ArtVpath * vpath);
 ArtSVP * nr_art_svp_from_svp (NRSVP * svp);
+
+/* Memory management stuff */
+
+NRVertex * nr_vertex_new (void);
+NRVertex * nr_vertex_new_xy (NRCoord x, NRCoord y);
+void nr_vertex_free_one (NRVertex * v);
+void nr_vertex_free_list (NRVertex * v);
+
+NRVertex * nr_vertex_reverse_list (NRVertex * v);
+
+NRSVP * nr_svp_new (void);
+NRSVP * nr_svp_new_full (NRVertex * vertex, NRDRect * bbox, gint wind);
+NRSVP * nr_svp_new_vertex_wind (NRVertex * vertex, gint wind);
+void nr_svp_free_one (NRSVP * svp);
+void nr_svp_free_list (NRSVP * svp);
+
+NRSVP * nr_svp_remove (NRSVP * start, NRSVP * svp);
+NRSVP * nr_svp_insert_sorted (NRSVP * start, NRSVP * svp);
+NRSVP * nr_svp_move_sorted (NRSVP * start, NRSVP * svp);
+gint nr_svp_compare (NRSVP * l, NRSVP * r);
+
+void nr_svp_calculate_bbox (NRSVP * svp);
+
+/* Internal stuff */
+
+struct _NRFlat {
+	NRFlat * next;
+	NRCoord y, x0, x1;
+};
+
+NRFlat * nr_flat_new_full (NRCoord y, NRCoord x0, NRCoord x1);
+void nr_flat_free_one (NRFlat * flat);
+void nr_flat_free_list (NRFlat * flat);
+
+NRFlat * nr_flat_insert_sorted (NRFlat * start, NRFlat * flat);
 
 #endif

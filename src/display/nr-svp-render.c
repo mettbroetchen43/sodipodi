@@ -3,79 +3,77 @@
 #include <math.h>
 #include "nr-svp-render.h"
 
-typedef struct _NRRSpan NRRSpan;
+typedef struct _NRSlice NRSlice;
 
-struct _NRRSpan {
-	NRRSpan * next;
-	NRLine * line;
-	NRPoint s;
-	NRPoint e;
-	float stepx;
+struct _NRSlice {
+	NRSlice * next;
+	NRSVP * svp;
+	NRVertex * vertex;
+	NRCoord x;
+	NRCoord y;
+	NRCoord stepx;
 };
 
 typedef struct _NRRun NRRun;
 
 struct _NRRun {
 	NRRun * next;
-	NRPoint s;
-	NRPoint e;
+	NRCoord x0, y0, x1, y1;
 	float step;
-	float value;
 	float final;
 	float x;
+	float value;
 };
 
-static NRRSpan * nr_rspan_new (NRLine * line);
-static void nr_rspan_free (NRRSpan * rs);
-static void nr_rspan_free_list (NRRSpan * rs);
-static NRRSpan * nr_rspan_insert_sorted (NRRSpan * start, NRRSpan * span);
+static NRSlice * nr_slice_new (NRSVP * svp, NRCoord y);
+static void nr_slice_free_one (NRSlice * s);
+static void nr_slice_free_list (NRSlice * s);
+static NRSlice * nr_slice_insert_sorted (NRSlice * start, NRSlice * slice);
+static gint nr_slice_compare (NRSlice * l, NRSlice * r);
 
-static NRRun * nr_run_new (NRRSpan * span);
-static void nr_run_free (NRRun * run);
+static NRRun * nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, gint wind);
+static void nr_run_free_one (NRRun * run);
 static void nr_run_free_list (NRRun * run);
 static NRRun * nr_run_insert_sorted (NRRun * start, NRRun * run);
-
-static gint nr_x_order (NRLine * l0, NRLine * l1);
 
 void
 nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint width, gint height, gint rowstride, guint32 rgba)
 {
-	NRRSpan * spans;
-	NRRun * runs;
-	NRLine * line;
-	gint32 xstart, ystart;
-	gint32 x1, y1;
-	guchar * bs, * br;
-	guint fg_r, fg_g, fg_b, fg_a;
+	NRSVP * nsvp;
+	NRSlice * slices;
+	gint x1, y1, ystart;
+	guint32 fg_r, fg_g, fg_b, fg_a;
+	guchar * rowbuffer;
 	gint y;
 
 	if (!svp) return;
 
 	x1 = x0 + width;
 	y1 = y0 + height;
-	spans = NULL;
 
-	/* Construct initial spans from lines crossing y0 */
-	for (line = svp->lines; (line) && (line->s.y < y0); line = line->next) {
-		if (line->e.y > y0) {
-			NRRSpan * new;
-			new = nr_rspan_new (line);
-			new->s.x = line->s.x + (line->e.x - line->s.x) * (y0 - line->s.y) / (line->e.y - line->s.y);
-			new->s.y = y0;
-			if (!spans) {
-				spans = new;
-			} else {
-				spans = nr_rspan_insert_sorted (spans, new);
-			}
+	/* Find starting pixel row */
+	g_assert (svp->bbox.y0 == svp->vertex->y);
+	ystart = (gint) floor (svp->bbox.y0);
+	if (ystart >= y1) return;
+	if (ystart > y0) {
+		buffer += (ystart - y0) * rowstride;
+		height -= (ystart - y0);
+		y0 = ystart;
+	}
+
+	/* Construct initial slice list */
+	slices = NULL;
+	nsvp = svp;
+	while ((nsvp) && (nsvp->bbox.y0 <= y0)) {
+		g_assert (nsvp->bbox.y0 == nsvp->vertex->y);
+		if (nsvp->bbox.y1 > y0) {
+			NRSlice * newslice;
+			newslice = nr_slice_new (nsvp, y0);
+			slices = nr_slice_insert_sorted (slices, newslice);
 		}
+		nsvp = nsvp->next;
 	}
-
-	if (spans) {
-		ystart = y0;
-	} else {
-		if (!line) return;
-		ystart = (gint32) floor (line->s.y);
-	}
+	if ((!nsvp) && (!slices)) return;
 
 	/* Get colors */
 	fg_r = (rgba >> 24) & 0xff;
@@ -83,83 +81,114 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 	fg_b = (rgba >> 8) & 0xff;
 	fg_a = rgba & 0xff;
 
-	/* Initial buffer */
-	bs = buffer + (ystart - y0) * rowstride;
+	/* Row buffer */
+	/* fixme: not needed */
+	rowbuffer = buffer;
 
 	/* Main iteration */
-	for (y = ystart; y < y1; y ++) {
-		NRRSpan * s, * s0;
-		NRRun * r, * r0;
+	for (y = y0; y < y1; y++) {
+		NRSlice * ss, * cs;
+		NRRun * runs;
+		gint xstart;
 		float globalval;
+		guchar * br;
 		gint x;
-		/* Add new lines starting between y and y+1 to spans */
-		while ((line) && (line->s.y < (y + 1.0))) {
-			NRRSpan * new;
-			new = nr_rspan_new (line);
-			new->s.x = line->s.x;
-			new->s.y = line->s.y;
-			if (!spans) {
-				spans = new;
-			} else {
-				spans = nr_rspan_insert_sorted (spans, new);
-			}
-			line = line->next;
-		}
-		/* Now we have sorted list of spans with CORRECT STARTPOINTS */
-		/* Generate endpoints */
-		for (s = spans; s != NULL; s = s->next) {
-			if (s->line->e.y < y + 1.0) {
-				s->e.x = s->line->e.x;
-				s->e.y = s->line->e.y;
-			} else {
-				if (s->s.y == y) {
-					s->e.x = s->s.x + s->stepx;
-				} else {
-					s->e.x = s->s.x + s->stepx * (y + 1.0 - s->s.y);
-				}
-				s->e.y = y + 1.0;
-			}
-		}
 
-		/* Generate runs */
-		runs = NULL;
-		for (s = spans; s != NULL; s = s->next) {
-			runs = nr_run_insert_sorted (runs, nr_run_new (s));
+		/* Add possible new svps to slice list */
+		while ((nsvp) && (nsvp->bbox.y0 < (y + 1))) {
+			NRSlice * newslice;
+			/* fixme: we should use safely nsvp->vertex->y here */
+			newslice = nr_slice_new (nsvp, MAX (y, nsvp->bbox.y0));
+			slices = nr_slice_insert_sorted (slices, newslice);
+			nsvp = nsvp->next;
 		}
-		/* fixme: killpoints */
-		/* Find initial value */
+		/* Construct runs, stretching slices */
+		runs = NULL;
+		ss = NULL;
+		cs = slices;
+		while (cs) {
+			g_assert (cs->y >= y0);
+			g_assert (cs->y < (y + 1));
+			while ((cs->y < (y + 1)) && (cs->vertex->next)) {
+				NRCoord x0, y0, x1, y1;
+				NRRun * newrun;
+				x0 = cs->x;
+				y0 = cs->y;
+				if (cs->vertex->next->y > (y + 1)) {
+					/* The same slice continues */
+					x1 = x0 + ((y + 1) - y0) * cs->stepx;
+					y1 = y + 1;
+					cs->x = x1;
+					cs->y = y1;
+				} else {
+					cs->vertex = cs->vertex->next;
+					x1 = cs->vertex->x;
+					y1 = cs->vertex->y;
+					cs->x = x1;
+					cs->y = y1;
+					if (cs->vertex->next ) {
+						cs->stepx = (cs->vertex->next->x - x1) / (cs->vertex->next->y - y1);
+					}
+				}
+				newrun = nr_run_new (x0, y0, x1, y1, cs->svp->wind);
+				/* fixme: we should use walking forward/backward instead */
+				runs = nr_run_insert_sorted (runs, newrun);
+			}
+			if (cs->vertex->next) {
+				ss = cs;
+				cs = cs->next;
+			} else {
+				/* Slice is exhausted */
+				if (ss) {
+					ss->next = cs->next;
+					nr_slice_free_one (cs);
+					cs = ss->next;
+				} else {
+					slices = cs->next;
+					nr_slice_free_one (cs);
+					cs = slices;
+				}
+			}
+		}
+		/* Slices are expanded to next scanline */
+		/* Run list is generated */
+		/* find initial value */
 		globalval = 0.0;
-		if ((runs) && (x0 < runs->s.x)) {
-			xstart = (gint32) floor (runs->s.x);
+		if ((runs) && (x0 < runs->x0)) {
+			/* First run starts right from x0 */
+			xstart = (gint32) floor (runs->x0);
 		} else {
+			NRRun * sr, * cr;
+			/* First run starts left from x0 */
 			xstart = x0;
-			r0 = NULL;
-			r = runs;
-			while ((r) && (r->s.x < x0)) {
-				if (r->e.x <= x0) {
-					globalval += r->final;
-					if (r0) {
-						r0->next = r->next;
-						nr_run_free (r);
-						r = r0->next;
+			sr = NULL;
+			cr = runs;
+			while ((cr) && (cr->x0 < x0)) {
+				if (cr->x1 <= x0) {
+					globalval += cr->final;
+					if (sr) {
+						sr->next = cr->next;
+						nr_run_free_one (cr);
+						cr = sr->next;
 					} else {
-						runs = r->next;
-						nr_run_free (r);
-						r = runs;
+						runs = cr->next;
+						nr_run_free_one (cr);
+						cr = runs;
 					}
 				} else {
-					r->x = x0;
-					r->value = (x0 - r->s.x) * r->step;
-					r0 = r;
-					r = r->next;
+					cr->x = x0;
+					cr->value = (x0 - cr->x0) * cr->step;
+					sr = cr;
+					cr = cr->next;
 				}
 			}
 		}
 
 		/* Running buffer */
-		br = bs + 3 * (xstart - x0);
+		br = rowbuffer + 3 * (xstart - x0);
 
 		for (x = xstart; (runs) && (x < x1); x++) {
+			NRRun * sr, * cr;
 			float xnext;
 			float localval;
 			guint coverage;
@@ -168,40 +197,41 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 			/* process runs */
 			/* fixme: generate fills */
 			localval = globalval;
-			r0 = NULL;
-			r = runs;
-			while ((r) && (r->s.x < xnext)) {
-				if (r->e.x <= xnext) {
-					globalval += r->final;
-					localval +=  (r->e.x - r->x) * (r->value + r->final) / 2.0;
-					localval += (xnext - r->e.x) * r->final;
+			sr = NULL;
+			cr = runs;
+			while ((cr) && (cr->x0 < xnext)) {
+				if (cr->x1 <= xnext) {
+					/* Run ends here */
+					globalval += cr->final;
+					localval += (cr->x1 - cr->x) * (cr->value + cr->final) / 2.0;
+					localval += (xnext - cr->x1) * cr->final;
 					if ((localval < 0.0) || (localval > 1.0)) {
-						g_print ("A: localval += (%f - %f) * (%f + %f) / 2\n", r->e.x, r->x, r->value, r->final);
-						g_print ("A: localval += (%f - %f) * %f\n", xnext, r->e.x, r->final);
+						g_print ("A: localval += (%f - %f) * (%f + %f) / 2\n", cr->x1, cr->x, cr->value, cr->final);
+						g_print ("A: localval += (%f - %f) * %f\n", xnext, cr->x1, cr->final);
 						g_print ("A Y: %d X: %d Globalval: %f Localval: %f\n", y, x, globalval, localval);
 					}
-					if (r0) {
-						r0->next = r->next;
-						nr_run_free (r);
-						r = r0->next;
+					if (sr) {
+						sr->next = cr->next;
+						nr_run_free_one (cr);
+						cr = sr->next;
 					} else {
-						runs = r->next;
-						nr_run_free (r);
-						r = runs;
+						runs = cr->next;
+						nr_run_free_one (cr);
+						cr = runs;
 					}
 				} else {
-#if 0
-					g_print ("C: localval += %f\n", r->value + (xnext - r->x) * r->step / 2.0);
-#endif
-					localval += (xnext - r->x) * (r->value + r->step / 2.0);
+					/* Run continues through xnext */
+					localval += (xnext - cr->x) * (cr->value + (xnext - cr->x) * cr->step / 2.0);
 					if ((localval < 0.0) || (localval > 1.0)) {
-						g_print ("B: localval += (%f - %f) * (%f + %f / 2)\n", xnext, r->x, r->value, r->step);
+						g_print ("B: Run is %f %f %f %f step %f final %f x %f value %f\n",
+							 cr->x0, cr->y0, cr->x1, cr->y1, cr->step, cr->final, cr->x, cr->value);
+						g_print ("B: localval += (%f - %f) * (%f + %f / 2)\n", xnext, cr->x, cr->value, cr->step);
 						g_print ("B Y: %d X: %d Globalval: %f Localval: %f\n", y, x, globalval, localval);
 					}
-					r->x = xnext;
-					r->value = (xnext - r->s.x) * r->step;
-					r0 = r;
-					r = r->next;
+					cr->x = xnext;
+					cr->value = (xnext - cr->x0) * cr->step;
+					sr = cr;
+					cr = cr->next;
 				}
 			}
 			/* Draw */
@@ -212,165 +242,213 @@ nr_svp_render_rgb_rgba (NRSVP * svp, guchar * buffer, gint x0, gint y0, gint wid
 			*br++ = *br + (((fg_b - *br) * coverage + 0x80) >> 8);
 		}
 		nr_run_free_list (runs);
-
-		/* Remove exhausted spans and update crossings */
-		s0 = NULL;
-		s = spans;
-		while (s) {
-			if (s->line->e.y <= y) {
-				if (s0) {
-					s0->next = s->next;
-					nr_rspan_free (s);
-					s = s0->next;
-				} else {
-					spans = s->next;
-					nr_rspan_free (s);
-					s = spans;
-				}
-			} else {
-				s->s.x = s->e.x;
-				s->s.y = s->e.y;
-				s0 = s;
-				s = s->next;
-			}
-		}
-		bs += rowstride;
+		rowbuffer += rowstride;
 	}
-	nr_rspan_free_list (spans);
+	if (slices) nr_slice_free_list (slices);
 }
 
 /*
  * Memory management stuff follows (remember goals?)
  */
 
-#define NR_RS_ALLOC_SIZE 32
-static NRRSpan * firstfreers = NULL;
+/* Slices */
 
-static NRRSpan *
-nr_rspan_new (NRLine * line)
+#define NR_SLICE_ALLOC_SIZE 32
+static NRSlice * ffslice = NULL;
+
+NRSlice *
+nr_slice_new (NRSVP * svp, NRCoord y)
 {
-	NRRSpan * rs;
+	NRSlice * s;
+	NRVertex * v;
 
-	rs = firstfreers;
+	g_assert (svp);
+	g_assert (svp->vertex);
+	/* fixme: not sure, whether correct */
+	g_assert (y == NR_COORD_SNAP (y));
+	/* Slices startpoints are included, endpoints excluded */
+	g_return_val_if_fail (y >= svp->bbox.y0, NULL);
+	g_return_val_if_fail (y < svp->bbox.y1, NULL);
 
-	if (rs == NULL) {
+	s = ffslice;
+
+	if (s == NULL) {
 		gint i;
-		rs = g_new (NRRSpan, NR_RS_ALLOC_SIZE);
-		for (i = 1; i < (NR_RS_ALLOC_SIZE - 1); i++) (rs + i)->next = (rs + i + 1);
-		(rs + NR_RS_ALLOC_SIZE - 1)->next = NULL;
-		firstfreers = rs + 1;
+		s = g_new (NRSlice, NR_SLICE_ALLOC_SIZE);
+		for (i = 1; i < (NR_SLICE_ALLOC_SIZE - 1); i++) s[i].next = &s[i + 1];
+		s[NR_SLICE_ALLOC_SIZE - 1].next = NULL;
+		ffslice = s + 1;
 	} else {
-		firstfreers = rs->next;
+		ffslice = s->next;
 	}
 
-	rs->next = NULL;
-	rs->line = line;
-	rs->stepx = (line->e.x - line->s.x) / (line->e.y - line->s.y);
+	s->next = NULL;
+	s->svp = svp;
 
-	return rs;
+	v = svp->vertex;
+	while ((v->next) && (v->next->y <= y)) v = v->next;
+	g_assert (v->next);
+
+	s->vertex = v;
+	if (v->y == y) {
+		s->x = v->x;
+	} else {
+		s->x = v->x + (v->next->x - v->x) * (y - v->y) / (v->next->y - v->y);
+	}
+	s->y = y;
+	s->stepx = (s->vertex->next->x - s->vertex->x) / (s->vertex->next->y - s->vertex->y);
+
+	return s;
 }
 
-static NRRSpan *
-nr_rspan_insert_sorted (NRRSpan * start, NRRSpan * span)
+void
+nr_slice_free_one (NRSlice * slice)
 {
-	NRRSpan * s, * l;
+	slice->next = ffslice;
+	ffslice = slice;
+}
 
-	if (!start) return span;
-	if (!span) return start;
+void
+nr_slice_free_list (NRSlice * slice)
+{
+	NRSlice * l;
 
-	if (nr_x_order (span->line, start->line) < 0) {
-		span->next = start;
-		return span;
+	if (!slice) return;
+
+	for (l = slice; l->next != NULL; l = l->next);
+
+	l->next = ffslice;
+	ffslice = slice;
+}
+
+NRSlice *
+nr_slice_insert_sorted (NRSlice * start, NRSlice * slice)
+{
+	NRSlice * s, * l;
+
+	if (!start) return slice;
+	if (!slice) return start;
+
+	if (nr_slice_compare (slice, start) <= 0) {
+		slice->next = start;
+		return slice;
 	}
 
 	s = start;
 	for (l = start->next; l != NULL; l = l->next) {
-		if (nr_x_order (span->line, l->line) < 0) {
-			span->next = l;
-			s->next = span;
+		if (nr_slice_compare (slice, l) <= 0) {
+			slice->next = l;
+			s->next = slice;
 			return start;
 		}
 		s = l;
 	}
 
-	s->next = span;
+	slice->next = NULL;
+	s->next = slice;
 
 	return start;
 }
 
-static void
-nr_rspan_free (NRRSpan * rs)
+static gint
+nr_slice_compare (NRSlice * l, NRSlice * r)
 {
-	rs->next = firstfreers;
-	firstfreers = rs;
-}
-
-static void
-nr_rspan_free_list (NRRSpan * rs)
-{
-	NRRSpan * l;
-
-	if (!rs) return;
-
-	for (l = rs; l->next != NULL; l = l->next);
-	l->next = firstfreers;
-	firstfreers = rs;
+	if (l->y == r->y) {
+		if (l->x < r->x) return -1;
+		if (l->x > r->x) return 1;
+		if (l->stepx < r->stepx) return -1;
+		if (l->stepx > r->stepx) return 1;
+		return 0;
+	} else if (l->y > r->y) {
+		NRVertex * v;
+		NRCoord x, stepx;
+		/* This is bitch - we have to determine r values at l->y */
+		v = r->vertex;
+		while ((v->next) && (v->next->y <= l->y)) v = v->next;
+		/* If v is last vertex, r ends before l starts */
+		if (!v->next) return 1;
+		if (v->y == l->y) {
+			x = v->x;
+		} else {
+			x = v->x + (v->next->x - v->x) * (l->y - v->y) / (v->next->y - v->y);
+		}
+		if (l->x < x) return -1;
+		if (l->x > x) return 1;
+		stepx = (v->next->x - v->x) / (v->next->y - v->y);
+		if (l->stepx < stepx) return -1;
+		if (l->stepx > stepx) return 1;
+		return 0;
+	} else {
+		NRVertex * v;
+		NRCoord x, stepx;
+		/* This is bitch - we have to determine l value at r->y */
+		v = l->vertex;
+		while ((v->next) && (v->next->y <= r->y)) v = v->next;
+		/* If v is last vertex, l ends before r starts */
+		if (!v->next) return -1;
+		if (v->y == r->y) {
+			x = v->x;
+		} else {
+			x = v->x + (v->next->x - v->x) * (r->y - v->y) / (v->next->y - v->y);
+		}
+		if (x < r->x) return -1;
+		if (x > r->x) return 1;
+		stepx = (v->next->x - v->x) / (v->next->y - v->y);
+		if (stepx < r->stepx) return -1;
+		if (stepx > r->stepx) return 1;
+		return 0;
+	}
 }
 
 #define NR_RUN_ALLOC_SIZE 32
-static NRRun * firstfreerun = NULL;
+static NRRun * ffrun = NULL;
 
 static NRRun *
-nr_run_new (NRRSpan * span)
+nr_run_new (NRCoord x0, NRCoord y0, NRCoord x1, NRCoord y1, gint wind)
 {
 	NRRun * r;
 
-	r = firstfreerun;
+	r = ffrun;
 
 	if (r == NULL) {
 		gint i;
 		r = g_new (NRRun, NR_RUN_ALLOC_SIZE);
 		for (i = 1; i < (NR_RUN_ALLOC_SIZE - 1); i++) (r + i)->next = (r + i + 1);
 		(r + NR_RUN_ALLOC_SIZE - 1)->next = NULL;
-		firstfreerun = r + 1;
+		ffrun = r + 1;
 	} else {
-		firstfreerun = r->next;
+		ffrun = r->next;
 	}
 
 	r->next = NULL;
 
-	if (span->s.x == span->e.x) {
-		r->s.x = r->e.x = span->s.x;
-		r->s.y = span->s.y;
-		r->e.y = span->e.y;
-		r->step = 0.0;
-		r->final = r->e.y - r->s.y;
-	} else if (span->s.x < span->e.x) {
-		r->s = span->s;
-		r->e = span->e;
-		r->step = (r->e.y - r->s.y) / (r->e.x - r->s.x);
-		r->final = r->e.y - r->s.y;
+	if (x0 <= x1) {
+		r->x0 = x0;
+		r->x1 = x1;
+		r->y0 = y0;
+		r->y1 = y1;
+		r->step = (x0 == x1) ? 0.0 : wind * (y1 - y0) / (x1 - x0);
 	} else {
-		r->s = span->e;
-		r->e = span->s;
-		r->step = (r->s.y - r->e.y) / (r->e.x - r->s.x);
-		r->final = r->s.y - r->e.y;
+		r->x0 = x1;
+		r->x1 = x0;
+		r->y0 = y1;
+		r->y1 = y0;
+		r->step = wind * (y1 - y0) / (x0 - x1);
 	}
 
-	r->step *= -span->line->direction;
-	r->final *= -span->line->direction;
+	r->final = wind * (y1 - y0);
 
 	r->value = 0.0;
-	r->x = r->s.x;
+	r->x = r->x0;
 
 	return r;
 }
 
 static void
-nr_run_free (NRRun * run)
+nr_run_free_one (NRRun * run)
 {
-	run->next = firstfreerun;
-	firstfreerun = run;
+	run->next = ffrun;
+	ffrun = run;
 }
 
 static void
@@ -381,8 +459,8 @@ nr_run_free_list (NRRun * run)
 	if (!run) return;
 
 	for (l = run; l->next != NULL; l = l->next);
-	l->next = firstfreerun;
-	firstfreerun = run;
+	l->next = ffrun;
+	ffrun = run;
 }
 
 static NRRun *
@@ -393,14 +471,14 @@ nr_run_insert_sorted (NRRun * start, NRRun * run)
 	if (!start) return run;
 	if (!run) return start;
 
-	if (run->s.x < start->s.x) {
+	if (run->x0 < start->x0) {
 		run->next = start;
 		return run;
 	}
 
 	s = start;
 	for (l = start->next; l != NULL; l = l->next) {
-		if (run->s.x < l->s.x) {
+		if (run->x0 < l->x0) {
 			run->next = l;
 			s->next = run;
 			return start;
@@ -413,6 +491,7 @@ nr_run_insert_sorted (NRRun * start, NRRun * run)
 	return start;
 }
 
+#if 0
 /*
  * Determinate the exact order of 2 noncrossing lines
  */
@@ -507,4 +586,5 @@ nr_x_order (NRLine * l0, NRLine * l1)
 	if (de > 0.0) return -1;
 	return 0;
 }
+#endif
 

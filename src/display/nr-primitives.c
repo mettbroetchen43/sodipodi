@@ -65,6 +65,37 @@ nr_irect_intersection (NRIRect * dst, NRIRect * r0, NRIRect * r1)
 	return dst;
 }
 
+void
+nr_drect_set_empty (NRDRect * rect)
+{
+	g_return_if_fail (rect != NULL);
+
+	rect->x0 = rect->y0 = 1e18;
+	rect->x1 = rect->y1 = -1e18;
+}
+
+NRDRect *
+nr_drect_stretch_xy (NRDRect * rect, NRCoord x, NRCoord y)
+{
+	g_return_val_if_fail (rect != NULL, NULL);
+
+	rect->x0 = MIN (rect->x0, x);
+	rect->y0 = MIN (rect->y0, y);
+	rect->x1 = MAX (rect->x1, x);
+	rect->y1 = MAX (rect->y1, y);
+
+	return rect;
+}
+
+int
+nr_drect_do_intersect (NRDRect * a, NRDRect * b)
+{
+	g_return_val_if_fail (a != NULL, FALSE);
+	g_return_val_if_fail (b != NULL, FALSE);
+
+	return ((MAX (a->x0, b->x0) <= MIN (a->x1, b->x1)) && (MAX (a->y0, b->y0) <= MIN (a->y1, b->y1)));
+}
+
 NRAffine *
 nr_affine_set_identity (NRAffine * affine)
 {
