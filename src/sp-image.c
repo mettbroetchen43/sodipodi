@@ -421,22 +421,19 @@ sp_image_repr_read_image (SPRepr * repr)
 				g_free (fullname);
 				if (pixbuf != NULL) return pixbuf;
 			}
-		}
-		else if (strncmp (filename,"data:",5) == 0) {
+		} else if (strncmp (filename,"data:",5) == 0) {
 			/* data URI - embedded image */
 			filename += 5;
 			pixbuf = sp_image_repr_read_dataURI (filename);
 			if (pixbuf != NULL) return pixbuf;
-		}
-		else if (!g_path_is_absolute (filename)) {
+		} else if (!g_path_is_absolute (filename)) {
 			/* try to load from relative pos */
 			docbase = sp_repr_attr (sp_repr_document_root (sp_repr_document (repr)), "sodipodi:docbase");
-			if (docbase != NULL) {
-				fullname = g_strconcat (docbase, filename, NULL);
-				pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
-				g_free (fullname);
-				if (pixbuf != NULL) return pixbuf;
-			}
+			if (!docbase) docbase = "./";
+			fullname = g_strconcat (docbase, filename, NULL);
+			pixbuf = gdk_pixbuf_new_from_file (fullname, NULL);
+			g_free (fullname);
+			if (pixbuf != NULL) return pixbuf;
 		} else {
 			/* try absolute filename */
 			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);

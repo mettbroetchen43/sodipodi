@@ -42,6 +42,7 @@
 /* Write flags */
 #define SP_OBJECT_WRITE_BUILD (1 << 0)
 #define SP_OBJECT_WRITE_SODIPODI (1 << 1)
+#define SP_OBJECT_WRITE_ALL (1 << 2)
 
 /* Convenience stuff */
 #define SP_OBJECT_ID(o) (((SPObject *) (o))->id)

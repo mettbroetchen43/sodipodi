@@ -22,7 +22,7 @@
 #include "sp-item.h"
 #include "selection.h"
 
-#define SP_SELECTION_UPDATE_PRIORITY GTK_PRIORITY_REDRAW
+#define SP_SELECTION_UPDATE_PRIORITY (G_PRIORITY_HIGH_IDLE + 1)
 
 enum {
 	CHANGED,

@@ -35,11 +35,11 @@
 
 #include "sp-canvas.h"
 
-#define SP_CANVAS_UPDATE_PRIORITY GTK_PRIORITY_REDRAW
+#define SP_CANVAS_UPDATE_PRIORITY G_PRIORITY_HIGH_IDLE
 
-#define SP_CANVAS_WINDOW(c) (GTK_WIDGET (c)->window)
-#define DISPLAY_X1(canvas) (SP_CANVAS (canvas)->x0)
-#define DISPLAY_Y1(canvas) (SP_CANVAS (canvas)->y0)
+#define SP_CANVAS_WINDOW(c) (((GtkWidget *) (c))->window)
+#define DISPLAY_X1(canvas) (((SPCanvas *) (canvas))->x0)
+#define DISPLAY_Y1(canvas) (((SPCanvas *) (canvas))->y0)
 #define SP_CANVAS_PX_EPSILON 0.0625
 
 enum {
@@ -461,8 +461,7 @@ sp_canvas_item_hide (SPCanvasItem *item)
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (SP_IS_CANVAS_ITEM (item));
 
-	if (!(item->object.flags & SP_CANVAS_ITEM_VISIBLE))
-		return;
+	if (!(item->object.flags & SP_CANVAS_ITEM_VISIBLE)) return;
 
 	item->object.flags &= ~SP_CANVAS_ITEM_VISIBLE;
 

@@ -186,8 +186,6 @@ static void sp_gradient_remove_child (SPObject *object, SPRepr *child);
 static void sp_gradient_modified (SPObject *object, guint flags);
 static SPRepr *sp_gradient_write (SPObject *object, SPRepr *repr, guint flags);
 
-static void sp_gradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
-
 static void sp_gradient_href_release (SPObject *href, SPGradient *gradient);
 static void sp_gradient_href_modified (SPObject *href, guint flags, SPGradient *gradient);
 
@@ -235,8 +233,6 @@ sp_gradient_class_init (SPGradientClass *klass)
 	sp_object_class->remove_child = sp_gradient_remove_child;
 	sp_object_class->modified = sp_gradient_modified;
 	sp_object_class->write = sp_gradient_write;
-
-	klass->flatten_attributes = sp_gradient_flatten_attributes;
 }
 
 static void
@@ -562,16 +558,8 @@ sp_gradient_write (SPObject *object, SPRepr *repr, guint flags)
 		sp_repr_set_attr (repr, "xlink:href", str);
 		g_free (str);
 	}
-	/* fixme: (Lauris) */
-	sp_gradient_flatten_attributes (SP_GRADIENT (object), repr, TRUE);
 
-	return repr;
-}
-
-static void
-sp_gradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missing)
-{
-	if (set_missing || gr->units_set) {
+	if ((flags & SP_OBJECT_WRITE_ALL) || gr->units_set) {
 		switch (gr->units) {
 		case SP_GRADIENT_UNITS_USERSPACEONUSE:
 			sp_repr_set_attr (repr, "gradientUnits", "userSpaceOnUse");
@@ -582,7 +570,7 @@ sp_gradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missi
 		}
 	}
 
-	if (set_missing || gr->transform_set) {
+	if ((flags & SP_OBJECT_WRITE_ALL) || gr->transform_set) {
 		gchar c[256];
 		NRMatrixF t;
 		int i;
@@ -594,7 +582,7 @@ sp_gradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missi
 		}
 	}
 
-	if (set_missing || gr->spread_set) {
+	if ((flags & SP_OBJECT_WRITE_ALL) || gr->spread_set) {
 		switch (gr->spread) {
 		case SP_GRADIENT_SPREAD_REFLECT:
 			sp_repr_set_attr (repr, "spreadMethod", "reflect");
@@ -607,6 +595,8 @@ sp_gradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missi
 			break;
 		}
 	}
+
+	return repr;
 }
 
 /* Forces vector to be built, if not present (i.e. changed) */
@@ -660,6 +650,7 @@ sp_gradient_set_spread (SPGradient *gr, unsigned int spread)
 {
 	if (spread != gr->spread) {
 		gr->spread = spread;
+		gr->spread_set = TRUE;
 		sp_object_request_modified (SP_OBJECT (gr), SP_OBJECT_MODIFIED_FLAG);
 	}
 }
@@ -668,12 +659,13 @@ sp_gradient_set_spread (SPGradient *gr, unsigned int spread)
 void
 sp_gradient_repr_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missing)
 {
+	unsigned int flags;
 	g_return_if_fail (gr != NULL);
 	g_return_if_fail (SP_IS_GRADIENT (gr));
 	g_return_if_fail (repr != NULL);
-
-	if (((SPGradientClass *) G_OBJECT_GET_CLASS(gr))->flatten_attributes)
-		((SPGradientClass *) G_OBJECT_GET_CLASS(gr))->flatten_attributes (gr, repr, set_missing);
+	flags = SP_OBJECT_WRITE_SODIPODI;
+	if (set_missing) flags |= SP_OBJECT_WRITE_ALL;
+	sp_object_invoke_write ((SPObject *) gr, repr, flags);
 }
 
 void
@@ -1166,6 +1158,8 @@ sp_gradient_set_gs2d_matrix_f (SPGradient *gr, NRMatrixF *ctm, NRRectF *bbox, NR
 	gr->transform[4] = gs2g.c[4];
 	gr->transform[5] = gs2g.c[5];
 
+	gr->transform_set = TRUE;
+
 	sp_object_request_modified (SP_OBJECT (gr), SP_OBJECT_MODIFIED_FLAG);
 }
 
@@ -1252,8 +1246,6 @@ static SPRepr *sp_lineargradient_write (SPObject *object, SPRepr *repr, guint fl
 static SPPainter *sp_lineargradient_painter_new (SPPaintServer *ps, const double *affine, const NRRectD *bbox);
 static void sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
-static void sp_lineargradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
-
 static void sp_lg_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPGradientClass *lg_parent_class;
@@ -1300,8 +1292,6 @@ sp_lineargradient_class_init (SPLinearGradientClass * klass)
 
 	ps_class->painter_new = sp_lineargradient_painter_new;
 	ps_class->painter_free = sp_lineargradient_painter_free;
-
-	gr_class->flatten_attributes = sp_lineargradient_flatten_attributes;
 }
 
 static void
@@ -1379,10 +1369,10 @@ sp_lineargradient_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("linearGradient");
 	}
 
-	sp_repr_set_double (repr, "x1", lg->x1.computed);
-	sp_repr_set_double (repr, "y1", lg->y1.computed);
-	sp_repr_set_double (repr, "x2", lg->x2.computed);
-	sp_repr_set_double (repr, "y2", lg->y2.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || lg->x1.set) sp_repr_set_double_attribute (repr, "x1", lg->x1.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || lg->y1.set) sp_repr_set_double_attribute (repr, "y1", lg->y1.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || lg->x2.set) sp_repr_set_double_attribute (repr, "x2", lg->x2.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || lg->y2.set) sp_repr_set_double_attribute (repr, "y2", lg->y2.computed);
 
 	if (((SPObjectClass *) lg_parent_class)->write)
 		(* ((SPObjectClass *) lg_parent_class)->write) (object, repr, flags);
@@ -1531,20 +1521,6 @@ sp_lineargradient_painter_free (SPPaintServer *ps, SPPainter *painter)
 	g_free (lgp);
 }
 
-static void
-sp_lineargradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missing)
-{
-	SPLinearGradient *lg;
-
-	lg = SP_LINEARGRADIENT (gr);
-
-	/* fixme: Write real units etc. (Lauris) */
-	if (set_missing || lg->x1.set) sp_repr_set_double_attribute (repr, "x1", lg->x1.computed);
-	if (set_missing || lg->y1.set) sp_repr_set_double_attribute (repr, "y1", lg->y1.computed);
-	if (set_missing || lg->x2.set) sp_repr_set_double_attribute (repr, "x2", lg->x2.computed);
-	if (set_missing || lg->y2.set) sp_repr_set_double_attribute (repr, "y2", lg->y2.computed);
-}
-
 void
 sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gdouble x2, gdouble y2)
 {
@@ -1552,10 +1528,10 @@ sp_lineargradient_set_position (SPLinearGradient *lg, gdouble x1, gdouble y1, gd
 	g_return_if_fail (SP_IS_LINEARGRADIENT (lg));
 
 	/* fixme: units? (Lauris)  */
-	sp_svg_length_unset (&lg->x1, SP_SVG_UNIT_NONE, x1, x1);
-	sp_svg_length_unset (&lg->y1, SP_SVG_UNIT_NONE, y1, y1);
-	sp_svg_length_unset (&lg->x2, SP_SVG_UNIT_NONE, x2, x2);
-	sp_svg_length_unset (&lg->y2, SP_SVG_UNIT_NONE, y2, y2);
+	sp_svg_length_set (&lg->x1, SP_SVG_UNIT_NONE, x1, x1);
+	sp_svg_length_set (&lg->y1, SP_SVG_UNIT_NONE, y1, y1);
+	sp_svg_length_set (&lg->x2, SP_SVG_UNIT_NONE, x2, x2);
+	sp_svg_length_set (&lg->y2, SP_SVG_UNIT_NONE, y2, y2);
 
 	sp_object_request_modified (SP_OBJECT (lg), SP_OBJECT_MODIFIED_FLAG);
 }
@@ -1614,8 +1590,6 @@ static SPRepr *sp_radialgradient_write (SPObject *object, SPRepr *repr, guint fl
 static SPPainter *sp_radialgradient_painter_new (SPPaintServer *ps, const gdouble *affine, const NRRectD *bbox);
 static void sp_radialgradient_painter_free (SPPaintServer *ps, SPPainter *painter);
 
-static void sp_radialgradient_flatten_attributes (SPGradient *gradient, SPRepr *repr, gboolean set_missing);
-
 static void sp_rg_fill (SPPainter *painter, NRPixBlock *pb);
 
 static SPGradientClass *rg_parent_class;
@@ -1662,8 +1636,6 @@ sp_radialgradient_class_init (SPRadialGradientClass * klass)
 
 	ps_class->painter_new = sp_radialgradient_painter_new;
 	ps_class->painter_free = sp_radialgradient_painter_free;
-
-	gr_class->flatten_attributes = sp_radialgradient_flatten_attributes;
 }
 
 static void
@@ -1757,11 +1729,11 @@ sp_radialgradient_write (SPObject *object, SPRepr *repr, guint flags)
 		repr = sp_repr_new ("radialGradient");
 	}
 
-	sp_repr_set_double (repr, "cx", rg->cx.computed);
-	sp_repr_set_double (repr, "cy", rg->cy.computed);
-	sp_repr_set_double (repr, "fx", rg->fx.computed);
-	sp_repr_set_double (repr, "fy", rg->fy.computed);
-	sp_repr_set_double (repr, "r", rg->r.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || rg->cx.set) sp_repr_set_double_attribute (repr, "cx", rg->cx.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || rg->cy.set) sp_repr_set_double_attribute (repr, "cy", rg->cy.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || rg->r.set) sp_repr_set_double_attribute (repr, "r", rg->r.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || rg->fx.set) sp_repr_set_double_attribute (repr, "fx", rg->fx.computed);
+	if ((flags & SP_OBJECT_WRITE_ALL) || rg->fy.set) sp_repr_set_double_attribute (repr, "fy", rg->fy.computed);
 
 	if (((SPObjectClass *) rg_parent_class)->write)
 		(* ((SPObjectClass *) rg_parent_class)->write) (object, repr, flags);
@@ -1839,20 +1811,6 @@ sp_radialgradient_painter_free (SPPaintServer *ps, SPPainter *painter)
 	g_free (rgp);
 }
 
-static void
-sp_radialgradient_flatten_attributes (SPGradient *gr, SPRepr *repr, gboolean set_missing)
-{
-	SPRadialGradient *rg;
-
-	rg = SP_RADIALGRADIENT (gr);
-
-	if (set_missing || rg->cx.set) sp_repr_set_double_attribute (repr, "cx", rg->cx.computed);
-	if (set_missing || rg->cy.set) sp_repr_set_double_attribute (repr, "cy", rg->cy.computed);
-	if (set_missing || rg->r.set) sp_repr_set_double_attribute (repr, "r", rg->r.computed);
-	if (set_missing || rg->fx.set) sp_repr_set_double_attribute (repr, "fx", rg->fx.computed);
-	if (set_missing || rg->fy.set) sp_repr_set_double_attribute (repr, "fy", rg->fy.computed);
-}
-
 void
 sp_radialgradient_set_position (SPRadialGradient *rg, gdouble cx, gdouble cy, gdouble fx, gdouble fy, gdouble r)
 {
@@ -1860,11 +1818,11 @@ sp_radialgradient_set_position (SPRadialGradient *rg, gdouble cx, gdouble cy, gd
 	g_return_if_fail (SP_IS_RADIALGRADIENT (rg));
 
 	/* fixme: units? (Lauris)  */
-	sp_svg_length_unset (&rg->cx, SP_SVG_UNIT_NONE, cx, cx);
-	sp_svg_length_unset (&rg->cy, SP_SVG_UNIT_NONE, cy, cy);
-	sp_svg_length_unset (&rg->fx, SP_SVG_UNIT_NONE, fx, fx);
-	sp_svg_length_unset (&rg->fy, SP_SVG_UNIT_NONE, fy, fy);
-	sp_svg_length_unset (&rg->r, SP_SVG_UNIT_NONE, r, r);
+	sp_svg_length_set (&rg->cx, SP_SVG_UNIT_NONE, cx, cx);
+	sp_svg_length_set (&rg->cy, SP_SVG_UNIT_NONE, cy, cy);
+	sp_svg_length_set (&rg->fx, SP_SVG_UNIT_NONE, fx, fx);
+	sp_svg_length_set (&rg->fy, SP_SVG_UNIT_NONE, fy, fy);
+	sp_svg_length_set (&rg->r, SP_SVG_UNIT_NONE, r, r);
 
 	sp_object_request_modified (SP_OBJECT (rg), SP_OBJECT_MODIFIED_FLAG);
 }

@@ -131,6 +131,7 @@ static SPRepr *
 sp_spiral_write (SPObject *object, SPRepr *repr, guint flags)
 {
 	SPSpiral *spiral;
+	char *d;
 
 	spiral = SP_SPIRAL (object);
 
@@ -151,6 +152,10 @@ sp_spiral_write (SPObject *object, SPRepr *repr, guint flags)
 		sp_repr_set_double_attribute (repr, "sodipodi:argument", spiral->arg);
 		sp_repr_set_double_attribute (repr, "sodipodi:t0", spiral->t0);
 	}
+
+	d = sp_svg_write_path (((SPShape *) spiral)->curve->bpath);
+	sp_repr_set_attr (repr, "d", d);
+	g_free (d);
 
 	if (((SPObjectClass *) (parent_class))->write)
 		((SPObjectClass *) (parent_class))->write (object, repr, flags | SP_SHAPE_WRITE_PATH);

@@ -42,6 +42,9 @@
 #include "print.h"
 #include "file.h"
 
+/* fixme: (Lauris) */
+#include "sp-namedview.h"
+
 #ifdef WITH_MODULES
 #include "module.h"
 #include "modules/sp-module-sys.h"

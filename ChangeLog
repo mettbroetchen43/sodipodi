@@ -1,3 +1,21 @@
+2003-07-04  Lauris Kaplinski  <lauris@kaplinski.com>
+
+	* src/svg/svg-length.c (sp_svg_length_set): New method
+
+	* src/sp-spiral.c (sp_spiral_write): Write path here
+
+	* src/sp-image.c (sp_image_repr_read_image): Treat NULL docbase as current directory
+
+	* src/sp-gradient.c (sp_gradient_write): Merged code with flatten_attribute
+	(sp_lineargradient_write): Ditto
+	(sp_radialgradient_write): Ditto
+
+	* src/rect-context.c (sp_rect_context_root_handler): Get motion hints
+
+	* src/helper/sp-canvas.c (SP_CANVAS_UPDATE_PRIORITY): Use higher priority
+
+	* src/document.c (SP_DOCUMENT_UPDATE_PRIORITY): Use higher priority
+
 2003-06-30  Lauris Kaplinski  <lauris@kaplinski.com>
 
 	* src/libnrtype/nr-type-ft2.c (nr_typeface_ft2_glyph_outline_get): Do not
