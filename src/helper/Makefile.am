@@ -4,11 +4,17 @@
 # libspchelp - canvas utilities, specific canvas items, libart add-ons
 #
 
-INCLUDES = \
-	-I.. \
+noinst_LIBRARIES = libspchelp.a
+
+CPPFLAGS = \
+	$(cppflags)
+
+CFLAGS = \
+	$(cflags) \
 	$(SODIPODI_CFLAGS)
 
-noinst_LIBRARIES = libspchelp.a
+INCLUDES = \
+	-I..
 
 libspchelp_a_SOURCES = \
 	helper-forward.h \

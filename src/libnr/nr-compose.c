@@ -11,9 +11,18 @@
  * Released under GNU GPL, read the file 'COPYING' for more information
  */
 
+#include <config.h>
+
 #include <string.h>
 #include "nr-pixops.h"
 #include "nr-compose.h"
+
+#ifdef USE_MMX
+/* fixme: */
+int nr_have_mmx (void);
+void nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned char *c);
+#define NR_PIXOPS_MMX nr_have_mmx ()
+#endif
 
 void
 nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N (unsigned char *px, int w, int h, int rs, const unsigned char *spx, int srs, unsigned int alpha)
@@ -776,12 +785,25 @@ nr_R8G8B8A8_P_R8G8B8A8_P_A8_RGBA32 (unsigned char *px, int w, int h, int rs, con
 	unsigned int r, g, b, a;
 	unsigned int x, y;
 
+	if (!rgba & 0xff) return;
+
 	r = NR_RGBA32_R (rgba);
 	g = NR_RGBA32_G (rgba);
 	b = NR_RGBA32_B (rgba);
 	a = NR_RGBA32_A (rgba);
 
-	if (a == 0) return;
+#ifdef USE_MMX
+	if (NR_PIXOPS_MMX) {
+		unsigned char c[4];
+		c[0] = NR_PREMUL (r, a);
+		c[1] = NR_PREMUL (g, a);
+		c[2] = NR_PREMUL (b, a);
+		c[3] = a;
+		/* WARNING: MMX composer REQUIRES w > 0 and h > 0 */
+		nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP (px, w, h, rs, spx, srs, c);
+		return;
+	}
+#endif
 
 	for (y = 0; y < h; y++) {
 		unsigned char *d, *s;

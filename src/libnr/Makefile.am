@@ -1,9 +1,21 @@
 
 noinst_LIBRARIES = libnr.a
 
-INCLUDES = \
-	-I.. \
+CPPFLAGS = \
+	$(cppflags)
+
+CFLAGS = \
+	$(cflags) \
 	$(SODIPODI_CFLAGS)
+
+INCLUDES = \
+	-I..
+
+if USE_MMX
+mmx_sources = \
+	have_mmx.S \
+	nr_mmx_R8G8B8A8_P_R8G8B8A8_P_A8_RGBAP.S
+endif
 
 libnr_a_SOURCES = \
 	nr-types.h \
@@ -22,4 +34,5 @@ libnr_a_SOURCES = \
 	nr-blit.c nr-blit.h \
 	nr-render.h \
 	nr-gradient.c nr-gradient.h \
-	nr-path.h
+	nr-path.h \
+	$(mmx_sources)

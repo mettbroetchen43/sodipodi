@@ -99,8 +99,6 @@ struct _SPCanvas {
 
 	SPCanvasItem *root;
 
-	guint root_destroy_id;
-
 	/* Scrolling region */
 	double scroll_x1, scroll_y1;
 	double scroll_x2, scroll_y2;
@@ -142,9 +140,6 @@ struct _SPCanvas {
 	unsigned int left_grabbed_item : 1;
 	/* For use by internal pick_current_item() function */
 	unsigned int in_repick : 1;
-
-	unsigned int aa : 1;
-	unsigned int dither : 2;
 };
 
 GtkWidget *sp_canvas_new_aa (void);

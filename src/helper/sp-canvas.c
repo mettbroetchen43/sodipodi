@@ -15,13 +15,9 @@
  */
 
 #include <config.h>
-#if 0
-#include <stdio.h>
-#include <math.h>
-#endif
+
 #include <gtk/gtkmain.h>
 #include <gtk/gtksignal.h>
-#include <gtk/gtklayout.h>
 
 #include <libart_lgpl/art_misc.h>
 #include <libart_lgpl/art_affine.h>
@@ -29,13 +25,6 @@
 #include <libart_lgpl/art_uta.h>
 #include <libart_lgpl/art_rect_uta.h>
 #include <libart_lgpl/art_uta_rect.h>
-
-#if 0
-#include "libart_lgpl/art_rect.h"
-#include "libart_lgpl/art_rect_uta.h"
-#include "libart_lgpl/art_uta_rect.h"
-#include "libart_lgpl/art_uta_ops.h"
-#endif
 
 #include <libnr/nr-values.h>
 #include <libnr/nr-pixblock.h>
@@ -1083,15 +1072,6 @@ sp_canvas_class_init (SPCanvasClass *class)
 	widget_class->focus_out_event = sp_canvas_focus_out;
 }
 
-/* Callback used when the root item of a canvas is destroyed.  The user should
- * never ever do this, so we panic if this happens.
- */
-static void
-panic_root_destroyed (GtkObject *object, gpointer data)
-{
-	g_error ("Eeeek, root item %p of canvas %p was destroyed!", object, data);
-}
-
 /* Object initialization function for SPCanvas */
 static void
 sp_canvas_init (SPCanvas *canvas)
@@ -1107,27 +1087,15 @@ sp_canvas_init (SPCanvas *canvas)
 	canvas->pick_event.crossing.x = 0;
 	canvas->pick_event.crossing.y = 0;
 
-	canvas->dither = GDK_RGB_DITHER_MAX;
-
 	gtk_layout_set_hadjustment (GTK_LAYOUT (canvas), NULL);
 	gtk_layout_set_vadjustment (GTK_LAYOUT (canvas), NULL);
 
-#if 0
-	canvas->cc = gdk_color_context_new (gtk_widget_get_visual (GTK_WIDGET (canvas)),
-					    gtk_widget_get_colormap (GTK_WIDGET (canvas)));
-#endif
-
 	/* Create the root item as a special case */
-
 	canvas->root = SP_CANVAS_ITEM (gtk_type_new (sp_canvas_group_get_type ()));
 	canvas->root->canvas = canvas;
 
 	gtk_object_ref (GTK_OBJECT (canvas->root));
 	gtk_object_sink (GTK_OBJECT (canvas->root));
-
-	canvas->root_destroy_id = gtk_signal_connect (GTK_OBJECT (canvas->root), "destroy",
-						      (GtkSignalFunc) panic_root_destroyed,
-						      canvas);
 
 	canvas->need_repick = TRUE;
 }
@@ -1183,7 +1151,6 @@ sp_canvas_destroy (GtkObject *object)
 
 	canvas = SP_CANVAS (object);
 
-	gtk_signal_disconnect (GTK_OBJECT (canvas->root), canvas->root_destroy_id);
 	gtk_object_unref (GTK_OBJECT (canvas->root));
 
 	shutdown_transients (canvas);
@@ -1204,9 +1171,8 @@ sp_canvas_new_aa (void)
 	canvas = gtk_type_new (sp_canvas_get_type ());
 	gtk_widget_pop_colormap ();
 	gtk_widget_pop_visual ();
-	
-	canvas->aa = 1;
-	return GTK_WIDGET (canvas);
+
+	return (GtkWidget *) canvas;
 }
 
 /* Map handler for the canvas */
@@ -1902,7 +1868,7 @@ paint (SPCanvas *canvas)
 							      draw_x1 - DISPLAY_X1 (canvas),
 							      draw_y1 - DISPLAY_Y1 (canvas),
 							      width, height,
-							      canvas->dither,
+							      GDK_RGB_DITHER_MAX,
 							      buf.buf,
 							      IMAGE_WIDTH_AA * 3,
 							      draw_x1,
