@@ -1,16 +1,17 @@
-# -------------------------------------------------------
+# Turkish translation of sodipodi.
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Fatih Demir <kabalak@gmx.net>, 2000.
+# Mufit Eribol <meribol@ere.com.tr>, 2000.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi 0.20\n"
 "POT-Creation-Date: 2001-09-27 16:59+0200\n"
-"PO-Revision-Date: 2000-12-1 16:37+0200\n"
+"PO-Revision-Date: 2000-12-01 16:37+0200\n"
 "Last-Translator: Mufit Eribol <meribol@ere.com.tr>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-9\n"
+"Content-Type: text/plain; charset=ISO-8859-9\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #.
