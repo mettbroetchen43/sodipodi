@@ -105,14 +105,11 @@ struct _SPStyle {
 	guint stroke_opacity_set : 1;
 };
 
-#define SP_RGBA_FROM_COLOR(c,o) (((guint32)((c)->r*255)<<24)|((guint32)((c)->g*255)<<16)|((guint32)((c)->b*255)<<8)|((guint32)((o)*255)))
-
 SPStyle *sp_style_new (SPObject *object);
 
 SPStyle *sp_style_ref (SPStyle *style);
 SPStyle *sp_style_unref (SPStyle *style);
 
-void sp_style_read_from_string (SPStyle *style, const guchar *str, SPDocument *document);
 void sp_style_read_from_object (SPStyle *style, SPObject *object);
 void sp_style_merge_from_object (SPStyle *style, SPObject *object);
 
@@ -122,6 +119,8 @@ void sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b,
 void sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set);
 void sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gfloat a, gboolean fill_set, gboolean opacity_set);
 void sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfloat k, gfloat a, gboolean fill_set, gboolean opacity_set);
+
+void sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set);
 
 /* SPStyleText */
 

@@ -41,7 +41,7 @@ static void sp_shape_destroy (GtkObject *object);
 static void sp_shape_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_shape_write_repr (SPObject * object, SPRepr * repr);
 static void sp_shape_read_attr (SPObject * object, const gchar * attr);
-static void sp_shape_style_changed (SPObject *object, guint flags);
+static void sp_shape_style_modified (SPObject *object, guint flags);
 
 void sp_shape_print (SPItem * item, GnomePrintContext * gpc);
 static gchar * sp_shape_description (SPItem * item);
@@ -95,7 +95,7 @@ sp_shape_class_init (SPShapeClass * klass)
 	sp_object_class->build = sp_shape_build;
 	sp_object_class->write_repr = sp_shape_write_repr;
 	sp_object_class->read_attr = sp_shape_read_attr;
-	sp_object_class->style_changed = sp_shape_style_changed;
+	sp_object_class->style_modified = sp_shape_style_modified;
 
 	item_class->print = sp_shape_print;
 	item_class->description = sp_shape_description;
@@ -169,7 +169,7 @@ sp_shape_read_attr (SPObject * object, const gchar * attr)
 }
 
 static void
-sp_shape_style_changed (SPObject *object, guint flags)
+sp_shape_style_modified (SPObject *object, guint flags)
 {
 	SPShape *shape;
 	SPItemView *v;
@@ -177,8 +177,8 @@ sp_shape_style_changed (SPObject *object, guint flags)
 	shape = SP_SHAPE (object);
 
 	/* Item class reads style */
-	if (((SPObjectClass *) (parent_class))->style_changed)
-		(* ((SPObjectClass *) (parent_class))->style_changed) (object, flags);
+	if (((SPObjectClass *) (parent_class))->style_modified)
+		(* ((SPObjectClass *) (parent_class))->style_modified) (object, flags);
 
 	for (v = SP_ITEM (shape)->display; v != NULL; v = v->next) {
 		/* fixme: */

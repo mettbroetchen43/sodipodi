@@ -29,7 +29,7 @@ static void sp_item_destroy (GtkObject * object);
 
 static void sp_item_build (SPObject * object, SPDocument * document, SPRepr * repr);
 static void sp_item_read_attr (SPObject *object, const gchar *key);
-static void sp_item_style_changed (SPObject *object, guint flags);
+static void sp_item_style_modified (SPObject *object, guint flags);
 
 static gchar * sp_item_private_description (SPItem * item);
 static GSList * sp_item_private_snappoints (SPItem * item, GSList * points);
@@ -81,7 +81,7 @@ sp_item_class_init (SPItemClass * klass)
 
 	sp_object_class->build = sp_item_build;
 	sp_object_class->read_attr = sp_item_read_attr;
-	sp_object_class->style_changed = sp_item_style_changed;
+	sp_object_class->style_modified = sp_item_style_modified;
 
 	klass->description = sp_item_private_description;
 	klass->show = sp_item_private_show;
@@ -213,12 +213,12 @@ sp_item_read_attr (SPObject * object, const gchar * key)
 	    !strcmp (key, "stroke") ||
 	    !strcmp (key, "opacity")) {
 		sp_style_read_from_object (object->style, object);
-		sp_object_style_changed (object, SP_OBJECT_MODIFIED_FLAG);
+		sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 	}
 }
 
 static void
-sp_item_style_changed (SPObject *object, guint flags)
+sp_item_style_modified (SPObject *object, guint flags)
 {
 	SPItem *item;
 	SPStyle *style;

@@ -46,7 +46,7 @@ sp_style_new (SPObject *object)
 {
 	SPStyle *style;
 
-	g_return_val_if_fail (!object || SP_IS_OBJECT (object), NULL);
+	g_return_val_if_fail (SP_IS_OBJECT (object), NULL);
 
 	style = g_new0 (SPStyle, 1);
 
@@ -385,12 +385,12 @@ sp_style_paint_server_modified (SPPaintServer *server, guint flags, SPStyle *sty
 		g_assert (style->fill.type == SP_PAINT_TYPE_PAINTSERVER);
 		/* fixme: I do not know, whether it is optimal - we are forcing reread of everything (Lauris) */
 		/* fixme: We have to use object_modified flag, because parent flag is only available downstreams */
-		if (style->object) sp_object_style_changed (style->object, SP_OBJECT_MODIFIED_FLAG);
+		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 	} else if (server == style->stroke.server) {
 		g_assert (style->stroke_set);
 		g_assert (style->stroke.type == SP_PAINT_TYPE_PAINTSERVER);
 		/* fixme: */
-		if (style->object) sp_object_style_changed (style->object, SP_OBJECT_MODIFIED_FLAG);
+		sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 	} else {
 		g_assert_not_reached ();
 	}
@@ -681,6 +681,8 @@ sp_style_set_fill_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gflo
 	sp_color_set_rgb_float (&style->fill.color, r, g, b);
 	style->fill_opacity_set = opacity_set;
 	style->fill_opacity = a;
+
+	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
 
 void
@@ -697,6 +699,8 @@ sp_style_set_fill_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, gfl
 	sp_color_set_cmyk_float (&style->fill.color, c, m, y, k);
 	style->fill_opacity_set = opacity_set;
 	style->fill_opacity = a;
+
+	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
 
 void
@@ -713,6 +717,8 @@ sp_style_set_stroke_color_rgba (SPStyle *style, gfloat r, gfloat g, gfloat b, gf
 	sp_color_set_rgb_float (&style->stroke.color, r, g, b);
 	style->stroke_opacity_set = opacity_set;
 	style->stroke_opacity = a;
+
+	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
 
 void
@@ -729,6 +735,19 @@ sp_style_set_stroke_color_cmyka (SPStyle *style, gfloat c, gfloat m, gfloat y, g
 	sp_color_set_cmyk_float (&style->stroke.color, c, m, y, k);
 	style->stroke_opacity_set = opacity_set;
 	style->stroke_opacity = a;
+
+	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
+}
+
+void
+sp_style_set_opacity (SPStyle *style, gfloat opacity, gboolean opacity_set)
+{
+	g_return_if_fail (style != NULL);
+
+	style->opacity_set = opacity_set;
+	style->opacity = opacity;
+
+	sp_object_request_modified (style->object, SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG);
 }
 
 /* SPStyleText operations */

@@ -558,7 +558,6 @@ sp_stroke_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 		items = sp_widget_get_item_list (spw);
 		for (i = items; i != NULL; i = i->next) {
 			sp_style_set_stroke_color_rgba (SP_OBJECT_STYLE (i->data), c[0], c[1], c[2], c[3], TRUE, TRUE);
-			sp_object_style_changed (SP_OBJECT (i->data), SP_OBJECT_MODIFIED_FLAG);
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_COLOR_CMYK:
@@ -566,7 +565,6 @@ sp_stroke_style_widget_paint_dragged (SPPaintSelector *psel, SPWidget *spw)
 		items = sp_widget_get_item_list (spw);
 		for (i = items; i != NULL; i = i->next) {
 			sp_style_set_stroke_color_cmyka (SP_OBJECT_STYLE (i->data), c[0], c[1], c[2], c[3], c[4], TRUE, TRUE);
-			sp_object_style_changed (SP_OBJECT (i->data), SP_OBJECT_MODIFIED_FLAG);
 		}
 		break;
 	case SP_PAINT_SELECTOR_MODE_GRADIENT_LINEAR:

@@ -37,7 +37,6 @@ static void sp_group_read_attr (SPObject * object, const gchar * attr);
 static void sp_group_child_added (SPObject * object, SPRepr * child, SPRepr * ref);
 static void sp_group_remove_child (SPObject * object, SPRepr * child);
 static void sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr * new);
-static void sp_group_style_changed (SPObject *object, guint flags);
 static void sp_group_modified (SPObject *object, guint flags);
 static gint sp_group_sequence (SPObject *object, gint seq);
 
@@ -91,7 +90,6 @@ sp_group_class_init (SPGroupClass *klass)
 	sp_object_class->child_added = sp_group_child_added;
 	sp_object_class->remove_child = sp_group_remove_child;
 	sp_object_class->order_changed = sp_group_order_changed;
-	sp_object_class->style_changed = sp_group_style_changed;
 	sp_object_class->modified = sp_group_modified;
 	sp_object_class->sequence = sp_group_sequence;
 
@@ -292,23 +290,6 @@ sp_group_order_changed (SPObject * object, SPRepr * child, SPRepr * old, SPRepr 
 		for (v = SP_ITEM (ochild)->display; v != NULL; v = v->next) {
 			nr_arena_item_set_order (v->arenaitem, newpos);
 		}
-	}
-}
-
-static void
-sp_group_style_changed (SPObject *object, guint flags)
-{
-	SPGroup *group;
-	SPObject *child;
-
-	group = SP_GROUP (object);
-
-	if (((SPObjectClass *) (parent_class))->style_changed)
-		(* ((SPObjectClass *) (parent_class))->style_changed) (object, flags);
-
-	/* fixme: I am not sure - currently we are invoking 2 cascades - style changed and mofified */
-	for (child = group->children; child != NULL; child = child->next) {
-		sp_object_style_changed (child, SP_OBJECT_PARENT_MODIFIED_FLAG);
 	}
 }
 

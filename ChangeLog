@@ -1,3 +1,29 @@
+2002-04-04  Lauris Kaplinski  <lauris@ximian.com>
+
+	* src/dialogs/item-properties.c: Removed #ifdef 0 code
+
+	* src/style.c (sp_style_new): Require object validity
+	(sp_style_paint_server_modified): Use sp_object_request_modified
+	(sp_style_set_fill_color_rgba): Request modified
+	(sp_style_set_fill_color_cmyka): Ditto
+	(sp_style_set_stroke_color_rgba): Ditto
+	(sp_style_set_stroke_color_cmyka): Ditto
+	(sp_style_set_opacity): Ditto
+
+	* src/sp-shape.c (sp_shape_style_modified): Renamed method
+
+	* src/sp-item.c (sp_item_read_attr): Use sp_object_request_modified
+	(sp_item_style_modified): Renamed method, otherwise same
+
+	* src/sp-item-group.c (sp_group_class_init): No ::style_changed anymore
+
+	* src/sp-object.c (sp_object_request_modified): Accept style modification
+	flag (but not alone)
+	(sp_object_modified): Ditto, invoke ::style_changed if needed
+
+	* src/sp-object.h (SP_OBJECT_STYLE_MODIFIED_FLAG): New flag - we now
+	collect style modifications into single-step async apply too
+
 Sun Mar 31 19:09:25 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
 
 	* src/sp-rect.c (sp_rect_*_set): Fixed a little.

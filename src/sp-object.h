@@ -18,16 +18,18 @@
 
 /* Async modifiaction flags */
 
+#define SP_OBJECT_FLAGS GTK_OBJECT_FLAGS
 #define SP_OBJECT_SET_FLAGS GTK_OBJECT_SET_FLAGS
 #define SP_OBJECT_UNSET_FLAGS GTK_OBJECT_UNSET_FLAGS
 #define SP_OBJECT_CLONED_FLAG (1 << 4)
 #define SP_OBJECT_MODIFIED_FLAG (1 << 5)
 #define SP_OBJECT_CHILD_MODIFIED_FLAG (1 << 6)
 #define SP_OBJECT_PARENT_MODIFIED_FLAG (1 << 7)
+#define SP_OBJECT_STYLE_MODIFIED_FLAG (1 << 8)
+#define SP_OBJECT_MODIFIED_STATE (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG | SP_OBJECT_STYLE_MODIFIED_FLAG)
 #define SP_OBJECT_IS_CLONED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CLONED_FLAG)
 #define SP_OBJECT_IS_MODIFIED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_MODIFIED_FLAG)
 #define SP_OBJECT_CHILD_IS_MODIFIED(o) (GTK_OBJECT_FLAGS (o) & SP_OBJECT_CHILD_MODIFIED_FLAG)
-
 /* Convenience stuff */
 
 #define SP_OBJECT_ID(o) (SP_OBJECT (o)->id)
@@ -98,10 +100,10 @@ struct _SPObjectClass {
 	void (* read_attr) (SPObject * object, const gchar * key);
 	void (* read_content) (SPObject * object);
 
-	/* Style change notifier */
-	void (* style_changed) (SPObject *object, guint flags);
 	/* Modification handler */
 	void (* modified) (SPObject *object, guint flags);
+	/* Style change notifier */
+	void (* style_modified) (SPObject *object, guint flags);
 
 	/* Compute next sequence number */
 	gint (* sequence) (SPObject *object, gint seq);
@@ -139,9 +141,11 @@ void sp_object_invoke_read_attr (SPObject * object, const gchar * key);
 
 /* Styling */
 
+#if 0
 /* fixme: this is potentially dangerous - use load/set style instead (Lauris) */
 /* flags are the same as for modification */
 void sp_object_style_changed (SPObject *object, guint flags);
+#endif
 
 /* Modification */
 

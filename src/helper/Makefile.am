@@ -31,3 +31,5 @@ libspchelp_a_SOURCES = \
 	units.c units.h \
 	unit-menu.c unit-menu.h
 
+#	pathops.c pathops.h
+

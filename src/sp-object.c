@@ -469,22 +469,6 @@ sp_object_repr_content_changed (SPRepr *repr, const guchar *oldcontent, const gu
 	sp_document_content_changed (object->document, object, oldcontent, newcontent);
 }
 
-/* Styling */
-
-/* fixme: this is potentially dangerous - use load/set style instead (Lauris) */
-void
-sp_object_style_changed (SPObject *object, guint flags)
-{
-	g_return_if_fail (object != NULL);
-	g_return_if_fail (SP_IS_OBJECT (object));
-
-	if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_changed)
-		(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_changed) (object, flags);
-
-	/* fixme: I think this is correct - changing parent style modifies object itself */
-	sp_object_request_modified (object, SP_OBJECT_MODIFIED_FLAG);
-}
-
 /* Modification */
 
 void
@@ -494,17 +478,16 @@ sp_object_request_modified (SPObject *object, guint flags)
 
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
-	g_return_if_fail ((flags == SP_OBJECT_MODIFIED_FLAG) || (flags == SP_OBJECT_CHILD_MODIFIED_FLAG));
+	g_return_if_fail (!(flags & SP_OBJECT_PARENT_MODIFIED_FLAG));
+	g_return_if_fail ((flags & SP_OBJECT_MODIFIED_FLAG) || (flags & SP_OBJECT_CHILD_MODIFIED_FLAG));
+	g_return_if_fail (!((flags & SP_OBJECT_MODIFIED_FLAG) && (flags & SP_OBJECT_CHILD_MODIFIED_FLAG)));
 
 	/* Check for propagate before we set any flags */
-	propagate = ((GTK_OBJECT_FLAGS (object) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG)) == 0);
+	/* Propagate means, that object is not passed through by modification request cascade yet */
+	propagate = (!(SP_OBJECT_FLAGS (object) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG)));
 
-	/* Either one is true, so we can simply overwrite flag */
-	if (flags & SP_OBJECT_MODIFIED_FLAG) {
-		SP_OBJECT_SET_FLAGS (object, SP_OBJECT_MODIFIED_FLAG);
-	} else if (flags & SP_OBJECT_CHILD_MODIFIED_FLAG) {
-		SP_OBJECT_SET_FLAGS (object, SP_OBJECT_CHILD_MODIFIED_FLAG);
-	}
+	/* Just set object flags safe even if some have been set before */
+	SP_OBJECT_SET_FLAGS (object, flags);
 
 	if (propagate) {
 		if (object->parent) {
@@ -520,14 +503,19 @@ sp_object_modified (SPObject *object, guint flags)
 {
 	g_return_if_fail (object != NULL);
 	g_return_if_fail (SP_IS_OBJECT (object));
-	g_return_if_fail ((flags == 0) || (flags == SP_OBJECT_PARENT_MODIFIED_FLAG));
+	g_return_if_fail (!flags || (flags == SP_OBJECT_PARENT_MODIFIED_FLAG));
 
-	flags |= (GTK_OBJECT_FLAGS (object) & (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG));
+	flags |= (GTK_OBJECT_FLAGS (object) & SP_OBJECT_MODIFIED_STATE);
 
 	g_return_if_fail (flags != 0);
 
 	/* Clear flags to allow reentrancy */
-	SP_OBJECT_UNSET_FLAGS (object, (SP_OBJECT_MODIFIED_FLAG | SP_OBJECT_CHILD_MODIFIED_FLAG));
+	SP_OBJECT_UNSET_FLAGS (object, SP_OBJECT_MODIFIED_STATE);
+
+	if (flags && SP_OBJECT_STYLE_MODIFIED_FLAG) {
+		if (((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified)
+			(*((SPObjectClass *)(((GtkObject *) object)->klass))->style_modified) (object, flags);
+	}
 
 	gtk_object_ref (GTK_OBJECT (object));
 	gtk_signal_emit (GTK_OBJECT (object), object_signals[MODIFIED], flags);
