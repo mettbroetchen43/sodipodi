@@ -1,3 +1,8 @@
+Sat Jul 13 05:52:15 2002  Mitsuru Oka  <oka326@parkcity.ne.jp>
+
+	* src/sp-item-group.c (sp_group_bbox): Fixed group selection bug -
+	thanks to Ted Gould and his bug report.
+
 2002-05-20  Lauris Kaplinski  <lauris@ximian.com>
 
 	* src/xml/repr-io.c (sp_repr_svg_read_node): Add namespaces back -

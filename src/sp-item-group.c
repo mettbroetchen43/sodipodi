@@ -352,7 +352,7 @@ sp_group_bbox (SPItem *item, ArtDRect *bbox, const gdouble *transform)
 		if (SP_IS_ITEM (o)) {
 			gdouble a[6];
 			child = SP_ITEM (o);
-			art_affine_multiply (a, item->affine, transform);
+			art_affine_multiply (a, child->affine, transform);
 			sp_item_invoke_bbox (child, &child_bbox, a);
 			art_drect_union (bbox, bbox, &child_bbox);
 		}
