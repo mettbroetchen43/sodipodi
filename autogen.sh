@@ -9,6 +9,8 @@ PKG_NAME="sodipodi"
 
 DIE=0
 
+${srcdir}/tools-version.sh
+
 (autoconf --version) < /dev/null > /dev/null 2>&1 || {
   echo
   echo "**Error**: You must have \`autoconf' installed to compile $PKG_NAME."
