@@ -10,6 +10,10 @@
  * This code is in public domain
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef HAVE_INTTYPES_H
 /* ISO C99 headers */
 #include <inttypes.h>
@@ -84,5 +88,9 @@ struct _NRRectL {
 struct _NRRectS {
 	NRShort x0, y0, x1, y1;
 };
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

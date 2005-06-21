@@ -397,7 +397,7 @@ static NRPathGVector pbpgv = {
 /* fixme: 'close' is unused (Lauris) */
 
 NRSVL *
-nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness)
+nr_svl_from_path (const NRPath *path, const NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness)
 {
 	NRSVLBuild svlb;
 	NRSVL *svl;

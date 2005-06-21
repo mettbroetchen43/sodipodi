@@ -17,6 +17,10 @@
 #include <libnr/nr-path.h>
 #include <libnr/nr-svp.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum {
 	NR_STROKE_CAP_BUTT,
 	NR_STROKE_CAP_ROUND,
@@ -29,10 +33,13 @@ enum {
 	NR_STROKE_JOIN_BEVEL
 };
 
-NRSVL *nr_path_stroke (const NRPath *path, NRMatrixF *transform,
+NRSVL *nr_path_stroke (const NRPath *path, const NRMatrixF *transform,
 		       float width,
 		       unsigned int cap, unsigned int join, float miterlimit,
 		       float flatness);
+
+void nr_path_stroke_bbox_union (const NRPath *path, NRMatrixF *transform, NRRectF *bbox,
+								float width, unsigned int cap, unsigned int join, float miterlimit, float flatness);
 
 #ifdef LIBNR_LIBART
 NRSVL *nr_bpath_stroke (const NRBPath *path, NRMatrixF *transform,
@@ -50,6 +57,10 @@ NRRectF *nr_bpath_stroke_bbox_union (const NRBPath *path, NRMatrixF *transform,
 				     float width,
 				     unsigned int cap, unsigned int join, float miterlimit,
 				     float flatness);
+#endif
+
+#ifdef __cplusplus
+};
 #endif
 
 #endif

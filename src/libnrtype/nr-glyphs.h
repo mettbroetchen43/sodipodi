@@ -17,6 +17,10 @@ typedef struct _NRPGL NRPGL;
 
 #include <libnrtype/nr-rasterfont.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct _NRPosGlyph {
 	NRULong glyph;
 	float x, y;
@@ -36,6 +40,10 @@ NRPGL *nr_pgl_new_from_string (NRUShort *text, unsigned int length, NRFont *font
 NRPGL *nr_pgl_free (NRPGL *pgl);
 
 void nr_pgl_set_origin (NRPGL *pgl, float x, float y);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
 

@@ -135,7 +135,7 @@ struct _NRRFGlyphSlot {
 static NRRFGlyphSlot *nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned int flags);
 
 NRRasterFont *
-nr_rasterfont_generic_new (NRFont *font, NRMatrixF *transform)
+nr_rasterfont_generic_new (NRFont *font, const NRMatrixF *transform)
 {
 	NRRasterFont *rf;
 
@@ -207,10 +207,10 @@ nr_rasterfont_generic_glyph_area_get (NRRasterFont *rf, unsigned int glyph, NRRe
 	switch (slot->type) {
 	case NRRF_TYPE_TINY:
 	case NRRF_TYPE_IMAGE:
-		area->x0 = NRRF_COORD_TO_FLOAT (slot->glyph.tg.bbox.x0);
-		area->y0 = NRRF_COORD_TO_FLOAT (slot->glyph.tg.bbox.y0);
-		area->x1 = NRRF_COORD_TO_FLOAT (slot->glyph.tg.bbox.x1);
-		area->y1 = NRRF_COORD_TO_FLOAT (slot->glyph.tg.bbox.y1);
+		area->x0 = (float) NRRF_COORD_TO_FLOAT (slot->glyph.tg.bbox.x0);
+		area->y0 = (float) NRRF_COORD_TO_FLOAT (slot->glyph.tg.bbox.y0);
+		area->x1 = (float) NRRF_COORD_TO_FLOAT (slot->glyph.tg.bbox.x1);
+		area->y1 = (float) NRRF_COORD_TO_FLOAT (slot->glyph.tg.bbox.y1);
 		break;
 	case NRRF_TYPE_SVP:
 		nr_svp_bbox (slot->glyph.sg.svp, area, TRUE);
@@ -315,16 +315,16 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 		if (nr_font_glyph_advance_get (rf->font, glyph, &a)) {
 			switch (slot->type) {
 			case NRRF_TYPE_TINY:
-				slot->glyph.tg.advance.x = NR_MATRIX_DF_TRANSFORM_X (&rf->transform, a.x, a.y);
-				slot->glyph.tg.advance.y = NR_MATRIX_DF_TRANSFORM_Y (&rf->transform, a.x, a.y);
+				slot->glyph.tg.advance.x = (short) NR_MATRIX_DF_TRANSFORM_X (&rf->transform, a.x, a.y);
+				slot->glyph.tg.advance.y = (short) NR_MATRIX_DF_TRANSFORM_Y (&rf->transform, a.x, a.y);
 				break;
 			case NRRF_TYPE_IMAGE:
-				slot->glyph.ig.advance.x = NR_MATRIX_DF_TRANSFORM_X (&rf->transform, a.x, a.y);
-				slot->glyph.ig.advance.y = NR_MATRIX_DF_TRANSFORM_Y (&rf->transform, a.x, a.y);
+				slot->glyph.ig.advance.x = (short) NR_MATRIX_DF_TRANSFORM_X (&rf->transform, a.x, a.y);
+				slot->glyph.ig.advance.y = (short) NR_MATRIX_DF_TRANSFORM_Y (&rf->transform, a.x, a.y);
 				break;
 			case NRRF_TYPE_SVP:
-				slot->glyph.sg.advance.x = NR_MATRIX_DF_TRANSFORM_X (&rf->transform, a.x, a.y);
-				slot->glyph.sg.advance.y = NR_MATRIX_DF_TRANSFORM_Y (&rf->transform, a.x, a.y);
+				slot->glyph.sg.advance.x = (long) NR_MATRIX_DF_TRANSFORM_X (&rf->transform, a.x, a.y);
+				slot->glyph.sg.advance.y = (long) NR_MATRIX_DF_TRANSFORM_Y (&rf->transform, a.x, a.y);
 				break;
 			default:
 				break;

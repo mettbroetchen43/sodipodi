@@ -16,6 +16,10 @@
 
 #include <libnr/nr-svp.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define NR_QUANT_X 16.0F
 #define NR_QUANT_Y 16.0F
 #define NR_COORD_X_FROM_ART(v) (floor (NR_QUANT_X * (v) + 0.5F) / NR_QUANT_X)
@@ -44,7 +48,7 @@ void nr_svl_build_curveto (NRSVLBuild *svlb,
 			   float flatness);
 #endif
 
-NRSVL *nr_svl_from_path (NRPath *path, NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness);
+NRSVL *nr_svl_from_path (const NRPath *path, const NRMatrixF *transform, unsigned int windrule, unsigned int close, float flatness);
 
 #ifdef LIBNR_LIBART
 /* fixme: Remove these if ready (Lauris) */
@@ -87,5 +91,9 @@ void nr_flat_free_one (NRFlat *flat);
 void nr_flat_free_list (NRFlat *flat);
 
 NRFlat *nr_flat_insert_sorted (NRFlat *start, NRFlat *flat);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

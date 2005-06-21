@@ -14,6 +14,10 @@
 #include <config.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct _NRPath NRPath;
 
 enum {
@@ -83,13 +87,15 @@ struct _NRPath {
 	NRPathElement elements[1];
 };
 
+NRPath *nr_path_duplicate (const NRPath *path, unsigned int nreserved);
 NRPath *nr_path_duplicate_transform (const NRPath *path, const NRMatrixF *transform);
 
-unsigned int nr_path_forall (const NRPath *path, NRMatrixF *transform, const NRPathGVector *gv, void *data);
-unsigned int nr_path_forall_flat (const NRPath *path, NRMatrixF *transform, float tolerance,
+unsigned int nr_path_forall (const NRPath *path, const NRMatrixF *transform, const NRPathGVector *gv, void *data);
+unsigned int nr_path_forall_flat (const NRPath *path, const NRMatrixF *transform, float tolerance,
 				  const NRPathGVector *gv, void *data);
 
-void nr_path_matrix_f_bbox_f_union (NRPath *path, NRMatrixF *m, NRRectF *bbox, float tolerance);
+void nr_path_matrix_f_bbox_f_union (const NRPath *path, const NRMatrixF *m, NRRectF *bbox, float tolerance);
+float nr_path_matrix_f_wind_distance (const NRPath *path, const NRMatrixF *m, float x, float y, int *wind, float tolerance);
 
 #ifdef LIBNR_LIBART
 /* Temporary */
@@ -150,6 +156,10 @@ void nr_path_matrix_f_point_f_bbox_wind_distance (NRBPath *bpath, NRMatrixF *m, 
 						  float tolerance);
 
 void nr_bpath_matrix_f_bbox_f_union (NRBPath *bpath, NRMatrixF *m, NRRectF *bbox, float tolerance);
+#endif
+
+#ifdef __cplusplus
+};
 #endif
 
 #endif

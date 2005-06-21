@@ -15,6 +15,10 @@ typedef struct _NRFont NRFont;
 #include <libnrtype/nr-typeface.h>
 #include <libnrtype/nr-rasterfont.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct _NRFont {
 	unsigned int refcount;
 	NRFont *next;
@@ -36,7 +40,7 @@ void nr_font_glyph_outline_unref (NRFont *font, unsigned int glyph);
 NRPointF *nr_font_glyph_advance_get (NRFont *font, unsigned int glyph, NRPointF *adv);
 NRRectF *nr_font_glyph_area_get (NRFont *font, unsigned int glyph, NRRectF *area);
 
-NRRasterFont *nr_rasterfont_new (NRFont *font, NRMatrixF *transform);
+NRRasterFont *nr_rasterfont_new (NRFont *font, const NRMatrixF *transform);
 
 /* Generic implementation */
 
@@ -48,7 +52,11 @@ void nr_font_generic_glyph_outline_unref (NRFont *font, unsigned int glyph);
 NRPointF *nr_font_generic_glyph_advance_get (NRFont *font, unsigned int glyph, NRPointF *adv);
 NRRectF *nr_font_generic_glyph_area_get (NRFont *font, unsigned int glyph, NRRectF *area);
 
-NRRasterFont *nr_font_generic_rasterfont_new (NRFont *font, NRMatrixF *transform);
+NRRasterFont *nr_font_generic_rasterfont_new (NRFont *font, const NRMatrixF *transform);
 void nr_font_generic_rasterfont_free (NRRasterFont *rf);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

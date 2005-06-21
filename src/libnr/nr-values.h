@@ -26,6 +26,20 @@
 #define NR_EXPORT
 #endif
 
+#if 1
+#define NR_MATRIX_D_IDENTITY (*nr_matrix_d_get_identity ())
+#define NR_MATRIX_F_IDENTITY (*nr_matrix_f_get_identity ())
+#define NR_RECT_D_EMPTY (*nr_rect_d_get_empty ())
+#define NR_RECT_F_EMPTY (*nr_rect_f_get_empty ())
+#define NR_RECT_L_EMPTY (*nr_rect_l_get_empty ())
+#define NR_RECT_S_EMPTY (*nr_rect_s_get_empty ())
+const NRMatrixD *nr_matrix_d_get_identity (void);
+const NRMatrixF *nr_matrix_f_get_identity (void);
+const NRRectD *nr_rect_d_get_empty (void);
+const NRRectF *nr_rect_f_get_empty (void);
+const NRRectL *nr_rect_l_get_empty (void);
+const NRRectS *nr_rect_s_get_empty (void);
+#else
 #if defined (__NR_VALUES_C__) || defined (_WIN32)
 NR_EXPORT NRMatrixD NR_MATRIX_D_IDENTITY = {{1.0, 0.0, 0.0, 1.0, 0.0, 0.0}};
 NR_EXPORT NRMatrixF NR_MATRIX_F_IDENTITY = {{1.0, 0.0, 0.0, 1.0, 0.0, 0.0}};
@@ -40,6 +54,7 @@ extern NRRectD NR_RECT_D_EMPTY;
 extern NRRectF NR_RECT_F_EMPTY;
 extern NRRectL NR_RECT_L_EMPTY;
 extern NRRectS NR_RECT_S_EMPTY;
+#endif
 #endif
 
 #endif

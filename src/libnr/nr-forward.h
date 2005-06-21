@@ -10,6 +10,14 @@
  * This code is in public domain
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct _NRPixBlock NRPixBlock;
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

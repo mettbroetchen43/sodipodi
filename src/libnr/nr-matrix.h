@@ -13,6 +13,10 @@
 #include <libnr/nr-macros.h>
 #include <libnr/nr-values.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define nr_matrix_d_set_identity(m) (*(m) = NR_MATRIX_D_IDENTITY)
 #define nr_matrix_f_set_identity(m) (*(m) = NR_MATRIX_F_IDENTITY)
 
@@ -56,5 +60,9 @@ NRMatrixF *nr_matrix_f_set_rotate (NRMatrixF *m, float theta);
 
 #define NR_MATRIX_DF_EXPANSION2(m) (fabs ((m)->c[0] * (m)->c[3] - (m)->c[1] * (m)->c[2]))
 #define NR_MATRIX_DF_EXPANSION(m) (sqrt (NR_MATRIX_DF_EXPANSION2 (m)))
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

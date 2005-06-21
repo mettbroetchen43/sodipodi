@@ -11,6 +11,50 @@
 
 #include "nr-rect.h"
 
+const NRRectD *
+nr_rect_d_get_empty (void)
+{
+	static NRRectD r;
+	r.x0 = NR_HUGE_D;
+	r.y0 = NR_HUGE_D;
+	r.x1 = -NR_HUGE_D;
+	r.y1 = -NR_HUGE_D;
+	return &r;
+}
+
+const NRRectF *
+nr_rect_f_get_empty (void)
+{
+	static NRRectF r;
+	r.x0 = NR_HUGE_F;
+	r.y0 = NR_HUGE_F;
+	r.x1 = -NR_HUGE_F;
+	r.y1 = -NR_HUGE_F;
+	return &r;
+}
+
+const NRRectL *
+nr_rect_l_get_empty (void)
+{
+	static NRRectL r;
+	r.x0 = NR_HUGE_L;
+	r.y0 = NR_HUGE_L;
+	r.x1 = -NR_HUGE_L;
+	r.y1 = -NR_HUGE_L;
+	return &r;
+}
+
+const NRRectS *
+nr_rect_s_get_empty (void)
+{
+	static NRRectS r;
+	r.x0 = NR_HUGE_S;
+	r.y0 = NR_HUGE_S;
+	r.x1 = -NR_HUGE_S;
+	r.y1 = -NR_HUGE_S;
+	return &r;
+}
+
 NRRectD *
 nr_rect_d_intersect (NRRectD *d, const NRRectD *r0, const NRRectD *r1)
 {

@@ -19,6 +19,10 @@ typedef struct _NRSVP NRSVP;
 #include <libnr/nr-types.h>
 #include <libnr/nr-path.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct _NRSVPSegment {
 	NRShort wind;
 	NRUShort length;
@@ -87,5 +91,9 @@ struct _NRFlat {
 NRSVP *nr_svp_from_svl (NRSVL *svl, NRFlat *flat);
 
 int nr_svl_point_wind (NRSVL *svl, float x, float y);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

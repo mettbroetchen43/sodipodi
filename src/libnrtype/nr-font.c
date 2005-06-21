@@ -61,7 +61,7 @@ nr_font_glyph_area_get (NRFont *font, unsigned int glyph, NRRectF *area)
 }
 
 NRRasterFont *
-nr_rasterfont_new (NRFont *font, NRMatrixF *transform)
+nr_rasterfont_new (NRFont *font, const NRMatrixF *transform)
 {
 	return ((NRTypeFaceClass *) ((NRObject *) font->face)->klass)->rasterfont_new (font, transform);
 }
@@ -173,7 +173,7 @@ nr_font_generic_glyph_area_get (NRFont *font, unsigned int glyph, NRRectF *area)
 }
 
 NRRasterFont *
-nr_font_generic_rasterfont_new (NRFont *font, NRMatrixF *transform)
+nr_font_generic_rasterfont_new (NRFont *font, const NRMatrixF *transform)
 {
 	NRFontGeneric *fg;
 	NRRasterFont *rf;

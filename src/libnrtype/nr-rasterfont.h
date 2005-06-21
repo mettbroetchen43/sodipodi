@@ -16,6 +16,10 @@ typedef struct _NRRFGlyphSlot NRRFGlyphSlot;
 #include <libnr/nr-pixblock.h>
 #include <libnrtype/nr-font.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct _NRRasterFont {
 	unsigned int refcount;
 	NRRasterFont *next;
@@ -38,10 +42,14 @@ void nr_rasterfont_glyph_mask_render (NRRasterFont *rf, int glyph, NRPixBlock *m
 
 /* Generic implementation */
 
-NRRasterFont *nr_rasterfont_generic_new (NRFont *font, NRMatrixF *transform);
+NRRasterFont *nr_rasterfont_generic_new (NRFont *font, const NRMatrixF *transform);
 void nr_rasterfont_generic_free (NRRasterFont *rf);
 NRPointF *nr_rasterfont_generic_glyph_advance_get (NRRasterFont *rf, unsigned int glyph, NRPointF *adv);
 NRRectF *nr_rasterfont_generic_glyph_area_get (NRRasterFont *rf, unsigned int glyph, NRRectF *area);
 void nr_rasterfont_generic_glyph_mask_render (NRRasterFont *rf, unsigned int glyph, NRPixBlock *m, float x, float y);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

@@ -11,6 +11,32 @@
 
 #include "nr-matrix.h"
 
+const NRMatrixF *
+nr_matrix_f_get_identity (void)
+{
+	static NRMatrixF m;
+	m.c[0] = 1;
+	m.c[1] = 0;
+	m.c[2] = 0;
+	m.c[3] = 1;
+	m.c[4] = 0;
+	m.c[5] = 0;
+	return &m;
+}
+
+const NRMatrixD *
+nr_matrix_d_get_identity (void)
+{
+	static NRMatrixD m;
+	m.c[0] = 1;
+	m.c[1] = 0;
+	m.c[2] = 0;
+	m.c[3] = 1;
+	m.c[4] = 0;
+	m.c[5] = 0;
+	return &m;
+}
+
 NRMatrixD *
 nr_matrix_d_from_f (NRMatrixD *d, const NRMatrixF *s)
 {

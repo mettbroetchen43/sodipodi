@@ -26,6 +26,10 @@ typedef struct _NRTypePosDef NRTypePosDef;
 #include <libnrtype/nr-font.h>
 #include <libnrtype/nr-rasterfont.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum {
 	NR_TYPEFACE_METRICS_DEFAULT,
 	NR_TYPEFACE_METRICS_HORIZONTAL,
@@ -89,7 +93,7 @@ struct _NRTypeFaceClass {
 	void (* font_glyph_outline_unref) (NRFont *font, unsigned int glyph);
 	NRPointF *(* font_glyph_advance_get) (NRFont *font, unsigned int glyph, NRPointF *adv);
 	NRRectF *(* font_glyph_area_get) (NRFont *font, unsigned int glyph, NRRectF *area);
-	NRRasterFont *(* rasterfont_new) (NRFont *font, NRMatrixF *transform);
+	NRRasterFont *(* rasterfont_new) (NRFont *font, const NRMatrixF *transform);
 
 	void (* rasterfont_free) (NRRasterFont *rfont);
 	NRPointF *(* rasterfont_glyph_advance_get) (NRRasterFont *rfont, unsigned int glyph, NRPointF *adv);
@@ -145,5 +149,9 @@ unsigned int nr_type_string_to_slant (const unsigned char *sstr);
 const unsigned char *nr_type_slant_to_string (unsigned int slant);
 
 const unsigned char *nr_type_make_style_name_dumb (const NRTypeFaceDef *def);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

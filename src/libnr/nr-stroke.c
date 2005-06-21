@@ -261,10 +261,13 @@ nr_path_stroke_lineto (float x0, float y0, float x1, float y1, unsigned int flag
 {
 	NRSVLStrokeBuild *svlb;
 	svlb = (NRSVLStrokeBuild *) data;
-	nr_svl_stroke_build_lineto (svlb, x0, y0);
+	nr_svl_stroke_build_lineto (svlb, x1, y1);
+#if 0
+	/* fixme: It seems we have to do this (and more) in endpath */
 	if (flags & NR_PATH_LAST) {
 		nr_svl_stroke_build_finish_subpath (svlb);
 	}
+#endif
 	return TRUE;
 }
 
@@ -273,6 +276,10 @@ nr_path_stroke_endpath (float ex, float ey, float sx, float sy, unsigned int fla
 {
 	NRSVLStrokeBuild *svlb;
 	svlb = (NRSVLStrokeBuild *) data;
+	if ((flags & NR_PATH_CLOSED) && ((ex != sx) || (ey != sy))) {
+		nr_svl_stroke_build_lineto (svlb, sx, sy);
+	}
+	nr_svl_stroke_build_finish_subpath (svlb);
 	nr_svl_stroke_build_finish_segment (svlb);
 	return TRUE;
 }
@@ -285,7 +292,7 @@ static NRPathGVector spgv = {
 	nr_path_stroke_endpath
 };
 
-NRSVL *nr_path_stroke (const NRPath *path, NRMatrixF *transform,
+NRSVL *nr_path_stroke (const NRPath *path, const NRMatrixF *transform,
 		       float width,
 		       unsigned int cap, unsigned int join, float miterlimit,
 		       float flatness)
@@ -302,7 +309,7 @@ NRSVL *nr_path_stroke (const NRPath *path, NRMatrixF *transform,
 	}
 	svlb.bboxonly = FALSE;
 	svlb.closed = FALSE;
-	svlb.width_2 = width / 2.0;
+	svlb.width_2 = MAX (width / 2.0, 0.0625);
 	svlb.cap = cap;
 	svlb.join = join;
 	svlb.curve = FALSE;
@@ -339,6 +346,57 @@ NRSVL *nr_path_stroke (const NRPath *path, NRMatrixF *transform,
 	/* nr_flat_free_list (flats); */
 
 	return svlb.svl;
+}
+
+void
+nr_path_stroke_bbox_union (const NRPath *path, NRMatrixF *transform, NRRectF *bbox,
+								float width, unsigned int cap, unsigned int join, float miterlimit, float flatness)
+{
+	NRSVLStrokeBuild svlb;
+
+	/* Initialize NRSVLBuilds */
+	svlb.svl = NULL;
+	svlb.flats = NULL;
+	if (transform) {
+		svlb.transform = *transform;
+	} else {
+		nr_matrix_f_set_identity (&svlb.transform);
+	}
+	svlb.bboxonly = TRUE;
+	svlb.closed = FALSE;
+	svlb.width_2 = MAX (width / 2.0, 0.0625);
+	svlb.cap = cap;
+	svlb.join = join;
+	svlb.curve = FALSE;
+	svlb.cosml = MIN (cos (miterlimit), 0.9998477);
+	svlb.npoints = 0;
+
+	svlb.left.svl = &svlb.svl;
+	svlb.left.flats = &svlb.flats;
+	svlb.left.refvx = NULL;
+	svlb.left.dir = 0;
+	svlb.left.reverse = FALSE;
+	svlb.left.bboxonly = TRUE;
+	svlb.left.sx = svlb.left.sy = 0.0;
+	nr_rect_f_set_empty (&svlb.left.bbox);
+
+	svlb.right.svl = &svlb.svl;
+	svlb.right.flats = &svlb.flats;
+	svlb.right.refvx = NULL;
+	svlb.right.dir = 0;
+	svlb.right.reverse = TRUE;
+	svlb.right.bboxonly = TRUE;
+	svlb.right.sx = svlb.right.sy = 0.0;
+	nr_rect_f_set_empty (&svlb.right.bbox);
+
+	nr_path_forall_flat (path, transform, flatness, &spgv, &svlb);
+
+	// fixme: Shouldn't happen
+	nr_svl_free_list (svlb.svl);
+	nr_flat_free_list (svlb.flats);
+
+	nr_rect_f_union (bbox, bbox, &svlb.left.bbox);
+	nr_rect_f_union (bbox, bbox, &svlb.right.bbox);
 }
 
 #ifdef LIBNR_LIBART
@@ -705,7 +763,7 @@ nr_svl_stroke_build_draw_cap (NRSVLStrokeBuild *svlb, float x0, float y0, float 
 		nr_svl_build_lineto (&svlb->left,
 				     x0 + dy * svlb->width_2,
 				     y0 - dx * svlb->width_2);
-		for (theta = 0.0; theta < M_PI; theta += (M_PI / 32.0)) {
+		for (theta = 0.0; theta < M_PI; theta += (float) (M_PI / 32)) {
 			float ct, st;
 			ct = cos (theta);
 			st = sin (theta);

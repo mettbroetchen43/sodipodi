@@ -14,6 +14,10 @@
 #include <stdlib.h>
 #include <libnr/nr-types.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define nr_new(t,n) ((t *) malloc ((n) * sizeof (t)))
 #define nr_free free
 #define nr_renew(p,t,n) ((t *) realloc (p, (n) * sizeof (t)))
@@ -55,5 +59,9 @@
 
 #define NR_MATRIX_D_TO_DOUBLE(m) ((m)->c)
 #define NR_MATRIX_D_FROM_DOUBLE(d) ((NRMatrixD *) &(d)[0])
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

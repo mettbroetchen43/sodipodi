@@ -874,7 +874,7 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
         Ay = FIXED_TO_FLOAT (&pgh->pfxStart.y);
         /* Always starts with moveto */
 #if 1
-		nr_dynamic_path_moveto (dp, Ax, Ay);
+		nr_dynamic_path_moveto (dp, (float) Ax, (float) Ay);
 #else
 		bp->code = ART_MOVETO;
         bp->x3 = Ax;
@@ -892,7 +892,7 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
                     Cx = FIXED_TO_FLOAT (&pc->apfx[i].x);
                     Cy = FIXED_TO_FLOAT (&pc->apfx[i].y);
 #if 1
-					nr_dynamic_path_lineto (dp, Cx, Cy);
+					nr_dynamic_path_lineto (dp, (float) Cx, (float) Cy);
 #else
 					bp->code = ART_LINETO;
                     bp->x3 = Cx;
@@ -915,7 +915,7 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
                         Cy = FIXED_TO_FLOAT (&pc->apfx[i + 1].y);
                     }
 #if 1
-					nr_dynamic_path_curveto2 (dp, Bx, By, Cx, Cy);
+					nr_dynamic_path_curveto2 (dp, (float) Bx, (float) By, (float) Cx, (float) Cy);
 #else
 					bp->code = ART_CURVETO;
                     bp->x1 = Bx - (Bx - Ax) / 3;
@@ -934,7 +934,7 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
         }
         if ((Cx != Sx) || (Cy != Sy)) {
 #if 1
-			nr_dynamic_path_lineto (dp, Sx, Sy);
+			nr_dynamic_path_lineto (dp, (float) Sx, (float) Sy);
 #else
 			bp->code = ART_LINETO;
             bp->x3 = Sx;
@@ -955,8 +955,8 @@ nr_typeface_w32_ensure_outline (NRTypeFaceW32 *tfw32, NRTypeFaceGlyphW32 *slot, 
 		/* Have to select font */
 		SelectFont (hdc, tfw32->hfont);
 		GetGlyphOutline (hdc, glyph + tfw32->otm->otmTextMetrics.tmFirstChar, GGO_METRICS, &gmetrics, 0, NULL, &mat);
-		nr_matrix_f_set_translate (&a, -0.5 * gmetrics.gmBlackBoxX - gmetrics.gmptGlyphOrigin.x,
-							  gmetrics.gmptGlyphOrigin.y - 1000.0 - gmetrics.gmptGlyphOrigin.y);
+		nr_matrix_f_set_translate (&a, -0.5F * gmetrics.gmBlackBoxX - gmetrics.gmptGlyphOrigin.x,
+							  gmetrics.gmptGlyphOrigin.y - 1000.0F - gmetrics.gmptGlyphOrigin.y);
 		slot->outline = nr_path_duplicate_transform (dp->path, &a);
 	} else {
 		slot->outline = nr_path_duplicate_transform (dp->path, NULL);

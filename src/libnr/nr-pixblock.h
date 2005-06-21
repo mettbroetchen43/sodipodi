@@ -13,6 +13,10 @@
 #include <libnr/nr-types.h>
 #include <libnr/nr-forward.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum {
 	NR_PIXBLOCK_SIZE_TINY, /* Fits in (unsigned char *) */
 	NR_PIXBLOCK_SIZE_4K, /* Pixelstore */
@@ -58,5 +62,9 @@ unsigned char *nr_pixelstore_16K_new (int clear, unsigned char val);
 void nr_pixelstore_16K_free (unsigned char *px);
 unsigned char *nr_pixelstore_64K_new (int clear, unsigned char val);
 void nr_pixelstore_64K_free (unsigned char *px);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
