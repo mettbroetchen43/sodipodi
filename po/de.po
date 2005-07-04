@@ -4,15 +4,15 @@
 # Benedikt Roth <Benedikt.Roth@gmx.net>, 2000
 # Christian Meyer <chrisime@gnome.org>, 2000-2002.
 # Christian Neumair <chris@gnome-de.org>, 2002-2004.
-# 
+# Hendrik Richter <hendi@gnome-de.org>, 2005.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-13 22:03+0100\n"
-"PO-Revision-Date: 2005-01-13 22:02+0100\n"
-"Last-Translator: Frank Arnold <frank@scirocco-5v-turbo.de>\n"
+"PO-Revision-Date: 2005-07-04 20:22+0200\n"
+"Last-Translator: Hendrik Richter <hendi@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2853,7 +2853,7 @@ msgstr "Position"
 
 #: src/widgets/sp-dock-paned.c:135
 msgid "Position of the divider in pixels"
-msgstr "Postion des Trenners in Pixel"
+msgstr "Position des Trenners in Pixel"
 
 #: src/widgets/sp-dock-placeholder.c:125
 msgid "Sticky"
@@ -2909,7 +2909,7 @@ msgstr ""
 
 #: src/widgets/sp-dock-tablabel.c:131
 msgid "Controlling dock item"
-msgstr "Dock-Element kontollieren"
+msgstr "Dock-Element kontrollieren"
 
 #: src/widgets/sp-dock-tablabel.c:132
 msgid "Dockitem which 'owns' this tablabel"
