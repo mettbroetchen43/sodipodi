@@ -38,7 +38,7 @@ GETTEXT_PACKAGE=sodipodi
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",[Translation domain used])
 dnl Add the languages which your application supports here.
-ALL_LINGUAS="am az be ca cs da de el en_CA en_GB es et fi fr ga gl hr hu it ja ko mk mn nb nl no pa pl pt pt_BR ru rw sk sl sq sr sr@Latn sv tr uk zh_CN zh_TW"
+ALL_LINGUAS="am az be ca cs da de el en_CA en_GB es et fi fr ga gl hr hu it ja ko mk mn nb ne nl no pa pl pt pt_BR ru rw sk sl sq sr sr@Latn sv tr uk zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 dnl ******************************
