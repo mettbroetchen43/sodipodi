@@ -1,0 +1,2988 @@
+# Vietnamese translation for Sodipodi.
+# Copyright © 2006 Free Software Foundation, Inc.
+# Clytie Siddall <clytie@riverland.net.au>, 2006.
+# 
+msgid ""
+""
+msgstr "Project-Id-Version: sodipodi Gnome HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-05-30 04:27+0200\n"
+"PO-Revision-Date: 2006-06-01 22:44+0930\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"X-Generator: LocFactoryEditor 1.6b36\n"
+
+# Name: don't translate / Tên: đừng dịch
+#: ../sodipodi.desktop.in.h:1
+msgid "SVG Vector Illustrator"
+msgstr "Bộ vẽ véc-tơ SVG"
+
+#.Create window
+# Name: don't translate / Tên: đừng dịch
+#: ../sodipodi.desktop.in.h:2
+#: ../src/toolbox.c:105
+#: ../src/toolbox.c:144
+#: ../src/toolbox.c:178
+msgid "Sodipodi"
+msgstr "Sodipodi"
+
+#: ../src/arc-context.c:254
+#, c-format
+msgid "Drawing arc %s x %s"
+msgstr "Đang vẽ hình cung %s × %s..."
+
+#: ../src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr "Không thể tạo bộ chế tạo sodipodi-svg-doc"
+
+#: ../src/desktop.c:990
+msgid "Zoom drawing if window size changes"
+msgstr "Thu phóng bản ảnh nếu kích cỡ cửa sổ thay đổi"
+
+#: ../src/desktop.c:997
+msgid "Drawing target is constrained to active group"
+msgstr "Đích vẽ bị ràng buộc thành nhóm hoạt động"
+
+#: ../src/desktop.c:1089
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr "Sodipodi: %s: %s: %d"
+
+#: ../src/desktop.c:1196
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr "Tài liệu %s có thay đổi chưa lưu : lưu chúng ?"
+
+#.Page page
+#.Page settings
+#.Notebook tab
+#: ../src/desktop.c:1776
+#: ../src/dialogs/align.c:291
+#: ../src/dialogs/desktop-properties.c:284
+#: ../src/dialogs/document-properties.c:168
+#: ../src/dialogs/export.c:161
+#: ../src/verbs.c:471
+#: ../src/widgets/sp-dock-notebook.c:135
+msgid "Page"
+msgstr "Trang"
+
+#: ../src/desktop.c:1780
+#: ../src/dialogs/align.c:292
+#: ../src/dialogs/export.c:166
+#: ../src/verbs.c:472
+msgid "Drawing"
+msgstr "Bản vẽ"
+
+#.Selection submenu
+#: ../src/desktop.c:1784
+#: ../src/dialogs/align.c:293
+#: ../src/dialogs/export.c:171
+#: ../src/interface.c:597
+#: ../src/toolbox.c:448
+#: ../src/verbs.c:473
+msgid "Selection"
+msgstr "Lựa chọn"
+
+#: ../src/dialogs/align.c:156
+#: ../src/toolbox.c:405
+msgid "Align objects"
+msgstr "Canh đối tượng"
+
+#: ../src/dialogs/align.c:175
+msgid "Right side of aligned objects to left side of anchor"
+msgstr "Bên phải đối tượng đã canh nằm bên trái neo"
+
+#: ../src/dialogs/align.c:178
+msgid "Left side of aligned objects to left side of anchor"
+msgstr "Bên trái đối tượng đã canh nằm bên phải neo"
+
+#: ../src/dialogs/align.c:181
+msgid "Center horizontally"
+msgstr "Giữa lại ngang"
+
+#: ../src/dialogs/align.c:184
+msgid "Right side of aligned objects to right side of anchor"
+msgstr "Bên phải đối tượng đã canh nằm bên phải neo"
+
+#: ../src/dialogs/align.c:187
+msgid "Left side of aligned objects to right side of anchor"
+msgstr "Bên trái đối tượng đã canh nằm bên phải neo"
+
+#: ../src/dialogs/align.c:191
+msgid "Bottom of aligned objects to top of anchor"
+msgstr "Bên dưới đối tượng đã canh nằm bên trên neo"
+
+#: ../src/dialogs/align.c:194
+msgid "Top of aligned objects to top of anchor"
+msgstr "Bên trên đối tượng đã canh nằm bên trên neo"
+
+#: ../src/dialogs/align.c:197
+msgid "Center vertically"
+msgstr "Giữa lại dọc"
+
+#: ../src/dialogs/align.c:200
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr "Bên dưới đối tượng đã canh nằm bên dưới neo"
+
+#: ../src/dialogs/align.c:203
+msgid "Top of aligned objects to bottom of anchor"
+msgstr "Bên trên đối tượng đã canh nằm bên dưới neo"
+
+#: ../src/dialogs/align.c:206
+msgid "Align"
+msgstr "Canh"
+
+#: ../src/dialogs/align.c:224
+msgid "Distribute left sides of objects at even distances"
+msgstr "Phân phối các bên trái đối tượng tại khoảng cách đều đều"
+
+#: ../src/dialogs/align.c:227
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr "Phân phối các trung tâm của đối tượng tại khoảng cách đều đều theo chiều ngang"
+
+#: ../src/dialogs/align.c:230
+msgid "Distribute right sides of objects at even distances"
+msgstr "Phân phối các bên phải đối tượng tại khoảng cách đều đều"
+
+#: ../src/dialogs/align.c:233
+msgid "Distribute horizontal distance between objects equally"
+msgstr "Phân phối đều đều khoảng cách ngang giữa đối tượng"
+
+#: ../src/dialogs/align.c:237
+msgid "Distribute top sides of objects at even distances"
+msgstr "Phân phối các bên trên đối tượng tại khoảng cách đều đều"
+
+#: ../src/dialogs/align.c:240
+msgid "Distribute centres of objects at even distances vertically"
+msgstr "Phân phối các trung tâm của đối tượng tại khoảng cách đều đều theo chiều dọc"
+
+#: ../src/dialogs/align.c:243
+msgid "Distribute bottom sides of objects at even distances"
+msgstr "Phân phối các bên dưới đối tượng tại khoảng cách đều đều"
+
+#: ../src/dialogs/align.c:246
+msgid "Distribute vertical distance between objects equally"
+msgstr "Phân phối đều đều khoảng cách dọc giữa đối tượng"
+
+#: ../src/dialogs/align.c:249
+msgid "Distribute"
+msgstr "Phân phối"
+
+#: ../src/dialogs/align.c:287
+msgid "Last selected"
+msgstr "Chọn cuối cùng"
+
+#: ../src/dialogs/align.c:288
+msgid "First selected"
+msgstr "Chọn thứ nhất"
+
+#: ../src/dialogs/align.c:289
+msgid "Biggest item"
+msgstr "Mục lớn nhất"
+
+#: ../src/dialogs/align.c:290
+msgid "Smallest item"
+msgstr "Mục nhỏ nhất"
+
+#: ../src/dialogs/desktop-properties.c:195
+msgid "Desktop settings"
+msgstr "Thiết lập môi trường"
+
+#.Grid settings
+#.Notebook tab
+#: ../src/dialogs/desktop-properties.c:204
+msgid "Grid"
+msgstr "Lưới"
+
+#: ../src/dialogs/desktop-properties.c:217
+msgid "Show grid"
+msgstr "Hiện lưới"
+
+#: ../src/dialogs/desktop-properties.c:218
+msgid "Snap to grid"
+msgstr "Dính lưới"
+
+#: ../src/dialogs/desktop-properties.c:221
+msgid "Horizontal lines"
+msgstr "Đường ngang"
+
+#: ../src/dialogs/desktop-properties.c:222
+msgid "Vertical lines"
+msgstr "Đường dọc"
+
+#: ../src/dialogs/desktop-properties.c:224
+msgid "Iso grid"
+msgstr "Lưới ISO"
+
+#: ../src/dialogs/desktop-properties.c:225
+msgid "Hex grid"
+msgstr "Lưới lục giác"
+
+#: ../src/dialogs/desktop-properties.c:231
+msgid "Grid units:"
+msgstr "Đơn vị lưới:"
+
+#: ../src/dialogs/desktop-properties.c:233
+msgid "Origin X:"
+msgstr "Gốc X:"
+
+#: ../src/dialogs/desktop-properties.c:235
+msgid "Origin Y:"
+msgstr "Gốc Y:"
+
+#: ../src/dialogs/desktop-properties.c:238
+msgid "Spacing X:"
+msgstr "Khoảng cách X:"
+
+#: ../src/dialogs/desktop-properties.c:240
+msgid "Spacing Y:"
+msgstr "Khoảng cách Y:"
+
+#: ../src/dialogs/desktop-properties.c:244
+#: ../src/dialogs/desktop-properties.c:271
+msgid "Snap units:"
+msgstr "Đơn vị dính:"
+
+#: ../src/dialogs/desktop-properties.c:246
+#: ../src/dialogs/desktop-properties.c:273
+msgid "Snap distance:"
+msgstr "Khoảng cách dính:"
+
+#: ../src/dialogs/desktop-properties.c:249
+msgid "Grid color:"
+msgstr "Màu lưới:"
+
+#: ../src/dialogs/desktop-properties.c:250
+msgid "Grid color"
+msgstr "Màu lưới"
+
+#.Guidelines page
+#: ../src/dialogs/desktop-properties.c:254
+msgid "Guides"
+msgstr "Nét dẫn"
+
+#: ../src/dialogs/desktop-properties.c:265
+msgid "Show guides"
+msgstr "HIện các nét dẫn"
+
+#: ../src/dialogs/desktop-properties.c:266
+msgid "Snap to guides"
+msgstr "Dính nét dẫn"
+
+#: ../src/dialogs/desktop-properties.c:276
+msgid "Guides color:"
+msgstr "Màu nét dẫn:"
+
+#: ../src/dialogs/desktop-properties.c:277
+msgid "Guideline color"
+msgstr "Màu nét dẫn"
+
+#: ../src/dialogs/desktop-properties.c:279
+msgid "Highlight color:"
+msgstr "Màu tô sáng:"
+
+#: ../src/dialogs/desktop-properties.c:280
+msgid "Highlighted guideline color"
+msgstr "Màu nét dẫn đã tô sáng"
+
+#: ../src/dialogs/desktop-properties.c:295
+msgid "Show border"
+msgstr "Hiện viền"
+
+#: ../src/dialogs/desktop-properties.c:301
+msgid "Border on top of drawing"
+msgstr "Viền nằm trên bản vẽ"
+
+#: ../src/dialogs/desktop-properties.c:306
+msgid "Border color:"
+msgstr "Màu viền:"
+
+#: ../src/dialogs/desktop-properties.c:307
+msgid "Page border color"
+msgstr "Màu viền trang"
+
+#: ../src/dialogs/desktop-properties.c:308
+msgid "Page color:"
+msgstr "Màu trang:"
+
+#: ../src/dialogs/desktop-properties.c:309
+msgid "Page color"
+msgstr "Màu trang"
+
+#: ../src/dialogs/desktop-properties.c:580
+#: ../src/widgets/sp-color-preview.c:424
+msgid "Close"
+msgstr "Đóng"
+
+#: ../src/dialogs/display-settings.c:101
+msgid "Display settings"
+msgstr "Thiết lập bộ trình bày"
+
+#.Rendering settings
+#.Notebook tab
+#: ../src/dialogs/display-settings.c:108
+msgid "Rendering"
+msgstr "Vẽ"
+
+#: ../src/dialogs/display-settings.c:117
+msgid "Oversample bitmaps:"
+msgstr "Quá lấy mẫu sơ đồ bit:"
+
+#: ../src/dialogs/display-settings.c:125
+#: ../src/verbs.c:407
+msgid "None"
+msgstr "Không có"
+
+#: ../src/dialogs/display-settings.c:128
+msgid "2x2"
+msgstr "2×2"
+
+#: ../src/dialogs/display-settings.c:131
+msgid "4x4"
+msgstr "4×4"
+
+#: ../src/dialogs/display-settings.c:134
+msgid "8x8"
+msgstr "8×8"
+
+#: ../src/dialogs/display-settings.c:137
+msgid "16x16"
+msgstr "16×16"
+
+#.Input settings
+#.Notebook tab
+#: ../src/dialogs/display-settings.c:147
+msgid "Input"
+msgstr "Nhập"
+
+#: ../src/dialogs/display-settings.c:155
+msgid "Default cursor tolerance:"
+msgstr "Sức chịu đựng con trỏ mặc định:"
+
+#.Windows settings
+#.Notebook tab
+#: ../src/dialogs/display-settings.c:169
+msgid "Windows"
+msgstr "Cửa sổ"
+
+#: ../src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr "Đặt mẹo hộp thoại cho hộp thoại"
+
+#: ../src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr "Bỏ qủa mục nhập thanh tác vụ cho hộp thoại"
+
+#: ../src/dialogs/document-properties.c:159
+msgid "Document settings"
+msgstr "Thiết lập tài liệu"
+
+#: ../src/dialogs/document-properties.c:180
+msgid "Paper size:"
+msgstr "Cỡ giấy:"
+
+#: ../src/dialogs/document-properties.c:201
+msgid "Custom"
+msgstr "Tự chọn"
+
+#.Custom paper frame
+#: ../src/dialogs/document-properties.c:208
+msgid "Custom paper"
+msgstr "Giấy tự chọn"
+
+#.Unit selector
+#: ../src/dialogs/document-properties.c:219
+#: ../src/dialogs/export.c:179
+#: ../src/dialogs/object-properties.c:323
+#: ../src/dialogs/transformation.c:347
+#: ../src/dialogs/transformation.c:494
+msgid "Units:"
+msgstr "Đơn vị:"
+
+#.Stroke width
+#.Width
+#: ../src/dialogs/document-properties.c:228
+#: ../src/dialogs/export.c:189
+#: ../src/dialogs/export.c:213
+#: ../src/dialogs/object-attributes.c:71
+#: ../src/dialogs/object-attributes.c:79
+#: ../src/dialogs/object-properties.c:356
+#: ../src/dialogs/stroke-style.c:567
+#: ../src/dialogs/tool-attributes.c:125
+#: ../src/dyna-draw-context.c:1087
+msgid "Width:"
+msgstr "Rộng:"
+
+#: ../src/dialogs/document-properties.c:243
+#: ../src/dialogs/export.c:198
+#: ../src/dialogs/export.c:221
+#: ../src/dialogs/object-attributes.c:72
+#: ../src/dialogs/object-attributes.c:80
+#: ../src/dialogs/object-properties.c:368
+msgid "Height:"
+msgstr "Cao :"
+
+#: ../src/dialogs/document-tree.c:60
+#: ../src/verbs.c:476
+msgid "Document"
+msgstr "Tài liệu"
+
+#: ../src/dialogs/export.c:141
+msgid "Export bitmap"
+msgstr "Xuất sơ đồ bit"
+
+#.Export area frame
+#: ../src/dialogs/export.c:150
+msgid "Export area"
+msgstr "Xuất vùng"
+
+#: ../src/dialogs/export.c:183
+msgid "x0:"
+msgstr "x0:"
+
+#: ../src/dialogs/export.c:186
+msgid "x1:"
+msgstr "x1:"
+
+#: ../src/dialogs/export.c:192
+msgid "y0:"
+msgstr "y0:"
+
+#: ../src/dialogs/export.c:195
+msgid "y1:"
+msgstr "y1:"
+
+#.Bitmap size frame
+#: ../src/dialogs/export.c:204
+msgid "Bitmap size"
+msgstr "Cỡ sơ đồ bit"
+
+#: ../src/dialogs/export.c:213
+#: ../src/dialogs/export.c:221
+msgid "pixels"
+msgstr "điểm ảnh"
+
+#: ../src/dialogs/export.c:217
+#: ../src/dialogs/export.c:225
+msgid "dpi"
+msgstr "điểm/insơ"
+
+#: ../src/dialogs/export.c:233
+msgid "Background color"
+msgstr "Màu nền"
+
+#: ../src/dialogs/export.c:235
+msgid "Bitmap background:"
+msgstr "Nền sơ đồ bit:"
+
+#: ../src/dialogs/export.c:240
+msgid "Export png file"
+msgstr "Xuất tập tin PNG"
+
+#: ../src/dialogs/export.c:267
+#: ../src/verbs.c:417
+msgid "Export"
+msgstr "Xuất"
+
+#: ../src/dialogs/export.c:401
+msgid "Export in progress"
+msgstr "Thao tác xuất đang thực hiện"
+
+#: ../src/dialogs/export.c:405
+#, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr "Đang xuất [%d × %d] %s"
+
+#: ../src/dialogs/fill-style.c:87
+msgid "Fill style"
+msgstr "Kiểu tô đầy"
+
+#: ../src/dialogs/fill-style.c:124
+msgid "Fill Rule"
+msgstr "Tô thước"
+
+#: ../src/dialogs/fill-style.c:138
+msgid "nonzero"
+msgstr "khác 0"
+
+#: ../src/dialogs/fill-style.c:143
+msgid "evenodd"
+msgstr "chẵn/lẻ"
+
+#: ../src/dialogs/item-properties.c:84
+#: ../src/dialogs/item-properties.c:269
+#: ../src/dialogs/item-properties.c:368
+#: ../src/dialogs/item-properties.c:375
+msgid "ID"
+msgstr "ID"
+
+#: ../src/dialogs/item-properties.c:95
+msgid "Set ID"
+msgstr "Đặt mã nhận biết"
+
+#.Sensitive
+#: ../src/dialogs/item-properties.c:104
+msgid "Sensitive"
+msgstr "Nhạy cảm"
+
+#.Visible
+#: ../src/dialogs/item-properties.c:109
+#: ../src/widgets/sp-dock-layout.c:734
+msgid "Visible"
+msgstr "Hiển thị"
+
+#.Active
+#: ../src/dialogs/item-properties.c:114
+msgid "Active"
+msgstr "Hoạt động"
+
+#.Printable
+#: ../src/dialogs/item-properties.c:119
+msgid "Printable"
+msgstr "In được"
+
+#: ../src/dialogs/item-properties.c:128
+msgid "Opacity:"
+msgstr "Mờ đục:"
+
+#: ../src/dialogs/item-properties.c:144
+msgid "Transformation matrix"
+msgstr "Ma trận chuyển dạng"
+
+#: ../src/dialogs/item-properties.c:263
+msgid "Ref"
+msgstr "TCh"
+
+#: ../src/dialogs/item-properties.c:370
+msgid "ID invalid"
+msgstr "ID không hợp lệ"
+
+#: ../src/dialogs/item-properties.c:372
+msgid "ID exists"
+msgstr "ID đã có"
+
+#: ../src/dialogs/item-properties.c:448
+#: ../src/verbs.c:487
+msgid "Item properties"
+msgstr "Tài sản mục"
+
+#: ../src/dialogs/object-attributes.c:34
+msgid "Href:"
+msgstr "TChN:"
+
+#: ../src/dialogs/object-attributes.c:35
+msgid "Target:"
+msgstr "Đích:"
+
+#: ../src/dialogs/object-attributes.c:36
+msgid "Type:"
+msgstr "Kiểu :"
+
+#: ../src/dialogs/object-attributes.c:37
+msgid "Role:"
+msgstr "Vai:"
+
+#: ../src/dialogs/object-attributes.c:38
+msgid "Arcrole:"
+msgstr "Vai cung:"
+
+#: ../src/dialogs/object-attributes.c:39
+msgid "Title:"
+msgstr "Tựa :"
+
+#: ../src/dialogs/object-attributes.c:40
+#: ../src/dialogs/tool-attributes.c:115
+msgid "Show:"
+msgstr "Hiện:"
+
+#: ../src/dialogs/object-attributes.c:41
+msgid "Actuate:"
+msgstr "Động tác:"
+
+#: ../src/dialogs/object-attributes.c:46
+msgid "Sides:"
+msgstr "Mặt:"
+
+#: ../src/dialogs/object-attributes.c:47
+#: ../src/dialogs/object-attributes.c:57
+msgid "Center X:"
+msgstr "Giữa lại X:"
+
+#: ../src/dialogs/object-attributes.c:48
+#: ../src/dialogs/object-attributes.c:58
+msgid "Center Y:"
+msgstr "Giữa lại Y:"
+
+#: ../src/dialogs/object-attributes.c:49
+msgid "R1:"
+msgstr "R1:"
+
+#: ../src/dialogs/object-attributes.c:50
+msgid "R2:"
+msgstr "R2:"
+
+#: ../src/dialogs/object-attributes.c:51
+msgid "ARG1:"
+msgstr "Đối số 1:"
+
+#: ../src/dialogs/object-attributes.c:52
+msgid "ARG2:"
+msgstr "Đối số 2:"
+
+#.Expansion
+#: ../src/dialogs/object-attributes.c:59
+#: ../src/spiral-context.c:343
+msgid "Expansion:"
+msgstr "Mở rộng:"
+
+#.Revolution
+#: ../src/dialogs/object-attributes.c:60
+#: ../src/dialogs/tool-attributes.c:95
+#: ../src/spiral-context.c:331
+msgid "Revolution:"
+msgstr "Xoay vòng:"
+
+#: ../src/dialogs/object-attributes.c:61
+msgid "Radius:"
+msgstr "Bán kính:"
+
+#: ../src/dialogs/object-attributes.c:62
+msgid "Argument:"
+msgstr "Đối số :"
+
+#: ../src/dialogs/object-attributes.c:63
+msgid "T0:"
+msgstr "T0:"
+
+#: ../src/dialogs/object-attributes.c:68
+msgid "URL:"
+msgstr "URL:"
+
+#: ../src/dialogs/object-attributes.c:69
+#: ../src/dialogs/object-attributes.c:77
+#: ../src/dialogs/object-properties.c:332
+msgid "X:"
+msgstr "X:"
+
+#: ../src/dialogs/object-attributes.c:70
+#: ../src/dialogs/object-attributes.c:78
+#: ../src/dialogs/object-properties.c:344
+msgid "Y:"
+msgstr "Y:"
+
+#: ../src/dialogs/object-attributes.c:81
+msgid "RX:"
+msgstr "RX:"
+
+#: ../src/dialogs/object-attributes.c:82
+msgid "RY:"
+msgstr "RY:"
+
+#: ../src/dialogs/object-attributes.c:117
+#, c-format
+msgid "%s attributes"
+msgstr "thuộc tính %s"
+
+#: ../src/dialogs/object-properties.c:113
+msgid "Object style"
+msgstr "Kiểu dáng đối tượng"
+
+#: ../src/dialogs/object-properties.c:128
+msgid "Fill"
+msgstr "Tô màu"
+
+#: ../src/dialogs/object-properties.c:142
+msgid "Stroke paint"
+msgstr "Sơn nét dòng"
+
+#: ../src/dialogs/object-properties.c:156
+msgid "Stroke style"
+msgstr "Kiểu dáng nét dòng"
+
+#: ../src/dialogs/object-properties.c:176
+msgid "Apply to:"
+msgstr "Áp dụng cho :"
+
+#: ../src/dialogs/object-properties.c:186
+msgid "Selected objects"
+msgstr "Các đối tượng đã chọn"
+
+#: ../src/dialogs/object-properties.c:189
+msgid "All shape tools"
+msgstr "Mọi công cụ hình"
+
+#: ../src/dialogs/object-properties.c:192
+msgid "Rectangle tool"
+msgstr "Công cụ chữ nhật"
+
+#: ../src/dialogs/object-properties.c:195
+msgid "Arc tool"
+msgstr "Công cụ cung"
+
+#: ../src/dialogs/object-properties.c:198
+msgid "Star tool"
+msgstr "Công cụ sao"
+
+#: ../src/dialogs/object-properties.c:201
+msgid "Spiral tool"
+msgstr "Công cụ xoắn ốc"
+
+#: ../src/dialogs/object-properties.c:204
+msgid "Freehand and pen"
+msgstr "Bằng tay và bút"
+
+#: ../src/dialogs/object-properties.c:207
+msgid "Calligraphic line"
+msgstr "Đường viết đẹp"
+
+#: ../src/dialogs/object-properties.c:210
+#: ../src/verbs.c:462
+msgid "Text"
+msgstr "Chữ"
+
+#: ../src/dialogs/object-properties.c:289
+msgid "Object Size and Position"
+msgstr "Kích cỡ và vị trí đối tượng"
+
+#: ../src/dialogs/object-properties.c:312
+#: ../src/verbs.c:481
+msgid "Size and Position"
+msgstr "Kích cỡ và vị trí"
+
+#: ../src/dialogs/stroke-style.c:554
+#: ../src/toolbox.c:401
+msgid "Stroke settings"
+msgstr "Thiết lập nét dòng"
+
+#.Join type
+#: ../src/dialogs/stroke-style.c:590
+msgid "Join:"
+msgstr "Nối lại:"
+
+#.Cap type
+#: ../src/dialogs/stroke-style.c:633
+msgid "Cap:"
+msgstr "Nắp:"
+
+#.Dash
+#: ../src/dialogs/stroke-style.c:676
+msgid "Pattern:"
+msgstr "Mẫu :"
+
+#: ../src/dialogs/text-edit.c:102
+msgid "Text properties"
+msgstr "Tài sản chữ"
+
+#.Layout
+#: ../src/dialogs/text-edit.c:141
+msgid "Layout"
+msgstr "Bố trí"
+
+#: ../src/dialogs/text-edit.c:149
+msgid "Alignment:"
+msgstr "Canh:"
+
+#: ../src/dialogs/text-edit.c:174
+msgid "Orientation:"
+msgstr "Hướng:"
+
+#: ../src/dialogs/text-edit.c:192
+msgid "Line spacing:"
+msgstr "Khoảng dòng:"
+
+#: ../src/dialogs/text-edit.c:212
+msgid "Spacing:"
+msgstr "Khoảng cách:"
+
+#: ../src/dialogs/text-edit.c:235
+msgid "Text and font"
+msgstr "Chữ và phông chữ"
+
+#: ../src/dialogs/text-edit.c:246
+msgid "Set as default"
+msgstr "Đặt là mặc định"
+
+#: ../src/dialogs/tool-attributes.c:48
+#: ../src/verbs.c:479
+msgid "Tool attributes"
+msgstr "Thuộc tính công cụ"
+
+#: ../src/dialogs/tool-attributes.c:95
+msgid "Expansion"
+msgstr "Mở rộng"
+
+#: ../src/dialogs/tool-attributes.c:95
+msgid "Inner radius"
+msgstr "Bán kính nội bộ"
+
+#: ../src/dialogs/tool-attributes.c:99
+#: ../src/dialogs/tool-attributes.c:109
+#: ../src/dialogs/tool-attributes.c:119
+#: ../src/dialogs/tool-attributes.c:129
+msgid "Missing tool preferences"
+msgstr "Thiếu tùy thích công cụ"
+
+#.Magnitude
+#: ../src/dialogs/tool-attributes.c:105
+#: ../src/star-context.c:343
+msgid "Corners:"
+msgstr "Góc:"
+
+#: ../src/dialogs/tool-attributes.c:105
+msgid "Proportion"
+msgstr "Cân đối"
+
+#: ../src/dialogs/tool-attributes.c:115
+msgid "Transform:"
+msgstr "Chuyển dạng:"
+
+#.Mass
+#: ../src/dialogs/tool-attributes.c:125
+#: ../src/dyna-draw-context.c:1051
+msgid "Mass:"
+msgstr "Khối lượng:"
+
+#.Drag
+#: ../src/dialogs/tool-attributes.c:125
+#: ../src/dyna-draw-context.c:1063
+msgid "Drag:"
+msgstr "Kéo:"
+
+#: ../src/dialogs/tool-attributes.c:125
+msgid "Angle"
+msgstr "Góc"
+
+#: ../src/dialogs/tool-attributes.c:132
+msgid "Tool has no attributes"
+msgstr "Công cụ không có thuộc tính"
+
+#: ../src/dialogs/tool-attributes.c:135
+#: ../src/dialogs/tool-options.c:93
+msgid "No active tool"
+msgstr "Không có công cvụ hoạt động"
+
+#: ../src/dialogs/tool-options.c:47
+#: ../src/verbs.c:478
+msgid "Tool options"
+msgstr "Tùy chọn công cụ"
+
+#: ../src/dialogs/tool-options.c:90
+msgid "Tool has no options"
+msgstr "Công cụ không có tùy chọn"
+
+#: ../src/dialogs/transformation.c:195
+msgid "Transform selection"
+msgstr "Chuyển dạng vùng chọn"
+
+#.Apply to duplicate
+#: ../src/dialogs/transformation.c:216
+msgid "Apply to duplicate"
+msgstr "Áp dụng cho bản sao"
+
+#: ../src/dialogs/transformation.c:313
+msgid "Move"
+msgstr "Chuyển"
+
+#: ../src/dialogs/transformation.c:457
+msgid "Scale"
+msgstr "Co dãn"
+
+#: ../src/dialogs/transformation.c:584
+msgid "Rotate"
+msgstr "Xoay"
+
+#: ../src/dialogs/transformation.c:602
+msgid "deg"
+msgstr "độ"
+
+#: ../src/dialogs/xml-tree.c:157
+msgid "Drag to reorder nodes"
+msgstr "Kéo để sắp xếp lại nút"
+
+#: ../src/dialogs/xml-tree.c:170
+msgid "New element node"
+msgstr "Nút yếu tố mới"
+
+#: ../src/dialogs/xml-tree.c:188
+msgid "New text node"
+msgstr "Nút chữ mới"
+
+#: ../src/dialogs/xml-tree.c:205
+msgid "Duplicate node"
+msgstr "Nút trùng"
+
+#: ../src/dialogs/xml-tree.c:221
+msgid "Delete node"
+msgstr "Xoá bỏ nút"
+
+#: ../src/dialogs/xml-tree.c:234
+msgid "Unindent node"
+msgstr "Bỏ thụt lề nút"
+
+#: ../src/dialogs/xml-tree.c:245
+msgid "Indent node"
+msgstr "Thụt lề nút"
+
+#: ../src/dialogs/xml-tree.c:255
+msgid "Raise node"
+msgstr "Nâng nút lên"
+
+#: ../src/dialogs/xml-tree.c:266
+msgid "Lower node"
+msgstr "Hạ thấp nút"
+
+#: ../src/dialogs/xml-tree.c:303
+msgid "Delete attribute"
+msgstr "Xoá bỏ thuộc tính"
+
+#: ../src/dialogs/xml-tree.c:333
+msgid "Attribute name"
+msgstr "Tn thuộc tính"
+
+#: ../src/dialogs/xml-tree.c:340
+msgid "Set attribute"
+msgstr "Đặt thuộc tính"
+
+#: ../src/dialogs/xml-tree.c:353
+msgid "Attribute value"
+msgstr "Giá trị thuộc tính"
+
+#: ../src/dialogs/xml-tree.c:833
+#, c-format
+msgid "Sodipodi: %s : XML View"
+msgstr "Sodipodi: %s : ô xem XML"
+
+#: ../src/dialogs/xml-tree.c:856
+msgid "New element node..."
+msgstr "Nút yếu tố mới..."
+
+#: ../src/dialogs/xml-tree.c:876
+msgid "Cancel"
+msgstr "Thôi"
+
+#: ../src/dialogs/xml-tree.c:880
+msgid "Create"
+msgstr "Tạo"
+
+#: ../src/document.c:389
+#, c-format
+msgid "New document %d"
+msgstr "Tài liệu mới %d"
+
+#: ../src/document.c:425
+#, c-format
+msgid "Memory document %d"
+msgstr "Tài liệu bộ nhớ %d"
+
+#: ../src/document.c:572
+#, c-format
+msgid "Unnamed document %d"
+msgstr "Tài liệu không tên %d"
+
+#: ../src/draw-context.c:294
+msgid "Appending to selection. Press 'a' to toggle Append/New."
+msgstr "Đang phụ thêm vào vùng chọn. Hãy bấm phím A để bật/tắt « Phụ thêm/Mới »."
+
+#: ../src/draw-context.c:299
+msgid "Creating new curve. Press 'a' to toggle Append/New."
+msgstr "Đang tạo hình cung mới. Hãy bấm phím A để bật/tắt « Phụ thêm/Mới »."
+
+#.Angle
+#: ../src/dyna-draw-context.c:1075
+msgid "Angle:"
+msgstr "Góc:"
+
+#.Reset
+#: ../src/dyna-draw-context.c:1099
+#: ../src/rect-context.c:382
+#: ../src/spiral-context.c:367
+#: ../src/star-context.c:374
+msgid "Defaults"
+msgstr "Mặc định"
+
+#: ../src/file.c:123
+#: ../src/file.c:137
+#: ../src/file.c:149
+msgid "Select file to open"
+msgstr "Chọn tập tin cần mở"
+
+#: ../src/file.c:174
+#: ../src/file.c:278
+msgid "File type:"
+msgstr "Kiểu tập tin:"
+
+#: ../src/file.c:263
+msgid "Save file"
+msgstr "Lưu tập tin"
+
+#: ../src/file.c:468
+#: ../src/file.c:478
+#: ../src/file.c:484
+msgid "Select file to import"
+msgstr "Chọn tập tin cần nhập"
+
+#: ../src/help.c:51
+msgid "About sodipodi"
+msgstr "Giới thiệu Sodipodi"
+
+#.Do not insert any elements before/between first 4
+#: ../src/helper/units.c:42
+msgid "Unit"
+msgstr "Đơn vị"
+
+#: ../src/helper/units.c:42
+msgid "Units"
+msgstr "Đơn vị"
+
+#: ../src/helper/units.c:43
+msgid "Point"
+msgstr "Điểm"
+
+#: ../src/helper/units.c:43
+msgid "pt"
+msgstr "pt"
+
+#: ../src/helper/units.c:43
+msgid "Points"
+msgstr "Điểm"
+
+#: ../src/helper/units.c:43
+msgid "Pt"
+msgstr "Pt"
+
+#: ../src/helper/units.c:44
+msgid "Pixel"
+msgstr "Điểm ảnh"
+
+#: ../src/helper/units.c:44
+msgid "px"
+msgstr "px"
+
+#: ../src/helper/units.c:44
+msgid "Pixels"
+msgstr "Điểm ảnh"
+
+#: ../src/helper/units.c:44
+msgid "Px"
+msgstr "Px"
+
+#: ../src/helper/units.c:45
+msgid "Userspace unit"
+msgstr "Đơn vị miền người dùng"
+
+#: ../src/helper/units.c:45
+msgid "User"
+msgstr "Người dùng"
+
+#: ../src/helper/units.c:45
+msgid "Userspace units"
+msgstr "Đơn vị miền người dùng"
+
+#.Volatiles do not have default, so there are none here
+#.You can add new elements from this point forward
+#: ../src/helper/units.c:48
+msgid "Percent"
+msgstr "Phần trăm"
+
+#: ../src/helper/units.c:48
+msgid "%"
+msgstr "%"
+
+#: ../src/helper/units.c:48
+msgid "Percents"
+msgstr "Phần trăm"
+
+#: ../src/helper/units.c:49
+msgid "Millimeter"
+msgstr "Mili-mét"
+
+#: ../src/helper/units.c:49
+msgid "mm"
+msgstr "mm"
+
+#: ../src/helper/units.c:49
+msgid "Millimeters"
+msgstr "Mili-mét"
+
+#: ../src/helper/units.c:50
+msgid "Centimeter"
+msgstr "Cen-ti-mét"
+
+#: ../src/helper/units.c:50
+msgid "cm"
+msgstr "cm"
+
+#: ../src/helper/units.c:50
+msgid "Centimeters"
+msgstr "Cen-ti-mét"
+
+#: ../src/helper/units.c:51
+msgid "Meter"
+msgstr "Mét"
+
+#: ../src/helper/units.c:51
+msgid "m"
+msgstr "m"
+
+#: ../src/helper/units.c:51
+msgid "meters"
+msgstr "mét"
+
+#: ../src/helper/units.c:52
+msgid "Inch"
+msgstr "Insơ"
+
+#: ../src/helper/units.c:52
+msgid "in"
+msgstr "in"
+
+#: ../src/helper/units.c:52
+msgid "Inches"
+msgstr "Insơ"
+
+#: ../src/helper/units.c:53
+msgid "Em square"
+msgstr "Vuông Em"
+
+#: ../src/helper/units.c:53
+msgid "em"
+msgstr "em"
+
+#: ../src/helper/units.c:53
+msgid "Em squares"
+msgstr "Vuông Em"
+
+#: ../src/helper/units.c:54
+msgid "Ex square"
+msgstr "Vuông Ex"
+
+#: ../src/helper/units.c:54
+msgid "ex"
+msgstr "ex"
+
+#: ../src/helper/units.c:54
+msgid "Ex squares"
+msgstr "Vuông Ex"
+
+#: ../src/interface.c:305
+#: ../src/interface.c:504
+msgid "Open Recent"
+msgstr "Mở gần đây"
+
+#: ../src/interface.c:325
+msgid "Close View"
+msgstr "Đóng ô xem"
+
+#: ../src/interface.c:328
+#: ../src/interface.c:510
+msgid "About Sodipodi"
+msgstr "Giới thiệu Sodipodi"
+
+#.Have modules about menu
+#: ../src/interface.c:334
+#: ../src/interface.c:516
+msgid "About Modules"
+msgstr "Giới thiệu mô-đun"
+
+#: ../src/interface.c:354
+msgid "Cleanup"
+msgstr "Làm sạch"
+
+#.View:Zoom
+#: ../src/interface.c:429
+#: ../src/toolbox.c:587
+#: ../src/verbs.c:463
+msgid "Zoom"
+msgstr "Thu phóng"
+
+#.View:New View
+#: ../src/interface.c:441
+msgid "New View"
+msgstr "Ô xem mới"
+
+#.View:New Preview
+#: ../src/interface.c:443
+msgid "New Preview"
+msgstr "Ô xem thử mới"
+
+#: ../src/interface.c:445
+msgid "New Toplevel Toolbox"
+msgstr "Hộp công cụ cấp đầu mới"
+
+#: ../src/interface.c:446
+msgid "New Docked Toolbox"
+msgstr "Hộp công cụ đã cụ neo mới"
+
+#: ../src/interface.c:447
+msgid "Remove Docked Toolbox"
+msgstr "Gỡ bỏ hộp công cụ đã cụ neo"
+
+#.File
+#: ../src/interface.c:501
+#: ../src/verbs.c:409
+msgid "New"
+msgstr "Mới"
+
+#: ../src/interface.c:502
+msgid "Open"
+msgstr "Mở"
+
+#.For some reason action menu does not work on menubar :-(
+#: ../src/interface.c:522
+#: ../src/verbs.c:418
+msgid "Exit program"
+msgstr "Thoát khỏi chương trình"
+
+#.Generic menu
+#.File submenu
+#: ../src/interface.c:585
+#: ../src/toolbox.c:311
+msgid "File"
+msgstr "Tập tin"
+
+#.Edit submenu
+#: ../src/interface.c:591
+#: ../src/toolbox.c:362
+#: ../src/widgets/gradient-selector.c:138
+msgid "Edit"
+msgstr "Sửa"
+
+#.View submenu
+#: ../src/interface.c:603
+msgid "View"
+msgstr "Xem"
+
+#.Drawing mode submenu
+#: ../src/interface.c:609
+msgid "Drawing Mode"
+msgstr "Chế độ vẽ"
+
+#.Dialog submenu
+#: ../src/interface.c:615
+msgid "Dialogs"
+msgstr "Hộp thoại"
+
+#.Have modules menu
+#: ../src/interface.c:624
+msgid "Modules"
+msgstr "Mô-đun"
+
+#: ../src/main.c:120
+#: ../src/main.c:612
+msgid "Do not use X server (only process files from console)"
+msgstr "Không dùng trình phục vụ X (chỉ xử lý tập tin bằng bàn điều khiển)"
+
+#: ../src/main.c:123
+#: ../src/main.c:613
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr "Cố gắng dùng trình phục vụ thậm chí nếu chưa đặt biến bộ trình bày $DISPLAY"
+
+#: ../src/main.c:126
+#: ../src/main.c:614
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr "Mở các tài liệu đã xác định (chuỗi tùy chọn có thể bị loại trừ)"
+
+#: ../src/main.c:127
+#: ../src/main.c:130
+#: ../src/main.c:133
+#: ../src/main.c:147
+msgid "FILENAME"
+msgstr "TÊN TẬP TIN"
+
+#: ../src/main.c:129
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr "In các tài liệu vào tập tin xuất đã xác định (dùng « | chương trình » cho ống dẫn)"
+
+#: ../src/main.c:132
+#: ../src/main.c:615
+msgid "Export document to png file"
+msgstr "Xuất tài liệu vào tập tin PNG"
+
+#: ../src/main.c:135
+#: ../src/main.c:616
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr "Độ phân giải được dùng để chuyển đổi SVG sang sơ đồ bit (mặc định 72.0)"
+
+#: ../src/main.c:136
+msgid "DPI"
+msgstr "DPI"
+
+#: ../src/main.c:138
+#: ../src/main.c:617
+msgid ""
+"Exported area in millimeters (default is full document, 0,0 is lower-left "
+"corner)"
+msgstr "Vùng đã xuất theo mili-mét (mặc định là toàn bộ tài liệu, 0,0 là góc dưới bên trái)"
+
+#: ../src/main.c:139
+msgid "x0:y0:x1:y1"
+msgstr "x0:y0:x1:y1"
+
+#: ../src/main.c:141
+#: ../src/main.c:618
+msgid "The width of generated bitmap in pixels (overwrites dpi)"
+msgstr "Độ rộng của sơ đồ bit đã tạo ra theo điểm ảnh (ghi đè lên điểm trên mỗi insơ bình phương)"
+
+#: ../src/main.c:141
+msgid "WIDTH"
+msgstr "RỘNG"
+
+#: ../src/main.c:143
+#: ../src/main.c:619
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr "Độ cao của sơ đồ bit đã tạo ra theo điểm ảnh (ghi đè lên điểm trên mỗi insơ bình phương)"
+
+#: ../src/main.c:143
+msgid "HEIGHT"
+msgstr "CAO"
+
+#: ../src/main.c:145
+#: ../src/main.c:620
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr "Màu nền của sơ đồ bit đã xuất (bất kỳ chuỗi màu do SVG hỗ trợ)"
+
+#: ../src/main.c:145
+msgid "COLOR"
+msgstr "MÀU"
+
+#: ../src/main.c:147
+#: ../src/main.c:621
+msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+msgstr "Xuất tài liệu dạng tập tin SVG thô (không có miền tên « xmlns:sodipodi »"
+
+#: ../src/main.c:149
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr "Hiển thị các tập tin đưa ra từng cái một, bất kỳ sự kiện con chuốt chuyển đổi sang tập tin kế tiếp"
+
+#: ../src/main.c:151
+msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr "Thích biểu tượng sơ đồ bit (xpm) hơn điều SVG"
+
+#: ../src/main.c:622
+msgid "Print sodipodi version information"
+msgstr "In ra thông tin phiên bản Sodipodi"
+
+#: ../src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr "In ra trợ giúp về các đối số dòng lệnh"
+
+#: ../src/main.c:772
+msgid "Untitled document"
+msgstr "Tài liệu không tên"
+
+#.Show nice dialog box
+#: ../src/main.c:797
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr "Trình Sodipodi đã gặp lỗi nội bộ nên đóng ngay bây giờ.\n"
+
+#: ../src/main.c:798
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
+msgstr "Việc sao lưu tự động các tài liệu chưa lưu đã được thực hiện vào những địa điểm theo đây:\n"
+
+#: ../src/main.c:799
+msgid "Automatic backup of following documents failed:\n"
+msgstr "Lỗi sao lưu tự động các tài liệu theo đây:\n"
+
+#: ../src/module.c:898
+msgid "Scalable Vector Graphic (SVG)"
+msgstr "Đồ hóa véc-tơ có khả năng co giãn (SVG)"
+
+#: ../src/module.c:898
+msgid "Sodipodi native file format and W3C standard"
+msgstr "Dạng thức tập tin sở hữu Sodipodi và tiêu chuẩn W3C"
+
+#: ../src/module.c:905
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr "SVG với miền tên « xmlns:sodipodi »"
+
+#: ../src/module.c:906
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr "SVG với phần mở rộng Sodipodi"
+
+#: ../src/module.c:909
+msgid "Plain SVG"
+msgstr "SVG chuẩn"
+
+#: ../src/module.c:910
+msgid "Scalable Vector Graphics format"
+msgstr "Dạng thức đồ hóa véc-tơ có khả năng co giãn (SVG)"
+
+#: ../src/modules/gnome.c:158
+msgid "Select printer"
+msgstr "Chọn máy in"
+
+#: ../src/modules/gnome.c:212
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr "Sodipodi (tên tài liệu %s..): xem thử bản in"
+
+#: ../src/modules/kde.cpp:162
+msgid "Document variant:"
+msgstr "Biến thể tài liệu :"
+
+#: ../src/modules/kde.cpp:172
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+msgstr "*.svg *.svgz|các tập tin SVG\n"
+"*.xml|các tập tin XML\n"
+"*|Mọi tập tin"
+
+#: ../src/modules/kde.cpp:174
+msgid "Save document as"
+msgstr "Lưu tài liệu dạng"
+
+#: ../src/modules/plain-pdf.c:1105
+#: ../src/modules/plain-ps.c:745
+#: ../src/modules/ps.c:961
+msgid "write error occured"
+msgstr "gặp lỗi ghi"
+
+#: ../src/modules/plain.c:178
+#: ../src/modules/ps.c:264
+msgid "Print using PostScript operators"
+msgstr "In bằng toán tử PostScript"
+
+#: ../src/modules/plain.c:179
+#: ../src/modules/ps.c:266
+msgid ""
+"Use PostScript vector operators, resulting image will be (usually) smaller "
+"and can be arbitrarily scaled, but alpha transparency, markers and patterns "
+"will be lost"
+msgstr "Dùng các toán tử véc-tơ PostScript: ảnh kết quả sẽ (thường) là nhỏ hơn và có thể được co giãn tùy ý, nhưng độ trong suốt anfa, các dấu hiệu và mẫu sẽ bị mất."
+
+#: ../src/modules/plain.c:184
+#: ../src/modules/ps.c:271
+msgid "Print as bitmap"
+msgstr "In dạng sơ đồ bit"
+
+#: ../src/modules/plain.c:185
+#: ../src/modules/ps.c:273
+msgid ""
+"Print everything as bitmap, resulting image will be (usualy) larger and it "
+"quality depends on zoom factor, but all graphics will be rendered identical "
+"to display"
+msgstr "In mọi thứ dạng sơ đồ bit: ảnh kết quả sẽ (thường) là lớn hơn và độ chất lượng phụ thụộc vào hệ số thu phóng, nhưng mọi đồ họa sẽ được vẽ trùng với cách hiển thị."
+
+#: ../src/modules/plain.c:190
+msgid "Print using PDF driver"
+msgstr "In bằng trình điều khiển PDF"
+
+#: ../src/modules/plain.c:191
+msgid "Use Portable Document Format for printing"
+msgstr "Dùng Dạng thức Tài liệu Mang được (PDF) để in."
+
+#.Print destination frame
+#: ../src/modules/plain.c:224
+#: ../src/modules/plain.c:293
+#: ../src/modules/ps.c:245
+#: ../src/modules/ps.c:306
+msgid "Print destination"
+msgstr "Đích in"
+
+#.Print properties frame
+#: ../src/modules/plain.c:235
+#: ../src/modules/ps.c:256
+msgid "Print properties"
+msgstr "Tài sản in"
+
+#: ../src/modules/plain.c:274
+#: ../src/modules/ps.c:287
+msgid "Preferred resolution (dots per inch) of bitmap"
+msgstr "Độ phân giải đã muốn (chấm trên mỗi insơ) của sơ đồ bit"
+
+#: ../src/modules/plain.c:289
+#: ../src/modules/ps.c:302
+msgid "Resolution:"
+msgstr "Độ phân giải:"
+
+#: ../src/modules/plain.c:299
+#: ../src/modules/ps.c:312
+msgid ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+msgstr "Hãy nhập đích cho hàng đợi.\n"
+"Dùng « >tên_tập_tin » để in vào tập tin đó.\n"
+"Dùng « | chương_trình đối_số » để gởi qua ống dẫn chương trình đó."
+
+#.Create toplevel menuitem
+#: ../src/object-ui.c:111
+#: ../src/widgets/sp-dock-layout.c:741
+msgid "Item"
+msgstr "Mục"
+
+#.Item dialog
+#: ../src/object-ui.c:114
+#: ../src/verbs.c:487
+msgid "Item Properties"
+msgstr "Tài sản mục"
+
+#.Select item
+#: ../src/object-ui.c:122
+msgid "Select this"
+msgstr "Chọn điều này"
+
+#.Reset transformations
+#: ../src/object-ui.c:131
+msgid "Reset transformation"
+msgstr "Đặt lại sự chuyển dạng"
+
+#.Apply transformation
+#: ../src/object-ui.c:135
+msgid "Apply transformation"
+msgstr "Áp dụng sự chuyển dạng"
+
+#: ../src/object-ui.c:140
+msgid "Make sensitive"
+msgstr "Làm nhạy cảm"
+
+#: ../src/object-ui.c:140
+msgid "Make insensitive"
+msgstr "Làm không nhạy cảm"
+
+#.Create link
+#: ../src/object-ui.c:144
+msgid "Create link"
+msgstr "Tạo liên kết"
+
+#: ../src/object-ui.c:276
+#: ../src/verbs.c:435
+msgid "Group"
+msgstr "Nhóm"
+
+#.Group dialog
+#: ../src/object-ui.c:280
+msgid "Group Properties"
+msgstr "Tài sản nhóm"
+
+#.Ungroup
+#: ../src/object-ui.c:291
+#: ../src/verbs.c:436
+msgid "Ungroup"
+msgstr "Rã nhóm"
+
+#.Dive
+#: ../src/object-ui.c:296
+msgid "Set as layer"
+msgstr "Đặt là lớp"
+
+#.Create toplevel menuitem
+#: ../src/object-ui.c:341
+msgid "Link"
+msgstr "Liên kết"
+
+#.Link dialog
+#: ../src/object-ui.c:344
+msgid "Link Properties"
+msgstr "Tài sản liên kết"
+
+#.Select item
+#: ../src/object-ui.c:354
+msgid "Follow link"
+msgstr "Theo liên kết"
+
+#.Reset transformations
+#: ../src/object-ui.c:359
+msgid "Remove link"
+msgstr "Gỡ bỏ liên kết"
+
+#.Create toplevel menuitem
+#: ../src/object-ui.c:422
+msgid "Image"
+msgstr "Ảnh"
+
+#.Link dialog
+#: ../src/object-ui.c:425
+msgid "Image Properties"
+msgstr "Tài sản ảnh"
+
+#.Autotrace dialog
+#: ../src/object-ui.c:433
+#: ../src/sp-image.c:762
+msgid "Trace"
+msgstr "Đồ lại"
+
+#.Create toplevel menuitem
+#: ../src/object-ui.c:482
+msgid "Shape"
+msgstr "Hình"
+
+#.Item dialog
+#: ../src/object-ui.c:485
+#: ../src/toolbox.c:402
+msgid "Fill settings"
+msgstr "Thiết lập tô màu"
+
+#.Create toplevel menuitem
+#: ../src/object-ui.c:516
+msgid "Path"
+msgstr "Đường dẫn"
+
+#.Reverse
+#: ../src/object-ui.c:519
+msgid "Reverse"
+msgstr "Đảo"
+
+#.Create toplevel menuitem
+#: ../src/object-ui.c:542
+msgid "Rect"
+msgstr "Chử nhật"
+
+#.Link dialog
+#: ../src/object-ui.c:545
+msgid "Rect Properties"
+msgstr "Tài sản chữ nhật"
+
+#.Create toplevel menuitem
+#: ../src/object-ui.c:578
+#: ../src/verbs.c:457
+msgid "Star"
+msgstr "Sao"
+
+#.Link dialog
+#: ../src/object-ui.c:581
+msgid "Star Properties"
+msgstr "Tài sản sao"
+
+#.Create toplevel menuitem
+#: ../src/object-ui.c:614
+#: ../src/verbs.c:458
+msgid "Spiral"
+msgstr "Xoắn ốc"
+
+#.Link dialog
+#: ../src/object-ui.c:617
+msgid "Spiral Properties"
+msgstr "Tài sản xoắn ốc"
+
+#.rx_ratio
+#: ../src/rect-context.c:358
+msgid "Roundness ratio for x:"
+msgstr "Tỷ lệ tròn cho x:"
+
+#.ry_ratio
+#: ../src/rect-context.c:370
+msgid "Roundness ratio for y:"
+msgstr "Tỷ lệ tròn cho y:"
+
+#: ../src/select-context.c:570
+msgid "Visual transformation"
+msgstr "Chuyển dạng trực quan"
+
+#: ../src/select-context.c:576
+msgid "Show content"
+msgstr "Hiện nội dung"
+
+#: ../src/select-context.c:582
+msgid "Show outline"
+msgstr "Hiện phác thảo"
+
+#: ../src/select-context.c:588
+msgid "Object transformation"
+msgstr "Chuyển dạng đối tượng"
+
+#: ../src/select-context.c:594
+msgid "Optimize"
+msgstr "Tối ưu hóa"
+
+#: ../src/select-context.c:600
+msgid "Preserve"
+msgstr "Bảo tồn"
+
+#: ../src/select-context.c:606
+msgid "[Tab] Cycling"
+msgstr "Chu kỳ [Tab]"
+
+#: ../src/select-context.c:611
+msgid "Cycle only among visible items"
+msgstr "Xoay qua chỉ các mục hiển thị"
+
+#: ../src/select-context.c:614
+msgid "Center view to selected item"
+msgstr "Ô xem ở giữa tới mục đã chọn"
+
+#: ../src/slideshow.c:90
+msgid "Sodipodi slideshow"
+msgstr "Trình chiều Sodipodi"
+
+#: ../src/sodipodi.c:468
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr "%s không phải là một tập tin chuẩn.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể tải hay lưu tùy thích.\n"
+
+#: ../src/sodipodi.c:471
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "Hoặc %s không thể là một tập tin XML\n"
+"hợp lệ, hoặc bạn không có quyền đọc nó.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể tải hay lưu tùy thích."
+
+#: ../src/sodipodi.c:476
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "%s không phải là một tập tin tùy thích\n"
+"Sodipodi hợp lệ.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể tải hay lưu tùy thích."
+
+#: ../src/sodipodi.c:488
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "%s không phải là một tập tin hợp lệ.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể dùng phần mở rộng (bổ sung).\n"
+
+#: ../src/sodipodi.c:491
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "Hoặc %s không phải là một tập tin XML\n"
+"hợp lệ, hoặc bạn không có quyền đọc nó.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể dùng phần mở rộng (bổ sung).\n"
+
+#: ../src/sodipodi.c:495
+#, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "%s không phải là một tập tin mở rộng\n"
+"Sodipodi hợp lệ.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể dùng phần mở rộng (bổ sung).\n"
+""
+
+#: ../src/sodipodi.c:829
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+msgstr "Không thể tạo thư mục %s.\n"
+"Mặc dù trình Sodipodi sẽ chạy,\n"
+"bạn không thể tải hay lưu %s."
+
+#: ../src/sodipodi.c:833
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "%s không phải là một thư mục hợp lệ.\n"
+"Mặc dù trình Sodipodi sẽ chạy,\n"
+"bạn không thể tải hay lưu tùy thích."
+
+#: ../src/sodipodi.c:837
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "Không thể tạo tập tin %s.\n"
+"Mặc dù trình Sodipodi sẽ chạy,\n"
+"bạn không thể tải hay lưu tùy thích."
+
+#: ../src/sodipodi.c:841
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr "Không thể ghi tập tin %s.\n"
+"Mặc dù trình Sodipodi sẽ chạy,\n"
+"bạn không thể tải hay lưu tùy thích."
+
+#: ../src/sodipodi.c:851
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "Không thể tạo thư mục %s.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể dùng phần mở rộng (bổ sung).\n"
+
+#: ../src/sodipodi.c:854
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "%s không phải là một thư mục hợp lệ.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể dùng phần mở rộng (bổ sung).\n"
+
+#: ../src/sodipodi.c:857
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "Không thể tạo tập tin %s.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể dùng phần mở rộng (bổ sung).\n"
+
+#: ../src/sodipodi.c:860
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr "Không thể ghi tập tin %s.\n"
+"Mặc dù trình Sodipodi sẽ chạy, bạn\n"
+"không thể dùng phần mở rộng (bổ sung).\n"
+
+#: ../src/sp-anchor.c:196
+#, c-format
+msgid "Link to %s"
+msgstr "Liên kết tới %s"
+
+#: ../src/sp-image.c:373
+#, c-format
+msgid "Image with bad reference: %s"
+msgstr "Ảnh có tham chiếu sai: %s"
+
+#: ../src/sp-image.c:375
+#, c-format
+msgid "Color image %d x %d: %s"
+msgstr "Ảnh màu %d × %d: %s"
+
+#: ../src/sp-image.c:908
+#, c-format
+msgid "Error to write %s: %s"
+msgstr "Gặp lỗi khi ghi %s: %s"
+
+#: ../src/sp-image.c:942
+msgid "Untitled"
+msgstr "Không tên"
+
+#: ../src/sp-image.c:947
+msgid "Document Name:"
+msgstr "Tên tài liệu :"
+
+#: ../src/sp-image.c:960
+msgid "Unknown"
+msgstr "Không rõ"
+
+#: ../src/sp-image.c:966
+msgid "Image URI:"
+msgstr "URI ảnh:"
+
+#: ../src/sp-item-group.c:483
+#, c-format
+msgid "Group of %d objects"
+msgstr "Nhóm có %d đối tượng"
+
+#: ../src/sp-item.c:554
+msgid "Unknown item :-("
+msgstr "Không biết mục đó :-("
+
+#.fixme:
+#: ../src/sp-text.c:1293
+msgid "Text object"
+msgstr "Đối tượng chữ"
+
+#.T0
+#: ../src/spiral-context.c:355
+msgid "Inner radius:"
+msgstr "Bán kính nội bộ :"
+
+#.Proportion
+#: ../src/star-context.c:355
+msgid "Proportion:"
+msgstr "Cân đối:"
+
+#.Making sides flat
+#: ../src/star-context.c:368
+msgid "Make sides flat"
+msgstr "Làm phẳng các mặt"
+
+#: ../src/toolbox.c:399
+msgid "Object"
+msgstr "Đối tượng"
+
+#: ../src/toolbox.c:403
+#: ../src/verbs.c:481
+msgid "Object size and position"
+msgstr "Kích cỡ và vị trí của đối tượng"
+
+#: ../src/toolbox.c:404
+msgid "Text and font settings"
+msgstr "Thiết lập phông chữ và chữ"
+
+#: ../src/toolbox.c:406
+#: ../src/verbs.c:482
+msgid "Object transformations"
+msgstr "Chuyển dạng đối tượng"
+
+#: ../src/toolbox.c:485
+msgid "Draw"
+msgstr "Vẽ"
+
+#: ../src/toolbox.c:542
+msgid "Extension"
+msgstr "Bổ sung"
+
+#: ../src/toolbox.c:624
+msgid "Nodes"
+msgstr "Nút"
+
+#: ../src/toolbox.c:627
+msgid "Insert new nodes into selected segments"
+msgstr "Chèn các nút mới vào các đoạn đã chọn"
+
+#: ../src/toolbox.c:629
+msgid "Break line at selected nodes"
+msgstr "Ngắt đường tại các nút đã chọn"
+
+#: ../src/toolbox.c:631
+msgid "Make selected nodes corner"
+msgstr "Làm các nút đã chọn là góc"
+
+#: ../src/toolbox.c:633
+msgid "Make selected segments lines"
+msgstr "Làm các đoạn đã chọn là đường"
+
+#: ../src/toolbox.c:635
+msgid "Delete selected nodes"
+msgstr "Xoá bỏ các nút đã chọn"
+
+#: ../src/toolbox.c:637
+msgid "Join lines at selected nodes"
+msgstr "Nối lại đường tại các nút đã chọn"
+
+#: ../src/toolbox.c:640
+msgid "Join lines at selected nodes with new segment"
+msgstr "Nối lại đường tại các nút đã chọn với đoạn mới"
+
+#: ../src/toolbox.c:642
+msgid "Make selected nodes smooth"
+msgstr "Làm mịn các nút đã chọn"
+
+#: ../src/toolbox.c:644
+msgid "Make selected segments curves"
+msgstr "Làm các nút đã chọn là đường cong"
+
+#: ../src/verbs.c:407
+msgid "Does nothing"
+msgstr "Không làm gì"
+
+#: ../src/verbs.c:409
+msgid "Create new SVG document"
+msgstr "Tạo một tài liệu SVG mới"
+
+#: ../src/verbs.c:410
+msgid "Open..."
+msgstr "Mở..."
+
+#: ../src/verbs.c:410
+msgid "Open existing SVG document"
+msgstr "Mở một tài liệu SVG đã có"
+
+#: ../src/verbs.c:411
+msgid "Save"
+msgstr "Lưu"
+
+#: ../src/verbs.c:411
+msgid "Save document"
+msgstr "Lưu tài liệu"
+
+#: ../src/verbs.c:412
+msgid "Save As..."
+msgstr "Lưu dạng..."
+
+#: ../src/verbs.c:412
+msgid "Save document under new name"
+msgstr "Lưu tài liệu với tên mới"
+
+#: ../src/verbs.c:413
+msgid "Print..."
+msgstr "In..."
+
+#: ../src/verbs.c:413
+msgid "Print document"
+msgstr "In tài liệu"
+
+#: ../src/verbs.c:414
+msgid "Print Direct..."
+msgstr "In trực tiếp..."
+
+#: ../src/verbs.c:414
+msgid "Print directly to file or pipe"
+msgstr "In trực tiếp tới tập tin hay ống dẫn"
+
+#: ../src/verbs.c:415
+msgid "Print Preview"
+msgstr "Xem thử bản in"
+
+#: ../src/verbs.c:415
+msgid "Preview document printout"
+msgstr "Xem thử cách in tài liệu"
+
+#: ../src/verbs.c:416
+msgid "Import"
+msgstr "Nhập"
+
+#: ../src/verbs.c:416
+msgid "Import bitmap or SVG image into document"
+msgstr "Nhập ảnh sư đồ bit hay SVG vào tài liệu."
+
+#: ../src/verbs.c:417
+msgid "Export document as PNG bitmap"
+msgstr "Xuất tài liệu dạng sơ đồ bit PNG"
+
+#: ../src/verbs.c:418
+msgid "Exit"
+msgstr "Thoát"
+
+#.Edit
+#: ../src/verbs.c:420
+msgid "Undo"
+msgstr "Hồi lại"
+
+#: ../src/verbs.c:420
+msgid "Revert last action"
+msgstr "Hoàn lại hành động cuối cùng."
+
+#: ../src/verbs.c:421
+msgid "Redo"
+msgstr "Làm lại"
+
+#: ../src/verbs.c:421
+msgid "Do again undone action"
+msgstr "Làm lại hành động mới hồi lại"
+
+#: ../src/verbs.c:422
+msgid "Cut"
+msgstr "Cắt"
+
+#: ../src/verbs.c:422
+msgid "Cut selected objects to clipboard"
+msgstr "Cắt các đối tượng đã chọn vào bảng tạm"
+
+#: ../src/verbs.c:423
+msgid "Copy"
+msgstr "Chép"
+
+#: ../src/verbs.c:423
+msgid "Copy selected objects to clipboard"
+msgstr "Sao chép các đối tượng đã chọn sang bảng tạm"
+
+#: ../src/verbs.c:424
+msgid "Paste"
+msgstr "Dán"
+
+#: ../src/verbs.c:424
+msgid "Paste objects from clipboard"
+msgstr "Dán các đối tượng từ bảng tạm"
+
+#: ../src/verbs.c:425
+msgid "Delete"
+msgstr "Xóa bỏ"
+
+#: ../src/verbs.c:425
+msgid "Delete selected objects"
+msgstr "Xoá bỏ các đối tượng đã chọn"
+
+#: ../src/verbs.c:426
+msgid "Duplicate"
+msgstr "Nhân đôi"
+
+#: ../src/verbs.c:426
+msgid "Duplicate selected objects"
+msgstr "Nhân đôi các đối tượng đã chọn"
+
+#: ../src/verbs.c:427
+msgid "Clear All"
+msgstr "Xoá hết"
+
+#: ../src/verbs.c:427
+msgid "Delete all objects from document"
+msgstr "Xoá bỏ mọi đối tượng ra tài liệu đó."
+
+#: ../src/verbs.c:428
+msgid "Select All"
+msgstr "Chọn tất cả"
+
+#: ../src/verbs.c:428
+msgid "Select all objects in document"
+msgstr "Chọn mọi đối tượng trong tài liệu đó."
+
+#: ../src/verbs.c:429
+msgid "Repeat"
+msgstr "Lặp lại"
+
+#: ../src/verbs.c:429
+msgid "Repeat last saved action"
+msgstr "Làm lại hành động đã lưu cuối cùng."
+
+#.Selection
+#: ../src/verbs.c:431
+msgid "Bring to Front"
+msgstr "Đem lên trước"
+
+#: ../src/verbs.c:431
+msgid "Raise selected objects to top"
+msgstr "Nâng các đối tượng đã chọn lên trên các điều khác"
+
+#: ../src/verbs.c:432
+msgid "Send to Back"
+msgstr "Gởi ra sau"
+
+#: ../src/verbs.c:432
+msgid "Lower selected objects to bottom"
+msgstr "Hạ thấp các đối tượng đã chọn xuống dưới các điều khác"
+
+#: ../src/verbs.c:433
+msgid "Raise"
+msgstr "Nâng lên"
+
+#: ../src/verbs.c:433
+msgid "Raise selected objects one position"
+msgstr "Nâng các đối tượng đã chọn lên một vị trí"
+
+#: ../src/verbs.c:434
+msgid "Lower"
+msgstr "Hạ thấp"
+
+#: ../src/verbs.c:434
+msgid "Lower selected objects one position"
+msgstr "Hạ thấp các đối tượng đã chọn một vị trí"
+
+#: ../src/verbs.c:435
+msgid "Group selected objects"
+msgstr "Nhóm lại các đối tượng đã chọn"
+
+#: ../src/verbs.c:436
+msgid "Ungroup selected group"
+msgstr "Rã nhóm nhóm đã chọn"
+
+#: ../src/verbs.c:437
+msgid "Combine"
+msgstr "Phối hợp"
+
+#: ../src/verbs.c:437
+msgid "Combine multiple paths"
+msgstr "Phối hợp nhiều đường dẫn"
+
+#: ../src/verbs.c:438
+msgid "Break Apart"
+msgstr "Ngắt ra"
+
+#: ../src/verbs.c:438
+msgid "Break selected path to subpaths"
+msgstr "Ngắt đường dẫn đã chọn ra nhiều đường dẫn phụ"
+
+#: ../src/verbs.c:439
+msgid "Uncross"
+msgstr "Bỏ giao"
+
+#: ../src/verbs.c:439
+msgid "Break selected path at crossings"
+msgstr "Ngắt đường dẫn đã chọn tại chỗ đi qua."
+
+#: ../src/verbs.c:440
+msgid "Union"
+msgstr "Hợp"
+
+#: ../src/verbs.c:440
+msgid "Calculate union of selected paths"
+msgstr "Tính hợp các đường dẫn đã chọn."
+
+#: ../src/verbs.c:441
+msgid "Intersection"
+msgstr "Giao"
+
+#: ../src/verbs.c:441
+msgid "Calculate intersection of selected paths"
+msgstr "Tính giao các đường dẫn đã chọn."
+
+#: ../src/verbs.c:442
+msgid "Subtraction"
+msgstr "Trừ"
+
+#: ../src/verbs.c:442
+msgid "Subtract paths from first"
+msgstr "Trừ các đường dẫn ra điều thứ nhất"
+
+#: ../src/verbs.c:443
+msgid "Transform"
+msgstr "Chuyển dạng"
+
+#: ../src/verbs.c:443
+msgid "Applies transformation"
+msgstr "Thực hiện chuyển dạng."
+
+#.Object
+#: ../src/verbs.c:445
+msgid "Rotate 90 degrees"
+msgstr "Xoay 90°"
+
+#: ../src/verbs.c:445
+msgid "Rotates object 90 degrees clockwise"
+msgstr "Quay đối tượng 90 độ theo xuôi chiều."
+
+#: ../src/verbs.c:446
+msgid "Flatten object"
+msgstr "Làm phẳng đối tượng"
+
+#: ../src/verbs.c:446
+msgid "Remove transformations from object"
+msgstr "Hủy chuyển dạng ra đối tượng."
+
+#: ../src/verbs.c:447
+msgid "Convert to Curves"
+msgstr "Chuyển đổi thành cong"
+
+#: ../src/verbs.c:447
+msgid "Convert selected object to path"
+msgstr "Chuyển đổi đối tượng đã chọn sang đường dẫn."
+
+#: ../src/verbs.c:448
+msgid "Flip Horizontally"
+msgstr "Lật ngang"
+
+#: ../src/verbs.c:449
+msgid "Flip selected objects horizontally"
+msgstr "Lật các đối tượng theo chiều ngang."
+
+#: ../src/verbs.c:450
+msgid "Flip Vertically"
+msgstr "Lật dọc"
+
+#: ../src/verbs.c:451
+msgid "Flip selected objects vertically"
+msgstr "Lật các đối tượng theo chiều dọc."
+
+#.Event contexts
+#: ../src/verbs.c:453
+msgid "Select"
+msgstr "Chọn"
+
+#: ../src/verbs.c:453
+msgid "Select and transform objects"
+msgstr "Chọn và chuyển dạng đối tượng."
+
+#: ../src/verbs.c:454
+msgid "Node edit"
+msgstr "Sửa nút"
+
+#: ../src/verbs.c:454
+msgid "Modify existing objects by control nodes"
+msgstr "Sửa đổi đối tượng tồn tại bằng nút điều khiển."
+
+#: ../src/verbs.c:455
+msgid "Rectangle"
+msgstr "Chữ nhật"
+
+#: ../src/verbs.c:455
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr "Tạo hình hnữ nhật và hình vuông với góc tròn tùy chọn."
+
+#: ../src/verbs.c:456
+msgid "Ellipse"
+msgstr "Bầu dục"
+
+#: ../src/verbs.c:456
+msgid "Create circles, ellipses and arcs"
+msgstr "Tạo hình tròn, bầu dọc và cung."
+
+#: ../src/verbs.c:457
+msgid "Create stars and polygons"
+msgstr "Tạo hình sao và hình đa giác."
+
+#: ../src/verbs.c:458
+msgid "Create spirals"
+msgstr "Tạo xoắn ốc"
+
+#: ../src/verbs.c:459
+msgid "Pencil"
+msgstr "Bút chì"
+
+#: ../src/verbs.c:459
+msgid "Draw freehand curves and straight lines"
+msgstr "Vẽ đường cong bằng tay và đường thẳng."
+
+#: ../src/verbs.c:460
+msgid "Pen"
+msgstr "Bút"
+
+#: ../src/verbs.c:460
+msgid "Draw precisely positioned curved and straight lines"
+msgstr "Vẽ đường cong và đường thẳng có vị trí chính xác."
+
+#: ../src/verbs.c:461
+msgid "Calligraphy"
+msgstr "Viết đẹp"
+
+#: ../src/verbs.c:461
+msgid "Draw calligraphic lines"
+msgstr "Vẽ đường kiểu viết đẹp."
+
+#: ../src/verbs.c:462
+msgid "Create and edit text objects"
+msgstr "Tạo và sửa đổi đường dẫn chữ"
+
+#: ../src/verbs.c:463
+msgid "Zoom into precisely selected area"
+msgstr "Thu phóng vào vùng đã chọn chính xác"
+
+#: ../src/verbs.c:464
+msgid "Dropper"
+msgstr "Ống nhỏ giọt"
+
+#: ../src/verbs.c:464
+msgid "Pick averaged colors from image"
+msgstr "Kén màu trung bình từ ảnh"
+
+#.Zooming
+#: ../src/verbs.c:466
+msgid "In"
+msgstr "To"
+
+#: ../src/verbs.c:466
+msgid "Zoom in drawing"
+msgstr "Phóng to bản vẽ."
+
+#: ../src/verbs.c:467
+msgid "Out"
+msgstr "Nhỏ"
+
+#: ../src/verbs.c:467
+msgid "Zoom out drawing"
+msgstr "Thu nhỏ bản vẽ."
+
+#: ../src/verbs.c:468
+msgid "1:1"
+msgstr "1:1"
+
+#: ../src/verbs.c:468
+msgid "Set zoom factor to 1:1"
+msgstr "Đặt hệ số thu phóng là 1:1."
+
+#: ../src/verbs.c:469
+msgid "1:2"
+msgstr "1:2"
+
+#: ../src/verbs.c:469
+msgid "Set zoom factor to 1:2"
+msgstr "Đặt hệ số thu phóng là 1:2."
+
+#: ../src/verbs.c:470
+msgid "2:1"
+msgstr "2:1"
+
+#: ../src/verbs.c:470
+msgid "Set zoom factor to 2:1"
+msgstr "Đặt hệ số thu phóng là 2:1."
+
+#: ../src/verbs.c:471
+msgid "Fit the whole page into window"
+msgstr "Vừa toàn bộ trang khít cửa sổ"
+
+#: ../src/verbs.c:472
+msgid "Fit the whole drawing into window"
+msgstr "Vừa toàn bộ bản vẽ khít cửa sổ"
+
+#: ../src/verbs.c:473
+msgid "Fit the whole selection into window"
+msgstr "Vừa toàn bộ vùng chọn khít cửa sổ"
+
+#.Dialogs
+#: ../src/verbs.c:475
+msgid "Display"
+msgstr "Trình bày"
+
+#: ../src/verbs.c:475
+msgid "Global display settings"
+msgstr "Thiết lập trình bày toàn cục."
+
+#: ../src/verbs.c:476
+msgid "Page layout"
+msgstr "Bố trí trang"
+
+#: ../src/verbs.c:477
+msgid "Editing Window"
+msgstr "Cửa sổ sửa đổi"
+
+#: ../src/verbs.c:477
+msgid "Editing window properties"
+msgstr "Tài sản cửa sổ sửa đổi"
+
+#: ../src/verbs.c:478
+msgid "Tool Options"
+msgstr "Tùy chọn công cụ"
+
+#: ../src/verbs.c:479
+msgid "Tool Attributes"
+msgstr "Thuộc tính công cụ"
+
+#: ../src/verbs.c:480
+msgid "Fill and Stroke"
+msgstr "Tô và Nét"
+
+#: ../src/verbs.c:480
+msgid "Fill and stroke settings"
+msgstr "Thiết lập tô màu và nét vẽ"
+
+#: ../src/verbs.c:482
+msgid "Transformations"
+msgstr "Chuyển dạng"
+
+#: ../src/verbs.c:483
+msgid "Align and Distribute"
+msgstr "Canh lề và phân phối"
+
+#: ../src/verbs.c:483
+msgid "Align and distribute"
+msgstr "Canh lề và phân phối"
+
+#: ../src/verbs.c:484
+msgid "Text and Font"
+msgstr "Chữ và phông chữ"
+
+#: ../src/verbs.c:484
+msgid "Text editing and font settings"
+msgstr "Thiết lập soạn thảo văn bản và phông chữ"
+
+#: ../src/verbs.c:485
+msgid "Document Tree"
+msgstr "Cây tài liệu"
+
+#: ../src/verbs.c:486
+msgid "XML Editor"
+msgstr "Bộ hiệu chỉnh XML"
+
+#.Family frame
+#: ../src/widgets/font-selector.c:153
+msgid "Font family"
+msgstr "Nhóm phông chữ"
+
+#.Style frame
+#: ../src/widgets/font-selector.c:193
+msgid "Style"
+msgstr "Kiểu dáng"
+
+#: ../src/widgets/font-selector.c:228
+msgid "Font size:"
+msgstr "Cỡ phông chữ :"
+
+#: ../src/widgets/font-selector.c:560
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr "AaĂăÂâBbCcDdĐđEeÊêGgHhIiKkLlMmNnOoÔôƠơPpQqRrSsTtUuƯưVvXxYyổữợấằỵíễ«»"
+
+#: ../src/widgets/gradient-selector.c:143
+msgid "Add"
+msgstr "Thêm"
+
+#: ../src/widgets/gradient-selector.c:179
+msgid "gradientUnits"
+msgstr "Đơn vị dốc"
+
+#: ../src/widgets/gradient-selector.c:208
+msgid "gradientSpread"
+msgstr "Tản ra dốc"
+
+#: ../src/widgets/gradient-vector.c:250
+msgid "No document selected"
+msgstr "Chưa chọn tài liệu"
+
+#: ../src/widgets/gradient-vector.c:256
+msgid "No gradients in document"
+msgstr "Không có dốc trong tài liệu đó."
+
+#: ../src/widgets/gradient-vector.c:262
+msgid "No gradient selected"
+msgstr "Chưa chọn dốc"
+
+#: ../src/widgets/gradient-vector.c:417
+msgid "Start color"
+msgstr "Màu đầu"
+
+#: ../src/widgets/gradient-vector.c:427
+msgid "End color"
+msgstr "Màu cuối"
+
+#: ../src/widgets/gradient-vector.c:452
+msgid "Gradient vector"
+msgstr "Véc-tơ dốc"
+
+#: ../src/widgets/paint-selector.c:622
+msgid "No objects"
+msgstr "Không có đối tượng"
+
+#: ../src/widgets/paint-selector.c:636
+msgid "Multiple styles"
+msgstr "Đa kiểu dáng"
+
+#: ../src/widgets/paint-selector.c:650
+msgid "No paint"
+msgstr "Không có sơn"
+
+#.Label
+#: ../src/widgets/paint-selector.c:747
+msgid "Mode:"
+msgstr "Chế độ :"
+
+# Literal: don't translate / Nghĩa chữ: đừng dịch
+#: ../src/widgets/paint-selector.c:757
+msgid "RGB"
+msgstr "RGB"
+
+#: ../src/widgets/paint-selector.c:757
+#: ../src/widgets/paint-selector.c:758
+msgid "RGB Colorspace"
+msgstr "Miền màu RGB"
+
+#: ../src/widgets/paint-selector.c:758
+msgid "HSV"
+msgstr "HSV"
+
+#: ../src/widgets/paint-selector.c:759
+msgid "CMYK"
+msgstr "CMYK"
+
+#: ../src/widgets/paint-selector.c:759
+msgid "CMYK Colorspace"
+msgstr "Miền màu CMYK"
+
+#.Use dropper
+#: ../src/widgets/paint-selector.c:766
+msgid "Get from dropper"
+msgstr "Lấy từ ống nhỏ giọt"
+
+#: ../src/widgets/paint-selector.c:797
+msgid "Color paint"
+msgstr "Sơn màu"
+
+#: ../src/widgets/paint-selector.c:875
+msgid "Linear gradient"
+msgstr "Độ dốc tuyến:"
+
+#: ../src/widgets/paint-selector.c:878
+msgid "Radial gradient"
+msgstr "Dốc toả tròn"
+
+#: ../src/widgets/sp-color-selector.c:623
+msgid "Red:"
+msgstr "Đỏ :"
+
+#: ../src/widgets/sp-color-selector.c:624
+msgid "Green:"
+msgstr "Xanh lá cây:"
+
+#: ../src/widgets/sp-color-selector.c:625
+msgid "Blue:"
+msgstr "Xanh dương:"
+
+#: ../src/widgets/sp-color-selector.c:626
+#: ../src/widgets/sp-color-selector.c:646
+#: ../src/widgets/sp-color-selector.c:668
+msgid "Alpha:"
+msgstr "Anfa:"
+
+#: ../src/widgets/sp-color-selector.c:643
+msgid "Hue:"
+msgstr "Sắc màu :"
+
+#: ../src/widgets/sp-color-selector.c:644
+msgid "Saturation:"
+msgstr "Bão hoà:"
+
+#: ../src/widgets/sp-color-selector.c:645
+msgid "Value:"
+msgstr "Giá trị :"
+
+#: ../src/widgets/sp-color-selector.c:664
+msgid "Cyan:"
+msgstr "X.lông mòng:"
+
+#: ../src/widgets/sp-color-selector.c:665
+msgid "Magenta:"
+msgstr "Đỏ tươi:"
+
+#: ../src/widgets/sp-color-selector.c:666
+msgid "Yellow:"
+msgstr "Vàng:"
+
+#: ../src/widgets/sp-color-selector.c:667
+msgid "Black:"
+msgstr "Đen:"
+
+#: ../src/widgets/sp-dock-item.c:243
+msgid "Orientation"
+msgstr "Hướng"
+
+#: ../src/widgets/sp-dock-item.c:244
+msgid "Orientation of the docking item"
+msgstr "Hướng của mục neo"
+
+#: ../src/widgets/sp-dock-item.c:259
+msgid "Resizable"
+msgstr "Cho đổi cỡ"
+
+#: ../src/widgets/sp-dock-item.c:260
+msgid "If set, the dock item can be resized when docked in a paned"
+msgstr "Nếu lập thì mục neo có thể được lập lại kích thước khi nằm trên bảng điều khiển."
+
+#: ../src/widgets/sp-dock-item.c:267
+msgid "Item behavior"
+msgstr "Ứng xử mục"
+
+#: ../src/widgets/sp-dock-item.c:268
+msgid ""
+"General behavior for the dock item (i.e. whether it can float, if it's "
+"locked, etc.)"
+msgstr "Ứng xử chung của mục neo (nó có thể nổi không, nó được khoá không v.v.)."
+
+#: ../src/widgets/sp-dock-item.c:276
+msgid "Grip size"
+msgstr "Cỡ móc"
+
+#: ../src/widgets/sp-dock-item.c:277
+msgid "Size in pixels of the grip to drag the dock item"
+msgstr "Kích cỡ theo điểm ảnh của móc kéo mục neo."
+
+#: ../src/widgets/sp-dock-item.c:283
+#: ../src/widgets/sp-dock-master.c:149
+msgid "Locked"
+msgstr "Bị khoá"
+
+#: ../src/widgets/sp-dock-item.c:284
+msgid ""
+"If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr "Nếu lập thì mục neo không thể được kéo xung quanh và sẽ không hiện móc."
+
+#: ../src/widgets/sp-dock-item.c:292
+msgid "Preferred width"
+msgstr "Rộng ưa thích"
+
+#: ../src/widgets/sp-dock-item.c:293
+msgid "Preferred width for the dock item"
+msgstr "Độ rộng ưa thích của mục neo"
+
+#: ../src/widgets/sp-dock-item.c:299
+msgid "Preferred height"
+msgstr "Cao ưa thích"
+
+#: ../src/widgets/sp-dock-item.c:300
+msgid "Preferred height for the dock item"
+msgstr "Độ cao ưa thích của mục neo"
+
+#: ../src/widgets/sp-dock-item.c:547
+#, c-format
+msgid ""
+"You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
+"some other compound dock object."
+msgstr "Không thể thêm đối tượng neo (%p của kiểu %s) nằm trong một %s. Hãy dùng SPDock hay đối tượng neo phức hợp khác."
+
+#: ../src/widgets/sp-dock-item.c:554
+#, c-format
+msgid ""
+"Attempting to add a widget with type %s to a %s, but it can only contain one "
+"widget at a time; it already contains a widget of type %s"
+msgstr "Đang cố gắng thêm một ô điều khiển có kiểu %s vào %s, nhưng chỉ có thể chứa một ô điều khiển vào mỗi lúc; nó đã chứa một ô điều kiển có kiểu %s."
+
+#: ../src/widgets/sp-dock-item.c:1156
+#, c-format
+msgid "Unsupported docking strategy %s in dock object of type %s"
+msgstr "Không hỗ trợ chiến lược cụ neo %s trong đối tượng neo có kiểu %s."
+
+#.Hide menuitem.
+#: ../src/widgets/sp-dock-item.c:1238
+msgid "Hide"
+msgstr "Ẩn"
+
+#.Lock menuitem
+#: ../src/widgets/sp-dock-item.c:1244
+msgid "Lock"
+msgstr "Khoá"
+
+#: ../src/widgets/sp-dock-item.c:1411
+#, c-format
+msgid "Attempt to bind an unbound item %p"
+msgstr "Cố gắng tổ hợp mục tự do %p."
+
+#: ../src/widgets/sp-dock-layout.c:144
+msgid "Master"
+msgstr "Chủ"
+
+#: ../src/widgets/sp-dock-layout.c:145
+msgid "SPDockMaster object which the layout object is attached to"
+msgstr "Đối tượng SPDockMaster mà đối tượng bố trí được gắn kèm với nó."
+
+#: ../src/widgets/sp-dock-layout.c:152
+msgid "Dirty"
+msgstr "Bẩn"
+
+#: ../src/widgets/sp-dock-layout.c:153
+msgid "True if the layouts have changed and need to be saved to a file"
+msgstr "Đúng nếu các bố trí đã thay đổi và cần thiết được lưu vào tập tin."
+
+#: ../src/widgets/sp-dock-layout.c:500
+msgid "You must provide a name for the layout"
+msgstr "Phải cung cấp tên cho bố trí."
+
+#.FIXME: pop up an error dialog
+#: ../src/widgets/sp-dock-layout.c:679
+#, c-format
+msgid "Could not load layout user interface file '%s'"
+msgstr "Không thể tải tập tin giao diện người dùng của bố trí « %s »."
+
+#: ../src/widgets/sp-dock-layout.c:791
+#: ../src/widgets/sp-dock-object.c:123
+msgid "Name"
+msgstr "Tên"
+
+#: ../src/widgets/sp-dock-layout.c:830
+msgid "Dock items"
+msgstr "Mục neo"
+
+#: ../src/widgets/sp-dock-layout.c:836
+msgid "Saved layouts"
+msgstr "Bố trí đã lưu"
+
+#: ../src/widgets/sp-dock-layout.c:902
+#, c-format
+msgid ""
+"While loading layout: don't know how to create a dock object whose nick is '%"
+"s'"
+msgstr "Trong khi tải bố trí: không biết cách tạo đối tượng neo có tên hiệu « %s »."
+
+#: ../src/widgets/sp-dock-layout.c:1459
+msgid "Layout managment"
+msgstr "Quản lý bố trí"
+
+#: ../src/widgets/sp-dock-master.c:142
+#: ../src/widgets/sp-dock.c:184
+msgid "Default title"
+msgstr "Tựa mặc định"
+
+#: ../src/widgets/sp-dock-master.c:143
+msgid "Default title for newly created floating docks"
+msgstr "Tựa đề mặc định cho các neo nổi mới tạo."
+
+#: ../src/widgets/sp-dock-master.c:150
+msgid ""
+"If is set to 1, all the dock items bound to the master are locked; if it's "
+"0, all are unlocked; -1 indicates inconsistency among the items"
+msgstr "   1\t\t\ttất cả các mục neo tổ hợp với chủ chính được khoá\n"
+"   0\t\t\ttất cả được mở khoá\n"
+" -1 \t\t\tbiểu thị sự mâu thuẫn giữa các mục"
+
+#: ../src/widgets/sp-dock-master.c:741
+#, c-format
+msgid ""
+"master %p: unable to add object %p[%s] to the hash.  There already is an "
+"item with that name (%p)."
+msgstr "Chủ chính %p: không thể thêm đối tượng %p[%s] vào băm. Đã có một mục với tên đó (%p)."
+
+#: ../src/widgets/sp-dock-master.c:906
+#, c-format
+msgid ""
+"The new dock controller %p is automatic.  Only manual dock objects should be "
+"named controller."
+msgstr "Bộ điều khiển neo mới %p là tự động. Chỉ các đối tượng neo thủ công nên có tên là bộ điều khiển."
+
+#: ../src/widgets/sp-dock-notebook.c:136
+msgid "The index of the current page"
+msgstr "Chỉ số của trang hiện thời."
+
+#: ../src/widgets/sp-dock-object.c:124
+msgid "Unique name for identifying the dock object"
+msgstr "Tên duy nhất để nhận diện đối tượng neo."
+
+#: ../src/widgets/sp-dock-object.c:131
+msgid "Long name"
+msgstr "Tên dài"
+
+#: ../src/widgets/sp-dock-object.c:132
+msgid "Human readable name for the dock object"
+msgstr "Tên người có thể đọc được cho đối tượng neo."
+
+#: ../src/widgets/sp-dock-object.c:138
+msgid "Dock master"
+msgstr "Chủ neo"
+
+#: ../src/widgets/sp-dock-object.c:139
+msgid "Dock master this dock object is bound to"
+msgstr "Chủ chính neo đối tượng neo này được tổ hợp với nó."
+
+#: ../src/widgets/sp-dock-object.c:408
+#, c-format
+msgid ""
+"Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
+"hasn't implemented this method"
+msgstr "Cuộc gọi tới « gdl_dock_object_dock » trong đối tượng neo %p (kiểu đối tượng là %s) mà chưa thực thi phương pháp này."
+
+#: ../src/widgets/sp-dock-object.c:537
+#, c-format
+msgid ""
+"Dock operation requested in a non-bound object %p. The application might "
+"crash"
+msgstr "Thao tác neo được yêu cầu trong một đối tượng không tổ hợp %p. Ứng dụng có thể đổ vỡ."
+
+#: ../src/widgets/sp-dock-object.c:544
+#, c-format
+msgid "Cannot dock %p to %p because they belong to different masters"
+msgstr "Không thể cụ neo %p vào %p vì chúng thuộc về các chủ chính khác nhau."
+
+#: ../src/widgets/sp-dock-object.c:586
+#, c-format
+msgid ""
+"Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgstr "Cố tổ hợp tới %p một đối tượng neo đã tổ hợp %p (chủ chính hiện thời: %p)."
+
+#: ../src/widgets/sp-dock-paned.c:134
+msgid "Position"
+msgstr "Vị trí"
+
+#: ../src/widgets/sp-dock-paned.c:135
+msgid "Position of the divider in pixels"
+msgstr "Vị trí của bộ chia theo điểm ảnh."
+
+#: ../src/widgets/sp-dock-placeholder.c:125
+msgid "Sticky"
+msgstr "Dính"
+
+#: ../src/widgets/sp-dock-placeholder.c:126
+msgid ""
+"Whether the placeholder will stick to its host or move up the hierarchy when "
+"the host is redocked"
+msgstr "Bộ giữ nơi sẽ bám dính tới chủ của nó hay chuyển tiếp thứ bậc khi chủ cái cụ neo lại."
+
+#: ../src/widgets/sp-dock-placeholder.c:133
+msgid "Host"
+msgstr "Cái"
+
+#: ../src/widgets/sp-dock-placeholder.c:134
+msgid "The dock object this placeholder is attached to"
+msgstr "Đối tượng neo mà bộ giữ nơi này được gắn kèm với nó."
+
+#: ../src/widgets/sp-dock-placeholder.c:141
+msgid "Next placement"
+msgstr "Sự định vị kế"
+
+#: ../src/widgets/sp-dock-placeholder.c:142
+msgid ""
+"The position an item will be docked to our host if a request is made to dock "
+"to us"
+msgstr "Vị trí nơi mục sẽ được cụ neo tới chủ cái chúng tôi nếu đã yêu cầu cụ neo vào chúng ta."
+
+#: ../src/widgets/sp-dock-placeholder.c:303
+msgid "Attempt to dock a dock object to an unbound placeholder"
+msgstr "Cố cụ neo một đối tượng neo vào vào một bộ giữ nơi không tổ hợp."
+
+#: ../src/widgets/sp-dock-placeholder.c:417
+#, c-format
+msgid "Got a detach signal from an object (%p) who is not our host %p"
+msgstr "Đã nhận tín hiệu tách ra từ một đối tượng (%p) không phải là chủ cái của chúng ta %p."
+
+#: ../src/widgets/sp-dock-placeholder.c:438
+#, c-format
+msgid ""
+"Something weird happened while getting the child placement for %p from "
+"parent %p"
+msgstr "Gặp lỗi lạ khi nhận sự định vị con cho %p từ mẹ %p."
+
+#: ../src/widgets/sp-dock-tablabel.c:131
+msgid "Controlling dock item"
+msgstr "Mục neo điều khiển"
+
+#: ../src/widgets/sp-dock-tablabel.c:132
+msgid "Dockitem which 'owns' this tablabel"
+msgstr "Mục neo có « sở hữu » nhãn thanh này."
+
+#: ../src/widgets/sp-dock.c:176
+msgid "Floating"
+msgstr "Nổi"
+
+#: ../src/widgets/sp-dock.c:177
+msgid "Whether the dock is floating in its own window"
+msgstr "Neo có nổi trong cửa sổ của riêng nó hay không."
+
+#: ../src/widgets/sp-dock.c:185
+msgid "Default title for the newly created floating docks"
+msgstr "Tựa đề mặc định cho các neo nổi mới tạo."
+
+#: ../src/widgets/sp-dock.c:191
+msgid "Width"
+msgstr "Rộng"
+
+#: ../src/widgets/sp-dock.c:192
+msgid "Width for the dock when it's of floating type"
+msgstr "Độ rộng của neo khi nó có kiểu nổi."
+
+#: ../src/widgets/sp-dock.c:199
+msgid "Height"
+msgstr "Cao"
+
+#: ../src/widgets/sp-dock.c:200
+msgid "Height for the dock when it's of floating type"
+msgstr "Độ cao của neo khi nó có kiểu nổi."
+
+#: ../src/widgets/sp-dock.c:207
+msgid "Float X"
+msgstr "Nổi X"
+
+#: ../src/widgets/sp-dock.c:208
+msgid "X coordinate for a floating dock"
+msgstr "Tọa độ X cho neo nổi."
+
+#: ../src/widgets/sp-dock.c:215
+msgid "Float Y"
+msgstr "Nổi Y"
+
+#: ../src/widgets/sp-dock.c:216
+msgid "Y coordinate for a floating dock"
+msgstr "Tọa độ Y cho neo nổi."
+
+#: ../src/widgets/sp-dock.c:509
+#, c-format
+msgid "Dock #%d"
+msgstr "Neo #%d"
+
+#: ../src/widgets/sp-toolbox.c:305
+msgid "Toggle separate window and main toolbox placement"
+msgstr "Bật/tắt cách định vị riêng cửa sổ và hộp công cụ chính"
+
+#: ../src/widgets/sp-xmlview-attr-list.c:54
+msgid "Attribute"
+msgstr "Thuộc tính"
+
+#: ../src/widgets/sp-xmlview-attr-list.c:55
+msgid "Value"
+msgstr "Giá trị"
