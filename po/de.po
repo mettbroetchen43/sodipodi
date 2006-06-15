@@ -4,15 +4,15 @@
 # Benedikt Roth <Benedikt.Roth@gmx.net>, 2000
 # Christian Meyer <chrisime@gnome.org>, 2000-2002.
 # Christian Neumair <chris@gnome-de.org>, 2002-2004.
-# Hendrik Richter <hendi@gnome-de.org>, 2005.
+# Hendrik Richter <hendrikr@gnome.org>, 2005.
 # 
 msgid ""
 msgstr ""
 "Project-Id-Version: sodipodi\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2005-01-13 22:03+0100\n"
-"PO-Revision-Date: 2005-07-04 20:22+0200\n"
-"Last-Translator: Hendrik Richter <hendi@gnome-de.org>\n"
+"PO-Revision-Date: 2006-06-15 17:39+0200\n"
+"Last-Translator: Hendrik Richter <hendrikr@gnome.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -915,7 +915,7 @@ msgstr "Sodipodi: %s: XML-Ansicht"
 
 #: src/dialogs/xml-tree.c:856
 msgid "New element node..."
-msgstr "Neuer Elementknoten..."
+msgstr "Neuer Elementknoten …"
 
 #: src/dialogs/xml-tree.c:876
 msgid "Cancel"
@@ -1961,7 +1961,7 @@ msgstr "Ein neues SVG-Dokument anlegen"
 
 #: src/verbs.c:410
 msgid "Open..."
-msgstr "Öffnen..."
+msgstr "Öffnen …"
 
 #: src/verbs.c:410
 msgid "Open existing SVG document"
@@ -1977,7 +1977,7 @@ msgstr "Das Dokument speichern"
 
 #: src/verbs.c:412
 msgid "Save As..."
-msgstr "Speichern unter..."
+msgstr "Speichern unter …"
 
 #: src/verbs.c:412
 msgid "Save document under new name"
@@ -1985,7 +1985,7 @@ msgstr "Das Dokument unter einem anderen Namen speichern"
 
 #: src/verbs.c:413
 msgid "Print..."
-msgstr "Drucken..."
+msgstr "Drucken …"
 
 #: src/verbs.c:413
 msgid "Print document"
@@ -1993,7 +1993,7 @@ msgstr "Das Dokument drucken"
 
 #: src/verbs.c:414
 msgid "Print Direct..."
-msgstr "Direkt drucken..."
+msgstr "Direkt drucken …"
 
 #: src/verbs.c:414
 msgid "Print directly to file or pipe"
@@ -2975,3 +2975,6 @@ msgstr "Attribut"
 #: src/widgets/sp-xmlview-attr-list.c:55
 msgid "Value"
 msgstr "Wert"
+
+
+
