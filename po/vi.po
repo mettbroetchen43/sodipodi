@@ -1633,7 +1633,7 @@ msgstr "Đảo"
 #.Create toplevel menuitem
 #: ../src/object-ui.c:542
 msgid "Rect"
-msgstr "Chử nhật"
+msgstr "Chữ nhật"
 
 #.Link dialog
 #: ../src/object-ui.c:545
