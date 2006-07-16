@@ -1,7 +1,7 @@
 TOP = ..\..\..
 PRJ_TOP = ..\..
 PACKAGE = libnrtype
-PKG_VER = 0.32
+PKG_VER = 0.35
 !INCLUDE $(TOP)\glib\build\win32\make.msc
 
 SUBDIRS = cp
@@ -15,6 +15,7 @@ sub-one:
 	cd ..
 
 PKG_CFLAGS = \
+	-DWIN32 -DHAVE_CONFIG_H \
 	-FImsvc_recommended_pragmas.h \
 	-I$(PRJ_TOP) -I.. \
 	-I..\
@@ -23,6 +24,7 @@ PKG_CFLAGS = \
 PKG_LINK = \
 	cp/sp-cp.lib \
 	../libnr/libnr-$(PKG_VER).lib \
+	..\libarikkei\libarikkei-$(PKG_VER).lib \
 	$(GLIB_LIBS) $(LIBART_LIBS) $(FREETYPE2_LIBS) \
 	gdi32.lib
 
@@ -56,7 +58,8 @@ OBJECTS = \
 	nr-rasterfont.obj \
 	nr-type-directory.obj \
 	nr-type-ft2.obj \
-	nr-type-w32.obj
+	nr-type-w32.obj \
+	nr-glyphs.obj \
 
 all : \
 	$(PRJ_TOP)\config.h \

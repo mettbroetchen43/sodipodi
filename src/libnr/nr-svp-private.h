@@ -93,7 +93,7 @@ void nr_flat_free_list (NRFlat *flat);
 NRFlat *nr_flat_insert_sorted (NRFlat *start, NRFlat *flat);
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif

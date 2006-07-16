@@ -110,7 +110,7 @@ sp_repr_doc_new_from_mem (const unsigned char *buffer, unsigned int length, cons
 	return rdoc;
 }
 
-SPReprDoc *
+static SPReprDoc *
 sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns)
 {
 	SPReprDoc * rdoc;
@@ -159,7 +159,7 @@ sp_repr_do_read (xmlDocPtr doc, const gchar *default_ns)
 	return rdoc;
 }
 
-void
+static void
 sp_repr_set_xmlns_attr (const unsigned char *prefix, const unsigned char *uri, SPRepr *repr)
 {
 	gchar *name;
@@ -168,7 +168,7 @@ sp_repr_set_xmlns_attr (const unsigned char *prefix, const unsigned char *uri, S
 	g_free (name);
 }
 
-gint
+static gint
 sp_repr_qualified_name (unsigned char *p, gint len, xmlNsPtr ns, const xmlChar *name, const gchar *default_ns, GHashTable *prefix_map)
 {
 	const gchar *prefix;

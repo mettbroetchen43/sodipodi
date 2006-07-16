@@ -43,7 +43,7 @@ static char *sp_xml_ns_auto_prefix (const char *uri);
 
 static SPXMLNs *namespaces=NULL;
 
-void
+static void
 sp_xml_ns_register_defaults ()
 {
 	static SPXMLNs defaults[3];
@@ -59,7 +59,7 @@ sp_xml_ns_register_defaults ()
 	namespaces = &defaults[0];
 }
 
-char *
+static char *
 sp_xml_ns_auto_prefix (const char *uri)
 {
 	const char *start, *end;

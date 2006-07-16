@@ -4,7 +4,7 @@ PACKAGE = sodipodi
 PKG_VER = 0.35
 !INCLUDE $(TOP)\glib\build\win32\make.msc
 
-SUBDIRS = libarikkei libnr libnrtype xml svg helper widgets dialogs display modules $(module_subdirs)
+SUBDIRS = libnr libnrtype xml svg helper widgets dialogs display $(module_subdirs)
 
 sub-all: 
 	for %d in ($(SUBDIRS)) do nmake -nologo -f makefile.msc sub-one THIS=%d
@@ -15,8 +15,6 @@ sub-one:
 	cd ..
 
 PKG_CFLAGS = \
-	-DLIBNR_LIBART -DHAVE_CONFIG_H \
-	-DWIN32 \
 	-FImsvc_recommended_pragmas.h \
 	-I$(PRJ_TOP) -I. \
 	$(GLIB_CFLAGS) $(LIBART_CFLAGS) $(LIBXML2_CFLAGS) $(GTK2_CFLAGS) \
@@ -35,13 +33,14 @@ SODIPODI_LIBS = \
 	display/sp-display.lib \
 	modules/sp-modules.lib \
 
+
 PKG_LINK = \
 	$(SODIPODI_LIBS) \
 	$(GLIB_LIBS) $(GTK2_LIBS) $(LIBART_LIBS) $(LIBXML2_LIBS) $(PNG_LIBS) \
 	$(INTL_LIBS) \
 	$(POPT_LIBS) \
 	$(GNOME_PRINT_LIBS) \
-	gdi32.lib comdlg32.lib
+
 
 sodipodilib_src = \
 	macros.h \
@@ -91,6 +90,8 @@ sodipodilib_src = \
 	sp-spiral.h \
 	sp-line.c \
 	sp-line.h \
+	sp-polyline.c \
+	sp-polyline.h \
 	sp-polygon.c \
 	sp-polygon.h \
 	sp-chars.c \
@@ -207,6 +208,7 @@ OBJECTS = \
 	attributes.obj \
 	sp-pattern.obj \
 	sp-polygon.obj \
+	sp-polyline.obj \
 	sp-line.obj \
 	sp-image.obj \
 	sp-defs.obj \
@@ -223,8 +225,6 @@ OBJECTS = \
 	sp-star.obj \
 	sp-guide.obj \
 	sp-root.obj \
-	object-edit.obj \
-	object-ui.obj \
 	\
 	winmain.obj
 
@@ -234,7 +234,7 @@ all : \
 	$(PACKAGE).exe
 
 #LDFLAGS = /link $(LINKDEBUG) /subsystem:windows /machine:ix86
-#LINKDEBUG = $(LINKDEBUG) /nodefaultlib:msvcrt
+LINKDEBUG = $(LINKDEBUG) /nodefaultlib:msvcrt
 LDFLAGS = /link $(LINKDEBUG) /subsystem:console /machine:ix86
 
 $(PRJ_TOP)\config.h: $(PRJ_TOP)\config.h.win32

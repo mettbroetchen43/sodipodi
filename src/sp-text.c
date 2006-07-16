@@ -163,7 +163,7 @@ sp_string_read_content (SPObject *object)
 
 	string = SP_STRING (object);
 
-	t = sp_repr_content (object->repr);
+	t = sp_repr_get_content (object->repr);
 
 	/* New content stuff */
 	if (string->uchars) free (string->uchars);
@@ -435,7 +435,7 @@ sp_tspan_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 	sp_object_read_attr (object, "rotate");
 	sp_object_read_attr (object, "sodipodi:role");
 
-	for (rch = repr->children; rch != NULL; rch = rch->next) {
+	for (rch = sp_repr_get_children (repr); rch != NULL; rch = sp_repr_get_next (rch)) {
 		if (sp_repr_is_text (rch)) break;
 		if (sp_repr_is_cdata (rch)) break;
 	}
@@ -852,7 +852,7 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 		/* Old sodipodi */
 		for (rch = repr->children; rch != NULL; rch = rch->next) {
 			if (sp_repr_is_text (rch) || sp_repr_is_cdata (rch)) {
-				content = sp_repr_content (rch);
+				content = sp_repr_get_content (rch);
 				sp_text_set_repr_text_multiline (text, content);
 				break;
 			}
@@ -873,7 +873,7 @@ sp_text_build (SPObject *object, SPDocument *doc, SPRepr *repr)
 			string->ly = &text->ly;
 			sp_object_invoke_build (SP_OBJECT (string), doc, rch, SP_OBJECT_IS_CLONED (object));
 			ref = SP_OBJECT (string);
-		} else if ((rch->type == SP_XML_ELEMENT_NODE) && !strcmp (sp_repr_name (rch), "tspan")) {
+		} else if (sp_repr_is_element(rch) && !strcmp (sp_repr_name (rch), "tspan")) {
 			SPObject *child;
 			child = g_object_new (SP_TYPE_TSPAN, 0);
 			if (ref) {
@@ -992,7 +992,7 @@ sp_text_child_added (SPObject *object, SPRepr *rch, SPRepr *ref)
 		string->ly = &text->ly;
 		sp_object_invoke_build (SP_OBJECT (string), SP_OBJECT_DOCUMENT (object), rch, SP_OBJECT_IS_CLONED (object));
 		och = SP_OBJECT (string);
-	} else if ((rch->type == SP_XML_ELEMENT_NODE) && !strcmp (sp_repr_name (rch), "tspan")) {
+	} else if (sp_repr_is_element(rch) && !strcmp (sp_repr_name (rch), "tspan")) {
 		SPObject *child;
 		child = g_object_new (SP_TYPE_TSPAN, 0);
 		if (prev) {
@@ -1966,7 +1966,7 @@ sp_text_append (SPText *text, const guchar *utf8)
 		string = SP_TSPAN_STRING (child);
 	}
 		
-	content = sp_repr_content (SP_OBJECT_REPR (string));
+	content = sp_repr_get_content (SP_OBJECT_REPR (string));
 
 	clen = (content) ? strlen (content) : 0;
 	cchars = (content) ? g_utf8_strlen (content, clen) : 0;

@@ -1,21 +1,24 @@
 TOP = ..\..\..
 PRJ_TOP = ..\..
 PACKAGE = sp-xml
-PKG_VER = 0.32
+PKG_VER = 0.35
 !INCLUDE $(TOP)\glib\build\win32\make.msc
 
 OBJECTS = \
 	repr.obj \
+	repr-action.obj \
 	repr-util.obj \
 	repr-io.obj \
 	repr-css.obj \
 
 PKG_CFLAGS = \
+	-DWIN32 \
 	-FImsvc_recommended_pragmas.h \
 	-I.. \
 	$(GLIB_CFLAGS) $(LIBXML2_CFLAGS)
 
 PKG_LINK = \
+	..\libarikkei\libarikkei-$(PKG_VER).lib \
 	$(GLIB_LIBS) $(LIBXML2_LIBS)
 
 all : \

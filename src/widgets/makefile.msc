@@ -43,6 +43,9 @@ OBJECTS = \
 	sp-xmlview-attr-list.obj \
 	sp-xmlview-content.obj \
 	sp-widget.obj \
+	spw-utilities.obj \
+	cell-renderer-image.obj \
+	tree-store.obj \
 
 UNUSED =  \
 	sp-hwrap-box.obj \

@@ -5,6 +5,7 @@ PKG_VER = 0.32
 !INCLUDE $(TOP)\glib\build\win32\make.msc
 
 PKG_CFLAGS = \
+	-DWIN32 -DLIBNR_LIBART \
 	-FImsvc_recommended_pragmas.h \
 	-I$(PRJ_TOP) -I.. \
 	$(GLIB_CFLAGS) $(LIBART_CFLAGS) $(GTK2_CFLAGS) $(PNG_CFLAGS)
@@ -36,6 +37,7 @@ OBJECTS = \
 	bezier-utils.obj \
 	units.obj \
 	unit-menu.obj \
+	nr-gradient-gpl.obj \
 
 sp-marshal.h : sp-marshal.list
 	$(GLIB)\gobject\glib-genmarshal --prefix=sp_marshal sp-marshal.list --header >sp-marshal.h

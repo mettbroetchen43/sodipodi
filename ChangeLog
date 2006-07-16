@@ -1,3 +1,24 @@
+2006-07-16  Hans Breuer  <hans.breuer.org>
+
+	* src/dialogs/document-properties.c : implement paper selection 
+	without GNOME dependency. Also toggeling for Portrait/Landscape
+	
+	* src/libarikkei/libarikkei.def src/libarikkei/makefile.msc :
+	  src/modules: makefile.msc : new files
+	* dialogs/makefile.msc src/display/makefile.msc
+	  src/helper/makefile.msc src/libnr/makefile.msc
+	  src/libnrtype/libnrtype.def src/libnrtype/makefile.msc
+	  src/makefile.msc src/svg/makefile.msc src/svg/sp-svg.def
+	  src/widgets/makefile.msc src/xml/makefile.msc : updated build
+	  
+	* src/libnr/nr-svp-private.h : removed stray semicolon
+	* src/libnr/nr-svp-uncross.c src/xml/repr-io.c 
+	  src/xml/repr-util.c : static correctness
+	* src/modules/plain-ps.c : variables declared at start of block
+	* src/modules/plain.c : fixed GCCISM, only constants can be used to
+	to size arrays on the stack
+	* src/sp-text.c : less use of xml/repr-private.h
+
 2006-06-01  Clytie Siddall <clytie@riverland.net.au>
 
 	* configure.in	Added vi in ALL_LINGUAS line.

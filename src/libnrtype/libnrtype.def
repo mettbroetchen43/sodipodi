@@ -39,7 +39,6 @@ EXPORTS
 ;	nr_type_gnome_build_def
 ;	nr_type_gnome_families_get
 ;	nr_type_gnome_typefaces_get
-	nr_type_w32_build_def
 	nr_type_w32_families_get
 	nr_type_w32_typefaces_get
 ;	nr_type_xft_build_def
@@ -57,3 +56,9 @@ EXPORTS
 	nr_typeface_name_get
 	nr_typeface_new
 	nr_typeface_w32_get_type
+	nr_pgl_free
+	nr_pgl_new_from_string
+	nr_pgl_set_origin
+	nr_type_directory_get_families
+	nr_type_slant_to_string
+	nr_type_weight_to_string

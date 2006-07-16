@@ -361,10 +361,9 @@ sp_plain_ps_image (SPPrintPlainDriver *driver, unsigned char *px, unsigned int w
 static unsigned int
 sp_print_path_moveto (float x0, float y0, unsigned int flags, void *data)
 {
-	FILE *stream;
+	FILE *stream = (FILE *) data;
 	unsigned char c[256];
 	unsigned int p;
-	stream = (FILE *) data;
 	p = 0;
 	p += arikkei_dtoa_simple (c + p, 32, x0, 6, 0, FALSE);
 	c[p++] = ' ';
@@ -376,8 +375,7 @@ sp_print_path_moveto (float x0, float y0, unsigned int flags, void *data)
 static unsigned int
 sp_print_path_lineto (float x0, float y0, float x1, float y1, unsigned int flags, void *data)
 {
-	FILE *stream;
-	stream = (FILE *) data;
+	FILE *stream = (FILE *) data;
 	unsigned char c[256];
 	unsigned int p;
 	p = 0;
@@ -395,8 +393,7 @@ static unsigned int
 sp_print_path_curveto2 (float x0, float y0, float x1, float y1, float x2, float y2,
 			  unsigned int flags, void *data)
 {
-	FILE *stream;
-	stream = (FILE *) data;
+	FILE *stream = (FILE *) data;
 	unsigned char c[256];
 	unsigned int p;
 	p = 0;
@@ -419,8 +416,7 @@ static unsigned int
 sp_print_path_curveto3 (float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3,
 			unsigned int flags, void *data)
 {
-	FILE *stream;
-	stream = (FILE *) data;
+	FILE *stream = (FILE *) data;
 	unsigned char c[256];
 	unsigned int p;
 	p = 0;

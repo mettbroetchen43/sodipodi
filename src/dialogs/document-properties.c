@@ -44,9 +44,35 @@
  */ 
 
 static GtkWidget *dialog = NULL;
-#if 0
-static GList *papers = NULL;
-#endif
+static const struct _papers {
+	gchar  *name;
+	gdouble width;
+	gdouble height;
+} papers[] = {
+  { "A3", 29.7 * (72.0 / 2.54), 42.0 * (72.0 / 2.54) },
+  { "A4", 21.0 * (72.0 / 2.54), 29.7 * (72.0 / 2.54) },
+  { "A5", 14.85 * (72.0 / 2.54), 21.0 * (72.0 / 2.54) },
+  { "B4", 25.7528 * (72.0 / 2.54), 36.4772 * (72.0 / 2.54) },
+  { "B5", 17.6389 * (72.0 / 2.54), 25.0472 * (72.0 / 2.54) },
+  { "B5-Japan", 18.2386 * (72.0 / 2.54), 25.7528 * (72.0 / 2.54) },
+  { "Letter", 21.59 * (72.0 / 2.54), 27.94 * (72.0 / 2.54) },
+  { "Legal", 21.59 * (72.0 / 2.54), 35.56 * (72.0 / 2.54) },
+  { "Ledger", 27.9 * (72.0 / 2.54), 43.2 * (72.0 / 2.54) },
+  { "Half-Letter", 21.59 * (72.0 / 2.54), 14.0 * (72.0 / 2.54) },
+  { "Executive", 18.45 * (72.0 / 2.54), 26.74 * (72.0 / 2.54) },
+  { "Tabloid", 28.01 * (72.0 / 2.54), 43.2858 * (72.0 / 2.54) },
+  { "Monarch", 9.8778 * (72.0 / 2.54), 19.12 * (72.0 / 2.54) },
+  { "SuperB", 29.74 * (72.0 / 2.54), 43.2858 * (72.0 / 2.54) },
+  { "Envelope-Commercial", 10.5128 * (72.0 / 2.54), 24.2 * (72.0 / 2.54) },
+  { "Envelope-Monarch", 9.8778 * (72.0 / 2.54), 19.12 * (72.0 / 2.54) },
+  { "Envelope-DL", 11.0 * (72.0 / 2.54), 22.0 * (72.0 / 2.54) },
+  { "Envelope-C5", 16.2278 * (72.0 / 2.54) },
+  { "EuroPostcard", 10.5128 * (72.0 / 2.54), 14.8167 * (72.0 / 2.54) },
+  { "A0", 84.1 * (72.0 / 2.54), 118.9 * (72.0 / 2.54) },
+  { "A1", 59.4 * (72.0 / 2.54), 84.1 * (72.0 / 2.54) },
+  { "A2", 42.0 * (72.0 / 2.54), 59.4 * (72.0 / 2.54) },
+  { NULL, 0.0, 0.0 }
+};
 
 static GtkWidget *sp_doc_dialog_new (void);
 static void sp_doc_dialog_activate_desktop (Sodipodi *sodipodi, SPDesktop *desktop, GtkWidget *dialog);
@@ -72,16 +98,16 @@ sp_document_dialog (void)
 	gtk_window_present ((GtkWindow *) dialog);
 }
 
-#if 0
 static void
-sp_doc_dialog_paper_selected (GtkWidget *widget, const GnomePrintPaper *paper)
+sp_doc_dialog_paper_selected (GtkWidget *widget, const struct _papers *paper)
 {
-	GtkWidget *ww, *hw;
+	GtkWidget *ww, *hw, *rb;
 
 	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
 
 	ww = gtk_object_get_data (GTK_OBJECT (dialog), "widthsb");
 	hw = gtk_object_get_data (GTK_OBJECT (dialog), "heightsb");
+	rb = gtk_object_get_data (GTK_OBJECT (dialog), "portraitrb");
 
 	if (paper) {
 		SPUnitSelector *us;
@@ -89,16 +115,18 @@ sp_doc_dialog_paper_selected (GtkWidget *widget, const GnomePrintPaper *paper)
 		const SPUnit *unit;
 		GtkAdjustment *a;
 		gdouble w, h;
+		gboolean portrait = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(rb));
+
 		gtk_widget_set_sensitive (ww, FALSE);
 		gtk_widget_set_sensitive (hw, FALSE);
 		if (!pt) pt = sp_unit_get_by_abbreviation ("pt");
 		us = gtk_object_get_data (GTK_OBJECT (dialog), "units");
 		unit = sp_unit_selector_get_unit (us);
-		w = paper->width;
+		w = portrait ? paper->width : paper->height;
 		a = gtk_object_get_data (GTK_OBJECT (dialog), "width");
 		sp_convert_distance (&w, pt, unit);
 		gtk_adjustment_set_value (a, w);
-		h = paper->height;
+		h = portrait ? paper->height : paper->width;
 		a = gtk_object_get_data (GTK_OBJECT (dialog), "height");
 		sp_convert_distance (&h, pt, unit);
 		gtk_adjustment_set_value (a, h);
@@ -107,21 +135,34 @@ sp_doc_dialog_paper_selected (GtkWidget *widget, const GnomePrintPaper *paper)
 		gtk_widget_set_sensitive (hw, TRUE);
 	}
 }
-#else
+
 static void
-sp_doc_dialog_paper_selected (GtkWidget *widget, gpointer data)
+sp_doc_dialog_portrait_toggled (GtkWidget *widget, const struct _papers *paper)
 {
-	GtkWidget *ww, *hw;
+	GtkWidget *rb;
+	gboolean portrait;
+	GtkAdjustment *aw, *ah;
+	gdouble w, h;
 
-	if (gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
+	if (!dialog || gtk_object_get_data (GTK_OBJECT (dialog), "update")) return;
 
-	ww = gtk_object_get_data (GTK_OBJECT (dialog), "widthsb");
-	hw = gtk_object_get_data (GTK_OBJECT (dialog), "heightsb");
+	aw = gtk_object_get_data (GTK_OBJECT (dialog), "width");
+	ah = gtk_object_get_data (GTK_OBJECT (dialog), "height");
+	rb = gtk_object_get_data (GTK_OBJECT (dialog), "portraitrb");
 
-	gtk_widget_set_sensitive (ww, TRUE);
-	gtk_widget_set_sensitive (hw, TRUE);
+	w = gtk_adjustment_get_value (aw);
+	h = gtk_adjustment_get_value (ah);
+	portrait = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(rb));
+
+	/* maybe we need to swap values */
+	if (!!portrait && h > w) {
+		gtk_adjustment_set_value (aw, w);
+		gtk_adjustment_set_value (ah, h);
+	} else {
+		gtk_adjustment_set_value (aw, h);
+		gtk_adjustment_set_value (ah, w);
+	}
 }
-#endif
 
 static void
 sp_doc_dialog_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
@@ -153,8 +194,9 @@ sp_doc_dialog_whatever_changed (GtkAdjustment *adjustment, GtkWidget *dialog)
 static GtkWidget *
 sp_doc_dialog_new (void)
 {
-	GtkWidget *dialog, *nb, *vb, *hb, *l, *om, *m, *i, *f, *t, *us, *sb;
+	GtkWidget *dialog, *nb, *vb, *hb, *l, *om, *m, *i, *f, *t, *us, *sb, *rb;
 	GtkObject *a;
+	const struct _papers *paper;
 
 	dialog = sp_window_new (_("Document settings"), FALSE, TRUE);
 
@@ -188,16 +230,31 @@ sp_doc_dialog_new (void)
 
 	m = gtk_menu_new ();
 	gtk_widget_show (m);
-#if 0
-	if (!papers) papers = gnome_print_paper_get_list ();
-	for (ll = papers; ll != NULL; ll = ll->next) {
-		const GnomePrintPaper * paper = (GnomePrintPaper *)ll->data;
+	
+	for (paper = papers; paper->name != NULL; ++paper) {
 		i = gtk_menu_item_new_with_label (paper->name);
 		gtk_widget_show (i);
 		g_signal_connect (G_OBJECT (i), "activate", G_CALLBACK (sp_doc_dialog_paper_selected), (gpointer) paper);
 		gtk_menu_append (GTK_MENU (m), i);
 	}
-#endif
+
+	/* Portrait/Landscape */
+	hb = gtk_hbox_new (FALSE, 4);
+	gtk_widget_show (hb);
+	gtk_box_pack_start (GTK_BOX (vb), hb, FALSE, FALSE, 0);
+
+	rb = gtk_radio_button_new_with_label (NULL, _("Landscape"));
+	gtk_widget_show (rb);
+	gtk_box_pack_end (GTK_BOX (hb), rb, FALSE, FALSE, 0);
+
+	rb = gtk_radio_button_new_with_label (
+		gtk_radio_button_get_group (GTK_RADIO_BUTTON (rb)), _("Portrait"));
+	gtk_widget_show (rb);
+	gtk_box_pack_end (GTK_BOX (hb), rb, FALSE, FALSE, 0);
+
+	gtk_object_set_data (GTK_OBJECT (dialog), "portraitrb", rb);
+	g_signal_connect (G_OBJECT (rb), "toggled", G_CALLBACK (sp_doc_dialog_portrait_toggled), NULL);
+
 	i = gtk_menu_item_new_with_label (_("Custom"));
 	gtk_widget_show (i);
 	g_signal_connect (G_OBJECT (i), "activate", G_CALLBACK (sp_doc_dialog_paper_selected), NULL);
@@ -282,9 +339,9 @@ sp_doc_dialog_update (GtkWidget *dialog, SPDocument *doc)
 		gtk_widget_set_sensitive (dialog, FALSE);
 	} else {
 		gdouble docw, doch;
-		GList *l;
+		const struct _papers *paper;
 		gint pos;
-		GtkWidget *ww, *hw, *om;
+		GtkWidget *ww, *hw, *om, *rb;
 		SPUnitSelector *us;
 		static const SPUnit *pt = NULL;
 		const SPUnit *unit;
@@ -298,24 +355,20 @@ sp_doc_dialog_update (GtkWidget *dialog, SPDocument *doc)
 
 		pos = 1;
 
-#if 0
-		for (l = papers; l != NULL; l = l->next) {
+		for (paper = papers; paper->name != NULL; ++paper) {
 			gdouble pw, ph;
-			const GnomePrintPaper *paper = (GnomePrintPaper *)l->data;
 			pw = paper->width;
 			ph = paper->height;
 			if ((fabs (docw - pw) < 1.0) && (fabs (doch - ph) < 1.0)) break;
 			pos += 1;
 		}
-#else
-		l = NULL;
-#endif
 
 		ww = gtk_object_get_data (GTK_OBJECT (dialog), "widthsb");
 		hw = gtk_object_get_data (GTK_OBJECT (dialog), "heightsb");
 		om = gtk_object_get_data (GTK_OBJECT (dialog), "papers");
+		rb = gtk_object_get_data (GTK_OBJECT (dialog), "portraitrb");
 
-		if (l != NULL) {
+		if (paper->name) {
 			gtk_option_menu_set_history (GTK_OPTION_MENU (om), pos);
 			gtk_widget_set_sensitive (ww, FALSE);
 			gtk_widget_set_sensitive (hw, FALSE);
@@ -335,7 +388,8 @@ sp_doc_dialog_update (GtkWidget *dialog, SPDocument *doc)
 		sp_convert_distance (&doch, pt, unit);
 		gtk_adjustment_set_value (a, doch);
 
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (rb), doch > docw);
+
 		gtk_object_set_data (GTK_OBJECT (dialog), "update", GINT_TO_POINTER (FALSE));
 	}
 }
-

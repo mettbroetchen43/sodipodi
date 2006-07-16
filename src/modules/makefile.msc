@@ -1,28 +1,36 @@
 TOP = ..\..\..
 PRJ_TOP = ..\..
-PACKAGE = sp-display
-PKG_VER = 0.32
+PACKAGE = sp-modules
+PKG_VER = 0.35
 !INCLUDE $(TOP)\glib\build\win32\make.msc
 
 PKG_CFLAGS = \
-	-DLIBNR_LIBART -DHAVE_CONFIG_H \
+	-DWIN32 -DLIBNR_LIBART -I.. \
 	-FImsvc_recommended_pragmas.h \
-	-I$(PRJ_TOP) -I.. \
-	-I..\
-	$(GLIB_CFLAGS) $(LIBART_CFLAGS) $(GTK2_CFLAGS)
+	$(GTK2_CFLAGS) $(LIBART_CFLAGS)
 
+PKG_LINK = \
+	$(GLIB_LIBS) $(GTK2_LIBS) \
+	comdlg32.lib gdi32.lib
+	
 OBJECTS = \
-	nr-arena.obj \
-	nr-arena-item.obj \
-	nr-arena-group.obj \
-	nr-arena-image.obj \
-	nr-arena-shape.obj \
-	nr-arena-glyphs.obj \
-	canvas-arena.obj \
+#	gnome.obj \
+#	kde.c.obj \
+	plain-pdf.obj \
+	plain-ps.obj \
+	plain.obj \
+	ps.obj \
+	sp-module-doc.obj \
+#	sp-module-exec-ext.obj \
+#	sp-module-exec.obj \
+	sp-module-sys.obj \
+	sp-module.obj \
+	win32.obj \
 
 all : \
 	$(PRJ_TOP)\config.h \
 	$(PACKAGE).lib
+#	$(PACKAGE)-$(PKG_VER).dll
 
 
 $(PRJ_TOP)\config.h: $(PRJ_TOP)\config.h.win32

@@ -1,20 +1,22 @@
 TOP = ..\..\..
 PRJ_TOP = ..\..
 PACKAGE = libnr
-PKG_VER = 0.32
+PKG_VER = 0.35
 !INCLUDE $(TOP)\glib\build\win32\make.msc
 
 PKG_CFLAGS = \
+	-DLIBNR_LIBART \
 	-I.. \
 	-FImsvc_recommended_pragmas.h \
 	$(GLIB_CFLAGS) $(LIBART_CFLAGS)
-	
+
 OBJECTS = \
 	nr-values.obj \
 	nr-matrix.obj \
 	nr-rect.obj \
 	nr-compose.obj \
 	nr-compose-transform.obj \
+	nr-pathops.obj \
 	nr-pixblock.obj \
 	nr-pixblock-pixel.obj \
 	nr-pixblock-line.obj \
@@ -22,10 +24,12 @@ OBJECTS = \
 	nr-blit.obj \
 	nr-gradient.obj \
 	nr-path.obj \
+	nr-stroke.obj \
 	nr-svp.obj \
 	nr-svp-uncross.obj \
 	nr-svp-render.obj \
 	nr-object.obj \
+	nr-uta.obj \
 
 mmx_sources = \
 	have_mmx.S \
@@ -52,7 +56,8 @@ $(PACKAGE).lib : $(OBJECTS)
 	lib /out:$(PACKAGE).lib $(OBJECTS)
 
 $(PACKAGE)-$(PKG_VER).dll : $(OBJECTS) $(PACKAGE).def
-	$(CC) $(CFLAGS) -LD -Fe$(PACKAGE)-$(PKG_VER).dll $(OBJECTS) $(PKG_LINK) user32.lib advapi32.lib wsock32.lib $(LDFLAGS) /def:$(PACKAGE).def
+	$(CC) $(CFLAGS) -LD -Fe$(PACKAGE)-$(PKG_VER).dll $(OBJECTS) \
+	$(PKG_LINK) user32.lib advapi32.lib wsock32.lib $(LDFLAGS) /def:$(PACKAGE).def
 
 $(PACKAGE).exe : $(OBJECTS) $(PACKAGE).def $(PACKAGE).res
 	$(CC) $(CFLAGS) -Fe$(PACKAGE).exe $(PACKAGE).res $(OBJECTS) $(PKG_LINK) \

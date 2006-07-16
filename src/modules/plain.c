@@ -197,14 +197,15 @@ static const struct _SPPlainDriver drivers[] = {
 	},
 */
 };
-static unsigned int n_drivers = sizeof(drivers)/sizeof(struct _SPPlainDriver);
+
+#define N_DRIVERS (sizeof(drivers)/sizeof(struct _SPPlainDriver))
 
 static unsigned int
 sp_module_print_plain_setup (SPModulePrint *mod)
 {
 	static const guchar *pdr[] = {"72", "75", "100", "144", "150", "200", "300", "360", "600", "1200", "2400", NULL};
 	SPModulePrintPlain *pmod;
-	GtkWidget *dlg, *vbox, *f, *vb, *rb, *rbs[n_drivers], *hb, *combo, *l, *e;
+	GtkWidget *dlg, *vbox, *f, *vb, *rb, *rbs[N_DRIVERS], *hb, *combo, *l, *e;
 	GtkTooltips *tt;
 	GList *sl;
 	int i;
@@ -242,7 +243,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 		const unsigned char *driver_name;
 		driver_name = sp_repr_get_attr (repr, "driver");
 		if (! driver_name) driver_name = "ps";
-		for (i = 0; i < n_drivers; i++) {
+		for (i = 0; i < N_DRIVERS; i++) {
 			if (! strcmp (drivers[i].name, driver_name)) {
 				pmod->driver_type = drivers[i].type;
 				printf ("plain_setup: set driver_type = %d, driver_name = %s\n", pmod->driver_type, driver_name);
@@ -251,7 +252,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 		}
 	}
 	rb = NULL;
-	for (i = 0; i < n_drivers; i++) {
+	for (i = 0; i < N_DRIVERS; i++) {
 		GSList *group;
 		group = rb ? gtk_radio_button_get_group ((GtkRadioButton *) rb) : NULL;
 		rbs[i] = gtk_radio_button_new_with_label (group, drivers[i].label);
@@ -321,7 +322,7 @@ sp_module_print_plain_setup (SPModulePrint *mod)
 		const unsigned char *fn;
 		const char *sstr;
 
-		for (i = 0; i < n_drivers; i++) {
+		for (i = 0; i < N_DRIVERS; i++) {
 			if (gtk_toggle_button_get_active ((GtkToggleButton *) rbs[i])) {
 				pmod->driver_type = drivers[i].type;
 				printf ("plain_setup: set driver_type = %d, driver_name = %s\n", pmod->driver_type, drivers[i].name);

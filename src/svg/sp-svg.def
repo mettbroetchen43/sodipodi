@@ -17,8 +17,6 @@ EXPORTS
 	sp_svg_number_read_f
 	sp_svg_number_write_d
 	sp_svg_number_write_de
-	sp_svg_number_write_f
-	sp_svg_number_write_fe
 	sp_svg_number_write_i
 	sp_svg_read_color
 	sp_svg_read_path
@@ -28,3 +26,8 @@ EXPORTS
 	sp_svg_write_color
 	sp_svg_write_path
 	sp_svg_write_percentage
+	sp_svg_atof
+	sp_svg_viewbox_read
+	sp_svg_length_set
+	sp_svg_points_read
+

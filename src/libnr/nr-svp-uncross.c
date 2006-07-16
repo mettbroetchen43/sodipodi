@@ -757,7 +757,7 @@ nr_svl_slice_ensure_vertex_at (NRSVLSlice *s, NRCoord x, NRCoord y)
 #define NR_SLICE_ALLOC_SIZE 32
 static NRSVLSlice * ffslice = NULL;
 
-NRSVLSlice *
+static NRSVLSlice *
 nr_svl_slice_new (NRSVL * svl, NRCoord y)
 {
 	NRSVLSlice * s;
@@ -804,7 +804,7 @@ nr_svl_slice_new (NRSVL * svl, NRCoord y)
 	return s;
 }
 
-void
+static void
 nr_svl_slice_free_one (NRSVLSlice * slice)
 {
 	slice->next = ffslice;
@@ -838,7 +838,7 @@ nr_svl_slice_free_list (NRSVLSlice * slice)
 }
 #endif
 
-NRSVLSlice *
+static NRSVLSlice *
 nr_svl_slice_insert_sorted (NRSVLSlice * start, NRSVLSlice * slice)
 {
 	NRSVLSlice * s, * l;
@@ -875,7 +875,7 @@ nr_svl_slice_insert_sorted (NRSVLSlice * start, NRSVLSlice * slice)
 	return start;
 }
 
-NRSVLSlice *
+static NRSVLSlice *
 nr_svl_slice_stretch_list (NRSVLSlice * slices, NRCoord y)
 {
 	NRSVLSlice * p, * s;
