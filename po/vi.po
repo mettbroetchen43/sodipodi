@@ -6,23 +6,23 @@ msgid ""
 ""
 msgstr "Project-Id-Version: sodipodi Gnome HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-30 04:27+0200\n"
-"PO-Revision-Date: 2006-06-01 22:44+0930\n"
+"POT-Creation-Date: 2006-08-27 05:14+0200\n"
+"PO-Revision-Date: 2006-08-27 13:49+0930\n"
 "Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
 "Language-Team: Vietnamese <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
-"X-Generator: LocFactoryEditor 1.6b36\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.6fc1\n"
 
 # Name: don't translate / Tên: đừng dịch
 #: ../sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
 msgstr "Bộ vẽ véc-tơ SVG"
 
-#.Create window
 # Name: don't translate / Tên: đừng dịch
+#.Create window
 #: ../sodipodi.desktop.in.h:2
 #: ../src/toolbox.c:105
 #: ../src/toolbox.c:144
@@ -63,7 +63,7 @@ msgstr "Tài liệu %s có thay đổi chưa lưu : lưu chúng ?"
 #: ../src/desktop.c:1776
 #: ../src/dialogs/align.c:291
 #: ../src/dialogs/desktop-properties.c:284
-#: ../src/dialogs/document-properties.c:168
+#: ../src/dialogs/document-properties.c:210
 #: ../src/dialogs/export.c:161
 #: ../src/verbs.c:471
 #: ../src/widgets/sp-dock-notebook.c:135
@@ -142,7 +142,8 @@ msgstr "Phân phối các bên trái đối tượng tại khoảng cách đều
 
 #: ../src/dialogs/align.c:227
 msgid "Distribute centres of objects at even distances horizontally"
-msgstr "Phân phối các trung tâm của đối tượng tại khoảng cách đều đều theo chiều ngang"
+msgstr "Phân phối các trung tâm của đối tượng tại khoảng cách đều đều theo chiều "
+"ngang"
 
 #: ../src/dialogs/align.c:230
 msgid "Distribute right sides of objects at even distances"
@@ -330,7 +331,7 @@ msgstr "Vẽ"
 
 #: ../src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
-msgstr "Quá lấy mẫu sơ đồ bit:"
+msgstr "Quá lấy mẫu mảng ảnh:"
 
 #: ../src/dialogs/display-settings.c:125
 #: ../src/verbs.c:407
@@ -375,27 +376,35 @@ msgstr "Đặt mẹo hộp thoại cho hộp thoại"
 
 #: ../src/dialogs/display-settings.c:179
 msgid "Skip taskbar entry for dialogs"
-msgstr "Bỏ qủa mục nhập thanh tác vụ cho hộp thoại"
+msgstr "Bỏ qua mục nhập thanh tác vụ cho hộp thoại"
 
-#: ../src/dialogs/document-properties.c:159
+#: ../src/dialogs/document-properties.c:201
 msgid "Document settings"
 msgstr "Thiết lập tài liệu"
 
-#: ../src/dialogs/document-properties.c:180
+#: ../src/dialogs/document-properties.c:222
 msgid "Paper size:"
 msgstr "Cỡ giấy:"
 
-#: ../src/dialogs/document-properties.c:201
+#: ../src/dialogs/document-properties.c:246
+msgid "Landscape"
+msgstr "Nằm ngang"
+
+#: ../src/dialogs/document-properties.c:251
+msgid "Portrait"
+msgstr "Thẳng đứng"
+
+#: ../src/dialogs/document-properties.c:258
 msgid "Custom"
 msgstr "Tự chọn"
 
 #.Custom paper frame
-#: ../src/dialogs/document-properties.c:208
+#: ../src/dialogs/document-properties.c:265
 msgid "Custom paper"
 msgstr "Giấy tự chọn"
 
 #.Unit selector
-#: ../src/dialogs/document-properties.c:219
+#: ../src/dialogs/document-properties.c:276
 #: ../src/dialogs/export.c:179
 #: ../src/dialogs/object-properties.c:323
 #: ../src/dialogs/transformation.c:347
@@ -405,7 +414,7 @@ msgstr "Đơn vị:"
 
 #.Stroke width
 #.Width
-#: ../src/dialogs/document-properties.c:228
+#: ../src/dialogs/document-properties.c:285
 #: ../src/dialogs/export.c:189
 #: ../src/dialogs/export.c:213
 #: ../src/dialogs/object-attributes.c:71
@@ -417,7 +426,7 @@ msgstr "Đơn vị:"
 msgid "Width:"
 msgstr "Rộng:"
 
-#: ../src/dialogs/document-properties.c:243
+#: ../src/dialogs/document-properties.c:300
 #: ../src/dialogs/export.c:198
 #: ../src/dialogs/export.c:221
 #: ../src/dialogs/object-attributes.c:72
@@ -433,7 +442,7 @@ msgstr "Tài liệu"
 
 #: ../src/dialogs/export.c:141
 msgid "Export bitmap"
-msgstr "Xuất sơ đồ bit"
+msgstr "Xuất mảng ảnh"
 
 #.Export area frame
 #: ../src/dialogs/export.c:150
@@ -459,7 +468,7 @@ msgstr "y1:"
 #.Bitmap size frame
 #: ../src/dialogs/export.c:204
 msgid "Bitmap size"
-msgstr "Cỡ sơ đồ bit"
+msgstr "Cỡ mảng ảnh"
 
 #: ../src/dialogs/export.c:213
 #: ../src/dialogs/export.c:221
@@ -477,7 +486,7 @@ msgstr "Màu nền"
 
 #: ../src/dialogs/export.c:235
 msgid "Bitmap background:"
-msgstr "Nền sơ đồ bit:"
+msgstr "Nền mảng ảnh:"
 
 #: ../src/dialogs/export.c:240
 msgid "Export png file"
@@ -863,7 +872,7 @@ msgstr "Công cụ không có thuộc tính"
 #: ../src/dialogs/tool-attributes.c:135
 #: ../src/dialogs/tool-options.c:93
 msgid "No active tool"
-msgstr "Không có công cvụ hoạt động"
+msgstr "Không có công cụ hoạt động"
 
 #: ../src/dialogs/tool-options.c:47
 #: ../src/verbs.c:478
@@ -941,7 +950,7 @@ msgstr "Xoá bỏ thuộc tính"
 
 #: ../src/dialogs/xml-tree.c:333
 msgid "Attribute name"
-msgstr "Tn thuộc tính"
+msgstr "Tên thuộc tính"
 
 #: ../src/dialogs/xml-tree.c:340
 msgid "Set attribute"
@@ -1295,7 +1304,8 @@ msgstr "TÊN TẬP TIN"
 
 #: ../src/main.c:129
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
-msgstr "In các tài liệu vào tập tin xuất đã xác định (dùng « | chương trình » cho ống dẫn)"
+msgstr "In các tài liệu vào tập tin xuất đã xác định (dùng « | chương trình » cho "
+"ống dẫn)"
 
 #: ../src/main.c:132
 #: ../src/main.c:615
@@ -1305,7 +1315,7 @@ msgstr "Xuất tài liệu vào tập tin PNG"
 #: ../src/main.c:135
 #: ../src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr "Độ phân giải được dùng để chuyển đổi SVG sang sơ đồ bit (mặc định 72.0)"
+msgstr "Độ phân giải được dùng để chuyển đổi SVG sang mảng ảnh (mặc định 72.0)"
 
 #: ../src/main.c:136
 msgid "DPI"
@@ -1316,7 +1326,8 @@ msgstr "DPI"
 msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
-msgstr "Vùng đã xuất theo mili-mét (mặc định là toàn bộ tài liệu, 0,0 là góc dưới bên trái)"
+msgstr "Vùng đã xuất theo mili-mét (mặc định là toàn bộ tài liệu, 0,0 là góc dưới "
+"bên trái)"
 
 #: ../src/main.c:139
 msgid "x0:y0:x1:y1"
@@ -1325,7 +1336,8 @@ msgstr "x0:y0:x1:y1"
 #: ../src/main.c:141
 #: ../src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr "Độ rộng của sơ đồ bit đã tạo ra theo điểm ảnh (ghi đè lên điểm trên mỗi insơ bình phương)"
+msgstr "Độ rộng của mảng ảnh đã tạo ra theo điểm ảnh (ghi đè lên điểm trên mỗi insơ "
+"bình phương)"
 
 #: ../src/main.c:141
 msgid "WIDTH"
@@ -1334,7 +1346,8 @@ msgstr "RỘNG"
 #: ../src/main.c:143
 #: ../src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr "Độ cao của sơ đồ bit đã tạo ra theo điểm ảnh (ghi đè lên điểm trên mỗi insơ bình phương)"
+msgstr "Độ cao của mảng ảnh đã tạo ra theo điểm ảnh (ghi đè lên điểm trên mỗi insơ "
+"bình phương)"
 
 #: ../src/main.c:143
 msgid "HEIGHT"
@@ -1343,7 +1356,7 @@ msgstr "CAO"
 #: ../src/main.c:145
 #: ../src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr "Màu nền của sơ đồ bit đã xuất (bất kỳ chuỗi màu do SVG hỗ trợ)"
+msgstr "Màu nền của mảng ảnh đã xuất (bất kỳ chuỗi màu do SVG hỗ trợ)"
 
 #: ../src/main.c:145
 msgid "COLOR"
@@ -1356,11 +1369,12 @@ msgstr "Xuất tài liệu dạng tập tin SVG thô (không có miền tên « 
 
 #: ../src/main.c:149
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
-msgstr "Hiển thị các tập tin đưa ra từng cái một, bất kỳ sự kiện con chuốt chuyển đổi sang tập tin kế tiếp"
+msgstr "Hiển thị các tập tin đưa ra từng cái một, bất kỳ sự kiện con chuốt chuyển "
+"đổi sang tập tin kế tiếp"
 
 #: ../src/main.c:151
 msgid "Prefer bitmap (xpm) icons to SVG ones"
-msgstr "Thích biểu tượng sơ đồ bit (xpm) hơn điều SVG"
+msgstr "Thích biểu tượng mảng ảnh (xpm) hơn điều SVG"
 
 #: ../src/main.c:622
 msgid "Print sodipodi version information"
@@ -1382,7 +1396,8 @@ msgstr "Trình Sodipodi đã gặp lỗi nội bộ nên đóng ngay bây giờ.
 #: ../src/main.c:798
 msgid ""
 "Automatic backups of unsaved documents were done to following locations:\n"
-msgstr "Việc sao lưu tự động các tài liệu chưa lưu đã được thực hiện vào những địa điểm theo đây:\n"
+msgstr "Việc sao lưu tự động các tài liệu chưa lưu đã được thực hiện vào những địa "
+"điểm theo đây:\n"
 
 #: ../src/main.c:799
 msgid "Automatic backup of following documents failed:\n"
@@ -1439,7 +1454,7 @@ msgid "Save document as"
 msgstr "Lưu tài liệu dạng"
 
 #: ../src/modules/plain-pdf.c:1105
-#: ../src/modules/plain-ps.c:745
+#: ../src/modules/plain-ps.c:741
 #: ../src/modules/ps.c:961
 msgid "write error occured"
 msgstr "gặp lỗi ghi"
@@ -1455,12 +1470,14 @@ msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
-msgstr "Dùng các toán tử véc-tơ PostScript: ảnh kết quả sẽ (thường) là nhỏ hơn và có thể được co giãn tùy ý, nhưng độ trong suốt anfa, các dấu hiệu và mẫu sẽ bị mất."
+msgstr "Dùng các toán tử véc-tơ PostScript: ảnh kết quả sẽ (thường) là nhỏ hơn và có "
+"thể được co giãn tùy ý, nhưng độ trong suốt anfa, các dấu hiệu và mẫu sẽ bị "
+"mất."
 
 #: ../src/modules/plain.c:184
 #: ../src/modules/ps.c:271
 msgid "Print as bitmap"
-msgstr "In dạng sơ đồ bit"
+msgstr "In dạng mảng ảnh"
 
 #: ../src/modules/plain.c:185
 #: ../src/modules/ps.c:273
@@ -1468,7 +1485,9 @@ msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
-msgstr "In mọi thứ dạng sơ đồ bit: ảnh kết quả sẽ (thường) là lớn hơn và độ chất lượng phụ thụộc vào hệ số thu phóng, nhưng mọi đồ họa sẽ được vẽ trùng với cách hiển thị."
+msgstr "In mọi thứ dạng mảng ảnh: ảnh kết quả sẽ (thường) là lớn hơn và độ chất "
+"lượng phụ thuộc vào hệ số thu phóng, nhưng mọi đồ họa sẽ được vẽ trùng với "
+"cách hiển thị."
 
 #: ../src/modules/plain.c:190
 msgid "Print using PDF driver"
@@ -1479,30 +1498,30 @@ msgid "Use Portable Document Format for printing"
 msgstr "Dùng Dạng thức Tài liệu Mang được (PDF) để in."
 
 #.Print destination frame
-#: ../src/modules/plain.c:224
-#: ../src/modules/plain.c:293
+#: ../src/modules/plain.c:225
+#: ../src/modules/plain.c:294
 #: ../src/modules/ps.c:245
 #: ../src/modules/ps.c:306
 msgid "Print destination"
 msgstr "Đích in"
 
 #.Print properties frame
-#: ../src/modules/plain.c:235
+#: ../src/modules/plain.c:236
 #: ../src/modules/ps.c:256
 msgid "Print properties"
 msgstr "Tài sản in"
 
-#: ../src/modules/plain.c:274
+#: ../src/modules/plain.c:275
 #: ../src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
-msgstr "Độ phân giải đã muốn (chấm trên mỗi insơ) của sơ đồ bit"
+msgstr "Độ phân giải đã muốn (chấm trên mỗi insơ) của mảng ảnh"
 
-#: ../src/modules/plain.c:289
+#: ../src/modules/plain.c:290
 #: ../src/modules/ps.c:302
 msgid "Resolution:"
 msgstr "Độ phân giải:"
 
-#: ../src/modules/plain.c:299
+#: ../src/modules/plain.c:300
 #: ../src/modules/ps.c:312
 msgid ""
 "Enter destination lpr queue.\n"
@@ -1779,7 +1798,6 @@ msgstr "%s không phải là một tập tin mở rộng\n"
 "Sodipodi hợp lệ.\n"
 "Mặc dù trình Sodipodi sẽ chạy, bạn\n"
 "không thể dùng phần mở rộng (bổ sung).\n"
-""
 
 #: ../src/sodipodi.c:829
 #, c-format
@@ -2058,11 +2076,11 @@ msgstr "Nhập"
 
 #: ../src/verbs.c:416
 msgid "Import bitmap or SVG image into document"
-msgstr "Nhập ảnh sư đồ bit hay SVG vào tài liệu."
+msgstr "Nhập mảng ảnh hay ảnh SVG vào tài liệu."
 
 #: ../src/verbs.c:417
 msgid "Export document as PNG bitmap"
-msgstr "Xuất tài liệu dạng sơ đồ bit PNG"
+msgstr "Xuất tài liệu dạng mảng ảnh PNG"
 
 #: ../src/verbs.c:418
 msgid "Exit"
@@ -2071,15 +2089,15 @@ msgstr "Thoát"
 #.Edit
 #: ../src/verbs.c:420
 msgid "Undo"
-msgstr "Hồi lại"
+msgstr "Hủy bước"
 
 #: ../src/verbs.c:420
 msgid "Revert last action"
-msgstr "Hoàn lại hành động cuối cùng."
+msgstr "Hoàn lại hành động cuối cùng"
 
 #: ../src/verbs.c:421
 msgid "Redo"
-msgstr "Làm lại"
+msgstr "Bước lại"
 
 #: ../src/verbs.c:421
 msgid "Do again undone action"
@@ -2310,7 +2328,7 @@ msgstr "Chữ nhật"
 
 #: ../src/verbs.c:455
 msgid "Create rectangles and squares with optional rounded corners"
-msgstr "Tạo hình hnữ nhật và hình vuông với góc tròn tùy chọn."
+msgstr "Tạo hình chữ nhật và hình vuông với góc tròn tùy chọn."
 
 #: ../src/verbs.c:456
 msgid "Ellipse"
@@ -2656,7 +2674,8 @@ msgstr "Cho đổi cỡ"
 
 #: ../src/widgets/sp-dock-item.c:260
 msgid "If set, the dock item can be resized when docked in a paned"
-msgstr "Nếu lập thì mục neo có thể được lập lại kích thước khi nằm trên bảng điều khiển."
+msgstr "Nếu lập thì mục neo có thể được lập lại kích thước khi nằm trên bảng điều "
+"khiển."
 
 #: ../src/widgets/sp-dock-item.c:267
 msgid "Item behavior"
@@ -2707,14 +2726,16 @@ msgstr "Độ cao ưa thích của mục neo"
 msgid ""
 "You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
 "some other compound dock object."
-msgstr "Không thể thêm đối tượng neo (%p của kiểu %s) nằm trong một %s. Hãy dùng SPDock hay đối tượng neo phức hợp khác."
+msgstr "Không thể thêm đối tượng neo (%p của kiểu %s) nằm trong một %s. Hãy dùng "
+"SPDock hay đối tượng neo phức hợp khác."
 
 #: ../src/widgets/sp-dock-item.c:554
 #, c-format
 msgid ""
 "Attempting to add a widget with type %s to a %s, but it can only contain one "
 "widget at a time; it already contains a widget of type %s"
-msgstr "Đang cố gắng thêm một ô điều khiển có kiểu %s vào %s, nhưng chỉ có thể chứa một ô điều khiển vào mỗi lúc; nó đã chứa một ô điều kiển có kiểu %s."
+msgstr "Đang cố gắng thêm một ô điều khiển có kiểu %s vào %s, nhưng chỉ có thể chứa "
+"một ô điều khiển vào mỗi lúc; nó đã chứa một ô điều khiển có kiểu %s."
 
 #: ../src/widgets/sp-dock-item.c:1156
 #, c-format
@@ -2808,14 +2829,16 @@ msgstr "   1\t\t\ttất cả các mục neo tổ hợp với chủ chính đư�
 msgid ""
 "master %p: unable to add object %p[%s] to the hash.  There already is an "
 "item with that name (%p)."
-msgstr "Chủ chính %p: không thể thêm đối tượng %p[%s] vào băm. Đã có một mục với tên đó (%p)."
+msgstr "Chủ chính %p: không thể thêm đối tượng %p[%s] vào băm. Đã có một mục với tên "
+"đó (%p)."
 
 #: ../src/widgets/sp-dock-master.c:906
 #, c-format
 msgid ""
 "The new dock controller %p is automatic.  Only manual dock objects should be "
 "named controller."
-msgstr "Bộ điều khiển neo mới %p là tự động. Chỉ các đối tượng neo thủ công nên có tên là bộ điều khiển."
+msgstr "Bộ điều khiển neo mới %p là tự động. Chỉ các đối tượng neo thủ công nên có "
+"tên là bộ điều khiển."
 
 #: ../src/widgets/sp-dock-notebook.c:136
 msgid "The index of the current page"
@@ -2846,14 +2869,16 @@ msgstr "Chủ chính neo đối tượng neo này được tổ hợp với nó.
 msgid ""
 "Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
 "hasn't implemented this method"
-msgstr "Cuộc gọi tới « gdl_dock_object_dock » trong đối tượng neo %p (kiểu đối tượng là %s) mà chưa thực thi phương pháp này."
+msgstr "Cuộc gọi tới « gdl_dock_object_dock » trong đối tượng neo %p (kiểu đối tượng "
+"là %s) mà chưa thực thi phương pháp này."
 
 #: ../src/widgets/sp-dock-object.c:537
 #, c-format
 msgid ""
 "Dock operation requested in a non-bound object %p. The application might "
 "crash"
-msgstr "Thao tác neo được yêu cầu trong một đối tượng không tổ hợp %p. Ứng dụng có thể đổ vỡ."
+msgstr "Thao tác neo được yêu cầu trong một đối tượng không tổ hợp %p. Ứng dụng có "
+"thể đổ vỡ."
 
 #: ../src/widgets/sp-dock-object.c:544
 #, c-format
@@ -2882,7 +2907,8 @@ msgstr "Dính"
 msgid ""
 "Whether the placeholder will stick to its host or move up the hierarchy when "
 "the host is redocked"
-msgstr "Bộ giữ nơi sẽ bám dính tới chủ của nó hay chuyển tiếp thứ bậc khi chủ cái cụ neo lại."
+msgstr "Bộ giữ nơi sẽ bám dính tới chủ của nó hay chuyển tiếp thứ bậc khi chủ cái cụ "
+"neo lại."
 
 #: ../src/widgets/sp-dock-placeholder.c:133
 msgid "Host"
@@ -2900,7 +2926,8 @@ msgstr "Sự định vị kế"
 msgid ""
 "The position an item will be docked to our host if a request is made to dock "
 "to us"
-msgstr "Vị trí nơi mục sẽ được cụ neo tới chủ cái chúng tôi nếu đã yêu cầu cụ neo vào chúng ta."
+msgstr "Vị trí nơi mục sẽ được cụ neo tới chủ cái chúng tôi nếu đã yêu cầu cụ neo "
+"vào chúng ta."
 
 #: ../src/widgets/sp-dock-placeholder.c:303
 msgid "Attempt to dock a dock object to an unbound placeholder"
@@ -2909,7 +2936,8 @@ msgstr "Cố cụ neo một đối tượng neo vào vào một bộ giữ nơi 
 #: ../src/widgets/sp-dock-placeholder.c:417
 #, c-format
 msgid "Got a detach signal from an object (%p) who is not our host %p"
-msgstr "Đã nhận tín hiệu tách ra từ một đối tượng (%p) không phải là chủ cái của chúng ta %p."
+msgstr "Đã nhận tín hiệu tách ra từ một đối tượng (%p) không phải là chủ cái của "
+"chúng ta %p."
 
 #: ../src/widgets/sp-dock-placeholder.c:438
 #, c-format
@@ -2960,7 +2988,7 @@ msgstr "Nổi X"
 
 #: ../src/widgets/sp-dock.c:208
 msgid "X coordinate for a floating dock"
-msgstr "Tọa độ X cho neo nổi."
+msgstr "Toạ độ X cho neo nổi."
 
 #: ../src/widgets/sp-dock.c:215
 msgid "Float Y"
@@ -2968,7 +2996,7 @@ msgstr "Nổi Y"
 
 #: ../src/widgets/sp-dock.c:216
 msgid "Y coordinate for a floating dock"
-msgstr "Tọa độ Y cho neo nổi."
+msgstr "Toạ độ Y cho neo nổi."
 
 #: ../src/widgets/sp-dock.c:509
 #, c-format
