@@ -1,26 +1,29 @@
+# translation of sodipodi.HEAD.ne.po to Nepali
 # translation of sodipodi.HEAD.po to Nepali
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 # Pawan Chitrakar <pawan@mpp.org.np>, 2005.
 # Jaydeep Bhusal <zaydeep@hotmail.com>, 2005.
+# Shiva  Pokharel <pokharelshiva@hotmail.com>, 2005.
+# Mahesh subedi <submanesh@hotmail.com>, 2006.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi.HEAD\n"
+"Project-Id-Version: sodipodi.HEAD.ne\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2005-09-09 10:02+0545\n"
-"PO-Revision-Date: 2005-07-03 12:33+0545\n"
-"Last-Translator: Jaydeep Bhusal <zaydeep@hotmail.com>\n"
+"POT-Creation-Date: 2006-05-15 12:35+0200\n"
+"PO-Revision-Date: 2006-06-16 17:11+0545\n"
+"Last-Translator: Mahesh subedi <submanesh@hotmail.com>\n"
 "Language-Team: Nepali <info@mpp.org.np>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.9.1\n"
-"Plural-Forms: Nplurals=2;plural=(n!=0)\n"
+"X-Generator: KBabel 1.10.2\n"
+"Plural-Forms: nplurals=2;plural=(n!=1)\n"
 
 #: ../sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
-msgstr "एसभिजि भेक्टर इलुस्ट्रेटर"
+msgstr "SVG भेक्टर चित्रलेखक"
 
 #. Create window
 #: ../sodipodi.desktop.in.h:2 ../src/toolbox.c:105 ../src/toolbox.c:144
@@ -31,19 +34,19 @@ msgstr "सोडिपोडि"
 #: ../src/arc-context.c:254
 #, c-format
 msgid "Drawing arc %s x %s"
-msgstr "रेखाचित्र चाप %s x %s"
+msgstr "चाप %s x %s कोर्दै"
 
 #: ../src/bonobo/svg-doc-factory.c:35
 msgid "Could not create sodipodi-svg-doc factory"
-msgstr "सोडिपोडि-एसभिजि-कागजात कारखाना सृजना गर्न सकेन"
+msgstr "सोडिपोडि-एसभिजि-कागजात कारखाना सिर्जना गर्न सकेन"
 
 #: ../src/desktop.c:990
 msgid "Zoom drawing if window size changes"
-msgstr "जुम रेखाचित्र यदि विन्डो आकार परिवर्तन हुन्छ भने"
+msgstr "जुम रेखाचित्र यदि सञ्झ्याल साइज परिवर्तन हुन्छ भने"
 
 #: ../src/desktop.c:997
 msgid "Drawing target is constrained to active group"
-msgstr "सक्रिय समुहलाइ रेखाचित्र लक्ष्य रोकिन्छ"
+msgstr "सक्रिय समूहलाई रेखाचित्र लक्ष्य रोकिन्छ"
 
 #: ../src/desktop.c:1089
 #, c-format
@@ -53,7 +56,7 @@ msgstr "सोडिपोडि: %s: %s: %d"
 #: ../src/desktop.c:1196
 #, c-format
 msgid "Document %s has unsaved changes, save them?"
-msgstr "कागजात %s संग बचत नगरिएका परिवर्तनहरु छन, तिनिहरुलाइ बचत गर्ने?"
+msgstr "कागजात %sसँग बचत नगरिएका परिवर्तनहरू छन्, तिनिहरूलाई बचत गर्नुहुन्छ ?"
 
 #. Page page
 #. Page settings
@@ -68,118 +71,118 @@ msgstr "पृष्ठ"
 #: ../src/desktop.c:1780 ../src/dialogs/align.c:292
 #: ../src/dialogs/export.c:166 ../src/verbs.c:472
 msgid "Drawing"
-msgstr "रेखाचित्र"
+msgstr "कोर्नु"
 
 #. Selection submenu
 #: ../src/desktop.c:1784 ../src/dialogs/align.c:293
 #: ../src/dialogs/export.c:171 ../src/interface.c:597 ../src/toolbox.c:448
 #: ../src/verbs.c:473
 msgid "Selection"
-msgstr "छनौट"
+msgstr "चयन"
 
 #: ../src/dialogs/align.c:156 ../src/toolbox.c:405
 msgid "Align objects"
-msgstr "वस्तुहरु पंक्तिबद्ध गर्नुहोस"
+msgstr "वस्तुहरू पङ्क्तिबद्ध गर्नुहोस्"
 
 #: ../src/dialogs/align.c:175
 msgid "Right side of aligned objects to left side of anchor"
-msgstr "पंक्तिबद्ध गरिएको वस्तुहरु को दाँया छेउ बाट अंकुसे को बाँया छेउ"
+msgstr "पङ्क्तिबद्ध गरिएको वस्तुहरूको दायाँ छेउबाट एङ्करको बायाँ छेउ"
 
 #: ../src/dialogs/align.c:178
 msgid "Left side of aligned objects to left side of anchor"
-msgstr "पंक्तिबद्ध गरिएको वस्तुहरु को बाँया छेउ बाट अंकुसे को बाँया छेउ"
+msgstr "पङ्क्तिबद्ध गरिएको वस्तुहरूको बायाँ छेउबाट एङ्करको बायाँ छेउ"
 
 #: ../src/dialogs/align.c:181
 msgid "Center horizontally"
-msgstr "तेर्सोगरी केन्द्रिकृत गर्नुहोस"
+msgstr "तेर्सोगरी केन्द्रिकृत गर्नुहोस्"
 
 #: ../src/dialogs/align.c:184
 msgid "Right side of aligned objects to right side of anchor"
-msgstr "पंक्तिबद्ध गरिएको वस्तुहरु को दाँया छेउ बाट अंकुसे को दाँया छेउ"
+msgstr "पङ्क्तिबद्ध गरिएको वस्तुहरूको दायाँ छेउबाट एङ्करको दायाँ छेउ"
 
 #: ../src/dialogs/align.c:187
 msgid "Left side of aligned objects to right side of anchor"
-msgstr "पंक्तिबद्ध गरिएको वस्तुहरु को बाँया छेउ बाट अंकुसे को दाँया छेउ"
+msgstr "पङ्क्तिबद्ध गरिएको वस्तुहरूको बायाँ छेउबाट एङ्करको दायाँ छेउ"
 
 #: ../src/dialogs/align.c:191
 msgid "Bottom of aligned objects to top of anchor"
-msgstr "पंक्तिबद्ध गरिएको वस्तुहरु को तल बाट अंकुसे को माथि"
+msgstr "पङ्क्तिबद्ध गरिएको वस्तुहरूको तलबाट एङ्करको माथि"
 
 #: ../src/dialogs/align.c:194
 msgid "Top of aligned objects to top of anchor"
-msgstr "पंक्तिबद्ध गरिएको वस्तुहरु को माथि बाट अंकुसे को माथि"
+msgstr "पङ्क्तिबद्ध गरिएको वस्तुहरूको माथिबाट एङ्करको माथि"
 
 #: ../src/dialogs/align.c:197
 msgid "Center vertically"
-msgstr "ठाडोगरि केन्द्रिकृत गर्नुहोस"
+msgstr "ठाडोगरि केन्द्रिकृत गर्नुहोस्"
 
 #: ../src/dialogs/align.c:200
 msgid "Bottom of aligned objects to bottom of anchor"
-msgstr "पंक्तिबद्ध गरिएको वस्तुहरु को तल बाट अंकुसे को तल"
+msgstr "पङ्क्तिबद्ध गरिएको वस्तुहरूको तलबाट एङ्करको तल"
 
 #: ../src/dialogs/align.c:203
 msgid "Top of aligned objects to bottom of anchor"
-msgstr "पंक्तिबद्ध गरिएको वस्तुहरु को माथि बाट अंकुसे को तल"
+msgstr "पङ्क्तिबद्ध गरिएको वस्तुहरूको माथिबाट एङ्करको तल"
 
 #: ../src/dialogs/align.c:206
 msgid "Align"
-msgstr "पंक्तिबद्ध गर्नुहोस"
+msgstr "पङ्क्तिबद्ध गर्नुहोस्"
 
 #: ../src/dialogs/align.c:224
 msgid "Distribute left sides of objects at even distances"
-msgstr "वस्तुहरुको बायाँ छेउहरुलाइ जोडा दूरीहरुमा वितरण गर्नुहोस"
+msgstr "वस्तुहरूको बायाँ छेउहरूलाई जोडा दूरीहरूमा वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:227
 msgid "Distribute centres of objects at even distances horizontally"
-msgstr "वस्तुहरुको केन्द्रहरु लाइ तेर्सो गरि जोडा दूरीहरुमा वितरण गर्नुहोस"
+msgstr "वस्तुहरूको केन्द्रहरूलाई तेर्सो गरी जोडा दूरीहरूमा वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:230
 msgid "Distribute right sides of objects at even distances"
-msgstr "वस्तुहरुको दायाँ छेउहरुलाइ जोडा दूरीहरुमा वितरण गर्नुहोस"
+msgstr "वस्तुहरूको दायाँ छेउहरूलाई जोडा दूरीहरूमा वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:233
 msgid "Distribute horizontal distance between objects equally"
-msgstr "वस्तुहरुको बीचमा समान रुपले तेर्सो दूरी वितरण गर्नुहोस"
+msgstr "वस्तुहरूको बीचमा समान रूपले तेर्सो दूरी वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:237
 msgid "Distribute top sides of objects at even distances"
-msgstr "वस्तुहरुको माथिल्लो छेउहरुलाइ जोडा दूरीहरुमा वितरण गर्नुहोस"
+msgstr "वस्तुहरूको माथिल्लो छेउहरूलाई जोडा दूरीहरूमा वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:240
 msgid "Distribute centres of objects at even distances vertically"
-msgstr "वस्तुहरुको केन्द्रहरु लाइ ठाडोगरि जोडा दूरीहरुमा वितरण गर्नुहोस"
+msgstr "वस्तुहरूको केन्द्रहरूलाई ठाडोगरि जोडा दूरीहरूमा वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:243
 msgid "Distribute bottom sides of objects at even distances"
-msgstr "वस्तुहरुको तेस्रो छेउहरुलाइ जोडा दूरीहरुमा वितरण गर्नुहोस"
+msgstr "वस्तुहरूको तेस्रो छेउहरूलाई जोडा दूरीहरूमा वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:246
 msgid "Distribute vertical distance between objects equally"
-msgstr "वस्तुहरुको बीचको ठाडो दूरी समान रुपले वितरण गर्नुहोस"
+msgstr "वस्तुहरूको बीचको ठाडो दूरी समान रूपले वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:249
 msgid "Distribute"
-msgstr "वितरण गर्नुहोस"
+msgstr "वितरण गर्नुहोस्"
 
 #: ../src/dialogs/align.c:287
 msgid "Last selected"
-msgstr "अन्तिम छानिएको"
+msgstr "अन्तिम चयन गरिएको"
 
 #: ../src/dialogs/align.c:288
 msgid "First selected"
-msgstr "पहिला छानिएको"
+msgstr "पहिला चयन गरिएको"
 
 #: ../src/dialogs/align.c:289
 msgid "Biggest item"
-msgstr "सबैभन्दा ठुलो चीज"
+msgstr "सबैभन्दा ठूलो वस्तु "
 
 #: ../src/dialogs/align.c:290
 msgid "Smallest item"
-msgstr "सबैभन्दा सानो चीज"
+msgstr "सबैभन्दा सानो वस्तु "
 
 #: ../src/dialogs/desktop-properties.c:195
 msgid "Desktop settings"
-msgstr "डेस्कटप सेटिंगहरु"
+msgstr "डेस्कटप सेटिङ"
 
 #. Grid settings
 #. Notebook tab
@@ -193,15 +196,15 @@ msgstr "ग्रिड देखाउनुहोस्"
 
 #: ../src/dialogs/desktop-properties.c:218
 msgid "Snap to grid"
-msgstr "ग्रिडमा सटाउनुहोस"
+msgstr "ग्रिडमा सटाउनुहोस्"
 
 #: ../src/dialogs/desktop-properties.c:221
 msgid "Horizontal lines"
-msgstr "तेर्सो रेखाहरु"
+msgstr "तेर्सो रेखाहरू"
 
 #: ../src/dialogs/desktop-properties.c:222
 msgid "Vertical lines"
-msgstr "ठाडो रेखाहरु"
+msgstr "ठाडो रेखाहरू"
 
 #: ../src/dialogs/desktop-properties.c:224
 msgid "Iso grid"
@@ -213,7 +216,7 @@ msgstr "हेक्स ग्रिड"
 
 #: ../src/dialogs/desktop-properties.c:231
 msgid "Grid units:"
-msgstr "ग्रिड एकाइहरु"
+msgstr "ग्रिड एकाइहरू"
 
 #: ../src/dialogs/desktop-properties.c:233
 msgid "Origin X:"
@@ -225,101 +228,101 @@ msgstr "उद्गम वाइ"
 
 #: ../src/dialogs/desktop-properties.c:238
 msgid "Spacing X:"
-msgstr "खालिस्थान गर्दै एक्स"
+msgstr "खालीस्थान गर्दै एक्स"
 
 #: ../src/dialogs/desktop-properties.c:240
 msgid "Spacing Y:"
-msgstr "खालिस्थान गर्दै वाइ"
+msgstr "खालीस्थान गर्दै वाइ"
 
 #: ../src/dialogs/desktop-properties.c:244
 #: ../src/dialogs/desktop-properties.c:271
 msgid "Snap units:"
-msgstr "एकाइहरु सटाउनुहोस"
+msgstr "एकाइहरू सटाउनुहोस्"
 
 #: ../src/dialogs/desktop-properties.c:246
 #: ../src/dialogs/desktop-properties.c:273
 msgid "Snap distance:"
-msgstr "दूरी सटाउनुहोस"
+msgstr "दूरी सटाउनुहोस्"
 
 #: ../src/dialogs/desktop-properties.c:249
 msgid "Grid color:"
-msgstr "ग्रिड रंग"
+msgstr "ग्रिड रङ"
 
 #: ../src/dialogs/desktop-properties.c:250
 msgid "Grid color"
-msgstr "ग्रिड रंग"
+msgstr "ग्रिड रङ"
 
 #. Guidelines page
 #: ../src/dialogs/desktop-properties.c:254
 msgid "Guides"
-msgstr "मार्गदर्शकहरु"
+msgstr "मार्गदर्शकहरू"
 
 #: ../src/dialogs/desktop-properties.c:265
 msgid "Show guides"
-msgstr "मार्गदर्शकहरु देखाउनुहोस"
+msgstr "मार्गदर्शकहरू देखाउनुहोस्"
 
 #: ../src/dialogs/desktop-properties.c:266
 msgid "Snap to guides"
-msgstr "मार्गदर्शकहरु मा सटाउनुहोस"
+msgstr "मार्गदर्शकहरूमा सटाउनुहोस्"
 
 #: ../src/dialogs/desktop-properties.c:276
 msgid "Guides color:"
-msgstr "रंग मार्गदर्शन गर्दछ"
+msgstr "रङ मार्गदर्शन गर्दछ:"
 
 #: ../src/dialogs/desktop-properties.c:277
 msgid "Guideline color"
-msgstr "मार्गदर्शन रंग"
+msgstr "मार्गदर्शन रङ"
 
 #: ../src/dialogs/desktop-properties.c:279
 msgid "Highlight color:"
-msgstr "हाइलाइट रंग"
+msgstr "हाइलाइट रङ"
 
 #: ../src/dialogs/desktop-properties.c:280
 msgid "Highlighted guideline color"
-msgstr "हाइलाइट गरिएको मार्गदर्शन रंग"
+msgstr "हाइलाइट गरिएको मार्गदर्शन रङ"
 
 #: ../src/dialogs/desktop-properties.c:295
 msgid "Show border"
-msgstr "किनारा देखाउनुहोस"
+msgstr "छेउ देखाउनुहोस्"
 
 #: ../src/dialogs/desktop-properties.c:301
 msgid "Border on top of drawing"
-msgstr "रेखाचित्रको माथिको किनारा"
+msgstr "रेखाचित्रको माथिको छेउ"
 
 #: ../src/dialogs/desktop-properties.c:306
 msgid "Border color:"
-msgstr "किनारा रंग"
+msgstr "छेउ रङ"
 
 #: ../src/dialogs/desktop-properties.c:307
 msgid "Page border color"
-msgstr "पृष्ठ किनारा रंग"
+msgstr "पृष्ठ छेउ रङ"
 
 #: ../src/dialogs/desktop-properties.c:308
 msgid "Page color:"
-msgstr "पृष्ठ रंग"
+msgstr "पृष्ठ रङ"
 
 #: ../src/dialogs/desktop-properties.c:309
 msgid "Page color"
-msgstr "पृष्ठ रंग"
+msgstr "पृष्ठ रङ"
 
 #: ../src/dialogs/desktop-properties.c:580
 #: ../src/widgets/sp-color-preview.c:424
 msgid "Close"
-msgstr "बंद गर्नुहोस"
+msgstr "बन्द गर्नुहोस्"
 
 #: ../src/dialogs/display-settings.c:101
 msgid "Display settings"
-msgstr "सेटिंगहरु प्रदर्शन गर्नुहोस"
+msgstr "प्रदर्शन सेटिङ"
 
 #. Rendering settings
 #. Notebook tab
 #: ../src/dialogs/display-settings.c:108
 msgid "Rendering"
-msgstr "प्रतिपादन"
+msgstr "रेन्डरिङ"
 
 #: ../src/dialogs/display-settings.c:117
 msgid "Oversample bitmaps:"
-msgstr "ओभरस्याम्पल बिटम्याप्स "
+msgstr "ओभर स्याम्पल बिटम्याप्स:"
 
 #: ../src/dialogs/display-settings.c:125 ../src/verbs.c:407
 msgid "None"
@@ -349,45 +352,45 @@ msgstr "निवेश"
 
 #: ../src/dialogs/display-settings.c:155
 msgid "Default cursor tolerance:"
-msgstr "पुर्वनिर्धारित कर्सर धैर्य"
+msgstr "पूर्वनिर्धारित कर्सर धैर्य:"
 
 #. Windows settings
 #. Notebook tab
 #: ../src/dialogs/display-settings.c:169
 msgid "Windows"
-msgstr "विन्डोहरु"
+msgstr "सञ्झ्यालहरू"
 
 #: ../src/dialogs/display-settings.c:174
 msgid "Set dialog hint for dialogs"
-msgstr "संवादहरुको लागि संवाद संकेत सेट गर्नुहोस"
+msgstr "संवादहरूका लागि संवाद सङ्केत सेट गर्नुहोस्"
 
 #: ../src/dialogs/display-settings.c:179
 msgid "Skip taskbar entry for dialogs"
-msgstr "संवादहरु को लागि कार्यपट्टि प्रविष्टि फड्काउनुहोस"
+msgstr "संवादहरूका लागि कार्यपट्टी प्रविष्टि फड्काउनुहोस्"
 
 #: ../src/dialogs/document-properties.c:159
 msgid "Document settings"
-msgstr "कागजात सेटिंगहरु"
+msgstr "कागजात सेटिङ"
 
 #: ../src/dialogs/document-properties.c:180
 msgid "Paper size:"
-msgstr "कागज आकार"
+msgstr "कागज साइज"
 
 #: ../src/dialogs/document-properties.c:201
 msgid "Custom"
-msgstr "अनुकुलन गर्नुहोस"
+msgstr "अनुकूल"
 
 #. Custom paper frame
 #: ../src/dialogs/document-properties.c:208
 msgid "Custom paper"
-msgstr "कागज अनुकुलन गर्नुहोस"
+msgstr "कागज अनुकूल गर्नुहोस्"
 
 #. Unit selector
 #: ../src/dialogs/document-properties.c:219 ../src/dialogs/export.c:179
 #: ../src/dialogs/object-properties.c:323 ../src/dialogs/transformation.c:347
 #: ../src/dialogs/transformation.c:494
 msgid "Units:"
-msgstr "एकाइहरु"
+msgstr "एकाइहरू:"
 
 #. Stroke width
 #. Width
@@ -397,14 +400,14 @@ msgstr "एकाइहरु"
 #: ../src/dialogs/object-properties.c:356 ../src/dialogs/stroke-style.c:567
 #: ../src/dialogs/tool-attributes.c:125 ../src/dyna-draw-context.c:1087
 msgid "Width:"
-msgstr "चौडाई॒:"
+msgstr "चौडाइ॒:"
 
 #: ../src/dialogs/document-properties.c:243 ../src/dialogs/export.c:198
 #: ../src/dialogs/export.c:221 ../src/dialogs/object-attributes.c:72
 #: ../src/dialogs/object-attributes.c:80
 #: ../src/dialogs/object-properties.c:368
 msgid "Height:"
-msgstr "सउचाई:"
+msgstr "उचाइ:"
 
 #: ../src/dialogs/document-tree.c:60 ../src/verbs.c:476
 msgid "Document"
@@ -412,12 +415,12 @@ msgstr "कागजात"
 
 #: ../src/dialogs/export.c:141
 msgid "Export bitmap"
-msgstr "बिटम्याप निर्यात गर्नुहोस"
+msgstr "बिटम्याप निर्यात गर्नुहोस्"
 
 #. Export area frame
 #: ../src/dialogs/export.c:150
 msgid "Export area"
-msgstr "क्षेत्र निर्यात गर्नुहोस"
+msgstr "क्षेत्र निर्यात गर्नुहोस्"
 
 #: ../src/dialogs/export.c:183
 msgid "x0:"
@@ -438,11 +441,11 @@ msgstr "वाइ१:"
 #. Bitmap size frame
 #: ../src/dialogs/export.c:204
 msgid "Bitmap size"
-msgstr "बिटम्याप आकार"
+msgstr "बिटम्याप साइज"
 
 #: ../src/dialogs/export.c:213 ../src/dialogs/export.c:221
 msgid "pixels"
-msgstr "पिक्सेलहरू"
+msgstr "पिक्सेल"
 
 #: ../src/dialogs/export.c:217 ../src/dialogs/export.c:225
 msgid "dpi"
@@ -450,7 +453,7 @@ msgstr "डिपिआइ"
 
 #: ../src/dialogs/export.c:233
 msgid "Background color"
-msgstr "पृष्ठभूमि रङ्ग"
+msgstr "पृष्ठभूमि रङ"
 
 #: ../src/dialogs/export.c:235
 msgid "Bitmap background:"
@@ -458,15 +461,15 @@ msgstr "बिटम्याप पृष्ठभुमि"
 
 #: ../src/dialogs/export.c:240
 msgid "Export png file"
-msgstr "पिएनजि फाइल निर्यात गर्नुहोस"
+msgstr "पिएनजि फाइल निर्यात गर्नुहोस्"
 
 #: ../src/dialogs/export.c:267 ../src/verbs.c:417
 msgid "Export"
-msgstr "निर्यात गर्नुहोस"
+msgstr "निर्यात गर्नुहोस्"
 
 #: ../src/dialogs/export.c:401
 msgid "Export in progress"
-msgstr "प्रगतिमा निर्यात गर्नुहोस"
+msgstr "प्रगतिमा निर्यात गर्नुहोस्"
 
 #: ../src/dialogs/export.c:405
 #, c-format
@@ -475,19 +478,19 @@ msgstr "निर्यात गर्दै [%d x %d] %s"
 
 #: ../src/dialogs/fill-style.c:87
 msgid "Fill style"
-msgstr "शैली भर्नुहोस"
+msgstr "शैली भर्नुहोस्"
 
 #: ../src/dialogs/fill-style.c:124
 msgid "Fill Rule"
-msgstr "नियम भर्नुहोस"
+msgstr "नियम भर्नुहोस्"
 
 #: ../src/dialogs/fill-style.c:138
 msgid "nonzero"
-msgstr "ननशुन्य"
+msgstr "शून्य विहिन"
 
 #: ../src/dialogs/fill-style.c:143
 msgid "evenodd"
-msgstr "जोडाबिजोडा"
+msgstr "जोडा बिजोडा"
 
 #: ../src/dialogs/item-properties.c:84 ../src/dialogs/item-properties.c:269
 #: ../src/dialogs/item-properties.c:368 ../src/dialogs/item-properties.c:375
@@ -496,7 +499,7 @@ msgstr "आइडि"
 
 #: ../src/dialogs/item-properties.c:95
 msgid "Set ID"
-msgstr "आइडि सेट गर्नुहोस"
+msgstr "आइडि सेट गर्नुहोस्"
 
 #. Sensitive
 #: ../src/dialogs/item-properties.c:104
@@ -516,15 +519,15 @@ msgstr "सक्रिय"
 #. Printable
 #: ../src/dialogs/item-properties.c:119
 msgid "Printable"
-msgstr "छपाइ योग्य"
+msgstr "मुद्रण योग्य"
 
 #: ../src/dialogs/item-properties.c:128
 msgid "Opacity:"
-msgstr "धमिलोपन"
+msgstr "अस्पष्टता:"
 
 #: ../src/dialogs/item-properties.c:144
 msgid "Transformation matrix"
-msgstr "रुपान्तरण म्याट्रिक्स"
+msgstr "रूपान्तरण म्याट्रिक्स"
 
 #: ../src/dialogs/item-properties.c:263
 msgid "Ref"
@@ -540,11 +543,11 @@ msgstr "आइडि अस्तित्वमा छ"
 
 #: ../src/dialogs/item-properties.c:448 ../src/verbs.c:487
 msgid "Item properties"
-msgstr "चीज गुणहरु"
+msgstr "वस्तु गुण"
 
 #: ../src/dialogs/object-attributes.c:34
 msgid "Href:"
-msgstr "एचसन्दर्भ"
+msgstr "एचसन्दर्भ:"
 
 #: ../src/dialogs/object-attributes.c:35
 msgid "Target:"
@@ -556,11 +559,11 @@ msgstr "प्रकार:"
 
 #: ../src/dialogs/object-attributes.c:37
 msgid "Role:"
-msgstr "भुमिका"
+msgstr "भुमिका:"
 
 #: ../src/dialogs/object-attributes.c:38
 msgid "Arcrole:"
-msgstr "आर्कभुमिका"
+msgstr "आर्कभुमिका:"
 
 #: ../src/dialogs/object-attributes.c:39
 msgid "Title:"
@@ -568,66 +571,66 @@ msgstr "शीर्षक:"
 
 #: ../src/dialogs/object-attributes.c:40 ../src/dialogs/tool-attributes.c:115
 msgid "Show:"
-msgstr "देखाउनुहोस"
+msgstr "देखाउनुहोस्:"
 
 #: ../src/dialogs/object-attributes.c:41
 msgid "Actuate:"
-msgstr "परिचालित गर्नुहोस"
+msgstr "परिचालित गर्नुहोस्:"
 
 #: ../src/dialogs/object-attributes.c:46
 msgid "Sides:"
-msgstr "छेउहरु"
+msgstr "छेउहरू:"
 
 #: ../src/dialogs/object-attributes.c:47 ../src/dialogs/object-attributes.c:57
 msgid "Center X:"
-msgstr "केन्र एक्स"
+msgstr "केन्द्र एक्स:"
 
 #: ../src/dialogs/object-attributes.c:48 ../src/dialogs/object-attributes.c:58
 msgid "Center Y:"
-msgstr "केन्द्र वाइ"
+msgstr "केन्द्र वाइ:"
 
 #: ../src/dialogs/object-attributes.c:49
 msgid "R1:"
-msgstr "आर१"
+msgstr "आर १:"
 
 #: ../src/dialogs/object-attributes.c:50
 msgid "R2:"
-msgstr "आर२"
+msgstr "आर २:"
 
 #: ../src/dialogs/object-attributes.c:51
 msgid "ARG1:"
-msgstr "आर्ग१"
+msgstr "आर्ग १:"
 
 #: ../src/dialogs/object-attributes.c:52
 msgid "ARG2:"
-msgstr "आर्ग२"
+msgstr "आर्ग २:"
 
 #. Expansion
 #: ../src/dialogs/object-attributes.c:59 ../src/spiral-context.c:343
 msgid "Expansion:"
-msgstr "विस्तार"
+msgstr "विस्तार:"
 
 #. Revolution
 #: ../src/dialogs/object-attributes.c:60 ../src/dialogs/tool-attributes.c:95
 #: ../src/spiral-context.c:331
 msgid "Revolution:"
-msgstr "क्रान्ति"
+msgstr "क्रान्ति:"
 
 #: ../src/dialogs/object-attributes.c:61
 msgid "Radius:"
-msgstr "अर्धव्यास"
+msgstr "अर्धव्यास:"
 
 #: ../src/dialogs/object-attributes.c:62
 msgid "Argument:"
-msgstr "विवाद"
+msgstr "तर्क:"
 
 #: ../src/dialogs/object-attributes.c:63
 msgid "T0:"
-msgstr "लाइ"
+msgstr "लाइ:"
 
 #: ../src/dialogs/object-attributes.c:68
 msgid "URL:"
-msgstr "युआरएल:"
+msgstr "यू आर एल:"
 
 #: ../src/dialogs/object-attributes.c:69 ../src/dialogs/object-attributes.c:77
 #: ../src/dialogs/object-properties.c:332
@@ -641,16 +644,16 @@ msgstr "वाई:"
 
 #: ../src/dialogs/object-attributes.c:81
 msgid "RX:"
-msgstr "आरएक्स"
+msgstr "आरएक्स:"
 
 #: ../src/dialogs/object-attributes.c:82
 msgid "RY:"
-msgstr "आरवाइ"
+msgstr "आरवाइ:"
 
 #: ../src/dialogs/object-attributes.c:117
 #, c-format
 msgid "%s attributes"
-msgstr "%s विशेषताहरु"
+msgstr "%s विशेषताहरू"
 
 #: ../src/dialogs/object-properties.c:113
 msgid "Object style"
@@ -658,11 +661,11 @@ msgstr "वस्तु शैली"
 
 #: ../src/dialogs/object-properties.c:128
 msgid "Fill"
-msgstr "भर्नुहोस"
+msgstr "भर्नुहोस्"
 
 #: ../src/dialogs/object-properties.c:142
 msgid "Stroke paint"
-msgstr "स्ट्रोक पेन्ट"
+msgstr "स्ट्रोक रङरोगन"
 
 #: ../src/dialogs/object-properties.c:156
 msgid "Stroke style"
@@ -670,15 +673,15 @@ msgstr "स्ट्रोक शैली"
 
 #: ../src/dialogs/object-properties.c:176
 msgid "Apply to:"
-msgstr "मा लागु गर्नुहोस"
+msgstr "लागू गर्नुहोस्:"
 
 #: ../src/dialogs/object-properties.c:186
 msgid "Selected objects"
-msgstr "छानिएको वस्तुहरु"
+msgstr "चयन गरिएको वस्तुहरू"
 
 #: ../src/dialogs/object-properties.c:189
 msgid "All shape tools"
-msgstr "सबै आकारका उपकरणहरु"
+msgstr "सबै साइजका उपकरणहरू"
 
 #: ../src/dialogs/object-properties.c:192
 msgid "Rectangle tool"
@@ -710,20 +713,20 @@ msgstr "पाठ"
 
 #: ../src/dialogs/object-properties.c:289
 msgid "Object Size and Position"
-msgstr "वस्तु आकार र अवस्था"
+msgstr "वस्तु साइज र स्थिति"
 
 #: ../src/dialogs/object-properties.c:312 ../src/verbs.c:481
 msgid "Size and Position"
-msgstr "आकार र अवस्था"
+msgstr "साइज र स्थिति"
 
 #: ../src/dialogs/stroke-style.c:554 ../src/toolbox.c:401
 msgid "Stroke settings"
-msgstr "स्ट्रोक सेटिंगहरु"
+msgstr "स्ट्रोक सेटिङ"
 
 #. Join type
 #: ../src/dialogs/stroke-style.c:590
 msgid "Join:"
-msgstr "जोड्नुहोस"
+msgstr "जोड्नुहोस्:"
 
 #. Cap type
 #: ../src/dialogs/stroke-style.c:633
@@ -733,11 +736,11 @@ msgstr "बिर्को:"
 #. Dash
 #: ../src/dialogs/stroke-style.c:676
 msgid "Pattern:"
-msgstr "बान्की:"
+msgstr "बाँन्की:"
 
 #: ../src/dialogs/text-edit.c:102
 msgid "Text properties"
-msgstr "पाठ गुणहरु"
+msgstr "पाठ गुण"
 
 #. Layout
 #: ../src/dialogs/text-edit.c:141
@@ -746,19 +749,19 @@ msgstr "सजावट"
 
 #: ../src/dialogs/text-edit.c:149
 msgid "Alignment:"
-msgstr "पंक्तिबद्धता"
+msgstr "पङ्क्तिबद्धता:"
 
 #: ../src/dialogs/text-edit.c:174
 msgid "Orientation:"
-msgstr "अभिमुखिकरण"
+msgstr "अभिमुखिकरण:"
 
 #: ../src/dialogs/text-edit.c:192
 msgid "Line spacing:"
-msgstr "रेखा खालिस्थान"
+msgstr "रेखा खालीस्थान:"
 
 #: ../src/dialogs/text-edit.c:212
 msgid "Spacing:"
-msgstr "खालि ठाँउ"
+msgstr "खाली ठाउँ:"
 
 #: ../src/dialogs/text-edit.c:235
 msgid "Text and font"
@@ -766,11 +769,11 @@ msgstr "पाठ र फन्ट"
 
 #: ../src/dialogs/text-edit.c:246
 msgid "Set as default"
-msgstr "पुर्वनिर्धारित को रुपमा सेट गर्नुहोस"
+msgstr "पूर्वनिर्धारितको रूपमा सेट गर्नुहोस्"
 
 #: ../src/dialogs/tool-attributes.c:48 ../src/verbs.c:479
 msgid "Tool attributes"
-msgstr "उपकरण विशेषताहरु"
+msgstr "उपकरण विशेषताहरू"
 
 #: ../src/dialogs/tool-attributes.c:95
 msgid "Expansion"
@@ -788,7 +791,7 @@ msgstr "हराएको उपकरण प्राथमिकता"
 #. Magnitude
 #: ../src/dialogs/tool-attributes.c:105 ../src/star-context.c:343
 msgid "Corners:"
-msgstr "कुनाहरु"
+msgstr "कुनाहरू:"
 
 #: ../src/dialogs/tool-attributes.c:105
 msgid "Proportion"
@@ -796,17 +799,17 @@ msgstr "समानुपात"
 
 #: ../src/dialogs/tool-attributes.c:115
 msgid "Transform:"
-msgstr "बदल्नुहोस"
+msgstr "बदल्नुहोस्:"
 
 #. Mass
 #: ../src/dialogs/tool-attributes.c:125 ../src/dyna-draw-context.c:1051
 msgid "Mass:"
-msgstr "समुह"
+msgstr "समूह:"
 
 #. Drag
 #: ../src/dialogs/tool-attributes.c:125 ../src/dyna-draw-context.c:1063
 msgid "Drag:"
-msgstr "तान्नुहोस"
+msgstr "तान्नुहोस्:"
 
 #: ../src/dialogs/tool-attributes.c:125
 msgid "Angle"
@@ -814,7 +817,7 @@ msgstr "कोण"
 
 #: ../src/dialogs/tool-attributes.c:132
 msgid "Tool has no attributes"
-msgstr "उपकरणको विशेषताहरु छैन"
+msgstr "उपकरणको विशेषताहरू छैन"
 
 #: ../src/dialogs/tool-attributes.c:135 ../src/dialogs/tool-options.c:93
 msgid "No active tool"
@@ -822,7 +825,7 @@ msgstr "सक्रिय उपकरण छैन"
 
 #: ../src/dialogs/tool-options.c:47 ../src/verbs.c:478
 msgid "Tool options"
-msgstr "उपकरण विकल्पहरु"
+msgstr "उपकरण विकल्पहरू"
 
 #: ../src/dialogs/tool-options.c:90
 msgid "Tool has no options"
@@ -830,16 +833,16 @@ msgstr "उपकरणको विकल्प छैन"
 
 #: ../src/dialogs/transformation.c:195
 msgid "Transform selection"
-msgstr "छनौट बदल्नुहोस"
+msgstr "चयन बदल्नुहोस्"
 
 #. Apply to duplicate
 #: ../src/dialogs/transformation.c:216
 msgid "Apply to duplicate"
-msgstr "नक्कलमा लागु गर्नुहोस"
+msgstr "नक्कलमा लागू गर्नुहोस्"
 
 #: ../src/dialogs/transformation.c:313
 msgid "Move"
-msgstr "सार्नुहोस"
+msgstr "सार्नुहोस्"
 
 #: ../src/dialogs/transformation.c:457
 msgid "Scale"
@@ -855,7 +858,7 @@ msgstr "डिग्री"
 
 #: ../src/dialogs/xml-tree.c:157
 msgid "Drag to reorder nodes"
-msgstr "नोडहरु फेरि क्रमबद्ध गर्नको लागि तान्नुहोस"
+msgstr "नोडहरू फेरि क्रमबद्ध गर्नका लागि तान्नुहोस्"
 
 #: ../src/dialogs/xml-tree.c:170
 msgid "New element node"
@@ -871,11 +874,11 @@ msgstr "नक्कल नोड"
 
 #: ../src/dialogs/xml-tree.c:221
 msgid "Delete node"
-msgstr "नोड मेट्नुहोस"
+msgstr "नोड मेट्नुहोस्"
 
 #: ../src/dialogs/xml-tree.c:234
 msgid "Unindent node"
-msgstr "नोडको इन्डेन्ट हटाउनुहोस"
+msgstr "नोडको इन्डेन्ट हटाउनुहोस्"
 
 #: ../src/dialogs/xml-tree.c:245
 msgid "Indent node"
@@ -883,15 +886,15 @@ msgstr "इन्डेन्ट नोड"
 
 #: ../src/dialogs/xml-tree.c:255
 msgid "Raise node"
-msgstr "नोड बढाउनुहोस"
+msgstr "नोड बढाउनुहोस्"
 
 #: ../src/dialogs/xml-tree.c:266
 msgid "Lower node"
-msgstr "नोड घटाउनुहोस"
+msgstr "नोड घटाउनुहोस्"
 
 #: ../src/dialogs/xml-tree.c:303
 msgid "Delete attribute"
-msgstr "विशेषता मेट्नुहोस"
+msgstr "विशेषता मेट्नुहोस्"
 
 #: ../src/dialogs/xml-tree.c:333
 msgid "Attribute name"
@@ -899,7 +902,7 @@ msgstr "विशेषता नाम"
 
 #: ../src/dialogs/xml-tree.c:340
 msgid "Set attribute"
-msgstr "विशेषता सेट गर्नुहोस"
+msgstr "विशेषता सेट गर्नुहोस्"
 
 #: ../src/dialogs/xml-tree.c:353
 msgid "Attribute value"
@@ -916,11 +919,11 @@ msgstr "नयाँ तत्व नोड"
 
 #: ../src/dialogs/xml-tree.c:876
 msgid "Cancel"
-msgstr "रद्द गर्नुहोस"
+msgstr "रद्द गर्नुहोस्"
 
 #: ../src/dialogs/xml-tree.c:880
 msgid "Create"
-msgstr "सृजना गर्नुहोस"
+msgstr "सिर्जना गर्नुहोस्"
 
 #: ../src/document.c:389
 #, c-format
@@ -939,26 +942,26 @@ msgstr "बेनाम कागजात %d"
 
 #: ../src/draw-context.c:294
 msgid "Appending to selection. Press 'a' to toggle Append/New."
-msgstr "छनौटमा संलग्न गर्दै. संलग्न गर्नुहोस/नयाँ टगल गर्नको लागि 'ए' थिच्नुहोस"
+msgstr "चयनमा जोड्दैछ। जोड्नुहोस्/नयाँ टगल गर्नका लागि 'ए' थिच्नुहोस्।"
 
 #: ../src/draw-context.c:299
 msgid "Creating new curve. Press 'a' to toggle Append/New."
-msgstr "नयाँ वक्ररेखा सृजना गर्दै. संलग्न गर्नुहोस/नयाँ टगल गर्नको लागि 'ए' थिच्नुहोस"
+msgstr "नयाँ वक्ररेखा सिर्जना गर्दै। जोड्दै/नयाँ टगल गर्नका लागि 'ए' थिच्नुहोस्।"
 
 #. Angle
 #: ../src/dyna-draw-context.c:1075
 msgid "Angle:"
-msgstr "कोण"
+msgstr "कोण:"
 
 #. Reset
 #: ../src/dyna-draw-context.c:1099 ../src/rect-context.c:382
 #: ../src/spiral-context.c:367 ../src/star-context.c:374
 msgid "Defaults"
-msgstr "पूर्वनिर्धारितहरु"
+msgstr "पूर्वनिर्धारितहरू"
 
 #: ../src/file.c:123 ../src/file.c:137 ../src/file.c:149
 msgid "Select file to open"
-msgstr "खोल्न फाइल चयन गर्नुहोस"
+msgstr "खोल्न फाइल चयन गर्नुहोस्"
 
 #: ../src/file.c:174 ../src/file.c:278
 msgid "File type:"
@@ -966,15 +969,15 @@ msgstr "फाइल प्रकार"
 
 #: ../src/file.c:263
 msgid "Save file"
-msgstr "फाइल बचत गर्नुहोस"
+msgstr "फाइल बचत गर्नुहोस्"
 
 #: ../src/file.c:468 ../src/file.c:478 ../src/file.c:484
 msgid "Select file to import"
-msgstr "आयात गर्न को लागि फाइल चयन गर्नुहोस"
+msgstr "आयात गर्नका लागि फाइल चयन गर्नुहोस्"
 
 #: ../src/help.c:51
 msgid "About sodipodi"
-msgstr "सोडिपोडि को बारेमा"
+msgstr "सोडिपोडिका बारेमा"
 
 #. Do not insert any elements before/between first 4
 #: ../src/helper/units.c:42
@@ -983,11 +986,11 @@ msgstr "एकाइ"
 
 #: ../src/helper/units.c:42
 msgid "Units"
-msgstr "इकाईहरु"
+msgstr "एकाइहरू"
 
 #: ../src/helper/units.c:43
 msgid "Point"
-msgstr "बिन्दु॒"
+msgstr "बिन्दु"
 
 #: ../src/helper/units.c:43
 msgid "pt"
@@ -1011,7 +1014,7 @@ msgstr "पिक्सेल"
 
 #: ../src/helper/units.c:44
 msgid "Pixels"
-msgstr "पिक्सेलहरु"
+msgstr "पिक्सेल"
 
 #: ../src/helper/units.c:44
 msgid "Px"
@@ -1019,7 +1022,7 @@ msgstr "पिक्सेल"
 
 #: ../src/helper/units.c:45
 msgid "Userspace unit"
-msgstr "प्रयोगकर्ताखालिस्थान एकाइ"
+msgstr "प्रयोगकर्ता खालीस्थान एकाइ"
 
 #: ../src/helper/units.c:45
 msgid "User"
@@ -1027,7 +1030,7 @@ msgstr "प्रयोगकर्ता"
 
 #: ../src/helper/units.c:45
 msgid "Userspace units"
-msgstr "प्रयोगकर्ताखालिस्थान एकाइहरु"
+msgstr "प्रयोगकर्ता खाली स्थान एकाइहरू"
 
 #. Volatiles do not have default, so there are none here
 #. You can add new elements from this point forward
@@ -1041,7 +1044,7 @@ msgstr "%"
 
 #: ../src/helper/units.c:48
 msgid "Percents"
-msgstr "प्रतिशतहरु"
+msgstr "प्रतिशतहरू"
 
 #: ../src/helper/units.c:49
 msgid "Millimeter"
@@ -1101,7 +1104,7 @@ msgstr "इएम"
 
 #: ../src/helper/units.c:53
 msgid "Em squares"
-msgstr "इएम वर्गहरु"
+msgstr "इएम वर्गहरू"
 
 #: ../src/helper/units.c:54
 msgid "Ex square"
@@ -1113,33 +1116,33 @@ msgstr "इएक्स"
 
 #: ../src/helper/units.c:54
 msgid "Ex squares"
-msgstr "इएक्स वर्गहरु"
+msgstr "इएक्स वर्गहरू"
 
 #: ../src/interface.c:305 ../src/interface.c:504
 msgid "Open Recent"
-msgstr "भर्खरको खोल्नुहोस"
+msgstr "भर्खरको खोल्नुहोस्"
 
 #: ../src/interface.c:325
 msgid "Close View"
-msgstr "दृश्य बन्द गर्नुहोस"
+msgstr "दृश्य बन्द गर्नुहोस्"
 
 #: ../src/interface.c:328 ../src/interface.c:510
 msgid "About Sodipodi"
-msgstr "सोडिपोडि को बारेमा"
+msgstr "सोडिपोडिका बारेमा"
 
 #. Have modules about menu
 #: ../src/interface.c:334 ../src/interface.c:516
 msgid "About Modules"
-msgstr "मोड्युलहरु को बारेमा"
+msgstr "मोड्युलहरूका बारेमा"
 
 #: ../src/interface.c:354
 msgid "Cleanup"
-msgstr "सफा गर्नुहोस"
+msgstr "सफा गर्नुहोस्"
 
 #. View:Zoom
 #: ../src/interface.c:429 ../src/toolbox.c:587 ../src/verbs.c:463
 msgid "Zoom"
-msgstr "जूम"
+msgstr "जुम"
 
 #. View:New View
 #: ../src/interface.c:441
@@ -1153,15 +1156,15 @@ msgstr "नयाँ पुर्वदृश्य"
 
 #: ../src/interface.c:445
 msgid "New Toplevel Toolbox"
-msgstr "नयाँ माथिल्लोस्तर उपकरणबाकस"
+msgstr "नयाँ माथिल्लोस्तर उपकरण बाकस"
 
 #: ../src/interface.c:446
 msgid "New Docked Toolbox"
-msgstr "नयाँ डक गरिएको उपकरणबाकस"
+msgstr "नयाँ डक गरिएको उपकरण बाकस"
 
 #: ../src/interface.c:447
 msgid "Remove Docked Toolbox"
-msgstr "डक गरिएको उपकरणबाकस हटाउनुहोस"
+msgstr "डक गरिएको उपकरण बाकस हटाउनुहोस्"
 
 #. File
 #: ../src/interface.c:501 ../src/verbs.c:409
@@ -1170,29 +1173,29 @@ msgstr "नयाँ"
 
 #: ../src/interface.c:502
 msgid "Open"
-msgstr "खोल्नुहोस"
+msgstr "खोल्नुहोस्"
 
 #. For some reason action menu does not work on menubar :-(
 #: ../src/interface.c:522 ../src/verbs.c:418
 msgid "Exit program"
-msgstr "कार्यक्रम बाट निस्कनुहोस"
+msgstr "कार्यक्रम बाट निस्कनुहोस्"
 
 #. Generic menu
 #. File submenu
 #: ../src/interface.c:585 ../src/toolbox.c:311
 msgid "File"
-msgstr "फाईल"
+msgstr "फाइल"
 
 #. Edit submenu
 #: ../src/interface.c:591 ../src/toolbox.c:362
 #: ../src/widgets/gradient-selector.c:138
 msgid "Edit"
-msgstr "सम्पादन गर्नुहोस"
+msgstr "सम्पादन"
 
 #. View submenu
 #: ../src/interface.c:603
 msgid "View"
-msgstr "दृष्य"
+msgstr "दृश्य"
 
 #. Drawing mode submenu
 #: ../src/interface.c:609
@@ -1202,24 +1205,24 @@ msgstr "रेखाचित्र मोड"
 #. Dialog submenu
 #: ../src/interface.c:615
 msgid "Dialogs"
-msgstr "संवादहरु"
+msgstr "संवादहरू"
 
 #. Have modules menu
 #: ../src/interface.c:624
 msgid "Modules"
-msgstr "मोड्युलहरु"
+msgstr "मोड्युलहरू"
 
 #: ../src/main.c:120 ../src/main.c:612
 msgid "Do not use X server (only process files from console)"
-msgstr "एक्स सर्भर प्रयोग नगर्नुहोस (सान्त्वना बाट केवल प्रक्रिया फाइलहरु)"
+msgstr "एक्स सर्भर प्रयोग नगर्नुहोस् (कन्सोल बाट केवल प्रक्रिया फाइलहरू मात्र)"
 
 #: ../src/main.c:123 ../src/main.c:613
 msgid "Try to use X server even if $DISPLAY is not set)"
-msgstr "$प्रदर्शन सेट नभएपनि एक्स सर्भर प्रयोग गर्ने प्रयास गर्नुहोस"
+msgstr "$प्रदर्शन सेट नभएपनि एक्स सर्भर प्रयोग गर्ने प्रयास गर्नुहोस्"
 
 #: ../src/main.c:126 ../src/main.c:614
 msgid "Open specified document(s) (option string may be excluded)"
-msgstr "तोकिएको कागजात(हरु)खोल्नुहोस.(विकल्प स्ट्रिंग निकाल्न सकिन्छ)"
+msgstr "तोकिएको कागजात(हरू) खोल्नुहोस्।(विकल्प स्ट्रिङ निकाल्न सकिन्छ)"
 
 #: ../src/main.c:127 ../src/main.c:130 ../src/main.c:133 ../src/main.c:147
 msgid "FILENAME"
@@ -1227,18 +1230,15 @@ msgstr "फाइलनाम"
 
 #: ../src/main.c:129
 msgid "Print document(s) to specified output file (use '| program' for pipe)"
-msgstr ""
-"तोकिएको प्रतिफल फाइलको लागि कागजात(हरु)छाप्नुहोस (पाइपको लागि '| कार्यक्रम' प्रयोग "
-"गर्नुहोस)"
+msgstr "निर्दिष्ट गरिएको प्रतिफल फाइलका लागि कागजात(हरु)मुद्रण गर्नुहोस् (पाइपका लागि '| कार्यक्रम' प्रयोग गर्नुहोस्)"
 
 #: ../src/main.c:132 ../src/main.c:615
 msgid "Export document to png file"
-msgstr "पिएनजि फाइल मा कागजात निर्यात गर्नुहोस"
+msgstr "पिएनजि फाइलमा कागजात निर्यात गर्नुहोस्"
 
 #: ../src/main.c:135 ../src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
-msgstr ""
-"एसभिजि लाइ बिटम्याप मा रुपान्तर गर्दा प्रयोग गरिएको रिजोल्युसन (पुर्वनिर्धारित ७२.०)"
+msgstr "एसभीजि लाई बिटम्यापमा रूपान्तर गर्दा प्रयोग गरिएको रिजोल्युसन (पूर्वनिर्धारित ७२.०)"
 
 #: ../src/main.c:136
 msgid "DPI"
@@ -1249,77 +1249,73 @@ msgid ""
 "Exported area in millimeters (default is full document, 0,0 is lower-left "
 "corner)"
 msgstr ""
-"निर्यात गरिएको क्षेत्र मिलिमिटरमा (पुर्वनिर्धारित पुरा कागजात हो, ०,० तल्लो-बायाँ कुना "
+"निर्यात गरिएको क्षेत्र मिलिमिटरमा (पूर्वनिर्धारित पूरा कागजात हो, ०,० तल्लो-बायाँ कुना "
 "हो)"
 
 #: ../src/main.c:139
 msgid "x0:y0:x1:y1"
-msgstr "एक्स०:वाइ०:एक्स१:वाइ१"
+msgstr "x0:y0:x1:y1"
 
 #: ../src/main.c:141 ../src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
-msgstr "उत्पन्न गरिएको बिटम्याप को चौडाइ पिक्सेलमा (डिपिआइ लाइ अधिलेखन गर्छ)"
+msgstr "उत्पन्न गरिएको बिटम्यापको चौडाइ पिक्सेलमा (डिपिआइ लाई अधिलेखन गर्दछ)"
 
 #: ../src/main.c:141
 msgid "WIDTH"
-msgstr "चौडाई"
+msgstr "चौडाइ"
 
 #: ../src/main.c:143 ../src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
-msgstr "उत्पन्न गरिएको बिटम्याप को उचाइ पिक्सेलमा (डिपिआइ लाइ अधिलेखन गर्छ)"
+msgstr "उत्पन्न गरिएको बिटम्यापको उचाइ पिक्सेलमा (डिपिआइ लाई अधिलेखन गर्दछ)"
 
 #: ../src/main.c:143
 msgid "HEIGHT"
-msgstr "उचाई"
+msgstr "उचाइ"
 
 #: ../src/main.c:145 ../src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
-msgstr "निर्यात गरिएको बिटम्यापको पृष्ठभुमि रंग (कुनै एसभिजि समर्थित रंग स्ट्रिंग)"
+msgstr "निर्यात गरिएको बिटम्यापको पृष्ठभुमि रङ (कुनै एसभीजी समर्थित रङ स्ट्रिङ)"
 
 #: ../src/main.c:145
 msgid "COLOR"
-msgstr "रंग"
+msgstr "रङ"
 
 #: ../src/main.c:147 ../src/main.c:621
 msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
-msgstr ""
-"सादा एसभिजि फाइलमा कागजात निर्यात गर्नुहोस (सं \"एक्समिन्स:सोडिपोडिi\" नामखालिस्थान)"
+msgstr "सादा एसभिजि फाइलमा कागजात निर्यात गर्नुहोस् (सं \"एक्समिन्स:सोडिपोडिi\" नाम खाली स्थान)"
 
 #: ../src/main.c:149
 msgid "Show given files one-by-one, switch to next on any key/mouse event"
-msgstr ""
-"दिइएको फाइलहरु एक पछि अर्को गर्दै देखाउनुहोस, कुनै कुञ्जि/माउस घटना मा पछिल्लो मा स्विच "
-"गर्नुहोस"
+msgstr "दिइएको फाइलहरू एक पछि अर्को गर्दै देखाउनुहोस्, कुनै कुञ्जी/माउस घटनामा पछिल्लोमा स्विच गर्नुहोस्"
 
 #: ../src/main.c:151
 msgid "Prefer bitmap (xpm) icons to SVG ones"
-msgstr "एसभिजि हरुको लागि बिटम्याप (एक्सपिएम) प्रतिमाहरु प्राथमिकता दिनुहोस"
+msgstr "एसभिजिहरूका लागि बिटम्याप (एक्सपिएम) प्रतिमाहरू प्राथमिकता दिनुहोस्"
 
 #: ../src/main.c:622
 msgid "Print sodipodi version information"
-msgstr "सोडिपोडि संस्करण जानकारी छाप्नुहोस"
+msgstr "सोडिपोडि संस्करण जानकारी मुद्रण गर्नुहोस्"
 
 #: ../src/main.c:623
 msgid "Print help about command-line arguments"
-msgstr "आदेश-रेखा विवादहरु को बारेमा मद्दत छाप्नुहोस"
+msgstr "आदेश-रेखा विवादहरूका बारेमा मद्दत मुद्रण गर्नुहोस्"
 
 #: ../src/main.c:772
 msgid "Untitled document"
-msgstr "शीर्षक नभएको कागजात"
+msgstr "शीर्षक विहिन कागजात"
 
 #. Show nice dialog box
 #: ../src/main.c:797
 msgid "Sodipodi encountered an internal error and will close now.\n"
-msgstr "एउटा आन्तरिक त्रुटि संग सोडिपोडि को जम्काभेट भएको छ र अब सोडिपोडि बन्द हुन्छ.\n"
+msgstr "एउटा आन्तरिक त्रुटिसँग सोडिपोडिको जम्काभेट भएको छ र अब सोडिपोडि बन्द हुन्छ।\n"
 
 #: ../src/main.c:798
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
-msgstr "निम्न स्थानहरुमा बचत नगरिएका कागजातहरु को स्वचालित ब्याकअपहरु गरिएको थियो:\n"
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgstr "निम्न स्थानहरूमा बचत नगरिएका कागजातहरूको स्वचालित जगेडाहरू गरिएको थियो:\n"
 
 #: ../src/main.c:799
 msgid "Automatic backup of following documents failed:\n"
-msgstr "निम्न कागजातहरुको स्वचालित ब्याकअप असफल भयो:\n"
+msgstr "निम्न कागजातहरूको स्वचालित जगेडा असफल भयो:\n"
 
 #: ../src/module.c:898
 msgid "Scalable Vector Graphic (SVG)"
@@ -1327,15 +1323,15 @@ msgstr "स्केल गर्न लायक भेक्टर ग्र�
 
 #: ../src/module.c:898
 msgid "Sodipodi native file format and W3C standard"
-msgstr "सोडिपोडि स्थानीय फाइल ढाँचा र डब्ल्यु३सि मानक"
+msgstr "सोडिपोडि स्थानीय फाइल ढाँचा र डब्ल्यु ३ सि मानक"
 
 #: ../src/module.c:905
 msgid "SVG with \"xmlns:sodipodi\" namespace"
-msgstr "\"एक्समिन्स:सोडिपोडि\"नामखालिस्थान सहित एसभिजि"
+msgstr "\"एक्समिन्स:सोडिपोडि\"नाम खालीस्थान सहित एसभिजि"
 
 #: ../src/module.c:906
 msgid "Scalable Vector Graphics format with sodipodi extensions"
-msgstr "सोडिपोडि विस्तारहरु सहित स्केल गर्न लायक भेक्टर ग्राफिक्स ढाँचा"
+msgstr "सोडिपोडि विस्तारहरू सहित स्केल गर्न लायक भेक्टर ग्राफिक्स ढाँचा"
 
 #: ../src/module.c:909
 msgid "Plain SVG"
@@ -1347,12 +1343,12 @@ msgstr "स्केल गर्न लायक भेक्टर ग्र�
 
 #: ../src/modules/gnome.c:158
 msgid "Select printer"
-msgstr "मुद्रक छान्नुहोस"
+msgstr "मुद्रक चयन गर्नुहोस्"
 
 #: ../src/modules/gnome.c:212
 #, c-format
 msgid "Sodipodi (doc name %s..): Print Preview"
-msgstr "सोडिपोडि (कागजात नाम %s..): छपाइ पुर्वदृश्य"
+msgstr "सोडिपोडि (कागजात नाम %s..): मुद्रण पुर्वावलोकन"
 
 #: ../src/modules/kde.cpp:162
 msgid "Document variant:"
@@ -1364,67 +1360,63 @@ msgid ""
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
-"*.एसभिजि *.एसभिजिजेड|एसभिजि फाइलहरु\n"
-"*.एक्सएमएल|एक्सएमएल फाइलहरु\n"
-"*|सबै फाइलहरु"
+"*.svg *.svgz|SVG फाइल\n"
+"*.xml|XML फाइल\n"
+"*|सबै फाइल"
 
 #: ../src/modules/kde.cpp:174
 msgid "Save document as"
-msgstr "को रुपमा कागजात बचत गर्नुहोस"
+msgstr "यसको रूपमा कागजात बचत गर्नुहोस्"
 
 #: ../src/modules/plain-pdf.c:1105 ../src/modules/plain-ps.c:745
 #: ../src/modules/ps.c:961
 msgid "write error occured"
-msgstr "भएको त्रुटि लेख्नुहोस"
+msgstr "भएको त्रुटि लेख्नुहोस्"
 
 #: ../src/modules/plain.c:178 ../src/modules/ps.c:264
 msgid "Print using PostScript operators"
-msgstr "पोस्टस्क्रिप्ट संचालकहरु प्रयोग गरी छाप्नुहोस"
+msgstr "पोस्टस्क्रिप्ट सञ्चालकहरू प्रयोग गरी मुद्रण गर्नुहोस्"
 
 #: ../src/modules/plain.c:179 ../src/modules/ps.c:266
 msgid ""
 "Use PostScript vector operators, resulting image will be (usually) smaller "
 "and can be arbitrarily scaled, but alpha transparency, markers and patterns "
 "will be lost"
-msgstr ""
-"पोस्टस्क्रिप्ट भेक्टर संचालकहरु प्रयोग गर्नुहोस, परिणाम छवि (धेरैजसो) सानो हुनेछ अनि मनपरी "
-"ढंगले स्केल हुन सक्दछ, तर अल्फा पारदर्शिता, चिन्हकहरु र बान्कीहरु हराउनेछन"
+msgstr "पोस्टस्क्रिप्ट भेक्टर सञ्चालकहरू प्रयोग गर्नुहोस्, परिणाम छवि (धेरैजसो) सानो हुँनेछ अनि मनपरी ढंगले स्केल हुन सक्दछ, तर अल्फा पारदर्शीता, मार्कर र बाँन्की हराउँनेछन"
 
 #: ../src/modules/plain.c:184 ../src/modules/ps.c:271
 msgid "Print as bitmap"
-msgstr "बिटम्याप को रुपमा छाप्नुहोस"
+msgstr "बिटम्यापको रूपमा मुद्रण गर्नुहोस्"
 
 #: ../src/modules/plain.c:185 ../src/modules/ps.c:273
 msgid ""
 "Print everything as bitmap, resulting image will be (usualy) larger and it "
 "quality depends on zoom factor, but all graphics will be rendered identical "
 "to display"
-msgstr ""
-"प्रत्येक कुरा बिटम्याप को रुपमा छाप्नुहोस, परिणाम छवि (धेरैजसो) झन ठुलो हुनेछ अनि यसको गुण "
-"जुम तत्वमा निर्भर हुनेछ, तर सबै ग्राफिक्सहरु प्रदर्शन को लागि समान रुपले अनुवाद हुनेछ"
+msgstr "प्रत्येक कुरा बिटम्यापको रूपमा मुद्रण गर्नुहोस्, परिणाम छवि (धेरैजसो) झन ठूलो हुँनेछ अनि यसको गुण जुम तत्वमा निर्भर हुँनेछ, तर सबै ग्राफिक्सहरू प्रदर्शनका लागि समान रूपले अनुवाद हुँनेछ"
 
 #: ../src/modules/plain.c:190
 msgid "Print using PDF driver"
-msgstr "पिडिएफ चालक प्रयोग गरेर छाप्नुहोस"
+msgstr "पिडिएफ चालक प्रयोग गरेर मुद्रण गर्नुहोस्"
 
 #: ../src/modules/plain.c:191
 msgid "Use Portable Document Format for printing"
-msgstr "छपाइको लागि पोर्टेबल कागजात ढाँचा प्रयोग गर्नुहोस"
+msgstr "मुद्रणका लागि पोर्टेबल कागजात ढाँचा प्रयोग गर्नुहोस्"
 
 #. Print destination frame
 #: ../src/modules/plain.c:224 ../src/modules/plain.c:293
 #: ../src/modules/ps.c:245 ../src/modules/ps.c:306
 msgid "Print destination"
-msgstr "छपाइ गन्तव्य"
+msgstr "मुद्रण गन्तव्य"
 
 #. Print properties frame
 #: ../src/modules/plain.c:235 ../src/modules/ps.c:256
 msgid "Print properties"
-msgstr "छपाइ गुणहरु"
+msgstr "मुद्रण गुण"
 
 #: ../src/modules/plain.c:274 ../src/modules/ps.c:287
 msgid "Preferred resolution (dots per inch) of bitmap"
-msgstr "बिटम्याप को सुझावित रिजोल्युसन (डट प्रति इन्च)"
+msgstr "बिटम्यापको सुझावित रिजोल्युसन (डट प्रति इन्च)"
 
 #: ../src/modules/plain.c:289 ../src/modules/ps.c:302
 msgid "Resolution:"
@@ -1436,47 +1428,47 @@ msgid ""
 "Use '> filename' to print to file.\n"
 "Use '| prog arg...' to pipe to program"
 msgstr ""
-"गन्तव्य एलपिआर लाम पर्विष्ट गर्नुहोस.\n"
-"प्रयोग गर्नुहोस '> फाइल छाप्नको लागि फाइलनाम प्रविष्ट गर्नुहोस.\n"
-"प्रयोग गर्नुहोस '| कार्यक्रम विवाद...' कार्यक्रम मा पाइप गर्नको लागि"
+"गन्तव्य एलपिआर लाम पर्विष्ट गर्नुहोस्।\n"
+"प्रयोग गर्नुहोस् '> फाइल छाप्नका लागि फाइलनाम प्रविष्ट गर्नुहोस्।\n"
+"प्रयोग गर्नुहोस् '| कार्यक्रम विवाद...' कार्यक्रम मा पाइप गर्नका लागि"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:111 ../src/widgets/sp-dock-layout.c:741
 msgid "Item"
-msgstr "चीज"
+msgstr "वस्तु"
 
 #. Item dialog
 #: ../src/object-ui.c:114 ../src/verbs.c:487
 msgid "Item Properties"
-msgstr "चीज गुणहरु"
+msgstr "वस्तु गुण"
 
 #. Select item
 #: ../src/object-ui.c:122
 msgid "Select this"
-msgstr "यो चयन गर्नुहोस"
+msgstr "यो चयन गर्नुहोस्"
 
 #. Reset transformations
 #: ../src/object-ui.c:131
 msgid "Reset transformation"
-msgstr "रुपान्तरण रिसेट गर्नुहोस"
+msgstr "रूपान्तरण रिसेट गर्नुहोस्"
 
 #. Apply transformation
 #: ../src/object-ui.c:135
 msgid "Apply transformation"
-msgstr "रुपान्तरण लागु गर्नुहोस"
+msgstr "रूपान्तरण लागू गर्नुहोस्"
 
 #: ../src/object-ui.c:140
 msgid "Make sensitive"
-msgstr "संवेदनशील बनाउनुहोस"
+msgstr "संवेदनशील बनाउनुहोस्"
 
 #: ../src/object-ui.c:140
 msgid "Make insensitive"
-msgstr "असंवेदनशील बनाउनुहोस"
+msgstr "असंवेदनशील बनाउनुहोस्"
 
 #. Create link
 #: ../src/object-ui.c:144
 msgid "Create link"
-msgstr "लिंक सृजना गर्नुहोस"
+msgstr "लिङ्क सिर्जना गर्नुहोस्"
 
 #: ../src/object-ui.c:276 ../src/verbs.c:435
 msgid "Group"
@@ -1485,37 +1477,37 @@ msgstr "समूह"
 #. Group dialog
 #: ../src/object-ui.c:280
 msgid "Group Properties"
-msgstr "समुह गुणहरु"
+msgstr "समूह गुण"
 
 #. "Ungroup"
 #: ../src/object-ui.c:291 ../src/verbs.c:436
 msgid "Ungroup"
-msgstr "समुह छुट्ट्याउनुहोस"
+msgstr "समूह छुट्याउनुहोस्"
 
 #. Dive
 #: ../src/object-ui.c:296
 msgid "Set as layer"
-msgstr "तह को रुपमा सेट गर्नुहोस"
+msgstr "तहको रूपमा सेट गर्नुहोस्"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:341
 msgid "Link"
-msgstr "लिंक"
+msgstr "लिङ्क"
 
 #. Link dialog
 #: ../src/object-ui.c:344
 msgid "Link Properties"
-msgstr "लिंक गुणहरु"
+msgstr "लिङ्क गुण"
 
 #. Select item
 #: ../src/object-ui.c:354
 msgid "Follow link"
-msgstr "लिंक अनुशरण गर्नुहोस"
+msgstr "लिङ्क अनुशरण गर्नुहोस्"
 
 #. Reset transformations
 #: ../src/object-ui.c:359
 msgid "Remove link"
-msgstr "लिंक हटाउनुहोस"
+msgstr "लिङ्क हटाउनुहोस्"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:422
@@ -1525,12 +1517,12 @@ msgstr "छवि"
 #. Link dialog
 #: ../src/object-ui.c:425
 msgid "Image Properties"
-msgstr "छवि गुणहरु"
+msgstr "छवि गुण"
 
 #. Autotrace dialog
 #: ../src/object-ui.c:433 ../src/sp-image.c:762
 msgid "Trace"
-msgstr "ट्रेस गर्नुहोस"
+msgstr "पद चिन्ह"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:482
@@ -1540,17 +1532,17 @@ msgstr "बनावट"
 #. Item dialog
 #: ../src/object-ui.c:485 ../src/toolbox.c:402
 msgid "Fill settings"
-msgstr "सेटिंगहरु भर्नुहोस"
+msgstr "भराइ सेटिङ"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:516
 msgid "Path"
-msgstr "बाटो"
+msgstr "मार्ग"
 
 #. Reverse
 #: ../src/object-ui.c:519
 msgid "Reverse"
-msgstr "उल्टाउनुहोस"
+msgstr "उल्टाउनुहोस्"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:542
@@ -1560,7 +1552,7 @@ msgstr "आयात"
 #. Link dialog
 #: ../src/object-ui.c:545
 msgid "Rect Properties"
-msgstr "आयात गुणहरु"
+msgstr "आयात गुण"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:578 ../src/verbs.c:457
@@ -1570,7 +1562,7 @@ msgstr "तारा"
 #. Link dialog
 #: ../src/object-ui.c:581
 msgid "Star Properties"
-msgstr "तारा गुणहरु"
+msgstr "तारा गुण"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:614 ../src/verbs.c:458
@@ -1580,41 +1572,41 @@ msgstr "घुमाउरो"
 #. Link dialog
 #: ../src/object-ui.c:617
 msgid "Spiral Properties"
-msgstr "घुमाउरो गुणहरु"
+msgstr "घुमाउरो गुण"
 
 #. rx_ratio
 #: ../src/rect-context.c:358
 msgid "Roundness ratio for x:"
-msgstr "एक्स को लागि घुमाउरोपना अनुपात"
+msgstr "एक्सका लागि घुमाउरोपना अनुपात"
 
 #. ry_ratio
 #: ../src/rect-context.c:370
 msgid "Roundness ratio for y:"
-msgstr "वाइको लागि घुमाउरोपना अनुपात"
+msgstr "वाइका लागि घुमाउरोपना अनुपात"
 
 #: ../src/select-context.c:570
 msgid "Visual transformation"
-msgstr "दृश्यात्मक बदली"
+msgstr "दृश्यात्मक रूपान्तरण"
 
 #: ../src/select-context.c:576
 msgid "Show content"
-msgstr "सामग्री देखाउनुहोस"
+msgstr "सामग्री देखाउनुहोस्"
 
 #: ../src/select-context.c:582
 msgid "Show outline"
-msgstr "रुपरेखा देखाउनुहोस"
+msgstr "रूपरेखा देखाउनुहोस्"
 
 #: ../src/select-context.c:588
 msgid "Object transformation"
-msgstr "वस्तु बदली"
+msgstr "वस्तु रूपान्तरण"
 
 #: ../src/select-context.c:594
 msgid "Optimize"
-msgstr "अप्टिमाइज गर्नुहोस"
+msgstr "अनुकूलन"
 
 #: ../src/select-context.c:600
 msgid "Preserve"
-msgstr "संरक्षण गर्नुहोस"
+msgstr "संरक्षण गर्नुहोस्"
 
 #: ../src/select-context.c:606
 msgid "[Tab] Cycling"
@@ -1622,11 +1614,11 @@ msgstr "[ट्याब] घुमिरहेको"
 
 #: ../src/select-context.c:611
 msgid "Cycle only among visible items"
-msgstr "दृश्यात्मक चीजहरु मध्ये मात्र घुमाउनुहोस"
+msgstr "दृश्यात्मक वस्तुहरू मध्ये मात्र घुमाउनुहोस्"
 
 #: ../src/select-context.c:614
 msgid "Center view to selected item"
-msgstr "छानिएको चीज मा केन्द्रिय दृश्य"
+msgstr "चयन गरिएको वस्तुमा केन्द्रिय दृश्य"
 
 #: ../src/slideshow.c:90
 msgid "Sodipodi slideshow"
@@ -1640,8 +1632,8 @@ msgid ""
 "neither load nor save preferences\n"
 msgstr ""
 "%s नियमित फाइल होइन.\n"
-"सोडिपोडि चलेपनि, तपाईंले\n"
-"प्राथमिकताहरु लोड गर्न र बचत गर्न पनि सक्नुहुन्न\n"
+"सोडिपोडि चलेपनि, तपाईँले\n"
+"प्राथमिकताहरू लोड गर्न र बचत गर्न पनि सक्नुहुन्न\n"
 
 #: ../src/sodipodi.c:471
 #, c-format
@@ -1653,9 +1645,9 @@ msgid ""
 "preferences."
 msgstr ""
 "%s पनि मान्य एक्सएमएल फाइल होइन अथवा\n"
-"तपाईंले यसमा भएको अनुमतिहरु पढ्नुभएको छैन.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"प्राथमिकताहरु लोड गर्न र बचत गर्न\n"
+"तपाईँले यसमा भएको अनुमतिहरू पढ्नुभएको छैन.\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"प्राथमिकताहरू लोड गर्न र बचत गर्न\n"
 "सक्षम हुनुहुन्न"
 
 #: ../src/sodipodi.c:476
@@ -1666,9 +1658,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"%s मान्य सोडिपोडि प्राथमिकताहरु फाइल होइन.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"प्राथमिकताहरु लोड गर्न र बचत दुवै गर्न\n"
+"%s मान्य सोडिपोडि प्राथमिकताहरू फाइल होइन।\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"प्राथमिकताहरू लोड गर्न र बचत दुवै गर्न\n"
 "सक्षम हुनुहुन्न"
 
 #: ../src/sodipodi.c:488
@@ -1678,9 +1670,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"%s नियमित फाइल होइन.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"विस्तारहरु(प्लगइनहरु)प्रयोग गर्न समर्थ हुनुहुन्न\n"
+"%s नियमित फाइल होइन।\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"विस्तारहरू (प्लगइनहरू) प्रयोग गर्न समर्थ हुनुहुन्न\n"
 
 #: ../src/sodipodi.c:491
 #, c-format
@@ -1691,9 +1683,9 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 "%s पनि मान्य एक्सएमएल फाइल होइन अथवा\n"
-"तपाईंले यसमा भएको अनुमतिहरु पढ्नुभएको छैन.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"विस्तारहरु(प्लगइनहरु)प्रयोग गर्न समर्थ हुनुहुन्न\n"
+"तपाईँले यसमा भएको अनुमतिहरू पढ्नुभएको छैन।\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"विस्तारहरू (प्लगइनहरू) प्रयोग गर्न समर्थ हुनुहुन्न\n"
 
 #: ../src/sodipodi.c:495
 #, c-format
@@ -1702,9 +1694,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"%s मान्य सोडिपोडि विस्तारहरु फाइल होइन .\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"विस्तारहरु(प्लगइनहरु)प्रयोग गर्न समर्थ हुनुहुन्न\n"
+"%s मान्य सोडिपोडि विस्तारहरू फाइल होइन।\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"विस्तारहरू (प्लगइनहरू ) प्रयोग गर्न समर्थ हुनुहुन्न\n"
 
 #: ../src/sodipodi.c:829
 #, c-format
@@ -1714,9 +1706,9 @@ msgid ""
 "are neither able to load nor save\n"
 "%s."
 msgstr ""
-"निर्देशिका सृजना गर्न सक्दैन %s.\n"
-"सोडिपोडि चलेपनि, तपाईंले\n"
-"प्राथमिकताहरु लोड गर्न र बचत गर्न पनि सक्नुहुन्न\n"
+"डाइरेक्टरी सिर्जना गर्न सक्दैन %s\n"
+"सोडिपोडि चलेपनि, तपाईँले\n"
+"प्राथमिकताहरू लोड गर्न र बचत गर्न पनि सक्नुहुन्न\n"
 "%s."
 
 #: ../src/sodipodi.c:833
@@ -1727,9 +1719,9 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"%s एउटा मान्य निर्देशिका होइन.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"प्राथमिकताहरु लोड गर्न र बचत दुवै गर्न\n"
+"%s एउटा मान्य डाइरेक्टरी होइन।\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"प्राथमिकताहरू लोड गर्न र बचत दुवै गर्न\n"
 "सक्षम हुनुहुन्न"
 
 #: ../src/sodipodi.c:837
@@ -1740,10 +1732,10 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"फाइल सृजना गर्न सक्दैन %s.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"प्राथमिकताहरु लोड गर्न र बचत दुवै गर्न\n"
-"सक्षम हुनुहुन्न"
+"फाइल सिर्जना गर्न सक्दैन %s\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"प्राथमिकताहरू लोड गर्न र बचत दुवै गर्न\n"
+"सक्षम हुनुहुन्न।"
 
 #: ../src/sodipodi.c:841
 #, c-format
@@ -1753,10 +1745,10 @@ msgid ""
 "are neither able to load nor save\n"
 "preferences."
 msgstr ""
-"फाइल लेख्न सक्दैन %s.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"प्राथमिकताहरु लोड गर्न र बचत दुवै गर्न\n"
-"सक्षम हुनुहुन्न"
+"फाइल लेख्न सक्दैन %s\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"प्राथमिकताहरू लोड गर्न र बचत दुवै गर्न\n"
+"सक्षम हुनुहुन्न।"
 
 #: ../src/sodipodi.c:851
 #, c-format
@@ -1765,9 +1757,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"फाइल सृजना गर्न सक्दैन %s.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"विस्तारहरु(प्लगइनहरु)प्रयोग गर्न समर्थ हुनुहुन्न\n"
+"फाइल सिर्जना गर्न सक्दैन %s\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"विस्तारहरू (प्लगइनहरू ) प्रयोग गर्न समर्थ हुनुहुन्न\n"
 
 #: ../src/sodipodi.c:854
 #, c-format
@@ -1776,9 +1768,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"%s एउटा मान्य निर्देशिका होइन.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"विस्तारहरु(प्लगइनहरु)प्रयोग गर्न समर्थ हुनुहुन्न\n"
+"%s एउटा मान्य डाइरेक्टरी होइन।\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"विस्तारहरू (प्लगइनहरू ) प्रयोग गर्न समर्थ हुनुहुन्न\n"
 
 #: ../src/sodipodi.c:857
 #, c-format
@@ -1787,9 +1779,9 @@ msgid ""
 "Although sodipodi will run, you are\n"
 "not able to use extensions (plugins)\n"
 msgstr ""
-"फाइल सृजना गर्न सक्दैन %s.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"विस्तारहरु(प्लगइनहरु)प्रयोग गर्न समर्थ हुनुहुन्न\n"
+"फाइल सिर्जना गर्न सक्दैन %s\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"विस्तारहरू (प्लगइनहरू ) प्रयोग गर्न समर्थ हुनुहुन्न\n"
 
 #: ../src/sodipodi.c:860
 #, c-format
@@ -1799,13 +1791,13 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 "फाइल लेख्न सक्दैन %s.\n"
-"सोडिपोडि चलेपनि, तपाईं\n"
-"विस्तारहरु(प्लगइनहरु)प्रयोग गर्न समर्थ हुनुहुन्न\n"
+"सोडिपोडि चलेपनि, तपाईँ\n"
+"विस्तारहरू (प्लगइनहरू) प्रयोग गर्न समर्थ हुनुहुन्न\n"
 
 #: ../src/sp-anchor.c:196
 #, c-format
 msgid "Link to %s"
-msgstr "%s लाइ लिंक"
+msgstr "%s लाई लिङ्क गर्नुहोस्"
 
 #: ../src/sp-image.c:373
 #, c-format
@@ -1815,7 +1807,7 @@ msgstr "खराब सन्दर्भ सहितको छवि: %s"
 #: ../src/sp-image.c:375
 #, c-format
 msgid "Color image %d x %d: %s"
-msgstr "रंग छवि %d x %d: %s"
+msgstr "रङ छवि %d x %d: %s"
 
 #: ../src/sp-image.c:908
 #, c-format
@@ -1824,11 +1816,11 @@ msgstr "लेख्न त्रुटि %s: %s"
 
 #: ../src/sp-image.c:942
 msgid "Untitled"
-msgstr "शीर्षक नभएको"
+msgstr "शीर्षक विहिन"
 
 #: ../src/sp-image.c:947
 msgid "Document Name:"
-msgstr "कागजात नाम"
+msgstr "कागजात नाम:"
 
 #: ../src/sp-image.c:960
 msgid "Unknown"
@@ -1836,16 +1828,16 @@ msgstr "अज्ञात"
 
 #: ../src/sp-image.c:966
 msgid "Image URI:"
-msgstr "छवि युआरएल"
+msgstr "छवि यू आर एल:"
 
 #: ../src/sp-item-group.c:483
 #, c-format
 msgid "Group of %d objects"
-msgstr "%d वस्तुहरुको समुह"
+msgstr "%d वस्तुहरूको समूह"
 
 #: ../src/sp-item.c:554
 msgid "Unknown item :-("
-msgstr "अज्ञात चीज :-("
+msgstr "अज्ञात वस्तु  :-("
 
 #. fixme:
 #: ../src/sp-text.c:1293
@@ -1860,12 +1852,12 @@ msgstr "भित्रि अर्धव्यास"
 #. Proportion
 #: ../src/star-context.c:355
 msgid "Proportion:"
-msgstr "समानुपात"
+msgstr "समानुपात:"
 
 #. Making sides flat
 #: ../src/star-context.c:368
 msgid "Make sides flat"
-msgstr "छेउहरु चेप्टो बनाउँछ"
+msgstr "छेउहरू समतल बनाउँछ"
 
 #: ../src/toolbox.c:399
 msgid "Object"
@@ -1873,289 +1865,289 @@ msgstr "वस्तु"
 
 #: ../src/toolbox.c:403 ../src/verbs.c:481
 msgid "Object size and position"
-msgstr "वस्तु आकार र अवस्था"
+msgstr "वस्तु साइज र स्थिति"
 
 #: ../src/toolbox.c:404
 msgid "Text and font settings"
-msgstr "पाठ र फन्ट सेटिंगहरु"
+msgstr "पाठ र फन्ट सेटिङ"
 
 #: ../src/toolbox.c:406 ../src/verbs.c:482
 msgid "Object transformations"
-msgstr "वस्तु बदलीहरु"
+msgstr "वस्तु रूपान्तरणहरू"
 
 #: ../src/toolbox.c:485
 msgid "Draw"
-msgstr "रेखाङ्कन गर्नुहोस"
+msgstr "कोर्नुहोस्"
 
 #: ../src/toolbox.c:542
 msgid "Extension"
-msgstr "बिस्तार"
+msgstr "विस्तार"
 
 #: ../src/toolbox.c:624
 msgid "Nodes"
-msgstr "नोडहरु"
+msgstr "नोडहरू"
 
 #: ../src/toolbox.c:627
 msgid "Insert new nodes into selected segments"
-msgstr "छानिएको खण्डहरु मा नयाँ नोडहरु घुसाउनुहोस"
+msgstr "चयन गरिएको खण्डहरूमा नयाँ नोडहरू घुसाउनुहोस्"
 
 #: ../src/toolbox.c:629
 msgid "Break line at selected nodes"
-msgstr "छानिएको नोडहरु मा विच्छेद रेखा"
+msgstr "चयन गरिएको नोडहरूमा विच्छेद रेखा"
 
 #: ../src/toolbox.c:631
 msgid "Make selected nodes corner"
-msgstr "छानिएको नोडहरु कुना बनाउनुहोस"
+msgstr "चयन गरिएको नोडहरू कुना बनाउनुहोस्"
 
 #: ../src/toolbox.c:633
 msgid "Make selected segments lines"
-msgstr "छानिएको खण्डहरु रेखाहरु बनाउनुहोस"
+msgstr "चयन गरिएको खण्डहरू रेखाहरू बनाउनुहोस्"
 
 #: ../src/toolbox.c:635
 msgid "Delete selected nodes"
-msgstr "छानिएको नोडहरु मेट्नुहोस"
+msgstr "चयन गरिएको नोडहरू मेट्नुहोस्"
 
 #: ../src/toolbox.c:637
 msgid "Join lines at selected nodes"
-msgstr "छानिएको नोडहरुमा रेखाहरु जोड्नुहोस"
+msgstr "चयन गरिएको नोडहरूमा रेखाहरू जोड्नुहोस्"
 
 #: ../src/toolbox.c:640
 msgid "Join lines at selected nodes with new segment"
-msgstr "नयाँ खण्ड संग छानिएको नोडहरुमा रेखाहरु जोड्नुहोस"
+msgstr "नयाँ खण्डसँग चयन गरिएको नोडहरूमा रेखाहरू जोड्नुहोस्"
 
 #: ../src/toolbox.c:642
 msgid "Make selected nodes smooth"
-msgstr "छानिएको नोडहरुलाइ स्मुद बनाउनुहोस"
+msgstr "चयन गरिएको नोडहरूलाई मिहिन बनाउनुहोस्"
 
 #: ../src/toolbox.c:644
 msgid "Make selected segments curves"
-msgstr "छानिएको खण्डहरुलाइ वक्ररेखाहरु बनाउनुहोस"
+msgstr "चयन गरिएको खण्डहरूलाई वक्ररेखाहरू बनाउनुहोस्"
 
 #: ../src/verbs.c:407
 msgid "Does nothing"
-msgstr "केहि पनि गर्दैन"
+msgstr "केही पनि गर्दैन"
 
 #: ../src/verbs.c:409
 msgid "Create new SVG document"
-msgstr "नयाँ एसभिजि कागजात बनाउनुहोस"
+msgstr "नयाँ एसभिजि कागजात बनाउनुहोस्"
 
 #: ../src/verbs.c:410
 msgid "Open..."
-msgstr "खोल्नुहोस"
+msgstr "खोल्नुहोस्..."
 
 #: ../src/verbs.c:410
 msgid "Open existing SVG document"
-msgstr "अस्तित्वमा रहेको एसभिजि कागजात खोल्नुहोस"
+msgstr "अस्तित्वमा रहेको एसभिजि कागजात खोल्नुहोस्"
 
 #: ../src/verbs.c:411
 msgid "Save"
-msgstr "बचत गर्नुहोस"
+msgstr "बचत गर्नुहोस्"
 
 #: ../src/verbs.c:411
 msgid "Save document"
-msgstr "कागजात बचत गर्नुहोस"
+msgstr "कागजात बचत गर्नुहोस्"
 
 #: ../src/verbs.c:412
 msgid "Save As..."
-msgstr "को रुपमा बचत गर्नुहोस"
+msgstr "यसको रूपमा बचत गर्नुहोस्"
 
 #: ../src/verbs.c:412
 msgid "Save document under new name"
-msgstr "नयाँ नाम मा कागजात बचत गर्नुहोस"
+msgstr "नयाँ नाममा कागजात बचत गर्नुहोस्"
 
 #: ../src/verbs.c:413
 msgid "Print..."
-msgstr "छाप्नुहोस"
+msgstr "मुद्रण गर्नुहोस्..."
 
 #: ../src/verbs.c:413
 msgid "Print document"
-msgstr "कागजात छाप्नुहोस"
+msgstr "कागजात मुद्रण गर्नुहोस्"
 
 #: ../src/verbs.c:414
 msgid "Print Direct..."
-msgstr "सीधै छाप्नुहोस"
+msgstr "सीधै मुद्रण गर्नुहोस्"
 
 #: ../src/verbs.c:414
 msgid "Print directly to file or pipe"
-msgstr "फाइल अथवा पाइपमा सीधै छाप्नुहोसश"
+msgstr "फाइल अथवा पाइपमा सीधै मुद्रण गर्नुहोस्"
 
 #: ../src/verbs.c:415
 msgid "Print Preview"
-msgstr "छपाइ पूर्वालोकन"
+msgstr "मुद्रण पूर्वालोकन"
 
 #: ../src/verbs.c:415
 msgid "Preview document printout"
-msgstr "पुर्वदृश्य कागजात प्रिन्टआउट"
+msgstr "पुर्वदृश्य कागजात मुद्रण"
 
 #: ../src/verbs.c:416
 msgid "Import"
-msgstr "आयात गर्नुहोस"
+msgstr "आयात गर्नुहोस्"
 
 #: ../src/verbs.c:416
 msgid "Import bitmap or SVG image into document"
-msgstr "कागजात भित्र बिटम्याप वा एसभिजि छवि आयात गर्नुहोस"
+msgstr "कागजात भित्र बिटम्याप वा एसभिजि छवि आयात गर्नुहोस्"
 
 #: ../src/verbs.c:417
 msgid "Export document as PNG bitmap"
-msgstr "पिएनजि बिटम्याप को रुपमा कागजात निर्यात गर्नुहोस"
+msgstr "पिएनजि बिटम्यापको रूपमा कागजात निर्यात गर्नुहोस्"
 
 #: ../src/verbs.c:418
 msgid "Exit"
-msgstr "निस्कनुहोस"
+msgstr "निस्कनुहोस्"
 
 #. Edit
 #: ../src/verbs.c:420
 msgid "Undo"
-msgstr "पुर्वस्थितिमा फर्काउनुहोस"
+msgstr "पूर्वस्थितिमा फर्काउनुहोस्"
 
 #: ../src/verbs.c:420
 msgid "Revert last action"
-msgstr "अन्तिम कार्य मा फर्किनुहोस"
+msgstr "अन्तिम कार्यमा फर्किनुहोस्"
 
 #: ../src/verbs.c:421
 msgid "Redo"
-msgstr "रिडु गर्नुहोस"
+msgstr "रिडु गर्नुहोस्"
 
 #: ../src/verbs.c:421
 msgid "Do again undone action"
-msgstr "नगरिएको कार्य फेरि गर्नुहोस"
+msgstr "पूर्वावस्थामा ल्याइएकोलाई फेरि रिडु गर्नुहोस्"
 
 #: ../src/verbs.c:422
 msgid "Cut"
-msgstr "काट्नुहोस"
+msgstr "काट्नुहोस्"
 
 #: ../src/verbs.c:422
 msgid "Cut selected objects to clipboard"
-msgstr "क्लिपबोर्डमा छानिएको वस्तुहरु काट्नुहोस"
+msgstr "क्लिपबोर्डमा चयन गरिएको वस्तुहरू काट्नुहोस्"
 
 #: ../src/verbs.c:423
 msgid "Copy"
-msgstr "प्रतिलिपि बनाउनुहोस"
+msgstr "प्रतिलिपि बनाउनुहोस्"
 
 #: ../src/verbs.c:423
 msgid "Copy selected objects to clipboard"
-msgstr "क्लिपबोर्डमा छानिएको वस्तुहरु को प्रतिलिपि बनाउनुहोस"
+msgstr "क्लिपबोर्डमा चयन गरिएको वस्तुहरूको प्रतिलिपि बनाउनुहोस्"
 
 #: ../src/verbs.c:424
 msgid "Paste"
-msgstr "टाँस्नुहोस"
+msgstr "टाँस्नुहोस्"
 
 #: ../src/verbs.c:424
 msgid "Paste objects from clipboard"
-msgstr "क्लिपबोर्ड बाट वस्तुहरु टाँस्नुहोस"
+msgstr "क्लिपबोर्ड बाट वस्तुहरू टाँस्नुहोस्"
 
 #: ../src/verbs.c:425
 msgid "Delete"
-msgstr "मेट्नुहोस"
+msgstr "मेट्नुहोस्"
 
 #: ../src/verbs.c:425
 msgid "Delete selected objects"
-msgstr "छानिएको वस्तुहरु मेट्नुहोस"
+msgstr "चयन गरिएको वस्तुहरू मेट्नुहोस्"
 
 #: ../src/verbs.c:426
 msgid "Duplicate"
-msgstr "नक्कल गर्नुहोस"
+msgstr "नक्कल गर्नुहोस्"
 
 #: ../src/verbs.c:426
 msgid "Duplicate selected objects"
-msgstr "छानिएको वस्तुहरु को नक्कल गर्नुहोस"
+msgstr "चयन गरिएको वस्तुहरूको नक्कल गर्नुहोस्"
 
 #: ../src/verbs.c:427
 msgid "Clear All"
-msgstr "सबै खालि गर्नुहोस"
+msgstr "सबै खाली गर्नुहोस्"
 
 #: ../src/verbs.c:427
 msgid "Delete all objects from document"
-msgstr "कागजात बाट सबै वस्तुहरु मेट्नुहोस"
+msgstr "कागजात बाट सबै वस्तुहरू मेट्नुहोस्"
 
 #: ../src/verbs.c:428
 msgid "Select All"
-msgstr "सबै छान्नुहोस्"
+msgstr "सबै चयन गर्नुहोस्"
 
 #: ../src/verbs.c:428
 msgid "Select all objects in document"
-msgstr "कागजातमा सबै वस्तुहरु छान्नुहोस"
+msgstr "कागजातमा सबै वस्तुहरू चयन गर्नुहोस्"
 
 #: ../src/verbs.c:429
 msgid "Repeat"
-msgstr "दोहोर्याउनुहोस"
+msgstr "दोहोर्याउनुहोस्"
 
 #: ../src/verbs.c:429
 msgid "Repeat last saved action"
-msgstr "अन्तिम बचत गरिएको कार्य दोहोर्याउनुहोस"
+msgstr "अन्तिम बचत गरिएको कार्य दोहोर्याउनुहोस्"
 
 #. Selection
 #: ../src/verbs.c:431
 msgid "Bring to Front"
-msgstr "अगाडि ल्याउनुहोस"
+msgstr "अगाडि ल्याउनुहोस्"
 
 #: ../src/verbs.c:431
 msgid "Raise selected objects to top"
-msgstr "छानिएको वस्तुहरु लाइ माथि बढाउनुहोस"
+msgstr "चयन गरिएको वस्तुहरूलाई माथि बढाउनुहोस्"
 
 #: ../src/verbs.c:432
 msgid "Send to Back"
-msgstr "पछाडि पठाउनुहोस"
+msgstr "पछाडि पठाउनुहोस्"
 
 #: ../src/verbs.c:432
 msgid "Lower selected objects to bottom"
-msgstr "छानिएको वस्तुहरु लाइ तल घटाउनुहोस"
+msgstr "चयन गरिएको वस्तुहरूलाई तल घटाउनुहोस्"
 
 #: ../src/verbs.c:433
 msgid "Raise"
-msgstr "बढाउनुहोस"
+msgstr "बढाउनुहोस्"
 
 #: ../src/verbs.c:433
 msgid "Raise selected objects one position"
-msgstr "छानिएको वस्तुहरु लाइ एक अवस्था बढाउनुहोस"
+msgstr "चयन गरिएको वस्तुहरूलाई एक स्थिति बढाउनुहोस्"
 
 #: ../src/verbs.c:434
 msgid "Lower"
-msgstr "घटाउनुहोस"
+msgstr "घटाउनुहोस्"
 
 #: ../src/verbs.c:434
 msgid "Lower selected objects one position"
-msgstr "छानिएको वस्तुहरु लाइ एक अवस्था घटाउनुहोस"
+msgstr "चयन गरिएको वस्तुहरूलाई एक स्थिति घटाउनुहोस्"
 
 #: ../src/verbs.c:435
 msgid "Group selected objects"
-msgstr "छानिएको वस्तुहरुको समुह बनाउनुहोस"
+msgstr "चयन गरिएको वस्तुहरूको समूह बनाउनुहोस्"
 
 #: ../src/verbs.c:436
 msgid "Ungroup selected group"
-msgstr "छानिएको वस्तुहरुको समुह छुट्ट्याउनुहोस"
+msgstr "चयन गरिएको वस्तुहरूको समूह छुट्ट्याउनुहोस्"
 
 #: ../src/verbs.c:437
 msgid "Combine"
-msgstr "संयोजन गर्नुहोस"
+msgstr "संयोजन गर्नुहोस्"
 
 #: ../src/verbs.c:437
 msgid "Combine multiple paths"
-msgstr "बहुविध बाटोहरु संयोजन गर्नुहोस"
+msgstr "बहुविध मार्गहरू संयोजन गर्नुहोस्"
 
 #: ../src/verbs.c:438
 msgid "Break Apart"
-msgstr "छुट्टै विच्छेद गर्नुहोस"
+msgstr "छुट्टै विच्छेद गर्नुहोस्"
 
 #: ../src/verbs.c:438
 msgid "Break selected path to subpaths"
-msgstr "छानिएको बाटो लाइ उपबाटोहरु मा विच्छेद गर्नुहोस"
+msgstr "चयन गरिएको मार्गलाई उपमार्गहरूमा विच्छेद गर्नुहोस्"
 
 #: ../src/verbs.c:439
 msgid "Uncross"
-msgstr "क्रस छुटाउनुहोस"
+msgstr "क्रस छुटाउनुहोस्"
 
 #: ../src/verbs.c:439
 msgid "Break selected path at crossings"
-msgstr "क्रसिंगहरु मा छानिएको बाटो विच्छेद गर्नुहोस"
+msgstr "क्रसिंगहरूमा चयन गरिएको मार्ग विच्छेद गर्नुहोस्"
 
 #: ../src/verbs.c:440
 msgid "Union"
-msgstr "मेल"
+msgstr "संयोग"
 
 #: ../src/verbs.c:440
 msgid "Calculate union of selected paths"
-msgstr "छानिएको बाटोहरु को मेल गणना गर्नुहोस"
+msgstr "चयन गरिएको मार्गहरूको मेल गणना गर्नुहोस्"
 
 #: ../src/verbs.c:441
 msgid "Intersection"
@@ -2163,7 +2155,7 @@ msgstr "प्रतिच्छेद"
 
 #: ../src/verbs.c:441
 msgid "Calculate intersection of selected paths"
-msgstr "छानिएको बाटोहरु को प्रतिच्छेदन गणना गर्नुहोस"
+msgstr "चयन गरिएको मार्गहरूको प्रतिच्छेदन गणना गर्नुहोस्"
 
 #: ../src/verbs.c:442
 msgid "Subtraction"
@@ -2171,65 +2163,65 @@ msgstr "घटाउनु"
 
 #: ../src/verbs.c:442
 msgid "Subtract paths from first"
-msgstr "पहिलो बाट बाटोहरु घटाउनुहोस"
+msgstr "पहिलो बाट मार्गहरू घटाउनुहोस्"
 
 #: ../src/verbs.c:443
 msgid "Transform"
-msgstr "बदल्नुहोस"
+msgstr "बदल्नुहोस्"
 
 #: ../src/verbs.c:443
 msgid "Applies transformation"
-msgstr "बदली लागु गर्दछ"
+msgstr "रूपान्तरण लागू गर्दछ"
 
 #. Object
 #: ../src/verbs.c:445
 msgid "Rotate 90 degrees"
-msgstr "९० डिग्री घुमाउनुहोस"
+msgstr "९० डिग्री घुमाउनुहोस्"
 
 #: ../src/verbs.c:445
 msgid "Rotates object 90 degrees clockwise"
-msgstr "वस्तु लाइ घडिको दिशा अनुसार ९० डिग्रि घुमाउँछ"
+msgstr "वस्तुलाई घडिको दिशा अनुसार ९० डिग्रि घुमाउँछ"
 
 #: ../src/verbs.c:446
 msgid "Flatten object"
-msgstr "वस्तुलाइ चेप्टो बनाउँछ"
+msgstr "वस्तुलाई चेप्टो बनाउँछ"
 
 #: ../src/verbs.c:446
 msgid "Remove transformations from object"
-msgstr "वस्तु बाट बदलीहरु हटाउनुहोस"
+msgstr "वस्तु बाट रूपान्तरणहरू हटाउनुहोस्"
 
 #: ../src/verbs.c:447
 msgid "Convert to Curves"
-msgstr "वक्ररेखाहरुमा रुपान्तरण गर्नुहोस"
+msgstr "वक्ररेखाहरूमा रूपान्तरण गर्नुहोस्"
 
 #: ../src/verbs.c:447
 msgid "Convert selected object to path"
-msgstr "छानिएको वस्तुलाइ बाटोमा रुपान्तरण गर्नुहोस"
+msgstr "चयन गरिएको वस्तुलाई मार्गमा रूपान्तरण गर्नुहोस्"
 
 #: ../src/verbs.c:448
 msgid "Flip Horizontally"
-msgstr "तेर्सो गरी फ्लिप गर्नुहोस"
+msgstr "तेर्सो गरी घुमाउनुहोस्"
 
 #: ../src/verbs.c:449
 msgid "Flip selected objects horizontally"
-msgstr "छानिएको वस्तुहरु तेर्सोगरी फ्लिप गर्नुहोस"
+msgstr "चयन गरिएको वस्तुहरू तेर्सो गरी घुमाउनुहोस्"
 
 #: ../src/verbs.c:450
 msgid "Flip Vertically"
-msgstr "ठाडो गरी फ्लिप गर्नुहोस"
+msgstr "ठाडो गरी घुमाउनुहोस्"
 
 #: ../src/verbs.c:451
 msgid "Flip selected objects vertically"
-msgstr "ठाडो गरी छानिएको वस्तुहरु फ्लिप गर्नुहोस"
+msgstr "ठाडो गरी चयन गरिएको वस्तुहरू घुमाउनुहोस्"
 
 #. Event contexts
 #: ../src/verbs.c:453
 msgid "Select"
-msgstr "चयन गर्नुहोस"
+msgstr "चयन गर्नुहोस्"
 
 #: ../src/verbs.c:453
 msgid "Select and transform objects"
-msgstr "वस्तुहरु चयन गर्नुहोस र बदली गर्नुहोस"
+msgstr "वस्तुहरू चयन गर्नुहोस् र रूपान्तर गर्नुहोस्"
 
 #: ../src/verbs.c:454
 msgid "Node edit"
@@ -2237,7 +2229,7 @@ msgstr "नोड सम्पादन"
 
 #: ../src/verbs.c:454
 msgid "Modify existing objects by control nodes"
-msgstr "नियन्त्रण नोडहरु द्वारा अस्तित्वमा रहेका वस्तुहरु समायोजन गर्नुहोस"
+msgstr "नियन्त्रण नोडद्वारा अस्तित्वमा रहेका वस्तुहरू समायोजन गर्नुहोस्"
 
 #: ../src/verbs.c:455
 msgid "Rectangle"
@@ -2245,23 +2237,23 @@ msgstr "आयात"
 
 #: ../src/verbs.c:455
 msgid "Create rectangles and squares with optional rounded corners"
-msgstr "इच्छाधिन घुमेको कुनाहरु संग आयातहरु र वर्गहरु सृजना गर्नुहोस"
+msgstr "इच्छाधिन घुमेको कुनाहरूसँग आयातहरू र वर्गहरू सिर्जना गर्नुहोस्"
 
 #: ../src/verbs.c:456
 msgid "Ellipse"
-msgstr "अंडाकार"
+msgstr "अण्डाकार"
 
 #: ../src/verbs.c:456
 msgid "Create circles, ellipses and arcs"
-msgstr "वृतहरु, अंडाकारहरु र चापहरु सृजना गर्नुहोस"
+msgstr "वृतहरू, अण्डाकारहरू र चापहरू सिर्जना गर्नुहोस्"
 
 #: ../src/verbs.c:457
 msgid "Create stars and polygons"
-msgstr "ताराहरु र बहुभुजहरु"
+msgstr "ताराहरू र बहुभुजहरू"
 
 #: ../src/verbs.c:458
 msgid "Create spirals"
-msgstr "घुमाउरोहरु सृजना गर्नुहोस"
+msgstr "घुमाउरोहरू सिर्जना गर्नुहोस्"
 
 #: ../src/verbs.c:459
 msgid "Pencil"
@@ -2269,7 +2261,7 @@ msgstr "पेन्सिल"
 
 #: ../src/verbs.c:459
 msgid "Draw freehand curves and straight lines"
-msgstr "फ्रिह्यान्ड वक्ररेखाहरु र सीधा रेखाहरु रेखांकन गर्नुहोस"
+msgstr "फ्रिह्यान्ड वक्ररेखाहरू र सीधा रेखाहरू रेखाङ्कन गर्नुहोस्"
 
 #: ../src/verbs.c:460
 msgid "Pen"
@@ -2277,7 +2269,7 @@ msgstr "कलम"
 
 #: ../src/verbs.c:460
 msgid "Draw precisely positioned curved and straight lines"
-msgstr "विधिपुर्वक अवस्थित र सीधा रेखाहरु रेखांकन गर्नुहोस"
+msgstr "विधिपूर्वक अवस्थित र सीधा रेखाहरू रेखाङ्कन गर्नुहोस्"
 
 #: ../src/verbs.c:461
 msgid "Calligraphy"
@@ -2285,15 +2277,15 @@ msgstr "हस्तलेखन"
 
 #: ../src/verbs.c:461
 msgid "Draw calligraphic lines"
-msgstr "हस्तलेखन रेखाहरु रेखांकन गर्नुहोस"
+msgstr "हस्तलेखन रेखाहरू रेखाङ्कन गर्नुहोस्"
 
 #: ../src/verbs.c:462
 msgid "Create and edit text objects"
-msgstr "पाठ वस्तुहरु सृजना र सम्पादन गर्नुहोस"
+msgstr "पाठ वस्तुहरू सिर्जना र सम्पादन गर्नुहोस्"
 
 #: ../src/verbs.c:463
 msgid "Zoom into precisely selected area"
-msgstr "विधिपुर्वक छानिएको क्षेत्र मा जुम गर्नुहोस"
+msgstr "विधिपूर्वक चयन गरिएको क्षेत्रमा जुम गर्नुहोस्"
 
 #: ../src/verbs.c:464
 msgid "Dropper"
@@ -2301,7 +2293,7 @@ msgstr "ड्रपर"
 
 #: ../src/verbs.c:464
 msgid "Pick averaged colors from image"
-msgstr "छवि बाट औसत गरिएको रंगहरु रोज्नुहोस"
+msgstr "छवि बाट औसत गरिएको रङहरू रोज्नुहोस्"
 
 #. Zooming
 #: ../src/verbs.c:466
@@ -2310,7 +2302,7 @@ msgstr "भित्र"
 
 #: ../src/verbs.c:466
 msgid "Zoom in drawing"
-msgstr "रेखाचित्र जुम बढाउनुहोस"
+msgstr "रेखाचित्र जुम बढाउनुहोस्"
 
 #: ../src/verbs.c:467
 msgid "Out"
@@ -2318,7 +2310,7 @@ msgstr "बाहिर"
 
 #: ../src/verbs.c:467
 msgid "Zoom out drawing"
-msgstr "रेखाचित्र जुम घटाउनुहोस"
+msgstr "रेखाचित्र जुम घटाउनुहोस्"
 
 #: ../src/verbs.c:468
 msgid "1:1"
@@ -2326,7 +2318,7 @@ msgstr "१:१"
 
 #: ../src/verbs.c:468
 msgid "Set zoom factor to 1:1"
-msgstr "१:१ मा जुम खण्ड सेट गर्नुहोस"
+msgstr "१:१ मा जुम खण्ड सेट गर्नुहोस्"
 
 #: ../src/verbs.c:469
 msgid "1:2"
@@ -2334,7 +2326,7 @@ msgstr "१:२"
 
 #: ../src/verbs.c:469
 msgid "Set zoom factor to 1:2"
-msgstr "१:२ मा जुम खण्ड सेट गर्नुहोस"
+msgstr "१:२ मा जुम खण्ड सेट गर्नुहोस्"
 
 #: ../src/verbs.c:470
 msgid "2:1"
@@ -2342,28 +2334,28 @@ msgstr "२:१"
 
 #: ../src/verbs.c:470
 msgid "Set zoom factor to 2:1"
-msgstr "२:१ मा जुम खण्ड सेट गर्नुहोस"
+msgstr "२:१ मा जुम खण्ड सेट गर्नुहोस्"
 
 #: ../src/verbs.c:471
 msgid "Fit the whole page into window"
-msgstr "विन्डोमा पुरा पृष्ठ ठिक्क पार्नुहोस"
+msgstr "सञ्झ्यालमा पूरा पृष्ठ ठीक पार्नुहोस्"
 
 #: ../src/verbs.c:472
 msgid "Fit the whole drawing into window"
-msgstr "विन्डोमा पुरा रेखाचित्र ठिक्क पार्नुहोस"
+msgstr "सञ्झ्यालमा पूरा रेखाचित्र ठीक पार्नुहोस्"
 
 #: ../src/verbs.c:473
 msgid "Fit the whole selection into window"
-msgstr "विन्डोमा पुरा छनौट ठिक्क पार्नुहोस"
+msgstr "सञ्झ्यालमा पूरा चयन ठीक पार्नुहोस्"
 
 #. Dialogs
 #: ../src/verbs.c:475
 msgid "Display"
-msgstr "प्रदर्शन गर्नुहोस"
+msgstr "प्रदर्शन गर्नुहोस्"
 
 #: ../src/verbs.c:475
 msgid "Global display settings"
-msgstr "विश्वव्यापि प्रदर्शन सेटिंगहरु"
+msgstr "विश्वव्यापि प्रदर्शन सेटिङ"
 
 #: ../src/verbs.c:476
 msgid "Page layout"
@@ -2371,39 +2363,39 @@ msgstr "पृष्ठ सजावट"
 
 #: ../src/verbs.c:477
 msgid "Editing Window"
-msgstr "विन्डो सम्पादन"
+msgstr "सञ्झ्याल सम्पादन"
 
 #: ../src/verbs.c:477
 msgid "Editing window properties"
-msgstr "विन्डो गुणहरु सम्पादन"
+msgstr "सञ्झ्याल गुण सम्पादन"
 
 #: ../src/verbs.c:478
 msgid "Tool Options"
-msgstr "उपकरण विकल्पहरु"
+msgstr "उपकरण विकल्प"
 
 #: ../src/verbs.c:479
 msgid "Tool Attributes"
-msgstr "उपकरण विशेषताहरु"
+msgstr "उपकरण विशेषता"
 
 #: ../src/verbs.c:480
 msgid "Fill and Stroke"
-msgstr "भर्नुहोस र स्ट्रोक गर्नुहोस"
+msgstr "भर्नुहोस् र स्ट्रोक गर्नुहोस्"
 
 #: ../src/verbs.c:480
 msgid "Fill and stroke settings"
-msgstr "सेटिंगहरु भर्नुहोस र स्ट्रोक गर्नुहोस"
+msgstr "भराइ र स्ट्रोक सेटिङ"
 
 #: ../src/verbs.c:482
 msgid "Transformations"
-msgstr "बदलीहरु"
+msgstr "रूपान्तरण"
 
 #: ../src/verbs.c:483
 msgid "Align and Distribute"
-msgstr "पंक्तिबद्ध गर्नुहोस र वितरण गर्नुहोस"
+msgstr "पङ्क्तिबद्ध गर्नुहोस् र वितरण गर्नुहोस्"
 
 #: ../src/verbs.c:483
 msgid "Align and distribute"
-msgstr "पंक्तिबद्ध गर्नुहोस र वितरण गर्नुहोस"
+msgstr "पङ्क्तिबद्ध गर्नुहोस् र वितरण गर्नुहोस्"
 
 #: ../src/verbs.c:484
 msgid "Text and Font"
@@ -2411,11 +2403,11 @@ msgstr "पाठ र फन्ट"
 
 #: ../src/verbs.c:484
 msgid "Text editing and font settings"
-msgstr "पाठ सम्पादन र फन्ट सेटिंगहरु"
+msgstr "पाठ सम्पादन र फन्ट सेटिङ"
 
 #: ../src/verbs.c:485
 msgid "Document Tree"
-msgstr "कागजात वृक्ष"
+msgstr "कागजात ट्रि"
 
 #: ../src/verbs.c:486
 msgid "XML Editor"
@@ -2429,23 +2421,23 @@ msgstr "फन्ट परिवार"
 #. Style frame
 #: ../src/widgets/font-selector.c:193
 msgid "Style"
-msgstr "शैलि"
+msgstr "शैली"
 
 #: ../src/widgets/font-selector.c:228
 msgid "Font size:"
-msgstr "फन्ट आकार"
+msgstr "फन्ट साइज"
 
 #: ../src/widgets/font-selector.c:560
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr "एएबिबिसिसिआइआइपिपिक्युक्यु१२३६८.;/()"
+msgstr "AaBbCcIiPpQq12368.;/()"
 
 #: ../src/widgets/gradient-selector.c:143
 msgid "Add"
-msgstr "थप्नुहोस"
+msgstr "थप्नुहोस्"
 
 #: ../src/widgets/gradient-selector.c:179
 msgid "gradientUnits"
-msgstr "ग्रेडियन्टएकाइहरु"
+msgstr "ग्रेडियन्ट एकाइहरू"
 
 #: ../src/widgets/gradient-selector.c:208
 msgid "gradientSpread"
@@ -2453,7 +2445,7 @@ msgstr "ग्रेडियन्टस्प्रेड"
 
 #: ../src/widgets/gradient-vector.c:250
 msgid "No document selected"
-msgstr "कुनै कागजात चयन नगरिएको"
+msgstr "कुनै कागजात चयन गरिएन"
 
 #: ../src/widgets/gradient-vector.c:256
 msgid "No gradients in document"
@@ -2465,11 +2457,11 @@ msgstr "कुनै ग्रेडियन्ट चयन गरिएन"
 
 #: ../src/widgets/gradient-vector.c:417
 msgid "Start color"
-msgstr "रंग शुरु गर्नुहोस"
+msgstr "रङ सुरु गर्नुहोस्"
 
 #: ../src/widgets/gradient-vector.c:427
 msgid "End color"
-msgstr "रंग समाप्त गर्नुहोस"
+msgstr "रङ समाप्त गर्नुहोस्"
 
 #: ../src/widgets/gradient-vector.c:452
 msgid "Gradient vector"
@@ -2477,11 +2469,11 @@ msgstr "ग्रेडियन्ट भेक्टर"
 
 #: ../src/widgets/paint-selector.c:622
 msgid "No objects"
-msgstr "वस्तुहरु छैन"
+msgstr "वस्तुहरू छैन"
 
 #: ../src/widgets/paint-selector.c:636
 msgid "Multiple styles"
-msgstr "बहुविध शैलीहरु"
+msgstr "बहुविध शैलीहरू"
 
 #: ../src/widgets/paint-selector.c:650
 msgid "No paint"
@@ -2498,7 +2490,7 @@ msgstr "आरजिबि"
 
 #: ../src/widgets/paint-selector.c:757 ../src/widgets/paint-selector.c:758
 msgid "RGB Colorspace"
-msgstr "आरजिबि रङ्गस्थान"
+msgstr "आरजिबि रङस्थान"
 
 #: ../src/widgets/paint-selector.c:758
 msgid "HSV"
@@ -2510,16 +2502,16 @@ msgstr "सिएमवाइके"
 
 #: ../src/widgets/paint-selector.c:759
 msgid "CMYK Colorspace"
-msgstr "सिएमवाइके रङ्गस्थान"
+msgstr "सिएमवाइके रङस्थान"
 
 #. Use dropper
 #: ../src/widgets/paint-selector.c:766
 msgid "Get from dropper"
-msgstr "ड्रपर बाट प्राप्त गर्नुहोस"
+msgstr "ड्रपर बाट प्राप्त गर्नुहोस्"
 
 #: ../src/widgets/paint-selector.c:797
 msgid "Color paint"
-msgstr "रङ्ग पेन्ट"
+msgstr "रङ पेन्ट"
 
 #: ../src/widgets/paint-selector.c:875
 msgid "Linear gradient"
@@ -2581,7 +2573,7 @@ msgstr "अभिमुखीकरण"
 
 #: ../src/widgets/sp-dock-item.c:244
 msgid "Orientation of the docking item"
-msgstr "डक गर्ने चीजको अभिमुखिकरण"
+msgstr "डक गर्ने वस्तुको अभिमुखिकरण"
 
 #: ../src/widgets/sp-dock-item.c:259
 msgid "Resizable"
@@ -2589,36 +2581,33 @@ msgstr "रिसाइज गर्न योग्य"
 
 #: ../src/widgets/sp-dock-item.c:260
 msgid "If set, the dock item can be resized when docked in a paned"
-msgstr "सेट भएपछि, प्यानलमा डक भएपछि डक चीज रिसाइज गर्न सकिन्छ"
+msgstr "सेट भएपछि, प्यानलमा डक भएपछि डक वस्तु रिसाइज गर्न सकिन्छ"
 
 #: ../src/widgets/sp-dock-item.c:267
 msgid "Item behavior"
-msgstr "चीज व्यवहार"
+msgstr "वस्तु व्यवहार"
 
 #: ../src/widgets/sp-dock-item.c:268
 msgid ""
 "General behavior for the dock item (i.e. whether it can float, if it's "
 "locked, etc.)"
-msgstr ""
-"डक चीज को लागि साधारण व्यवहार (जस्तो कि यो तैरिन सक्छ कि सक्दैन,यदि यो ताल्चा "
-"लगाइएको छ भने, आदि)"
+msgstr "डक वस्तुका लागि साधारण व्यवहार (जस्तो कि यो तैरिन सक्छ कि सक्दैन, यदि यो ताल्चा लगाइएको छ भने, आदि)"
 
 #: ../src/widgets/sp-dock-item.c:276
 msgid "Grip size"
-msgstr "पकड आकार"
+msgstr "ग्रिप साइज"
 
 #: ../src/widgets/sp-dock-item.c:277
 msgid "Size in pixels of the grip to drag the dock item"
-msgstr "डक चीज लाइ तान्नको लागि पकड को आकार पिक्सेलमा"
+msgstr "डक वस्तुलाई तान्नका लागि पिक्सेलमा ग्रिपको साइज"
 
 #: ../src/widgets/sp-dock-item.c:283 ../src/widgets/sp-dock-master.c:149
 msgid "Locked"
 msgstr "ताल्चा लगाइएको"
 
 #: ../src/widgets/sp-dock-item.c:284
-msgid ""
-"If set, the dock item cannot be dragged around and it doesn't show a grip"
-msgstr "सेट भएपछि,डक चीज वरिपरि तान्न सकिंदैन र यसले एउटा पकड देखाउँदैन"
+msgid "If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr "सेट भएपछि,डक वस्तु वरिपरि तान्न सकिँदैन र यसले एउटा ग्रिप देखाउँदैन"
 
 #: ../src/widgets/sp-dock-item.c:292
 msgid "Preferred width"
@@ -2626,7 +2615,7 @@ msgstr "रोजिएको चौडाइ"
 
 #: ../src/widgets/sp-dock-item.c:293
 msgid "Preferred width for the dock item"
-msgstr "डक चीजको लागि रोजिएको चौडाइ"
+msgstr "डक वस्तुका लागि रोजिएको चौडाइ"
 
 #: ../src/widgets/sp-dock-item.c:299
 msgid "Preferred height"
@@ -2634,45 +2623,41 @@ msgstr "रोजिएको उचाइ"
 
 #: ../src/widgets/sp-dock-item.c:300
 msgid "Preferred height for the dock item"
-msgstr "डक चीजको लागि रोजिएको चौडाइ"
+msgstr "डक वस्तुका लागि रोजिएको चौडाइ"
 
 #: ../src/widgets/sp-dock-item.c:547
 #, c-format
 msgid ""
 "You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
 "some other compound dock object."
-msgstr ""
-"तपाईं एउटा डक वस्तु थप्न सक्नुहुन्न (%p प्रकारको %s) एउटा %s भित्र. एसपि डक अथवा कुनै "
-"अन्य मिश्रित डक वस्तु प्रयोग गर्नुहोस"
+msgstr "तपाईँ एउटा डक वस्तु थप्न सक्नुहुन्न (%p प्रकारको %s) एउटा %s भित्र. एसपि डक अथवा कुनै अन्य मिश्रित डक वस्तु प्रयोग गर्नुहोस्"
 
 #: ../src/widgets/sp-dock-item.c:554
 #, c-format
 msgid ""
 "Attempting to add a widget with type %s to a %s, but it can only contain one "
 "widget at a time; it already contains a widget of type %s"
-msgstr ""
-"%s प्रकार देखि एउटा %s को एउटा विजेट थप्ने प्रयास गर्दै, तर यसले एक समयमा केवल एउटा "
-"विजेट समाहित गर्न सक्छ; यसमा पहिल्यै %s प्रकारको एउटा विजेट समाहित छ"
+msgstr "%s प्रकार देखि एउटा %s को एउटा विजेट थप्ने प्रयास गर्दै, तर यसले एक समयमा केवल एउटा विजेट समाहित गर्न सक्छ; यसमा पहिल्यै %s प्रकारको एउटा विजेट समाहित छ"
 
 #: ../src/widgets/sp-dock-item.c:1156
 #, c-format
 msgid "Unsupported docking strategy %s in dock object of type %s"
-msgstr "%s प्रकारको डक वस्तु मा असमर्थित डक गर्ने रणनीति %s"
+msgstr "%s प्रकारको डक वस्तुमा असमर्थित डक गर्ने रणनीति %s"
 
 #. Hide menuitem.
 #: ../src/widgets/sp-dock-item.c:1238
 msgid "Hide"
-msgstr "लुकाउनु॒होस"
+msgstr "लुकाउनुहोस्"
 
 #. Lock menuitem
 #: ../src/widgets/sp-dock-item.c:1244
 msgid "Lock"
-msgstr "ताल्चा लगाउनुहोस"
+msgstr "ताल्चा लगाउनुहोस्"
 
 #: ../src/widgets/sp-dock-item.c:1411
 #, c-format
 msgid "Attempt to bind an unbound item %p"
-msgstr "नबाँधिएको चीज %p बाँध्ने प्रयास"
+msgstr "नबाँधिएको वस्तु %p बाँध्ने प्रयास"
 
 #: ../src/widgets/sp-dock-layout.c:144
 msgid "Master"
@@ -2688,11 +2673,11 @@ msgstr "मैला"
 
 #: ../src/widgets/sp-dock-layout.c:153
 msgid "True if the layouts have changed and need to be saved to a file"
-msgstr "सहि यदि सजावटहरु परिवर्तन गरिएको छ भने र एउटा फाइलमा बचत गर्नु छ भने"
+msgstr "सहि यदि सजावटहरू परिवर्तन गरिएको छ भने र एउटा फाइलमा बचत गर्नु छ भने"
 
 #: ../src/widgets/sp-dock-layout.c:500
 msgid "You must provide a name for the layout"
-msgstr "सजावट को लागि तपाईंले एउटा नाम दिनुपर्दछ"
+msgstr "सजावटका लागि तपाईँले एउटा नाम दिनुपर्दछ"
 
 #. FIXME: pop up an error dialog
 #: ../src/widgets/sp-dock-layout.c:679
@@ -2706,18 +2691,18 @@ msgstr "नाम"
 
 #: ../src/widgets/sp-dock-layout.c:830
 msgid "Dock items"
-msgstr "डक चीजहरु"
+msgstr "डक वस्तुहरू"
 
 #: ../src/widgets/sp-dock-layout.c:836
 msgid "Saved layouts"
-msgstr "बचत गरिएको सजावटहरु"
+msgstr "बचत गरिएको सजावटहरू"
 
 #: ../src/widgets/sp-dock-layout.c:902
 #, c-format
 msgid ""
 "While loading layout: don't know how to create a dock object whose nick is '%"
 "s'"
-msgstr "सजावट लोड गर्दा: थाहा छैन कसरी एउटा डक वस्तु सृजना गर्ने जसको उप '%s' हो"
+msgstr "सजावट लोड गर्दा: थाहा छैन कसरी एउटा डक वस्तु सिर्जना गर्ने जसको उप '%s' हो"
 
 #: ../src/widgets/sp-dock-layout.c:1459
 msgid "Layout managment"
@@ -2725,35 +2710,31 @@ msgstr "सजावट व्यवस्थापन"
 
 #: ../src/widgets/sp-dock-master.c:142 ../src/widgets/sp-dock.c:184
 msgid "Default title"
-msgstr "पुर्वनिर्धारित शीर्षक"
+msgstr "पूर्वनिर्धारित शीर्षक"
 
 #: ../src/widgets/sp-dock-master.c:143
 msgid "Default title for newly created floating docks"
-msgstr "भर्खरै सृजना गरिएका उत्प्लावन डकहरु को लागि पुर्वनिर्धारित शीर्षक"
+msgstr "भर्खरै सिर्जना गरिएका उत्प्लावन डकहरूका लागि पूर्वनिर्धारित शीर्षक"
 
 #: ../src/widgets/sp-dock-master.c:150
 msgid ""
 "If is set to 1, all the dock items bound to the master are locked; if it's "
 "0, all are unlocked; -1 indicates inconsistency among the items"
-msgstr ""
-"१ मा सेट छ भने, मास्टर मा बाँधिएका सबै डक चीजहरु ताल्चा लगाइन्छन,यदि ० मा छ भने, सबै "
-"ताल्चा खोलिनेछन; -१ ले चीजहरु मध्ये असामन्जस्यता सुचित गर्दछ"
+msgstr "१ मा सेट छ भने, मास्टर मा बाँधिएका सबै डक वस्तुहरू ताल्चा लगाइन्छन, यदि ० मा छ भने, सबै ताल्चा खोलिनेछन; -१ ले वस्तुहरू मध्ये असामन्जस्यता सूचीत गर्दछ"
 
 #: ../src/widgets/sp-dock-master.c:741
 #, c-format
 msgid ""
 "master %p: unable to add object %p[%s] to the hash.  There already is an "
 "item with that name (%p)."
-msgstr ""
-"मास्टर %p: ह्याश मा वस्तु थप्न असमर्थ %p[%s].  त्यो नाम बाट पहिल्यै एउटा चीज छ (%p)."
+msgstr "मास्टर %p: ह्याशमा वस्तु थप्न असमर्थ %p[%s]. त्यो नामबाट पहिल्यै एउटा वस्तु छ (%p)"
 
 #: ../src/widgets/sp-dock-master.c:906
 #, c-format
 msgid ""
 "The new dock controller %p is automatic.  Only manual dock objects should be "
 "named controller."
-msgstr ""
-"नयाँ डक नियन्त्रक %p स्वचालित छ.  केवल मानवचालित डक वस्तुहरु नियन्त्रक नामाकरण हुनुपर्दछ"
+msgstr "नयाँ डक नियन्त्रक %p स्वचालित छ।  केवल मानवचालित डक वस्तुहरू नियन्त्रक नामकरण हुनुपर्दछ।"
 
 #: ../src/widgets/sp-dock-notebook.c:136
 msgid "The index of the current page"
@@ -2761,7 +2742,7 @@ msgstr "हालको पृष्ठको अनुक्रमणिका"
 
 #: ../src/widgets/sp-dock-object.c:124
 msgid "Unique name for identifying the dock object"
-msgstr "डक वस्तु पहिचान गर्नको लागि अद्वितिय नाम"
+msgstr "डक वस्तु पहिचान गर्नका लागि अद्वितिय नाम"
 
 #: ../src/widgets/sp-dock-object.c:131
 msgid "Long name"
@@ -2769,7 +2750,7 @@ msgstr "लामो नाम"
 
 #: ../src/widgets/sp-dock-object.c:132
 msgid "Human readable name for the dock object"
-msgstr "डक वस्तुको लागि मानवले पढ्नेयोग्य नाम"
+msgstr "डक वस्तुका लागि मानवले पढ्नेयोग्य नाम"
 
 #: ../src/widgets/sp-dock-object.c:138
 msgid "Dock master"
@@ -2777,53 +2758,49 @@ msgstr "डक मास्टर"
 
 #: ../src/widgets/sp-dock-object.c:139
 msgid "Dock master this dock object is bound to"
-msgstr "डक मास्टर मा यो डक वस्तु बाँधिएको छ"
+msgstr "डक मास्टरमा यो डक वस्तु बाँधिएको छ"
 
 #: ../src/widgets/sp-dock-object.c:408
 #, c-format
 msgid ""
 "Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
 "hasn't implemented this method"
-msgstr ""
-"एउटा डक वस्तु %p (%s वस्तु प्रकार हो) मा एसपि_डक_वस्तु_डक बोलाउनुहोस जुन यो विधिमा "
-"अवलम्बन गरिएको छैन"
+msgstr "एउटा डक वस्तु %p (%s वस्तु प्रकार हो) मा एसपि_डक_वस्तु_डक बोलाउनुहोस् जुन यो विधिमा अवलम्बन गरिएको छैन"
 
 #: ../src/widgets/sp-dock-object.c:537
 #, c-format
 msgid ""
 "Dock operation requested in a non-bound object %p. The application might "
 "crash"
-msgstr "नबाँधिएको वस्तु %p मा डक संचालन अनुरोधि गरिएको. अनुप्रयोग क्र्यास हुन सक्छ"
+msgstr "नबाँधिएको वस्तु %p मा डक सञ्चालन अनुरोधि गरिएको। अनुप्रयोग क्र्यास हुनसक्छ"
 
 #: ../src/widgets/sp-dock-object.c:544
 #, c-format
 msgid "Cannot dock %p to %p because they belong to different masters"
-msgstr "%p मा %p डक गर्न सक्दैन किनभने तिनिहरु विभिन्न मास्टरहरु को अधिनमा छन"
+msgstr "%p मा %p डक गर्न सक्दैन किनभने तिनिहरू विभिन्न मास्टरहरूको अधिनमा छन"
 
 #: ../src/widgets/sp-dock-object.c:586
 #, c-format
-msgid ""
-"Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgid "Attempt to bind to %p an already bound dock object %p (current master: %p)"
 msgstr "एउटा पहिल्यै बाँधिएको डक वस्तु %p (हालको मास्टर: %p) मा बाँध्ने %p प्रयास"
 
 #: ../src/widgets/sp-dock-paned.c:134
 msgid "Position"
-msgstr "अवस्था"
+msgstr "स्थिति"
 
 #: ../src/widgets/sp-dock-paned.c:135
 msgid "Position of the divider in pixels"
-msgstr "विभाजक को अवस्था पिक्सेलमा"
+msgstr "विभाजकको स्थिति पिक्सेलमा"
 
 #: ../src/widgets/sp-dock-placeholder.c:125
 msgid "Sticky"
-msgstr "चिपचिपे"
+msgstr "टासिने"
 
 #: ../src/widgets/sp-dock-placeholder.c:126
 msgid ""
 "Whether the placeholder will stick to its host or move up the hierarchy when "
 "the host is redocked"
-msgstr ""
-"जब होस्ट फेरि डक हुन्छ या त प्लेसहोल्डर आफ्नो होस्ट मा टाँसिनेछ अथवा अनुक्रम को माथि सर्नेछ"
+msgstr "जब होस्ट फेरि डक हुन्छ या त प्लेसहोल्डर आफ्नो होस्टमा टाँसिनेछ अथवा अनुक्रमको माथि सर्नेछ"
 
 #: ../src/widgets/sp-dock-placeholder.c:133
 msgid "Host"
@@ -2841,12 +2818,11 @@ msgstr "पछिल्लो स्थापन"
 msgid ""
 "The position an item will be docked to our host if a request is made to dock "
 "to us"
-msgstr ""
-"यदि हामीमा डक हुने एउटा अनुरोध बनाइयो भने एउटा चीजको अवस्था हाम्रो होस्टमा डक हुनेछ"
+msgstr "यदि हामीमा डक हुने एउटा अनुरोध बनाइयो भने एउटा वस्तुको स्थिति हाम्रो होस्टमा डक हुँनेछ"
 
 #: ../src/widgets/sp-dock-placeholder.c:303
 msgid "Attempt to dock a dock object to an unbound placeholder"
-msgstr "एउटा नबाँधिएको प्लेसहोल्डर लाइ एउटा डक वस्तु डक गर्ने प्रयास"
+msgstr "एउटा नबाँधिएको प्लेसहोल्डरलाई एउटा डक वस्तु डक गर्ने प्रयास"
 
 #: ../src/widgets/sp-dock-placeholder.c:417
 #, c-format
@@ -2858,7 +2834,7 @@ msgstr "एउटा वस्तु (%p) जो हाम्रो होस्
 msgid ""
 "Something weird happened while getting the child placement for %p from "
 "parent %p"
-msgstr "प्रमुल %p बाट %p को लागि बालक स्थापन प्राप्त गर्दा केहि अद्‌भुत भयो"
+msgstr "प्रमूल %p बाट %p का लागि शाखा स्थापन प्राप्त गर्दा केही अद्‌भुत भयो"
 
 #: ../src/widgets/sp-dock-tablabel.c:131
 msgid "Controlling dock item"
@@ -2866,7 +2842,7 @@ msgstr "डक चिज नियन्त्रण गर्दै"
 
 #: ../src/widgets/sp-dock-tablabel.c:132
 msgid "Dockitem which 'owns' this tablabel"
-msgstr "डकचीज जसले यो ट्याबलेबुल 'अपनाउँछ'"
+msgstr "डकवस्तु जसले यो ट्याबलेबुल 'अपनाउँछ'"
 
 #: ../src/widgets/sp-dock.c:176
 msgid "Floating"
@@ -2874,27 +2850,27 @@ msgstr "उत्प्लावन"
 
 #: ../src/widgets/sp-dock.c:177
 msgid "Whether the dock is floating in its own window"
-msgstr "डक आफ्नो विन्डो भित्र उत्प्लावन गरिरहेको छ कि"
+msgstr "डक आफ्नो सञ्झ्याल भित्र उत्प्लावन गरिरहेको छ कि"
 
 #: ../src/widgets/sp-dock.c:185
 msgid "Default title for the newly created floating docks"
-msgstr "भर्खरै सृजना गरिएको उत्प्लावन डकहरु को लागि पुर्वनिर्धारित शीर्षक"
+msgstr "भर्खरै सिर्जना गरिएको उत्प्लावन डकहरूका लागि पूर्वनिर्धारित शीर्षक"
 
 #: ../src/widgets/sp-dock.c:191
 msgid "Width"
-msgstr "चौडाई"
+msgstr "चौडाइ"
 
 #: ../src/widgets/sp-dock.c:192
 msgid "Width for the dock when it's of floating type"
-msgstr "डक को चौडाइ जब यो उत्प्लावन प्रकारको हुन्छ"
+msgstr "डकको चौडाइ जब यो उत्प्लावन प्रकारको हुन्छ"
 
 #: ../src/widgets/sp-dock.c:199
 msgid "Height"
-msgstr "उचाई"
+msgstr "उचाइ"
 
 #: ../src/widgets/sp-dock.c:200
 msgid "Height for the dock when it's of floating type"
-msgstr "डक को उचाइ जब यो उत्प्लावन प्रकारको हुन्छ"
+msgstr "डकको उचाइ जब यो उत्प्लावन प्रकारको हुन्छ"
 
 #: ../src/widgets/sp-dock.c:207
 msgid "Float X"
@@ -2902,7 +2878,7 @@ msgstr "उत्प्लावन एक्स"
 
 #: ../src/widgets/sp-dock.c:208
 msgid "X coordinate for a floating dock"
-msgstr "एउटा उत्प्लावन डक को लागि एक्स समन्वय"
+msgstr "एउटा उत्प्लावन डकका लागि एक्स समन्वय"
 
 #: ../src/widgets/sp-dock.c:215
 msgid "Float Y"
@@ -2910,7 +2886,7 @@ msgstr "उत्प्लावन वाइ"
 
 #: ../src/widgets/sp-dock.c:216
 msgid "Y coordinate for a floating dock"
-msgstr "एउटा उत्प्लावन डक को लागि वाइ समन्वय"
+msgstr "एउटा उत्प्लावन डकका लागि वाइ समन्वय"
 
 #: ../src/widgets/sp-dock.c:509
 #, c-format
@@ -2919,7 +2895,7 @@ msgstr "डक #%d"
 
 #: ../src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
-msgstr "अलग विन्डो र मुख्य उपकरणपट्टि स्थापन टगल गर्नुहोस"
+msgstr "अलग सञ्झ्याल र मुख्य उपकरणपट्टी स्थापन टगल गर्नुहोस्"
 
 #: ../src/widgets/sp-xmlview-attr-list.c:54
 msgid "Attribute"
@@ -2928,3 +2904,4 @@ msgstr "विशेषता"
 #: ../src/widgets/sp-xmlview-attr-list.c:55
 msgid "Value"
 msgstr "मान"
+
