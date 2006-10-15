@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-16 12:36+0300\n"
-"PO-Revision-Date: 2006-08-16 12:47+0300\n"
+"POT-Creation-Date: 2006-10-15 13:53+0300\n"
+"PO-Revision-Date: 2006-10-15 14:07+0300\n"
 "Last-Translator: Jaakko H Kyro <jkyro@pp.htv.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -2603,6 +2603,8 @@ msgid ""
 "General behavior for the dock item (i.e. whether it can float, if it's "
 "locked, etc.)"
 msgstr ""
+"Yleinen toiminta telakan kohdalle (eli voiko kohta kellua, onko se "
+"lukittu jne.)"
 
 #: ../src/widgets/sp-dock-item.c:276
 msgid "Grip size"
@@ -2619,8 +2621,7 @@ msgstr "Lukittu"
 #: ../src/widgets/sp-dock-item.c:284
 msgid ""
 "If set, the dock item cannot be dragged around and it doesn't show a grip"
-msgstr ""
-"Jos asetettu, ei telakan kohtaa voi siirtää eikä sille näytetä kahvaa"
+msgstr "Jos asetettu, ei telakan kohtaa voi siirtää eikä sille näytetä kahvaa"
 
 #: ../src/widgets/sp-dock-item.c:292
 msgid "Preferred width"
@@ -2644,6 +2645,8 @@ msgid ""
 "You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
 "some other compound dock object."
 msgstr ""
+"Et voi lisätä telakan kohtaa (%p tyyppiä %s) kohteen %s sisään. Käytä "
+"SPDock:ia tai jotain muuta yhdistettyä telakkatyyppiä."
 
 #: ../src/widgets/sp-dock-item.c:554
 #, c-format
@@ -2651,11 +2654,13 @@ msgid ""
 "Attempting to add a widget with type %s to a %s, but it can only contain one "
 "widget at a time; it already contains a widget of type %s"
 msgstr ""
+"Yritettiin lisätä %s-tyyppinen ikkunaelementti kohtaan %s, mutta se voi "
+"sisältää vain yhden elementin kerrallaan ja sisältää jo tyypin %s elementin"
 
 #: ../src/widgets/sp-dock-item.c:1156
 #, c-format
 msgid "Unsupported docking strategy %s in dock object of type %s"
-msgstr ""
+msgstr "Telakointimenetelmä %s ei ole tuettu %s-tyyppisessä telakan oliossa"
 
 #. Hide menuitem.
 #: ../src/widgets/sp-dock-item.c:1238
@@ -2670,27 +2675,27 @@ msgstr "Lukitse"
 #: ../src/widgets/sp-dock-item.c:1411
 #, c-format
 msgid "Attempt to bind an unbound item %p"
-msgstr ""
+msgstr "Yritettiin sitoa sitomaton kohta %p"
 
 #: ../src/widgets/sp-dock-layout.c:144
 msgid "Master"
-msgstr ""
+msgstr "Isäntä"
 
 #: ../src/widgets/sp-dock-layout.c:145
 msgid "SPDockMaster object which the layout object is attached to"
-msgstr ""
+msgstr "SPDockMaster-oli, johon asettelun olio on liitetty"
 
 #: ../src/widgets/sp-dock-layout.c:152
 msgid "Dirty"
-msgstr ""
+msgstr "Likainen"
 
 #: ../src/widgets/sp-dock-layout.c:153
 msgid "True if the layouts have changed and need to be saved to a file"
-msgstr ""
+msgstr "Tosi, jos asettelut ovat muuttuneet ja täytyy tallentaa tiedostoon"
 
 #: ../src/widgets/sp-dock-layout.c:500
 msgid "You must provide a name for the layout"
-msgstr ""
+msgstr "Asettelulle täytyy antaa nimi"
 
 #. FIXME: pop up an error dialog
 #: ../src/widgets/sp-dock-layout.c:679
@@ -2716,6 +2721,8 @@ msgid ""
 "While loading layout: don't know how to create a dock object whose nick is '%"
 "s'"
 msgstr ""
+"Ladattaessa asettelua: ei tietoa kuinka luoda telakan kohta, jonka lempinimi "
+"on \"%s\""
 
 #: ../src/widgets/sp-dock-layout.c:1459
 msgid "Layout managment"
@@ -2734,6 +2741,9 @@ msgid ""
 "If is set to 1, all the dock items bound to the master are locked; if it's "
 "0, all are unlocked; -1 indicates inconsistency among the items"
 msgstr ""
+"Jos asetettu arvoon 1, kaikki isäntään liitetyt telakan kohdat on lukittu; "
+"jos arvo on 0, kaikki ovat lukitsemattomia; arvo -1 kertoo epäyhtenäisyydestä "
+"telakan kohtien välillä"
 
 #: ../src/widgets/sp-dock-master.c:741
 #, c-format
@@ -2741,6 +2751,8 @@ msgid ""
 "master %p: unable to add object %p[%s] to the hash.  There already is an "
 "item with that name (%p)."
 msgstr ""
+"isäntä %p: ei voi liittää oliota %p[%s] hajautustauluun, koska taulussa "
+"on jo kohta tällä nimellä (%p)."
 
 #: ../src/widgets/sp-dock-master.c:906
 #, c-format
@@ -2748,14 +2760,16 @@ msgid ""
 "The new dock controller %p is automatic.  Only manual dock objects should be "
 "named controller."
 msgstr ""
+"Uusi telakkaohjain %p on automaattinen. Vain käsin ohjatut telakan kohteet "
+"tulisi nimetä ohjaimiksi."
 
 #: ../src/widgets/sp-dock-notebook.c:136
 msgid "The index of the current page"
-msgstr ""
+msgstr "Nykyisen sivun indeksi"
 
 #: ../src/widgets/sp-dock-object.c:124
 msgid "Unique name for identifying the dock object"
-msgstr ""
+msgstr "Yksilöllinen nimi telakan olion tunnistamiseksi"
 
 #: ../src/widgets/sp-dock-object.c:131
 msgid "Long name"
@@ -2779,6 +2793,8 @@ msgid ""
 "Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
 "hasn't implemented this method"
 msgstr ""
+"Kutsu metodille sp_dock_object_dock telakan oliosso %p (tyyppiä %s), "
+"joka ei ole toteuttanut tätä metodia"
 
 #: ../src/widgets/sp-dock-object.c:537
 #, c-format
@@ -2786,17 +2802,21 @@ msgid ""
 "Dock operation requested in a non-bound object %p. The application might "
 "crash"
 msgstr ""
+"Telakointitoimintoa pyydetty sitomattomalle oliolle %p. Ohjelma saattaa "
+"kaatua."
 
 #: ../src/widgets/sp-dock-object.c:544
 #, c-format
 msgid "Cannot dock %p to %p because they belong to different masters"
-msgstr ""
+msgstr "Olioto %p ei voi liittää kohtaan %p, koska ne kuuluvat eri isäntiin"
 
 #: ../src/widgets/sp-dock-object.c:586
 #, c-format
 msgid ""
 "Attempt to bind to %p an already bound dock object %p (current master: %p)"
 msgstr ""
+"Yritettin sitoa kohteeseen %p jo sidottu telakan olio %p (tämänhetkinen "
+"isäntä: %p)"
 
 #: ../src/widgets/sp-dock-paned.c:134
 msgid "Position"
@@ -2808,13 +2828,15 @@ msgstr "Jakajan sijainti pikseleinä"
 
 #: ../src/widgets/sp-dock-placeholder.c:125
 msgid "Sticky"
-msgstr ""
+msgstr "Tarttuva"
 
 #: ../src/widgets/sp-dock-placeholder.c:126
 msgid ""
 "Whether the placeholder will stick to its host or move up the hierarchy when "
 "the host is redocked"
 msgstr ""
+"Tulisiko kiinnityskohdan pysyä kiinni isännässään vai siirtyä ylöspäin "
+"hierarkiassa, kun isäntä liitetään uudestaan"
 
 #: ../src/widgets/sp-dock-placeholder.c:133
 msgid "Host"
@@ -2833,15 +2855,16 @@ msgid ""
 "The position an item will be docked to our host if a request is made to dock "
 "to us"
 msgstr ""
+"Sijainti, josta kohta liitetään isäntään, jos pyyntö liittää itseen saadaan"
 
 #: ../src/widgets/sp-dock-placeholder.c:303
 msgid "Attempt to dock a dock object to an unbound placeholder"
-msgstr ""
+msgstr "Yritettiin sitoa telakan kohta sitomattomaan paikkaan"
 
 #: ../src/widgets/sp-dock-placeholder.c:417
 #, c-format
 msgid "Got a detach signal from an object (%p) who is not our host %p"
-msgstr ""
+msgstr "Saatiin irroitussignaali oliolta (%p), joka ei ole isäntä %p"
 
 #: ../src/widgets/sp-dock-placeholder.c:438
 #, c-format
@@ -2849,14 +2872,16 @@ msgid ""
 "Something weird happened while getting the child placement for %p from "
 "parent %p"
 msgstr ""
+"Jotain omituista tapahtui haettaessa lapsen sijoitteluea kohteelle %p "
+"vanhemmasta %p"
 
 #: ../src/widgets/sp-dock-tablabel.c:131
 msgid "Controlling dock item"
-msgstr ""
+msgstr "Ohjaava telakan kohta"
 
 #: ../src/widgets/sp-dock-tablabel.c:132
 msgid "Dockitem which 'owns' this tablabel"
-msgstr ""
+msgstr "Telakan kohta, joka 'omistaa' tämän välilehtiotsikon"
 
 #: ../src/widgets/sp-dock.c:176
 msgid "Floating"
@@ -2868,7 +2893,7 @@ msgstr "Kelluuko telakka omassa ikkunassaan"
 
 #: ../src/widgets/sp-dock.c:185
 msgid "Default title for the newly created floating docks"
-msgstr ""
+msgstr "Uusien kelluvien telakoiden oletusotsikko"
 
 #: ../src/widgets/sp-dock.c:191
 msgid "Width"
@@ -2888,19 +2913,19 @@ msgstr "Kelluvan telakan korkeus"
 
 #: ../src/widgets/sp-dock.c:207
 msgid "Float X"
-msgstr ""
+msgstr "Kelluva X"
 
 #: ../src/widgets/sp-dock.c:208
 msgid "X coordinate for a floating dock"
-msgstr ""
+msgstr "Kelluvan telakan Y-koordinaatti"
 
 #: ../src/widgets/sp-dock.c:215
 msgid "Float Y"
-msgstr ""
+msgstr "Kelluva Y"
 
 #: ../src/widgets/sp-dock.c:216
 msgid "Y coordinate for a floating dock"
-msgstr ""
+msgstr "Kelluvan telakan Y-koordinaatti"
 
 #: ../src/widgets/sp-dock.c:509
 #, c-format
