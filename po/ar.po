@@ -1,0 +1,3348 @@
+# Arabic translations for PACKAGE package.
+# Copyright (C) 2006 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Automatically generated, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Project\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-11-17 21:14+0000\n"
+"PO-Revision-Date: 2006-11-18 00:18+0100\n"
+"Last-Translator: Djihed Afifi <djihed@gmail.com>\n"
+"Language-Team: Arabic <doc@arabeyes.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n == 0 ? 0 : n == 1 ? 1 : n == 2 ? 2 : n >= 3 && n <= 10 ? 3 : n >= 11 && n <= 99 ? 4 : 5;\n"
+"X-Poedit-Language: Arabic\n"
+
+#: ../sodipodi.desktop.in.h:1
+#, fuzzy
+msgid "SVG Vector Illustrator"
+msgstr "التّحجيم و دعم SVG:"
+
+#. Create window
+#: ../sodipodi.desktop.in.h:2
+#: ../src/toolbox.c:105
+#: ../src/toolbox.c:144
+#: ../src/toolbox.c:178
+msgid "Sodipodi"
+msgstr ""
+
+#: ../src/arc-context.c:254
+#, fuzzy, c-format
+msgid "Drawing arc %s x %s"
+msgstr "مساحة رسم"
+
+#: ../src/bonobo/svg-doc-factory.c:35
+msgid "Could not create sodipodi-svg-doc factory"
+msgstr ""
+
+#: ../src/desktop.c:990
+msgid "Zoom drawing if window size changes"
+msgstr ""
+
+#: ../src/desktop.c:997
+msgid "Drawing target is constrained to active group"
+msgstr ""
+
+#: ../src/desktop.c:1089
+#, c-format
+msgid "Sodipodi: %s: %s: %d"
+msgstr ""
+
+#: ../src/desktop.c:1196
+#, c-format
+msgid "Document %s has unsaved changes, save them?"
+msgstr ""
+
+#. Page page
+#. Page settings
+#. Notebook tab
+#: ../src/desktop.c:1776
+#: ../src/dialogs/align.c:291
+#: ../src/dialogs/desktop-properties.c:284
+#: ../src/dialogs/document-properties.c:210
+#: ../src/dialogs/export.c:161
+#: ../src/verbs.c:471
+#: ../src/widgets/sp-dock-notebook.c:135
+#, fuzzy
+msgid "Page"
+msgstr "صفحة"
+
+#: ../src/desktop.c:1780
+#: ../src/dialogs/align.c:292
+#: ../src/dialogs/export.c:166
+#: ../src/verbs.c:472
+#, fuzzy
+msgid "Drawing"
+msgstr "مساحة رسم"
+
+#. Selection submenu
+#: ../src/desktop.c:1784
+#: ../src/dialogs/align.c:293
+#: ../src/dialogs/export.c:171
+#: ../src/interface.c:597
+#: ../src/toolbox.c:448
+#: ../src/verbs.c:473
+#, fuzzy
+msgid "Selection"
+msgstr "المنتقى"
+
+#: ../src/dialogs/align.c:156
+#: ../src/toolbox.c:405
+#, fuzzy
+msgid "Align objects"
+msgstr "جاري تحديث الأجسام"
+
+#: ../src/dialogs/align.c:175
+msgid "Right side of aligned objects to left side of anchor"
+msgstr ""
+
+#: ../src/dialogs/align.c:178
+msgid "Left side of aligned objects to left side of anchor"
+msgstr ""
+
+#: ../src/dialogs/align.c:181
+#, fuzzy
+msgid "Center horizontally"
+msgstr "الصدر الأوسط"
+
+#: ../src/dialogs/align.c:184
+msgid "Right side of aligned objects to right side of anchor"
+msgstr ""
+
+#: ../src/dialogs/align.c:187
+msgid "Left side of aligned objects to right side of anchor"
+msgstr ""
+
+#: ../src/dialogs/align.c:191
+msgid "Bottom of aligned objects to top of anchor"
+msgstr ""
+
+#: ../src/dialogs/align.c:194
+msgid "Top of aligned objects to top of anchor"
+msgstr ""
+
+#: ../src/dialogs/align.c:197
+#, fuzzy
+msgid "Center vertically"
+msgstr "الصدر الأوسط"
+
+#: ../src/dialogs/align.c:200
+msgid "Bottom of aligned objects to bottom of anchor"
+msgstr ""
+
+#: ../src/dialogs/align.c:203
+msgid "Top of aligned objects to bottom of anchor"
+msgstr ""
+
+#: ../src/dialogs/align.c:206
+#, fuzzy
+msgid "Align"
+msgstr "ترصيف"
+
+#: ../src/dialogs/align.c:224
+msgid "Distribute left sides of objects at even distances"
+msgstr ""
+
+#: ../src/dialogs/align.c:227
+msgid "Distribute centres of objects at even distances horizontally"
+msgstr ""
+
+#: ../src/dialogs/align.c:230
+msgid "Distribute right sides of objects at even distances"
+msgstr ""
+
+#: ../src/dialogs/align.c:233
+msgid "Distribute horizontal distance between objects equally"
+msgstr ""
+
+#: ../src/dialogs/align.c:237
+msgid "Distribute top sides of objects at even distances"
+msgstr ""
+
+#: ../src/dialogs/align.c:240
+msgid "Distribute centres of objects at even distances vertically"
+msgstr ""
+
+#: ../src/dialogs/align.c:243
+msgid "Distribute bottom sides of objects at even distances"
+msgstr ""
+
+#: ../src/dialogs/align.c:246
+msgid "Distribute vertical distance between objects equally"
+msgstr ""
+
+#: ../src/dialogs/align.c:249
+msgid "Distribute"
+msgstr ""
+
+#: ../src/dialogs/align.c:287
+#, fuzzy
+msgid "Last selected"
+msgstr "اليوم المنتقى (%a %b %d %Y)"
+
+#: ../src/dialogs/align.c:288
+#, fuzzy
+msgid "First selected"
+msgstr "اليوم المنتقى (%a %b %d %Y)"
+
+#: ../src/dialogs/align.c:289
+#, fuzzy
+msgid "Biggest item"
+msgstr "عنصر _جديد"
+
+#: ../src/dialogs/align.c:290
+#, fuzzy
+msgid "Smallest item"
+msgstr "عنصر _جديد"
+
+#: ../src/dialogs/desktop-properties.c:195
+#, fuzzy
+msgid "Desktop settings"
+msgstr "تعيينات سطح المكتب"
+
+#. Grid settings
+#. Notebook tab
+#: ../src/dialogs/desktop-properties.c:204
+#, fuzzy
+msgid "Grid"
+msgstr "عرض الشبكة"
+
+#: ../src/dialogs/desktop-properties.c:217
+#, fuzzy
+msgid "Show grid"
+msgstr "عرض الشبكة"
+
+#: ../src/dialogs/desktop-properties.c:218
+#, fuzzy
+msgid "Snap to grid"
+msgstr "طقطقات لنقرات"
+
+#: ../src/dialogs/desktop-properties.c:221
+#, fuzzy
+msgid "Horizontal lines"
+msgstr "أقصى عدد من السّطور"
+
+#: ../src/dialogs/desktop-properties.c:222
+#, fuzzy
+msgid "Vertical lines"
+msgstr "أقصى عدد من السّطور"
+
+#: ../src/dialogs/desktop-properties.c:224
+#, fuzzy
+msgid "Iso grid"
+msgstr "عرض الشبكة"
+
+#: ../src/dialogs/desktop-properties.c:225
+#, fuzzy
+msgid "Hex grid"
+msgstr "عرض الشبكة"
+
+#: ../src/dialogs/desktop-properties.c:231
+#, fuzzy
+msgid "Grid units:"
+msgstr "وحدات مساحة المستخدم"
+
+#: ../src/dialogs/desktop-properties.c:233
+msgid "Origin X:"
+msgstr ""
+
+#: ../src/dialogs/desktop-properties.c:235
+msgid "Origin Y:"
+msgstr ""
+
+#: ../src/dialogs/desktop-properties.c:238
+#, fuzzy
+msgid "Spacing X:"
+msgstr "_فراغات:"
+
+#: ../src/dialogs/desktop-properties.c:240
+#, fuzzy
+msgid "Spacing Y:"
+msgstr "_فراغات:"
+
+#: ../src/dialogs/desktop-properties.c:244
+#: ../src/dialogs/desktop-properties.c:271
+#, fuzzy
+msgid "Snap units:"
+msgstr "وحدات مساحة المستخدم"
+
+#: ../src/dialogs/desktop-properties.c:246
+#: ../src/dialogs/desktop-properties.c:273
+#, fuzzy
+msgid "Snap distance:"
+msgstr "حافة سريعة"
+
+#: ../src/dialogs/desktop-properties.c:249
+#, fuzzy
+msgid "Grid color:"
+msgstr "لون ال_شبكة:"
+
+#: ../src/dialogs/desktop-properties.c:250
+#, fuzzy
+msgid "Grid color"
+msgstr "لون ال_شبكة:"
+
+#. Guidelines page
+#: ../src/dialogs/desktop-properties.c:254
+msgid "Guides"
+msgstr ""
+
+#: ../src/dialogs/desktop-properties.c:265
+#, fuzzy
+msgid "Show guides"
+msgstr "اظهار التفاصيل"
+
+#: ../src/dialogs/desktop-properties.c:266
+#, fuzzy
+msgid "Snap to guides"
+msgstr "طقطقات لنقرات"
+
+#: ../src/dialogs/desktop-properties.c:276
+#, fuzzy
+msgid "Guides color:"
+msgstr "إضبط الألوان"
+
+#: ../src/dialogs/desktop-properties.c:277
+#, fuzzy
+msgid "Guideline color"
+msgstr "إضبط الألوان"
+
+#: ../src/dialogs/desktop-properties.c:279
+#, fuzzy
+msgid "Highlight color:"
+msgstr "لون التظليل"
+
+#: ../src/dialogs/desktop-properties.c:280
+#, fuzzy
+msgid "Highlighted guideline color"
+msgstr "لون GDK fill"
+
+#: ../src/dialogs/desktop-properties.c:295
+#, fuzzy
+msgid "Show border"
+msgstr "عرض الحد"
+
+#: ../src/dialogs/desktop-properties.c:301
+#, fuzzy
+msgid "Border on top of drawing"
+msgstr "أظهر أعلى الشاشة"
+
+#: ../src/dialogs/desktop-properties.c:306
+#, fuzzy
+msgid "Border color:"
+msgstr "لون الحدود"
+
+#: ../src/dialogs/desktop-properties.c:307
+#, fuzzy
+msgid "Page border color"
+msgstr "لون GDK fill"
+
+#: ../src/dialogs/desktop-properties.c:308
+#, fuzzy
+msgid "Page color:"
+msgstr "إضبط الألوان"
+
+#: ../src/dialogs/desktop-properties.c:309
+#, fuzzy
+msgid "Page color"
+msgstr "إضبط الألوان"
+
+#: ../src/dialogs/desktop-properties.c:580
+#: ../src/widgets/sp-color-preview.c:424
+#, fuzzy
+msgid "Close"
+msgstr "غلق"
+
+#: ../src/dialogs/display-settings.c:101
+#, fuzzy
+msgid "Display settings"
+msgstr "اختر الإعدادات"
+
+#. Rendering settings
+#. Notebook tab
+#: ../src/dialogs/display-settings.c:108
+#, fuzzy
+msgid "Rendering"
+msgstr "جاري رسم الصفحة %d من %d..."
+
+#: ../src/dialogs/display-settings.c:117
+msgid "Oversample bitmaps:"
+msgstr ""
+
+#: ../src/dialogs/display-settings.c:125
+#: ../src/verbs.c:407
+#, fuzzy
+msgid "None"
+msgstr "لا شيء"
+
+#: ../src/dialogs/display-settings.c:128
+msgid "2x2"
+msgstr ""
+
+#: ../src/dialogs/display-settings.c:131
+msgid "4x4"
+msgstr ""
+
+#: ../src/dialogs/display-settings.c:134
+msgid "8x8"
+msgstr ""
+
+#: ../src/dialogs/display-settings.c:137
+msgid "16x16"
+msgstr ""
+
+#. Input settings
+#. Notebook tab
+#: ../src/dialogs/display-settings.c:147
+#, fuzzy
+msgid "Input"
+msgstr "إدخال"
+
+#: ../src/dialogs/display-settings.c:155
+#, fuzzy
+msgid "Default cursor tolerance:"
+msgstr "سرعة ومضات المؤشر"
+
+#. Windows settings
+#. Notebook tab
+#: ../src/dialogs/display-settings.c:169
+#, fuzzy
+msgid "Windows"
+msgstr "النوافذ"
+
+#: ../src/dialogs/display-settings.c:174
+msgid "Set dialog hint for dialogs"
+msgstr ""
+
+#: ../src/dialogs/display-settings.c:179
+msgid "Skip taskbar entry for dialogs"
+msgstr ""
+
+#: ../src/dialogs/document-properties.c:201
+#, fuzzy
+msgid "Document settings"
+msgstr "اختر الإعدادات"
+
+#: ../src/dialogs/document-properties.c:222
+#, fuzzy
+msgid "Paper size:"
+msgstr "_حجم الورق:"
+
+#: ../src/dialogs/document-properties.c:246
+#, fuzzy
+msgid "Landscape"
+msgstr "عرضيّ"
+
+#: ../src/dialogs/document-properties.c:251
+#, fuzzy
+msgid "Portrait"
+msgstr "طولي"
+
+#: ../src/dialogs/document-properties.c:258
+#, fuzzy
+msgid "Custom"
+msgstr "مخصص"
+
+#. Custom paper frame
+#: ../src/dialogs/document-properties.c:265
+#, fuzzy
+msgid "Custom paper"
+msgstr "مصدر الورق:"
+
+#. Unit selector
+#: ../src/dialogs/document-properties.c:276
+#: ../src/dialogs/export.c:179
+#: ../src/dialogs/object-properties.c:323
+#: ../src/dialogs/transformation.c:347
+#: ../src/dialogs/transformation.c:494
+#, fuzzy
+msgid "Units:"
+msgstr "الوحدات"
+
+#. Stroke width
+#. Width
+#: ../src/dialogs/document-properties.c:285
+#: ../src/dialogs/export.c:189
+#: ../src/dialogs/export.c:213
+#: ../src/dialogs/object-attributes.c:71
+#: ../src/dialogs/object-attributes.c:79
+#: ../src/dialogs/object-properties.c:356
+#: ../src/dialogs/stroke-style.c:567
+#: ../src/dialogs/tool-attributes.c:125
+#: ../src/dyna-draw-context.c:1087
+#, fuzzy
+msgid "Width:"
+msgstr "العرض:"
+
+#: ../src/dialogs/document-properties.c:300
+#: ../src/dialogs/export.c:198
+#: ../src/dialogs/export.c:221
+#: ../src/dialogs/object-attributes.c:72
+#: ../src/dialogs/object-attributes.c:80
+#: ../src/dialogs/object-properties.c:368
+#, fuzzy
+msgid "Height:"
+msgstr "الإرتفاع:"
+
+#: ../src/dialogs/document-tree.c:60
+#: ../src/verbs.c:476
+#, fuzzy
+msgid "Document"
+msgstr "مستند"
+
+#: ../src/dialogs/export.c:141
+#, fuzzy
+msgid "Export bitmap"
+msgstr "تصدير علامات المواقع"
+
+#. Export area frame
+#: ../src/dialogs/export.c:150
+#, fuzzy
+msgid "Export area"
+msgstr "مساحة التبليغ"
+
+#: ../src/dialogs/export.c:183
+msgid "x0:"
+msgstr ""
+
+#: ../src/dialogs/export.c:186
+msgid "x1:"
+msgstr ""
+
+#: ../src/dialogs/export.c:192
+msgid "y0:"
+msgstr ""
+
+#: ../src/dialogs/export.c:195
+msgid "y1:"
+msgstr ""
+
+#. Bitmap size frame
+#: ../src/dialogs/export.c:204
+#, fuzzy
+msgid "Bitmap size"
+msgstr "<b>حجم الشاشة:</b>"
+
+#: ../src/dialogs/export.c:213
+#: ../src/dialogs/export.c:221
+#, fuzzy
+msgid "pixels"
+msgstr "بكسلات"
+
+#: ../src/dialogs/export.c:217
+#: ../src/dialogs/export.c:225
+#, fuzzy
+msgid "dpi"
+msgstr "Xft DPI"
+
+#: ../src/dialogs/export.c:233
+#, fuzzy
+msgid "Background color"
+msgstr "لون الخلفية"
+
+#: ../src/dialogs/export.c:235
+#, fuzzy
+msgid "Bitmap background:"
+msgstr "ك_خلفية"
+
+#: ../src/dialogs/export.c:240
+#, fuzzy
+msgid "Export png file"
+msgstr "_تصدير علامات المواقع إلى ملف"
+
+#: ../src/dialogs/export.c:267
+#: ../src/verbs.c:417
+#, fuzzy
+msgid "Export"
+msgstr "تصدير علامات المواقع"
+
+#: ../src/dialogs/export.c:401
+#, fuzzy
+msgid "Export in progress"
+msgstr "قيد التحقق..."
+
+#: ../src/dialogs/export.c:405
+#, c-format
+msgid "Exporting [%d x %d] %s"
+msgstr ""
+
+#: ../src/dialogs/fill-style.c:87
+#, fuzzy
+msgid "Fill style"
+msgstr "<b>مظهر البرنامج:</b>"
+
+#: ../src/dialogs/fill-style.c:124
+#, fuzzy
+msgid "Fill Rule"
+msgstr "إضافة قاعدة"
+
+#: ../src/dialogs/fill-style.c:138
+msgid "nonzero"
+msgstr ""
+
+#: ../src/dialogs/fill-style.c:143
+msgid "evenodd"
+msgstr ""
+
+#: ../src/dialogs/item-properties.c:84
+#: ../src/dialogs/item-properties.c:269
+#: ../src/dialogs/item-properties.c:368
+#: ../src/dialogs/item-properties.c:375
+#, fuzzy
+msgid "ID"
+msgstr "الهوية"
+
+#: ../src/dialogs/item-properties.c:95
+#, fuzzy
+msgid "Set ID"
+msgstr "اضبط رقم ID ال_مستخدم"
+
+#. Sensitive
+#: ../src/dialogs/item-properties.c:104
+#, fuzzy
+msgid "Sensitive"
+msgstr "حساس"
+
+#. Visible
+#: ../src/dialogs/item-properties.c:109
+#: ../src/widgets/sp-dock-layout.c:734
+#, fuzzy
+msgid "Visible"
+msgstr "مرئي"
+
+#. Active
+#: ../src/dialogs/item-properties.c:114
+#, fuzzy
+msgid "Active"
+msgstr "نشط"
+
+#. Printable
+#: ../src/dialogs/item-properties.c:119
+#, fuzzy
+msgid "Printable"
+msgstr "[رمز لا يمكن طباعته]"
+
+#: ../src/dialogs/item-properties.c:128
+#, fuzzy
+msgid "Opacity:"
+msgstr "عتمة الخلفية"
+
+#: ../src/dialogs/item-properties.c:144
+#, fuzzy
+msgid "Transformation matrix"
+msgstr "تحويل لصورة غير محملة."
+
+#: ../src/dialogs/item-properties.c:263
+#, fuzzy
+msgid "Ref"
+msgstr "مرجع المرجع"
+
+#: ../src/dialogs/item-properties.c:370
+#, fuzzy
+msgid "ID invalid"
+msgstr "ID مجموعة غير سليم"
+
+#: ../src/dialogs/item-properties.c:372
+#, fuzzy
+msgid "ID exists"
+msgstr "هويّة المراسَل موجودة مسبقاً"
+
+#: ../src/dialogs/item-properties.c:448
+#: ../src/verbs.c:487
+#, fuzzy
+msgid "Item properties"
+msgstr "خصائص عنصر القائمة"
+
+#: ../src/dialogs/object-attributes.c:34
+#, fuzzy
+msgid "Href:"
+msgstr "HREF URI"
+
+#: ../src/dialogs/object-attributes.c:35
+#, fuzzy
+msgid "Target:"
+msgstr "الهدف:"
+
+#: ../src/dialogs/object-attributes.c:36
+#, fuzzy
+msgid "Type:"
+msgstr "النّوع:"
+
+#: ../src/dialogs/object-attributes.c:37
+#, fuzzy
+msgid "Role:"
+msgstr "الدّور"
+
+#: ../src/dialogs/object-attributes.c:38
+msgid "Arcrole:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:39
+#, fuzzy
+msgid "Title:"
+msgstr "العنوان:"
+
+#: ../src/dialogs/object-attributes.c:40
+#: ../src/dialogs/tool-attributes.c:115
+#, fuzzy
+msgid "Show:"
+msgstr "عرض"
+
+#: ../src/dialogs/object-attributes.c:41
+msgid "Actuate:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:46
+msgid "Sides:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:47
+#: ../src/dialogs/object-attributes.c:57
+#, fuzzy
+msgid "Center X:"
+msgstr "وسط"
+
+#: ../src/dialogs/object-attributes.c:48
+#: ../src/dialogs/object-attributes.c:58
+#, fuzzy
+msgid "Center Y:"
+msgstr "وسط"
+
+#: ../src/dialogs/object-attributes.c:49
+msgid "R1:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:50
+msgid "R2:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:51
+msgid "ARG1:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:52
+msgid "ARG2:"
+msgstr ""
+
+#. Expansion
+#: ../src/dialogs/object-attributes.c:59
+#: ../src/spiral-context.c:343
+msgid "Expansion:"
+msgstr ""
+
+#. Revolution
+#: ../src/dialogs/object-attributes.c:60
+#: ../src/dialogs/tool-attributes.c:95
+#: ../src/spiral-context.c:331
+msgid "Revolution:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:61
+msgid "Radius:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:62
+#, fuzzy
+msgid "Argument:"
+msgstr "متغير غير صحيح: \"%s\"\n"
+
+#: ../src/dialogs/object-attributes.c:63
+msgid "T0:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:68
+#, fuzzy
+msgid "URL:"
+msgstr "العنوان:"
+
+#: ../src/dialogs/object-attributes.c:69
+#: ../src/dialogs/object-attributes.c:77
+#: ../src/dialogs/object-properties.c:332
+msgid "X:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:70
+#: ../src/dialogs/object-attributes.c:78
+#: ../src/dialogs/object-properties.c:344
+msgid "Y:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:81
+msgid "RX:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:82
+msgid "RY:"
+msgstr ""
+
+#: ../src/dialogs/object-attributes.c:117
+#, fuzzy, c-format
+msgid "%s attributes"
+msgstr "خواص"
+
+#: ../src/dialogs/object-properties.c:113
+#, fuzzy
+msgid "Object style"
+msgstr "<b>مظهر البرنامج:</b>"
+
+#: ../src/dialogs/object-properties.c:128
+#, fuzzy
+msgid "Fill"
+msgstr "ملأ"
+
+#: ../src/dialogs/object-properties.c:142
+msgid "Stroke paint"
+msgstr ""
+
+#: ../src/dialogs/object-properties.c:156
+#, fuzzy
+msgid "Stroke style"
+msgstr "<b>مظهر البرنامج:</b>"
+
+#: ../src/dialogs/object-properties.c:176
+#, fuzzy
+msgid "Apply to:"
+msgstr "مسجل ل %s"
+
+#: ../src/dialogs/object-properties.c:186
+#, fuzzy
+msgid "Selected objects"
+msgstr "جاري حذف الأجسام المنتقاة"
+
+#: ../src/dialogs/object-properties.c:189
+#, fuzzy
+msgid "All shape tools"
+msgstr "مدير الأدوات الخارجية"
+
+#: ../src/dialogs/object-properties.c:192
+#, fuzzy
+msgid "Rectangle tool"
+msgstr "الأداة المشغلة:"
+
+#: ../src/dialogs/object-properties.c:195
+#, fuzzy
+msgid "Arc tool"
+msgstr "الأداة المشغلة:"
+
+#: ../src/dialogs/object-properties.c:198
+#, fuzzy
+msgid "Star tool"
+msgstr "الأداة المشغلة:"
+
+#: ../src/dialogs/object-properties.c:201
+#, fuzzy
+msgid "Spiral tool"
+msgstr "الأداة المشغلة:"
+
+#: ../src/dialogs/object-properties.c:204
+#, fuzzy
+msgid "Freehand and pen"
+msgstr "احفظ و اخرج"
+
+#: ../src/dialogs/object-properties.c:207
+#, fuzzy
+msgid "Calligraphic line"
+msgstr "لف السّطور"
+
+#: ../src/dialogs/object-properties.c:210
+#: ../src/verbs.c:462
+#, fuzzy
+msgid "Text"
+msgstr "النّص"
+
+#: ../src/dialogs/object-properties.c:289
+#, fuzzy
+msgid "Object Size and Position"
+msgstr "الحجم و المكان الأوليين للنافذة  "
+
+#: ../src/dialogs/object-properties.c:312
+#: ../src/verbs.c:481
+#, fuzzy
+msgid "Size and Position"
+msgstr "الحجم و المكان الأوليين للنافذة  "
+
+#: ../src/dialogs/stroke-style.c:554
+#: ../src/toolbox.c:401
+#, fuzzy
+msgid "Stroke settings"
+msgstr "اختر الإعدادات"
+
+#. Join type
+#: ../src/dialogs/stroke-style.c:590
+msgid "Join:"
+msgstr ""
+
+#. Cap type
+#: ../src/dialogs/stroke-style.c:633
+#, fuzzy
+msgid "Cap:"
+msgstr "قمّة"
+
+#. Dash
+#: ../src/dialogs/stroke-style.c:676
+#, fuzzy
+msgid "Pattern:"
+msgstr "ال_نمط:"
+
+#: ../src/dialogs/text-edit.c:102
+#, fuzzy
+msgid "Text properties"
+msgstr "تحديد خصائص النص"
+
+#. Layout
+#: ../src/dialogs/text-edit.c:141
+#, fuzzy
+msgid "Layout"
+msgstr "التصميم"
+
+#: ../src/dialogs/text-edit.c:149
+#, fuzzy
+msgid "Alignment:"
+msgstr "محاذاة:"
+
+#: ../src/dialogs/text-edit.c:174
+#, fuzzy
+msgid "Orientation:"
+msgstr "<b>الإتجاه:</b>"
+
+#: ../src/dialogs/text-edit.c:192
+#, fuzzy
+msgid "Line spacing:"
+msgstr "تَبَاعُد المؤشر"
+
+#: ../src/dialogs/text-edit.c:212
+#, fuzzy
+msgid "Spacing:"
+msgstr "_فراغات:"
+
+#: ../src/dialogs/text-edit.c:235
+#, fuzzy
+msgid "Text and font"
+msgstr "خطّ النّصّ"
+
+#: ../src/dialogs/text-edit.c:246
+#, fuzzy
+msgid "Set as default"
+msgstr "التّعيين كا_فتراضي"
+
+#: ../src/dialogs/tool-attributes.c:48
+#: ../src/verbs.c:479
+#, fuzzy
+msgid "Tool attributes"
+msgstr "اعرض الخواص"
+
+#: ../src/dialogs/tool-attributes.c:95
+msgid "Expansion"
+msgstr ""
+
+#: ../src/dialogs/tool-attributes.c:95
+#, fuzzy
+msgid "Inner radius"
+msgstr "منغوليا الداخلية"
+
+#: ../src/dialogs/tool-attributes.c:99
+#: ../src/dialogs/tool-attributes.c:109
+#: ../src/dialogs/tool-attributes.c:119
+#: ../src/dialogs/tool-attributes.c:129
+#, fuzzy
+msgid "Missing tool preferences"
+msgstr "حجم نافذة التفضيلات"
+
+#. Magnitude
+#: ../src/dialogs/tool-attributes.c:105
+#: ../src/star-context.c:343
+#, fuzzy
+msgid "Corners:"
+msgstr "كلينيس"
+
+#: ../src/dialogs/tool-attributes.c:105
+msgid "Proportion"
+msgstr ""
+
+#: ../src/dialogs/tool-attributes.c:115
+msgid "Transform:"
+msgstr ""
+
+#. Mass
+#: ../src/dialogs/tool-attributes.c:125
+#: ../src/dyna-draw-context.c:1051
+msgid "Mass:"
+msgstr ""
+
+#. Drag
+#: ../src/dialogs/tool-attributes.c:125
+#: ../src/dyna-draw-context.c:1063
+#, fuzzy
+msgid "Drag:"
+msgstr "سحب العتبة"
+
+#: ../src/dialogs/tool-attributes.c:125
+#, fuzzy
+msgid "Angle"
+msgstr "قائمة ال_زوايا"
+
+#: ../src/dialogs/tool-attributes.c:132
+#, fuzzy
+msgid "Tool has no attributes"
+msgstr "ليس للمضيف عنوان"
+
+#: ../src/dialogs/tool-attributes.c:135
+#: ../src/dialogs/tool-options.c:93
+#, fuzzy
+msgid "No active tool"
+msgstr "بدون عمود الأدوات"
+
+#: ../src/dialogs/tool-options.c:47
+#: ../src/verbs.c:478
+#, fuzzy
+msgid "Tool options"
+msgstr "<b>خيارات العرض:</b>"
+
+#: ../src/dialogs/tool-options.c:90
+#, fuzzy
+msgid "Tool has no options"
+msgstr "لا خيارات معرفة"
+
+#: ../src/dialogs/transformation.c:195
+#, fuzzy
+msgid "Transform selection"
+msgstr "<b>الحرف المنتقى:</b>"
+
+#. Apply to duplicate
+#: ../src/dialogs/transformation.c:216
+#, fuzzy
+msgid "Apply to duplicate"
+msgstr "فشل تطبيق مصفات الإخراج: %s"
+
+#: ../src/dialogs/transformation.c:313
+#, fuzzy
+msgid "Move"
+msgstr "_نقل"
+
+#: ../src/dialogs/transformation.c:457
+#, fuzzy
+msgid "Scale"
+msgstr "القياس"
+
+#: ../src/dialogs/transformation.c:584
+#, fuzzy
+msgid "Rotate"
+msgstr "تدوير"
+
+#: ../src/dialogs/transformation.c:602
+msgid "deg"
+msgstr ""
+
+#: ../src/dialogs/xml-tree.c:157
+#, fuzzy
+msgid "Drag to reorder nodes"
+msgstr "اسحب شعارا على جسم ﻹضافته له"
+
+#: ../src/dialogs/xml-tree.c:170
+#, fuzzy
+msgid "New element node"
+msgstr "تجاهل عقدة XML `%s': %s"
+
+#: ../src/dialogs/xml-tree.c:188
+#, fuzzy
+msgid "New text node"
+msgstr "_إدخل نص جديد"
+
+#: ../src/dialogs/xml-tree.c:205
+#, fuzzy
+msgid "Duplicate node"
+msgstr "تجاهل عقدة XML `%s': %s"
+
+#: ../src/dialogs/xml-tree.c:221
+#, fuzzy
+msgid "Delete node"
+msgstr "إحذف النص"
+
+#: ../src/dialogs/xml-tree.c:234
+#, fuzzy
+msgid "Unindent node"
+msgstr "إزالة تجويف النص"
+
+#: ../src/dialogs/xml-tree.c:245
+#, fuzzy
+msgid "Indent node"
+msgstr "فراغ آلي"
+
+#: ../src/dialogs/xml-tree.c:255
+#, fuzzy
+msgid "Raise node"
+msgstr "تجاهل عقدة XML `%s': %s"
+
+#: ../src/dialogs/xml-tree.c:266
+#, fuzzy
+msgid "Lower node"
+msgstr "المجموع السفلي"
+
+#: ../src/dialogs/xml-tree.c:303
+#, fuzzy
+msgid "Delete attribute"
+msgstr "معيار البحث:"
+
+#: ../src/dialogs/xml-tree.c:333
+#, fuzzy
+msgid "Attribute name"
+msgstr "اسم الموصول"
+
+#: ../src/dialogs/xml-tree.c:340
+#, fuzzy
+msgid "Set attribute"
+msgstr "معيار البحث:"
+
+#: ../src/dialogs/xml-tree.c:353
+#, fuzzy
+msgid "Attribute value"
+msgstr "حدود قيم الصّفة"
+
+#: ../src/dialogs/xml-tree.c:833
+#, fuzzy, c-format
+msgid "Sodipodi: %s : XML View"
+msgstr "عرض الفيديو الافتراضي"
+
+#: ../src/dialogs/xml-tree.c:856
+#, fuzzy
+msgid "New element node..."
+msgstr "تجاهل عقدة XML `%s': %s"
+
+#: ../src/dialogs/xml-tree.c:876
+#, fuzzy
+msgid "Cancel"
+msgstr "إلغاء"
+
+#: ../src/dialogs/xml-tree.c:880
+#, fuzzy
+msgid "Create"
+msgstr "إ_نشاء"
+
+#: ../src/document.c:389
+#, fuzzy, c-format
+msgid "New document %d"
+msgstr "إنشاء مستند جديد"
+
+#: ../src/document.c:425
+#, fuzzy, c-format
+msgid "Memory document %d"
+msgstr "إغلاق ال_مستند"
+
+#: ../src/document.c:572
+#, fuzzy, c-format
+msgid "Unnamed document %d"
+msgstr "إغلاق ال_مستند"
+
+#: ../src/draw-context.c:294
+msgid "Appending to selection. Press 'a' to toggle Append/New."
+msgstr ""
+
+#: ../src/draw-context.c:299
+msgid "Creating new curve. Press 'a' to toggle Append/New."
+msgstr ""
+
+#. Angle
+#: ../src/dyna-draw-context.c:1075
+#, fuzzy
+msgid "Angle:"
+msgstr "قائمة ال_زوايا"
+
+#. Reset
+#: ../src/dyna-draw-context.c:1099
+#: ../src/rect-context.c:382
+#: ../src/spiral-context.c:367
+#: ../src/star-context.c:374
+#, fuzzy
+msgid "Defaults"
+msgstr "الا_فتراضيّات"
+
+#: ../src/file.c:123
+#: ../src/file.c:137
+#: ../src/file.c:149
+#, fuzzy
+msgid "Select file to open"
+msgstr "إنتقي ملفّ للفتح"
+
+#: ../src/file.c:174
+#: ../src/file.c:278
+#, fuzzy
+msgid "File type:"
+msgstr "_نوع الملف:"
+
+#: ../src/file.c:263
+#, fuzzy
+msgid "Save file"
+msgstr "حفظ الملف"
+
+#: ../src/file.c:468
+#: ../src/file.c:478
+#: ../src/file.c:484
+#, fuzzy
+msgid "Select file to import"
+msgstr "إنتقي ملفّ للفتح"
+
+#: ../src/help.c:51
+#, fuzzy
+msgid "About sodipodi"
+msgstr "_حول الملحق"
+
+#. Do not insert any elements before/between first 4
+#: ../src/helper/units.c:42
+#, fuzzy
+msgid "Unit"
+msgstr "الوحدة"
+
+#: ../src/helper/units.c:42
+#, fuzzy
+msgid "Units"
+msgstr "الوحدات"
+
+#: ../src/helper/units.c:43
+#, fuzzy
+msgid "Point"
+msgstr "نقطة"
+
+#: ../src/helper/units.c:43
+#, fuzzy
+msgid "pt"
+msgstr "نقطة"
+
+#: ../src/helper/units.c:43
+#, fuzzy
+msgid "Points"
+msgstr "نقاط"
+
+#: ../src/helper/units.c:43
+#, fuzzy
+msgid "Pt"
+msgstr "نقطة"
+
+#: ../src/helper/units.c:44
+#, fuzzy
+msgid "Pixel"
+msgstr "بكسل"
+
+#: ../src/helper/units.c:44
+#, fuzzy
+msgid "px"
+msgstr "بكسل"
+
+#: ../src/helper/units.c:44
+#, fuzzy
+msgid "Pixels"
+msgstr "بكسلات"
+
+#: ../src/helper/units.c:44
+#, fuzzy
+msgid "Px"
+msgstr "بكسل"
+
+#: ../src/helper/units.c:45
+#, fuzzy
+msgid "Userspace unit"
+msgstr "وحدة مساحة المستخدم"
+
+#: ../src/helper/units.c:45
+#, fuzzy
+msgid "User"
+msgstr "مستخدم"
+
+#: ../src/helper/units.c:45
+#, fuzzy
+msgid "Userspace units"
+msgstr "وحدات مساحة المستخدم"
+
+#. Volatiles do not have default, so there are none here
+#. You can add new elements from this point forward
+#: ../src/helper/units.c:48
+#, fuzzy
+msgid "Percent"
+msgstr "بجزء من المائة"
+
+#: ../src/helper/units.c:48
+#, fuzzy
+msgid "%"
+msgstr "%"
+
+#: ../src/helper/units.c:48
+#, fuzzy
+msgid "Percents"
+msgstr "بأجزاء من المائة"
+
+#: ../src/helper/units.c:49
+#, fuzzy
+msgid "Millimeter"
+msgstr "مليمتر"
+
+#: ../src/helper/units.c:49
+#, fuzzy
+msgid "mm"
+msgstr "مم"
+
+#: ../src/helper/units.c:49
+#, fuzzy
+msgid "Millimeters"
+msgstr "ملليمترات"
+
+#: ../src/helper/units.c:50
+#, fuzzy
+msgid "Centimeter"
+msgstr "صنتيمتر"
+
+#: ../src/helper/units.c:50
+#, fuzzy
+msgid "cm"
+msgstr "صم"
+
+#: ../src/helper/units.c:50
+#, fuzzy
+msgid "Centimeters"
+msgstr "صنتيمترات"
+
+#: ../src/helper/units.c:51
+#, fuzzy
+msgid "Meter"
+msgstr "قياس شدة الصوت"
+
+#: ../src/helper/units.c:51
+#, fuzzy
+msgid "m"
+msgstr "م"
+
+#: ../src/helper/units.c:51
+#, fuzzy
+msgid "meters"
+msgstr "أمتار"
+
+#: ../src/helper/units.c:52
+#, fuzzy
+msgid "Inch"
+msgstr "بوصة"
+
+#: ../src/helper/units.c:52
+#, fuzzy
+msgid "in"
+msgstr "بوصة"
+
+#: ../src/helper/units.c:52
+#, fuzzy
+msgid "Inches"
+msgstr "بوصات"
+
+#: ../src/helper/units.c:53
+#, fuzzy
+msgid "Em square"
+msgstr "الجذر التربيعي [s]"
+
+#: ../src/helper/units.c:53
+msgid "em"
+msgstr ""
+
+#: ../src/helper/units.c:53
+#, fuzzy
+msgid "Em squares"
+msgstr "المربعات الفنية"
+
+#: ../src/helper/units.c:54
+#, fuzzy
+msgid "Ex square"
+msgstr "الجذر التربيعي [s]"
+
+#: ../src/helper/units.c:54
+msgid "ex"
+msgstr ""
+
+#: ../src/helper/units.c:54
+#, fuzzy
+msgid "Ex squares"
+msgstr "المربعات الفنية"
+
+#: ../src/interface.c:305
+#: ../src/interface.c:504
+#, fuzzy
+msgid "Open Recent"
+msgstr "فتح التعديلات الأخيرة"
+
+#: ../src/interface.c:325
+#, fuzzy
+msgid "Close View"
+msgstr "وضعية _ العرض"
+
+#: ../src/interface.c:328
+#: ../src/interface.c:510
+#, fuzzy
+msgid "About Sodipodi"
+msgstr "_حول الملحق"
+
+#. Have modules about menu
+#: ../src/interface.c:334
+#: ../src/interface.c:516
+#, fuzzy
+msgid "About Modules"
+msgstr "كل الوحدات"
+
+#: ../src/interface.c:354
+msgid "Cleanup"
+msgstr ""
+
+#. View:Zoom
+#: ../src/interface.c:429
+#: ../src/toolbox.c:587
+#: ../src/verbs.c:463
+#, fuzzy
+msgid "Zoom"
+msgstr "التكبير"
+
+#. View:New View
+#: ../src/interface.c:441
+#, fuzzy
+msgid "New View"
+msgstr "اعرض ال_مجلدات الجديدة باستخدام:"
+
+#. View:New Preview
+#: ../src/interface.c:443
+#, fuzzy
+msgid "New Preview"
+msgstr "استعراض الفيديو"
+
+#: ../src/interface.c:445
+#, fuzzy
+msgid "New Toplevel Toolbox"
+msgstr "تركيز في المستوى الأعلى"
+
+#: ../src/interface.c:446
+#, fuzzy
+msgid "New Docked Toolbox"
+msgstr "خواتم وقتية للملفات الجديدة"
+
+#: ../src/interface.c:447
+#, fuzzy
+msgid "Remove Docked Toolbox"
+msgstr "حذف شريط الأدوات المحدد"
+
+#. File
+#: ../src/interface.c:501
+#: ../src/verbs.c:409
+#, fuzzy
+msgid "New"
+msgstr "جديد"
+
+#: ../src/interface.c:502
+#, fuzzy
+msgid "Open"
+msgstr "فتح"
+
+#. For some reason action menu does not work on menubar :-(
+#: ../src/interface.c:522
+#: ../src/verbs.c:418
+#, fuzzy
+msgid "Exit program"
+msgstr "إنهاء البرنامج"
+
+#. Generic menu
+#. File submenu
+#: ../src/interface.c:585
+#: ../src/toolbox.c:311
+#, fuzzy
+msgid "File"
+msgstr "الملف"
+
+#. Edit submenu
+#: ../src/interface.c:591
+#: ../src/toolbox.c:362
+#: ../src/widgets/gradient-selector.c:138
+#, fuzzy
+msgid "Edit"
+msgstr "تحرير"
+
+#. View submenu
+#: ../src/interface.c:603
+#, fuzzy
+msgid "View"
+msgstr "عرض"
+
+#. Drawing mode submenu
+#: ../src/interface.c:609
+#, fuzzy
+msgid "Drawing Mode"
+msgstr "نسق القطعة"
+
+#. Dialog submenu
+#: ../src/interface.c:615
+msgid "Dialogs"
+msgstr ""
+
+#. Have modules menu
+#: ../src/interface.c:624
+#, fuzzy
+msgid "Modules"
+msgstr "وحدات"
+
+#: ../src/main.c:120
+#: ../src/main.c:612
+msgid "Do not use X server (only process files from console)"
+msgstr ""
+
+#: ../src/main.c:123
+#: ../src/main.c:613
+msgid "Try to use X server even if $DISPLAY is not set)"
+msgstr ""
+
+#: ../src/main.c:126
+#: ../src/main.c:614
+msgid "Open specified document(s) (option string may be excluded)"
+msgstr ""
+
+#: ../src/main.c:127
+#: ../src/main.c:130
+#: ../src/main.c:133
+#: ../src/main.c:147
+#, fuzzy
+msgid "FILENAME"
+msgstr "إسم الملف"
+
+#: ../src/main.c:129
+msgid "Print document(s) to specified output file (use '| program' for pipe)"
+msgstr ""
+
+#: ../src/main.c:132
+#: ../src/main.c:615
+#, fuzzy
+msgid "Export document to png file"
+msgstr "الذاكرة غير كافية لتحميل ملف PNG"
+
+#: ../src/main.c:135
+#: ../src/main.c:616
+msgid "The resolution used for converting SVG into bitmap (default 72.0)"
+msgstr ""
+
+#: ../src/main.c:136
+#, fuzzy
+msgid "DPI"
+msgstr "Xft DPI"
+
+#: ../src/main.c:138
+#: ../src/main.c:617
+msgid "Exported area in millimeters (default is full document, 0,0 is lower-left corner)"
+msgstr ""
+
+#: ../src/main.c:139
+msgid "x0:y0:x1:y1"
+msgstr ""
+
+#: ../src/main.c:141
+#: ../src/main.c:618
+msgid "The width of generated bitmap in pixels (overwrites dpi)"
+msgstr ""
+
+#: ../src/main.c:141
+#, fuzzy
+msgid "WIDTH"
+msgstr "العرض"
+
+#: ../src/main.c:143
+#: ../src/main.c:619
+msgid "The height of generated bitmap in pixels (overwrites dpi)"
+msgstr ""
+
+#: ../src/main.c:143
+#, fuzzy
+msgid "HEIGHT"
+msgstr "الارتفاع (الطول)"
+
+#: ../src/main.c:145
+#: ../src/main.c:620
+msgid "Background color of exported bitmap (any SVG supported color string)"
+msgstr ""
+
+#: ../src/main.c:145
+#, fuzzy
+msgid "COLOR"
+msgstr "اللّون"
+
+#: ../src/main.c:147
+#: ../src/main.c:621
+msgid "Export document to plain SVG file (no \"xmlns:sodipodi\" namespace)"
+msgstr ""
+
+#: ../src/main.c:149
+msgid "Show given files one-by-one, switch to next on any key/mouse event"
+msgstr ""
+
+#: ../src/main.c:151
+msgid "Prefer bitmap (xpm) icons to SVG ones"
+msgstr ""
+
+#: ../src/main.c:622
+#, fuzzy
+msgid "Print sodipodi version information"
+msgstr "اطبع الإصدار و اخرج"
+
+#: ../src/main.c:623
+msgid "Print help about command-line arguments"
+msgstr ""
+
+#: ../src/main.c:772
+#, fuzzy
+msgid "Untitled document"
+msgstr "مستند غير مسمّى"
+
+#. Show nice dialog box
+#: ../src/main.c:797
+msgid "Sodipodi encountered an internal error and will close now.\n"
+msgstr ""
+
+#: ../src/main.c:798
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgstr ""
+
+#: ../src/main.c:799
+msgid "Automatic backup of following documents failed:\n"
+msgstr ""
+
+#: ../src/module.c:898
+msgid "Scalable Vector Graphic (SVG)"
+msgstr ""
+
+#: ../src/module.c:898
+msgid "Sodipodi native file format and W3C standard"
+msgstr ""
+
+#: ../src/module.c:905
+msgid "SVG with \"xmlns:sodipodi\" namespace"
+msgstr ""
+
+#: ../src/module.c:906
+msgid "Scalable Vector Graphics format with sodipodi extensions"
+msgstr ""
+
+#: ../src/module.c:909
+#, fuzzy
+msgid "Plain SVG"
+msgstr "تباين عال-SVG"
+
+#: ../src/module.c:910
+msgid "Scalable Vector Graphics format"
+msgstr ""
+
+#: ../src/modules/gnome.c:158
+#, fuzzy
+msgid "Select printer"
+msgstr "خدمة الطابعة"
+
+#: ../src/modules/gnome.c:212
+#, c-format
+msgid "Sodipodi (doc name %s..): Print Preview"
+msgstr ""
+
+#: ../src/modules/kde.cpp:162
+#, fuzzy
+msgid "Document variant:"
+msgstr "ضرب الخط"
+
+#: ../src/modules/kde.cpp:172
+msgid ""
+"*.svg *.svgz|SVG files\n"
+"*.xml|XML files\n"
+"*|All files"
+msgstr ""
+
+#: ../src/modules/kde.cpp:174
+#, fuzzy
+msgid "Save document as"
+msgstr "حفظ الملف كـ"
+
+#: ../src/modules/plain-pdf.c:1105
+#: ../src/modules/plain-ps.c:741
+#: ../src/modules/ps.c:961
+#, fuzzy
+msgid "write error occured"
+msgstr "حدث خطأ مجهول"
+
+#: ../src/modules/plain.c:178
+#: ../src/modules/ps.c:264
+#, fuzzy
+msgid "Print using PostScript operators"
+msgstr "طبع بإستخدام التّظليل الرّمادي"
+
+#: ../src/modules/plain.c:179
+#: ../src/modules/ps.c:266
+msgid "Use PostScript vector operators, resulting image will be (usually) smaller and can be arbitrarily scaled, but alpha transparency, markers and patterns will be lost"
+msgstr ""
+
+#: ../src/modules/plain.c:184
+#: ../src/modules/ps.c:271
+#, fuzzy
+msgid "Print as bitmap"
+msgstr "حفظ الملف كـ"
+
+#: ../src/modules/plain.c:185
+#: ../src/modules/ps.c:273
+msgid "Print everything as bitmap, resulting image will be (usualy) larger and it quality depends on zoom factor, but all graphics will be rendered identical to display"
+msgstr ""
+
+#: ../src/modules/plain.c:190
+#, fuzzy
+msgid "Print using PDF driver"
+msgstr "طبع بإستخدام التّظليل الرّمادي"
+
+#: ../src/modules/plain.c:191
+msgid "Use Portable Document Format for printing"
+msgstr ""
+
+#. Print destination frame
+#: ../src/modules/plain.c:225
+#: ../src/modules/plain.c:294
+#: ../src/modules/ps.c:245
+#: ../src/modules/ps.c:306
+#, fuzzy
+msgid "Print destination"
+msgstr "المجلّد المقصود:"
+
+#. Print properties frame
+#: ../src/modules/plain.c:236
+#: ../src/modules/ps.c:256
+#, fuzzy
+msgid "Print properties"
+msgstr "خصائص القائمة"
+
+#: ../src/modules/plain.c:275
+#: ../src/modules/ps.c:287
+msgid "Preferred resolution (dots per inch) of bitmap"
+msgstr ""
+
+#: ../src/modules/plain.c:290
+#: ../src/modules/ps.c:302
+#, fuzzy
+msgid "Resolution:"
+msgstr "الإ_ستبانة:"
+
+#: ../src/modules/plain.c:300
+#: ../src/modules/ps.c:312
+msgid ""
+"Enter destination lpr queue.\n"
+"Use '> filename' to print to file.\n"
+"Use '| prog arg...' to pipe to program"
+msgstr ""
+
+#. Create toplevel menuitem
+#: ../src/object-ui.c:111
+#: ../src/widgets/sp-dock-layout.c:741
+#, fuzzy
+msgid "Item"
+msgstr "عنصر"
+
+#. Item dialog
+#: ../src/object-ui.c:114
+#: ../src/verbs.c:487
+#, fuzzy
+msgid "Item Properties"
+msgstr "خصائص عنصر القائمة"
+
+#. Select item
+#: ../src/object-ui.c:122
+#, fuzzy
+msgid "Select this"
+msgstr "إنتقاء ملف"
+
+#. Reset transformations
+#: ../src/object-ui.c:131
+#, fuzzy
+msgid "Reset transformation"
+msgstr "إعا_دة ضبط الخطوط"
+
+#. Apply transformation
+#: ../src/object-ui.c:135
+#, fuzzy
+msgid "Apply transformation"
+msgstr "تطبيق ال_خلفية"
+
+#: ../src/object-ui.c:140
+#, fuzzy
+msgid "Make sensitive"
+msgstr "حالة الأحرف حساسة"
+
+#: ../src/object-ui.c:140
+#, fuzzy
+msgid "Make insensitive"
+msgstr "اجعل إ_فتراضي"
+
+#. Create link
+#: ../src/object-ui.c:144
+#, fuzzy
+msgid "Create link"
+msgstr "وصلة التنزيل"
+
+#: ../src/object-ui.c:276
+#: ../src/verbs.c:435
+#, fuzzy
+msgid "Group"
+msgstr "مجموعة"
+
+#. Group dialog
+#: ../src/object-ui.c:280
+#, fuzzy
+msgid "Group Properties"
+msgstr "خصائص المجموعة"
+
+#. "Ungroup"
+#: ../src/object-ui.c:291
+#: ../src/verbs.c:436
+msgid "Ungroup"
+msgstr ""
+
+#. Dive
+#: ../src/object-ui.c:296
+#, fuzzy
+msgid "Set as layer"
+msgstr "ضبط ك_خلفية"
+
+#. Create toplevel menuitem
+#: ../src/object-ui.c:341
+#, fuzzy
+msgid "Link"
+msgstr "وصلة"
+
+#. Link dialog
+#: ../src/object-ui.c:344
+#, fuzzy
+msgid "Link Properties"
+msgstr "خصائص الرابط"
+
+#. Select item
+#: ../src/object-ui.c:354
+#, fuzzy
+msgid "Follow link"
+msgstr "وصلة التنزيل"
+
+#. Reset transformations
+#: ../src/object-ui.c:359
+#, fuzzy
+msgid "Remove link"
+msgstr "حذف وصلة"
+
+#. Create toplevel menuitem
+#: ../src/object-ui.c:422
+#, fuzzy
+msgid "Image"
+msgstr "صورة"
+
+#. Link dialog
+#: ../src/object-ui.c:425
+#, fuzzy
+msgid "Image Properties"
+msgstr "خصائص القائمة"
+
+#. Autotrace dialog
+#: ../src/object-ui.c:433
+#: ../src/sp-image.c:762
+#, fuzzy
+msgid "Trace"
+msgstr "تعقّب"
+
+#. Create toplevel menuitem
+#: ../src/object-ui.c:482
+#, fuzzy
+msgid "Shape"
+msgstr "شكل"
+
+#. Item dialog
+#: ../src/object-ui.c:485
+#: ../src/toolbox.c:402
+#, fuzzy
+msgid "Fill settings"
+msgstr "اختر الإعدادات"
+
+#. Create toplevel menuitem
+#: ../src/object-ui.c:516
+#, fuzzy
+msgid "Path"
+msgstr "المسار"
+
+#. Reverse
+#: ../src/object-ui.c:519
+#, fuzzy
+msgid "Reverse"
+msgstr "ق_لب الترتيب"
+
+#. Create toplevel menuitem
+#: ../src/object-ui.c:542
+msgid "Rect"
+msgstr ""
+
+#. Link dialog
+#: ../src/object-ui.c:545
+#, fuzzy
+msgid "Rect Properties"
+msgstr "خصائص القائمة"
+
+#. Create toplevel menuitem
+#: ../src/object-ui.c:578
+#: ../src/verbs.c:457
+#, fuzzy
+msgid "Star"
+msgstr "رمز النجمة"
+
+#. Link dialog
+#: ../src/object-ui.c:581
+#, fuzzy
+msgid "Star Properties"
+msgstr "خصائص القائمة"
+
+#. Create toplevel menuitem
+#: ../src/object-ui.c:614
+#: ../src/verbs.c:458
+msgid "Spiral"
+msgstr ""
+
+#. Link dialog
+#: ../src/object-ui.c:617
+#, fuzzy
+msgid "Spiral Properties"
+msgstr "خصائص القائمة"
+
+#. rx_ratio
+#: ../src/rect-context.c:358
+#, fuzzy
+msgid "Roundness ratio for x:"
+msgstr "كلمة المرور للمستند %s"
+
+#. ry_ratio
+#: ../src/rect-context.c:370
+#, fuzzy
+msgid "Roundness ratio for y:"
+msgstr "كلمة المرور للمستند %s"
+
+#: ../src/select-context.c:570
+#, fuzzy
+msgid "Visual transformation"
+msgstr "عبري مرئي"
+
+#: ../src/select-context.c:576
+#, fuzzy
+msgid "Show content"
+msgstr "<b>محتوى الانترنت</b>"
+
+#: ../src/select-context.c:582
+#, fuzzy
+msgid "Show outline"
+msgstr "اظهار التفاصيل"
+
+#: ../src/select-context.c:588
+#, fuzzy
+msgid "Object transformation"
+msgstr "مميّز الجسم (%s)"
+
+#: ../src/select-context.c:594
+msgid "Optimize"
+msgstr ""
+
+#: ../src/select-context.c:600
+#, fuzzy
+msgid "Preserve"
+msgstr "حافظ على متغيرات LD_* "
+
+#: ../src/select-context.c:606
+#, fuzzy
+msgid "[Tab] Cycling"
+msgstr "غلق اللسان"
+
+#: ../src/select-context.c:611
+msgid "Cycle only among visible items"
+msgstr ""
+
+#: ../src/select-context.c:614
+#, fuzzy
+msgid "Center view to selected item"
+msgstr "لا عنصر منتقى للتغيير!"
+
+#: ../src/slideshow.c:90
+#, fuzzy
+msgid "Sodipodi slideshow"
+msgstr "أظهر عرض شرائح من صور الكَوْن"
+
+#: ../src/sodipodi.c:468
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you can\n"
+"neither load nor save preferences\n"
+msgstr ""
+
+#: ../src/sodipodi.c:471
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+
+#: ../src/sodipodi.c:476
+#, c-format
+msgid ""
+"%s is not valid sodipodi preferences file.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+
+#: ../src/sodipodi.c:488
+#, c-format
+msgid ""
+"%s is not regular file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: ../src/sodipodi.c:491
+#, c-format
+msgid ""
+"%s either is not valid xml file or\n"
+"you do not have read premissions on it.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: ../src/sodipodi.c:495
+#, c-format
+msgid ""
+"%s is not valid sodipodi extensions file.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: ../src/sodipodi.c:829
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"%s."
+msgstr ""
+
+#: ../src/sodipodi.c:833
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+
+#: ../src/sodipodi.c:837
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+
+#: ../src/sodipodi.c:841
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you\n"
+"are neither able to load nor save\n"
+"preferences."
+msgstr ""
+
+#: ../src/sodipodi.c:851
+#, c-format
+msgid ""
+"Cannot create directory %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: ../src/sodipodi.c:854
+#, c-format
+msgid ""
+"%s is not a valid directory.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: ../src/sodipodi.c:857
+#, c-format
+msgid ""
+"Cannot create file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: ../src/sodipodi.c:860
+#, c-format
+msgid ""
+"Cannot write file %s.\n"
+"Although sodipodi will run, you are\n"
+"not able to use extensions (plugins)\n"
+msgstr ""
+
+#: ../src/sp-anchor.c:196
+#, fuzzy, c-format
+msgid "Link to %s"
+msgstr "وصل بـ %s"
+
+#: ../src/sp-image.c:373
+#, fuzzy, c-format
+msgid "Image with bad reference: %s"
+msgstr ""
+"كلمة مرور سيئة: %s.\n"
+"رجاء حول مع كلمة مرور جديدة"
+
+#: ../src/sp-image.c:375
+#, fuzzy, c-format
+msgid "Color image %d x %d: %s"
+msgstr "صورة الفيديو"
+
+#: ../src/sp-image.c:908
+#, fuzzy, c-format
+msgid "Error to write %s: %s"
+msgstr "لا يمكن الكتابة على %s: %s"
+
+#: ../src/sp-image.c:942
+#, fuzzy
+msgid "Untitled"
+msgstr "بدون عنوان"
+
+#: ../src/sp-image.c:947
+#, fuzzy
+msgid "Document Name:"
+msgstr "اسم الموصول"
+
+#: ../src/sp-image.c:960
+#, fuzzy
+msgid "Unknown"
+msgstr "مجهول"
+
+#: ../src/sp-image.c:966
+#, fuzzy
+msgid "Image URI:"
+msgstr "عنوان غير صحيح"
+
+#: ../src/sp-item-group.c:483
+#, fuzzy, c-format
+msgid "Group of %d objects"
+msgstr "جاري تحديث الأجسام"
+
+#: ../src/sp-item.c:554
+#, fuzzy
+msgid "Unknown item :-("
+msgstr "نوع عنصر حزمة المفاتيح غير معروف: %d"
+
+#. fixme:
+#: ../src/sp-text.c:1293
+#, fuzzy
+msgid "Text object"
+msgstr "مميّز الجسم (%s)"
+
+#. T0
+#: ../src/spiral-context.c:355
+#, fuzzy
+msgid "Inner radius:"
+msgstr "منغوليا الداخلية"
+
+#. Proportion
+#: ../src/star-context.c:355
+msgid "Proportion:"
+msgstr ""
+
+#. Making sides flat
+#: ../src/star-context.c:368
+#, fuzzy
+msgid "Make sides flat"
+msgstr "نسق المعاينة البسيطة"
+
+#: ../src/toolbox.c:399
+#, fuzzy
+msgid "Object"
+msgstr "جسم"
+
+#: ../src/toolbox.c:403
+#: ../src/verbs.c:481
+#, fuzzy
+msgid "Object size and position"
+msgstr "الحجم و المكان الأوليين للنافذة  "
+
+#: ../src/toolbox.c:404
+#, fuzzy
+msgid "Text and font settings"
+msgstr "تفضيلات و تعيينات شخصيّة"
+
+#: ../src/toolbox.c:406
+#: ../src/verbs.c:482
+#, fuzzy
+msgid "Object transformations"
+msgstr "مميّز الجسم (%s)"
+
+#: ../src/toolbox.c:485
+#, fuzzy
+msgid "Draw"
+msgstr "رسم"
+
+#: ../src/toolbox.c:542
+#, fuzzy
+msgid "Extension"
+msgstr "ا_متداد الملف:"
+
+#: ../src/toolbox.c:624
+msgid "Nodes"
+msgstr ""
+
+#: ../src/toolbox.c:627
+msgid "Insert new nodes into selected segments"
+msgstr ""
+
+#: ../src/toolbox.c:629
+msgid "Break line at selected nodes"
+msgstr ""
+
+#: ../src/toolbox.c:631
+#, fuzzy
+msgid "Make selected nodes corner"
+msgstr "اجعل الأيقونة المنتقات قابلة للتمديد"
+
+#: ../src/toolbox.c:633
+#, fuzzy
+msgid "Make selected segments lines"
+msgstr "اجعل الأيقونة المنتقات قابلة للتمديد"
+
+#: ../src/toolbox.c:635
+#, fuzzy
+msgid "Delete selected nodes"
+msgstr "_حذف المهام المنتقاة"
+
+#: ../src/toolbox.c:637
+msgid "Join lines at selected nodes"
+msgstr ""
+
+#: ../src/toolbox.c:640
+msgid "Join lines at selected nodes with new segment"
+msgstr ""
+
+#: ../src/toolbox.c:642
+#, fuzzy
+msgid "Make selected nodes smooth"
+msgstr "اجعل الأيقونة المنتقات قابلة للتمديد"
+
+#: ../src/toolbox.c:644
+#, fuzzy
+msgid "Make selected segments curves"
+msgstr "اجعل الأيقونة المنتقات قابلة للتمديد"
+
+#: ../src/verbs.c:407
+#, fuzzy
+msgid "Does nothing"
+msgstr "لا تعمل شيئا"
+
+#: ../src/verbs.c:409
+#, fuzzy
+msgid "Create new SVG document"
+msgstr "خطأ \"%s\" أثناء إنشاء مستند جديد."
+
+#: ../src/verbs.c:410
+#, fuzzy
+msgid "Open..."
+msgstr "افتح %s"
+
+#: ../src/verbs.c:410
+#, fuzzy
+msgid "Open existing SVG document"
+msgstr "تعذر فتح المستند"
+
+#: ../src/verbs.c:411
+#, fuzzy
+msgid "Save"
+msgstr "حفظ"
+
+#: ../src/verbs.c:411
+#, fuzzy
+msgid "Save document"
+msgstr "حفظ نسخة من المستند الحالي"
+
+#: ../src/verbs.c:412
+#, fuzzy
+msgid "Save As..."
+msgstr "حفظ كـ..."
+
+#: ../src/verbs.c:412
+msgid "Save document under new name"
+msgstr ""
+
+#: ../src/verbs.c:413
+#, fuzzy
+msgid "Print..."
+msgstr "طباعة..."
+
+#: ../src/verbs.c:413
+#, fuzzy
+msgid "Print document"
+msgstr "طباعة المستند"
+
+#: ../src/verbs.c:414
+#, fuzzy
+msgid "Print Direct..."
+msgstr "إدخال مباشر"
+
+#: ../src/verbs.c:414
+msgid "Print directly to file or pipe"
+msgstr ""
+
+#: ../src/verbs.c:415
+#, fuzzy
+msgid "Print Preview"
+msgstr "معاينة الطّباعة."
+
+#: ../src/verbs.c:415
+#, fuzzy
+msgid "Preview document printout"
+msgstr "تجاوز قيود المستند"
+
+#: ../src/verbs.c:416
+#, fuzzy
+msgid "Import"
+msgstr "استيراد"
+
+#: ../src/verbs.c:416
+msgid "Import bitmap or SVG image into document"
+msgstr ""
+
+#: ../src/verbs.c:417
+msgid "Export document as PNG bitmap"
+msgstr ""
+
+#: ../src/verbs.c:418
+#, fuzzy
+msgid "Exit"
+msgstr "إنهاء البرنامج"
+
+#. Edit
+#: ../src/verbs.c:420
+#, fuzzy
+msgid "Undo"
+msgstr "تراجع"
+
+#: ../src/verbs.c:420
+#, fuzzy
+msgid "Revert last action"
+msgstr "تراجع عن العمل الأخير"
+
+#: ../src/verbs.c:421
+#, fuzzy
+msgid "Redo"
+msgstr "تكرار"
+
+#: ../src/verbs.c:421
+#, fuzzy
+msgid "Do again undone action"
+msgstr "تكرار آخر عملية متراجع عنها"
+
+#: ../src/verbs.c:422
+#, fuzzy
+msgid "Cut"
+msgstr "قص"
+
+#: ../src/verbs.c:422
+#, fuzzy
+msgid "Cut selected objects to clipboard"
+msgstr "قص النّص المنتقى للحافظة الوسيطة"
+
+#: ../src/verbs.c:423
+#, fuzzy
+msgid "Copy"
+msgstr "نسخ"
+
+#: ../src/verbs.c:423
+#, fuzzy
+msgid "Copy selected objects to clipboard"
+msgstr "نسخ النّص المنتقى للحافظة الوسيطة"
+
+#: ../src/verbs.c:424
+#, fuzzy
+msgid "Paste"
+msgstr "لصق"
+
+#: ../src/verbs.c:424
+#, fuzzy
+msgid "Paste objects from clipboard"
+msgstr "لصق نص من الحافظة الوسيطة"
+
+#: ../src/verbs.c:425
+#, fuzzy
+msgid "Delete"
+msgstr "حذف"
+
+#: ../src/verbs.c:425
+#, fuzzy
+msgid "Delete selected objects"
+msgstr "جاري حذف الأجسام المنتقاة"
+
+#: ../src/verbs.c:426
+#, fuzzy
+msgid "Duplicate"
+msgstr "مضاعفة"
+
+#: ../src/verbs.c:426
+#, fuzzy
+msgid "Duplicate selected objects"
+msgstr "جاري حذف الأجسام المنتقاة"
+
+#: ../src/verbs.c:427
+#, fuzzy
+msgid "Clear All"
+msgstr "نسخ ال_كل"
+
+#: ../src/verbs.c:427
+msgid "Delete all objects from document"
+msgstr ""
+
+#: ../src/verbs.c:428
+#, fuzzy
+msgid "Select All"
+msgstr "انتقاء الكل"
+
+#: ../src/verbs.c:428
+#, fuzzy
+msgid "Select all objects in document"
+msgstr "انتقي كامل النص في خانة نص"
+
+#: ../src/verbs.c:429
+#, fuzzy
+msgid "Repeat"
+msgstr "إعادة"
+
+#: ../src/verbs.c:429
+#, fuzzy
+msgid "Repeat last saved action"
+msgstr "تكرار آخر عملية متراجع عنها"
+
+#. Selection
+#: ../src/verbs.c:431
+#, fuzzy
+msgid "Bring to Front"
+msgstr "ا_ستعادة الحالة الأصلية"
+
+#: ../src/verbs.c:431
+msgid "Raise selected objects to top"
+msgstr ""
+
+#: ../src/verbs.c:432
+#, fuzzy
+msgid "Send to Back"
+msgstr "الرجوع للطبقة"
+
+#: ../src/verbs.c:432
+#, fuzzy
+msgid "Lower selected objects to bottom"
+msgstr "تحويل النّص المنتقى إلى الأحرف الصّغيرة"
+
+#: ../src/verbs.c:433
+msgid "Raise"
+msgstr ""
+
+#: ../src/verbs.c:433
+msgid "Raise selected objects one position"
+msgstr ""
+
+#: ../src/verbs.c:434
+#, fuzzy
+msgid "Lower"
+msgstr "أدنى"
+
+#: ../src/verbs.c:434
+msgid "Lower selected objects one position"
+msgstr ""
+
+#: ../src/verbs.c:435
+#, fuzzy
+msgid "Group selected objects"
+msgstr "جاري حذف الأجسام المنتقاة"
+
+#: ../src/verbs.c:436
+#, fuzzy
+msgid "Ungroup selected group"
+msgstr "مجموعة قائمة المهام"
+
+#: ../src/verbs.c:437
+msgid "Combine"
+msgstr ""
+
+#: ../src/verbs.c:437
+#, fuzzy
+msgid "Combine multiple paths"
+msgstr "رسائل غير مراجعة متعدّد"
+
+#: ../src/verbs.c:438
+#, fuzzy
+msgid "Break Apart"
+msgstr "رموز التّوقّف"
+
+#: ../src/verbs.c:438
+msgid "Break selected path to subpaths"
+msgstr ""
+
+#: ../src/verbs.c:439
+msgid "Uncross"
+msgstr ""
+
+#: ../src/verbs.c:439
+msgid "Break selected path at crossings"
+msgstr ""
+
+#: ../src/verbs.c:440
+msgid "Union"
+msgstr ""
+
+#: ../src/verbs.c:440
+msgid "Calculate union of selected paths"
+msgstr ""
+
+#: ../src/verbs.c:441
+msgid "Intersection"
+msgstr ""
+
+#: ../src/verbs.c:441
+msgid "Calculate intersection of selected paths"
+msgstr ""
+
+#: ../src/verbs.c:442
+msgid "Subtraction"
+msgstr ""
+
+#: ../src/verbs.c:442
+msgid "Subtract paths from first"
+msgstr ""
+
+#: ../src/verbs.c:443
+msgid "Transform"
+msgstr ""
+
+#: ../src/verbs.c:443
+#, fuzzy
+msgid "Applies transformation"
+msgstr "تحويل لصورة غير محملة."
+
+#. Object
+#: ../src/verbs.c:445
+#, fuzzy
+msgid "Rotate 90 degrees"
+msgstr "مدوّر 90 درجة"
+
+#: ../src/verbs.c:445
+msgid "Rotates object 90 degrees clockwise"
+msgstr ""
+
+#: ../src/verbs.c:446
+#, fuzzy
+msgid "Flatten object"
+msgstr "مميّز الجسم (%s)"
+
+#: ../src/verbs.c:446
+#, fuzzy
+msgid "Remove transformations from object"
+msgstr "حذف من هذا الموضوع."
+
+#: ../src/verbs.c:447
+#, fuzzy
+msgid "Convert to Curves"
+msgstr "لا يمكن تحويل المحارف من %s إلى %s."
+
+#: ../src/verbs.c:447
+#, fuzzy
+msgid "Convert selected object to path"
+msgstr "فشل في تحويل الجسم الى IOR"
+
+#: ../src/verbs.c:448
+#, fuzzy
+msgid "Flip Horizontally"
+msgstr "قلب أ_فقي"
+
+#: ../src/verbs.c:449
+#, fuzzy
+msgid "Flip selected objects horizontally"
+msgstr "إنشاء محفوضة بالأجسام المختارة"
+
+#: ../src/verbs.c:450
+#, fuzzy
+msgid "Flip Vertically"
+msgstr "قلب أ_فقي"
+
+#: ../src/verbs.c:451
+#, fuzzy
+msgid "Flip selected objects vertically"
+msgstr "إنشاء محفوضة بالأجسام المختارة"
+
+#. Event contexts
+#: ../src/verbs.c:453
+#, fuzzy
+msgid "Select"
+msgstr "انتقاء"
+
+#: ../src/verbs.c:453
+#, fuzzy
+msgid "Select and transform objects"
+msgstr "اختر و حدّد خيار البحث \"%s\""
+
+#: ../src/verbs.c:454
+#, fuzzy
+msgid "Node edit"
+msgstr "ت_حرير الخط"
+
+#: ../src/verbs.c:454
+msgid "Modify existing objects by control nodes"
+msgstr ""
+
+#: ../src/verbs.c:455
+#, fuzzy
+msgid "Rectangle"
+msgstr "مستطيل الانتقاء"
+
+#: ../src/verbs.c:455
+msgid "Create rectangles and squares with optional rounded corners"
+msgstr ""
+
+#: ../src/verbs.c:456
+msgid "Ellipse"
+msgstr ""
+
+#: ../src/verbs.c:456
+msgid "Create circles, ellipses and arcs"
+msgstr ""
+
+#: ../src/verbs.c:457
+#, fuzzy
+msgid "Create stars and polygons"
+msgstr "إنشاء و تغيير محفوظة"
+
+#: ../src/verbs.c:458
+#, fuzzy
+msgid "Create spirals"
+msgstr "إنشاء مجلّد"
+
+#: ../src/verbs.c:459
+msgid "Pencil"
+msgstr ""
+
+#: ../src/verbs.c:459
+msgid "Draw freehand curves and straight lines"
+msgstr ""
+
+#: ../src/verbs.c:460
+#, fuzzy
+msgid "Pen"
+msgstr "_فتح المجلّد"
+
+#: ../src/verbs.c:460
+msgid "Draw precisely positioned curved and straight lines"
+msgstr ""
+
+#: ../src/verbs.c:461
+msgid "Calligraphy"
+msgstr ""
+
+#: ../src/verbs.c:461
+#, fuzzy
+msgid "Draw calligraphic lines"
+msgstr "رسم الخطوط و موسّعات +/-."
+
+#: ../src/verbs.c:462
+msgid "Create and edit text objects"
+msgstr ""
+
+#: ../src/verbs.c:463
+msgid "Zoom into precisely selected area"
+msgstr ""
+
+#: ../src/verbs.c:464
+msgid "Dropper"
+msgstr ""
+
+#: ../src/verbs.c:464
+msgid "Pick averaged colors from image"
+msgstr ""
+
+#. Zooming
+#: ../src/verbs.c:466
+#, fuzzy
+msgid "In"
+msgstr "داخل"
+
+#: ../src/verbs.c:466
+#, fuzzy
+msgid "Zoom in drawing"
+msgstr "تكبير الصفحة"
+
+#: ../src/verbs.c:467
+#, fuzzy
+msgid "Out"
+msgstr "خارج"
+
+#: ../src/verbs.c:467
+#, fuzzy
+msgid "Zoom out drawing"
+msgstr "تصغير الصفحة"
+
+#: ../src/verbs.c:468
+msgid "1:1"
+msgstr ""
+
+#: ../src/verbs.c:468
+#, fuzzy
+msgid "Set zoom factor to 1:1"
+msgstr "ضبط عامل تحجيم الشاشة الطرفية (1.0 = حجم عادي)"
+
+#: ../src/verbs.c:469
+msgid "1:2"
+msgstr ""
+
+#: ../src/verbs.c:469
+#, fuzzy
+msgid "Set zoom factor to 1:2"
+msgstr "ضبط عامل تحجيم الشاشة الطرفية (1.0 = حجم عادي)"
+
+#: ../src/verbs.c:470
+msgid "2:1"
+msgstr ""
+
+#: ../src/verbs.c:470
+#, fuzzy
+msgid "Set zoom factor to 2:1"
+msgstr "ضبط عامل تحجيم الشاشة الطرفية (1.0 = حجم عادي)"
+
+#: ../src/verbs.c:471
+#, fuzzy
+msgid "Fit the whole page into window"
+msgstr "ضبط الحجم لملائمة الصفحة بكاملها"
+
+#: ../src/verbs.c:472
+msgid "Fit the whole drawing into window"
+msgstr ""
+
+#: ../src/verbs.c:473
+msgid "Fit the whole selection into window"
+msgstr ""
+
+#. Dialogs
+#: ../src/verbs.c:475
+#, fuzzy
+msgid "Display"
+msgstr "العرض"
+
+#: ../src/verbs.c:475
+#, fuzzy
+msgid "Global display settings"
+msgstr "ابق الإعدادات الحالية"
+
+#: ../src/verbs.c:476
+#, fuzzy
+msgid "Page layout"
+msgstr "مخطط القائمة"
+
+#: ../src/verbs.c:477
+#, fuzzy
+msgid "Editing Window"
+msgstr "مبدل النافذة"
+
+#: ../src/verbs.c:477
+#, fuzzy
+msgid "Editing window properties"
+msgstr "جاري انشاء نافذة الخصائص."
+
+#: ../src/verbs.c:478
+#, fuzzy
+msgid "Tool Options"
+msgstr "<b>خيارات العرض:</b>"
+
+#: ../src/verbs.c:479
+#, fuzzy
+msgid "Tool Attributes"
+msgstr "اعرض الخواص"
+
+#: ../src/verbs.c:480
+#, fuzzy
+msgid "Fill and Stroke"
+msgstr "احفظ و اخرج"
+
+#: ../src/verbs.c:480
+#, fuzzy
+msgid "Fill and stroke settings"
+msgstr "تفضيلات و تعيينات شخصيّة"
+
+#: ../src/verbs.c:482
+msgid "Transformations"
+msgstr ""
+
+#: ../src/verbs.c:483
+#, fuzzy
+msgid "Align and Distribute"
+msgstr "احفظ و اخرج"
+
+#: ../src/verbs.c:483
+#, fuzzy
+msgid "Align and distribute"
+msgstr "احفظ و اخرج"
+
+#: ../src/verbs.c:484
+#, fuzzy
+msgid "Text and Font"
+msgstr "خطّ النّصّ"
+
+#: ../src/verbs.c:484
+msgid "Text editing and font settings"
+msgstr ""
+
+#: ../src/verbs.c:485
+#, fuzzy
+msgid "Document Tree"
+msgstr "شجرة الدليل"
+
+#: ../src/verbs.c:486
+#, fuzzy
+msgid "XML Editor"
+msgstr "<b>خط المحرر:</b>"
+
+#. Family frame
+#: ../src/widgets/font-selector.c:153
+#, fuzzy
+msgid "Font family"
+msgstr "عائلة الخطوط"
+
+#. Style frame
+#: ../src/widgets/font-selector.c:193
+#, fuzzy
+msgid "Style"
+msgstr "الأسلوب"
+
+#: ../src/widgets/font-selector.c:228
+#, fuzzy
+msgid "Font size:"
+msgstr "حجم الخط"
+
+#: ../src/widgets/font-selector.c:560
+msgid "AaBbCcIiPpQq12368.;/()"
+msgstr ""
+
+#: ../src/widgets/gradient-selector.c:143
+#, fuzzy
+msgid "Add"
+msgstr "اضافة"
+
+#: ../src/widgets/gradient-selector.c:179
+msgid "gradientUnits"
+msgstr ""
+
+#: ../src/widgets/gradient-selector.c:208
+msgid "gradientSpread"
+msgstr ""
+
+#: ../src/widgets/gradient-vector.c:250
+#, fuzzy
+msgid "No document selected"
+msgstr "لم يتم انتقاء أيّة تطبيقات"
+
+#: ../src/widgets/gradient-vector.c:256
+#, fuzzy
+msgid "No gradients in document"
+msgstr "ليس ثمّة رسالة %s في %s"
+
+#: ../src/widgets/gradient-vector.c:262
+#, fuzzy
+msgid "No gradient selected"
+msgstr "لم يتم انتقاء أيّة تطبيقات"
+
+#: ../src/widgets/gradient-vector.c:417
+#, fuzzy
+msgid "Start color"
+msgstr "إضبط الألوان"
+
+#: ../src/widgets/gradient-vector.c:427
+#, fuzzy
+msgid "End color"
+msgstr "إضبط الألوان"
+
+#: ../src/widgets/gradient-vector.c:452
+#, fuzzy
+msgid "Gradient vector"
+msgstr "تدرّج أفقي"
+
+#: ../src/widgets/paint-selector.c:622
+#, fuzzy
+msgid "No objects"
+msgstr "لا كائنات مدمجة"
+
+#: ../src/widgets/paint-selector.c:636
+#, fuzzy
+msgid "Multiple styles"
+msgstr "VCards عديدة"
+
+#: ../src/widgets/paint-selector.c:650
+#, fuzzy
+msgid "No paint"
+msgstr "لا تاريخ"
+
+#. Label
+#: ../src/widgets/paint-selector.c:747
+#, fuzzy
+msgid "Mode:"
+msgstr "نمط"
+
+#: ../src/widgets/paint-selector.c:757
+#, fuzzy
+msgid "RGB"
+msgstr "_RGB"
+
+#: ../src/widgets/paint-selector.c:757
+#: ../src/widgets/paint-selector.c:758
+msgid "RGB Colorspace"
+msgstr ""
+
+#: ../src/widgets/paint-selector.c:758
+msgid "HSV"
+msgstr ""
+
+#: ../src/widgets/paint-selector.c:759
+msgid "CMYK"
+msgstr ""
+
+#: ../src/widgets/paint-selector.c:759
+msgid "CMYK Colorspace"
+msgstr ""
+
+#. Use dropper
+#: ../src/widgets/paint-selector.c:766
+#, fuzzy
+msgid "Get from dropper"
+msgstr ""
+"لا يمكن جلب الرّسالة: %s من المجلّد %s\n"
+"  %s"
+
+#: ../src/widgets/paint-selector.c:797
+#, fuzzy
+msgid "Color paint"
+msgstr "إضبط الألوان"
+
+#: ../src/widgets/paint-selector.c:875
+#, fuzzy
+msgid "Linear gradient"
+msgstr "تدرّج أفقي"
+
+#: ../src/widgets/paint-selector.c:878
+#, fuzzy
+msgid "Radial gradient"
+msgstr "تدرّج أفقي"
+
+#: ../src/widgets/sp-color-selector.c:623
+#, fuzzy
+msgid "Red:"
+msgstr "أحمر"
+
+#: ../src/widgets/sp-color-selector.c:624
+#, fuzzy
+msgid "Green:"
+msgstr "أخضر"
+
+#: ../src/widgets/sp-color-selector.c:625
+#, fuzzy
+msgid "Blue:"
+msgstr "أزرق"
+
+#: ../src/widgets/sp-color-selector.c:626
+#: ../src/widgets/sp-color-selector.c:646
+#: ../src/widgets/sp-color-selector.c:668
+#, fuzzy
+msgid "Alpha:"
+msgstr "ألفا يونانية"
+
+#: ../src/widgets/sp-color-selector.c:643
+#, fuzzy
+msgid "Hue:"
+msgstr "ال_فارق بين الألوان:"
+
+#: ../src/widgets/sp-color-selector.c:644
+#, fuzzy
+msgid "Saturation:"
+msgstr "الت_شبع:"
+
+#: ../src/widgets/sp-color-selector.c:645
+#, fuzzy
+msgid "Value:"
+msgstr "القيمة"
+
+#: ../src/widgets/sp-color-selector.c:664
+#, fuzzy
+msgid "Cyan:"
+msgstr "أزرق"
+
+#: ../src/widgets/sp-color-selector.c:665
+#, fuzzy
+msgid "Magenta:"
+msgstr "أرجوانى"
+
+#: ../src/widgets/sp-color-selector.c:666
+#, fuzzy
+msgid "Yellow:"
+msgstr "أصفر"
+
+#: ../src/widgets/sp-color-selector.c:667
+#, fuzzy
+msgid "Black:"
+msgstr "أسود"
+
+#: ../src/widgets/sp-dock-item.c:243
+#, fuzzy
+msgid "Orientation"
+msgstr "الإتّجاه"
+
+#: ../src/widgets/sp-dock-item.c:244
+#, fuzzy
+msgid "Orientation of the docking item"
+msgstr "خصائص عنصر القائمة"
+
+#: ../src/widgets/sp-dock-item.c:259
+#, fuzzy
+msgid "Resizable"
+msgstr "قابل للتحجيم"
+
+#: ../src/widgets/sp-dock-item.c:260
+msgid "If set, the dock item can be resized when docked in a paned"
+msgstr ""
+
+#: ../src/widgets/sp-dock-item.c:267
+#, fuzzy
+msgid "Item behavior"
+msgstr "عنصر _جديد"
+
+#: ../src/widgets/sp-dock-item.c:268
+msgid "General behavior for the dock item (i.e. whether it can float, if it's locked, etc.)"
+msgstr ""
+
+#: ../src/widgets/sp-dock-item.c:276
+#, fuzzy
+msgid "Grip size"
+msgstr "<b>حجم الشاشة:</b>"
+
+#: ../src/widgets/sp-dock-item.c:277
+msgid "Size in pixels of the grip to drag the dock item"
+msgstr ""
+
+#: ../src/widgets/sp-dock-item.c:283
+#: ../src/widgets/sp-dock-master.c:149
+#, fuzzy
+msgid "Locked"
+msgstr "مقفل"
+
+#: ../src/widgets/sp-dock-item.c:284
+msgid "If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgstr ""
+
+#: ../src/widgets/sp-dock-item.c:292
+#, fuzzy
+msgid "Preferred width"
+msgstr "العرض المفضّل"
+
+#: ../src/widgets/sp-dock-item.c:293
+msgid "Preferred width for the dock item"
+msgstr ""
+
+#: ../src/widgets/sp-dock-item.c:299
+#, fuzzy
+msgid "Preferred height"
+msgstr "الإرتفاع المفضّل"
+
+#: ../src/widgets/sp-dock-item.c:300
+msgid "Preferred height for the dock item"
+msgstr ""
+
+#: ../src/widgets/sp-dock-item.c:547
+#, c-format
+msgid "You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or some other compound dock object."
+msgstr ""
+
+#: ../src/widgets/sp-dock-item.c:554
+#, c-format
+msgid "Attempting to add a widget with type %s to a %s, but it can only contain one widget at a time; it already contains a widget of type %s"
+msgstr ""
+
+#: ../src/widgets/sp-dock-item.c:1156
+#, c-format
+msgid "Unsupported docking strategy %s in dock object of type %s"
+msgstr ""
+
+#. Hide menuitem.
+#: ../src/widgets/sp-dock-item.c:1238
+#, fuzzy
+msgid "Hide"
+msgstr "إخفاء"
+
+#. Lock menuitem
+#: ../src/widgets/sp-dock-item.c:1244
+#, fuzzy
+msgid "Lock"
+msgstr "إقفال"
+
+#: ../src/widgets/sp-dock-item.c:1411
+#, c-format
+msgid "Attempt to bind an unbound item %p"
+msgstr ""
+
+#: ../src/widgets/sp-dock-layout.c:144
+#, fuzzy
+msgid "Master"
+msgstr "جاري تعليق السيد..."
+
+#: ../src/widgets/sp-dock-layout.c:145
+msgid "SPDockMaster object which the layout object is attached to"
+msgstr ""
+
+#: ../src/widgets/sp-dock-layout.c:152
+msgid "Dirty"
+msgstr ""
+
+#: ../src/widgets/sp-dock-layout.c:153
+msgid "True if the layouts have changed and need to be saved to a file"
+msgstr ""
+
+#: ../src/widgets/sp-dock-layout.c:500
+#, fuzzy
+msgid "You must provide a name for the layout"
+msgstr "يجب إدخال اسم للخادم."
+
+#. FIXME: pop up an error dialog
+#: ../src/widgets/sp-dock-layout.c:679
+#, c-format
+msgid "Could not load layout user interface file '%s'"
+msgstr ""
+
+#: ../src/widgets/sp-dock-layout.c:791
+#: ../src/widgets/sp-dock-object.c:123
+#, fuzzy
+msgid "Name"
+msgstr "اسم"
+
+#: ../src/widgets/sp-dock-layout.c:830
+#, fuzzy
+msgid "Dock items"
+msgstr "إنشاء عناصر"
+
+#: ../src/widgets/sp-dock-layout.c:836
+#, fuzzy
+msgid "Saved layouts"
+msgstr "التصاميم ال_متوفّرة:"
+
+#: ../src/widgets/sp-dock-layout.c:902
+#, c-format
+msgid "While loading layout: don't know how to create a dock object whose nick is '%s'"
+msgstr ""
+
+#: ../src/widgets/sp-dock-layout.c:1459
+#, fuzzy
+msgid "Layout managment"
+msgstr "مخطط القائمة"
+
+#: ../src/widgets/sp-dock-master.c:142
+#: ../src/widgets/sp-dock.c:184
+#, fuzzy
+msgid "Default title"
+msgstr "عنوان ال_صفحة"
+
+#: ../src/widgets/sp-dock-master.c:143
+msgid "Default title for newly created floating docks"
+msgstr ""
+
+#: ../src/widgets/sp-dock-master.c:150
+msgid "If is set to 1, all the dock items bound to the master are locked; if it's 0, all are unlocked; -1 indicates inconsistency among the items"
+msgstr ""
+
+#: ../src/widgets/sp-dock-master.c:741
+#, c-format
+msgid "master %p: unable to add object %p[%s] to the hash.  There already is an item with that name (%p)."
+msgstr ""
+
+#: ../src/widgets/sp-dock-master.c:906
+#, c-format
+msgid "The new dock controller %p is automatic.  Only manual dock objects should be named controller."
+msgstr ""
+
+#: ../src/widgets/sp-dock-notebook.c:136
+#, fuzzy
+msgid "The index of the current page"
+msgstr "دليل الصفحة الحالية"
+
+#: ../src/widgets/sp-dock-object.c:124
+msgid "Unique name for identifying the dock object"
+msgstr ""
+
+#: ../src/widgets/sp-dock-object.c:131
+#, fuzzy
+msgid "Long name"
+msgstr "الاسم طويل جدا"
+
+#: ../src/widgets/sp-dock-object.c:132
+msgid "Human readable name for the dock object"
+msgstr ""
+
+#: ../src/widgets/sp-dock-object.c:138
+#, fuzzy
+msgid "Dock master"
+msgstr "جاري تعليق السيد..."
+
+#: ../src/widgets/sp-dock-object.c:139
+msgid "Dock master this dock object is bound to"
+msgstr ""
+
+#: ../src/widgets/sp-dock-object.c:408
+#, c-format
+msgid "Call to sp_dock_object_dock in a dock object %p (object type is %s) which hasn't implemented this method"
+msgstr ""
+
+#: ../src/widgets/sp-dock-object.c:537
+#, c-format
+msgid "Dock operation requested in a non-bound object %p. The application might crash"
+msgstr ""
+
+#: ../src/widgets/sp-dock-object.c:544
+#, c-format
+msgid "Cannot dock %p to %p because they belong to different masters"
+msgstr ""
+
+#: ../src/widgets/sp-dock-object.c:586
+#, c-format
+msgid "Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgstr ""
+
+#: ../src/widgets/sp-dock-paned.c:134
+#, fuzzy
+msgid "Position"
+msgstr "موقع"
+
+#: ../src/widgets/sp-dock-paned.c:135
+#, fuzzy
+msgid "Position of the divider in pixels"
+msgstr "ارتفاع النافذة بالبكسل"
+
+#: ../src/widgets/sp-dock-placeholder.c:125
+#, fuzzy
+msgid "Sticky"
+msgstr "_ملتصق"
+
+#: ../src/widgets/sp-dock-placeholder.c:126
+msgid "Whether the placeholder will stick to its host or move up the hierarchy when the host is redocked"
+msgstr ""
+
+#: ../src/widgets/sp-dock-placeholder.c:133
+#, fuzzy
+msgid "Host"
+msgstr "مضيف"
+
+#: ../src/widgets/sp-dock-placeholder.c:134
+msgid "The dock object this placeholder is attached to"
+msgstr ""
+
+#: ../src/widgets/sp-dock-placeholder.c:141
+#, fuzzy
+msgid "Next placement"
+msgstr "<b>وضعية المكبّر</b>"
+
+#: ../src/widgets/sp-dock-placeholder.c:142
+msgid "The position an item will be docked to our host if a request is made to dock to us"
+msgstr ""
+
+#: ../src/widgets/sp-dock-placeholder.c:303
+msgid "Attempt to dock a dock object to an unbound placeholder"
+msgstr ""
+
+#: ../src/widgets/sp-dock-placeholder.c:417
+#, c-format
+msgid "Got a detach signal from an object (%p) who is not our host %p"
+msgstr ""
+
+#: ../src/widgets/sp-dock-placeholder.c:438
+#, c-format
+msgid "Something weird happened while getting the child placement for %p from parent %p"
+msgstr ""
+
+#: ../src/widgets/sp-dock-tablabel.c:131
+#, fuzzy
+msgid "Controlling dock item"
+msgstr "خصائص عنصر القائمة"
+
+#: ../src/widgets/sp-dock-tablabel.c:132
+#, fuzzy
+msgid "Dockitem which 'owns' this tablabel"
+msgstr "مدير هذا المشروع."
+
+#: ../src/widgets/sp-dock.c:176
+#, fuzzy
+msgid "Floating"
+msgstr "أرجل طائفة"
+
+#: ../src/widgets/sp-dock.c:177
+msgid "Whether the dock is floating in its own window"
+msgstr ""
+
+#: ../src/widgets/sp-dock.c:185
+msgid "Default title for the newly created floating docks"
+msgstr ""
+
+#: ../src/widgets/sp-dock.c:191
+#, fuzzy
+msgid "Width"
+msgstr "العرض"
+
+#: ../src/widgets/sp-dock.c:192
+msgid "Width for the dock when it's of floating type"
+msgstr ""
+
+#: ../src/widgets/sp-dock.c:199
+#, fuzzy
+msgid "Height"
+msgstr "الارتفاع"
+
+#: ../src/widgets/sp-dock.c:200
+msgid "Height for the dock when it's of floating type"
+msgstr ""
+
+#: ../src/widgets/sp-dock.c:207
+#, fuzzy
+msgid "Float X"
+msgstr "عشري"
+
+#: ../src/widgets/sp-dock.c:208
+msgid "X coordinate for a floating dock"
+msgstr ""
+
+#: ../src/widgets/sp-dock.c:215
+#, fuzzy
+msgid "Float Y"
+msgstr "عشري"
+
+#: ../src/widgets/sp-dock.c:216
+msgid "Y coordinate for a floating dock"
+msgstr ""
+
+#: ../src/widgets/sp-dock.c:509
+#, fuzzy, c-format
+msgid "Dock #%d"
+msgstr "إرساء"
+
+#: ../src/widgets/sp-toolbox.c:305
+msgid "Toggle separate window and main toolbox placement"
+msgstr ""
+
+#: ../src/widgets/sp-xmlview-attr-list.c:54
+#, fuzzy
+msgid "Attribute"
+msgstr "الصّفة"
+
+#: ../src/widgets/sp-xmlview-attr-list.c:55
+#, fuzzy
+msgid "Value"
+msgstr "القيمة"
+
