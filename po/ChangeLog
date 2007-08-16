@@ -1,3 +1,11 @@
+2007-08-16  Adam Weinberger  <adamw@gnome.org>
+
+	* POTFILES.skip: Added glade/sodipodi-glade.c. It appears that this
+	file was removed intentionally from POTFILES.in, but it still exists
+	on disk. It's not referenced in any Makefiles, so I'm adding it to
+	POTFILES.skip to placate Damned Lies et. al.
+	* en_CA.po: Updated Canadian English translation.
+
 2007-04-22  Djihed Afifi <djihed@gmail.com> 
 
 	* ar.po: Updated Arabic Translation by Djihed Afifi.
