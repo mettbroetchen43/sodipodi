@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: sodipodi 0.34\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2004-02-16 00:25+0100\n"
-"PO-Revision-Date: 2007-08-07 14:08+0200\n"
+"PO-Revision-Date: 2007-08-20 19:46+0200\n"
 "Last-Translator: Yannig MARCHEGAY (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
@@ -24,7 +24,7 @@ msgstr ""
 #. Create window
 #: sodipodi.desktop.in.h:2 src/toolbox.c:105 src/toolbox.c:138
 msgid "Sodipodi"
-msgstr ""
+msgstr "Sodipodi"
 
 #: src/arc-context.c:302
 #, c-format
@@ -954,7 +954,7 @@ msgstr ""
 
 #: src/help.c:51
 msgid "About sodipodi"
-msgstr ""
+msgstr "A prepaus de sodipodi"
 
 #. Do not insert any elements before/between first 4
 #: src/helper/units.c:42
@@ -987,7 +987,7 @@ msgstr "Pixel"
 
 #: src/helper/units.c:44
 msgid "px"
-msgstr ""
+msgstr "px"
 
 #: src/helper/units.c:44
 msgid "Pixels"
@@ -1105,7 +1105,7 @@ msgstr ""
 
 #: src/interface.c:338 src/interface.c:519
 msgid "About Sodipodi"
-msgstr ""
+msgstr "A prepaus de Sodipodi"
 
 #. Have modules about menu
 #: src/interface.c:344 src/interface.c:525
@@ -2323,7 +2323,7 @@ msgstr "Talha de la poliça :"
 
 #: src/widgets/font-selector.c:521
 msgid "AaBbCcIiPpQq12368.;/()"
-msgstr ""
+msgstr "AaBbCcIiPpQq12368.;/()"
 
 #: src/widgets/gradient-selector.c:143
 msgid "Add"
@@ -2458,7 +2458,7 @@ msgstr "Jaune :"
 
 #: src/widgets/sp-color-selector.c:667
 msgid "Black:"
-msgstr ""
+msgstr "Nègre :"
 
 #: src/widgets/sp-toolbox.c:305
 msgid "Toggle separate window and main toolbox placement"
