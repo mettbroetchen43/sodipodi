@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-15 13:53+0300\n"
+"POT-Creation-Date: 2007-09-16 13:41+0300\n"
 "PO-Revision-Date: 2006-10-15 14:07+0300\n"
 "Last-Translator: Jaakko H Kyro <jkyro@pp.htv.fi>\n"
 "Language-Team: Finnish <gnome-fi-laatu@lists.sourceforge.net>\n"
@@ -1731,9 +1731,8 @@ msgid ""
 "preferences."
 msgstr ""
 "%s ei ole hakemisto. \n"
-"Asetuksia ei voi ladata\n"
-"tai tallentaa\n"
-"höh."
+"Vaikka sodipodi voidaan suorittaa, et voi\n"
+"ladata etkä tallentaa asetuksia."
 
 #: ../src/sodipodi.c:837
 #, c-format
@@ -1744,9 +1743,8 @@ msgid ""
 "preferences."
 msgstr ""
 "Tiedostoa %s ei voida luoda.\n"
-"Asetuksia ei voi ladata\n"
-"tai tallentaa\n"
-"joopa joo."
+"Vaikka sodipodi voidaan suorittaa, et voi\n"
+"ladata etkä tallentaa asetuksia."
 
 #: ../src/sodipodi.c:841
 #, c-format
@@ -1757,9 +1755,8 @@ msgid ""
 "preferences."
 msgstr ""
 "Tiedostoa %s ei voida kirjoittaa. \n"
-"Asetuksia ei voi ladata\n"
-"tai tallentaa\n"
-"niin niin."
+"Vaikka sodipodi voidaan suorittaa, et voi\n"
+"ladata etkä tallentaa asetuksia."
 
 #: ../src/sodipodi.c:851
 #, c-format
@@ -1769,8 +1766,8 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 "Hakemistoa %s ei voida luoda. \n"
-"Laajennukset (plugins) eivät ole \n"
-"käytettävissä.\n"
+"Vaikka sodipodi voidaan suorittaa, \n"
+"laajennokset eivät ole käytettävissä.\n"
 
 #: ../src/sodipodi.c:854
 #, c-format
@@ -1780,8 +1777,8 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 "%s ei ole hakemisto. \n"
-"Laajennukset (plugins) eivät ole \n"
-"käytettävissä.\n"
+"Vaikka sodipodi voidaan suorittaa, \n"
+"laajennokset eivät ole käytettävissä.\n"
 
 #: ../src/sodipodi.c:857
 #, c-format
@@ -1791,8 +1788,8 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 "Tiedostoa %s ei voida luoda. \n"
-"Laajennukset (plugins) eivät ole \n"
-"käytettävissä.\n"
+"Vaikka sodipodi voidaan suorittaa, \n"
+"laajennokset eivät ole käytettävissä.\n"
 
 #: ../src/sodipodi.c:860
 #, c-format
@@ -1802,8 +1799,8 @@ msgid ""
 "not able to use extensions (plugins)\n"
 msgstr ""
 "%s ei voida kirjoittaa. \n"
-"Laajennukset (plugins) eivät ole \n"
-"käytettävissä.\n"
+"Vaikka sodipodi voidaan suorittaa, \n"
+"laajennokset eivät ole käytettävissä.\n"
 
 #: ../src/sp-anchor.c:196
 #, c-format
@@ -2603,8 +2600,8 @@ msgid ""
 "General behavior for the dock item (i.e. whether it can float, if it's "
 "locked, etc.)"
 msgstr ""
-"Yleinen toiminta telakan kohdalle (eli voiko kohta kellua, onko se "
-"lukittu jne.)"
+"Yleinen toiminta telakan kohdalle (eli voiko kohta kellua, onko se lukittu "
+"jne.)"
 
 #: ../src/widgets/sp-dock-item.c:276
 msgid "Grip size"
@@ -2645,8 +2642,8 @@ msgid ""
 "You can't add a dock object (%p of type %s) inside a %s. Use a SPDock or "
 "some other compound dock object."
 msgstr ""
-"Et voi lisätä telakan kohtaa (%p tyyppiä %s) kohteen %s sisään. Käytä "
-"SPDock:ia tai jotain muuta yhdistettyä telakkatyyppiä."
+"Et voi lisätä telakan kohtaa (%p tyyppiä %s) kohteen %s sisään. Käytä SPDock:"
+"ia tai jotain muuta yhdistettyä telakkatyyppiä."
 
 #: ../src/widgets/sp-dock-item.c:554
 #, c-format
@@ -2742,8 +2739,8 @@ msgid ""
 "0, all are unlocked; -1 indicates inconsistency among the items"
 msgstr ""
 "Jos asetettu arvoon 1, kaikki isäntään liitetyt telakan kohdat on lukittu; "
-"jos arvo on 0, kaikki ovat lukitsemattomia; arvo -1 kertoo epäyhtenäisyydestä "
-"telakan kohtien välillä"
+"jos arvo on 0, kaikki ovat lukitsemattomia; arvo -1 kertoo "
+"epäyhtenäisyydestä telakan kohtien välillä"
 
 #: ../src/widgets/sp-dock-master.c:741
 #, c-format
@@ -2751,8 +2748,8 @@ msgid ""
 "master %p: unable to add object %p[%s] to the hash.  There already is an "
 "item with that name (%p)."
 msgstr ""
-"isäntä %p: ei voi liittää oliota %p[%s] hajautustauluun, koska taulussa "
-"on jo kohta tällä nimellä (%p)."
+"isäntä %p: ei voi liittää oliota %p[%s] hajautustauluun, koska taulussa on "
+"jo kohta tällä nimellä (%p)."
 
 #: ../src/widgets/sp-dock-master.c:906
 #, c-format
@@ -2793,8 +2790,8 @@ msgid ""
 "Call to sp_dock_object_dock in a dock object %p (object type is %s) which "
 "hasn't implemented this method"
 msgstr ""
-"Kutsu metodille sp_dock_object_dock telakan oliosso %p (tyyppiä %s), "
-"joka ei ole toteuttanut tätä metodia"
+"Kutsu metodille sp_dock_object_dock telakan oliosso %p (tyyppiä %s), joka ei "
+"ole toteuttanut tätä metodia"
 
 #: ../src/widgets/sp-dock-object.c:537
 #, c-format
