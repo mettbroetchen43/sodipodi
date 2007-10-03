@@ -544,7 +544,7 @@ msgstr ""
 
 #: src/dialogs/object-attributes.c:39
 msgid "Title:"
-msgstr "Titol:"
+msgstr "Títol:"
 
 #: src/dialogs/object-attributes.c:40 src/dialogs/tool-attributes.c:115
 msgid "Show:"
@@ -1003,7 +1003,7 @@ msgstr ""
 
 #: src/helper/units.c:45
 msgid "User"
-msgstr "Usuari"
+msgstr "Utilizaire"
 
 #: src/helper/units.c:45
 msgid "Userspace units"
