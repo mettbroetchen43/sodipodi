@@ -1,21 +1,25 @@
+# Translation of oc.po to Occitan
+# translation of oc.po to Occitan
 # Occitan translation of sodipodi.
-# Copyright (C) 2000-2003, 2004 Free Software Foundation, Inc.
+# Copyright (C) 2000-2003, 2004, 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the sodipodi package.
 #
 # Yannig MARCHEGAY (yannig@marchegay.org) - 2006-2007
 #
+# Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2007.
 msgid ""
 msgstr ""
-"Project-Id-Version: sodipodi 0.34\n"
+"Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2007-10-13 17:50+0200\n"
-"PO-Revision-Date: 2007-08-20 19:46+0200\n"
-"Last-Translator: Yannig MARCHEGAY (Kokoyaya) <yannig@marchegay.org>\n"
-"Language-Team: Occitan (post 1500) <ubuntu-l10n-oci@lists.ubuntu.com>\n"
+"PO-Revision-Date: 2007-11-20 15:23+0100\n"
+"Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
+"Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: ../sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -374,12 +378,11 @@ msgstr ""
 
 #: ../src/dialogs/document-properties.c:246
 msgid "Landscape"
-msgstr ""
+msgstr "Païsatge"
 
 #: ../src/dialogs/document-properties.c:251
-#, fuzzy
 msgid "Portrait"
-msgstr "Punt"
+msgstr ""
 
 #: ../src/dialogs/document-properties.c:258
 msgid "Custom"
@@ -640,12 +643,12 @@ msgstr "URL :"
 #: ../src/dialogs/object-attributes.c:69 ../src/dialogs/object-attributes.c:77
 #: ../src/dialogs/object-properties.c:332
 msgid "X:"
-msgstr "X :"
+msgstr "X\\:"
 
 #: ../src/dialogs/object-attributes.c:70 ../src/dialogs/object-attributes.c:78
 #: ../src/dialogs/object-properties.c:344
 msgid "Y:"
-msgstr "Y :"
+msgstr "Y\\:"
 
 #: ../src/dialogs/object-attributes.c:81
 msgid "RX:"
@@ -754,7 +757,7 @@ msgstr "Presentacion"
 
 #: ../src/dialogs/text-edit.c:149
 msgid "Alignment:"
-msgstr ""
+msgstr "Alinhament :"
 
 #: ../src/dialogs/text-edit.c:174
 msgid "Orientation:"
@@ -970,11 +973,11 @@ msgstr ""
 
 #: ../src/file.c:174 ../src/file.c:278
 msgid "File type:"
-msgstr ""
+msgstr "Tipe de fichièr"
 
 #: ../src/file.c:263
 msgid "Save file"
-msgstr ""
+msgstr "Enregistrar lo fichièr"
 
 #: ../src/file.c:468 ../src/file.c:478 ../src/file.c:484
 msgid "Select file to import"
@@ -1061,7 +1064,7 @@ msgstr "mm"
 
 #: ../src/helper/units.c:49
 msgid "Millimeters"
-msgstr ""
+msgstr "Milimц╗tres"
 
 #: ../src/helper/units.c:50
 msgid "Centimeter"
@@ -1142,12 +1145,12 @@ msgstr ""
 
 #: ../src/interface.c:354
 msgid "Cleanup"
-msgstr ""
+msgstr "Netejar"
 
 #. View:Zoom
 #: ../src/interface.c:429 ../src/toolbox.c:587 ../src/verbs.c:463
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 #. View:New View
 #: ../src/interface.c:441
@@ -1265,7 +1268,7 @@ msgstr ""
 
 #: ../src/main.c:141
 msgid "WIDTH"
-msgstr ""
+msgstr "LARGOR"
 
 #: ../src/main.c:143 ../src/main.c:619
 msgid "The height of generated bitmap in pixels (overwrites dpi)"
@@ -1273,7 +1276,7 @@ msgstr ""
 
 #: ../src/main.c:143
 msgid "HEIGHT"
-msgstr ""
+msgstr "NAUTOR"
 
 #: ../src/main.c:145 ../src/main.c:620
 msgid "Background color of exported bitmap (any SVG supported color string)"
@@ -1313,8 +1316,7 @@ msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 
 #: ../src/main.c:798
-msgid ""
-"Automatic backups of unsaved documents were done to following locations:\n"
+msgid "Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 
 #: ../src/main.c:799
@@ -1520,7 +1522,7 @@ msgstr "Propietas de l'imatge"
 #. Autotrace dialog
 #: ../src/object-ui.c:433 ../src/sp-image.c:762
 msgid "Trace"
-msgstr ""
+msgstr "França"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:482
@@ -1534,15 +1536,13 @@ msgstr ""
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:516
-#, fuzzy
 msgid "Path"
-msgstr "Pt"
+msgstr "Camin"
 
 #. Reverse
 #: ../src/object-ui.c:519
-#, fuzzy
 msgid "Reverse"
-msgstr "mètres"
+msgstr ""
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:542
@@ -2109,7 +2109,7 @@ msgstr ""
 
 #: ../src/verbs.c:442
 msgid "Subtraction"
-msgstr ""
+msgstr "Sostraccion"
 
 #: ../src/verbs.c:442
 msgid "Subtract paths from first"
@@ -2356,9 +2356,8 @@ msgid "Text editing and font settings"
 msgstr ""
 
 #: ../src/verbs.c:485
-#, fuzzy
 msgid "Document Tree"
-msgstr "Document"
+msgstr ""
 
 #: ../src/verbs.c:486
 msgid "XML Editor"
@@ -2519,18 +2518,16 @@ msgid "Black:"
 msgstr "Nègre :"
 
 #: ../src/widgets/sp-dock-item.c:243
-#, fuzzy
 msgid "Orientation"
-msgstr "Orientacion :"
+msgstr "Orientacion"
 
 #: ../src/widgets/sp-dock-item.c:244
 msgid "Orientation of the docking item"
 msgstr ""
 
 #: ../src/widgets/sp-dock-item.c:259
-#, fuzzy
 msgid "Resizable"
-msgstr "Visible"
+msgstr ""
 
 #: ../src/widgets/sp-dock-item.c:260
 msgid "If set, the dock item can be resized when docked in a paned"
@@ -2556,11 +2553,10 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-item.c:283 ../src/widgets/sp-dock-master.c:149
 msgid "Locked"
-msgstr ""
+msgstr "Varrolhat"
 
 #: ../src/widgets/sp-dock-item.c:284
-msgid ""
-"If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgid "If set, the dock item cannot be dragged around and it doesn't show a grip"
 msgstr ""
 
 #: ../src/widgets/sp-dock-item.c:292
@@ -2600,14 +2596,13 @@ msgstr ""
 
 #. Hide menuitem.
 #: ../src/widgets/sp-dock-item.c:1238
-#, fuzzy
 msgid "Hide"
-msgstr "Guidas"
+msgstr "Amagar"
 
 #. Lock menuitem
 #: ../src/widgets/sp-dock-item.c:1244
 msgid "Lock"
-msgstr ""
+msgstr "Varrolhar"
 
 #: ../src/widgets/sp-dock-item.c:1411
 #, c-format
@@ -2615,9 +2610,8 @@ msgid "Attempt to bind an unbound item %p"
 msgstr ""
 
 #: ../src/widgets/sp-dock-layout.c:144
-#, fuzzy
 msgid "Master"
-msgstr "Mètre"
+msgstr ""
 
 #: ../src/widgets/sp-dock-layout.c:145
 msgid "SPDockMaster object which the layout object is attached to"
@@ -2633,7 +2627,7 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-layout.c:500
 msgid "You must provide a name for the layout"
-msgstr ""
+msgstr "Vous devez fournir un nom pour cet agencement"
 
 #. FIXME: pop up an error dialog
 #: ../src/widgets/sp-dock-layout.c:679
@@ -2643,16 +2637,15 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-layout.c:791 ../src/widgets/sp-dock-object.c:123
 msgid "Name"
-msgstr ""
+msgstr "Nom"
 
 #: ../src/widgets/sp-dock-layout.c:830
 msgid "Dock items"
 msgstr ""
 
 #: ../src/widgets/sp-dock-layout.c:836
-#, fuzzy
 msgid "Saved layouts"
-msgstr "Enregistrar lo document"
+msgstr ""
 
 #: ../src/widgets/sp-dock-layout.c:902
 #, c-format
@@ -2738,14 +2731,12 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-object.c:586
 #, c-format
-msgid ""
-"Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgid "Attempt to bind to %p an already bound dock object %p (current master: %p)"
 msgstr ""
 
 #: ../src/widgets/sp-dock-paned.c:134
-#, fuzzy
 msgid "Position"
-msgstr "Punt"
+msgstr "Posicion"
 
 #: ../src/widgets/sp-dock-paned.c:135
 msgid "Position of the divider in pixels"
@@ -2763,7 +2754,7 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-placeholder.c:133
 msgid "Host"
-msgstr ""
+msgstr "Òste"
 
 #: ../src/widgets/sp-dock-placeholder.c:134
 msgid "The dock object this placeholder is attached to"
@@ -2816,18 +2807,16 @@ msgid "Default title for the newly created floating docks"
 msgstr ""
 
 #: ../src/widgets/sp-dock.c:191
-#, fuzzy
 msgid "Width"
-msgstr "Largor :"
+msgstr "Largor"
 
 #: ../src/widgets/sp-dock.c:192
 msgid "Width for the dock when it's of floating type"
 msgstr ""
 
 #: ../src/widgets/sp-dock.c:199
-#, fuzzy
 msgid "Height"
-msgstr "Nautor :"
+msgstr "Nautor"
 
 #: ../src/widgets/sp-dock.c:200
 msgid "Height for the dock when it's of floating type"
@@ -2865,3 +2854,4 @@ msgstr ""
 #: ../src/widgets/sp-xmlview-attr-list.c:55
 msgid "Value"
 msgstr "Valor"
+
