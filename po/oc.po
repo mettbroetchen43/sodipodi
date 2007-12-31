@@ -1,25 +1,21 @@
 # Translation of oc.po to Occitan
-# translation of oc.po to Occitan
 # Occitan translation of sodipodi.
 # Copyright (C) 2000-2003, 2004, 2007 Free Software Foundation, Inc.
 # This file is distributed under the same license as the sodipodi package.
 #
-# Yannig MARCHEGAY (yannig@marchegay.org) - 2006-2007
-#
-# Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2007.
+# Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2006-2008.
 msgid ""
 msgstr ""
 "Project-Id-Version: oc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-13 17:50+0200\n"
-"PO-Revision-Date: 2007-11-20 15:23+0100\n"
+"POT-Creation-Date: 2007-12-27 13:21+0100\n"
+"PO-Revision-Date: 2007-12-28 15:34+0100\n"
 "Last-Translator: Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>\n"
 "Language-Team: Occitan <ubuntu-l10n-oci@lists.ubuntu.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);"
 
 #: ../sodipodi.desktop.in.h:1
 msgid "SVG Vector Illustrator"
@@ -51,7 +47,7 @@ msgstr ""
 #: ../src/desktop.c:1089
 #, c-format
 msgid "Sodipodi: %s: %s: %d"
-msgstr ""
+msgstr "Sodipodi : %s: %s: %d"
 
 #: ../src/desktop.c:1196
 #, c-format
@@ -82,7 +78,7 @@ msgstr "Seleccion"
 
 #: ../src/dialogs/align.c:156 ../src/toolbox.c:405
 msgid "Align objects"
-msgstr ""
+msgstr "Alinhar los objèctes"
 
 #: ../src/dialogs/align.c:175
 msgid "Right side of aligned objects to left side of anchor"
@@ -204,7 +200,7 @@ msgstr ""
 
 #: ../src/dialogs/desktop-properties.c:222
 msgid "Vertical lines"
-msgstr ""
+msgstr "Linhas verticalas"
 
 #: ../src/dialogs/desktop-properties.c:224
 msgid "Iso grid"
@@ -291,7 +287,7 @@ msgstr ""
 
 #: ../src/dialogs/desktop-properties.c:306
 msgid "Border color:"
-msgstr ""
+msgstr "Color de bordadura :"
 
 #: ../src/dialogs/desktop-properties.c:307
 msgid "Page border color"
@@ -299,11 +295,11 @@ msgstr ""
 
 #: ../src/dialogs/desktop-properties.c:308
 msgid "Page color:"
-msgstr ""
+msgstr "Color de pagina :"
 
 #: ../src/dialogs/desktop-properties.c:309
 msgid "Page color"
-msgstr ""
+msgstr "Color de pagina"
 
 #: ../src/dialogs/desktop-properties.c:580
 #: ../src/widgets/sp-color-preview.c:424
@@ -370,11 +366,11 @@ msgstr ""
 
 #: ../src/dialogs/document-properties.c:201
 msgid "Document settings"
-msgstr ""
+msgstr "Paramètres de document"
 
 #: ../src/dialogs/document-properties.c:222
 msgid "Paper size:"
-msgstr ""
+msgstr "Talha de papièr :"
 
 #: ../src/dialogs/document-properties.c:246
 msgid "Landscape"
@@ -382,7 +378,7 @@ msgstr "Païsatge"
 
 #: ../src/dialogs/document-properties.c:251
 msgid "Portrait"
-msgstr ""
+msgstr "Contrast"
 
 #: ../src/dialogs/document-properties.c:258
 msgid "Custom"
@@ -391,7 +387,7 @@ msgstr "Personalisat"
 #. Custom paper frame
 #: ../src/dialogs/document-properties.c:265
 msgid "Custom paper"
-msgstr ""
+msgstr "Papièr personalizat"
 
 #. Unit selector
 #: ../src/dialogs/document-properties.c:276 ../src/dialogs/export.c:179
@@ -432,19 +428,19 @@ msgstr ""
 
 #: ../src/dialogs/export.c:183
 msgid "x0:"
-msgstr ""
+msgstr "x0 :"
 
 #: ../src/dialogs/export.c:186
 msgid "x1:"
-msgstr ""
+msgstr "x1 :"
 
 #: ../src/dialogs/export.c:192
 msgid "y0:"
-msgstr ""
+msgstr "y0 :"
 
 #: ../src/dialogs/export.c:195
 msgid "y1:"
-msgstr ""
+msgstr "y1 :"
 
 #. Bitmap size frame
 #: ../src/dialogs/export.c:204
@@ -527,7 +523,7 @@ msgstr "Actiu"
 #. Printable
 #: ../src/dialogs/item-properties.c:119
 msgid "Printable"
-msgstr ""
+msgstr "Estampable"
 
 #: ../src/dialogs/item-properties.c:128
 msgid "Opacity:"
@@ -551,15 +547,15 @@ msgstr ""
 
 #: ../src/dialogs/item-properties.c:448 ../src/verbs.c:487
 msgid "Item properties"
-msgstr ""
+msgstr "Propietats de l'element"
 
 #: ../src/dialogs/object-attributes.c:34
 msgid "Href:"
-msgstr ""
+msgstr "Href :"
 
 #: ../src/dialogs/object-attributes.c:35
 msgid "Target:"
-msgstr ""
+msgstr "Cibla :"
 
 #: ../src/dialogs/object-attributes.c:36
 msgid "Type:"
@@ -567,7 +563,7 @@ msgstr "Tipe :"
 
 #: ../src/dialogs/object-attributes.c:37
 msgid "Role:"
-msgstr "Ròtle"
+msgstr "Ròtle :"
 
 #: ../src/dialogs/object-attributes.c:38
 msgid "Arcrole:"
@@ -607,11 +603,11 @@ msgstr ""
 
 #: ../src/dialogs/object-attributes.c:51
 msgid "ARG1:"
-msgstr ""
+msgstr "ARG1 :"
 
 #: ../src/dialogs/object-attributes.c:52
 msgid "ARG2:"
-msgstr ""
+msgstr "ARG2 :"
 
 #. Expansion
 #: ../src/dialogs/object-attributes.c:59 ../src/spiral-context.c:343
@@ -622,7 +618,7 @@ msgstr ""
 #: ../src/dialogs/object-attributes.c:60 ../src/dialogs/tool-attributes.c:95
 #: ../src/spiral-context.c:331
 msgid "Revolution:"
-msgstr ""
+msgstr "Revolucion :"
 
 #: ../src/dialogs/object-attributes.c:61
 msgid "Radius:"
@@ -630,7 +626,7 @@ msgstr ""
 
 #: ../src/dialogs/object-attributes.c:62
 msgid "Argument:"
-msgstr ""
+msgstr "Argument :"
 
 #: ../src/dialogs/object-attributes.c:63
 msgid "T0:"
@@ -643,12 +639,12 @@ msgstr "URL :"
 #: ../src/dialogs/object-attributes.c:69 ../src/dialogs/object-attributes.c:77
 #: ../src/dialogs/object-properties.c:332
 msgid "X:"
-msgstr "X\\:"
+msgstr "X :"
 
 #: ../src/dialogs/object-attributes.c:70 ../src/dialogs/object-attributes.c:78
 #: ../src/dialogs/object-properties.c:344
 msgid "Y:"
-msgstr "Y\\:"
+msgstr "Y :"
 
 #: ../src/dialogs/object-attributes.c:81
 msgid "RX:"
@@ -665,7 +661,7 @@ msgstr ""
 
 #: ../src/dialogs/object-properties.c:113
 msgid "Object style"
-msgstr ""
+msgstr "Estil d'objècte"
 
 #: ../src/dialogs/object-properties.c:128
 msgid "Fill"
@@ -685,7 +681,7 @@ msgstr "Aplicar a :"
 
 #: ../src/dialogs/object-properties.c:186
 msgid "Selected objects"
-msgstr ""
+msgstr "Objèctes seleccionats"
 
 #: ../src/dialogs/object-properties.c:189
 msgid "All shape tools"
@@ -725,7 +721,7 @@ msgstr ""
 
 #: ../src/dialogs/object-properties.c:312 ../src/verbs.c:481
 msgid "Size and Position"
-msgstr ""
+msgstr "Talha e posicion"
 
 #: ../src/dialogs/stroke-style.c:554 ../src/toolbox.c:401
 msgid "Stroke settings"
@@ -773,7 +769,7 @@ msgstr ""
 
 #: ../src/dialogs/text-edit.c:235
 msgid "Text and font"
-msgstr ""
+msgstr "Tèxt e poliça"
 
 #: ../src/dialogs/text-edit.c:246
 msgid "Set as default"
@@ -803,7 +799,7 @@ msgstr ""
 
 #: ../src/dialogs/tool-attributes.c:105
 msgid "Proportion"
-msgstr ""
+msgstr "Proporcion"
 
 #: ../src/dialogs/tool-attributes.c:115
 msgid "Transform:"
@@ -906,7 +902,7 @@ msgstr ""
 
 #: ../src/dialogs/xml-tree.c:333
 msgid "Attribute name"
-msgstr ""
+msgstr "Nom d'atribut"
 
 #: ../src/dialogs/xml-tree.c:340
 msgid "Set attribute"
@@ -914,7 +910,7 @@ msgstr ""
 
 #: ../src/dialogs/xml-tree.c:353
 msgid "Attribute value"
-msgstr ""
+msgstr "Valor d'atribut"
 
 #: ../src/dialogs/xml-tree.c:833
 #, c-format
@@ -936,7 +932,7 @@ msgstr "Crear"
 #: ../src/document.c:389
 #, c-format
 msgid "New document %d"
-msgstr ""
+msgstr "Document novèl %d"
 
 #: ../src/document.c:425
 #, c-format
@@ -965,15 +961,15 @@ msgstr "Angle :"
 #: ../src/dyna-draw-context.c:1099 ../src/rect-context.c:382
 #: ../src/spiral-context.c:367 ../src/star-context.c:374
 msgid "Defaults"
-msgstr ""
+msgstr "Valors per defaut"
 
 #: ../src/file.c:123 ../src/file.c:137 ../src/file.c:149
 msgid "Select file to open"
-msgstr ""
+msgstr "Seleccionatz lo fichièr de dobrir"
 
 #: ../src/file.c:174 ../src/file.c:278
 msgid "File type:"
-msgstr "Tipe de fichièr"
+msgstr "Tipe de fichièr :"
 
 #: ../src/file.c:263
 msgid "Save file"
@@ -981,7 +977,7 @@ msgstr "Enregistrar lo fichièr"
 
 #: ../src/file.c:468 ../src/file.c:478 ../src/file.c:484
 msgid "Select file to import"
-msgstr ""
+msgstr "Seleccionatz lo fichièr d'importar"
 
 #: ../src/help.c:51
 msgid "About sodipodi"
@@ -1002,7 +998,7 @@ msgstr "Punt"
 
 #: ../src/helper/units.c:43
 msgid "pt"
-msgstr ""
+msgstr "pt"
 
 #: ../src/helper/units.c:43
 msgid "Points"
@@ -1100,7 +1096,7 @@ msgstr "dins"
 
 #: ../src/helper/units.c:52
 msgid "Inches"
-msgstr ""
+msgstr "Poces"
 
 #: ../src/helper/units.c:53
 msgid "Em square"
@@ -1141,7 +1137,7 @@ msgstr "A prepaus de Sodipodi"
 #. Have modules about menu
 #: ../src/interface.c:334 ../src/interface.c:516
 msgid "About Modules"
-msgstr ""
+msgstr "A prepaus dels moduls"
 
 #: ../src/interface.c:354
 msgid "Cleanup"
@@ -1186,7 +1182,7 @@ msgstr "Dobrir"
 #. For some reason action menu does not work on menubar :-(
 #: ../src/interface.c:522 ../src/verbs.c:418
 msgid "Exit program"
-msgstr ""
+msgstr "Sortir del programa"
 
 #. Generic menu
 #. File submenu
@@ -1242,7 +1238,7 @@ msgstr ""
 
 #: ../src/main.c:132 ../src/main.c:615
 msgid "Export document to png file"
-msgstr ""
+msgstr "Exportar lo document dins un fichièr PNG"
 
 #: ../src/main.c:135 ../src/main.c:616
 msgid "The resolution used for converting SVG into bitmap (default 72.0)"
@@ -1260,7 +1256,7 @@ msgstr ""
 
 #: ../src/main.c:139
 msgid "x0:y0:x1:y1"
-msgstr ""
+msgstr "x0 : y0 : x1 : y1"
 
 #: ../src/main.c:141 ../src/main.c:618
 msgid "The width of generated bitmap in pixels (overwrites dpi)"
@@ -1308,7 +1304,7 @@ msgstr ""
 
 #: ../src/main.c:772
 msgid "Untitled document"
-msgstr ""
+msgstr "Document sens títol"
 
 #. Show nice dialog box
 #: ../src/main.c:797
@@ -1316,7 +1312,8 @@ msgid "Sodipodi encountered an internal error and will close now.\n"
 msgstr ""
 
 #: ../src/main.c:798
-msgid "Automatic backups of unsaved documents were done to following locations:\n"
+msgid ""
+"Automatic backups of unsaved documents were done to following locations:\n"
 msgstr ""
 
 #: ../src/main.c:799
@@ -1349,7 +1346,7 @@ msgstr ""
 
 #: ../src/modules/gnome.c:158
 msgid "Select printer"
-msgstr ""
+msgstr "Seleccionatz una estampaira"
 
 #: ../src/modules/gnome.c:212
 #, c-format
@@ -1366,10 +1363,13 @@ msgid ""
 "*.xml|XML files\n"
 "*|All files"
 msgstr ""
+"*.svg *.svgz|Fichièrs SVG\n"
+"*.xml|Fichièrs XML\n"
+"*|Totes los fichièrs"
 
 #: ../src/modules/kde.cpp:174
 msgid "Save document as"
-msgstr ""
+msgstr "Enregistrar lo document coma"
 
 #: ../src/modules/plain-pdf.c:1105 ../src/modules/plain-ps.c:741
 #: ../src/modules/ps.c:961
@@ -1440,7 +1440,7 @@ msgstr "Element"
 #. Item dialog
 #: ../src/object-ui.c:114 ../src/verbs.c:487
 msgid "Item Properties"
-msgstr ""
+msgstr "Propietats de l'element"
 
 #. Select item
 #: ../src/object-ui.c:122
@@ -1468,7 +1468,7 @@ msgstr ""
 #. Create link
 #: ../src/object-ui.c:144
 msgid "Create link"
-msgstr ""
+msgstr "Crear un ligam"
 
 #: ../src/object-ui.c:276 ../src/verbs.c:435
 msgid "Group"
@@ -1542,7 +1542,7 @@ msgstr "Camin"
 #. Reverse
 #: ../src/object-ui.c:519
 msgid "Reverse"
-msgstr ""
+msgstr "mètres"
 
 #. Create toplevel menuitem
 #: ../src/object-ui.c:542
@@ -1557,7 +1557,7 @@ msgstr ""
 #. Create toplevel menuitem
 #: ../src/object-ui.c:578 ../src/verbs.c:457
 msgid "Star"
-msgstr ""
+msgstr "Estèla"
 
 #. Link dialog
 #: ../src/object-ui.c:581
@@ -1770,7 +1770,7 @@ msgstr "Sens nom"
 
 #: ../src/sp-image.c:947
 msgid "Document Name:"
-msgstr ""
+msgstr "Nom de document :"
 
 #: ../src/sp-image.c:960
 msgid "Unknown"
@@ -1778,7 +1778,7 @@ msgstr "Desconegut"
 
 #: ../src/sp-image.c:966
 msgid "Image URI:"
-msgstr ""
+msgstr "URI de l'imatge :"
 
 #: ../src/sp-item-group.c:483
 #, c-format
@@ -1787,7 +1787,7 @@ msgstr ""
 
 #: ../src/sp-item.c:554
 msgid "Unknown item :-("
-msgstr ""
+msgstr "Element desconegut :-("
 
 #. fixme:
 #: ../src/sp-text.c:1293
@@ -1802,7 +1802,7 @@ msgstr ""
 #. Proportion
 #: ../src/star-context.c:355
 msgid "Proportion:"
-msgstr ""
+msgstr "Proporcion :"
 
 #. Making sides flat
 #: ../src/star-context.c:368
@@ -1899,7 +1899,7 @@ msgstr "Enregistrar lo document"
 
 #: ../src/verbs.c:412
 msgid "Save As..."
-msgstr ""
+msgstr "Enregistrar coma..."
 
 #: ../src/verbs.c:412
 msgid "Save document under new name"
@@ -1911,7 +1911,7 @@ msgstr "Estampar..."
 
 #: ../src/verbs.c:413
 msgid "Print document"
-msgstr ""
+msgstr "Estampar lo document"
 
 #: ../src/verbs.c:414
 msgid "Print Direct..."
@@ -1996,7 +1996,7 @@ msgstr ""
 
 #: ../src/verbs.c:426
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplicar"
 
 #: ../src/verbs.c:426
 msgid "Duplicate selected objects"
@@ -2004,7 +2004,7 @@ msgstr ""
 
 #: ../src/verbs.c:427
 msgid "Clear All"
-msgstr ""
+msgstr "Tot voidar"
 
 #: ../src/verbs.c:427
 msgid "Delete all objects from document"
@@ -2223,7 +2223,7 @@ msgstr ""
 
 #: ../src/verbs.c:461
 msgid "Calligraphy"
-msgstr ""
+msgstr "Calligrafia"
 
 #: ../src/verbs.c:461
 msgid "Draw calligraphic lines"
@@ -2301,7 +2301,7 @@ msgstr ""
 #. Dialogs
 #: ../src/verbs.c:475
 msgid "Display"
-msgstr "Afichar"
+msgstr "Visualizar"
 
 #: ../src/verbs.c:475
 msgid "Global display settings"
@@ -2349,7 +2349,7 @@ msgstr ""
 
 #: ../src/verbs.c:484
 msgid "Text and Font"
-msgstr ""
+msgstr "Tèxt e poliça"
 
 #: ../src/verbs.c:484
 msgid "Text editing and font settings"
@@ -2361,7 +2361,7 @@ msgstr ""
 
 #: ../src/verbs.c:486
 msgid "XML Editor"
-msgstr ""
+msgstr "Editor XML"
 
 #. Family frame
 #: ../src/widgets/font-selector.c:153
@@ -2411,7 +2411,7 @@ msgstr ""
 
 #: ../src/widgets/gradient-vector.c:427
 msgid "End color"
-msgstr ""
+msgstr "Color de fin"
 
 #: ../src/widgets/gradient-vector.c:452
 msgid "Gradient vector"
@@ -2527,7 +2527,7 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-item.c:259
 msgid "Resizable"
-msgstr ""
+msgstr "Visible"
 
 #: ../src/widgets/sp-dock-item.c:260
 msgid "If set, the dock item can be resized when docked in a paned"
@@ -2535,7 +2535,7 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-item.c:267
 msgid "Item behavior"
-msgstr ""
+msgstr "Compòrtament de l'element"
 
 #: ../src/widgets/sp-dock-item.c:268
 msgid ""
@@ -2556,12 +2556,13 @@ msgid "Locked"
 msgstr "Varrolhat"
 
 #: ../src/widgets/sp-dock-item.c:284
-msgid "If set, the dock item cannot be dragged around and it doesn't show a grip"
+msgid ""
+"If set, the dock item cannot be dragged around and it doesn't show a grip"
 msgstr ""
 
 #: ../src/widgets/sp-dock-item.c:292
 msgid "Preferred width"
-msgstr ""
+msgstr "Largor preferida"
 
 #: ../src/widgets/sp-dock-item.c:293
 msgid "Preferred width for the dock item"
@@ -2569,7 +2570,7 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-item.c:299
 msgid "Preferred height"
-msgstr ""
+msgstr "Nautor preferida"
 
 #: ../src/widgets/sp-dock-item.c:300
 msgid "Preferred height for the dock item"
@@ -2611,7 +2612,7 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-layout.c:144
 msgid "Master"
-msgstr ""
+msgstr "Mètre"
 
 #: ../src/widgets/sp-dock-layout.c:145
 msgid "SPDockMaster object which the layout object is attached to"
@@ -2645,7 +2646,7 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-layout.c:836
 msgid "Saved layouts"
-msgstr ""
+msgstr "Enregistrar lo document"
 
 #: ../src/widgets/sp-dock-layout.c:902
 #, c-format
@@ -2660,7 +2661,7 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-master.c:142 ../src/widgets/sp-dock.c:184
 msgid "Default title"
-msgstr ""
+msgstr "Títol per defaut"
 
 #: ../src/widgets/sp-dock-master.c:143
 msgid "Default title for newly created floating docks"
@@ -2731,7 +2732,8 @@ msgstr ""
 
 #: ../src/widgets/sp-dock-object.c:586
 #, c-format
-msgid "Attempt to bind to %p an already bound dock object %p (current master: %p)"
+msgid ""
+"Attempt to bind to %p an already bound dock object %p (current master: %p)"
 msgstr ""
 
 #: ../src/widgets/sp-dock-paned.c:134
@@ -2849,7 +2851,7 @@ msgstr ""
 
 #: ../src/widgets/sp-xmlview-attr-list.c:54
 msgid "Attribute"
-msgstr ""
+msgstr "Atribut"
 
 #: ../src/widgets/sp-xmlview-attr-list.c:55
 msgid "Value"
