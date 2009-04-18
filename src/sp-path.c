@@ -33,6 +33,7 @@ static void sp_path_build (SPObject * object, SPDocument * document, SPRepr * re
 static void sp_path_set (SPObject *object, unsigned int key, const unsigned char *value);
 
 static SPRepr *sp_path_write (SPObject *object, SPRepr *repr, guint flags);
+static gchar *sp_path_description (SPItem * item);
 static void sp_path_write_transform (SPItem *item, SPRepr *repr, NRMatrixF *transform);
 
 static SPShapeClass *parent_class;
@@ -72,6 +73,7 @@ sp_path_class_init (SPPathClass * klass)
 	sp_object_class->set = sp_path_set;
 	sp_object_class->write = sp_path_write;
 
+	item_class->description = sp_path_description;
 	item_class->write_transform = sp_path_write_transform;
 }
 
@@ -217,6 +219,12 @@ sp_path_write (SPObject *object, SPRepr *repr, guint flags)
 		((SPObjectClass *) (parent_class))->write (object, repr, flags);
 
 	return repr;
+}
+
+static gchar *
+sp_path_description (SPItem * item)
+{
+	return g_strdup ("Path");
 }
 
 static void
