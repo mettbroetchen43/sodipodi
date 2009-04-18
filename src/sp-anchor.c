@@ -193,7 +193,7 @@ sp_anchor_description (SPItem *item)
 
 	anchor = SP_ANCHOR (item);
 
-	g_snprintf (c, 128, _("Link to %s"), anchor->href);
+	g_snprintf (c, 128, _("Link to %s"), anchor->href ? anchor->href : "(null)");
 
 	return g_strdup (c);
 }
