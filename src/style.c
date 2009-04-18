@@ -639,7 +639,7 @@ trim_space (const unsigned char *str, unsigned int length,
 			unsigned int *left, unsigned int *right)
 {
 	const unsigned char *p;
-	unsigned int i;
+	unsigned int i = 0, j;
 	
 	if (left) {
 		for (i = 0, p = str;
@@ -649,11 +649,11 @@ trim_space (const unsigned char *str, unsigned int length,
 		*left = i;
 	}
 	if (right) {
-		for (i = length - 1, p = str + i;
-			 p && isspace (*p) && i >= 0;
-			 i--, p--)
+		for (j = length - 1, p = str + j;
+			 p && isspace (*p) && j >= i;
+			 j--, p--)
 			;
-		*right = i + 1;
+		*right = j + 1;
 	}
 }
 
@@ -696,8 +696,8 @@ sp_style_merge_from_style_string (SPStyle *style, const guchar *p)
 			len = MIN (e - s - 1, 4095);
 			if (len > 0) {
 				trim_space (s + 1, len, &left, &right);
-				memcpy (c, s + 1 + left, right);
-				c[right] = '\0';
+				memcpy (c, s + 1 + left, right - left);
+				c[right - left] = '\0';
 				sp_style_merge_property (style, idx, c);
 			} else {
 				g_warning ("Strange style property value at: %s", p);
