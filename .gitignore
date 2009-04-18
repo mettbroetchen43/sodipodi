@@ -1,0 +1,10 @@
+*.obj
+*.lib
+*.exp
+*.ilk
+*.dll
+*.pdb
+*.bak
+*.res
+config.h
+
