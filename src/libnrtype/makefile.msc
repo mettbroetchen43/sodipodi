@@ -4,7 +4,7 @@ PACKAGE = libnrtype
 PKG_VER = 0.35
 !INCLUDE $(TOP)\glib\build\win32\make.msc
 
-SUBDIRS = cp
+SUBDIRS = #?cp
 
 sub-all:
 	for %d in ($(SUBDIRS)) do nmake -nologo -f makefile.msc sub-one THIS=%d
@@ -19,13 +19,15 @@ PKG_CFLAGS = \
 	-FImsvc_recommended_pragmas.h \
 	-I$(PRJ_TOP) -I.. \
 	-I..\
-	$(GLIB_CFLAGS) $(LIBART_CFLAGS) $(FREETYPE2_CFLAGS)
+	$(GLIB_CFLAGS) $(LIBART_CFLAGS) \
+#	$(FREETYPE2_CFLAGS)
 
 PKG_LINK = \
-	cp/sp-cp.lib \
+#	cp/sp-cp.lib \
 	../libnr/libnr-$(PKG_VER).lib \
 	..\libarikkei\libarikkei-$(PKG_VER).lib \
-	$(GLIB_LIBS) $(LIBART_LIBS) $(FREETYPE2_LIBS) \
+	$(GLIB_LIBS) $(LIBART_LIBS) \
+#	$(FREETYPE2_LIBS) \
 	gdi32.lib
 
 # LDFLAGS = $(LDFLAGS)  /nodefaultlib:libcmt
@@ -57,13 +59,13 @@ OBJECTS = \
 	nr-font.obj \
 	nr-rasterfont.obj \
 	nr-type-directory.obj \
-	nr-type-ft2.obj \
+#	nr-type-ft2.obj \
 	nr-type-w32.obj \
 	nr-glyphs.obj \
 
 all : \
 	$(PRJ_TOP)\config.h \
-	sub-all \
+#	sub-all \
 	$(PACKAGE).lib \
 	$(PACKAGE)-$(PKG_VER).dll
 

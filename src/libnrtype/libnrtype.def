@@ -35,7 +35,7 @@ EXPORTS
 	nr_type_directory_lookup_fuzzy
 	nr_type_directory_style_list_get
 	nr_type_empty_build_def
-	nr_type_ft2_build_def
+;	nr_type_ft2_build_def
 ;	nr_type_gnome_build_def
 ;	nr_type_gnome_families_get
 ;	nr_type_gnome_typefaces_get
@@ -46,7 +46,7 @@ EXPORTS
 ;	nr_type_xft_typefaces_get
 	nr_typeface_attribute_get
 	nr_typeface_family_name_get
-	nr_typeface_ft2_get_type
+;	nr_typeface_ft2_get_type
 	nr_typeface_get_type
 	nr_typeface_glyph_advance_get
 	nr_typeface_glyph_outline_get

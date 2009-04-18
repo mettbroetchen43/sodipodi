@@ -1,32 +1,23 @@
 TOP = ..\..\..
 PRJ_TOP = ..\..
-PACKAGE = sp-display
+PACKAGE = libarikkei
 PKG_VER = 0.35
 !INCLUDE $(TOP)\glib\build\win32\make.msc
 
+OBJECTS = \
+	arikkei-dict.obj \
+	arikkei-iolib.obj \
+	arikkei-strlib.obj \
+	arikkei-token.obj \
+
 PKG_CFLAGS = \
-	-DLIBNR_LIBART -DHAVE_CONFIG_H \
+	-DWIN32 \
 	-FImsvc_recommended_pragmas.h \
-	-I$(PRJ_TOP) -I.. \
-	-I..\
-	$(GLIB_CFLAGS) $(LIBART_CFLAGS) $(GTK2_CFLAGS)
+	-I.. \
+	$(GLIB_CFLAGS) $(LIBXML2_CFLAGS)
 
 PKG_LINK = \
-	../libarikkei/libarikkei-$(PKG_VER).lib \
-	../libnr/libnr-$(PKG_VER).lib \
-	../libnrtype/libnrtype-$(PKG_VER).lib \
-	\
-	$(GLIB_LIBS) \
-	$(LIBART_LIBS) 
-
-OBJECTS = \
-	nr-arena.obj \
-	nr-arena-item.obj \
-	nr-arena-group.obj \
-	nr-arena-image.obj \
-	nr-arena-shape.obj \
-	nr-arena-glyphs.obj \
-	canvas-arena.obj \
+	$(GLIB_LIBS) $(LIBXML2_LIBS)
 
 all : \
 	$(PRJ_TOP)\config.h \

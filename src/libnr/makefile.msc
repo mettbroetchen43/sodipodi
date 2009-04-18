@@ -10,6 +10,9 @@ PKG_CFLAGS = \
 	-FImsvc_recommended_pragmas.h \
 	$(GLIB_CFLAGS) $(LIBART_CFLAGS)
 
+PKG_LINK = \
+	$(LIBART_LIBS)
+
 OBJECTS = \
 	nr-values.obj \
 	nr-matrix.obj \

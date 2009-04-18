@@ -14,6 +14,16 @@ sub-one:
 	nmake -nologo -f makefile.msc
 	cd ..
 
+clean :: sub-all-clean
+
+sub-all-clean:
+	for %d in ($(SUBDIRS)) do @nmake -nologo -f makefile.msc sub-one-clean THIS=%d
+
+sub-one-clean:
+	@cd $(THIS)
+	@nmake -nologo -f makefile.msc clean
+	@cd ..
+
 PKG_CFLAGS = \
 	-DLIBNR_LIBART -DHAVE_CONFIG_H \
 	-DWIN32 \

@@ -1,0 +1,19 @@
+EXPORTS
+	arikkei_dict_insert
+	arikkei_dict_lookup
+	arikkei_dict_setup_string
+	arikkei_dtoa_exp
+	arikkei_dtoa_simple
+	arikkei_itoa
+	arikkei_mmap
+	arikkei_munmap
+	arikkei_strtod_exp
+	arikkei_strtod_simple
+	arikkei_token_set_from_string
+	arikkei_token_strcmp
+	arikkei_token_strncpy
+	arikkei_token_tokenize_ws
+	arikkei_ucs2_strlen
+	arikkei_ucs2_strncpy
+	arikkei_ucs2_utf8_strdup
+	arikkei_utf8_ucs2_strdup
