@@ -8,7 +8,15 @@
  *
  * This code is in public domain
  */
+#ifdef HAVE_CONFIG_H
+#include <config.h> /* _UNICODE */
+#endif
 
+#ifdef _UNICODE
+#define UNICODE
+#endif
+
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
 
