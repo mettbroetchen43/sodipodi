@@ -224,7 +224,7 @@ sp_knot_class_init (SPKnotClass * klass)
 					    G_SIGNAL_RUN_LAST,
 					    G_STRUCT_OFFSET (SPKnotClass, event),
 					    NULL, NULL,
-					    sp_marshal_BOOLEAN__POINTER,
+					    sp_marshal_BOOLEAN__BOXED,
 					    G_TYPE_BOOLEAN, 1,
 					    GDK_TYPE_EVENT);
 	knot_signals[CLICKED] = g_signal_new ("clicked",

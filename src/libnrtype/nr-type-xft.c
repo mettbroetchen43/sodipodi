@@ -120,7 +120,7 @@ nr_type_xft_init (void)
 
 	/* Get family list */
 #ifdef WITH_FONTCONFIG
-	obj = FcObjectSetBuild (FC_SCALABLE, FC_OUTLINE, FC_FAMILY, 0);
+	obj = FcObjectSetBuild (FC_SCALABLE, FC_OUTLINE, FC_FAMILY, NULL);
 	fs = FcFontList (cfg, pat, obj);
 	FcObjectSetDestroy (obj);
 #else
@@ -142,7 +142,7 @@ nr_type_xft_init (void)
 
 	/* Get typeface list */
 #ifdef WITH_FONTCONFIG
-	obj = FcObjectSetBuild (FC_SCALABLE, FC_OUTLINE, FC_FAMILY, FC_WEIGHT, FC_SLANT, FC_FILE, FC_INDEX, 0);
+	obj = FcObjectSetBuild (FC_SCALABLE, FC_OUTLINE, FC_FAMILY, FC_WEIGHT, FC_SLANT, FC_FILE, FC_INDEX, NULL);
 	NRXftPatterns = FcFontList (cfg, pat, obj);
 	FcObjectSetDestroy (obj);
 #else

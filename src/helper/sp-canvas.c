@@ -122,7 +122,7 @@ sp_canvas_item_class_init (SPCanvasItemClass *klass)
 						 G_SIGNAL_RUN_LAST,
 						 G_STRUCT_OFFSET (SPCanvasItemClass, event),
 						 NULL, NULL,
-						 sp_marshal_BOOLEAN__POINTER,
+						 sp_marshal_BOOLEAN__BOXED,
 						 G_TYPE_BOOLEAN, 1,
 						 GDK_TYPE_EVENT);
 
