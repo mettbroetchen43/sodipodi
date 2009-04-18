@@ -35,7 +35,7 @@
 #include <libnr/nr-values.h>
 /* #include "../style.h" */
 #include "nr-type-primitives.h"
-#ifdef WIT_FT2
+#ifdef WITH_FT2
 #include "nr-type-ft2.h"
 #endif
 #ifdef WITH_GNOME_PRINT
@@ -658,6 +658,7 @@ nr_type_read_private_list (void)
 					if (!arikkei_token_is_empty (&filet) &&
 					    !arikkei_token_is_empty (&namet) &&
 					    !arikkei_token_is_empty (&familyt)) {
+#ifdef WITH_FT2
 						NRTypeFaceDefFT2 *dft2;
 						unsigned char f[1024], n[1024], m[1024];
 						dft2 = nr_new (NRTypeFaceDefFT2, 1);
@@ -668,6 +669,9 @@ nr_type_read_private_list (void)
 						arikkei_token_strncpy (&familyt, m, 1024);
 						nr_type_ft2_build_def (dft2, f, n, m, slant, weight, face);
 						nr_type_register ((NRTypeFaceDef *) dft2);
+#else
+						g_warning ("NRTypeFaceDefFT2 (%s,%s,%s)", f, n, m);
+#endif
 					}
 				}
 			}
