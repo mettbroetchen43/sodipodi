@@ -1,0 +1,33 @@
+<Project xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:gnome="http://api.gnome.org/doap-extensions#"
+         xmlns="http://usefulinc.com/ns/doap#">
+
+  <name xml:lang="en">sodipodi</name>
+  <shortdesc xml:lang="en">Sodipodi is a vector illustrator program.</shortdesc>
+  <homepage rdf:resource="http://sourceforge.net/projects/sodipodi/" />
+  <description>Sodipodi is sleeping but not dead ;)
+
+  Sodipodi was forked to Inkscape in 2003 [http://wiki.inkscape.org/wiki/index.php?title=SodiPodi].
+
+  Sodipodi was moved to Sourceforge in 2006 [http://sodipodi.svn.sourceforge.net/viewvc/sodipodi]
+
+  It got a small new feature in 2006 and another one in 2011-2012. Also a few bug fixes.
+  </description>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Lauris Kaplinski</foaf:name>
+      <foaf:mbox rdf:resource="mailto:lauris@kaplinski.com" />
+      <gnome:userid>lauris</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+  <maintainer>
+    <foaf:Person>
+      <foaf:name>Hans Breuer</foaf:name>
+      <foaf:mbox rdf:resource="mailto:hans@breuer.org" />
+      <gnome:userid>hans</gnome:userid>
+    </foaf:Person>
+  </maintainer>
+</Project>
+
