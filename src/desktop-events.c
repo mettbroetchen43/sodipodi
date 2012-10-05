@@ -461,7 +461,7 @@ sp_dt_simple_guide_dialog (SPGuide *guide, SPDesktop *desktop)
 		gtk_widget_show (m);
     
 		// spinbutton
-		a = gtk_adjustment_new (0.0, -SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT, 1.0, 10.0, 10.0);
+		a = gtk_adjustment_new (0.0, -SP_DESKTOP_SCROLL_LIMIT, SP_DESKTOP_SCROLL_LIMIT, 1.0, 10.0, 0.0);
 		e = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1.0 , 2);
 		gtk_widget_show (e);
 		gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (e), TRUE);

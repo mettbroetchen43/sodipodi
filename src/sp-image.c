@@ -727,7 +727,10 @@ sp_image_repr_read_b64 (const gchar * uri_data)
 
 	gdk_pixbuf_loader_close (loader, NULL);
 
-	if (!failed) pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+	if (!failed) 
+	  pixbuf = g_object_ref (gdk_pixbuf_loader_get_pixbuf (loader));
+
+	g_object_unref (loader);
 
 	return pixbuf;
 }

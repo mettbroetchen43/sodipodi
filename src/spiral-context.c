@@ -332,7 +332,7 @@ sp_spiral_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 0, 1, 0, 0, 0, 0);
-	a = gtk_adjustment_new (sc->revo, 0.05, 20.0, 1.0, 1.0, 1.0);
+	a = gtk_adjustment_new (sc->revo, 0.05, 20.0, 1.0, 1.0, 0.0);
 	gtk_object_set_data (GTK_OBJECT (tbl), "revolution", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 1, 2);
 	gtk_widget_show (sb);
@@ -344,7 +344,7 @@ sp_spiral_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 1, 2, 0, 0, 0, 0);
-	a = gtk_adjustment_new (sc->exp, 0.0, 1000.0, 0.1, 1.0, 1.0);
+	a = gtk_adjustment_new (sc->exp, 0.0, 1000.0, 0.1, 1.0, 0.0);
 	gtk_object_set_data (GTK_OBJECT (tbl), "expansion", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);
@@ -356,7 +356,7 @@ sp_spiral_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 2, 3, 0, 0, 0, 0);
-	a = gtk_adjustment_new (sc->t0, 0.0, 0.999, 0.1, 1.0, 1.0);
+	a = gtk_adjustment_new (sc->t0, 0.0, 0.999, 0.1, 1.0, 0.0);
 	gtk_object_set_data (GTK_OBJECT (tbl), "t0", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);

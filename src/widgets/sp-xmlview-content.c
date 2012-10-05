@@ -61,8 +61,8 @@ sp_xmlview_content_new (SPRepr * repr)
 
 #if 0
 	gtk_text_set_adjustments (GTK_TEXT (text),
-				  GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 1.0, 0.2, 1.0, 1.0)),
-				  GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 1.0, 0.2, 1.0, 1.0)));
+				  GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 1.0, 0.2, 1.0, 0.0)),
+				  GTK_ADJUSTMENT (gtk_adjustment_new (0.0, 0.0, 1.0, 0.2, 1.0, 0.0)));
 #endif
 
 	sp_xmlview_content_set_repr (text, repr);

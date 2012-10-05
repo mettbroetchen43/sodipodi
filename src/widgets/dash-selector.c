@@ -120,7 +120,7 @@ sp_dash_selector_init (SPDashSelector *dsel)
 	}
 	gtk_option_menu_set_menu (GTK_OPTION_MENU (dsel->dash), m);
 
-	dsel->offset = gtk_adjustment_new (0.0, 0.0, 10.0, 0.1, 1.0, 1.0);
+	dsel->offset = gtk_adjustment_new (0.0, 0.0, 10.0, 0.1, 1.0, 0.0);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (dsel->offset), 0.1, 2);
 	gtk_widget_show (sb);
 	gtk_box_pack_start (GTK_BOX (dsel), sb, FALSE, FALSE, 0);

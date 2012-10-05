@@ -156,7 +156,7 @@ sp_display_dialog_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_box_pack_start (GTK_BOX (hb), l, FALSE, FALSE, 0);
 
-	a = gtk_adjustment_new (0.0, 0.0, 10.0, 0.1, 1.0, 1.0);
+	a = gtk_adjustment_new (0.0, 0.0, 10.0, 0.1, 1.0, 0.0);
 	gtk_adjustment_set_value (GTK_ADJUSTMENT (a), nr_arena_global_delta);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 1);
 	gtk_box_pack_start (GTK_BOX (hb), sb, TRUE, TRUE, 0);

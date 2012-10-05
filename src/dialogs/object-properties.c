@@ -332,7 +332,7 @@ sp_selection_layout_widget_new (void)
 	l = gtk_label_new (_("X:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (t), l, 1, 2, 1, 2, GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 0.1, 10.0, 10.0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 0.1, 10.0, 0.0);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
 	gtk_object_set_data (GTK_OBJECT (spw), "X", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
@@ -344,7 +344,7 @@ sp_selection_layout_widget_new (void)
 	l = gtk_label_new (_("Y:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (t), l, 1, 2, 2, 3, GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 0.1, 10.0, 10.0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 0.1, 10.0, 0.0);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
 	gtk_object_set_data (GTK_OBJECT (spw), "Y", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
@@ -356,7 +356,7 @@ sp_selection_layout_widget_new (void)
 	l = gtk_label_new (_("Width:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (t), l, 1, 2, 3, 4, GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 0.1, 10.0, 10.0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 0.1, 10.0, 0.0);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
 	gtk_object_set_data (GTK_OBJECT (spw), "width", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
@@ -368,7 +368,7 @@ sp_selection_layout_widget_new (void)
 	l = gtk_label_new (_("Height:"));
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (t), l, 1, 2, 4, 5, GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, -1e6, 1e6, 0.1, 10.0, 10.0);
+	a = gtk_adjustment_new (0.0, -1e6, 1e6, 0.1, 10.0, 0.0);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), GTK_ADJUSTMENT (a));
 	gtk_object_set_data (GTK_OBJECT (spw), "height", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);

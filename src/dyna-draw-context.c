@@ -1052,7 +1052,7 @@ sp_dyna_draw_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 0, 1, 0, 0, 0, 0);
-	a = gtk_adjustment_new (ddc->mass, 0.0, 1.0, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (ddc->mass, 0.0, 1.0, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (tbl), "mass", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);
@@ -1064,7 +1064,7 @@ sp_dyna_draw_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 1, 2, 0, 0, 0, 0);
-	a = gtk_adjustment_new (ddc->drag, DRAG_MIN, DRAG_MAX, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (ddc->drag, DRAG_MIN, DRAG_MAX, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (tbl), "drag", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);
@@ -1076,7 +1076,7 @@ sp_dyna_draw_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 2, 3, 0, 0, 0, 0);
-	a = gtk_adjustment_new (ddc->angle, 0.0, 360.0, 1.0, 10.0, 10.0);
+	a = gtk_adjustment_new (ddc->angle, 0.0, 360.0, 1.0, 10.0, 0.0);
 	gtk_object_set_data (GTK_OBJECT (tbl), "angle", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);
@@ -1088,7 +1088,7 @@ sp_dyna_draw_context_config_widget (SPEventContext *ec)
 	gtk_widget_show (l);
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_table_attach (GTK_TABLE (tbl), l, 0, 1, 3, 4, 0, 0, 0, 0);
-	a = gtk_adjustment_new (ddc->width, 0.01, 1.0, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (ddc->width, 0.01, 1.0, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (tbl), "width", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);

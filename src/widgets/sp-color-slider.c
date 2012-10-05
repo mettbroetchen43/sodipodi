@@ -320,7 +320,7 @@ sp_color_slider_set_adjustment (SPColorSlider *slider, GtkAdjustment *adjustment
 	g_return_if_fail (SP_IS_COLOR_SLIDER (slider));
 
 	if (!adjustment) {
-		adjustment = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 1.0, 0.01, 0.1, 0.1);
+		adjustment = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 1.0, 0.01, 0.1, 0.0);
 	}
 
 	if (slider->adjustment != adjustment) {

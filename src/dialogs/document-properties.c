@@ -286,7 +286,7 @@ sp_doc_dialog_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, 1e-6, 1e6, 1.0, 10.0, 10.0);
+	a = gtk_adjustment_new (0.0, 1e-6, 1e6, 1.0, 10.0, 0.0);
 	gtk_object_set_data (GTK_OBJECT (a), "key", "width");
 	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
 	gtk_object_set_data (GTK_OBJECT (dialog), "width", a);
@@ -301,7 +301,7 @@ sp_doc_dialog_new (void)
 	gtk_misc_set_alignment (GTK_MISC (l), 1.0, 0.5);
 	gtk_widget_show (l);
 	gtk_table_attach (GTK_TABLE (t), l, 0, 1, 2, 3, GTK_EXPAND | GTK_FILL, 0, 0, 0);
-	a = gtk_adjustment_new (0.0, 1e-6, 1e6, 1.0, 10.0, 10.0);
+	a = gtk_adjustment_new (0.0, 1e-6, 1e6, 1.0, 10.0, 0.0);
 	gtk_object_set_data (GTK_OBJECT (a), "key", "height");
 	gtk_object_set_data (GTK_OBJECT (a), "unit_selector", us);
 	gtk_object_set_data (GTK_OBJECT (dialog), "height", a);

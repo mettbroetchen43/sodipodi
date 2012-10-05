@@ -160,7 +160,7 @@ sp_color_selector_init (SPColorSelector *csel)
 		gtk_widget_show (csel->l[i]);
 		gtk_table_attach (GTK_TABLE (t), csel->l[i], 0, 1, i, i + 1, GTK_FILL, GTK_FILL, XPAD, YPAD);
 		/* Adjustment */
-		csel->a[i] = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 1.0, 0.01, 0.1, 0.1);
+		csel->a[i] = (GtkAdjustment *) gtk_adjustment_new (0.0, 0.0, 1.0, 0.01, 0.1, 0.0);
 		/* Slider */
 		csel->s[i] = sp_color_slider_new (csel->a[i]);
 		gtk_widget_show (csel->s[i]);

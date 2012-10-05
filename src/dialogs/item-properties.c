@@ -147,37 +147,37 @@ sp_item_widget_new (void)
 	t = gtk_table_new (2, 3, TRUE);
 	gtk_container_add (GTK_CONTAINER (f), t);
 
-	a = gtk_adjustment_new (1.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (1.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "t0", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.01, 2);
 	gtk_table_attach (GTK_TABLE (t), sb, 0, 1, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (a, "value_changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_value_changed), spw);
 
-	a = gtk_adjustment_new (0.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (0.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "t1", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.01, 2);
 	gtk_table_attach (GTK_TABLE (t), sb, 0, 1, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (a, "value_changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_value_changed), spw);
 
-	a = gtk_adjustment_new (0.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (0.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "t2", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.01, 2);
 	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (a, "value_changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_value_changed), spw);
 
-	a = gtk_adjustment_new (1.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (1.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "t3", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.01, 2);
 	gtk_table_attach (GTK_TABLE (t), sb, 1, 2, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (a, "value_changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_value_changed), spw);
 
-	a = gtk_adjustment_new (0.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (0.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "t4", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.01, 2);
 	gtk_table_attach (GTK_TABLE (t), sb, 2, 3, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 	gtk_signal_connect (a, "value_changed", GTK_SIGNAL_FUNC (sp_item_widget_transform_value_changed), spw);
 
-	a = gtk_adjustment_new (0.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.1);
+	a = gtk_adjustment_new (0.0, -NR_HUGE_F, NR_HUGE_F, 0.01, 0.1, 0.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "t5", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.01, 2);
 	gtk_table_attach (GTK_TABLE (t), sb, 2, 3, 1, 2, GTK_EXPAND | GTK_FILL, 0, 0, 0);

@@ -330,7 +330,7 @@ sp_transformation_page_move_new (GObject *obj)
 	/* Horizontal */
 	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "arrows_hor");
 	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 0, 1, 0, 0, 0, 0);
-	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
+	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.0);
 	g_object_set_data (obj, "move_position_x", adj);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), adj);
 	sb = gtk_spin_button_new (adj, 0.1, 2);
@@ -338,7 +338,7 @@ sp_transformation_page_move_new (GObject *obj)
 	/* Vertical */
 	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "arrows_ver");
 	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 1, 2, 0, 0, 0, 0);
-	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
+	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.0);
 	g_object_set_data (obj, "move_position_y", adj);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), adj);
 	sb = gtk_spin_button_new (adj, 0.1, 2);
@@ -475,7 +475,7 @@ sp_transformation_page_scale_new (GObject *obj)
 	/* Horizontal */
 	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "scale_hor");
 	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 0, 1, 0, 0, 0, 0);
-	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
+	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.0);
 	g_object_set_data (obj, "scale_dimension_x", adj);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), adj);
 	g_signal_connect (G_OBJECT (adj), "value_changed", G_CALLBACK (sp_transformation_scale_value_changed), obj);
@@ -484,7 +484,7 @@ sp_transformation_page_scale_new (GObject *obj)
 	/* Vertical */
 	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "scale_ver");
 	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 1, 2, 0, 0, 0, 0);
-	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
+	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.0);
 	g_object_set_data (obj, "scale_dimension_y", adj);
 	sp_unit_selector_add_adjustment (SP_UNIT_SELECTOR (us), adj);
 	g_signal_connect (G_OBJECT (adj), "value_changed", G_CALLBACK (sp_transformation_scale_value_changed), obj);
@@ -594,7 +594,7 @@ sp_transformation_page_rotate_new (GObject *obj)
 
 	img = sp_icon_new (SP_ICON_SIZE_BUTTON, "rotate_left");
 	gtk_table_attach (GTK_TABLE (tbl), img, 0, 1, 0, 1, 0, 0, 0, 0);
-	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.1);
+	adj = (GtkAdjustment *) gtk_adjustment_new (0.0, -1e6, 1e6, 0.01, 0.1, 0.0);
 	g_object_set_data (obj, "rotate_angle", adj);
 	g_signal_connect (G_OBJECT (adj), "value_changed", G_CALLBACK (sp_transformation_rotate_value_changed), obj);
 	sb = gtk_spin_button_new (adj, 0.1, 2);

@@ -573,7 +573,7 @@ sp_stroke_style_line_widget_new (void)
 	gtk_widget_show (hb);
 	gtk_table_attach (GTK_TABLE (t), hb, 1, 4, 0, 1, GTK_EXPAND | GTK_FILL, 0, 0, 0);
 
-	a = gtk_adjustment_new (1.0, 0.0, 100.0, 0.1, 10.0, 10.0);
+	a = gtk_adjustment_new (1.0, 0.0, 100.0, 0.1, 10.0, 0.0);
 	gtk_object_set_data (GTK_OBJECT (spw), "width", a);
 	sb = gtk_spin_button_new (GTK_ADJUSTMENT (a), 0.1, 2);
 	gtk_widget_show (sb);
