@@ -329,7 +329,7 @@ nr_arena_item_invoke_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, u
 
 		if (item->clip || item->mask) {
 			/* Setup mask pixblock */
-			nr_pixblock_setup_fast (&mpb, NR_PIXBLOCK_MODE_A8, carea.x0, carea.y0, carea.x1, carea.y1, TRUE);
+			nr_pixblock_setup_fast (&mpb, NR_PIXBLOCK_MODE_G8, carea.x0, carea.y0, carea.x1, carea.y1, TRUE);
 			/* Do clip if needed */
 			if (item->clip) {
 				state = nr_arena_item_invoke_clip (item->clip, &carea, &mpb);

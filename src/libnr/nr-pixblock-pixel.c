@@ -20,9 +20,9 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 	if (dpb->empty) {
 		/* Empty destination */
 		switch (dpb->mode) {
-		case NR_PIXBLOCK_MODE_A8:
+		case NR_PIXBLOCK_MODE_G8:
 			switch (spb->mode) {
-			case NR_PIXBLOCK_MODE_A8:
+			case NR_PIXBLOCK_MODE_G8:
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8:
 				d[0] = 255;
@@ -39,7 +39,7 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8:
 			switch (spb->mode) {
-			case NR_PIXBLOCK_MODE_A8:
+			case NR_PIXBLOCK_MODE_G8:
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8:
 				d[0] = s[0];
@@ -62,7 +62,7 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8A8N:
 			switch (spb->mode) {
-			case NR_PIXBLOCK_MODE_A8:
+			case NR_PIXBLOCK_MODE_G8:
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8:
 				d[0] = s[0];
@@ -94,7 +94,7 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8A8P:
 			switch (spb->mode) {
-			case NR_PIXBLOCK_MODE_A8:
+			case NR_PIXBLOCK_MODE_G8:
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8:
 				d[0] = s[0];
@@ -124,9 +124,9 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 	} else {
 		/* Image destination */
 		switch (dpb->mode) {
-		case NR_PIXBLOCK_MODE_A8:
+		case NR_PIXBLOCK_MODE_G8:
 			switch (spb->mode) {
-			case NR_PIXBLOCK_MODE_A8:
+			case NR_PIXBLOCK_MODE_G8:
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8:
 				d[0] = 255;
@@ -143,7 +143,7 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8:
 			switch (spb->mode) {
-			case NR_PIXBLOCK_MODE_A8:
+			case NR_PIXBLOCK_MODE_G8:
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8:
 				d[0] = s[0];
@@ -166,7 +166,7 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8A8N:
 			switch (spb->mode) {
-			case NR_PIXBLOCK_MODE_A8:
+			case NR_PIXBLOCK_MODE_G8:
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8:
 				d[0] = s[0];
@@ -199,7 +199,7 @@ nr_compose_pixblock_pixblock_pixel (NRPixBlock *dpb, unsigned char *d, const NRP
 			break;
 		case NR_PIXBLOCK_MODE_R8G8B8A8P:
 			switch (spb->mode) {
-			case NR_PIXBLOCK_MODE_A8:
+			case NR_PIXBLOCK_MODE_G8:
 				break;
 			case NR_PIXBLOCK_MODE_R8G8B8:
 				d[0] = s[0];

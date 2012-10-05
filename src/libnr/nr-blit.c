@@ -12,22 +12,21 @@
 #include "nr-rect.h"
 #include "nr-pixops.h"
 #include "nr-compose.h"
+#include "nr-pixblock.h"
+
 #include "nr-blit.h"
 
 void
-nr_blit_pixblock_pixblock_alpha (NRPixBlock *d, NRPixBlock *s, unsigned int alpha)
+nr_blit_pixblock_pixblock_alpha (NRPixBlock *d, const NRPixBlock *s, unsigned int alpha)
 {
 	NRRectS clip;
-	unsigned char *dpx, *spx;
+	unsigned char *dpx;
+	const unsigned char *spx;
 	int dbpp, sbpp;
 	int w, h;
 
 	if (alpha == 0) return;
 	if (s->empty) return;
-	/* fixme: */
-	if (s->mode == NR_PIXBLOCK_MODE_A8) return;
-	/* fixme: */
-	if (s->mode == NR_PIXBLOCK_MODE_R8G8B8) return;
 
 	/*
 	 * Possible variants as of now:
@@ -64,14 +63,34 @@ nr_blit_pixblock_pixblock_alpha (NRPixBlock *d, NRPixBlock *s, unsigned int alph
 	h = clip.y1 - clip.y0;
 
 	switch (d->mode) {
-	case NR_PIXBLOCK_MODE_A8:
-		/* No rendering into alpha at moment */
+	case NR_PIXBLOCK_MODE_G8:
+		if (d->empty) {
+			if (s->mode == NR_PIXBLOCK_MODE_G8) {
+				nr_A8_EMPTY_A8 (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8) {
+				nr_A8_EMPTY_R8G8B8 (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
+				nr_A8_EMPTY_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
+				nr_A8_EMPTY_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+			}
+		} else {
+			/* fixme: Implement (Lauris) */
+		}
 		break;
 	case NR_PIXBLOCK_MODE_R8G8B8:
-		if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
-			nr_R8G8B8_R8G8B8_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+		if (d->empty) {
+			/* fixme: Implement (Lauris) */
 		} else {
-			nr_R8G8B8_R8G8B8_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			if (s->mode == NR_PIXBLOCK_MODE_G8) {
+				/* fixme: Implement mask rendering (Lauris) */
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8) {
+				nr_R8G8B8_R8G8B8_R8G8B8 (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
+				nr_R8G8B8_R8G8B8_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				nr_R8G8B8_R8G8B8_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
+			}
 		}
 		break;
 	case NR_PIXBLOCK_MODE_R8G8B8A8P:
@@ -79,36 +98,46 @@ nr_blit_pixblock_pixblock_alpha (NRPixBlock *d, NRPixBlock *s, unsigned int alph
 			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 				/* Case 8 */
 				nr_R8G8B8A8_P_EMPTY_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
-			} else {
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
 				/* Case C */
 				nr_R8G8B8A8_P_EMPTY_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				/* fixme: Implement mask and RGB rendering (Lauris) */
 			}
 		} else {
 			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 				/* case A */
 				nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
-			} else {
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
 				/* case E */
 				nr_R8G8B8A8_P_R8G8B8A8_P_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				/* fixme: Implement mask and RGB rendering (Lauris) */
 			}
 		}
 		break;
 	case NR_PIXBLOCK_MODE_R8G8B8A8N:
 		if (d->empty) {
-			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
-				/* Case 9 */
-				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
-			} else {
-				/* Case D */
+			if (s->mode == NR_PIXBLOCK_MODE_G8) {
+				/* fixme: Implement (Lauris) */
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8) {
+				nr_R8G8B8A8_N_EMPTY_R8G8B8 (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
 				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
 			}
 		} else {
 			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
 				/* case B */
 				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_P (dpx, w, h, d->rs, spx, s->rs, alpha);
-			} else {
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
 				/* case F */
 				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8A8_N (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else  if (s->mode == NR_PIXBLOCK_MODE_R8G8B8) {
+				nr_R8G8B8A8_N_R8G8B8A8_N_R8G8B8 (dpx, w, h, d->rs, spx, s->rs, alpha);
+			} else {
+				/* fixme: Implement mask rendering (Lauris) */
 			}
 		}
 		break;
@@ -116,18 +145,15 @@ nr_blit_pixblock_pixblock_alpha (NRPixBlock *d, NRPixBlock *s, unsigned int alph
 }
 
 void
-nr_blit_pixblock_pixblock_mask (NRPixBlock *d, NRPixBlock *s, NRPixBlock *m)
+nr_blit_pixblock_pixblock_mask (NRPixBlock *d, const NRPixBlock *s, const NRPixBlock *m)
 {
 	NRRectS clip;
-	unsigned char *dpx, *spx, *mpx;
+	unsigned char *dpx;
+	const unsigned char *spx, *mpx;
 	int dbpp, sbpp;
 	int w, h;
 
 	if (s->empty) return;
-	/* fixme: */
-	if (s->mode == NR_PIXBLOCK_MODE_A8) return;
-	/* fixme: */
-	if (s->mode == NR_PIXBLOCK_MODE_R8G8B8) return;
 
 	/*
 	 * Possible variants as of now:
@@ -166,7 +192,7 @@ nr_blit_pixblock_pixblock_mask (NRPixBlock *d, NRPixBlock *s, NRPixBlock *m)
 	h = clip.y1 - clip.y0;
 
 	switch (d->mode) {
-	case NR_PIXBLOCK_MODE_A8:
+	case NR_PIXBLOCK_MODE_G8:
 		/* No rendering into alpha at moment */
 		break;
 	case NR_PIXBLOCK_MODE_R8G8B8:
@@ -197,12 +223,14 @@ nr_blit_pixblock_pixblock_mask (NRPixBlock *d, NRPixBlock *s, NRPixBlock *m)
 		break;
 	case NR_PIXBLOCK_MODE_R8G8B8A8N:
 		if (d->empty) {
-			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
-				/* Case 9 */
-				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
-			} else {
-				/* Case D */
+			if (s->mode == NR_PIXBLOCK_MODE_G8) {
+				nr_R8G8B8A8_N_EMPTY_A8_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8) {
+				nr_R8G8B8A8_N_EMPTY_R8G8B8_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
+			} else if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8N) {
 				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_N_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
+			} else {
+				nr_R8G8B8A8_N_EMPTY_R8G8B8A8_P_A8 (dpx, w, h, d->rs, spx, s->rs, mpx, m->rs);
 			}
 		} else {
 			if (s->mode == NR_PIXBLOCK_MODE_R8G8B8A8P) {
@@ -218,16 +246,17 @@ nr_blit_pixblock_pixblock_mask (NRPixBlock *d, NRPixBlock *s, NRPixBlock *m)
 }
 
 void
-nr_blit_pixblock_mask_rgba32 (NRPixBlock *d, NRPixBlock *m, unsigned long rgba)
+nr_blit_pixblock_mask_rgba32 (NRPixBlock *d, const NRPixBlock *m, unsigned long rgba)
 {
 	if (!(rgba & 0xff)) return;
 
 	if (m) {
 		NRRectS clip;
-		unsigned char *dpx, *mpx;
+		unsigned char *dpx;
+		const unsigned char *mpx;
 		int w, h;
 
-		if (m->mode != NR_PIXBLOCK_MODE_A8) return;
+		if (m->mode != NR_PIXBLOCK_MODE_G8) return;
 
 		if (!nr_rect_s_test_intersect (&d->area, &m->area)) return;
 

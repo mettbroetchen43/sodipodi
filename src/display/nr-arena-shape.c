@@ -452,7 +452,7 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 		NRPixBlock m;
 		guint32 rgba;
 
-		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_G8, area->x0, area->y0, area->x1, area->y1, TRUE);
 		nr_pixblock_render_svp_mask_or (&m, shape->fill_svp);
 		m.empty = FALSE;
 
@@ -489,7 +489,7 @@ nr_arena_shape_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, unsigne
 		NRPixBlock m;
 		guint32 rgba;
 
-		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_G8, area->x0, area->y0, area->x1, area->y1, TRUE);
 		nr_pixblock_render_svp_mask_or (&m, shape->stroke_svp);
 		m.empty = FALSE;
 

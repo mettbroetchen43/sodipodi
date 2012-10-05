@@ -260,7 +260,7 @@ nr_rasterfont_generic_glyph_mask_render (NRRasterFont *rf, unsigned int glyph, N
 		area.y1 = NRRF_COORD_INT_UPPER (slot->glyph.ig.bbox.y1) + sy;
 		break;
 	case NRRF_TYPE_SVP:
-		nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_A8,
+		nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_G8,
 					  m->area.x0 - sx, m->area.y0 - sy, m->area.x1 - sx, m->area.y1 - sy,
 					  NR_PIXBLOCK_PX (m), m->rs, FALSE, FALSE);
 		nr_pixblock_render_svp_mask_or (&spb, slot->glyph.sg.svp);
@@ -383,7 +383,7 @@ nr_rasterfont_ensure_glyph_slot (NRRasterFont *rf, unsigned int glyph, unsigned 
 					slot->glyph.ig.bbox.x1 = MIN (x1, 32767);
 					slot->glyph.ig.bbox.y1 = MIN (y1, 32767);
 					slot->glyph.ig.px = nr_new (unsigned char, w * h);
-					nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_A8,
+					nr_pixblock_setup_extern (&spb, NR_PIXBLOCK_MODE_G8,
 								  NRRF_COORD_INT_LOWER (x0),
 								  NRRF_COORD_INT_LOWER (y0),
 								  NRRF_COORD_INT_UPPER (x1),

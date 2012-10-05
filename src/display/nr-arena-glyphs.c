@@ -452,7 +452,7 @@ nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, 
 	if (style->fill.type != SP_PAINT_TYPE_NONE) {
 		NRPixBlock mb;
 		guint32 rgba;
-		nr_pixblock_setup_fast (&mb, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		nr_pixblock_setup_fast (&mb, NR_PIXBLOCK_MODE_G8, area->x0, area->y0, area->x1, area->y1, TRUE);
 		/* Render children fill mask */
 		for (child = group->children; child != NULL; child = child->next) {
 			ret = nr_arena_glyphs_fill_mask (NR_ARENA_GLYPHS (child), area, &mb);
@@ -493,7 +493,7 @@ nr_arena_glyphs_group_render (NRArenaItem *item, NRRectL *area, NRPixBlock *pb, 
 	if (style->stroke.type != SP_PAINT_TYPE_NONE) {
 		NRPixBlock m;
 		guint32 rgba;
-		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, area->x0, area->y0, area->x1, area->y1, TRUE);
+		nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_G8, area->x0, area->y0, area->x1, area->y1, TRUE);
 		/* Render children stroke mask */
 		for (child = group->children; child != NULL; child = child->next) {
 			ret = nr_arena_glyphs_stroke_mask (NR_ARENA_GLYPHS (child), area, &m);

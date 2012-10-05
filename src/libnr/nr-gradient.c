@@ -246,7 +246,7 @@ nr_rgradient_render_generic_symmetric (NRRGradientRenderer *rgr, NRPixBlock *pb)
 					  (unsigned char *) rgr->vector,
 					  4 * NR_GRADIENT_VECTOR_LENGTH,
 					  0, 0);
-		bpp = (pb->mode == NR_PIXBLOCK_MODE_A8) ? 1 : (pb->mode == NR_PIXBLOCK_MODE_R8G8B8) ? 3 : 4;
+		bpp = (pb->mode == NR_PIXBLOCK_MODE_G8) ? 1 : (pb->mode == NR_PIXBLOCK_MODE_R8G8B8) ? 3 : 4;
 
 		for (y = pb->area.y0; y < pb->area.y1; y++) {
 			double gx, gy;
@@ -298,7 +298,7 @@ nr_rgradient_render_generic_optimized (NRRGradientRenderer *rgr, NRPixBlock *pb)
 				  (unsigned char *) rgr->vector,
 				  4 * NR_GRADIENT_VECTOR_LENGTH,
 				  0, 0);
-	bpp = (pb->mode == NR_PIXBLOCK_MODE_A8) ? 1 : (pb->mode == NR_PIXBLOCK_MODE_R8G8B8) ? 3 : 4;
+	bpp = (pb->mode == NR_PIXBLOCK_MODE_G8) ? 1 : (pb->mode == NR_PIXBLOCK_MODE_R8G8B8) ? 3 : 4;
 
 	r = MAX (rgr->r, 1e-9);
 

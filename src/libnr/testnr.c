@@ -67,7 +67,7 @@ main (int argc, const char **argv)
 	/* Masks */
 	for (i = 0; i < 16; i++) {
 		int r, b, c;
-		nr_pixblock_setup_fast (&m[i], NR_PIXBLOCK_MODE_A8, 0, 0, 64, 64, 0);
+		nr_pixblock_setup_fast (&m[i], NR_PIXBLOCK_MODE_G8, 0, 0, 64, 64, 0);
 		for (r = 0; r < 64; r++) {
 			unsigned int q;
 			unsigned char *p;

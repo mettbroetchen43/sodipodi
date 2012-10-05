@@ -594,7 +594,7 @@ sp_font_preview_expose (GtkWidget *widget, GdkEventExpose *event)
 					y1 = MIN (y0 + 64, event->area.y + event->area.height);
 					ps = nr_pixelstore_16K_new (TRUE, 0xff);
 					nr_pixblock_setup_extern (&pb, NR_PIXBLOCK_MODE_R8G8B8, x0, y0, x1, y1, ps, 3 * (x1 - x0), FALSE, FALSE);
-					nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_A8, x0, y0, x1, y1, TRUE);
+					nr_pixblock_setup_fast (&m, NR_PIXBLOCK_MODE_G8, x0, y0, x1, y1, TRUE);
 					pb.empty = FALSE;
 					for (i = 0; i < len; i++) {
 						nr_rasterfont_glyph_mask_render (fprev->rfont, glyphs[i], &m, hpos[i] + startx, starty);

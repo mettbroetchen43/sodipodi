@@ -23,6 +23,7 @@ typedef int16_t NRShort;
 typedef uint16_t NRUShort;
 typedef int32_t NRLong;
 typedef uint32_t NRULong;
+typedef uint64_t NRULongLong;
 #else
 #ifdef HAVE_NR_CONFIG_H
 /* Automake based systems */
@@ -35,6 +36,7 @@ typedef signed short NRShort;
 typedef unsigned short NRUShort;
 typedef signed int NRLong;
 typedef unsigned int NRULong;
+typedef unsigned __int64 NRULongLong;
 #endif
 #endif
 
