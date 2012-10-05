@@ -1,8 +1,7 @@
 TOP = ..\..\..
 PRJ_TOP = ..\..
 PACKAGE = sp-helper
-PKG_VER = 0.35
-!INCLUDE $(TOP)\glib\build\win32\make.msc
+!INCLUDE $(PRJ_TOP)\sp-make.msc
 
 PKG_CFLAGS = \
 	-DWIN32 -DLIBNR_LIBART \
@@ -48,7 +47,7 @@ sp-marshal.c : sp-marshal.list sp-marshal.h
 all : \
 	$(PRJ_TOP)\config.h \
 	$(PACKAGE).lib \
-	$(PACKAGE)-$(PKG_VER).dll
+#	$(PACKAGE)-$(PKG_VER).dll
 
 
 $(PRJ_TOP)\config.h: $(PRJ_TOP)\config.h.win32

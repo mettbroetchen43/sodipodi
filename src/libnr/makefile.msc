@@ -1,8 +1,7 @@
 TOP = ..\..\..
 PRJ_TOP = ..\..
 PACKAGE = libnr
-PKG_VER = 0.35
-!INCLUDE $(TOP)\glib\build\win32\make.msc
+!INCLUDE $(PRJ_TOP)\sp-make.msc
 
 PKG_CFLAGS = \
 	-DLIBNR_LIBART \
